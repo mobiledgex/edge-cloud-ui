@@ -157,7 +157,7 @@ export default function Header(props) {
                             </h5>
                         </IconButton> : null}
                     <EventMenu/>
-                    <HelpMenu viewMode={props.viewMode} helpClick={props.helpClick}/>
+                    <HelpMenu viewMode={props.viewMode}/>
                     {visible() ? <AlertReceiver/> : null}
                     <UserMenu email={props.email} data={props.data} />
                 </div>
