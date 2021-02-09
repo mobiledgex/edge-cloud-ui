@@ -32,7 +32,6 @@
     "http-proxy-middleware": "^0.20.0",
     "interactjs": "^1.9.22",
     "intro.js": "^2.9.3",
-    "intro.js-react": "^0.2.0",
     "json-server": "^0.16.1",
     "leaflet": "^1.7.1",
     "leaflet-make-cluster-group": "0.3.0",
