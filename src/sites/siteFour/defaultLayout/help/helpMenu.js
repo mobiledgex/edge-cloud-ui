@@ -20,14 +20,6 @@ const HelpMenu = (props) => {
         setAnchorEl(null);
     };
 
-    const tutorialClick = () => {
-        setAnchorEl(null);
-        let currentStep = props.viewMode ? tutor(props.viewMode) : null;
-        if (currentStep) {
-            props.helpClick(currentStep)
-        }
-    };
-
     const docClick = () => {
         setAnchorEl(null);
         let path = tutor(props.viewMode, true)
@@ -53,10 +45,6 @@ const HelpMenu = (props) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                {/* <MenuItem onClick={tutorialClick} disabled={!(props.viewMode && tutor(props.viewMode))}>
-                    <EmojiPeopleOutlinedIcon fontSize="small" color={props.viewMode && tutor(props.viewMode) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
-                    <ListItemText primary="Tutorial" />
-                </MenuItem> */}
                 <MenuItem onClick={docClick} disabled={!(props.viewMode && tutor(props.viewMode, true))}>
                     <DescriptionOutlinedIcon fontSize="small" color={props.viewMode && tutor(props.viewMode, true) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
                     <ListItemText primary="Guide" />
