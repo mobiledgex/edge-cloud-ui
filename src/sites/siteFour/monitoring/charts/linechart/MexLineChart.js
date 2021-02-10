@@ -15,6 +15,7 @@ const formatData = (rawData, avgDataRegion, globalFilter, rowSelected) => {
     let length = keys.length
     for (let i = 0; i < length; i++) {
         let key = keys[i]
+
         if (avgDataRegion[key]) {
             if (avgDataRegion[key].hidden) {
                 continue
@@ -135,6 +136,7 @@ class MexLineChart extends React.Component {
             fullscreen: false
         }
         this.metric = props.data.metric
+        
         this.header = this.metric ? this.metric.header : ''
         this.unit = this.metric ? this.metric.unit : undefined
         this.position = this.metric ? this.metric.position : 0
@@ -208,7 +210,6 @@ class MexLineChart extends React.Component {
 
         let id = this.props.id
         id = id.toLowerCase()
-
         return (
             datasets.length > 0 ?
                 <GridListTile key={id} cols={1} style={style} mex-test="component-line-chart">

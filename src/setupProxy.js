@@ -3,7 +3,7 @@ module.exports = function (app) {
     app.use(proxy('/api',
         {
             target:`${process.env.REACT_APP_API_ENDPOINT}`,
-            // secure: false,
+            secure: false,
             changeOrigin: true
         }
     ));

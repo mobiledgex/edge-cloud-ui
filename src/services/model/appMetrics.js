@@ -49,18 +49,20 @@ export const appMetricsListKeys = [
     { field: 'connections', label: 'Active Connections', sortable: true, visible: true, isArray: true },
 ]
 
-
+export const networkMetricType = [
+    { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 10, unit: 1 },
+    { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 11, unit: 1},
+]
 
 export const appInstMetricTypeKeys = [
     { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 10, unit: 2, serverRequest: true },
     { field: 'memory', serverField: 'mem', header: 'Memory', position: 10, unit: 1, serverRequest: true },
     { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 10, unit: 1, serverRequest: true },
-    { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 10, unit: 1, serverRequest: true },
-    { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 11, unit: 1, serverRequest: false },
+    { field: 'network', serverField: 'network', serverRequest: true, keys:networkMetricType},
     { field: 'connections', serverField: 'connections', subId: 'active', header: 'Active Connections', position: 10, unit: 3, serverRequest: true },
-    { field: 'map', header: 'Map', serverRequest: false },
-    { field: 'event', header: 'Event', serverRequest: false },
-    { field: 'client', header: 'Client Usage', serverRequest: false },
+    { field: 'map', header: 'Map' },
+    { field: 'event', header: 'Event'},
+    { field: 'client', header: 'Client Usage'},
 ]
 
 export const appActions = [
