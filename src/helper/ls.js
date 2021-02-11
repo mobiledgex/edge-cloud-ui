@@ -4,7 +4,12 @@ export const LS_USER_META_DATA = 'usermetadata'
 
 export const getUserMetaData = () => {
     let data = localStorage.getItem(LS_USER_META_DATA)
-    data = data ? JSON.parse(data) : {}
+    try {
+        data = data ? JSON.parse(data) : {}
+    }
+    catch (e) {
+        data = {}
+    }
     return data
 }
 
