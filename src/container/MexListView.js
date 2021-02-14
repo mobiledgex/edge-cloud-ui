@@ -345,6 +345,7 @@ class MexListView extends React.Component {
                     groupActionClose={this.groupActionClose}
                     dropList={this.state.dropList}
                     isDropped={this.isDropped}
+                    viewerEdit={this.requestInfo.viewerEdit}
                     tableHeight={this.props.tableHeight} />
             </div>)
     }
