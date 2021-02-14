@@ -154,7 +154,7 @@ class AppReg extends React.Component {
     /**Deployment manifest block */
 
     portForm = () => ([
-        { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 7, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
+        { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number', min:1 }, width: 7, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
         { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2, update: { edit: true } },
         { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3, update: { edit: true } },
@@ -176,9 +176,9 @@ class AppReg extends React.Component {
     }
 
     multiPortForm = () => ([
-        { field: fields.portRangeMin, label: 'Port Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
+        { field: fields.portRangeMin, label: 'Port Min', formType: INPUT, rules: { required: true, type: 'number', min:1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
-        { field: fields.portRangeMax, label: 'Port Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
+        { field: fields.portRangeMax, label: 'Port Max', formType: INPUT, rules: { required: true, type: 'number', min:1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
         { field: fields.tls, label: 'TLS', formType: CHECKBOX, visible: false, value: false, width: 2, update: { edit: true } },
         { field: fields.skipHCPorts, label: 'Health Check', formType: CHECKBOX, visible: false, value: true, width: 3, update: { edit: true } },
@@ -190,7 +190,7 @@ class AppReg extends React.Component {
     }
 
     configForm = () => ([
-        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows: 4 }, width: 9, visible: true, update: { edit: true } },
+        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, rows: 4 }, width: 9, visible: true, update: { edit: true } },
         { field: fields.kind, label: 'Kind', formType: SELECT, placeholder: 'Select Kind', rules: { required: true }, width: 4, visible: true, options: this.configOptions, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
     ])
@@ -201,7 +201,7 @@ class AppReg extends React.Component {
 
     outboundConnectionsForm = () => ([
         { field: fields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp', 'icmp'], update: { edit: true } },
-        { field: fields.ocPort, label: 'Port', formType: INPUT, rules: { required: true, type: 'number' }, width: 5, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
+        { field: fields.ocPort, label: 'Port', formType: INPUT, rules: { required: true, type: 'number', min:1 }, width: 5, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
         { field: fields.ocRemoteIP, label: 'Remote IP', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: this.validateRemoteIP },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
     ])
