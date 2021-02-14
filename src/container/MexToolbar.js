@@ -93,7 +93,7 @@ const MexToolbar = (props) => {
 
     /*Add Block*/
     const addForm = () => (
-        requestInfo.onAdd && !isViewer() ?
+        requestInfo.onAdd && (!isViewer() || requestInfo.viewerEdit) ?
             <Box order={5} >
                 <IconButton aria-label="new" style={{ marginTop: -3 }} className='buttonCreate' onClick={(e) => { props.onAction(ACTION_NEW) }}>
                     <AddIcon style={{ color: '#76ff03' }} />

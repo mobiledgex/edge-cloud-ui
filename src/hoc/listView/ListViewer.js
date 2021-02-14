@@ -10,7 +10,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { getUserRole } from '../../services/model/format'
 import { StyledTableRow, StyledTableCell, stableSort, getComparator } from './ListConstant'
 
-const canEdit = (action) => {
+const canEdit = (viewerEdit, action) => {
     let valid = true
     if (action.type === 'Edit') {
         let role = getUserRole()
@@ -18,7 +18,7 @@ const canEdit = (action) => {
             valid = false
         }
     }
-    return valid
+    return valid || viewerEdit
 }
 
 const getHeight = (props) => {
@@ -42,7 +42,7 @@ class ListViewer extends React.Component {
             actionEl: null,
             selectedRow: {}
         }
-        this.actionMenu = props.actionMenu ? props.actionMenu.filter(action => { return canEdit(action) }) : []
+        this.actionMenu = props.actionMenu ? props.actionMenu.filter(action => { return canEdit(props.viewerEdit, action) }) : []
         this.columnLength = 0
     }
 
@@ -92,6 +92,7 @@ class ListViewer extends React.Component {
 
     actionMenuView = () => {
         const { actionEl, selectedRow } = this.state
+        const {viewerEdit} = this.props
         return (
             this.actionMenu.length > 0 ?
                 <Popper open={Boolean(actionEl)} anchorEl={actionEl} role={undefined} transition disablePortal>
@@ -104,7 +105,7 @@ class ListViewer extends React.Component {
                                 <ClickAwayListener onClickAway={() => this.setState({ actionEl: null })}>
                                     <MenuList autoFocusItem={Boolean(actionEl)} id="menu-list-grow" >
                                         {this.actionMenu.map((action, i) => {
-                                            let visible = canEdit(action) ? action.visible ? action.visible(selectedRow) : true : false
+                                            let visible = canEdit(viewerEdit, action) ? action.visible ? action.visible(selectedRow) : true : false
                                             return visible ? <MenuItem key={i} onClick={(e) => { this.actionClose(action) }}>{action.label}</MenuItem> : null
                                         })}
                                     </MenuList>
