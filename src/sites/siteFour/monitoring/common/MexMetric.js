@@ -13,11 +13,14 @@ class MexMetric extends React.Component {
         let parent = filter.parent
         return (
             <React.Fragment>
-                {filter.region.map(region => (
-                    parent.metricTypeKeys.map(metric => (
-                        <MexChart key={`${region}-${metric.field}`} region={region} metric={metric} avgData={avgData} filter={filter} rowSelected={rowSelected} style={style} range={range} org={org} updateAvgData={updateAvgData} />
-                    ))
-                ))}
+                {filter.region.map(region => {
+                    return (
+                        parent.metricTypeKeys.map(metric => (
+                            filter.metricType.includes(metric.field) ?
+                            <MexChart key={`${region}-${metric.field}`} region={region} metric={metric} avgData={avgData} filter={filter} rowSelected={rowSelected} style={style} range={range} org={org} updateAvgData={updateAvgData} /> : undefined
+                        ))
+                    )
+                })}
             </React.Fragment>
         )
     }

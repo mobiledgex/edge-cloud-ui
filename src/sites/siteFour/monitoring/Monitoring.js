@@ -101,7 +101,6 @@ class Monitoring extends React.Component {
         this.setState({ listAction: {} })
     }
 
-
     onRefreshChange = (value) => {
         let interval = value.duration
         if (this.refreshId) {

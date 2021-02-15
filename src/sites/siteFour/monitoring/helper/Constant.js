@@ -29,6 +29,14 @@ export const PARENT_CLOUDLET = 'cloudlet'
 export const LIST_TOOLBAR_TRACK_DEVICES = 0
 export const LIST_TOOLBAR_TERMINAL = 1
 
+const visibility = (keys) => {
+    let list = []
+    for (let key of keys) {
+        key.keys ? [...list, ...visibility(key.keys, list)] : list.push(key)
+    }
+    return list
+}
+
 export const summaryList = [
     { label: 'Avg', field: 'avg', position: 0, metricType: [PARENT_APP_INST, PARENT_CLUSTER_INST] },
     { label: 'Min', field: 'min', position: 1, metricType: [PARENT_APP_INST, PARENT_CLUSTER_INST] },
@@ -36,9 +44,9 @@ export const summaryList = [
 ]
 
 export const metricParentTypes = [
-    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showOrgAppInsts], request: appInstMetrics, metricTypeKeys: appInstMetricTypeKeys, metricListKeys: appMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData },
-    { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showOrgCloudlets, showOrgClusterInsts], request: clusterMetrics, metricTypeKeys: clusterMetricTypeKeys, metricListKeys: clusterMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER] },
-    { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showOrgCloudlets], request: cloudletMetrics, metricTypeKeys: cloudletMetricTypeKeys, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.OPERATOR], customData: cloudletCustomData },
+    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showOrgAppInsts], request: appInstMetrics, metricTypeKeys: visibility(appInstMetricTypeKeys), metricListKeys: appMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData },
+    { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showOrgCloudlets, showOrgClusterInsts], request: clusterMetrics, metricTypeKeys: visibility(clusterMetricTypeKeys), metricListKeys: clusterMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER] },
+    { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showOrgCloudlets], request: cloudletMetrics, metricTypeKeys: visibility(cloudletMetricTypeKeys), metricListKeys: cloudletMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.OPERATOR], customData: cloudletCustomData },
 ]
 
 export const validateRole = (roles) => {

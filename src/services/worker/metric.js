@@ -1,12 +1,10 @@
 /* eslint-disable */
 /**Fetch monitoring metric data for app, cluster and cloudlet */
 
-import randomColor from 'randomcolor'
 import maxBy from 'lodash/maxBy';
 import meanBy from 'lodash/meanBy';
 import minBy from 'lodash/minBy';
 import { unit } from '../../utils/math_util'
-import { fields } from '../model/format'
 import cloneDeep from 'lodash/cloneDeep';
 
 
@@ -41,7 +39,9 @@ const avgCalculator = (parentId, data, metric) => {
                 let positionmaxValue = latestData[metric.position + 1] ? latestData[metric.position + 1] : 0
                 let convertedMaxValue = metric.unit ? unit(metric.unit, positionmaxValue) : positionmaxValue
                 let convertedValue = metric.unit ? unit(metric.unit, positionValue) : positionValue
-                chartData['avgData'][valueKey] = {valueKey : `${convertedValue} / ${convertedMaxValue}`}
+                let avgData = {}
+                avgData[metric.field] =  `${convertedValue} / ${convertedMaxValue}`
+                chartData['avgData'][valueKey] = avgData
             }
         }
     })
