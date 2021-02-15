@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { fields } from '../../../../services/model/format';
 import { showAlertReceiver, deleteAlertReceiver, showAlertReceiverKeys } from '../../../../services/model/alerts';
 import Reg from './AlertReceiverReg';
-import { validateRole, operatorRoles } from '../../../../constant'
 import { Chip } from '@material-ui/core';
 import WarningOutlineIcon from '@material-ui/icons/WarningOutlined';
 import InfoOutlineIcon from '@material-ui/icons/InfoOutlined';
@@ -56,7 +55,8 @@ class AlertList extends React.Component {
             selection: true,
             viewMode: HELP_ALERTS,
             keys: this.keys,
-            onAdd: validateRole(operatorRoles) ? this.onAdd : undefined,
+            onAdd: this.onAdd,
+            viewerEdit:true,
             grouping: false
         })
     }

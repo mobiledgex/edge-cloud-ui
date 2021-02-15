@@ -53,7 +53,7 @@ export const showAlertReceiverKeys = () => (
         { field: fields.appCloudlet, serverField: 'AppInst#OS#cluster_inst_key#OS#cloudlet_key#OS#name', label: 'Cloudlet', sortable: true, visible: false },
         { field: fields.operatorName, serverField: 'Cloudlet#OS#organization', label: 'Operator', sortable: true, visible: false },
         { field: fields.cloudletName, serverField: 'Cloudlet#OS#name', label: 'Cloudlet', sortable: true, visible: false },
-        { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: [ADMIN_MANAGER, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR] }
+        { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
     ]
 )
 

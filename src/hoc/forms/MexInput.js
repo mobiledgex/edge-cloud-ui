@@ -35,6 +35,7 @@ const MexInput = (props) => {
                 onChange={(e, { value }) => onValueChange(value)}
                 onBlur={(e) => onBlurChange(e.target.value)}
                 type={form.rules ? form.rules.type : 'text'}
+                min={form.rules ? form.rules.min : undefined}
                 required={form.required ? form.rules.required : false}
                 autoComplete={form.autocomplete ? form.autocomplete : 'on'}
                 disabled={props.disabled}
