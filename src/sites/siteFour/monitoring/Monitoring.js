@@ -195,13 +195,16 @@ class Monitoring extends React.Component {
     }
 
     updateAvgData = (region, metric, data) => {
-        this.setState(prevState=>{ 
+        this.setState(prevState => {
             let avgData = prevState.avgData
-            Object.keys(data).map(dataKey=>{
-                avgData[region][dataKey][metric.field] =  data[dataKey][metric.field]
+            Object.keys(data).map(dataKey => {
+                let avgDataRegion = avgData[region]
+                if (avgDataRegion[dataKey]) {
+                    avgDataRegion[dataKey][metric.field] = data[dataKey][metric.field]
+                }
             })
-            return {avgData}
-         })
+            return { avgData }
+        })
     }
 
     render() {
