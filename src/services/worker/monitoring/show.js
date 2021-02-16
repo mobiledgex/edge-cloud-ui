@@ -12,16 +12,15 @@ const defaultFields = (data) => {
 
 const fetchAppInstData = (showList, keys) => {
     let dataList = {}
-    for(let i=0;i<showList.length;i++)
+    for(let show of showList)
     {
-        let show = showList[i]
-        if (show[fields.appName] === 'MEXPrometheusAppName' || show[fields.appName] === 'NFSAutoProvision' || Object.keys(show.cloudletLocation).length === 0) {
+        if (show[fields.appName] === 'MEXPrometheusAppName' || show[fields.appName] === 'NFSAutoProvision' || (show.cloudletLocation === undefined || Object.keys(show.cloudletLocation).length === 0)) {
             continue;
         }
 
         let dataKey = ''
         let data = {}
-        keys.map((key, i)=>{
+        keys.map(key=>{
             data[key.field] = show[key.field]
             if(key.groupBy)
             {

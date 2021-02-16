@@ -1,7 +1,6 @@
 /* eslint-disable */
 /**Fetch monitoring metric data for app, cluster and cloudlet */
 
-import randomColor from 'randomcolor'
 import maxBy from 'lodash/maxBy';
 import meanBy from 'lodash/meanBy';
 import minBy from 'lodash/minBy';
