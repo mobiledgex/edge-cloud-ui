@@ -29,10 +29,27 @@ export const PARENT_CLOUDLET = 'cloudlet'
 export const LIST_TOOLBAR_TRACK_DEVICES = 0
 export const LIST_TOOLBAR_TERMINAL = 1
 
-const visibility = (keys) => {
+export const metricType = (id) => {
+    switch (id) {
+        case PARENT_APP_INST:
+            return appInstMetricTypeKeys
+        case PARENT_CLUSTER_INST:
+            return clusterMetricTypeKeys
+        case PARENT_CLOUDLET:
+            return cloudletMetricTypeKeys
+    }
+}
+
+export const visibility = (id, keys) => {
+    keys = keys ? keys : metricType(id)
     let list = []
     for (let key of keys) {
-        key.keys ? [...list, ...visibility(key.keys, list)] : list.push(key)
+        if (key.keys) {
+            list = [...list, ...visibility(id, key.keys)]
+        }
+        else {
+            list.push(key)
+        }
     }
     return list
 }
@@ -44,9 +61,9 @@ export const summaryList = [
 ]
 
 export const metricParentTypes = [
-    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showOrgAppInsts], request: appInstMetrics, metricTypeKeys: visibility(appInstMetricTypeKeys), metricListKeys: appMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData },
-    { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showOrgCloudlets, showOrgClusterInsts], request: clusterMetrics, metricTypeKeys: visibility(clusterMetricTypeKeys), metricListKeys: clusterMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER] },
-    { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showOrgCloudlets], request: cloudletMetrics, metricTypeKeys: visibility(cloudletMetricTypeKeys), metricListKeys: cloudletMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.OPERATOR], customData: cloudletCustomData },
+    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showOrgAppInsts], request: appInstMetrics, metricListKeys: appMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData },
+    { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showOrgCloudlets, showOrgClusterInsts], request: clusterMetrics, metricListKeys: clusterMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER] },
+    { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showOrgCloudlets], request: cloudletMetrics, metricListKeys: cloudletMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.OPERATOR], customData: cloudletCustomData },
 ]
 
 export const validateRole = (roles) => {
@@ -85,6 +102,6 @@ export const refreshRates = [
     { label: '1d', duration: 86400 }
 ]
 
-export const mapGridHeight = (minimize, selected)=>{
+export const mapGridHeight = (minimize, selected) => {
     return minimize ? 'calc(100vh - 127px)' : selected === 1 ? 'calc(100vh - 342px)' : 'calc(100vh - 295px)'
 }

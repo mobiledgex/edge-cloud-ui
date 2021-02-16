@@ -39,7 +39,7 @@ const defaultParent = () => {
 
 const defaultMetricType = (parent) => {
     let id = parent.id
-    let metricTypeKeys = parent.metricTypeKeys
+    let metricTypeKeys = constant.visibility(parent.id)
     let pref = id === constant.PARENT_CLOUDLET ? PREF_M_CLOUDLET_VISIBILITY : id === constant.PARENT_CLUSTER_INST ? PREF_M_CLUSTER_VISIBILITY : PREF_M_APP_VISIBILITY
     return monitoringPref(pref) ?  monitoringPref(pref).map(type => { return type.toLowerCase() }) : metricTypeKeys.map(metricType => { return metricType.field })
 }
@@ -129,14 +129,17 @@ class Monitoring extends React.Component {
     }
 
     onParentChange = () => {
-        this.fetchShowData()
+        this.setState({ showLoaded:false, avgData: this.defaultStructure() }, () => {
+            this.fetchShowData()
+        })
     }
 
     onOrgChange = (value) => {
         let selectedOrg = value[fields.organizationName]
         this.setState({ selectedOrg }, () => {
-            this.defaultStructure()
-            this.fetchShowData()
+            this.setState({ avgData: this.defaultStructure() }, () => {
+                this.fetchShowData()
+            })
         })
     }
 
@@ -193,7 +196,7 @@ class Monitoring extends React.Component {
         }
     }
 
-    updateAvgData = (region, metric, data) => {
+    updateAvgData = (region, metric, data) => {            
         this.setState(prevState => {
             let avgData = prevState.avgData
             Object.keys(data).map(dataKey => {
@@ -291,26 +294,26 @@ class Monitoring extends React.Component {
 
     defaultStructure = () => {
         let avgData = {}
-        constant.metricParentTypes.map(parent => {
-            let parentId = parent.id
-            if (constant.validateRole(parent.role) && parentId === this.state.filter.parent.id) {
-                this.regions.map((region) => {
-                    avgData[region] = {}
-                })
-            }
-        })
-        this.setState({ avgData })
+        let parent = this.state.filter.parent
+        if (constant.validateRole(parent.role)) {
+            this.regions.map((region) => {
+                avgData[region] = {}
+            })
+        }
+        return avgData
     }
 
     componentDidMount() {
         this.props.handleViewMode(HELP_MONITORING)
-        this.defaultStructure()
-        if (isAdmin()) {
-            sendAuthRequest(this, showOrganizations(), this.orgResponse)
-        }
-        else {
-            this.fetchShowData()
-        }
+        this.setState({ avgData: this.defaultStructure() }, () => {
+            if (isAdmin()) {
+                sendAuthRequest(this, showOrganizations(), this.orgResponse)
+            }
+            else {
+                this.fetchShowData()
+            }
+        })
+
     }
 
     componentWillUnmount() {

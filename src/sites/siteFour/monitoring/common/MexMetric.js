@@ -1,6 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import MexChart from '../charts/MexChart'
+import { metricType } from '../helper/Constant'
 
 
 class MexMetric extends React.Component {
@@ -15,9 +16,8 @@ class MexMetric extends React.Component {
             <React.Fragment>
                 {filter.region.map(region => {
                     return (
-                        parent.metricTypeKeys.map(metric => (
-                            filter.metricType.includes(metric.field) ?
-                            <MexChart key={`${region}-${metric.field}`} region={region} metric={metric} avgData={avgData} filter={filter} rowSelected={rowSelected} style={style} range={range} org={org} updateAvgData={updateAvgData} /> : undefined
+                        metricType(parent.id).map(metric => (
+                            <MexChart key={`${region}-${metric.field}`} region={region} metric={metric} avgData={avgData} filter={filter} rowSelected={rowSelected} style={style} range={range} org={org} updateAvgData={updateAvgData} />
                         ))
                     )
                 })}

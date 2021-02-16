@@ -24,12 +24,12 @@ class MexChart extends React.Component {
                 dataList.map(data => {
                     let key = this.metricKeyGenerator(filter, region, data.metric)
                     return (
-                        <React.Fragment key={key}>
+                        filter.metricType.includes(data.metric.field) ? <React.Fragment key={key}>
                             {data.values ?
                                 <LineChart id={key} rowSelected={rowSelected} data={data} avgDataRegion={avgData[region]} globalFilter={filter} tags={[2, 3]} tagFormats={['', '[']} style={style} range={range} />
                                 :
                                 null}
-                        </React.Fragment>
+                        </React.Fragment> : null
                     )
                 }) : null
         )
