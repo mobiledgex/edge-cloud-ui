@@ -55,11 +55,12 @@ const processData = (inp) => {
     let metricList = inp.metric.keys ? inp.metric.keys : [inp.metric]
     
     let chartData = []
+
     if (dataList && dataList.length > 0) {
         dataList.map(metricData => {
             let key = Object.keys(metricData)[0]
             metricList.map(metric=>{
-                let objectId = `${parentId}-${metric.serverField}`
+                let objectId = metric.serverHead ? metric.serverHead : `${parentId}-${metric.serverField}`
                 if (key === objectId) {
                     if (metricData[objectId]) {
                         let newData = {}

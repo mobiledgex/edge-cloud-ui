@@ -54,16 +54,16 @@ export const networkMetricType = [
     { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 11, unit: 1},
 ]
 
-export const appInstMetricTypeKeys = [
-    { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 10, unit: 2, serverRequest: true },
-    { field: 'memory', serverField: 'mem', header: 'Memory', position: 10, unit: 1, serverRequest: true },
-    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 10, unit: 1, serverRequest: true },
-    { field: 'network', serverField: 'network', serverRequest: true, keys:networkMetricType},
-    { field: 'connections', serverField: 'connections', subId: 'active', header: 'Active Connections', position: 10, unit: 3, serverRequest: true },
+export const appInstMetricTypeKeys = () => ([
+    { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 10, unit: 2, serverRequest: APP_INST_METRICS_ENDPOINT },
+    { field: 'memory', serverField: 'mem', header: 'Memory', position: 10, unit: 1, serverRequest: APP_INST_METRICS_ENDPOINT },
+    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 10, unit: 1, serverRequest: APP_INST_METRICS_ENDPOINT },
+    { field: 'network', serverField: 'network', serverRequest: APP_INST_METRICS_ENDPOINT, keys: networkMetricType },
+    { field: 'connections', serverField: 'connections', subId: 'active', header: 'Active Connections', position: 10, unit: 3, serverRequest: APP_INST_METRICS_ENDPOINT },
     { field: 'map', header: 'Map' },
-    { field: 'event', header: 'Event'},
-    { field: 'client', header: 'Client Usage'},
-]
+    { field: 'event', header: 'Event' },
+    { field: 'client', header: 'Client Usage' },
+])
 
 export const appActions = [
     { label: 'Show Clients' }

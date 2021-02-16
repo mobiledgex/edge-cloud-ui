@@ -4,6 +4,7 @@ import LineChart from './linechart/MexLineChart'
 import { sendAuthRequest } from '../../../../services/model/serverWorker'
 import { WORKER_METRIC } from '../../../../services/worker/constant'
 import MexWorker from '../../../../services/worker/mex.worker.js'
+import { metricRequest } from '../helper/Constant'
 class MexChart extends React.Component {
     constructor(props) {
         super()
@@ -63,8 +64,8 @@ class MexChart extends React.Component {
             data[fields.endtime] = this.props.range.endtime
             data[fields.selector] = metric.serverField
             let org = isAdmin() ? this.props.org : getOrganization()
-            let metricRequest = parent.request(data, org)
-            sendAuthRequest(this, metricRequest).addEventListener('message', event => {
+            let request = metricRequest(metric.serverRequest, data, org)
+            sendAuthRequest(this, request).addEventListener('message', event => {
                 if (event.data.status && event.data.status !== 200) {
                     // this.props.handleAlertInfo(event.data.message)
                 }
