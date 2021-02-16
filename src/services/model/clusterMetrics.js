@@ -33,8 +33,8 @@ export const networkMetricType = [
 
 export const clusterMetricTypeKeys = [
     { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 6, unit: 2, serverRequest: true },
-    { field: 'memory', serverField: 'mem', header: 'Memory', position: 6, unit: 1, serverRequest: true },
-    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 6, unit: 1, serverRequest: true },
+    { field: 'memory', serverField: 'mem', header: 'Memory', position: 6, unit: 2, serverRequest: true },
+    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 6, unit: 2, serverRequest: true },
     { field: 'network', serverField: 'network', serverRequest: true, keys:networkMetricType},
     { field: 'map', header: 'Map', serverRequest: false }
 ]
