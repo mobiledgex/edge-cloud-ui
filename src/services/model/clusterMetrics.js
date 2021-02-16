@@ -28,8 +28,8 @@ export const clusterMetricsListKeys = [
 
 export const clusterMetricTypeKeys = [
     { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 6, unit: 2, serverRequest: true },
-    { field: 'memory', serverField: 'mem', header: 'Memory', position: 7, unit: 1, serverRequest: false },
-    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 8, unit: 1, serverRequest: false },
+    { field: 'memory', serverField: 'mem', header: 'Memory', position: 7, unit: 2, serverRequest: false },
+    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 8, unit: 2, serverRequest: false },
     { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 9, unit: 1, serverRequest: false },
     { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 10, unit: 1, serverRequest: false },
     { field: 'map', header: 'Map', serverRequest: false }
