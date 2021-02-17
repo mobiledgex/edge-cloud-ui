@@ -664,8 +664,8 @@ class AppReg extends React.Component {
             if ((data[fields.imagePath] && data[fields.imagePath].length > 0) || (data[fields.deploymentManifest] && data[fields.deploymentManifest].length > 0)) {
                 if (ports.length > 0) {
                     data[fields.accessPorts] = ports
-                    data[fields.skipHCPorts] = skipHCPorts
-
+                    data[fields.skipHCPorts] = skipHCPorts.length > 0 ? skipHCPorts : undefined
+                    
                     if (annotations.length > 0) {
                         data[fields.annotations] = annotations
                     }
