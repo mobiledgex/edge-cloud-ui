@@ -23,9 +23,9 @@ export const cloudletMetricsListKeys = [
     { field: fields.cloudletName, label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData:true  },
     { field: fields.operatorName, label: 'Operator', sortable: true, visible: false, groupBy: true  },
     { field: fields.cloudletLocation, label: 'Location', visible: false  },
-    { field: 'cpu', label: 'vCpu Usage', sortable: true, visible: true },
-    { field: 'disk', label: 'Disk Usage', sortable: true, visible: true },
-    { field: 'memory', label: 'Memory Usage', sortable: true, visible: true },
+    { field: 'cpu', label: 'vCpu Infra Usage', sortable: true, visible: true },
+    { field: 'disk', label: 'Disk Infra Usage', sortable: true, visible: true },
+    { field: 'memory', label: 'Memory Infra Usage', sortable: true, visible: true },
 ]
 
 export const utilizationMetricType = [

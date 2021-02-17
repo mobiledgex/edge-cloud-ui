@@ -119,6 +119,7 @@ export const UPDATE_BILLING_ORG = 'billingorg/update'
 export const BILLING_ORG_ADD_CHILD = 'billingorg/addchild'
 export const BILLING_ORG_REMOVE_CHILD = 'billingorg/removechild'
 export const DELETE_BILLING_ORG = 'billingorg/delete'
+export const GET_CLOUDLET_RESOURCE_QUOTA_PROPS = 'GetCloudletResourceQuotaProps'
 
 export function getPath(request) {
     switch (request.method) {
@@ -217,6 +218,7 @@ export function getPath(request) {
         case SHOW_APP_INST_CLIENT:
         case SHOW_ALERT:
         case REVOKE_ACCESS_KEY:
+        case GET_CLOUDLET_RESOURCE_QUOTA_PROPS:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:
