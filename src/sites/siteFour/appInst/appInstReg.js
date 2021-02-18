@@ -10,7 +10,9 @@ import * as constant from '../../../constant';
 import { fields, getOrganization, updateFieldData } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
-import { getOrgCloudletList, showOrgCloudlets } from '../../../services/model/cloudlet';
+import { showOrgCloudlets, cloudletWithInfo } from '../../../services/model/cloudlet';
+import { sendRequests } from '../../../services/model/serverWorker'
+import { showOrgCloudletInfos } from '../../../services/model/cloudletInfo';
 import { getClusterInstList, showClusterInsts } from '../../../services/model/clusterInstance';
 import { getFlavorList, showFlavors } from '../../../services/model/flavor';
 import { getAppList } from '../../../services/model/app';
@@ -22,7 +24,7 @@ import { HELP_APP_INST_REG } from "../../../tutorial";
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 
-import { SHOW_ORG_CLOUDLET, SHOW_CLUSTER_INST, SHOW_FLAVOR } from '../../../services/model/endPointTypes';
+import { SHOW_CLUSTER_INST, SHOW_FLAVOR } from '../../../services/model/endPointTypes';
 import { Grid } from '@material-ui/core';
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
@@ -69,9 +71,18 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (region && organizationName) {
-            this.cloudletList = await getOrgCloudletList(this, { region: region, org: organizationName })
-            this.updateUI(form)
-            this.updateForm(forms)
+            let requestList = []
+            let requestData = { region: region, org: organizationName }
+            requestList.push(showOrgCloudlets(requestData))
+            requestList.push(showOrgCloudletInfos(requestData))
+            this.props.handleLoadingSpinner(true)
+            sendRequests(this, requestList).addEventListener('message', event => {
+                let mcList = event.data
+                this.cloudletList = cloudletWithInfo(mcList)
+                this.props.handleLoadingSpinner(false)
+                this.updateUI(form)
+                this.setState({ forms: forms })
+            });
         }
     }
 
@@ -372,13 +383,13 @@ class ClusterInstReg extends React.Component {
         this.checkForms(form, forms)
     }
 
-    onCreateResponse = (mcRequest) => {
+    onCreateResponse = (mc) => {
         this.props.handleLoadingSpinner(false)
-        if (mcRequest) {
+        if (mc) {
             let responseData = undefined;
-            let request = mcRequest.request;
-            if (mcRequest.response && mcRequest.response.data) {
-                responseData = mcRequest.response.data;
+            let request = mc.request;
+            if (mc.response && mc.response.data) {
+                responseData = mc.response.data;
             }
             let labels = [{ label: 'Cloudlet', field: fields.cloudletName }]
             if (this._isMounted) {
@@ -512,7 +523,9 @@ class ClusterInstReg extends React.Component {
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
             if (this.props.isLaunch) {
-                requestTypeList.push(showOrgCloudlets({ region: data[fields.region], org: data[fields.organizationName] }))
+                let cloudletRequestData = { region: data[fields.region], org: data[fields.organizationName] }
+                requestTypeList.push(showOrgCloudlets(cloudletRequestData))
+                requestTypeList.push(showOrgCloudletInfos(cloudletRequestData))
                 requestTypeList.push(showClusterInsts({ region: data[fields.region] }))
                 requestTypeList.push(showFlavors({ region: data[fields.region] }))
                 let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]
@@ -577,19 +590,16 @@ class ClusterInstReg extends React.Component {
             this.appList = [app];
 
             if (requestTypeList.length > 0) {
-                let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
-                if (mcRequestList && mcRequestList.length > 0) {
-                    for (let i = 0; i < mcRequestList.length; i++) {
-                        let mcRequest = mcRequestList[i];
-                        let request = mcRequest.request;
-                        if (request.method === SHOW_ORG_CLOUDLET) {
-                            this.cloudletList = mcRequest.response.data
-                        }
-                        else if (request.method === SHOW_CLUSTER_INST) {
-                            this.clusterInstList = mcRequest.response.data
+                let mcList = await serverData.showSyncMultiData(this, requestTypeList)
+                this.cloudletList = cloudletWithInfo(mcList)
+                if (mcList && mcList.length > 0) {
+                    for (let mc of mcList) {
+                        let request = mc.request;
+                        if (request.method === SHOW_CLUSTER_INST) {
+                            this.clusterInstList = mc.response.data
                         }
                         else if (request.method === SHOW_FLAVOR) {
-                            this.flavorList = mcRequest.response.data
+                            this.flavorList = mc.response.data
                         }
                     }
                 }
