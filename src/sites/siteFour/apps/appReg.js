@@ -622,20 +622,24 @@ class AppReg extends React.Component {
                             ports = ports.length > 0 ? ports + ',' : ports
                             let newPort = multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMin] + '-' + multiFormData[fields.portRangeMax]
                             ports = ports + newPort
-                            ports = ports + (multiFormData[fields.tls] ? ':tls' : '')
-                            if (!multiFormData[fields.skipHCPorts]) {
-                                skipHCPorts = skipHCPorts.length > 0 ? skipHCPorts + ',' : skipHCPorts
-                                skipHCPorts = skipHCPorts + newPort
+                            if (multiFormData[fields.protocol] === 'tcp') {
+                                ports = ports + (multiFormData[fields.tls] ? ':tls' : '')
+                                if (!multiFormData[fields.skipHCPorts]) {
+                                    skipHCPorts = skipHCPorts.length > 0 ? skipHCPorts + ',' : skipHCPorts
+                                    skipHCPorts = skipHCPorts + newPort
+                                }
                             }
                         }
                         else if (multiFormData[fields.portRangeMax]) {
                             ports = ports.length > 0 ? ports + ',' : ports
                             let newPort = multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMax]
                             ports = ports + newPort
-                            ports = ports + (multiFormData[fields.tls] ? ':tls' : '')
-                            if (!multiFormData[fields.skipHCPorts]) {
-                                skipHCPorts = skipHCPorts.length > 0 ? skipHCPorts + ',' : skipHCPorts
-                                skipHCPorts = skipHCPorts + newPort
+                            if (multiFormData[fields.protocol] === 'tcp') {
+                                ports = ports + (multiFormData[fields.tls] ? ':tls' : '')
+                                if (!multiFormData[fields.skipHCPorts] && multiFormData[fields.protocol] === 'tcp') {
+                                    skipHCPorts = skipHCPorts.length > 0 ? skipHCPorts + ',' : skipHCPorts
+                                    skipHCPorts = skipHCPorts + newPort
+                                }
                             }
                         }
                         else if (form.field === fields.deploymentManifest && multiFormData[fields.deploymentManifest]) {
@@ -1056,10 +1060,10 @@ class AppReg extends React.Component {
         return (
             <div className="round_panel">
                 <Grid container>
-                    <Grid item xs={this.state.showGraph ? 6 : 12}>
+                    <Grid item xs={this.state.showGraph ? 7 : 12}>
                         <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                     </Grid>
-                    {this.state.showGraph ? <Grid item xs={6} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
+                    {this.state.showGraph ? <Grid item xs={5} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
                         <Suspense fallback={<div></div>}>
                             <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow} />
                         </Suspense>
