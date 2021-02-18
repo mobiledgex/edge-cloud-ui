@@ -25,12 +25,12 @@ class MexChart extends React.Component {
                 dataList.map(data => {
                     let key = this.metricKeyGenerator(filter, region, data.metric)
                     return (
-                        filter.metricType.includes(data.metric.field) ? <React.Fragment key={key}>
-                            {data.values ?
-                                <LineChart id={key} rowSelected={rowSelected} data={data} avgDataRegion={avgData[region]} globalFilter={filter} tags={[2, 3]} tagFormats={['', '[']} style={style} range={range} />
-                                :
-                                null}
-                        </React.Fragment> : null
+                        filter.metricType.includes(data.metric.field) ?
+                            <React.Fragment key={key}>
+                                {
+                                    <LineChart id={key} rowSelected={rowSelected} data={data} avgDataRegion={avgData[region]} globalFilter={filter} tags={[2, 3]} tagFormats={['', '[']} style={style} range={range} />
+                                }
+                            </React.Fragment> : null
                     )
                 }) : null
         )
@@ -49,6 +49,9 @@ class MexChart extends React.Component {
                     })
                     this.setState({ dataList: event.data })
                 })
+            }
+            else {
+                this.setState({ dataList: undefined })
             }
         }
     }
@@ -76,21 +79,39 @@ class MexChart extends React.Component {
         }
     }
 
+    defaultContainer = () => {
+        let metric = this.props.metric
+        let dataList = []
+        if (metric.serverRequest) {
+            if (metric.keys) {
+                metric.keys.map(child => {
+                    dataList.push({ region: this.props.region, metric: child })
+                })
+            }
+            else {
+                dataList.push({ region: this.props.region, metric: metric })
+            }
+        }
+        this.setState({ dataList }, () => {
+            this.fetchMetricData()
+        })
+    }
+
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.org !== this.props.org) {
             this.setState({ dataList: undefined }, () => {
-                this.fetchMetricData()
+                this.defaultContainer()
             })
         }
         if (prevProps.range !== this.props.range) {
             this.setState({ dataList: undefined }, () => {
-                this.fetchMetricData()
+                this.defaultContainer()
             })
         }
     }
 
     componentDidMount() {
-        this.fetchMetricData()
+        this.defaultContainer()
     }
 }
 

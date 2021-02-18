@@ -4,7 +4,8 @@ import * as dateUtil from '../../../../../utils/date_util'
 import { unit } from '../../../../../utils/math_util'
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import uuid from 'uuid'
-import { Card, Dialog, GridListTile, IconButton } from '@material-ui/core';
+import { Box, Card, Dialog, GridListTile, IconButton, LinearProgress } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import CloseIcon from '@material-ui/icons/Close';
 import { LTTB } from 'downsample';
 
@@ -99,7 +100,7 @@ const optionsGenerator = (header, unitId, fullscreen, range) => {
                 ticks: {
                     maxTicksLimit: fullscreen ? 15 : 5,
                     max: dateUtil.timeInMilli(range.endtime),
-                    min: dateUtil.timeInMilli(range.starttime)  
+                    min: dateUtil.timeInMilli(range.starttime)
                 }
             }],
             yAxes: [{
@@ -136,7 +137,7 @@ class MexLineChart extends React.Component {
             fullscreen: false
         }
         this.metric = props.data.metric
-        
+
         this.header = this.metric ? this.metric.header : ''
         this.unit = this.metric ? this.metric.unit : undefined
         this.position = this.metric ? this.metric.position : 0
@@ -211,28 +212,36 @@ class MexLineChart extends React.Component {
         let id = this.props.id
         id = id.toLowerCase()
         return (
-            datasets.length > 0 ?
-                <GridListTile key={id} cols={1} style={style} mex-test="component-line-chart">
-                    <Card style={{ height: 300 }}>
-                        <div style={{ padding: 5, marginTop: 5, marginRight: 10 }}>
-                            <div className="line-chart-header">
-                                <div className="line-chart-header-left">
+            <GridListTile key={id} cols={1} style={style} mex-test="component-line-chart">
+                <Card style={{ height: 300 }}>
+                    <div style={{ padding: 5, marginTop: 5, marginRight: 10 }}>
+                        <div className="line-chart-header">
+                            <Box display="flex">
+                                <Box flexGrow={1} >
                                     <h3>{`${this.header} - ${this.props.data.region}`}</h3>
-                                </div>
-                                <div className="line-chart-header-right">
-                                    <IconButton onClick={this.openFullScreen}>
-                                        <AspectRatioIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />
-                                    </IconButton>
-                                </div>
-                            </div>
-                            <br />
-                            <div style={{ padding: 20, width: '100%', marginTop: 20 }}>
-                                <Line id={id} datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets }} height={200} />
-                            </div>
-                            {this.renderFullScreen(id, fullscreen, datasets)}
+                                </Box>
+                                {
+                                    datasets.length === 0 ?
+                                        <Box>
+                                            <CircularProgress size={20} thickness={3} />
+                                        </Box> :
+                                        <Box m={-1.5}>
+                                            <IconButton onClick={this.openFullScreen}>
+                                                <AspectRatioIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />
+                                            </IconButton>
+                                        </Box>
+                                }
+                            </Box>
                         </div>
-                    </Card>
-                </GridListTile> : null
+                        <br />
+                        <div style={{ padding: 20, width: '100%', marginTop: 20 }}>
+                            {datasets.length > 0 ?
+                                <Line id={id} datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets }} height={200} /> : null}
+                        </div>
+                        {this.renderFullScreen(id, fullscreen, datasets)}
+                    </div>
+                </Card>
+            </GridListTile>
         )
     }
 }
