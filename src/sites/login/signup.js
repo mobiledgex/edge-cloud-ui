@@ -197,7 +197,7 @@ class RegistryUserForm extends React.Component {
         )
     }
 
-    onChange = () => {
+    onVisibilityChange = () => {
         this.setState(prevState => {
             let forms = prevState.forms
             let visibility = !prevState.visibility
@@ -216,7 +216,7 @@ class RegistryUserForm extends React.Component {
     customForm = () => {
         return (
             <div style={{ marginLeft: '10%' }}>
-                <FormControlLabel control={<Checkbox name="showPassword" value={this.state.visibility} onChange={this.onChange} />} label="Show Password" />
+                <FormControlLabel control={<Checkbox name="showPassword" value={this.state.visibility} onChange={this.onVisibilityChange} />} label="Show Password" />
             </div>
         )
     }
