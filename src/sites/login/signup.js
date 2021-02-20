@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import MexForms, { INPUT, BUTTON, POPUP_INPUT, CHECKBOX } from "../../hoc/forms/MexForms";
+import MexForms, { INPUT, BUTTON, POPUP_INPUT, SWITCH } from "../../hoc/forms/MexForms";
 import { fields } from "../../services/model/format";
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
@@ -10,7 +10,7 @@ import zxcvbn from 'zxcvbn'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Icon } from "semantic-ui-react";
 import { generate } from 'generate-password'
-import { Button } from "@material-ui/core";
+import { Button, Checkbox, FormControlLabel } from "@material-ui/core";
 import { copyData } from '../../utils/file_util'
 import cloneDeep from "lodash/cloneDeep";
 import { sendRequest } from '../../services/model/serverWorker'
@@ -53,7 +53,8 @@ class RegistryUserForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            forms: []
+            forms: [],
+            visibility: false
         }
     }
 
@@ -146,10 +147,10 @@ class RegistryUserForm extends React.Component {
         })
     }
 
-    passwordGenerator = (length)=>{
+    passwordGenerator = (length) => {
         let password = generate({ length, numbers: true, symbols: true, lowercase: true, uppercase: true, strict: true })
         if (calculateStrength(password) < this.passwordMinCrackTimeSec) {
-            return this.passwordGenerator(length+1)
+            return this.passwordGenerator(length + 1)
         }
         return password
     }
@@ -162,9 +163,6 @@ class RegistryUserForm extends React.Component {
             let form = forms[i]
             if (form.field === fields.password || form.field === fields.confirmPassword) {
                 form.value = password
-            }
-            if (form.field === fields.password) {
-                form.rules.type = 'text'
             }
         }
         this.props.handleAlertInfo('success', 'Password generated successfully and copied to the clipboard, make sure you copy and paste the password to a secure location')
@@ -194,7 +192,31 @@ class RegistryUserForm extends React.Component {
                     <p style={{ color: '#F5382F' }}>Too many consecutive identical characters</p> :
                     <p style={{ color: '#CCCCCC' }}>To safeguard your password, avoid password reuse. Do not use recognizable words, such as house, car, password, etc. To meet the password strength criteria, use random characters, or click the Generate button to allow the system to generate a secure password for you. Make sure you copy and paste the password to a secure location.</p>
                 }
-                <div style={{ float: 'right' }}><Button onMouseDown={()=>{this.generatePassword(13)}} size='small' style={{ backgroundColor: '#7CC01D', textTransform: 'none' }}>Generate</Button></div>
+                <div style={{ float: 'right' }}><Button onMouseDown={() => { this.generatePassword(13) }} size='small' style={{ backgroundColor: '#7CC01D', textTransform: 'none' }}>Generate</Button></div>
+            </div>
+        )
+    }
+
+    onVisibilityChange = () => {
+        this.setState(prevState => {
+            let forms = prevState.forms
+            let visibility = !prevState.visibility
+            let type = visibility ? 'text' : 'password'
+            for(let form of forms)
+            {
+                if(form.field === fields.password || form.field === fields.confirmPassword)
+                {
+                    form.rules.type = type
+                }
+            }
+            return { visibility, forms }
+        })
+    }
+
+    customForm = () => {
+        return (
+            <div style={{ marginLeft: '10%' }}>
+                <FormControlLabel control={<Checkbox name="showPassword" value={this.state.visibility} onChange={this.onVisibilityChange} />} label="Show Password" />
             </div>
         )
     }
@@ -205,14 +227,15 @@ class RegistryUserForm extends React.Component {
             { field: fields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
             { field: fields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword },
             { field: fields.email, label: 'Email', labelIcon: <EmailOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Email ID', rules: { required: true, type: 'email', requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validateEmail },
-            { field: fields.otp, label: '2FA', labelStyle: { fontWeight: 500, color: '#FFF', fontSize: 14 }, formType: CHECKBOX, visible: true, value: false, style: { float: 'left', marginTop:-11 } }
+            { field: fields.otp, label: '2FA', labelStyle: { fontWeight: 500, color: '#FFF', fontSize: 14 }, formType: SWITCH, visible: true, value: false, style: { float: 'left', marginTop: -11 } },
+            { custom: this.customForm }
         ]
     )
 
     render() {
         return (
             <Fragment>
-                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{marginTop:5}} />
+                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
             </Fragment>
         );
     }
