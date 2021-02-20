@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { withRouter } from 'react-router-dom';
 import { Item, Step, Card, Form, Button } from 'semantic-ui-react';
 //Mex
-import MexForms, { SELECT, INPUT, CHECKBOX, MAIN_HEADER } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, INPUT, SWITCH, MAIN_HEADER } from '../../../hoc/forms/MexForms';
 import MexDetailViewer from '../../../hoc/dataViewer/DetailViewer'
 //redux
 import { connect } from 'react-redux';
@@ -369,7 +369,7 @@ class OrganizationReg extends React.Component {
             { field: fields.organizationName, label: 'Organization Name', formType: INPUT, placeholder: 'Enter Organization Name', rules: { required: true }, visible: true, },
             { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, update: { edit: true } },
             { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, update: { edit: true }, dataValidateFunc: constant.validatePhone },
-            { field: fields.publicImages, label: 'Public Image', formType: CHECKBOX, visible: true, value: false, update: { edit: true }, roles: [constant.ADMIN_MANAGER] }
+            { field: fields.publicImages, label: 'Public Image', formType: SWITCH, visible: true, value: false, update: { edit: true }, roles: [constant.ADMIN_MANAGER] }
         ]
     }
 

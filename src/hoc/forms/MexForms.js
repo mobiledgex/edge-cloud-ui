@@ -7,7 +7,7 @@ import MexInput from './MexInput';
 import MexPopupInput from './MexPopupInput';
 import MexTextArea from './MexTextArea';
 import MexDualList from './MexDualList';
-import MexCheckbox from './MexCheckbox';
+import MexSwitch from './MexSwitch';
 import MexButton from './MexButton';
 import MexSelectTree from './selectTree/MexSelectTree';
 import { Form, Grid, Divider } from 'semantic-ui-react';
@@ -29,7 +29,7 @@ export const MULTI_SELECT = 'MultiSelect'
 export const DUALLIST = 'DualList'
 export const INPUT = 'Input'
 export const POPUP_INPUT = 'PopupInput'
-export const CHECKBOX = 'Checkbox'
+export const SWITCH = 'Switch'
 export const CHECKBOX_ARRAY = 'CheckboxArray'
 export const ICON_BUTTON = 'IconButton'
 export const TEXT_AREA = 'TextArea'
@@ -204,9 +204,9 @@ const MexForms = (props) => {
                 <MexInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
                 form.formType === POPUP_INPUT ?
                     <MexPopupInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                form.formType === TEXT_AREA ?
-                    <MexTextArea form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
-                    null
+                    form.formType === TEXT_AREA ?
+                        <MexTextArea form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                        null
         )
     }
 
@@ -300,8 +300,8 @@ const MexForms = (props) => {
                                 loadInputForms(form, required, disabled) :
                                 form.formType === SELECT ?
                                     loadDropDownForms(form, required, disabled) :
-                                    form.formType === CHECKBOX ?
-                                        <div style={{marginTop:5}}><MexCheckbox horizontal={true} form={form} onChange={onValueSelect} /></div> :
+                                    form.formType === SWITCH ?
+                                        <div style={{ marginTop: 5 }}><MexSwitch horizontal={true} form={form} onChange={onValueSelect} /></div> :
                                         form.formType === ICON_BUTTON || form.formType === BUTTON ?
                                             loadButton(form, i) :
                                             null
@@ -313,7 +313,7 @@ const MexForms = (props) => {
 
     const showTip = (form) => {
         return (
-            <Tooltip title={<ul style={{listStyleType:'none', padding:0}}>{form.tip.split('\n').map((info, i) => { return <li key={i} style={{fontSize:13,marginTop:5}}>{info}</li> })}</ul>} aria-label="tip" style={{marginTop:7}}>
+            <Tooltip title={<ul style={{ listStyleType: 'none', padding: 0 }}>{form.tip.split('\n').map((info, i) => { return <li key={i} style={{ fontSize: 13, marginTop: 5 }}>{info}</li> })}</ul>} aria-label="tip" style={{ marginTop: 7 }}>
                 {getIcon('help')}
             </Tooltip>
         )
@@ -350,8 +350,8 @@ const MexForms = (props) => {
                 <Grid.Row columns={3} key={uuid() + '' + index} className={'formRow-' + index}>
                     <Grid.Column width={4} className='detail_item'>
                         {form.labelIcon ?
-                            <IconButton disabled={true}>{form.labelIcon}<sup style={{color:requiredColor}}>{required ? ' *' : ''}</sup></IconButton> :
-                            <div style={form.labelStyle ? form.labelStyle : {marginTop:8}}>{form.label}<sup style={{color:requiredColor}}>{required ? ' *' : ''}</sup></div>}
+                            <IconButton disabled={true}>{form.labelIcon}<sup style={{ color: requiredColor }}>{required ? ' *' : ''}</sup></IconButton> :
+                            <div style={form.labelStyle ? form.labelStyle : { marginTop: 8 }}>{form.label}<sup style={{ color: requiredColor }}>{required ? ' *' : ''}</sup></div>}
                     </Grid.Column>
                     <Grid.Column width={11}>
                         {
@@ -363,8 +363,8 @@ const MexForms = (props) => {
                                         <MexSelectTree form={form} forms={forms} onChange={onValueSelect} /> :
                                         form.formType === INPUT || form.formType === TEXT_AREA || form.formType === POPUP_INPUT ?
                                             loadInputForms(form, required, disabled) :
-                                            form.formType === CHECKBOX ?
-                                                <MexCheckbox form={form} onChange={onValueSelect} /> :
+                                            form.formType === SWITCH ?
+                                                <MexSwitch form={form} onChange={onValueSelect} /> :
                                                 null
                         }
                     </Grid.Column>
@@ -391,7 +391,14 @@ const MexForms = (props) => {
                     <Form.Group widths="equal" style={{ flexDirection: 'column', alignContent: 'space-around' }}>
                         <Grid columns={2}>
                             {forms.map((form, i) => {
-                                if (form.formType) {
+                                if (form.custom) {
+                                    return (
+                                        <React.Fragment key={i}>
+                                            {form.custom()}
+                                        </React.Fragment>
+                                    )
+                                }
+                                else if (form.formType) {
                                     initValidateRules(form);
                                     checkRole(form)
                                     return (

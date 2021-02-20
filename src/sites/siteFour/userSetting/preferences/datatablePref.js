@@ -1,5 +1,5 @@
 import React from 'react'
-import MexForms, { CHECKBOX, INPUT } from '../../../../hoc/forms/MexForms'
+import MexForms, { SWITCH, INPUT } from '../../../../hoc/forms/MexForms'
 import { PREF_MAP, PREF_PREFIX_SEARCH } from '../../../../utils/sharedPreferences_util'
 class DatatablePreferences extends React.Component {
     constructor(props) {
@@ -12,7 +12,7 @@ class DatatablePreferences extends React.Component {
 
     forms = () => (
         [
-            { field: PREF_MAP, label: 'Map', value: true, formType: CHECKBOX, visible: true, tip: 'Show map by default' },
+            { field: PREF_MAP, label: 'Map', value: true, formType: SWITCH, visible: true, tip: 'Show map by default' },
             { field: PREF_PREFIX_SEARCH, label: 'Prefix Search', formType: INPUT, visible: true, rules: { onBlur: true }, placeholder: 'Prefix search with default value', tip: 'Default prefix added to the search' }
         ]
     )
