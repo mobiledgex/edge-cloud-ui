@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Button, Grid, Input, Icon } from 'semantic-ui-react'
+import { Container, Button, Input, Icon, Grid } from 'semantic-ui-react'
 import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
@@ -16,45 +16,11 @@ import PublicIP from 'public-ip';
 import { fields } from '../../services/model/format';
 import ReCAPTCHA from "react-google-recaptcha";
 import { CURRENT_USER } from '../../services/model/endpoints';
+import LoginForm from './LoginForm'
+import { Checkbox, FormControlLabel } from '@material-ui/core';
 
 const host = window.location.host;
 let self = null;
-
-const LoginForm = (props) => (
-    <Grid className="signUpBD" style={{ padding: '0 20px 0 20px' }}>
-        <Grid.Row>
-            <span className='title'>Sign into your account</span>
-        </Grid.Row>
-        <Grid.Row>
-            <Grid.Column>
-                <Icon name='user outline' style={{ color: '#FFF' }} /><sup style={{ color: '#FFF' }}>{' *'}</sup>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <Input style={{ width: '80%', color: 'white' }} placeholder='Username or Email' name='username' ref={ipt => { props.self.uid = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
-            </Grid.Column>
-        </Grid.Row>
-        <Grid.Row>
-            <Grid.Column >
-                <Icon name='keyboard outline' style={{ color: '#FFF' }} /><sup style={{ color: '#FFF' }}>{' *'}</sup>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <Input autoComplete="off" style={{ width: '80%', color: 'white' }} placeholder='Password' name='password' type='password' ref={ipt => { props.self.pwd = ipt }} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') { props.self.onSubmit() } }}></Input>
-            </Grid.Column>
-        </Grid.Row>
-        <div className="loginValidation">
-            {props.login_danger}
-        </div>
-        <Grid.Row style={{ marginBottom: 20 }}>
-            <Grid.Column>
-                <div style={{ position: 'absolute', display: 'inline', right: 15, color: 'white', cursor: 'pointer' }} onClick={() => props.self.handleClickLogin('forgot')}>Forgot Password</div>
-            </Grid.Column>
-        </Grid.Row>
-        <Grid.Row>
-            <Grid.Column >
-                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSubmit()}>Log In</Button>
-            </Grid.Column>
-        </Grid.Row>
-    </Grid>
-
-)
 
 const FormForgotPass = (props) => (
     <Grid className="signUpBD">
@@ -71,7 +37,7 @@ const FormForgotPass = (props) => (
         </div>
         <Grid.Row>
             <Grid.Column>
-                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail()}>Send Me Email</Button>
+                <Button onClick={() => props.self.onSendEmail()}>Send Me Email</Button>
             </Grid.Column>
         </Grid.Row>
     </Grid>
@@ -87,7 +53,7 @@ const ForgotMessage = (props) => {
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column>
-                    <Button onFocus={() => props.self && props.self.onFocusHandle(true)} onBlur={() => props.self && props.self.onFocusHandle(false)} onClick={() => props.self.returnSignin()}>Log In</Button>
+                    <Button onClick={() => props.self.returnSignin()}>Log In</Button>
                 </Grid.Column>
             </Grid.Row>
 
@@ -122,7 +88,7 @@ const FormResendVerify = (props) => (
         </div>
         <Grid.Row>
             <Grid.Column>
-                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail('verify')}>Send verify email</Button>
+                <Button onClick={() => props.self.onSendEmail('verify')}>Send verify email</Button>
             </Grid.Column>
         </Grid.Row>
 
@@ -153,14 +119,14 @@ const SuccessMsg = (props) => (
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column>
-                        <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.handleClickLogin('signup')}><span>Sign Up</span></Button>
+                        <Button onClick={() => props.self.handleClickLogin('signup')}><span>Sign Up</span></Button>
                     </Grid.Column>
                 </Grid.Row>
             </Fragment>
         }
         <Grid.Row>
             <Grid.Column>
-                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.handleClickLogin('login')}><span>Log In</span></Button>
+                <Button onClick={() => props.self.handleClickLogin('login')}><span>Log In</span></Button>
             </Grid.Column>
         </Grid.Row>
     </Grid>
@@ -171,7 +137,6 @@ class Login extends Component {
         super(props);
         self = this;
         this.state = {
-            focused: false,
             session: 'close',
             uid: '',
             name: '',
@@ -186,7 +151,6 @@ class Login extends Component {
             errorCreate: false,
             loginMode: 'login',
             successMsg: 'Success create new account',
-            loginDanger: '',
             created: false,
             resultMsg: '',
             captchaValidated: false,
@@ -194,7 +158,6 @@ class Login extends Component {
             loginOTP: undefined
         };
 
-        this.onFocusHandle = this.onFocusHandle.bind(this);
         this.onConfirm = this.onConfirm.bind(this);
         this.onSignOut = this.onSignOut.bind(this);
         this.params = null;
@@ -311,10 +274,6 @@ class Login extends Component {
         }
     }
 
-    onFocusHandle = (value) => {
-        self.setState({ focused: value })
-    }
-
     onSignOut = () => {
         this.props.requestLogout();
     }
@@ -359,8 +318,8 @@ class Login extends Component {
             let mc = await serviceMC.sendSyncRequest(this, { method: CURRENT_USER, token: data.token })
             if (mc && mc.response && mc.response.status === 200) {
                 localStorage.setItem(LS_USER_META_DATA, mc.response.data.Metadata)
-                self.params['userToken'] = data.token
-                localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
+                this.params['userToken'] = data.token
+                localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(this.params))
                 this.getControllers(data.token)
                 this.validateUserName(username)
                 this.props.history.push({ pathname: `/site4/pg=${PAGE_ORGANIZATIONS}` })
@@ -368,9 +327,13 @@ class Login extends Component {
         }
     }
 
-    requestToken = async (self) => {
-        let username = self.state.username
-        let mcRequest = await serverData.login(self, { username: username, password: self.state.password })
+    onLogin = async (username, password) => {
+        this.params = {
+            email: username,
+            password: password,
+        }
+
+        let mcRequest = await serverData.login(self, { username, password })
         if (mcRequest && mcRequest.response) {
             let response = mcRequest.response;
             if (response.data) {
@@ -427,26 +390,6 @@ class Login extends Component {
         }
     }
 
-    onSubmit() {
-        const { username, password } = this.state
-        if (!username && !password) {
-            self.setState({ loginDanger: 'Insert Username and Password' });
-        } else if (!username) {
-            self.setState({ loginDanger: 'Insert Username' });
-        } else if (!password) {
-            self.setState({ loginDanger: 'Insert Password' });
-        }
-        const params = {
-            email: username,
-            password: password,
-        }
-        self.params = params;
-        if (username && password) {
-            self.setState({ loginDanger: '' });
-            self.requestToken(self)
-        };
-    }
-
     onCaptchaChange = (value) => {
         if (value) {
             this.setState({ captchaValidated: true })
@@ -468,7 +411,7 @@ class Login extends Component {
             <Grid.Row>
                 <span>
                     By clicking Sign Up, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Trust Policy</a>.
-                    </span>
+                </span>
             </Grid.Row>
         </Grid>
     )
@@ -548,14 +491,14 @@ class Login extends Component {
                                                     (this.state.successCreate || this.state.errorCreate) ?
                                                         <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
                                                         :
-                                                        <LoginForm self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger} />
+                                                        <LoginForm onSubmit={this.onLogin} handleClickLogin={this.handleClickLogin} />
 
                                                     : (this.state.loginMode === 'signuped') ?
                                                         (this.state.successCreate || this.state.errorCreate) ?
                                                             <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
                                                             : <div></div>
                                                         : (this.state.loginMode === 'login') ?
-                                                            <LoginForm self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger} />
+                                                            <LoginForm onSubmit={this.onLogin} handleClickLogin={this.handleClickLogin} />
                                                             :
                                                             null
                 }

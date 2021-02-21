@@ -1,7 +1,8 @@
 import React from 'react'
 import { Tab, Menu } from 'semantic-ui-react';
 import './style.css'
-const MexCheckbox = (props) => {
+
+const MexTab = (props) => {
 
     let form = props.form
 
@@ -21,4 +22,4 @@ const MexCheckbox = (props) => {
         getForm()
     )
 }
-export default MexCheckbox
+export default MexTab

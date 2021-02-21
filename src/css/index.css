@@ -1733,7 +1733,9 @@ rect.zoom {
 
 .loginValidation {
     font-size: 14px;
-    margin-left:60px;
+    margin-left:30px;
+    margin-top: 15px;
+    margin-bottom: 10px;
     color:#FF1902;
 }
 

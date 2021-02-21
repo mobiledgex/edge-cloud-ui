@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { Image, Label } from 'semantic-ui-react';
 import * as style from '../hoc/terminal/TerminalStyle';
 import { Paper, Box } from '@material-ui/core';
-import MexForms from '../hoc/forms/MexForms';
+import MexForms, { SWITCH } from '../hoc/forms/MexForms';
 import {fields} from '../services/model/format'
 import { getUserRole } from '../services/model/format';
 import {RUN_COMMAND, SHOW_LOGS, DEVELOPER_VIEWER, DEPLOYMENT_TYPE_VM} from '../constant'
@@ -203,8 +203,8 @@ class MexTerminal extends Component {
         [
             { field: 'Since', label: 'Since', formType: 'Input', visible: true, labelStyle: style.label, style: style.logs },
             { field: 'Tail', label: 'Tail', formType: 'Input', rules: { type: 'number' }, visible: true, labelStyle: style.label, style: style.logs },
-            { field: 'Timestamps', label: 'Timestamps', formType: 'Checkbox', visible: true, labelStyle: style.label, style: { color: 'green' } },
-            { field: 'Follow', label: 'Follow', formType: 'Checkbox', visible: true, labelStyle: style.label, style: { color: 'green' } }
+            { field: 'Timestamps', label: 'Timestamps', formType: SWITCH, visible: true, labelStyle: style.label, style: { color: 'green' } },
+            { field: 'Follow', label: 'Follow', formType: SWITCH, visible: true, labelStyle: style.label, style: { color: 'green' } }
         ]
     )
 
