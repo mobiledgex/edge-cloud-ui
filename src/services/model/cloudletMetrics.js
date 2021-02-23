@@ -68,7 +68,7 @@ export const cloudletUsageMetrics = (data, org) => {
     data.cloudlet = data.cloudlet ? data.cloudlet : {
         organization: org
     }
-    // data.platformtype = 'openstack'
+    data.platformtype = 'openstack'
     return { method: CLOUDLET_METRICS_USAGE_ENDPOINT, data: data, keys: cloudletMetricsKeys }
 }
 
