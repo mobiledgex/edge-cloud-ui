@@ -71,7 +71,7 @@ class MexChart extends React.Component {
             let request = metricRequest(metric.serverRequest, data, org)
             sendAuthRequest(this, request).addEventListener('message', event => {
                 if (event.data.status && event.data.status !== 200) {
-                    // this.props.handleAlertInfo(event.data.message)
+                    this.setState({ dataList: undefined })
                 }
                 else {
                     this.metricResponse(parent, metric, region, event.data)
@@ -90,7 +90,7 @@ class MexChart extends React.Component {
                 })
             }
             else {
-                dataList.push({ region: this.props.region, metric: metric })
+                dataList.push({ region: this.props.region, metric })
             }
         }
         this.setState({ dataList }, () => {

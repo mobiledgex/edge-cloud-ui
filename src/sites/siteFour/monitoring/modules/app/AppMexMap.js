@@ -200,7 +200,11 @@ class AppMexMap extends React.Component {
 
     componentDidUpdate(preProps, preState) {
         let listAction = this.props.listAction
-        if (listAction.action !== undefined && listAction.action !== preProps.listAction.action) {
+        let preListAction = preProps.listAction
+
+        let action = listAction ? listAction.action : ''
+        let preAction = preListAction ? preListAction.action : ''
+        if (listAction && action !== preAction) {
             this.mapClick(listAction.data)
         }
     }

@@ -100,8 +100,8 @@ const optionsGenerator = (header, unitId, fullscreen, range) => {
                 },
                 ticks: {
                     maxTicksLimit: fullscreen ? 15 : 5,
-                    // max: dateUtil.timeInMilli(range.endtime),
-                    // min: dateUtil.timeInMilli(range.starttime)
+                    max: dateUtil.timeInMilli(range.endtime),
+                    min: dateUtil.timeInMilli(range.starttime)
                 }
             }],
             yAxes: [{

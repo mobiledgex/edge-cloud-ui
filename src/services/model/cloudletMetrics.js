@@ -52,7 +52,7 @@ export const resourceUsageMetricType = [
 
 export const cloudletMetricTypeKeys = ()=>([
     { field: 'utilization', serverField: 'utilization', header: 'Memory Usage', keys:utilizationMetricType, serverRequest: CLOUDLET_METRICS_ENDPOINT },
-    { field: 'resourceusage', serverField: '*', header: 'Resource Usage', keys:resourceUsageMetricType, serverRequest: CLOUDLET_METRICS_USAGE_ENDPOINT },
+    { field: 'resourceusage', serverField: 'resourceusage', header: 'Resource Usage', keys:resourceUsageMetricType, serverRequest: CLOUDLET_METRICS_USAGE_ENDPOINT },
     { field: 'map', header: 'Map' },
     { field: 'event', header: 'Event'},
 ])

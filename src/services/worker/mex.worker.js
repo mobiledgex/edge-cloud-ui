@@ -3,7 +3,7 @@ import { fetch } from './server'
 import { format as metric } from './metric'
 import { format as role } from './role'
 import { format as show } from './monitoring/show'
-import { format as flavorUsage } from './monitoring/flavorUsage'
+import { format as flavorusage } from './monitoring/flavorusage'
 import * as constant from './constant'
 
 self.addEventListener("message", processWorker);
@@ -24,7 +24,7 @@ function processWorker(event) {
             show(worker)
             break;
         case constant.WORKER_MONITORING_FLAVOR_USAGE:
-            flavorUsage(worker)
+            flavorusage(worker)
             break;
     }
 }
