@@ -28,12 +28,11 @@ class CloudletFlavorUsage extends React.Component {
         this.event({ starttime, endtime }, true)
     }
 
-
     render() {
         const { chartData } = this.state
         const { filter, id, style } = this.props
         return (
-            chartData ?
+            chartData &&  filter.metricType.includes(chartData.metric.field) ?
                 <GridListTile cols={1} style={style}>
                     <Card style={{ height: 300 }}>
                         <LineChart id={'cloudlet-flavor-usage'} rowSelected={0} data={chartData} avgDataRegion={this.avgData} globalFilter={filter} range={this.props.range} labelPosition={5} steppedLine={true} />
