@@ -5,6 +5,9 @@ import { healthCheck } from '../../constant'
 
 let fields = formatter.fields;
 
+export const LIST_TOOLBAR_TRACK_DEVICES = 'TrackDevices'
+export const LIST_TOOLBAR_TERMINAL = 'Terminal'
+
 export const appMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },
     { label: 'Region', field: fields.region, serverField: 'region', visible: true, groupBy: true },
@@ -49,23 +52,26 @@ export const appMetricsListKeys = [
     { field: 'connections', label: 'Active Connections', sortable: true, visible: true, isArray: true },
 ]
 
-
-
-export const appInstMetricTypeKeys = [
-    { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 10, unit: 2, serverRequest: true },
-    { field: 'memory', serverField: 'mem', header: 'Memory', position: 11, unit: 1, serverRequest: false },
-    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 12, unit: 1, serverRequest: false },
-    { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 13, unit: 1, serverRequest: false },
-    { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 14, unit: 1, serverRequest: false },
-    { field: 'connections', serverField: 'connections', subId: 'active', header: 'Active Connections', position: 16, unit: 3, serverRequest: false },
-    { field: 'map', header: 'Map', serverRequest: false },
-    { field: 'event', header: 'Event', serverRequest: false },
-    { field: 'client', header: 'Client Usage', serverRequest: false },
+export const networkMetricType = [
+    { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 10, unit: 1 },
+    { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 11, unit: 1},
 ]
 
-export const appActions = [
-    { label: 'Show Clients' }
+export const appInstMetricTypeKeys = () => ([
+    { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 10, unit: 2, serverRequest: APP_INST_METRICS_ENDPOINT },
+    { field: 'memory', serverField: 'mem', header: 'Memory', position: 10, unit: 1, serverRequest: APP_INST_METRICS_ENDPOINT },
+    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 10, unit: 1, serverRequest: APP_INST_METRICS_ENDPOINT },
+    { field: 'network', serverField: 'network', serverRequest: APP_INST_METRICS_ENDPOINT, keys: networkMetricType },
+    { field: 'connections', serverField: 'connections', subId: 'active', header: 'Active Connections', position: 10, unit: 3, serverRequest: APP_INST_METRICS_ENDPOINT },
+    { field: 'map', header: 'Map' },
+    { field: 'event', header: 'Event' },
+    { field: 'client', header: 'Client Usage' },
+])
+
+export const appInstActions = [
+    { label: 'Track Devices', action: LIST_TOOLBAR_TRACK_DEVICES }
 ]
+
 
 export const fetchLocation = (avgValues, metricData, showList) => {
     for (let i = 0; i < showList.length; i++) {

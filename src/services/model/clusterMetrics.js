@@ -14,10 +14,10 @@ export const clusterMetricsKeys = [
 ]
 
 export const clusterMetricsListKeys = [
-    { field: fields.region, label: 'Region', sortable: true, visible: true, groupBy: true  },
-    { field: fields.clusterName, label: 'Cluster', sortable: true, visible: true, groupBy: true  },
-    { field: fields.cloudletName, label: 'Cloudlet', sortable: true, visible: true, groupBy: true  },
-    { field: fields.operatorName, label: 'Operator', sortable: true, visible: true, groupBy: true  },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, groupBy: true },
+    { field: fields.clusterName, label: 'Cluster', sortable: true, visible: true, groupBy: true },
+    { field: fields.cloudletName, label: 'Cloudlet', sortable: true, visible: true, groupBy: true },
+    { field: fields.operatorName, label: 'Operator', sortable: true, visible: true, groupBy: true },
     { field: fields.cloudletLocation, label: 'Location', sortable: false, visible: false, groupBy: false },
     { field: 'cpu', label: 'CPU', sortable: true, visible: true, isArray: true },
     { field: 'disk', label: 'Disk Usage', sortable: true, visible: true, isArray: true },
@@ -26,14 +26,18 @@ export const clusterMetricsListKeys = [
     { field: 'received', label: 'Network Received', sortable: true, visible: true, isArray: true }
 ]
 
-export const clusterMetricTypeKeys = [
-    { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 6, unit: 2, serverRequest: true },
-    { field: 'memory', serverField: 'mem', header: 'Memory', position: 7, unit: 2, serverRequest: false },
-    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 8, unit: 2, serverRequest: false },
-    { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 9, unit: 1, serverRequest: false },
-    { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 10, unit: 1, serverRequest: false },
-    { field: 'map', header: 'Map', serverRequest: false }
+export const networkMetricType = [
+    { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 6, unit: 1 },
+    { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 7, unit: 1 },
 ]
+
+export const clusterMetricTypeKeys = () => ([
+    { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 6, unit: 2, serverRequest: CLUSTER_METRICS_ENDPOINT },
+    { field: 'memory', serverField: 'mem', header: 'Memory', position: 6, unit: 2, serverRequest: CLUSTER_METRICS_ENDPOINT },
+    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 6, unit: 2, serverRequest: CLUSTER_METRICS_ENDPOINT },
+    { field: 'network', serverField: 'network', serverRequest: CLUSTER_METRICS_ENDPOINT, keys: networkMetricType },
+    { field: 'map', header: 'Map' }
+])
 
 export const clusterMetrics = (data, org) => {
     data.clusterinst = {

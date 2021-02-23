@@ -1,9 +1,9 @@
 import React from 'react'
 import { IconButton, makeStyles, Toolbar, Tooltip, Typography } from '@material-ui/core';
 import PhoneIphoneRoundedIcon from '@material-ui/icons/PhoneIphoneRounded';
-import CodeOutlinedIcon from '@material-ui/icons/CodeOutlined';
+import EmojiFoodBeverageOutlinedIcon from '@material-ui/icons/EmojiFoodBeverageOutlined';
 import clsx from 'clsx';
-import { LIST_TOOLBAR_TERMINAL, LIST_TOOLBAR_TRACK_DEVICES } from '../helper/Constant';
+import { LIST_TOOLBAR_TRACK_DEVICES } from '../../../../services/model/appMetrics';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -23,6 +23,14 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const fetchIcon = (action)=>{
+    switch(action)
+    {
+        case LIST_TOOLBAR_TRACK_DEVICES:
+            return <PhoneIphoneRoundedIcon />
+    }
+}
+
 const ListToolbar = (props) => {
 
     const classes = useStyles();
@@ -31,13 +39,14 @@ const ListToolbar = (props) => {
         <Toolbar className={clsx(classes.root, {
             [classes.highlight]: true,
         })}>
-
             <Typography className={classes.title}></Typography>
-            <Tooltip title="Track Devices">
-                <IconButton onClick={()=>{props.click(LIST_TOOLBAR_TRACK_DEVICES)}}>
-                    <PhoneIphoneRoundedIcon />
-                </IconButton>
-            </Tooltip>
+            {props.actions.map((item, i) => (
+                <Tooltip key={i} title={item.label}>
+                    <IconButton onClick={() => { props.click(item.action) }}>
+                        {fetchIcon(item.action)}
+                    </IconButton>
+                </Tooltip>
+            ))}
             {/* <Tooltip title="Terminal">
                 <IconButton onClick={()=>{props.click(LIST_TOOLBAR_TERMINAL)}}>
                     <CodeOutlinedIcon />

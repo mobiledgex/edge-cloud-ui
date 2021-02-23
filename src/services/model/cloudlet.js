@@ -1,7 +1,7 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
-import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO, GET_CLOUDLET_MANIFEST, SHOW_ORG_CLOUDLET_INFO } from './endPointTypes'
+import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO, GET_CLOUDLET_MANIFEST, SHOW_ORG_CLOUDLET_INFO, GET_CLOUDLET_RESOURCE_QUOTA_PROPS } from './endPointTypes'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 import { REVOKE_ACCESS_KEY } from './endpoints'
 
@@ -51,6 +51,9 @@ export const getKey = (data, isCreate) => {
         }
         if (data[fields.envVars]) {
             cloudlet.env_var = data[fields.envVars]
+        }
+        if (data[fields.resourceQuotas]) {
+            cloudlet.resource_quotas = data[fields.resourceQuotas]
         }
         if (data[fields.trustPolicyName]) {
             cloudlet.trust_policy = data[fields.trustPolicyName]
@@ -251,12 +254,18 @@ export const streamCloudlet = (data) => {
     return { uuid: data.uuid, method: STREAM_CLOUDLET, data: requestData }
 }
 
-
+export const cloudletResourceQuota = (data) => {
+    let requestData = {
+        cloudletresourcequotaprops: { platform_type: constant.PlatformType(data[fields.platformType])},
+        region: data[fields.region]
+    }
+    return { method: GET_CLOUDLET_RESOURCE_QUOTA_PROPS, data: requestData }
+}
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key:true },
-    { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true, filter: true, key:true },
-    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group: true, key:true },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
+    { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group: true, key: true },
     { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
     { field: fields.latitude, serverField: 'location#OS#latitude', label: 'Longitude', detailView: false },
     { field: fields.longitude, serverField: 'location#OS#longitude', label: 'Latitude', detailView: false },
@@ -273,6 +282,8 @@ export const keys = () => ([
     { field: fields.vmImageVersion, serverField: 'vm_image_version', label: 'VM Image Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
     { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: constant.TYPE_JSON },
     { field: fields.envVars, serverField: 'env_var', label: 'Environment Variables', dataType: constant.TYPE_JSON },
+    { field: fields.resourceQuotas, serverField: 'resource_quotas', label: 'Resource Quotas', dataType: constant.TYPE_JSON},
+    { field: fields.defaultResourceAlertThreshold, serverField: 'default_resource_alert_threshold', label: 'Default Resource Alert Threshold' },
     { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access' },
     { field: fields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name' },
     { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name' },
