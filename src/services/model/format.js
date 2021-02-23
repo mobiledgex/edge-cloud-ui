@@ -34,6 +34,9 @@ export const fields = {
     firstName:'firstName',
     lastName:'lastName',
     name:'name',
+    alertThreshold:'alertThreshold',
+    resourceValue:'resourceValue',
+    resourceName:'resourceName',
     address: 'address',
     phone: 'phone',
     country:'country',
@@ -163,6 +166,8 @@ export const fields = {
     envVars: 'envVars',
     apps: 'apps',
     eventType: 'eventType',
+    resourceQuotas: 'resourceQuotas',
+    defaultResourceAlertThreshold:'defaultResourceAlertThreshold',
     time: 'time',
     starttime: 'starttime',
     endtime: 'endtime',
@@ -401,6 +406,9 @@ export const formatUsageData = (response, body, keys) => {
     return formattedData
 }
 
+/**
+ * Use this method if the data specific to org 
+ */
 export const formatEventData = (response, body, keys) => {
     let formattedData = []
     try {

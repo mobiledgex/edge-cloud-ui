@@ -11,7 +11,7 @@ import * as constant from '../../../constant';
 import { fields, getOrganization, updateFieldData } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
-import { createCloudlet, updateCloudlet, getCloudletManifest } from '../../../services/model/cloudlet';
+import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota } from '../../../services/model/cloudlet';
 //Map
 import Map from "../../../hoc/maps/MexMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
@@ -20,7 +20,7 @@ import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
 import { getTrustPolicyList, showTrustPolicies } from '../../../services/model/trustPolicy';
 
 import * as serverData from '../../../services/model/serverData'
-import { SHOW_TRUST_POLICY } from '../../../services/model/endPointTypes';
+import { GET_CLOUDLET_RESOURCE_QUOTA_PROPS, SHOW_TRUST_POLICY } from '../../../services/model/endPointTypes';
 import { Grid } from '@material-ui/core';
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
@@ -54,12 +54,23 @@ class CloudletReg extends React.Component {
         this.updateFlowDataList = [];
         this.expandAdvanceMenu = false;
         this.trustPolicyList = [];
+        this.resourceQuotaList = [];
     }
 
-    platformTypeValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            if (form.field === fields.openRCData || form.field === fields.caCertdata) {
+    platformTypeValueChange = async (currentForm, forms, isInit) => {
+        await this.getCloudletResourceQuota(this.state.region, currentForm.value)
+        for (let form of forms) {
+            if (form.forms) {
+                for (let childForm of form.forms) {
+                    if (childForm.field === fields.resourceName) {
+                        if (!this.isUpdate) {
+                            this.updateUI(childForm)
+                            this.setState({ forms: forms })
+                        }
+                    }
+                }
+            }
+            else if (form.field === fields.openRCData || form.field === fields.caCertdata) {
                 form.visible = currentForm.value === constant.PLATFORM_TYPE_OPEN_STACK ? true : false
             }
         }
@@ -114,16 +125,30 @@ class CloudletReg extends React.Component {
         this.setState({ forms: forms })
     }
 
-    regionValueChange = (currentForm, forms, isInit) => {
+    getCloudletResourceQuota = async (region, platformType) => {
+        if (region && platformType) {
+            let mc = await serverData.sendRequest(this, cloudletResourceQuota({ region, platformType }))
+            if (mc && mc.response && mc.response.status === 200) {
+                this.resourceQuotaList = mc.response.data.props
+                this.resourceQuotaList = this.resourceQuotaList.map(quota => {
+                    return quota.name
+                })
+            }
+        }
+    }
+
+    regionValueChange = async (currentForm, forms, isInit) => {
         let region = currentForm.value;
         this.setState({ region: region })
         if (region) {
-            for (let i = 0; i < forms.length; i++) {
-                let form = forms[i]
+            for (let form of forms) {
                 if (form.field === fields.trustPolicyName) {
                     if (isInit === undefined || isInit === false) {
                         this.getTrustPolicy(region, form, forms)
                     }
+                }
+                else if (form.field === fields.platformType) {
+                    await this.getCloudletResourceQuota(region, form.value)
                 }
             }
             this.requestedRegionList.push(region);
@@ -239,6 +264,7 @@ class CloudletReg extends React.Component {
         if (data) {
             let forms = this.state.forms
             let envVars = undefined
+            let resourceQuotas = []
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
                 if (form.uuid) {
@@ -254,6 +280,9 @@ class CloudletReg extends React.Component {
                             envVars = envVars ? envVars : {}
                             envVars[multiFormData[fields.key]] = multiFormData[fields.value]
                         }
+                        else if (multiFormData[fields.resourceName] && multiFormData[fields.alertThreshold] && multiFormData[fields.resourceValue]) {
+                            resourceQuotas.push({ name: multiFormData[fields.resourceName], value: parseInt(multiFormData[fields.resourceValue]), alert_threshold: parseInt(multiFormData[fields.alertThreshold]) })
+                        }
                     }
                     data[uuid] = undefined
                 }
@@ -261,6 +290,11 @@ class CloudletReg extends React.Component {
             if (envVars) {
                 data[fields.envVars] = envVars
             }
+
+            if (resourceQuotas.length > 0) {
+                data[fields.resourceQuotas] = resourceQuotas
+            }
+
             if (this.props.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
                 if (updateData.fields.length > 0) {
@@ -429,6 +463,9 @@ class CloudletReg extends React.Component {
                         case fields.trustPolicyName:
                             form.options = this.trustPolicyList
                             break;
+                        case fields.resourceName:
+                            form.options = this.resourceQuotaList
+                            break;
                         default:
                             form.options = undefined;
                     }
@@ -447,8 +484,9 @@ class CloudletReg extends React.Component {
             this.setState({ mapData: [data] })
 
             requestTypeList.push(showTrustPolicies({ region: data[fields.region] }))
-
+            requestTypeList.push(cloudletResourceQuota({ region: data[fields.region], platformType: data[fields.platformType] }))
             let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
+            
             if (mcRequestList && mcRequestList.length > 0) {
                 for (let i = 0; i < mcRequestList.length; i++) {
                     let mcRequest = mcRequestList[i];
@@ -456,9 +494,14 @@ class CloudletReg extends React.Component {
                     if (request.method === SHOW_TRUST_POLICY) {
                         this.trustPolicyList = mcRequest.response.data
                     }
+                    else if (request.method === GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
+                        this.resourceQuotaList = mcRequest.response.data.props
+                        this.resourceQuotaList = this.resourceQuotaList.map(quota => {
+                            return quota.name
+                        })
+                    }
                 }
             }
-
             data[fields.maintenanceState] = undefined
 
             let multiFormCount = 0
@@ -478,6 +521,28 @@ class CloudletReg extends React.Component {
                         }
                     }
                     forms.splice(15 + multiFormCount, 0, this.getEnvForm(envForms))
+                    multiFormCount += 1
+                })
+            }
+
+            if (data[fields.resourceQuotas]) {
+                let resourceQuotaArray = data[fields.resourceQuotas]
+                resourceQuotaArray.map(item => {
+                    let resourceQuotaForms = this.resourceQuotaForm()
+                    for (let resourceQuotaForm of resourceQuotaForms) {
+                        if (resourceQuotaForm.field === fields.resourceName) {
+                            resourceQuotaForm.value = item['name']
+
+                        }
+                        else if (resourceQuotaForm.field === fields.resourceValue) {
+                            resourceQuotaForm.value = item['value']
+
+                        }
+                        else if (resourceQuotaForm.field === fields.alertThreshold) {
+                            resourceQuotaForm.value = item['alert_threshold'] ? item['alert_threshold'] : data[fields.defaultResourceAlertThreshold]
+                        }
+                    }
+                    forms.splice(16 + multiFormCount, 0, this.getResoureQuotaForm(resourceQuotaForms))
                     multiFormCount += 1
                 })
             }
@@ -503,8 +568,20 @@ class CloudletReg extends React.Component {
             { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 4, onClick: this.removeMultiForm }
     ])
 
+    resourceQuotaForm = () => ([
+        { field: fields.resourceName, label: 'Name', formType: SELECT, placeholder: 'Select Name', rules: { required: true }, width: 5, visible: true, options: this.resourceQuotaList, update: { edit: true } },
+        { field: fields.alertThreshold, label: 'Alert Threshold', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, value: this.isUpdate ? this.props.data[fields.defaultResourceAlertThreshold] : undefined },
+        { field: fields.resourceValue, label: 'Value', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true } },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
+
+    ])
+
     getEnvForm = (form) => {
         return ({ uuid: uuid(), field: fields.annotations, formType: 'MultiForm', forms: form ? form : this.envForm(), width: 3, visible: true })
+    }
+
+    getResoureQuotaForm = (form) => {
+        return ({ uuid: uuid(), field: fields.annotations, formType: 'MultiForm', forms: form ? form : this.resourceQuotaForm(), width: 3, visible: true })
     }
 
     removeMultiForm = (e, form) => {
@@ -541,6 +618,7 @@ class CloudletReg extends React.Component {
             { field: fields.infraFlavorName, label: 'Infra Flavor Name', formType: 'Input', placeholder: 'Enter Infra Flavor Name', rules: { required: false }, visible: true, tip: 'Infra specific flavor name' },
             { field: fields.infraExternalNetworkName, label: 'Infra External Network Name', formType: 'Input', placeholder: 'Enter Infra External Network Name', rules: { required: false }, visible: true, tip: 'Infra specific external network name' },
             { field: fields.envVars, label: 'Environment Variable', formType: HEADER, forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getEnvForm }], visible: true, tip: 'Single Key-Value pair of env var to be passed to CRM' },
+            { field: fields.resourceQuotas, label: 'Resource Quota', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Resource Quota', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getResoureQuotaForm }], visible: true, update: { id: ['39', '39.1', '39.2', '39.3'] }, tip: '* Alert Threshold: Generate alert when more than threshold percentage of resource is used\n * Name: Resource name on which to set quota\n * Value: Quota value of the resource' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
             { field: fields.trustPolicyName, label: 'Trust Policy', formType: SELECT, placeholder: 'Select Trust Policy', visible: true, update: { id: ['37'] }, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.operatorName }], advance: false },
             { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version', advance: false },

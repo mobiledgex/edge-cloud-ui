@@ -3,10 +3,6 @@ import * as formatter from './format'
 import { CLOUDLET_EVENT_LOG_ENDPOINT } from './endPointTypes'
 import * as dateUtil from '../../utils/date_util'
 
-export const showKey = () => (
-    { region: 'EU', cloudlet: { organization: "TDG", name: "automationBerlinCloudlet" } }
-)
-
 export const cloudletEventKeys = [
     { label: 'Starttime', serverField: 'time', visible: true, detailedView: false, format: dateUtil.FORMAT_FULL_DATE_TIME },
     { label: 'Region', serverField: 'region', visible: true, detailedView: false, groupBy: true, filter: true },

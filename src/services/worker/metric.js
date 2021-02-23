@@ -5,54 +5,21 @@ import maxBy from 'lodash/maxBy';
 import meanBy from 'lodash/meanBy';
 import minBy from 'lodash/minBy';
 import { unit } from '../../utils/math_util'
-import { fields } from '../model/format'
 import cloneDeep from 'lodash/cloneDeep';
 
-const metricKeyGenerator = (parentId, region, metric) => {
-    return `${parentId}-${metric.serverField}${metric.subId ? `-${metric.subId}` : ''}-${region}`
-}
 
-export const fetchLocation = (parentId, avgValues, metricData, showList) => {
-    for (let i = 0; i < showList.length; i++) {
-        let show = showList[i]
-        let valid = false
-        if (parentId === 'appinst') {
-            valid = metricData.includes(show[fields.region]) &&
-                metricData.includes(show[fields.appName].toLowerCase()) &&
-                metricData.includes(show[fields.organizationName]) &&
-                metricData.includes(show[fields.clusterName]) &&
-                metricData.includes(show[fields.clusterdeveloper]) &&
-                metricData.includes(show[fields.cloudletName]) &&
-                metricData.includes(show[fields.operatorName])
-        }
-        else {
-            valid = metricData.includes(show[fields.region]) &&
-                metricData.includes(show[fields.cloudletName]) &&
-                metricData.includes(show[fields.operatorName])
-        }
-        if (valid) {
-            avgValues['location'] = show[fields.cloudletLocation]
-            avgValues['showData'] = show
-        }
-    }
-    return avgValues
-}
-
-const avgCalculator = (avgData, parentId, data, region, metric, showList) => {
+const avgCalculator = (parentId, data, metric) => {
     let chartData = {}
     chartData = cloneDeep(data)
-    chartData['values'] = {}
-    let avgDataRegion = avgData[region]
-    Object.keys(avgDataRegion).map(key => {
-
-        let value = data['values'][key]
-        let avgValues = avgDataRegion[key]
-        if (value && avgValues) {
-            chartData['values'][key] = value
+    chartData['avgData'] = chartData['avgData'] ? chartData['avgData'] : {}
+    Object.keys(data.values).map(valueKey=>{
+        let value = data.values[valueKey]  
+        if(value)
+        {
             if (parentId === 'appinst' || parentId === 'cluster') {
-                let avg = meanBy(data.values[key], v => (v[metric.position]))
-                let max = maxBy(data.values[key], v => (v[metric.position]))[metric.position]
-                let min = minBy(data.values[key], v => (v[metric.position]))[metric.position]
+                let avg = meanBy(value, v => (v[metric.position]))
+                let max = maxBy(value, v => (v[metric.position]))[metric.position]
+                let min = minBy(value, v => (v[metric.position]))[metric.position]
 
                 if (metric.field === 'connections') {
                     avg = avg ? avg : 0
@@ -62,7 +29,9 @@ const avgCalculator = (avgData, parentId, data, region, metric, showList) => {
                 let avgUnit = metric.unit ? unit(metric.unit, avg) : avg
                 let maxUnit = metric.unit ? unit(metric.unit, max) : max
                 let minUnit = metric.unit ? unit(metric.unit, min) : min
-                avgValues[metric.field] = [avgUnit, minUnit, maxUnit]
+                let avgData = {}
+                avgData[metric.field] = [avgUnit, minUnit, maxUnit]
+                chartData['avgData'][valueKey] =  avgData
             }
             else {
                 let latestData = value[0]
@@ -70,28 +39,28 @@ const avgCalculator = (avgData, parentId, data, region, metric, showList) => {
                 let positionmaxValue = latestData[metric.position + 1] ? latestData[metric.position + 1] : 0
                 let convertedMaxValue = metric.unit ? unit(metric.unit, positionmaxValue) : positionmaxValue
                 let convertedValue = metric.unit ? unit(metric.unit, positionValue) : positionValue
-                avgValues[metric.field] = `${convertedValue} / ${convertedMaxValue}`
+                let avgData = {}
+                avgData[metric.field] =  `${convertedValue} / ${convertedMaxValue}`
+                chartData['avgData'][valueKey] = avgData
             }
         }
     })
     return chartData
 }
 
-const processData = (data) => {
-    let metricList = data.metric
-    let showList = data.show
-    let parentId = data.parentId
-    let region = data.region
-    let metricTypeKeys = data.metricTypeKeys
-    let avgData = data.avgData
+const processData = (inp) => {
+    let dataList = inp.metricList
+    let parentId = inp.parentId
+    let region = inp.region
+    let metricList = inp.metric.keys ? inp.metric.keys : [inp.metric]
+    
+    let chartData = []
 
-    let chartData = {}
-    chartData[region] = chartData[region] ? chartData[region] : {}
-    if (metricList && metricList.length > 0) {
-        metricList.map(metricData => {
+    if (dataList && dataList.length > 0) {
+        dataList.map(metricData => {
             let key = Object.keys(metricData)[0]
-            metricTypeKeys.map(metric => {
-                let objectId = `${parentId}-${metric.serverField}`
+            metricList.map(metric=>{
+                let objectId = metric.serverHead ? metric.serverHead : `${parentId}-${metric.serverField}`
                 if (key === objectId) {
                     if (metricData[objectId]) {
                         let newData = {}
@@ -99,14 +68,14 @@ const processData = (data) => {
                         newData.metric = metric
                         newData.values = metricData[objectId].values
                         newData.columns = metricData[objectId].columns
-                        let metricKey = metricKeyGenerator(parentId, region, metric)
-                        chartData[region][metricKey] = avgCalculator(avgData, parentId, newData, region, metric, showList)
+                        chartData.push(avgCalculator(parentId, newData, metric))
                     }
                 }
             })
+            
         })
     }
-    self.postMessage({ chartData, avgData })
+    self.postMessage(chartData)
 }
 
 export const format = (worker) => {

@@ -7,8 +7,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Icon } from 'semantic-ui-react';
-import { Collapse  } from '@material-ui/core';
+import { Collapse } from '@material-ui/core';
 import ListToolbar from './MonitoringListToolbar'
+import { monitoringActions } from '../helper/Constant';
 
 
 
@@ -16,6 +17,7 @@ const MexChartList = (props) => {
 
   const data = props.data
   const rows = props.filter.parent.metricListKeys
+  const actions = monitoringActions(props.filter.parent.id)
 
   const validateRegionFilter = (region) => {
     let regionFilter = props.filter.region
@@ -37,13 +39,13 @@ const MexChartList = (props) => {
     }
   }
 
-  const onToolbar = (action)=>{
+  const onToolbar = (action) => {
     props.onToolbarClick(action)
   }
-  
+
   return (
     <Collapse in={!props.minimize}>
-      {props.rowSelected === 1 && props.filter.parent.id === 'appinst' ? <ListToolbar click={onToolbar}/> : null}
+      {props.rowSelected === 1 && actions && actions.length > 0 ? <ListToolbar actions={actions} click={onToolbar} /> : null}
       <TableContainer component={Paper} style={{ height: 170, overflow: 'auto' }}>
         <Table aria-label="mex chart list" stickyHeader size={'small'}>
           <TableHead>
@@ -68,7 +70,7 @@ const MexChartList = (props) => {
                     let visible = value.hidden ? false : true
                     if (visible) {
                       return (key.includes(props.filter.search) ?
-                        <TableRow key={i} style={{backgroundColor:value.selected ? `${value.color}1A` : `transparent`}}>
+                        <TableRow key={i} style={{ backgroundColor: value.selected ? `${value.color}1A` : `transparent` }}>
                           <TableCell onClick={(event) => onCellClick(region, value, key)}><Icon style={{ color: value.color }} name={`${value.selected ? 'line graph' : 'circle'}`} /></TableCell>
                           {rows.map((row, j) => (
                             row.visible ? <TableCell key={j} onClick={(event) => onCellClick(region, value, key)}>{rowValue(row, value)}</TableCell> : null

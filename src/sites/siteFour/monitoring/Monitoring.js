@@ -39,7 +39,7 @@ const defaultParent = () => {
 
 const defaultMetricType = (parent) => {
     let id = parent.id
-    let metricTypeKeys = parent.metricTypeKeys
+    let metricTypeKeys = constant.visibility(parent.id)
     let pref = id === constant.PARENT_CLOUDLET ? PREF_M_CLOUDLET_VISIBILITY : id === constant.PARENT_CLUSTER_INST ? PREF_M_CLUSTER_VISIBILITY : PREF_M_APP_VISIBILITY
     return monitoringPref(pref) ?  monitoringPref(pref).map(type => { return type.toLowerCase() }) : metricTypeKeys.map(metricType => { return metricType.field })
 }
@@ -72,7 +72,7 @@ class Monitoring extends React.Component {
             rowSelected: 0,
             selectedOrg: undefined,
             showLoaded: false,
-            listAction: {}
+            listAction: undefined
         }
         this.selectedRow = undefined
     }
@@ -89,18 +89,12 @@ class Monitoring extends React.Component {
     }
 
     onListToolbarClick = (action) => {
-        switch (action) {
-            case constant.LIST_TOOLBAR_TRACK_DEVICES:
-                this.setState({ listAction: { action: action, data: this.selectedRow } })
-                break;
-        }
-
+        this.setState({ listAction: { action: action, data: this.selectedRow } })
     }
 
     onListToolbarClear = () => {
-        this.setState({ listAction: {} })
+        this.setState({ listAction: undefined })
     }
-
 
     onRefreshChange = (value) => {
         let interval = value.duration
@@ -130,14 +124,17 @@ class Monitoring extends React.Component {
     }
 
     onParentChange = () => {
-        this.fetchShowData()
+        this.setState({ showLoaded:false, avgData: this.defaultStructure() }, () => {
+            this.fetchShowData()
+        })
     }
 
     onOrgChange = (value) => {
         let selectedOrg = value[fields.organizationName]
         this.setState({ selectedOrg }, () => {
-            this.defaultStructure()
-            this.fetchShowData()
+            this.setState({ avgData: this.defaultStructure() }, () => {
+                this.fetchShowData()
+            })
         })
     }
 
@@ -194,8 +191,17 @@ class Monitoring extends React.Component {
         }
     }
 
-    updateAvgData = (avgData) => {
-        this.setState({ avgData })
+    updateAvgData = (region, metric, data) => {            
+        this.setState(prevState => {
+            let avgData = prevState.avgData
+            Object.keys(data).map(dataKey => {
+                let avgDataRegion = avgData[region]
+                if (avgDataRegion[dataKey]) {
+                    avgDataRegion[dataKey][metric.field] = data[dataKey][metric.field]
+                }
+            })
+            return { avgData }
+        })
     }
 
     render() {
@@ -212,7 +218,7 @@ class Monitoring extends React.Component {
                         <MonitoringList data={avgData} filter={filter} onCellClick={this.onCellClick} minimize={minimize} rowSelected={rowSelected} onToolbarClick={this.onListToolbarClick} />
                         <AppInstMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} listAction={listAction} onListToolbarClear={this.onListToolbarClear} />
                         <ClusterMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
-                        <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
+                        <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg}  onListToolbarClear={this.onListToolbarClear} />
                     </React.Fragment> :
                         <React.Fragment>
                             <Skeleton variant="rect" height={170} />
@@ -283,26 +289,26 @@ class Monitoring extends React.Component {
 
     defaultStructure = () => {
         let avgData = {}
-        constant.metricParentTypes.map(parent => {
-            let parentId = parent.id
-            if (constant.validateRole(parent.role) && parentId === this.state.filter.parent.id) {
-                this.regions.map((region) => {
-                    avgData[region] = {}
-                })
-            }
-        })
-        this.setState({ avgData })
+        let parent = this.state.filter.parent
+        if (constant.validateRole(parent.role)) {
+            this.regions.map((region) => {
+                avgData[region] = {}
+            })
+        }
+        return avgData
     }
 
     componentDidMount() {
         this.props.handleViewMode(HELP_MONITORING)
-        this.defaultStructure()
-        if (isAdmin()) {
-            sendAuthRequest(this, showOrganizations(), this.orgResponse)
-        }
-        else {
-            this.fetchShowData()
-        }
+        this.setState({ avgData: this.defaultStructure() }, () => {
+            if (isAdmin()) {
+                sendAuthRequest(this, showOrganizations(), this.orgResponse)
+            }
+            else {
+                this.fetchShowData()
+            }
+        })
+
     }
 
     componentWillUnmount() {

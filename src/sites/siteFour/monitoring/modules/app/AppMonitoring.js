@@ -63,16 +63,14 @@ class AppMonitoring extends React.Component {
         }
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
-
-
-
+    
     static getDerivedStateFromProps(props, state) {
         return processData(props.avgData)
     }
 
     render() {
         const { mapData } = this.state
-        const { avgData, filter, range, rowSelected, minimize, selectedOrg, updateAvgData, onListToolbarClear } = this.props
+        const { avgData, filter, range, rowSelected, minimize, selectedOrg, updateAvgData, onListToolbarClear, listAction } = this.props
         let selected = mapData.selected
         return (
             filter.parent.id === 'appinst' ?
@@ -86,7 +84,7 @@ class AppMonitoring extends React.Component {
                             </GridListTile> : null}
                         {filter.metricType.includes('map') ?
                             <GridListTile cols={2}>
-                                <MexMap data={mapData} region={filter.region} listAction={this.props.listAction} avgData={avgData} onListToolbarClear={onListToolbarClear}/>
+                                <MexMap data={mapData} region={filter.region} listAction={listAction} avgData={avgData} onListToolbarClear={onListToolbarClear}/>
                             </GridListTile> : null}
                         {filter.metricType.includes('event') ?
                             <GridListTile cols={1}>
