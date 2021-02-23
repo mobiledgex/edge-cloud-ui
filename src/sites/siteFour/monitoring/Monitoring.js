@@ -72,7 +72,7 @@ class Monitoring extends React.Component {
             rowSelected: 0,
             selectedOrg: undefined,
             showLoaded: false,
-            listAction: {}
+            listAction: undefined
         }
         this.selectedRow = undefined
     }
@@ -89,16 +89,11 @@ class Monitoring extends React.Component {
     }
 
     onListToolbarClick = (action) => {
-        switch (action) {
-            case constant.LIST_TOOLBAR_TRACK_DEVICES:
-                this.setState({ listAction: { action: action, data: this.selectedRow } })
-                break;
-        }
-
+        this.setState({ listAction: { action: action, data: this.selectedRow } })
     }
 
     onListToolbarClear = () => {
-        this.setState({ listAction: {} })
+        this.setState({ listAction: undefined })
     }
 
     onRefreshChange = (value) => {
@@ -223,7 +218,7 @@ class Monitoring extends React.Component {
                         <MonitoringList data={avgData} filter={filter} onCellClick={this.onCellClick} minimize={minimize} rowSelected={rowSelected} onToolbarClick={this.onListToolbarClick} />
                         <AppInstMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} listAction={listAction} onListToolbarClear={this.onListToolbarClear} />
                         <ClusterMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
-                        <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
+                        <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} listAction={listAction}  onListToolbarClear={this.onListToolbarClear} />
                     </React.Fragment> :
                         <React.Fragment>
                             <Skeleton variant="rect" height={170} />

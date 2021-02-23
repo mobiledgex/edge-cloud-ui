@@ -406,6 +406,9 @@ export const formatUsageData = (response, body, keys) => {
     return formattedData
 }
 
+/**
+ * Use this method if the data specific to org 
+ */
 export const formatEventData = (response, body, keys) => {
     let formattedData = []
     try {

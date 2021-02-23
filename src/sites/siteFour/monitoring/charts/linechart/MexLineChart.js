@@ -9,7 +9,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import CloseIcon from '@material-ui/icons/Close';
 import { LTTB } from 'downsample';
 
-const formatData = (rawData, avgDataRegion, globalFilter, rowSelected) => {
+const formatData = (rawData, avgDataRegion, globalFilter, rowSelected, labelPosition, steppedLine) => {
     let datasets = []
     const values = rawData ? rawData.values : {}
     let keys = Object.keys(values)
@@ -23,15 +23,16 @@ const formatData = (rawData, avgDataRegion, globalFilter, rowSelected) => {
             }
 
             let valueData = values[key]
-            if (key.includes(globalFilter.search) && (rowSelected === 0 || avgDataRegion[key].selected)) {
+            if (valueData.length > 0 && key.includes(globalFilter.search) && (rowSelected === 0 || avgDataRegion[key].selected)) {
                 let color = avgDataRegion[key] ? avgDataRegion[key].color : '#FFF'
                 let data = valueData.map(value => {
                     return { x: dateUtil.timeInMilli(value[0]), y: value[rawData.metric.position] }
                 })
                 datasets.push({
-                    label: valueData[0][2],
+                    label: valueData[0][labelPosition ? labelPosition : 2],
                     fill: false,
                     lineTension: 0.5,
+                    steppedLine:steppedLine,
                     backgroundColor: color,
                     borderColor: color,
                     borderCapStyle: 'butt',
@@ -99,8 +100,8 @@ const optionsGenerator = (header, unitId, fullscreen, range) => {
                 },
                 ticks: {
                     maxTicksLimit: fullscreen ? 15 : 5,
-                    max: dateUtil.timeInMilli(range.endtime),
-                    min: dateUtil.timeInMilli(range.starttime)
+                    // max: dateUtil.timeInMilli(range.endtime),
+                    // min: dateUtil.timeInMilli(range.starttime)
                 }
             }],
             yAxes: [{
@@ -141,38 +142,15 @@ class MexLineChart extends React.Component {
         this.header = this.metric ? this.metric.header : ''
         this.unit = this.metric ? this.metric.unit : undefined
         this.position = this.metric ? this.metric.position : 0
-        this.tags = props.tags
-        this.tagFormats = props.tagFormats
         this.range = props.range
         this.options = optionsGenerator(this.header, this.unit, false, this.range)
     }
 
-    formatLabel = (value) => {
-        let metricLabel = ''
-        this.tags.map((tag, j) => {
-            let labelVal = value[tag]
-            if (labelVal && labelVal !== null) {
-                let tagFormat = this.tagFormats[j]
-                switch (tagFormat) {
-                    case '[':
-                        metricLabel = metricLabel + ` [${labelVal}]`
-                        break;
-                    default:
-                        metricLabel = metricLabel + labelVal
-                        break;
-                }
-            }
-        })
-        return metricLabel
-    }
-
-
-
     static getDerivedStateFromProps(props, state) {
         let propsValues = props.data.values
         if (propsValues) {
-            const { data, avgDataRegion, globalFilter, rowSelected } = props
-            return { datasets: formatData(data, avgDataRegion, globalFilter, rowSelected) }
+            const { data, avgDataRegion, globalFilter, rowSelected, labelPosition } = props
+            return { datasets: formatData(data, avgDataRegion, globalFilter, rowSelected, labelPosition, props.steppedLine) }
         }
         return null
     }
@@ -207,41 +185,35 @@ class MexLineChart extends React.Component {
 
     render() {
         const { fullscreen, datasets } = this.state
-        const { style } = this.props
-
         let id = this.props.id
         id = id.toLowerCase()
         return (
-            <GridListTile key={id} cols={1} style={style} mex-test="component-line-chart">
-                <Card style={{ height: 300 }}>
-                    <div style={{ padding: 5, marginTop: 5, marginRight: 10 }}>
-                        <div className="line-chart-header">
-                            <Box display="flex">
-                                <Box flexGrow={1} >
-                                    <h3>{`${this.header} - ${this.props.data.region}`}</h3>
+            <div style={{ padding: 5, marginTop: 5, marginRight: 10 }} mex-test="component-line-chart">
+                <div className="line-chart-header">
+                    <Box display="flex">
+                        <Box flexGrow={1} >
+                            <h3>{`${this.header} - ${this.props.data.region}`}</h3>
+                        </Box>
+                        {
+                            datasets.length === 0 ?
+                                <Box>
+                                    <CircularProgress size={20} thickness={3} />
+                                </Box> :
+                                <Box m={-1.5}>
+                                    <IconButton onClick={this.openFullScreen}>
+                                        <AspectRatioIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />
+                                    </IconButton>
                                 </Box>
-                                {
-                                    datasets.length === 0 ?
-                                        <Box>
-                                            <CircularProgress size={20} thickness={3} />
-                                        </Box> :
-                                        <Box m={-1.5}>
-                                            <IconButton onClick={this.openFullScreen}>
-                                                <AspectRatioIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />
-                                            </IconButton>
-                                        </Box>
-                                }
-                            </Box>
-                        </div>
-                        <br />
-                        <div style={{ padding: 20, width: '100%', marginTop: 20 }}>
-                            {datasets.length > 0 ?
-                                <Line id={id} datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets }} height={200} /> : null}
-                        </div>
-                        {this.renderFullScreen(id, fullscreen, datasets)}
-                    </div>
-                </Card>
-            </GridListTile>
+                        }
+                    </Box>
+                </div>
+                <br />
+                <div style={{ padding: 20, width: '100%', marginTop: 20 }}>
+                    {datasets.length > 0 ?
+                        <Line id={id} datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets }} height={200} /> : null}
+                </div>
+                {this.renderFullScreen(id, fullscreen, datasets)}
+            </div>
         )
     }
 }

@@ -18,6 +18,14 @@ export const cloudletMetricsKeys = [
     { label: 'Operator', serverField: 'cloudletorg', visible: true, groupBy: true }
 ]
 
+export const cloudletFlavorMetricsKeys = [
+    { label: 'Date', serverField: 'time', visible: false },
+    { label: 'Region', serverField: 'region', visible: true, groupBy: true },
+    // { label: 'Cloudlet', serverField: 'cloudlet', visible: true, groupBy: true },
+    // { label: 'Operator', serverField: 'cloudletorg', visible: true, groupBy: true },
+    { label: 'Flavor', serverField: 'flavor', visible: true, groupBy: true }
+]
+
 export const cloudletMetricsListKeys = [
     { field: fields.region, label: 'Region', sortable: true, visible: false, groupBy: true  },
     { field: fields.cloudletName, label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData:true  },
@@ -57,11 +65,15 @@ export const cloudletMetrics = (data, org) => {
 }
 
 export const cloudletUsageMetrics = (data, org) => {
-    data.cloudlet = {
+    data.cloudlet = data.cloudlet ? data.cloudlet : {
         organization: org
     }
-    data.platformtype = 'openstack'
+    // data.platformtype = 'openstack'
     return { method: CLOUDLET_METRICS_USAGE_ENDPOINT, data: data, keys: cloudletMetricsKeys }
+}
+
+export const cloudletFlavorUsageMetrics = (data, org) => {
+    return { method: CLOUDLET_METRICS_USAGE_ENDPOINT, data: data, keys: cloudletFlavorMetricsKeys }
 }
 
 export const getData = (response, body) => {

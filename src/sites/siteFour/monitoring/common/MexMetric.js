@@ -24,13 +24,6 @@ class MexMetric extends React.Component {
             </React.Fragment>
         )
     }
-
-    componentDidMount() {
-    }
-
-    componentWillUnmount() {
-
-    }
 }
 
 export default withRouter(MexMetric);

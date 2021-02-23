@@ -5,6 +5,9 @@ import { healthCheck } from '../../constant'
 
 let fields = formatter.fields;
 
+export const LIST_TOOLBAR_TRACK_DEVICES = 'TrackDevices'
+export const LIST_TOOLBAR_TERMINAL = 'Terminal'
+
 export const appMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },
     { label: 'Region', field: fields.region, serverField: 'region', visible: true, groupBy: true },
@@ -65,9 +68,10 @@ export const appInstMetricTypeKeys = () => ([
     { field: 'client', header: 'Client Usage' },
 ])
 
-export const appActions = [
-    { label: 'Show Clients' }
+export const appInstActions = [
+    { label: 'Track Devices', action: LIST_TOOLBAR_TRACK_DEVICES }
 ]
+
 
 export const fetchLocation = (avgValues, metricData, showList) => {
     for (let i = 0; i < showList.length; i++) {

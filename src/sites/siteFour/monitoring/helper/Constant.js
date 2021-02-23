@@ -1,5 +1,5 @@
 import * as mainConstant from '../../../../constant'
-import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, fetchLocation, customData as appCustomData } from '../../../../services/model/appMetrics'
+import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, fetchLocation, customData as appCustomData, appInstActions } from '../../../../services/model/appMetrics'
 import { showOrgAppInsts } from '../../../../services/model/appInstance'
 import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys } from '../../../../services/model/clusterMetrics'
 import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys, customData as cloudletCustomData, cloudletUsageMetrics } from '../../../../services/model/cloudletMetrics'
@@ -28,9 +28,6 @@ export const PARENT_APP_INST = 'appinst'
 export const PARENT_CLUSTER_INST = 'cluster'
 export const PARENT_CLOUDLET = 'cloudlet'
 
-export const LIST_TOOLBAR_TRACK_DEVICES = 0
-export const LIST_TOOLBAR_TERMINAL = 1
-
 export const metricType = (id) => {
     switch (id) {
         case PARENT_APP_INST:
@@ -39,6 +36,14 @@ export const metricType = (id) => {
             return clusterMetricTypeKeys()
         case PARENT_CLOUDLET:
             return cloudletMetricTypeKeys()
+    }
+}
+
+export const monitoringActions = (id)=>{
+    switch(id)
+    {
+        case PARENT_APP_INST:
+            return appInstActions
     }
 }
 

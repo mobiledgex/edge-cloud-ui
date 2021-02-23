@@ -5,6 +5,7 @@ import { sendAuthRequest } from '../../../../services/model/serverWorker'
 import { WORKER_METRIC } from '../../../../services/worker/constant'
 import MexWorker from '../../../../services/worker/mex.worker.js'
 import { metricRequest } from '../helper/Constant'
+import { Card, GridListTile } from '@material-ui/core'
 class MexChart extends React.Component {
     constructor(props) {
         super()
@@ -26,11 +27,11 @@ class MexChart extends React.Component {
                     let key = this.metricKeyGenerator(filter, region, data.metric)
                     return (
                         filter.metricType.includes(data.metric.field) ?
-                            <React.Fragment key={key}>
-                                {
-                                    <LineChart id={key} rowSelected={rowSelected} data={data} avgDataRegion={avgData[region]} globalFilter={filter} tags={[2, 3]} tagFormats={['', '[']} style={style} range={range} />
-                                }
-                            </React.Fragment> : null
+                            <GridListTile key={key} cols={1} style={style}>
+                                <Card style={{ height: 300 }}>
+                                    <LineChart id={key} rowSelected={rowSelected} data={data} avgDataRegion={avgData[region]} globalFilter={filter} range={range} />
+                                </Card>
+                            </GridListTile> : null
                     )
                 }) : null
         )

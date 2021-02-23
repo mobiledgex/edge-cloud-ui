@@ -4,6 +4,7 @@ import { fields } from '../../../../../services/model/format'
 import MexMap from './CloudletMexMap'
 import CloudletEvent from './CloudletEvent'
 import MexMetric from '../../common/MexMetric'
+import CloudletFlavorUsage from './CloudletFlavorUsage'
 
 const processData = (avgData) => {
     let mapData = {}
@@ -43,14 +44,17 @@ class CloudletMonitoring extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        return processData(props.avgData)
+        if (props.listAction) {
+            return null
+        }
+        else {
+            return processData(props.avgData)
+        }
     }
-
-    
 
     render() {
         const { mapData } = this.state
-        const { avgData, filter, rowSelected, range, minimize, selectedOrg, updateAvgData } = this.props
+        const { avgData, filter, rowSelected, range, minimize, selectedOrg, updateAvgData, listAction } = this.props
         return (
             filter.parent.id === 'cloudlet' ?
                 <div className={minimize ? 'grid-charts-minimize' : 'grid-charts'}>
@@ -63,7 +67,12 @@ class CloudletMonitoring extends React.Component {
                                 <CloudletEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} />
                             </Card>
                         </GridListTile> : null}
-                        <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg}/>
+                        <GridListTile cols={1}>
+                            <Card style={{ height: 300 }}>
+                                <CloudletFlavorUsage range={range} filter={filter} avgData={avgData} rowSelected={rowSelected}/>
+                            </Card>
+                        </GridListTile>
+                        <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
                     </GridList>
                 </div> : null
         )

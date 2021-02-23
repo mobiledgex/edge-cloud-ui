@@ -63,9 +63,7 @@ class AppMonitoring extends React.Component {
         }
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
-
-
-
+    
     static getDerivedStateFromProps(props, state) {
         return processData(props.avgData)
     }
