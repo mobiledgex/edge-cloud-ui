@@ -3,7 +3,7 @@ import { fetch } from './server'
 import { format as metric } from './metric'
 import { format as role } from './role'
 import { format as show } from './monitoring/show'
-import { format as flavorusage } from './monitoring/flavorusage'
+import { format as flavorusage } from './monitoring/flavorUsage'
 import * as constant from './constant'
 
 self.addEventListener("message", processWorker);
