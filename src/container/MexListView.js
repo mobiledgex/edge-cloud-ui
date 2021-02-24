@@ -18,8 +18,7 @@ import MexMessageMultiNorm from '../hoc/stepper/mexMessageMultiNormal';
 import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
 import { prefixSearchPref, showMapPref } from '../utils/sharedPreferences_util';
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
-import Map from "../hoc/maps/MexMap";
-import { roundOff } from '../utils/math_util';
+import ListMexMap from './ListMexMap'
 import cloneDeep from 'lodash/cloneDeep';
 import { sendRequests } from '../services/model/serverWorker'
 
@@ -51,7 +50,6 @@ class MexListView extends React.Component {
         this.sorting = false;
         this.selectedRegion = REGION_ALL
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
-        this.mapDetails = undefined
     }
 
     setSelected = (dataList) => {
@@ -301,37 +299,26 @@ class MexListView extends React.Component {
         }
     }
 
-    onMapClick = (mapDataList) => {
+    onMapMarkerClick = (mapDataList) => {
         let filterList = this.onFilterValue(undefined)
         if (mapDataList) {
-            this.mapDetails = mapDataList
-            let coordinates = mapDataList.coordinates
-            filterList = filterList.filter(data => {
-                let cloudletLocation = data[fields.cloudletLocation]
-                let lat = roundOff(cloudletLocation[fields.latitude])
-                let lon = roundOff(cloudletLocation[fields.longitude])
-                return mapDataList.name.includes(data[this.requestInfo.nameField]) && coordinates[0] === lat && coordinates[1] === lon
-            })
+            filterList = mapDataList
         }
-        this.setState({ filterList: filterList })
+        this.setState({filterList}) 
     }
 
     groupActionClose = (action, dataList) => {
         this.onWarning(action, action.warning, true, dataList)
     }
+
     /*Action Block*/
     listView = () => {
         let isMap = this.requestInfo.isMap && this.state.showMap
-
         return (
             <div className="mexListView">
                 {isMap ?
                     <div className='panel_worldmap' style={{ height: 400 }}>
-                        <Map dataList={this.state.filterList}
-                            id={this.requestInfo.id}
-                            onClick={this.onMapClick}
-                            region={this.selectedRegion}
-                            mapDetails={this.mapDetails} />
+                        <ListMexMap onClick={this.onMapMarkerClick} id={this.requestInfo.id} dataList={this.state.filterList} region={this.selectedRegion}/>
                     </div> : null
                 }
                 <MexListViewer keys={this.keys} dataList={this.state.filterList}
@@ -380,7 +367,6 @@ class MexListView extends React.Component {
       */
 
     onFilterValue = (value) => {
-        this.mapDetails = null
         if (value !== undefined && value.length >= 0) {
             this.filterText = prefixSearchPref() + value.toLowerCase()
         }

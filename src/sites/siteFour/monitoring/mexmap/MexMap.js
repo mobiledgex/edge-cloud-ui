@@ -33,10 +33,10 @@ class MexMap extends React.Component {
 
     renderMapControl = (backswitch) => {
         let controllers = [
-            { label: 'Zoom In', icon: 'add', onClick: () => { this.zoomIn() }, visible:true },
-            { label: 'Zoom Out', icon: 'minus', onClick: () => { this.zoomOut() }, visible:true },
-            { label: 'Zoom Reset', icon: 'redo', onClick: () => { this.zoomReset() }, visible:true },
-            { label: 'Close', icon: 'close', onClick: () => { this.props.back() }, visible:backswitch }
+            { label: 'Zoom In', icon: 'add', onClick: () => { this.zoomIn() }, visible: true },
+            { label: 'Zoom Out', icon: 'minus', onClick: () => { this.zoomOut() }, visible: true },
+            { label: 'Zoom Reset', icon: 'redo', onClick: () => { this.zoomReset() }, visible: true },
+            { label: 'Close', icon: 'close', onClick: () => { this.props.back() }, visible: backswitch }
         ]
         return (
             <Control position="topleft" className="map-control">
@@ -52,6 +52,16 @@ class MexMap extends React.Component {
                 ))}
             </Control>
         )
+    }
+
+    onMapClick = (e) => {
+        if (this.props.onMapClick) {
+            let lat = Math.round(e.latlng['lat'])
+            let long = Math.round(e.latlng['lng'])
+            this.map.current.leafletElement.setView([lat, long], 3)
+            let location = { lat, long }
+            this.props.onMapClick(location)
+        }
     }
 
     render() {
@@ -71,6 +81,7 @@ class MexMap extends React.Component {
                     animate={false}
                     scrollWheelZoom={false}
                     zoomControl={false}
+                    onClick={this.onMapClick}
                     maxBounds={[[-90.0, -180.0], [90.0, 180.0]]}>
                     <TileLayer
                         style={{ width: '100%', height: '100%', zIndex: 1 }}
@@ -86,14 +97,16 @@ class MexMap extends React.Component {
     }
 
     componentDidUpdate(preProps, preState) {
+        if(this.props.register && this.props.mapCenter !== preProps.mapCenter)
+        {
+            this.map.current.leafletElement.setView(this.props.mapCenter, 3)
+        }
         if (preProps.region !== this.props.region) {
-            if(this.props.region.length > 1)
-            {
+            if (this.props.region.length > 1) {
                 this.map.current.leafletElement.setView(MAP_CENTER, DEFAULT_ZOOM)
             }
-            else
-            {
-                const {center, zoom} = regionLocation(this.props.region[0])
+            else {
+                const { center, zoom } = regionLocation(this.props.region[0])
                 this.map.current.leafletElement.setView(center, zoom)
             }
         }
