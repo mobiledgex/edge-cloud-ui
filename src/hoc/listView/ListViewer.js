@@ -106,7 +106,7 @@ class ListViewer extends React.Component {
                                     <MenuList autoFocusItem={Boolean(actionEl)} id="menu-list-grow" >
                                         {this.actionMenu.map((action, i) => {
                                             let visible = canEdit(viewerEdit, action) ? action.visible ? action.visible(selectedRow) : true : false
-                                            return visible ? <MenuItem key={i} onClick={(e) => { this.actionClose(action) }}>{action.label}</MenuItem> : null
+                                            return visible ? <MenuItem key={i} onClick={(e) => { this.actionClose(action) }} disabled={action.disable ? action.disable(selectedRow) : false}>{action.label}</MenuItem> : null
                                         })}
                                     </MenuList>
                                 </ClickAwayListener>

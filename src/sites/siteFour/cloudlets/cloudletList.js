@@ -69,15 +69,15 @@ class CloudletList extends React.Component {
         return data[fields.infraApiAccess] === INFRA_API_ACCESS_RESTRICTED
     }
 
-    onEditVisible = (data) => {
-        let visible = isAdmin() || data[fields.operatorName] === getOrganization()
-        return visible
+    onEditDisable = (data) => {
+        let disable = isAdmin() || data[fields.operatorName] === getOrganization()
+        return !disable
     }
 
     actionMenu = () => {
         return [
-            { label: 'Update', visible:this.onEditVisible, onClick: this.onAdd, type: 'Edit' },
-            { label: 'Delete', visible:this.onEditVisible, onClick: deleteCloudlet, ws: true, type: 'Edit' },
+            { label: 'Update', disable:this.onEditDisable, onClick: this.onAdd, type: 'Edit' },
+            { label: 'Delete', disable:this.onEditDisable, onClick: deleteCloudlet, ws: true, type: 'Edit' },
             { label: 'Show Manifest', visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest }
         ]
     }
