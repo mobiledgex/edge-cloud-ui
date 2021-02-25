@@ -1,17 +1,16 @@
 import React from 'react'
 import { Icon } from 'semantic-ui-react'
 import { Marker, Popup } from "react-leaflet";
-import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../../../../hoc/mexmap/MexMap'
-import MexCircleMarker from '../../mexmap/utils/MexCircleMarker'
 import { fields } from '../../../../../services/model/format';
-import { cloudGreenIcon, mobileIcon } from "../../mexmap/MapProperties";
 import { mcURL } from '../../../../../services/model/serviceMC'
 import { getPath } from '../../../../../services/model/endPointTypes'
 import * as serverData from '../../../../../services/model/serverData'
 import { showAppInstClient } from '../../../../../services/model/appInstClient'
 import cloneDeep from 'lodash/cloneDeep'
-
-import MexCurve from '../../mexmap/utils/MexCurve'
+import MexCircleMarker from '../../../../../hoc/mexmap/utils/MexCircleMarker'
+import { cloudGreenIcon, mobileIcon } from "../../../../../hoc/mexmap/MapProperties";
+import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../../../../hoc/mexmap/MexMap'
+import MexCurve from '../../../../../hoc/mexmap/utils/MexCurve'
 import { Dialog } from '@material-ui/core';
 
 
@@ -48,7 +47,7 @@ class AppMexMap extends React.Component {
             this.ws.close()
             this.ws = undefined
         }
-        this.setState({ showDevices: false, mapData: {}, mapCenter: MAP_CENTER, zoom: DEFAULT_ZOOM, backswitch: false },()=>{
+        this.setState({ showDevices: false, mapData: {}, mapCenter: MAP_CENTER, zoom: DEFAULT_ZOOM, backswitch: false }, () => {
             this.props.onListToolbarClear()
         })
     }
@@ -89,7 +88,7 @@ class AppMexMap extends React.Component {
         }
 
         this.ws.onclose = evt => {
-           
+
         }
     }
 
@@ -117,7 +116,7 @@ class AppMexMap extends React.Component {
                                                             <Icon style={{ color: keyData.color, marginRight: 5 }} name='circle' />
                                                             {keyData[fields.appName]} [{keyData[fields.version]}]
                                                             <code style={{ color: '#74B724' }}>
-                                                                        [{keyData[fields.clusterName]}]
+                                                                [{keyData[fields.clusterName]}]
                                                             </code>
                                                         </code>
                                                     </div> : null
@@ -132,7 +131,16 @@ class AppMexMap extends React.Component {
         )
     }
 
-   
+    calculateLength = (data) => {
+        let cost = 0
+        Object.keys(data).map(key => {
+            if(key !== fields.cloudletLocation && key !== 'selected')
+            {
+                cost = cost + data[key].length 
+            }
+        })
+        return cost
+    }
 
     renderDeviceMarker = () => {
         const { showDevices, mapData, polyline, curveColor } = this.state
@@ -149,7 +157,7 @@ class AppMexMap extends React.Component {
                                     <Marker icon={mobileIcon} position={[lat, lon]}>
                                         {this.renderMarkerPopup(mapData[key])}
                                     </Marker> :
-                                    <MexCircleMarker coords={{ lat: lat, lng: lon }} label={mapData[key]['label'] } popupData={mapData[key].devices}/>
+                                    <MexCircleMarker coords={{ lat: lat, lng: lon }} label={mapData[key]['label']} popupData={mapData[key].devices} />
                             }
                         </React.Fragment>
                     )
@@ -173,7 +181,7 @@ class AppMexMap extends React.Component {
                         return (
                             data.selected === 0 || data[key].selected ?
                                 <React.Fragment key={key}>
-                                    <Marker icon={cloudGreenIcon} position={[lat, lon]}>
+                                    <Marker icon={cloudGreenIcon(this.calculateLength(data[key]))} position={[lat, lon]}>
                                         {this.renderMarkerPopup(data[key])}
                                     </Marker>
                                 </React.Fragment> : null
@@ -190,9 +198,9 @@ class AppMexMap extends React.Component {
             <React.Fragment>
                 {showDevices ?
                     <Dialog fullScreen open={showDevices} onClose={this.resetMap} disableEscapeKeyDown={true}>
-                        <MexMap renderMarker={this.renderDeviceMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch} region={region}  fullscreen={showDevices} />
+                        <MexMap renderMarker={this.renderDeviceMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch} region={region} fullscreen={showDevices} />
                     </Dialog> :
-                    <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch} region={region}/>
+                    <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch} region={region} />
                 }
             </React.Fragment>
         )

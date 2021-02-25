@@ -48,7 +48,7 @@ class MexChart extends React.Component {
                     chartData.map(data => {
                         this.props.updateAvgData(region, data.metric, data.avgData)
                     })
-                    this.setState({ dataList: event.data })
+                    this.setState({ dataList: chartData })
                 })
             }
             else {

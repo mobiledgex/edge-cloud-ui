@@ -16,7 +16,7 @@ const processData = (avgData) => {
             if (keyData[fields.cloudletLocation]) {
                 let cloudletLocation = keyData[fields.cloudletLocation]
                 let key = `${cloudletLocation.latitude}_${cloudletLocation.longitude}`
-                let cloudletKey = keyData.cloudlet
+                let cloudletKey = 'data'//keyData.cloudlet
                 let data = { cloudletLocation, keyData: keyData }
                 selected += (keyData.selected ? 1 : 0)
                 let mapDataLocation = mapData[key]

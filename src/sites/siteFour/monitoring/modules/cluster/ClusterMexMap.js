@@ -1,12 +1,11 @@
 import React from 'react'
-import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../../../../hoc/mexmap/MexMap'
 import { Icon } from 'semantic-ui-react'
 import { Marker, Popup } from "react-leaflet";
-import MexCircleMarker from '../../mexmap/utils/MexCircleMarker'
 import { fields } from '../../../../../services/model/format';
-import { cloudGreenIcon } from "../../mexmap/MapProperties";
-
-import MexCurve from '../../mexmap/utils/MexCurve'
+import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../../../../hoc/mexmap/MexMap'
+import MexCurve from '../../../../../hoc/mexmap/utils/MexCurve'
+import { cloudGreenIcon } from "../../../../../hoc/mexmap/MapProperties";
+import MexCircleMarker from '../../../../../hoc/mexmap/utils/MexCircleMarker'
 
 
 class ClusterMexMap extends React.Component {
@@ -32,6 +31,7 @@ class ClusterMexMap extends React.Component {
         }
         this.setState({ showDevices: false, mapData: {}, mapCenter: MAP_CENTER, zoom: DEFAULT_ZOOM })
     }
+    
 
     renderMarkerPopup = (data) => {
         let selected = data['selected'] ? data['selected'] : 0
@@ -62,6 +62,17 @@ class ClusterMexMap extends React.Component {
         )
     }
 
+    calculateLength = (data) => {
+        let cost = 0
+        Object.keys(data).map(key => {
+            if(key !== fields.cloudletLocation && key !== 'selected')
+            {
+                cost = cost + data[key].length 
+            }
+        })
+        return cost
+    }
+
     renderMarker = () => {
         const { showDevices, mapData, polyline, curveColor } = this.state
         let data = showDevices ? mapData : this.props.data
@@ -72,16 +83,17 @@ class ClusterMexMap extends React.Component {
                     let location = data[key][fields.cloudletLocation]
                     let lat = location[fields.latitude]
                     let lon = location[fields.longitude]
+                    let dataLength = this.calculateLength(data[key])
                     return (
                         <React.Fragment key={key}>
                             {
                                 showDevices ?
                                     key === 'main' ?
-                                        <Marker icon={cloudGreenIcon} position={[lat, lon]}>
+                                        <Marker icon={cloudGreenIcon(dataLength)} position={[lat, lon]}>
                                             {this.renderMarkerPopup(data[key])}
                                         </Marker> :
                                         <MexCircleMarker coords={{ lat: lat, lng: lon }} label={data[key]['label']} /> :
-                                    <Marker icon={cloudGreenIcon} position={[lat, lon]}>
+                                    <Marker icon={cloudGreenIcon(dataLength)} position={[lat, lon]}>
                                         {this.renderMarkerPopup(data[key])}
                                     </Marker>
                             }
