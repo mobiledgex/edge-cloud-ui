@@ -588,6 +588,9 @@ ui.form .disabled.field, .ui.form .disabled.fields .field, .ui.form .field :disa
     color: rgba(255,255,255,.8);
     background-color: rgba(31,37,51,1);
     border: solid 1px rgba(255,255,255,.3);
+    max-height: 150px;
+    overflow-x: hidden;
+    overflow-y: auto;
     border-radius: 4px;
 }
 
