@@ -1,5 +1,5 @@
 import React from 'react'
-import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../mexmap/MexMap'
+import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../../../../hoc/mexmap/MexMap'
 import { Icon } from 'semantic-ui-react'
 import { Marker, Popup } from "react-leaflet";
 import MexCircleMarker from '../../mexmap/utils/MexCircleMarker'

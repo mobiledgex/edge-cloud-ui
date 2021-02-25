@@ -9,6 +9,7 @@ import { keys, showApps, deleteApp } from '../../../services/model/app';
 import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
 import { HELP_APP_LIST } from "../../../tutorial";
+import SecurityOutlinedIcon from '@material-ui/icons/SecurityOutlined';
 class AppList extends React.Component {
     constructor(props) {
         super(props);
@@ -72,9 +73,21 @@ class AppList extends React.Component {
         )
     }
 
+    customizedTrusted = (data, isDetailView)=>{
+        if(isDetailView)
+        {
+            return constant.showYesNo(data, isDetailView)
+        }
+        else 
+        {
+            let color = data[fields.trusted] ? constant.COLOR_GREEN : constant.COLOR_RED
+            return <SecurityOutlinedIcon style={{color:color}}/>
+        }
+    }
+
     /**
-  * Customized data block
-  **/
+     * Customized data block
+    **/
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
@@ -82,7 +95,7 @@ class AppList extends React.Component {
                 key.customizedData = constant.showYesNo
             }
             else if (key.field === fields.trusted) {
-                key.customizedData = constant.showYesNo
+                key.customizedData = this.customizedTrusted
             }
         }
     }

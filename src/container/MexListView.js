@@ -18,7 +18,7 @@ import MexMessageMultiNorm from '../hoc/stepper/mexMessageMultiNormal';
 import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
 import { prefixSearchPref, showMapPref } from '../utils/sharedPreferences_util';
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
-import ListMexMap from './ListMexMap'
+import ListMexMap from './map/ListMexMap'
 import cloneDeep from 'lodash/cloneDeep';
 import { sendRequests } from '../services/model/serverWorker'
 

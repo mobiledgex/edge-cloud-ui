@@ -9,13 +9,14 @@ import { fields, getOrganization, isAdmin } from '../../../services/model/format
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './cloudletReg';
-import {validateRole, operatorRoles, INFRA_API_ACCESS_RESTRICTED} from '../../../constant'
+import {validateRole, operatorRoles, INFRA_API_ACCESS_RESTRICTED, showYesNo, COLOR_RED, COLOR_GREEN} from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 import { getCloudletManifest, revokeAccessKey } from '../../../services/model/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
+import SecurityOutlinedIcon from '@material-ui/icons/SecurityOutlined';
 class CloudletList extends React.Component {
     constructor(props) {
         super(props);
@@ -170,14 +171,28 @@ class CloudletList extends React.Component {
         return progressRender
     }
 
+    customizedTrusted = (data, isDetailView)=>{
+        if(isDetailView)
+        {
+            return showYesNo(data, isDetailView)
+        }
+        else 
+        {
+            let color = data[fields.trusted] ? COLOR_GREEN : COLOR_RED
+            return <SecurityOutlinedIcon style={{color:color}}/>
+        }
+    }
+
     customizedData = () => {
-        for (let i = 0; i < this.keys.length; i++) {
-            let key = this.keys[i]
+        for (let key of this.keys) {
             if (key.field === fields.cloudletStatus) {
                 key.customizedData = this.getCloudletInfoState
             }
             else if (key.field === fields.state) {
                 key.customizedData = this.showProgress
+            }
+            else if (key.field === fields.trusted) {
+                key.customizedData = this.customizedTrusted
             }
         }
     }

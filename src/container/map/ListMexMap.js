@@ -1,27 +1,28 @@
 import React from 'react'
-import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../sites/siteFour/monitoring/mexmap/MexMap'
+import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../hoc/mexmap/MexMap'
 import { Icon } from 'semantic-ui-react'
 import { Marker, Tooltip } from "react-leaflet";
-import { fields } from '../services/model/format';
-import { CLUSTER_INST } from '../constant';
-
-const grdColors = ["#d32f2f", "#fb8c00", "#66CCFF", "#fffba7", "#FF78A5", "#76FF03", '#EAAE00']
+import { fields } from '../../services/model/format';
+import { CLUSTER_INST } from '../../constant';
+import Legend, { mapLegendColor } from './MapLegend'
 
 const processMapData = (dataList) => {
     let mapData = {}
     dataList.map(data => {
         if (data[fields.cloudletLocation]) {
             let cloudletLocation = data[fields.cloudletLocation]
-            let key = `${cloudletLocation.latitude}_${cloudletLocation.longitude}`
-            mapData[key] = mapData[key] ? mapData[key] : { cloudletLocation }
-            mapData[key]['data'] = mapData[key]['data'] ? mapData[key]['data'] : []
-            mapData[key]['data'].push(data)
+            if (cloudletLocation.latitude && cloudletLocation.longitude) {
+                let key = `${cloudletLocation.latitude}_${cloudletLocation.longitude}`
+                mapData[key] = mapData[key] ? mapData[key] : { cloudletLocation }
+                mapData[key]['data'] = mapData[key]['data'] ? mapData[key]['data'] : []
+                mapData[key]['data'].push(data)
+            }
         }
     })
     return mapData
 }
 
-class ClusterMexMap extends React.Component {
+class ListMexMap extends React.Component {
 
     constructor(props) {
         super(props)
@@ -41,21 +42,18 @@ class ClusterMexMap extends React.Component {
     }
 
     gradientFilter(key) {
-        return `<defs><filter id="inner${key}" x0="-25%" y0="-25%" width="200%" height="200%"><feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"></feGaussianBlur><feOffset dy="2" dx="3"></feOffset><feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite><feFlood flood-color="${grdColors[key]}" flood-opacity="1"></feFlood><feComposite in2="shadowDiff" operator="in"></feComposite><feComposite in2="SourceGraphic" operator="over" result="firstfilter"></feComposite><feGaussianBlur in="firstfilter" stdDeviation="3" result="blur2"></feGaussianBlur><feOffset dy="-2" dx="-3"></feOffset><feComposite in2="firstfilter" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite><feFlood flood-color="${grdColors[key]}" flood-opacity="1"></feFlood><feComposite in2="shadowDiff" operator="in"></feComposite><feComposite in2="firstfilter" operator="over"></feComposite></filter></defs>`
+        return `<defs><filter id="inner${key}" x0="-25%" y0="-25%" width="200%" height="200%"><feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"></feGaussianBlur><feOffset dy="2" dx="3"></feOffset><feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite><feFlood flood-color="${mapLegendColor[key]}" flood-opacity="1"></feFlood><feComposite in2="shadowDiff" operator="in"></feComposite><feComposite in2="SourceGraphic" operator="over" result="firstfilter"></feComposite><feGaussianBlur in="firstfilter" stdDeviation="3" result="blur2"></feGaussianBlur><feOffset dy="-2" dx="-3"></feOffset><feComposite in2="firstfilter" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite><feFlood flood-color="${mapLegendColor[key]}" flood-opacity="1"></feFlood><feComposite in2="shadowDiff" operator="in"></feComposite><feComposite in2="firstfilter" operator="over"></feComposite></filter></defs>`
     }
 
     renderColor = (data) => {
         let colorKey = 0
         if (data[fields.cloudletStatus] === 2) {
-            colorKey = 5
+            colorKey = 1
         }
         else if (data[fields.cloudletStatus] === 999) {
-            colorKey = 6
+            colorKey = 2
         }
-        else {
-            colorKey = 0
-        }
-        return grdColors[colorKey]
+        return mapLegendColor[colorKey]
     }
 
     renderLabel = (id, data) => {
@@ -69,11 +67,11 @@ class ClusterMexMap extends React.Component {
         }
     }
 
-    renderIconMarker = (id, register, dataList) => {
+    renderIconMarker = (id, register, backswitch, dataList) => {
 
         let colorKey = 0
         if (register) {
-            colorKey = 5
+            colorKey = 1
         }
         else {
             let online = false;
@@ -92,34 +90,33 @@ class ClusterMexMap extends React.Component {
                 }
             })
 
-            if (maintenance) {
-                colorKey = 6
+            if ((maintenance && online && offline) || (maintenance && online) || (maintenance && offline) || (online && offline)) {
+                colorKey = 3
             }
-            else if (online && offline) {
-                colorKey = 1
-            } else if (!online && offline) {
+            else if (maintenance) {
+                colorKey = 2
+            }
+            else if (offline) {
                 colorKey = 0
             }
-            else if (online && !offline) {
-                colorKey = -1
+            else if (online) {
+                colorKey = 1
             }
         }
 
-        let path = `<circle filter="url(#inner${colorKey})" cx="12" cy="12" r="12"></circle>`
-        switch (id) {
-            case 'Cloudlets':
-                colorKey = colorKey === -1 ? 5 : colorKey
-                path = `<path filter="url(#inner${colorKey})" d="M 19.35 10.04 C 18.67 6.59 15.64 4 12 4 C 9.11 4 6.6 5.64 5.35 8.04 C 2.34 8.36 0 10.91 0 14 c 0 3.31 2.69 6 6 6 h 13 c 2.76 0 5 -2.24 5 -5 c 0 -2.64 -2.05 -4.78 -4.65 -4.96 Z"></path>`
-                break;
-            case CLUSTER_INST:
-                colorKey = colorKey === -1 ? 3 : colorKey
-                path = `<path filter="url(#inner${colorKey})" d="M 10 4 H 4 c -1.1 0 -1.99 0.9 -1.99 2 L 2 18 c 0 1.1 0.9 2 2 2 h 16 c 1.1 0 2 -0.9 2 -2 V 8 c 0 -1.1 -0.9 -2 -2 -2 h -8 l -2 -2 Z"></path>`
-                break;
-            case 'AppInsts':
-                colorKey = colorKey === -1 ? 4 : colorKey
-                path = `<path filter="url(#inner${colorKey})" d="M 12 2 C 8.13 2 5 5.13 5 9 c 0 5.25 7 13 7 13 s 7 -7.75 7 -13 c 0 -3.87 -3.13 -7 -7 -7 Z"></path>`
-                break;
-        }
+        // let path = `<circle filter="url(#inner${colorKey})" cx="12" cy="12" r="12"></circle>`
+        let path = `<path filter="url(#inner${colorKey})" d="M 19.35 10.04 C 18.67 6.59 15.64 4 12 4 C 9.11 4 6.6 5.64 5.35 8.04 C 2.34 8.36 0 10.91 0 14 c 0 3.31 2.69 6 6 6 h 13 c 2.76 0 5 -2.24 5 -5 c 0 -2.64 -2.05 -4.78 -4.65 -4.96 Z"></path>`
+        // if(backswitch)
+        // {
+        //     switch (id) {
+        //         case CLUSTER_INST:
+        //             path = `<path filter="url(#inner${colorKey})" d="M 10 4 H 4 c -1.1 0 -1.99 0.9 -1.99 2 L 2 18 c 0 1.1 0.9 2 2 2 h 16 c 1.1 0 2 -0.9 2 -2 V 8 c 0 -1.1 -0.9 -2 -2 -2 h -8 l -2 -2 Z"></path>`
+        //             break;
+        //         case 'AppInsts':
+        //             path = `<path filter="url(#inner${colorKey})" d="M 12 2 C 8.13 2 5 5.13 5 9 c 0 5.25 7 13 7 13 s 7 -7.75 7 -13 c 0 -3.87 -3.13 -7 -7 -7 Z"></path>`
+        //             break;
+        //     }
+        // }
 
         let gradient = this.gradientFilter(colorKey);
         let cost = dataList.length
@@ -168,7 +165,7 @@ class ClusterMexMap extends React.Component {
     }
 
     renderMarker = () => {
-        const { mapData } = this.state
+        const { mapData, backswitch } = this.state
         const { id, register } = this.props
         let data = mapData
         return data ?
@@ -180,7 +177,7 @@ class ClusterMexMap extends React.Component {
                     return (
                         <React.Fragment key={key}>
                             {
-                                <Marker onclick={() => { this.onMarkerClick(data[key].data) }} icon={this.renderIconMarker(id, register, data[key].data)} position={[lat, lon]}>
+                                <Marker onclick={() => { this.onMarkerClick(data[key].data) }} icon={this.renderIconMarker(id, register, backswitch, data[key].data)} position={[lat, lon]}>
                                     {register ? null : this.renderMarkerPopup(id, data[key].data)}
                                 </Marker>
                             }
@@ -188,15 +185,15 @@ class ClusterMexMap extends React.Component {
                         </React.Fragment>
                     )
                 })}
+                <Legend />
             </div> : null
     }
 
     static getDerivedStateFromProps(props, state) {
         let mapData = processMapData(props.dataList)
-        if(props.register && props.dataList.length === 1)
-        {
+        if (props.register && props.dataList.length === 1) {
             let location = props.dataList[0].cloudletLocation
-            return {mapData, mapCenter:[parseInt(location.latitude), parseInt(location.longitude)]}
+            return { mapData, mapCenter: [parseInt(location.latitude), parseInt(location.longitude)] }
         }
         return { mapData }
     }
@@ -210,6 +207,6 @@ class ClusterMexMap extends React.Component {
     }
 }
 
-export default ClusterMexMap
+export default ListMexMap
 
 

@@ -13,7 +13,7 @@ import { fields, getOrganization, updateFieldData } from '../../../services/mode
 import { getOrganizationList } from '../../../services/model/organization';
 import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota } from '../../../services/model/cloudlet';
 //Map
-import ListMexMap from '../../../container/ListMexMap'
+import ListMexMap from '../../../container/map/ListMexMap'
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { HELP_CLOUDLET_REG } from "../../../tutorial";
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'

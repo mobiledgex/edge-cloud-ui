@@ -15,6 +15,7 @@ import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog, Tooltip } from '@material-ui/core';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_APP_INST_LIST } from "../../../tutorial";
+import SecurityOutlinedIcon from '@material-ui/icons/SecurityOutlined';
 
 class AppInstList extends React.Component {
     constructor(props) {
@@ -174,20 +175,35 @@ class AppInstList extends React.Component {
         }
     }
 
+    customizedTrusted = (data, isDetailView)=>{
+        if(isDetailView)
+        {
+            return constant.showYesNo(data, isDetailView)
+        }
+        else 
+        {
+            let color = data[fields.trusted] ? constant.COLOR_GREEN : constant.COLOR_RED
+            return <SecurityOutlinedIcon style={{color:color}}/>
+        }
+    }
+
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
             if (key.field === fields.state) {
                 key.customizedData = shared.showProgress
             }
-            if (key.field === fields.region) {
+            else if (key.field === fields.region) {
                 key.customizedData = this.getUpdate
             }
-            if (key.field === fields.powerState) {
+            else if (key.field === fields.powerState) {
                 key.customizedData = this.showPowerState
             }
-            if (key.field === fields.healthCheck) {
+            else if (key.field === fields.healthCheck) {
                 key.customizedData = this.showHealthCheck
+            }
+            else if (key.field === fields.trusted) {
+                key.customizedData = this.customizedTrusted
             }
         }
     }

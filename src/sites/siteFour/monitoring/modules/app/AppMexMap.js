@@ -1,7 +1,7 @@
 import React from 'react'
 import { Icon } from 'semantic-ui-react'
 import { Marker, Popup } from "react-leaflet";
-import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../mexmap/MexMap'
+import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../../../../hoc/mexmap/MexMap'
 import MexCircleMarker from '../../mexmap/utils/MexCircleMarker'
 import { fields } from '../../../../../services/model/format';
 import { cloudGreenIcon, mobileIcon } from "../../mexmap/MapProperties";

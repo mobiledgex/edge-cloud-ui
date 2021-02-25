@@ -4,7 +4,7 @@ import Control from 'react-leaflet-control';
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import { Icon } from "semantic-ui-react";
 import { Tooltip } from "@material-ui/core";
-import { regionLocation } from "../../../../constant";
+import { regionLocation } from "../../constant";
 
 export const DEFAULT_ZOOM = 2
 export const MAP_CENTER = [3.2, 23.53]
