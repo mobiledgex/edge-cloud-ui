@@ -27,10 +27,10 @@ export const PREF_MONITORING = 'Monitoring'
 export const PREF_TIMEZONE = 'Timezone'
 
 const preferencesList = [
-    { id: HEADER, label: 'General'},
+    { id: HEADER, label: 'General' },
     { id: PREF_DATATABLE, label: 'Data Table' },
     { id: PREF_TIMEZONE, label: 'Date & Time' },
-    { id: HEADER, label: 'Organization'},
+    { id: HEADER, label: 'Organization' },
     { id: PREF_MONITORING, label: 'Monitoring' },
 ]
 
@@ -82,20 +82,19 @@ class Preferences extends React.Component {
         }
     }
 
-    onTimezoneChangeEvent = (value) => {	
-        var event = new Event('MexTimezoneChangeEvent');	   
-        moment.tz.setDefault(timezonePref())	
-        window.dispatchEvent(event);	
-    } 
+    onTimezoneChangeEvent = (value) => {
+        var event = new Event('MexTimezoneChangeEvent');
+        moment.tz.setDefault(timezonePref())
+        window.dispatchEvent(event);
+    }
 
     onSaveResponse = (mc) => {
         this.setState({ loading: false })
         if (mc && mc.response && mc.response.status === 200) {
-            if(this.isTimezoneChanged)
-            {
+            if (this.isTimezoneChanged) {
                 this.onTimezoneChangeEvent()
             }
-            this.setState({open:false, header:1})
+            this.setState({ open: false, header: 1 })
             this.props.handleAlertInfo('success', 'Preferences saved, please reload page to apply changes')
         }
     }
@@ -111,9 +110,8 @@ class Preferences extends React.Component {
         })
     }
 
-    getOrgData = (data)=>{
-        if(getUserRole() && !isAdmin())
-        {
+    getOrgData = (data) => {
+        if (getUserRole() && !isAdmin()) {
             data = data[getOrganization()]
         }
         return data
@@ -158,7 +156,7 @@ class Preferences extends React.Component {
                             <h3 style={{ fontWeight: 700 }}>Preferences</h3>
                         </div>
                         <div style={{ float: "right", display: 'inline-block', marginTop: -8 }}>
-                            <Help data={prefHelp}/>
+                            <Help data={prefHelp} />
                             <IconButton onClick={this.handleClose}>
                                 <CloseIcon />
                             </IconButton>
@@ -196,9 +194,13 @@ class Preferences extends React.Component {
 
     componentDidMount() {
         let data = localStorage.getItem(LS_USER_META_DATA)
-        data = data ? JSON.parse(data) : {}
-        if(!isAdmin())
-        {
+        try {
+            data = data ? JSON.parse(data) : {}
+        }
+        catch (e) {
+            data = {}
+        }
+        if (!isAdmin()) {
             let org = getOrganization()
             data[org] = data[org] ? data[org] : {}
         }
