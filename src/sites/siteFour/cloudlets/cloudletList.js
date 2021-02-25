@@ -5,7 +5,7 @@ import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 
-import { fields } from '../../../services/model/format';
+import { fields, getOrganization, isAdmin } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './cloudletReg';
@@ -69,10 +69,15 @@ class CloudletList extends React.Component {
         return data[fields.infraApiAccess] === INFRA_API_ACCESS_RESTRICTED
     }
 
+    onEditDisable = (data) => {
+        let disable = isAdmin() || data[fields.operatorName] === getOrganization()
+        return !disable
+    }
+
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onAdd, type: 'Edit' },
-            { label: 'Delete', onClick: deleteCloudlet, ws: true, type: 'Edit' },
+            { label: 'Update', disable:this.onEditDisable, onClick: this.onAdd, type: 'Edit' },
+            { label: 'Delete', disable:this.onEditDisable, onClick: deleteCloudlet, ws: true, type: 'Edit' },
             { label: 'Show Manifest', visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest }
         ]
     }
