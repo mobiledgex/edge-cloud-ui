@@ -106,7 +106,7 @@ export const cloudletWithInfo = (mcList) => {
                 for (let j = 0; j < cloudletInfoList.length; j++) {
                     let cloudletInfo = cloudletInfoList[j]
                     if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
-                        valid = cloudletInfo[fields.state] === 2
+                        valid = cloudletInfo[fields.state] === 2 && (cloudlet[fields.maintenanceState] === undefined || cloudlet[fields.maintenanceState] === 0)
                         break;
                     }
                 }
