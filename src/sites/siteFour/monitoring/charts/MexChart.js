@@ -14,6 +14,25 @@ class MexChart extends React.Component {
         }
     }
 
+    /**
+     * Check if rawData exist in avgData
+     */
+    validateData = (rawData, avgData) => {
+        let values = rawData ? rawData.values : {}
+        let count = 0
+        if (values) {
+            let keys = Object.keys(values)
+            let length = keys.length
+            for (let i = 0; i < length; i++) {
+                let key = keys[i]
+                if (avgData[key]) {
+                    count++;
+                }
+            }
+        }
+        return count > 0
+    }
+
     metricKeyGenerator = (filter, region, metric) => {
         return `${filter.parent.id}-${metric.serverField}${metric.subId ? `-${metric.subId}` : ''}-${region}`
     }
@@ -48,7 +67,12 @@ class MexChart extends React.Component {
                     chartData.map(data => {
                         this.props.updateAvgData(region, data.metric, data.avgData)
                     })
-                    this.setState({ dataList: chartData })
+                    if (this.validateData(chartData[0], this.props.avgData[region])) {
+                        this.setState({ dataList: chartData })
+                    }
+                    else {
+                        this.setState({ dataList: undefined })
+                    }
                 })
             }
             else {
