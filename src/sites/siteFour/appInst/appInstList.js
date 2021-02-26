@@ -15,6 +15,7 @@ import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog, Tooltip } from '@material-ui/core';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_APP_INST_LIST } from "../../../tutorial";
+import { customizedTrusted } from '../../../constantUI';
 
 class AppInstList extends React.Component {
     constructor(props) {
@@ -174,19 +175,6 @@ class AppInstList extends React.Component {
         }
     }
 
-    customizedTrusted = (data, isDetailView)=>{
-        if(isDetailView)
-        {
-            return constant.showYesNo(data, isDetailView)
-        }
-        else 
-        {
-            let color = data[fields.trusted] ? 'green' : 'red'
-            let icon = data[fields.trusted] ? 'check' : 'close'
-            return <Icon className={'progressIndicator'} color={color} name={icon} />
-        }
-    }
-
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
@@ -203,7 +191,7 @@ class AppInstList extends React.Component {
                 key.customizedData = this.showHealthCheck
             }
             else if (key.field === fields.trusted) {
-                key.customizedData = this.customizedTrusted
+                key.customizedData = customizedTrusted
             }
         }
     }

@@ -10,6 +10,7 @@ import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
 import { HELP_APP_LIST } from "../../../tutorial";
 import { Icon } from 'semantic-ui-react';
+import { customizedTrusted } from '../../../constantUI';
 class AppList extends React.Component {
     constructor(props) {
         super(props);
@@ -73,19 +74,6 @@ class AppList extends React.Component {
         )
     }
 
-    customizedTrusted = (data, isDetailView)=>{
-        if(isDetailView)
-        {
-            return constant.showYesNo(data, isDetailView)
-        }
-        else 
-        {
-            let color = data[fields.trusted] ? 'green' : 'red'
-            let icon = data[fields.trusted] ? 'check' : 'close'
-            return <Icon className={'progressIndicator'} color={color} name={icon} />
-        }
-    }
-
     /**
      * Customized data block
     **/
@@ -96,7 +84,7 @@ class AppList extends React.Component {
                 key.customizedData = constant.showYesNo
             }
             else if (key.field === fields.trusted) {
-                key.customizedData = this.customizedTrusted
+                key.customizedData = customizedTrusted
             }
         }
     }

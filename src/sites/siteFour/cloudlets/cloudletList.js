@@ -16,6 +16,7 @@ import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 import { getCloudletManifest, revokeAccessKey } from '../../../services/model/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
+import { customizedTrusted } from '../../../constantUI';
 class CloudletList extends React.Component {
     constructor(props) {
         super(props);
@@ -170,19 +171,6 @@ class CloudletList extends React.Component {
         return progressRender
     }
 
-    customizedTrusted = (data, isDetailView)=>{
-        if(isDetailView)
-        {
-            return showYesNo(data, isDetailView)
-        }
-        else 
-        {
-            let color = data[fields.trusted] ? 'green' : 'red'
-            let icon = data[fields.trusted] ? 'check' : 'close'
-            return <Icon className={'progressIndicator'} color={color} name={icon} />
-        }
-    }
-
     customizedData = () => {
         for (let key of this.keys) {
             if (key.field === fields.cloudletStatus) {
@@ -192,7 +180,7 @@ class CloudletList extends React.Component {
                 key.customizedData = this.showProgress
             }
             else if (key.field === fields.trusted) {
-                key.customizedData = this.customizedTrusted
+                key.customizedData = customizedTrusted
             }
         }
     }
