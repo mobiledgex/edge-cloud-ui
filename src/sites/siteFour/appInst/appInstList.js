@@ -15,6 +15,7 @@ import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog, Tooltip } from '@material-ui/core';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_APP_INST_LIST } from "../../../tutorial";
+import { customizedTrusted } from '../../../constantUI';
 
 class AppInstList extends React.Component {
     constructor(props) {
@@ -180,14 +181,17 @@ class AppInstList extends React.Component {
             if (key.field === fields.state) {
                 key.customizedData = shared.showProgress
             }
-            if (key.field === fields.region) {
+            else if (key.field === fields.region) {
                 key.customizedData = this.getUpdate
             }
-            if (key.field === fields.powerState) {
+            else if (key.field === fields.powerState) {
                 key.customizedData = this.showPowerState
             }
-            if (key.field === fields.healthCheck) {
+            else if (key.field === fields.healthCheck) {
                 key.customizedData = this.showHealthCheck
+            }
+            else if (key.field === fields.trusted) {
+                key.customizedData = customizedTrusted
             }
         }
     }

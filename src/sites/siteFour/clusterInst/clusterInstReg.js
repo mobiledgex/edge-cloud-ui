@@ -17,7 +17,7 @@ import { showOrgCloudletInfos } from '../../../services/model/cloudletInfo';
 import { getFlavorList } from '../../../services/model/flavor';
 import { getAutoScalePolicyList, showAutoScalePolicies } from '../../../services/model/autoScalePolicy';
 //Map
-import Map from "../../../hoc/maps/MexMap"
+import ListMexMap from "../../../container/map/ListMexMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { HELP_CLUSTER_INST_REG } from "../../../tutorial";
 
@@ -290,7 +290,7 @@ class ClusterInstReg extends React.Component {
     getMap = () =>
     (
         <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-            <Map locData={this.state.mapData} id={'ClusterInst'} reg='cloudletAndClusterMap' region={this.state.region}></Map>
+            <ListMexMap dataList={this.state.mapData} id={'ClusterInst'} region={this.state.region} register={true}/>
         </div>
     )
 

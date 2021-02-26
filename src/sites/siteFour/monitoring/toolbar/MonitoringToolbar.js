@@ -1,7 +1,6 @@
 import React from 'react'
 import { Toolbar, Input, InputAdornment, makeStyles, Box, IconButton, Tooltip, Grid, Divider } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search';
-import InsertChartIcon from '@material-ui/icons/InsertChart';
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
 import * as constant from '../helper/Constant';
 import MexTimer from '../helper/MexTimer'

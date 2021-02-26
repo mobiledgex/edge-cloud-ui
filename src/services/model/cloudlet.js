@@ -292,6 +292,7 @@ export const keys = () => ([
     { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: constant.TYPE_YAML },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+    { field: fields.trusted, label: 'Trusted', visible: true },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }
 ])
 
@@ -302,6 +303,7 @@ const customData = (value) => {
     value[fields.infraApiAccess] = constant.infraApiAccess(value[fields.infraApiAccess])
     value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
     value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
+    value[fields.trusted] = value[fields.trustPolicyName] !== undefined
     return value
 }
 

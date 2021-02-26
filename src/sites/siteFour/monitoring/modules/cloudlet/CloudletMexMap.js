@@ -1,14 +1,11 @@
 import React from 'react'
-import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../mexmap/MexMap'
 import { Icon } from 'semantic-ui-react'
 import { Marker, Popup } from "react-leaflet";
-import MexCircleMarker from '../../mexmap/utils/MexCircleMarker'
 import { fields } from '../../../../../services/model/format';
-import { cloudGreenIcon } from "../../mexmap/MapProperties";
-
-import MexCurve from '../../mexmap/utils/MexCurve'
-
-
+import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../../../../hoc/mexmap/MexMap'
+import { cloudGreenIcon } from "../../../../../hoc/mexmap/MapProperties";
+import MexCircleMarker from '../../../../../hoc/mexmap/utils/MexCircleMarker'
+import MexCurve from '../../../../../hoc/mexmap/utils/MexCurve'
 class ClusterMexMap extends React.Component {
 
     constructor(props) {
@@ -75,11 +72,11 @@ class ClusterMexMap extends React.Component {
                             {
                                 showDevices ?
                                     key === 'main' ?
-                                        <Marker icon={cloudGreenIcon} position={[lat, lon]}>
+                                        <Marker icon={cloudGreenIcon(data[key].data.length)} position={[lat, lon]}>
                                             {this.renderMarkerPopup(data[key])}
                                         </Marker> :
                                         <MexCircleMarker coords={{ lat: lat, lng: lon }} label={data[key]['label']} /> :
-                                    <Marker icon={cloudGreenIcon} position={[lat, lon]}>
+                                    <Marker icon={cloudGreenIcon(data[key].data.length)} position={[lat, lon]}>
                                         {this.renderMarkerPopup(data[key])}
                                     </Marker>
                             }

@@ -13,7 +13,7 @@ import { fields, getOrganization, updateFieldData } from '../../../services/mode
 import { getOrganizationList } from '../../../services/model/organization';
 import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota } from '../../../services/model/cloudlet';
 //Map
-import Map from "../../../hoc/maps/MexMap"
+import ListMexMap from '../../../container/map/ListMexMap'
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { HELP_CLOUDLET_REG } from "../../../tutorial";
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
@@ -353,7 +353,7 @@ class CloudletReg extends React.Component {
     getMap = () =>
     (
         <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-            <Map locData={this.state.mapData} id={'Cloudlets'} reg='cloudletAndClusterMap' onMapClick={this.onMapClick} region={this.state.region}></Map>
+            <ListMexMap dataList={this.state.mapData} id={'Cloudlets'} onMapClick={this.onMapClick} region={this.state.region} register={true}/>
         </div>
     )
 
