@@ -1,6 +1,9 @@
 import { fields, getUserRole } from "./services/model/format"
 import { time } from './utils/date_util'
 
+export const COLOR_GREEN = '#388E3C'
+export const COLOR_RED = '#ab2424'
+
 export const LOCAL_STRAGE_KEY = 'PROJECT_INIT'
 export const LS_USER_META_DATA = 'usermetadata'
 export const ADD = 'Add'

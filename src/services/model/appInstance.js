@@ -36,6 +36,7 @@ export const keys = () => ([
   { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
   { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true },
   { field: fields.autoPolicyName, label: 'Auto Prov Policy', visible: false },
+  { field: fields.trusted, label: 'Trusted', visible: true, sortable:true },
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 

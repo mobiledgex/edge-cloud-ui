@@ -9,6 +9,8 @@ import { keys, showApps, deleteApp } from '../../../services/model/app';
 import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
 import { HELP_APP_LIST } from "../../../tutorial";
+import { Icon } from 'semantic-ui-react';
+import { customizedTrusted } from '../../../constantUI';
 class AppList extends React.Component {
     constructor(props) {
         super(props);
@@ -73,8 +75,8 @@ class AppList extends React.Component {
     }
 
     /**
-  * Customized data block
-  **/
+     * Customized data block
+    **/
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
@@ -82,7 +84,7 @@ class AppList extends React.Component {
                 key.customizedData = constant.showYesNo
             }
             else if (key.field === fields.trusted) {
-                key.customizedData = constant.showYesNo
+                key.customizedData = customizedTrusted
             }
         }
     }
