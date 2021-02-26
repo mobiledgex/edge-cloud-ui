@@ -161,7 +161,7 @@ class ListMexMap extends React.Component {
                         </React.Fragment>
                     )
                 })}
-                <Legend />
+                {register ? null : <Legend />}
             </div> : null
     }
 
