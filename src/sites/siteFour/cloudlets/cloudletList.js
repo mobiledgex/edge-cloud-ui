@@ -16,7 +16,6 @@ import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 import { getCloudletManifest, revokeAccessKey } from '../../../services/model/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
-import SecurityOutlinedIcon from '@material-ui/icons/SecurityOutlined';
 class CloudletList extends React.Component {
     constructor(props) {
         super(props);
@@ -178,8 +177,9 @@ class CloudletList extends React.Component {
         }
         else 
         {
-            let color = data[fields.trusted] ? COLOR_GREEN : COLOR_RED
-            return <SecurityOutlinedIcon style={{color:color}}/>
+            let color = data[fields.trusted] ? 'green' : 'red'
+            let icon = data[fields.trusted] ? 'check' : 'close'
+            return <Icon className={'progressIndicator'} color={color} name={icon} />
         }
     }
 

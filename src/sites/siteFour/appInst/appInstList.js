@@ -15,7 +15,6 @@ import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog, Tooltip } from '@material-ui/core';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_APP_INST_LIST } from "../../../tutorial";
-import SecurityOutlinedIcon from '@material-ui/icons/SecurityOutlined';
 
 class AppInstList extends React.Component {
     constructor(props) {
@@ -182,8 +181,9 @@ class AppInstList extends React.Component {
         }
         else 
         {
-            let color = data[fields.trusted] ? constant.COLOR_GREEN : constant.COLOR_RED
-            return <SecurityOutlinedIcon style={{color:color}}/>
+            let color = data[fields.trusted] ? 'green' : 'red'
+            let icon = data[fields.trusted] ? 'check' : 'close'
+            return <Icon className={'progressIndicator'} color={color} name={icon} />
         }
     }
 

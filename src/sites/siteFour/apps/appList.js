@@ -9,7 +9,7 @@ import { keys, showApps, deleteApp } from '../../../services/model/app';
 import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
 import { HELP_APP_LIST } from "../../../tutorial";
-import SecurityOutlinedIcon from '@material-ui/icons/SecurityOutlined';
+import { Icon } from 'semantic-ui-react';
 class AppList extends React.Component {
     constructor(props) {
         super(props);
@@ -80,8 +80,9 @@ class AppList extends React.Component {
         }
         else 
         {
-            let color = data[fields.trusted] ? constant.COLOR_GREEN : constant.COLOR_RED
-            return <SecurityOutlinedIcon style={{color:color}}/>
+            let color = data[fields.trusted] ? 'green' : 'red'
+            let icon = data[fields.trusted] ? 'check' : 'close'
+            return <Icon className={'progressIndicator'} color={color} name={icon} />
         }
     }
 
