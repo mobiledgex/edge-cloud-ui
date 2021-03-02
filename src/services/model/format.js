@@ -199,16 +199,15 @@ export const fields = {
 }
 
 export const getUserRole = () => {
-    return localStorage.selectRole
+    return localStorage.selectRole ? localStorage.selectRole : ''
 }
 
 export const isAdmin = () => {
-    return localStorage.selectRole && localStorage.selectRole === 'AdminManager'
+    return getUserRole() === 'AdminManager'
 }
 
 export const isViewer = () => {
-    let role = getUserRole()
-    return role && role.includes('Viewer')
+    return getUserRole().includes('Viewer')
 }
 
 export const getOrganization = () => {
