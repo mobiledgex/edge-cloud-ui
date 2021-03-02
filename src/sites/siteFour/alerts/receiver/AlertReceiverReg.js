@@ -5,7 +5,7 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, MAIN_HEADER } from '../.
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { fields, getOrganization, getUserRole } from '../../../../services/model/format';
+import { fields, getOrganization, getUserRole, isAdmin } from '../../../../services/model/format';
 //model
 import { createAlertReceiver } from '../../../../services/model/alerts';
 import { currentUser } from '../../../../services/model/serverData';
@@ -415,40 +415,41 @@ class FlavorReg extends React.Component {
     }
 
     serverResponse = (mcList) => {
-        mcList.map(mc => {
-            if (mc && mc.response && mc.response.status === 200) {
-                let request = mc.request
-                let data = mc.response.data
-                if (request.method === endpoints.SHOW_CLOUDLET || request.method === endpoints.SHOW_ORG_CLOUDLET) {
-                    this.cloudletList = [...this.cloudletList, ...data]
-                    this.checkOrgExist()
+        if (mcList && mcList.length > 0) {
+            mcList.map(mc => {
+                if (mc && mc.response && mc.response.status === 200) {
+                    let request = mc.request
+                    let data = mc.response.data
+                    if (request.method === endpoints.SHOW_CLOUDLET || request.method === endpoints.SHOW_ORG_CLOUDLET) {
+                        this.cloudletList = [...this.cloudletList, ...data]
+                        this.checkOrgExist()
+                    }
+                    else if (request.method === endpoints.SHOW_APP_INST) {
+                        this.appInstList = [...this.appInstList, ...data]
+                    }
+                    else if (request.method === endpoints.SHOW_CLUSTER_INST) {
+                        this.clusterInstList = [...this.clusterInstList, ...data]
+                    }
+                    else if (request.method === endpoints.SHOW_ORG) {
+                        this.organizationList = [...this.organizationList, ...data]
+                    }
+                }
+            })
 
+            let forms = cloneDeep(this.state.forms)
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i]
+                if (form.field === fields.selector) {
+                    form.rules.disabled = false
                 }
-                else if (request.method === endpoints.SHOW_APP_INST) {
-                    this.appInstList = [...this.appInstList, ...data]
-                }
-                else if (request.method === endpoints.SHOW_CLUSTER_INST) {
-                    this.clusterInstList = [...this.clusterInstList, ...data]
-                }
-                else if (request.method === endpoints.SHOW_ORG) {
-                    this.organizationList = [...this.organizationList, ...data]
-                }
+                this.updateUI(form)
             }
-        })
 
-        let forms = cloneDeep(this.state.forms)
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            if (form.field === fields.selector) {
-                form.rules.disabled = false
-            }
-            this.updateUI(form)
+            this.setState({
+                forms: forms,
+                loading: false
+            })
         }
-
-        this.setState({
-            forms: forms,
-            loading: false
-        })
     }
 
     fetchData = () => {
@@ -456,8 +457,10 @@ class FlavorReg extends React.Component {
         requestList.push(showOrganizations())
         this.regions.map(region => {
             requestList.push(showCloudlets({ region }))
-            requestList.push(showAppInsts({ region }))
-            requestList.push(showClusterInsts({ region }))
+            if (isAdmin() || getUserRole().includes(constant.DEVELOPER)) {
+                requestList.push(showAppInsts({ region }))
+                requestList.push(showClusterInsts({ region }))
+            }
         })
         sendRequests(this, requestList, this.serverResponse)
     }
