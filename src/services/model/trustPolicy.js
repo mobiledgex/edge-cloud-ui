@@ -2,6 +2,7 @@ import * as formatter from './format'
 import * as serverData from './serverData'
 import { SHOW_TRUST_POLICY, UPDATE_TRUST_POLICY, CREATE_TRUST_POLICY, DELETE_TRUST_POLICY, SHOW_APP } from './endPointTypes'
 import { SHOW_CLOUDLET } from './endpoints';
+import { ADMIN_MANAGER, OPERATOR_CONTRIBUTOR, OPERATOR_MANAGER, ADMIN_CONTRIBUTOR } from '../../constant';
 export const fields = formatter.fields;
 
 export const outboundSecurityRulesKeys = [
@@ -20,7 +21,7 @@ export const keys = () => ([
     field: fields.outboundSecurityRules, serverField: 'outbound_security_rules', label: 'Outbound Security Rules',
     keys: outboundSecurityRulesKeys
   },
-  { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true }
+  { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles:[ADMIN_MANAGER, ADMIN_CONTRIBUTOR, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR] }
 ])
 
 const getKey = (data) => {
