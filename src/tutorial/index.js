@@ -927,6 +927,10 @@ const alerts = (type, isDoc) => {
         if (getUserRole().includes(constant.DEVELOPER)) {
             return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/monitoring#alerts'
         }
+        else if(getUserRole().includes(constant.OPERATOR))
+        {
+            return 'https://operators.mobiledgex.com/health-checks-and-alarms#alerts'
+        }
     }
 }
 
