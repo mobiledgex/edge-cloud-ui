@@ -9,8 +9,7 @@ import TrustPolicyReg from './trustPolicyReg'
 import { keys, fields, showTrustPolicies, deleteTrustPolicy, multiDataRequest } from '../../../../services/model/trustPolicy';
 import { showCloudlets } from '../../../../services/model/cloudlet';
 import { HELP_TRUST_POLICY } from "../../../../tutorial";
-import { validateRole, operatorRoles, OPERATOR } from '../../../../constant';
-import { getUserRole, isAdmin } from '../../../../services/model/format';
+import { validateRole, operatorRoles } from '../../../../constant';
 
 class TrustPolicy extends React.Component {
     constructor(props) {
@@ -47,15 +46,10 @@ class TrustPolicy extends React.Component {
         }
     }
 
-    onEditDisable = (data) => {
-        let disable = isAdmin() || getUserRole().includes(OPERATOR)
-        return !disable
-    }
-
     actionMenu = () => {
         return [
-            { label: 'Update', disable:this.onEditDisable, onClick: this.onUpdate, type: 'Edit' },
-            { label: 'Delete', disable:this.onEditDisable, onClick: deleteTrustPolicy, onFinish: this.onDelete, type: 'Edit' }
+            { label: 'Update', onClick: this.onUpdate, type: 'Edit' },
+            { label: 'Delete', onClick: deleteTrustPolicy, onFinish: this.onDelete, type: 'Edit' }
         ]
     }
 
