@@ -6,6 +6,7 @@ import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import WhatsNew from './whatsnew'
 import { tutor } from '../../../../tutorial'
 import './style.css'
+import { isAdmin } from '../../../../services/model/format';
 
 const HelpMenu = (props) => {
 
@@ -45,10 +46,10 @@ const HelpMenu = (props) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <MenuItem onClick={docClick} disabled={!(props.viewMode && tutor(props.viewMode, true))}>
+                {isAdmin() ? null :<MenuItem onClick={docClick} disabled={!(props.viewMode && tutor(props.viewMode, true))}>
                     <DescriptionOutlinedIcon fontSize="small" color={props.viewMode && tutor(props.viewMode, true) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
                     <ListItemText primary="Guide" />
-                </MenuItem>
+                </MenuItem>}
                 <MenuItem onClick={newClick}>
                     <NewReleasesIcon fontSize="small" color={props.viewMode && tutor(props.viewMode, true) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
                     <ListItemText primary="What's new" />
