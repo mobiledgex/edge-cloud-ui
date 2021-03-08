@@ -110,6 +110,7 @@ const optionsGenerator = (header, unitId, fullscreen, range) => {
                     labelString: header
                 },
                 ticks: {
+                    precision:0,
                     callback: (label, index, labels) => {
                         return unit ? unit(unitId, label) : label
                     },
