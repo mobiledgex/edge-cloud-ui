@@ -162,7 +162,7 @@ class AppReg extends React.Component {
     ])
 
     getPortForm = (form) => {
-        return ({ uuid: uuid(), field: fields.ports, formType: MULTI_FORM, forms: form ? form : this.portForm(), width: 3, visible: true, dependentData: [{ index: 6, field: fields.accessType }] })
+        return ({ uuid: uuid(), field: fields.ports, formType: MULTI_FORM, forms: form ? form : this.portForm(), width: 3, visible: true })
     }
 
     annotationForm = () => ([
@@ -186,7 +186,7 @@ class AppReg extends React.Component {
     ])
 
     getMultiPortForm = (form) => {
-        return ({ uuid: uuid(), field: fields.ports, formType: MULTI_FORM, forms: form ? form : this.multiPortForm(), width: 3, visible: true, dependentData: [{ index: 6, field: fields.accessType }] })
+        return ({ uuid: uuid(), field: fields.ports, formType: MULTI_FORM, forms: form ? form : this.multiPortForm(), width: 3, visible: true })
     }
 
     configForm = () => ([
@@ -271,15 +271,6 @@ class AppReg extends React.Component {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
                 return form
             }
-            else if (form.field === fields.accessType) {
-                form.options = (currentForm.value === constant.DEPLOYMENT_TYPE_VM) ?
-                    [constant.ACCESS_TYPE_LOAD_BALANCER, constant.ACCESS_TYPE_DIRECT] :
-                    [constant.ACCESS_TYPE_LOAD_BALANCER]
-                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.ACCESS_TYPE_DIRECT : constant.ACCESS_TYPE_LOAD_BALANCER
-                this.tlsCount = form.value === constant.ACCESS_TYPE_DIRECT ? 0 : this.tlsCount
-                this.accessTypeChange(form, forms, isInit)
-                return form
-            }
             else if (form.field === fields.configs) {
                 form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM || currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES
                 this.configOptions = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.CONFIG_ENV_VAR] : [constant.CONFIG_HELM_CUST]
@@ -328,22 +319,15 @@ class AppReg extends React.Component {
 
     protcolValueChange = (currentForm, forms, isInit) => {
         let childForms = currentForm.parent.form.forms
-        let accessType = undefined
         let dependentData = currentForm.parent.form.dependentData
-        for (let i = 0; i < dependentData.length; i++) {
-            let parentForm = forms[dependentData[i].index]
-            if (parentForm.field === fields.accessType) {
-                accessType = parentForm.value;
-            }
-        }
 
         for (let i = 0; i < childForms.length; i++) {
             let form = childForms[i]
             if (form.field === fields.tls) {
-                form.visible = currentForm.value === 'tcp' && accessType === constant.ACCESS_TYPE_LOAD_BALANCER
+                form.visible = currentForm.value === 'tcp'
             }
             else if (form.field === fields.skipHCPorts) {
-                form.visible = currentForm.value === 'tcp' && accessType === constant.ACCESS_TYPE_LOAD_BALANCER
+                form.visible = currentForm.value === 'tcp'
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -406,37 +390,6 @@ class AppReg extends React.Component {
         }
         if (isInit === undefined || isInit === false) {
             this.setState({ forms })
-        }
-    }
-
-    accessTypeChange = (currentForm, forms, isInit) => {
-        this.tlsCount = currentForm.value === constant.ACCESS_TYPE_DIRECT ? 0 : this.tlsCount
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i];
-            if (form.field === fields.ports) {
-                let protocol = undefined
-                for (let j = 0; j < form.forms.length; j++) {
-                    let childForm = form.forms[j]
-                    if (childForm.field === fields.protocol) {
-                        protocol = childForm.value;
-                    }
-                    else if (childForm.field === fields.tls) {
-                        childForm.visible = currentForm.value === constant.ACCESS_TYPE_LOAD_BALANCER && protocol === 'tcp'
-                        if (!isInit) {
-                            childForm.value = childForm.visible ? childForm.value : false
-                        }
-                    }
-                    else if (childForm.field === fields.skipHCPorts) {
-                        childForm.visible = currentForm.value === constant.ACCESS_TYPE_LOAD_BALANCER && protocol === 'tcp'
-                        if (!isInit) {
-                            childForm.value = childForm.visible ? childForm.value : false
-                        }
-                    }
-                }
-            }
-        }
-        if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
         }
     }
 
@@ -536,7 +489,6 @@ class AppReg extends React.Component {
             flowDataList.push(appFlow.portFlow(this.tlsCount))
         }
         else if (form.field === fields.accessType) {
-            this.accessTypeChange(form, forms, isInit)
             let finalData = isInit ? data : formattedData(forms)
             flowDataList.push(appFlow.deploymentTypeFlow(finalData, constant.APP))
             flowDataList.push(appFlow.ipAccessFlowApp(finalData))
@@ -793,9 +745,6 @@ class AppReg extends React.Component {
                         case fields.deployment:
                             form.options = [constant.DEPLOYMENT_TYPE_DOCKER, constant.DEPLOYMENT_TYPE_KUBERNETES, constant.DEPLOYMENT_TYPE_VM, constant.DEPLOYMENT_TYPE_HELM]
                             break;
-                        case fields.accessType:
-                            form.options = [constant.ACCESS_TYPE_DIRECT, constant.ACCESS_TYPE_LOAD_BALANCER]
-                            break;
                         default:
                             form.options = undefined;
                     }
@@ -955,7 +904,6 @@ class AppReg extends React.Component {
             { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name', dataValidateFunc: this.validateAppName, update: { key: true } },
             { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version', update: { key: true } },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
-            { field: fields.accessType, label: 'Access Type', formType: SELECT, placeholder: 'Select Access Type', rules: { required: true }, visible: true },
             { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Deployment Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
             { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: { id: ['4'] }, tip: 'URI of where image resides' },
             { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, update: { id: ['9.1'] }, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
@@ -1009,9 +957,6 @@ class AppReg extends React.Component {
                 if (this.appInstExist === false) {
                     if (form.field == fields.deployment) {
                         form.update = { id: ['15'] }
-                    }
-                    if (form.field == fields.accessType) {
-                        form.update = { id: ['29'] }
                     }
                 }
             }
