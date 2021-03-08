@@ -43,6 +43,7 @@ export const PLATFORM_TYPE_OPEN_GCP = 'GCP'
 export const PLATFORM_TYPE_EDGEBOX = 'Edgebox'
 export const PLATFORM_TYPE_FAKEINFRA = 'Fakeinfra'
 export const PLATFORM_TYPE_VSPHERE = 'vSphere (alpha feature)'
+export const PLATFORM_TYPE_VCD = 'VCD'
 export const PLATFORM_TYPE_AWS = 'AWS'
 export const PLATFORM_TYPE_VMPOOL = 'VM Pool'
 export const IP_SUPPORT_DYNAMIC = 'Dynamic'
@@ -389,6 +390,8 @@ export const PlatformType = (id) => {
             return PLATFORM_TYPE_AWS
         case 9:
             return PLATFORM_TYPE_VMPOOL
+        case 11:
+            return PLATFORM_TYPE_VCD
         case PLATFORM_TYPE_FAKE:
             return 0
         case PLATFORM_TYPE_DIND:
@@ -409,6 +412,8 @@ export const PlatformType = (id) => {
             return 8
         case PLATFORM_TYPE_VMPOOL:
             return 9
+        case PLATFORM_TYPE_VCD:
+            return 11
         default:
             return id
     }
