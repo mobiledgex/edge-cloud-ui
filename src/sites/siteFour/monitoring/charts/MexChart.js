@@ -12,6 +12,13 @@ class MexChart extends React.Component {
         this.state = {
             dataList: undefined
         }
+        this._isMounted = false;
+    }
+
+    updateData = (dataList) => {
+        if (this._isMounted) {
+            this.setState({ dataList })
+        }
     }
 
     /**
@@ -68,15 +75,15 @@ class MexChart extends React.Component {
                         this.props.updateAvgData(region, data.metric, data.avgData)
                     })
                     if (this.validateData(chartData[0], this.props.avgData[region])) {
-                        this.setState({ dataList: chartData })
+                        this.updateData(chartData)
                     }
                     else {
-                        this.setState({ dataList: undefined })
+                        this.updateData(undefined)
                     }
                 })
             }
             else {
-                this.setState({ dataList: undefined })
+                this.updateData(undefined)
             }
         }
     }
@@ -95,7 +102,7 @@ class MexChart extends React.Component {
             let request = metricRequest(metric.serverRequest, data, org)
             sendAuthRequest(this, request).addEventListener('message', event => {
                 if (event.data.status && event.data.status !== 200) {
-                    this.setState({ dataList: undefined })
+                    this.updateData(undefined)
                 }
                 else {
                     this.metricResponse(parent, metric, region, event.data)
@@ -117,26 +124,37 @@ class MexChart extends React.Component {
                 dataList.push({ region: this.props.region, metric })
             }
         }
-        this.setState({ dataList }, () => {
-            this.fetchMetricData()
-        })
+        if (this._isMounted) {
+            this.setState({ dataList }, () => {
+                this.fetchMetricData()
+            })
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.org !== this.props.org) {
-            this.setState({ dataList: undefined }, () => {
-                this.defaultContainer()
-            })
+            if (this._isMounted) {
+                this.setState({ dataList: undefined }, () => {
+                    this.defaultContainer()
+                })
+            }
         }
         if (prevProps.range !== this.props.range) {
-            this.setState({ dataList: undefined }, () => {
-                this.defaultContainer()
-            })
+            if (this._isMounted) {
+                this.setState({ dataList: undefined }, () => {
+                    this.defaultContainer()
+                })
+            }
         }
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.defaultContainer()
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 }
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import sizeMe from 'react-sizeme';
 
 import { withRouter } from 'react-router-dom';
 //redux
@@ -114,4 +113,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFour)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFour));
