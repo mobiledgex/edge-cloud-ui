@@ -868,18 +868,6 @@ page_monitoring_dashboard_dev {
     color: rgba(255, 255, 255, .6);
 }
 
-.page_monitoring_terminal_button {
-    position: absolute;
-    bottom: 0px;
-    right: 24px;
-    background-image: url("../../assets/terminal_btn_off.png");
-    width: 192px;
-    height: 94px;
-    display: flex;
-    /*align-items: center;*/
-    /*justify-content: center;*/
-}
-
 /* 임시 팝업 화면 */
 .page_monitoring_popup_title {
     color: white;

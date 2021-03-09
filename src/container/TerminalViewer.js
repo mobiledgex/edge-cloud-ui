@@ -243,7 +243,7 @@ class MexTerminal extends Component {
     loadHeader = () => (
         <Box display="flex" p={1}>
             <Box p={1} flexGrow={1}>
-                <Image wrapped size='small' src='/assets/brand/logo_mex.svg' />
+                <Image wrapped size='small' src='/assets/logo_mex.svg' />
             </Box>
             {
                 this.state.isVM ? null :
