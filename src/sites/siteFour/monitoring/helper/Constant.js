@@ -75,7 +75,6 @@ export const visibility = (id, keys) => {
 }
 
 export const summaryList = [
-    { label: 'Live', field: 'live', position: 3, metricType: [PARENT_APP_INST, PARENT_CLUSTER_INST] },
     { label: 'Max', field: 'max', position: 2, metricType: [PARENT_APP_INST, PARENT_CLUSTER_INST] },
     { label: 'Avg', field: 'avg', position: 0, metricType: [PARENT_APP_INST, PARENT_CLUSTER_INST] },
     { label: 'Min', field: 'min', position: 1, metricType: [PARENT_APP_INST, PARENT_CLUSTER_INST] }
