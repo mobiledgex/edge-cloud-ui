@@ -20,20 +20,17 @@ const avgCalculator = (parentId, data, metric) => {
                 let avg = meanBy(value, v => (v[metric.position]))
                 let max = maxBy(value, v => (v[metric.position]))[metric.position]
                 let min = minBy(value, v => (v[metric.position]))[metric.position]
-                let live = value[value.length-1][metric.position]
-                console.log('Rahul1234', metric.unit ? unit(metric.unit, live) : live, metric, valueKey)
+
                 if (metric.field === 'connections') {
                     avg = avg ? avg : 0
                     max = max ? max : 0
                     min = min ? min : 0
-                    live = live ? live : 0
                 }
                 let avgUnit = metric.unit ? unit(metric.unit, avg) : avg
                 let maxUnit = metric.unit ? unit(metric.unit, max) : max
                 let minUnit = metric.unit ? unit(metric.unit, min) : min
-                let liveUnit = metric.unit ? unit(metric.unit, live) : live
                 let avgData = {}
-                avgData[metric.field] = [avgUnit, minUnit, maxUnit, liveUnit]
+                avgData[metric.field] = [avgUnit, minUnit, maxUnit]
                 chartData['avgData'][valueKey] =  avgData
             }
             else {

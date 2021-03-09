@@ -1,5 +1,4 @@
 import React from 'react';
-import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 import MexForms, { SELECT, DUALLIST, INPUT, BUTTON, HEADER, MULTI_FORM, MAIN_HEADER, ICON_BUTTON } from '../../../../hoc/forms/MexForms';
 //redux
@@ -459,4 +458,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(AutoProvPolicyReg)));
+export default withRouter(connect(null, mapDispatchProps)(AutoProvPolicyReg));
