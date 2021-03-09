@@ -209,7 +209,7 @@ body, button, input, textarea, optgroup, select, textarea,
     top: 30%;
     left: 50%;
     margin-left: -150px;
-    background-image: url("/assets/brand/logo_mex.svg");
+    background-image: url("../assets/logo_mex.svg");
     background-repeat: no-repeat;
     -webkit-filter: drop-shadow( 0 0.4em 0.6em rgba(0, 0, 0, 0.9));
     filter: drop-shadow( 0 0.4em 0.6em rgba(0, 0, 0, 0.9));
@@ -222,7 +222,7 @@ body, button, input, textarea, optgroup, select, textarea,
 
 .login_main::before {    
     content: "";
-    background-image: url("/assets/images/map.jpg");
+    background-image: url("../assets/map.jpg");
     background-size: cover;
     position: absolute;
     top: 0px;
@@ -267,38 +267,6 @@ body, button, input, textarea, optgroup, select, textarea,
     padding: 0 1rem;
     color: #c4d3dc;
 }
-
-.intro_globe {
-    background: url("/assets/images/globe_1.png") no-repeat #000000;
-    background-position: center;
-    background-size: cover;
-}
-.intro_globe .ui.grid .row .signup_btn,
-.intro_globe .ui.grid .row .login_btn {
-    width: unset !important;
-}
-
-
-
-
-/* login-signUp location horizontal
-.intro_login{
-    top: 45%;
-    width: 910px;
-    margin-left: -455px;
-    height: 384px;
-}
-.intro_login .ui.grid.signUpBD:first-child{
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-.intro_login .ui.grid.signUpBD:last-child{
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-*/
 
 .intro_login .ui.grid {
     margin: 1em 1em;
@@ -417,79 +385,6 @@ body, button, input, textarea, optgroup, select, textarea,
     width: 100%;
     height: 100%;
     overflow: hidden;
-}
-
-.console_header {
-    width: 700px !important;
-    height: 80px;
-    color: rgba(51,255,255,1);
-    background-image:url("/assets/worldmap/title_header_bg.svg");
-    background-repeat: no-repeat;
-    background-size: 700px 40px;
-    background-position: center 24px;
-    font-size: 1.5em;
-    line-height: 1.5em;
-    text-align: center;
-    padding-top: 25px !important;
-}
-.console_header_img {
-    width:180px;
-    height:32px;
-    background-image: url("/assets/brand/logo_mex.svg");
-    background-repeat: no-repeat;
-    background-size: 180px 27px;
-    background-position: center center;
-    text-align: center;
-    opacity: .9;
-    display: inline-block;
-}
-.console_footer,
-.console_footer_img {
-    position: absolute;
-    display: none;
-    bottom: 0;
-    width: 0;
-    height: 0;
-}
-/*
-.console_footer {
-    position: absolute;
-    width: 600px;
-    height:40px;
-    background-image:url("/assets/worldmap/title_footer_bg.svg");
-    background-repeat: no-repeat;
-    background-size: 600px 30px;
-    background-position: center top;
-    bottom: 0;
-    left: 50%;
-    margin-left: -300px;
-}
-.console_footer_img {
-    width: 600px;
-    height:40px;
-    background-image: url("/assets/brand/logo_mex.svg");
-    background-repeat: no-repeat;
-    background-size: 150px 23px;
-    background-position: center 10px;
-    opacity: .5;
-}
-*/
-
-.console_nav_left {
-    position: absolute;
-    width: 500px;
-    height: 40px;
-    left: 1.5em !important;
-    top: 1em !important;
-    background-color: transparent;
-    z-index: 120;
-}
-.console_nav_left .filter {
-    padding: 0 .357em !important;
-    display: inline-block !important;
-}
-.console_nav_left .filter .ui.selection.dropdown {
-    display: inline-block !important;
 }
 .navbar_right {
     float: right !important;
@@ -784,8 +679,7 @@ body, button, input, textarea, optgroup, select, textarea,
 .gnb_header .navbar_left .brand {
     width: 200px;
     height: 27px;
-    /* background-image: url("/assets/brand/logo_mex.svg"); */
-    background-image: url("/assets/brand/MobiledgeX_Logo_tm_white.svg");
+    background-image: url("../assets/MobiledgeX_Logo_tm_white.svg");
     background-repeat: no-repeat;
     vertical-align: middle !important;
     margin-left: 0.75em;
