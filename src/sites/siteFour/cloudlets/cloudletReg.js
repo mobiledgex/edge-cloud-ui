@@ -129,10 +129,12 @@ class CloudletReg extends React.Component {
         if (region && platformType) {
             let mc = await serverData.sendRequest(this, cloudletResourceQuota({ region, platformType }))
             if (mc && mc.response && mc.response.status === 200) {
-                this.resourceQuotaList = mc.response.data.props
-                this.resourceQuotaList = this.resourceQuotaList.map(quota => {
-                    return quota.name
-                })
+                if (mc.response.data.properties) {
+                    this.resourceQuotaList = mc.response.data.properties
+                    this.resourceQuotaList = this.resourceQuotaList.map(quota => {
+                        return quota.name
+                    })
+                }
             }
         }
     }
@@ -216,18 +218,18 @@ class CloudletReg extends React.Component {
         this.reloadForms()
     }
 
-    onCreateResponse = async (mcRequest) => {
-        if (mcRequest) {
+    onCreateResponse = async (mc) => {
+        if (mc) {
             this.props.handleLoadingSpinner(false)
-            if (mcRequest.close && this.state.stepsArray.length === 0) {
+            if (mc.close && this.state.stepsArray.length === 0) {
                 this.props.handleAlertInfo('success', 'Cloudlet updated successfully')
                 this.props.onClose(true)
             }
             else {
                 let responseData = undefined;
-                let request = mcRequest.request;
-                if (mcRequest.response && mcRequest.response.data) {
-                    responseData = mcRequest.response.data;
+                let request = mc.request;
+                if (mc.response && mc.response.data) {
+                    responseData = mc.response.data;
                 }
                 let orgData = request.orgData;
                 let isRestricted = orgData[fields.infraApiAccess] === constant.INFRA_API_ACCESS_RESTRICTED
@@ -353,7 +355,7 @@ class CloudletReg extends React.Component {
     getMap = () =>
     (
         <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-            <ListMexMap dataList={this.state.mapData} id={'Cloudlets'} onMapClick={this.onMapClick} region={this.state.region} register={true}/>
+            <ListMexMap dataList={this.state.mapData} id={'Cloudlets'} onMapClick={this.onMapClick} region={this.state.region} register={true} />
         </div>
     )
 
@@ -451,7 +453,7 @@ class CloudletReg extends React.Component {
                             form.options = [constant.IP_SUPPORT_DYNAMIC];
                             break;
                         case fields.platformType:
-                            form.options = [constant.PLATFORM_TYPE_OPEN_STACK, constant.PLATFORM_TYPE_VSPHERE, constant.PLATFORM_TYPE_VCD];
+                            form.options = [constant.PLATFORM_TYPE_OPEN_STACK, constant.PLATFORM_TYPE_VSPHERE];
                             break;
                         case fields.maintenanceState:
                             form.options = [constant.MAINTENANCE_STATE_NORMAL_OPERATION, constant.MAINTENANCE_STATE_MAINTENANCE_START, constant.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER];
@@ -486,19 +488,24 @@ class CloudletReg extends React.Component {
             requestTypeList.push(showTrustPolicies({ region: data[fields.region] }))
             requestTypeList.push(cloudletResourceQuota({ region: data[fields.region], platformType: data[fields.platformType] }))
             let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
-            
+
             if (mcRequestList && mcRequestList.length > 0) {
                 for (let i = 0; i < mcRequestList.length; i++) {
-                    let mcRequest = mcRequestList[i];
-                    let request = mcRequest.request;
-                    if (request.method === SHOW_TRUST_POLICY) {
-                        this.trustPolicyList = mcRequest.response.data
-                    }
-                    else if (request.method === GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
-                        this.resourceQuotaList = mcRequest.response.data.props
-                        this.resourceQuotaList = this.resourceQuotaList.map(quota => {
-                            return quota.name
-                        })
+                    let mc = mcRequestList[i];
+                    if (mc && mc.response && mc.response.data) {
+                        let responseData = mc.response.data
+                        let request = mc.request;
+                        if (request.method === SHOW_TRUST_POLICY) {
+                            this.trustPolicyList = responseData
+                        }
+                        else if (request.method === GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
+                            if (responseData.properties) {
+                                this.resourceQuotaList = responseData.properties
+                                this.resourceQuotaList = this.resourceQuotaList.map(quota => {
+                                    return quota.name
+                                })
+                            }
+                        }
                     }
                 }
             }

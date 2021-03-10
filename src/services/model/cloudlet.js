@@ -255,8 +255,13 @@ export const streamCloudlet = (data) => {
 }
 
 export const cloudletResourceQuota = (data) => {
+    let cloudletresourcequotaprops = {platform_type: constant.PlatformType(data[fields.platformType])}
+    if(formatter.getOrganization())
+    {
+        cloudletresourcequotaprops['organization'] = formatter.getOrganization()
+    }
     let requestData = {
-        cloudletresourcequotaprops: { platform_type: constant.PlatformType(data[fields.platformType])},
+        cloudletresourcequotaprops,
         region: data[fields.region]
     }
     return { method: GET_CLOUDLET_RESOURCE_QUOTA_PROPS, data: requestData }
