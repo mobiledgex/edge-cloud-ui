@@ -27,6 +27,7 @@ class CloudletEvent extends React.Component {
             showMore: false,
             loading: false
         }
+        this._isMounted = false
         this.regions = props.regions
     }
 
@@ -52,7 +53,7 @@ class CloudletEvent extends React.Component {
         const { filter } = this.props
         return (
             <div>
-                <EventList header='Events' eventData={eventData} filter={filter} colors={colors} keys={cloudletEventKeys} header={this.header} itemSize={80} itemExpandSize={320}/>
+                <EventList header='Events' eventData={eventData} filter={filter} colors={colors} keys={cloudletEventKeys} header={this.header} itemSize={80} itemExpandSize={320} />
                 {showMore ? <div className='event-list-more' align="center">
                     {loading ? <CircularProgress size={20} /> :
                         <Tooltip title='More' onClick={this.loadMore}>
@@ -76,25 +77,29 @@ class CloudletEvent extends React.Component {
                 dataList = [...this.state.eventData, ...dataList]
                 colors = [...this.state.colors, ...colors]
             }
-            this.setState({ eventData: dataList, colors, showMore, loading: false })
+            if (this._isMounted) {
+                this.setState({ eventData: dataList, colors, showMore, loading: false })
+            }
         }
     }
 
     event = async (range, more) => {
-        this.setState({ loading: true }, () => {
-            sendAuthRequest(this, orgEvents({
-                match: {
-                    orgs: [isAdmin() ? this.props.org : getOrganization()],
-                    types: ["event"],
-                    tags: { cloudlet: "*" },
-                    names: ["*cloudlet*", "*Cloudlet*"],
-                },
-                starttime: range.starttime,
-                endtime: range.endtime,
-                more: more,
-                limit: 10
-            }), this.serverResponse)
-        })
+        if (this._isMounted) {
+            this.setState({ loading: true }, () => {
+                sendAuthRequest(this, orgEvents({
+                    match: {
+                        orgs: [isAdmin() ? this.props.org : getOrganization()],
+                        types: ["event"],
+                        tags: { cloudlet: "*" },
+                        names: ["*cloudlet*", "*Cloudlet*"],
+                    },
+                    starttime: range.starttime,
+                    endtime: range.endtime,
+                    more: more,
+                    limit: 10
+                }), this.serverResponse)
+            })
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -109,9 +114,14 @@ class CloudletEvent extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         if (!isAdmin() || this.props.org) {
             this.event(this.props.range)
         }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 }
 

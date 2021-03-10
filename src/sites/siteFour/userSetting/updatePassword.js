@@ -55,6 +55,7 @@ class UpdatePassword extends React.Component {
             loading: false,
             open: false
         }
+        this._isMounted = false
     }
 
     validatePassword = (currentForm) => {
@@ -105,10 +106,16 @@ class UpdatePassword extends React.Component {
         }
     }
 
+    updateState = (data) => { 
+        if (this._isMounted) {
+            this.setState({...data})
+        }
+    }
+
     updateResponse = (mc) => {
-        this.setState({ loading: false })
+        this.updateState({ loading: false })
         if (mc && mc.response && mc.response.status === 200) {
-            this.setState({ open: false })
+            this.updateState({ open: false })
             this.props.handleAlertInfo('success', 'Password updated successfully')
         }
         else {
@@ -129,7 +136,7 @@ class UpdatePassword extends React.Component {
 
     onCreate = (data) => {
         if (this.props.dialog) {
-            this.setState({ loading: true })
+            this.updateState({ loading: true })
             updatePwd(this, { password: data.password }, this.updateResponse)
         }
         else {
@@ -145,7 +152,7 @@ class UpdatePassword extends React.Component {
     }
 
     reloadForms = () => {
-        this.setState({
+        this.updateState({
             forms: this.state.forms
         })
     }
@@ -172,7 +179,7 @@ class UpdatePassword extends React.Component {
             }
         }
         this.props.handleAlertInfo('success', 'Password generated successfully and copied to the clipboard, make sure you copy and paste the password to a secure location')
-        this.setState({ forms })
+        this.updateState({ forms })
     }
 
     passwordHelper = (form) => {
@@ -211,11 +218,11 @@ class UpdatePassword extends React.Component {
     )
 
     handleClose = () => {
-        this.setState({ open: false })
+        this.updateState({ open: false })
     }
 
     handleOpen = () => {
-        this.setState({ open: true })
+        this.updateState({ open: true })
         if (this.props.close) {
             this.props.close()
         }
@@ -280,7 +287,7 @@ class UpdatePassword extends React.Component {
             cStyle.right = 0
             forms.push({ label: 'Cancel', formType: BUTTON, onClick: this.handleClose, style: cStyle })
         }
-        this.setState({
+        this.updateState({
             forms: forms
         })
     }
@@ -295,8 +302,13 @@ class UpdatePassword extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.props.handleLoadingSpinner(true)
         sendRequest(this, { method: PUBLIC_CONFIG }, this.publicConfigResponse)
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false 
     }
 };
 

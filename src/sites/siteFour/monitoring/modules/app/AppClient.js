@@ -12,6 +12,7 @@ class MexAppClient extends React.Component {
         this.state = {
             stackedData: {}
         }
+        this._isMounted = false
         this.regions = props.regions
     }
 
@@ -66,11 +67,13 @@ class MexAppClient extends React.Component {
                     data.push({ key: `${region} -  ${dataObject[key][0][7]} [${dataObject[key][0][18]}]`, findCloudlet, registerClient, verifyLocation })
                 })
             })
-            this.setState(prevState => {
-                let stackedData = prevState.stackedData
-                stackedData[region] = data
-                return { stackedData }
-            })
+            if (this._isMounted) {
+                this.setState(prevState => {
+                    let stackedData = prevState.stackedData
+                    stackedData[region] = data
+                    return { stackedData }
+                })
+            }
         }
     }
 
@@ -86,9 +89,8 @@ class MexAppClient extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(prevProps.org !== this.props.org)
-        {
-            this.setState({stackedData: {}}, ()=>{
+        if (prevProps.org !== this.props.org) {
+            this.setState({ stackedData: {} }, () => {
                 this.client(this.props.range)
             })
         }
@@ -99,9 +101,14 @@ class MexAppClient extends React.Component {
 
 
     componentDidMount() {
+        this._isMounted = true
         if (!isAdmin() || this.props.org) {
             this.client(this.props.range)
         }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 }
 
