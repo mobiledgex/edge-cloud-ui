@@ -41,7 +41,8 @@ const defaultMetricType = (parent) => {
     let id = parent.id
     let metricTypeKeys = constant.visibility(parent.id)
     let pref = id === constant.PARENT_CLOUDLET ? PREF_M_CLOUDLET_VISIBILITY : id === constant.PARENT_CLUSTER_INST ? PREF_M_CLUSTER_VISIBILITY : PREF_M_APP_VISIBILITY
-    return monitoringPref(pref) ?  monitoringPref(pref).map(type => { return type.toLowerCase() }) : metricTypeKeys.map(metricType => { return metricType.field })
+    let monitoringPrefs = monitoringPref(pref)
+    return monitoringPrefs ?  metricTypeKeys.map(data => { if(monitoringPrefs.includes(data.header)) {return data.field} }) : metricTypeKeys.map(metricType => { return metricType.field })
 }
 
 const timeRangeInMin = (range) => {
