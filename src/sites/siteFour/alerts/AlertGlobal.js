@@ -1,7 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
 import Popover from '@material-ui/core/Popover';
 import { Badge, IconButton } from '@material-ui/core';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
@@ -21,16 +20,23 @@ class AlertGlobal extends React.Component {
             dataList: {},
             showDot: false
         }
+        this._isMounted = false
         this.intervalId = undefined
         this.regions = constant.regions()
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
     handleClick = (event) => {
-        this.setState({ anchorEl: event.currentTarget, showDot: false })
+        this.updateState({ anchorEl: event.currentTarget, showDot: false })
     };
 
     handleClose = () => {
-        this.setState({ anchorEl: null })
+        this.updateState({ anchorEl: null })
     };
 
     render() {
@@ -70,21 +76,23 @@ class AlertGlobal extends React.Component {
             let data = mc.response.data
             if (data && data.length > 0) {
                 let region = mc.request.data.region
-                this.setState(prevState => {
-                    let dataList = prevState.dataList
-                    let latestData = data[data.length - 1]
-                    let activeAt = localStorage.getItem('LatestAlert')
-                    let showDot = false
-                    if (activeAt) {
-                        showDot = latestData.activeAt > activeAt
-                    }
-                    else {
-                        showDot = true
-                    }
-                    localStorage.setItem('LatestAlert', latestData.activeAt)
-                    dataList[region] = data
-                    return { dataList, showDot }
-                })
+                if (this._isMounted) {
+                    this.setState(prevState => {
+                        let dataList = prevState.dataList
+                        let latestData = data[data.length - 1]
+                        let activeAt = localStorage.getItem('LatestAlert')
+                        let showDot = false
+                        if (activeAt) {
+                            showDot = latestData.activeAt > activeAt
+                        }
+                        else {
+                            showDot = true
+                        }
+                        localStorage.setItem('LatestAlert', latestData.activeAt)
+                        dataList[region] = data
+                        return { dataList, showDot }
+                    })
+                }
             }
         }
     }
@@ -102,6 +110,7 @@ class AlertGlobal extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         let userRole = this.props.userRole
         if (getOrganization() || (userRole && userRole.includes(constant.ADMIN))) {
             this.fetchdata()
@@ -115,13 +124,14 @@ class AlertGlobal extends React.Component {
             }
             else {
                 clearInterval(this.intervalId)
-                this.setState({ dataList: {} })
+                this.updateState({ dataList: {} })
                 this.fetchdata()
             }
         }
     }
 
     componentWillUnmount() {
+        this._isMounted = false
         if (this.intervalId) {
             clearInterval(this.intervalId)
         }
