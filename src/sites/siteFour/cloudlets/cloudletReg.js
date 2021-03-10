@@ -453,7 +453,7 @@ class CloudletReg extends React.Component {
                             form.options = [constant.IP_SUPPORT_DYNAMIC];
                             break;
                         case fields.platformType:
-                            form.options = [constant.PLATFORM_TYPE_OPEN_STACK, constant.PLATFORM_TYPE_VSPHERE];
+                            form.options = [constant.PLATFORM_TYPE_OPEN_STACK, constant.PLATFORM_TYPE_VSPHERE, constant.PLATFORM_TYPE_VCD];
                             break;
                         case fields.maintenanceState:
                             form.options = [constant.MAINTENANCE_STATE_NORMAL_OPERATION, constant.MAINTENANCE_STATE_MAINTENANCE_START, constant.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER];
