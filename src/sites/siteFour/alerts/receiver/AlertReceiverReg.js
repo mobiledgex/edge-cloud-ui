@@ -79,7 +79,7 @@ class FlavorReg extends React.Component {
             { field: fields.alertname, label: 'Alert Name', formType: INPUT, placeholder: 'Enter Alert Name', rules: { required: true }, visible: true, tip: 'Unique name of this receiver' },
             { field: fields.type, label: 'Receiver Type', formType: SELECT, placeholder: 'Select Receiver Type', rules: { required: true }, visible: true, tip: 'Receiver type - email, or slack' },
             { uuid: uuid(), field: fields.slack, label: 'Slack', formType: INPUT, rules: { required: true }, visible: false, forms: this.slackForm(), tip: 'Slack channel to be receiving the alert\nSlack webhook url' },
-            { uuid: uuid(), field: fields.pagerDuty, label: 'Page Duty', formType: INPUT, rules: { required: true }, visible: false, forms: this.pageDutyForm(), tip: 'Slack channel to be receiving the alert\nSlack webhook url' },
+            { uuid: uuid(), field: fields.pagerDuty, label: 'Page Duty', formType: INPUT, rules: { required: true }, visible: false, forms: this.pageDutyForm(), tip: 'PagerDuty API version\nPagerDuty integration key' },
             { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true }, visible: false, tip: 'Email address receiving the alert (by default email associated with the account)' },
             { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true }, visible: true, tip: 'Alert severity level - one of "info", "warning", "error"' },
             { field: fields.selector, label: 'Selector', formType: SELECT, placeholder: 'Select Selector', rules: { required: true, disabled: true }, visible: true, tip: 'Selector for which you want to receive alerts' },
