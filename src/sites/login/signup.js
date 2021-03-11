@@ -32,7 +32,7 @@ const validateDigit = (value) => {
 }
 //atleast on symbol
 const validateSymbol = (value) => {
-    return /\W/.test(value)
+    return /[\W_]/.test(value)
 }
 //atleast no consecutive characters
 const validateConsecutive = (value) => {
