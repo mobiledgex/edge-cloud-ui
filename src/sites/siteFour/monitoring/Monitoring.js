@@ -42,7 +42,7 @@ const defaultMetricType = (parent) => {
     let metricTypeKeys = constant.visibility(parent.id)
     let pref = id === constant.PARENT_CLOUDLET ? PREF_M_CLOUDLET_VISIBILITY : id === constant.PARENT_CLUSTER_INST ? PREF_M_CLUSTER_VISIBILITY : PREF_M_APP_VISIBILITY
     let monitoringPrefs = monitoringPref(pref)
-    return monitoringPrefs ?  metricTypeKeys.map(data => { if(monitoringPrefs.includes(data.header)) {return data.field} }) : metricTypeKeys.map(metricType => { return metricType.field })
+    return monitoringPrefs ? metricTypeKeys.map(data => { if (monitoringPrefs.includes(data.header)) { return data.field } }) : metricTypeKeys.map(metricType => { return metricType.field })
 }
 
 const timeRangeInMin = (range) => {
@@ -53,7 +53,7 @@ const timeRangeInMin = (range) => {
     return { starttime, endtime }
 }
 
-const defaultRegion = (regions)=>{
+const defaultRegion = (regions) => {
     return monitoringPref(PREF_M_REGION) ? monitoringPref(PREF_M_REGION) : regions
 }
 
@@ -75,26 +75,35 @@ class Monitoring extends React.Component {
             showLoaded: false,
             listAction: undefined
         }
+        this._isMounted = false
         this.selectedRow = undefined
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
     onCellClick = (region, value, key) => {
-        this.setState(prevState => {
-            let avgData = prevState.avgData
-            let rowSelected = prevState.rowSelected
-            avgData[region][key]['selected'] = !value['selected']
-            rowSelected = avgData[region][key]['selected'] ? rowSelected + 1 : rowSelected - 1
-            this.selectedRow = avgData[region][key]
-            return { avgData, rowSelected }
-        })
+        if (this._isMounted) {
+            this.setState(prevState => {
+                let avgData = prevState.avgData
+                let rowSelected = prevState.rowSelected
+                avgData[region][key]['selected'] = !value['selected']
+                rowSelected = avgData[region][key]['selected'] ? rowSelected + 1 : rowSelected - 1
+                this.selectedRow = avgData[region][key]
+                return { avgData, rowSelected }
+            })
+        }
     }
 
     onListToolbarClick = (action) => {
-        this.setState({ listAction: { action: action, data: this.selectedRow } })
+        this.updateState({ listAction: { action: action, data: this.selectedRow } })
     }
 
     onListToolbarClear = () => {
-        this.setState({ listAction: undefined })
+        this.updateState({ listAction: undefined })
     }
 
     onRefreshChange = (value) => {
@@ -104,7 +113,7 @@ class Monitoring extends React.Component {
         }
         if (interval > 0) {
             this.refreshId = setInterval(() => {
-                this.setState({ range: timeRangeInMin(this.state.duration.duration) })
+                this.updateState({ range: timeRangeInMin(this.state.duration.duration) })
             }, interval * 1000);
         }
     }
@@ -113,30 +122,34 @@ class Monitoring extends React.Component {
         if (this.refreshId) {
             clearInterval(this.refreshId)
         }
-        this.setState({ range: value })
+        this.updateState({ range: value })
     }
 
     onRelativeTime = (duration) => {
-        this.setState({ duration, range: timeRangeInMin(duration.duration) })
+        this.updateState({ duration, range: timeRangeInMin(duration.duration) })
     }
 
     onRefresh = () => {
-        this.setState({ range: timeRangeInMin(this.state.duration.duration) })
+        this.updateState({ range: timeRangeInMin(this.state.duration.duration) })
     }
 
     onParentChange = () => {
-        this.setState({ showLoaded:false, avgData: this.defaultStructure() }, () => {
-            this.fetchShowData()
-        })
+        if (this._isMounted) {
+            this.setState({ showLoaded: false, avgData: this.defaultStructure() }, () => {
+                this.fetchShowData()
+            })
+        }
     }
 
     onOrgChange = (value) => {
         let selectedOrg = value[fields.organizationName]
-        this.setState({ selectedOrg }, () => {
-            this.setState({ avgData: this.defaultStructure() }, () => {
-                this.fetchShowData()
+        if (this._isMounted) {
+            this.setState({ selectedOrg }, () => {
+                this.setState({ avgData: this.defaultStructure() }, () => {
+                    this.fetchShowData()
+                })
             })
-        })
+        }
     }
 
     onToolbar = async (action, value) => {
@@ -163,46 +176,50 @@ class Monitoring extends React.Component {
             }
         }
         else {
-            this.setState(prevState => {
-                let filter = prevState.filter
-                switch (action) {
-                    case constant.ACTION_REGION:
-                        filter.region = value
-                        break;
-                    case constant.ACTION_METRIC_PARENT_TYPE:
-                        filter.parent = value
-                        filter.metricType = defaultMetricType(value)
-                        break;
-                    case constant.ACTION_METRIC_TYPE:
-                        filter.metricType = value
-                        break;
-                    case constant.ACTION_SUMMARY:
-                        filter.summary = value
-                        break;
-                    case constant.ACTION_SEARCH:
-                        filter.search = value
-                        break;
-                }
-                return filter
-            }, () => {
-                if (action === constant.ACTION_METRIC_PARENT_TYPE) {
-                    this.onParentChange()
-                }
-            })
+            if (this._isMounted) {
+                this.setState(prevState => {
+                    let filter = prevState.filter
+                    switch (action) {
+                        case constant.ACTION_REGION:
+                            filter.region = value
+                            break;
+                        case constant.ACTION_METRIC_PARENT_TYPE:
+                            filter.parent = value
+                            filter.metricType = defaultMetricType(value)
+                            break;
+                        case constant.ACTION_METRIC_TYPE:
+                            filter.metricType = value
+                            break;
+                        case constant.ACTION_SUMMARY:
+                            filter.summary = value
+                            break;
+                        case constant.ACTION_SEARCH:
+                            filter.search = value
+                            break;
+                    }
+                    return filter
+                }, () => {
+                    if (action === constant.ACTION_METRIC_PARENT_TYPE) {
+                        this.onParentChange()
+                    }
+                })
+            }
         }
     }
 
-    updateAvgData = (region, metric, data) => {            
-        this.setState(prevState => {
-            let avgData = prevState.avgData
-            Object.keys(data).map(dataKey => {
-                let avgDataRegion = avgData[region]
-                if (avgDataRegion[dataKey]) {
-                    avgDataRegion[dataKey][metric.field] = data[dataKey][metric.field]
-                }
+    updateAvgData = (region, metric, data) => {
+        if (this._isMounted) {
+            this.setState(prevState => {
+                let avgData = prevState.avgData
+                Object.keys(data).map(dataKey => {
+                    let avgDataRegion = avgData[region]
+                    if (avgDataRegion[dataKey]) {
+                        avgDataRegion[dataKey][metric.field] = data[dataKey][metric.field]
+                    }
+                })
+                return { avgData }
             })
-            return { avgData }
-        })
+        }
     }
 
     render() {
@@ -219,7 +236,7 @@ class Monitoring extends React.Component {
                         <MonitoringList data={avgData} filter={filter} onCellClick={this.onCellClick} minimize={minimize} rowSelected={rowSelected} onToolbarClick={this.onListToolbarClick} />
                         <AppInstMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} listAction={listAction} onListToolbarClear={this.onListToolbarClear} />
                         <ClusterMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
-                        <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg}  onListToolbarClear={this.onListToolbarClear} />
+                        <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} onListToolbarClear={this.onListToolbarClear} />
                     </React.Fragment> :
                         <React.Fragment>
                             <Skeleton variant="rect" height={170} />
@@ -239,11 +256,13 @@ class Monitoring extends React.Component {
         worker.postMessage({ type: WORKER_MONITORING_SHOW, parentId, region, data: mcList, avgData, metricListKeys: parent.metricListKeys })
         worker.addEventListener('message', event => {
             let avgData = event.data.avgData
-            this.setState(prevState => {
-                let preAvgData = prevState.avgData
-                preAvgData[region] = avgData[region]
-                return { preAvgData }
-            })
+            if (this._isMounted) {
+                this.setState(prevState => {
+                    let preAvgData = prevState.avgData
+                    preAvgData[region] = avgData[region]
+                    return { preAvgData }
+                })
+            }
         });
     }
 
@@ -261,11 +280,11 @@ class Monitoring extends React.Component {
                             requestList = showRequests.map(showRequest => {
                                 return showRequest({ region, org: isAdmin() ? this.state.selectedOrg : getOrganization() })
                             })
-                            this.setState({ loading: true })
+                            this.updateState({ loading: true })
                             sendRequests(this, requestList).addEventListener('message', event => {
                                 count = count - 1
                                 if (count === 0) {
-                                    this.setState({ loading: false, showLoaded: true })
+                                    this.updateState({ loading: false, showLoaded: true })
                                 }
                                 if (event.data.status && event.data.status !== 200) {
                                     this.props.handleAlertInfo(event.data.message)
@@ -284,7 +303,7 @@ class Monitoring extends React.Component {
     orgResponse = (mc) => {
         if (mc && mc.response && mc.response.status === 200) {
             let organizations = sortBy(mc.response.data, [item => item[fields.organizationName].toLowerCase()], ['asc']);
-            this.setState({ organizations })
+            this.updateState({ organizations })
         }
     }
 
@@ -300,20 +319,22 @@ class Monitoring extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.props.handleViewMode(HELP_MONITORING)
-        this.setState({ avgData: this.defaultStructure() }, () => {
-            if (isAdmin()) {
-                sendAuthRequest(this, showOrganizations(), this.orgResponse)
-            }
-            else {
-                this.fetchShowData()
-            }
-        })
-
+        if (this._isMounted) {
+            this.setState({ avgData: this.defaultStructure() }, () => {
+                if (isAdmin()) {
+                    sendAuthRequest(this, showOrganizations(), this.orgResponse)
+                }
+                else {
+                    this.fetchShowData()
+                }
+            })
+        }
     }
 
     componentWillUnmount() {
-
+        this._isMounted = false
     }
 }
 

@@ -294,7 +294,13 @@ const MexForms = (props) => {
             return (
                 form.visible ?
                     <Grid.Column width={form.width ? form.width : parentForm.width} key={key}>
-                        {form.label ? <label style={form.labelStyle}>{form.label}{required ? ' *' : ''}</label> : null}
+                        {
+                            form.label ?
+                                <div style={{ marginBottom: 5 }}>
+                                    <label style={form.labelStyle}>{form.label}{required ? ' *' : ''}</label>
+                                </div> :
+                                null
+                        }
                         {
                             form.formType === INPUT || form.formType === TEXT_AREA || form.formType === POPUP_INPUT ?
                                 loadInputForms(form, required, disabled) :

@@ -98,19 +98,20 @@ class AlertList extends React.Component {
     renderType = (data, isDetailView) => {
         let id = isDetailView ? data : data[fields.receiverAddress]
         let ids = id.split('#OS#')
-        let color = '#ff4444'
         let label = ids[1]
-        let icon = 'mail'
+        let icon = undefined
         switch (ids[0]) {
             case 'slack':
-                color = '#33b5e5'
                 icon = 'slack'
+                break;
+            case 'email':
+                icon = 'mail'
                 break;
         }
 
         return (
             isDetailView ? ids[1] :
-                <div><Icon name={icon} size="large" />&nbsp;{label}</div>
+                <div>{icon ? <Icon name={icon} size="large" /> : null}&nbsp;{label}</div>
         )
     }
 
