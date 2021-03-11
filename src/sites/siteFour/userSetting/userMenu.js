@@ -19,6 +19,14 @@ class headerGlobalMini extends React.Component {
             anchorEl: null,
             userInfo: {}
         }
+        this._isMounted = false
+    }
+
+    updateState = (data)=>{
+        if(this._isMounted)
+        {
+            this.setState({...data})
+        }
     }
 
     logout(path) {
@@ -31,11 +39,11 @@ class headerGlobalMini extends React.Component {
     }
     
     handleClick = (event) => {
-        this.setState({ anchorEl: event.currentTarget });
+        this.updateState({ anchorEl: event.currentTarget });
     };
 
     handleClose = () => {
-        this.setState({ anchorEl: null });
+        this.updateState({ anchorEl: null });
     }
 
     render() {
@@ -64,17 +72,24 @@ class headerGlobalMini extends React.Component {
         )
     }
 
-    currentUser = async ()=>{
+    currentUser = async () => {
         let mc = await serverData.currentUser(this);
         if (mc && mc.response && mc.response.data) {
-            this.setState({userInfo: mc.response.data},()=>{
-                localStorage.setItem(LS_USER_META_DATA, this.state.userInfo.Metadata)
-            })
+            if (this._isMounted) {
+                this.setState({ userInfo: mc.response.data }, () => {
+                    localStorage.setItem(LS_USER_META_DATA, this.state.userInfo.Metadata)
+                })
+            }
         }
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.currentUser()
+    }
+
+    componentWillUnmount(){
+        this._isMounted = false
     }
 }
 
