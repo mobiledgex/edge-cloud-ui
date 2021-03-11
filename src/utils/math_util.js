@@ -4,7 +4,7 @@ export const roundOff = (value) => (
 
 export const convertByteToMegaGigaByte = (bytes) => {
     let marker = 1024; // Change to 1000 if required
-    let decimal = 0; // Change as required
+    let decimal = 1; // Change as required
     let kiloBytes = marker; // One Kilobyte is 1024 bytes
     let megaBytes = Math.pow(marker, 2); // One MB is 1024 KB
     let gigaBytes = Math.pow(marker, 3); // One GB is 1024 MB
@@ -16,7 +16,7 @@ export const convertByteToMegaGigaByte = (bytes) => {
 
 export const convertMBToGB = (mb) => {
     let marker = 1024; // Change to 1000 if required
-    let decimal = 0; // Change as required
+    let decimal = 1; // Change as required
     let gigaBytes = marker; // One GB is 1024 MB
     let teraBytes = Math.pow(marker, 2); // One TB is 1024 GB
     if(mb < gigaBytes) return mb + ' MB'
