@@ -10,7 +10,7 @@ import { PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIB
 import { getUserRole, isAdmin } from '../../../../services/model/format';
 import { DEVELOPER, OPERATOR } from '../../../../constant';
 
-const cloudletVisibility = ["vCpu Infra Usage", "Disk Infra Usage", "Memory Infra Usage", "Disk Usage", "Floating IP Used", "GPU Used", "RAM Used", "vCPUs Used", "Flavor Usage", "Map", "Event"]
+const cloudletVisibility = ["vCpu Infra Usage", "Disk Infra Usage", "Memory Infra Usage", "Disk Usage", "Floating IP Used", "GPU Used", "Instances Used", "RAM Used", "vCPUs Used", "Flavor Usage", "Map", "Event"]
 const clusterVisibility = ["CPU", "Memory", "Disk Usage", "Network Sent", "Network Received", "Map"]
 const appInstVisibility = ["CPU", "Memory", "Disk Usage", "Network Sent", "Network Received", "Active Connections", "Map", "Event", "Client Usage"]
 
