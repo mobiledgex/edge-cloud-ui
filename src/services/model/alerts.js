@@ -3,7 +3,7 @@ import { SHOW_ALERT } from './endpoints'
 import { ALERT_SHOW_RECEIVER, ALERT_DELETE_RECEIVER, ALERT_CREATE_RECEIVER } from './endPointTypes'
 import * as serverData from './serverData'
 import * as formatter from './format'
-import { ADMIN_MANAGER, RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL, HEALTH_CHECK, DEVELOPER, OPERATOR, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR } from '../../constant'
+import { ADMIN_MANAGER, RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL, HEALTH_CHECK, DEVELOPER, OPERATOR, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR, RECEIVER_TYPE_PAGER_DUTY } from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 
 let fields = formatter.fields
@@ -40,6 +40,8 @@ export const showAlertReceiverKeys = () => (
         { field: fields.username, serverField: 'User', label: 'Username', sortable: true, visible: true, filter: true },
         { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: false, filter: true },
         { field: fields.email, serverField: 'Email', label: 'Email', sortable: true, visible: false, filter: true },
+        { field: fields.pagerDutyIntegrationKey, serverField: 'PagerDutyIntegrationKey', label: 'Pager Duty Integration Key', sortable: false, visible: false, filter: true },
+        { field: fields.pagerDutyApiVersion, serverField: 'PagerDutyApiVersion', label: 'Pager Duty API Version', sortable: false, visible: false, filter: true },
         { field: fields.slackchannel, serverField: 'SlackChannel', label: 'Slack Channel', sortable: true, visible: false, filter: true },
         { field: fields.receiverAddress, label: 'Receiver Address', sortable: true, visible: true, filter: true, detailView: false },
         { field: fields.slackwebhook, serverField: 'SlackWebhook', label: 'Slack Webhook', sortable: true, visible: false },
@@ -106,9 +108,10 @@ const getKey = (data, isDelete) => {
     let alert = {}
     alert = {
         name: data[fields.alertname],
-        type: data[fields.type].toLowerCase(),
+        type: data[fields.type].split(" ").join("").toLowerCase(),
         severity: data[fields.severity].toLowerCase()
     }
+    
     if (data[fields.region]) {
         alert['region'] = data[fields.region]
     }
@@ -121,6 +124,10 @@ const getKey = (data, isDelete) => {
     }
     else if (data[fields.type] === RECEIVER_TYPE_EMAIL) {
         alert['email'] = data[fields.email]
+    }
+    else if (data[fields.type] === RECEIVER_TYPE_PAGER_DUTY) {
+        alert['pagerdutyintegrationkey'] = data[fields.pagerDutyIntegrationKey]
+        alert['pagerdutyapiversion'] = data[fields.pagerDutyApiVersion]
     }
 
 
@@ -192,12 +199,8 @@ export const showAlerts = (data) => {
     return { method: SHOW_ALERT, data: data, keys: showAlertKeys() }
 }
 
-
-
-
-
 const customData = (value) => {
-    value[fields.receiverAddress] = value[fields.type] === 'email' ? value[fields.email] : value[fields.slackchannel]
+    value[fields.receiverAddress] = value[fields.type] === 'pagerduty' ? 'NA' : value[fields.type] === 'email' ? value[fields.email] : value[fields.slackchannel]
     value[fields.receiverAddress] = value[fields.type] + '#OS#' + value[fields.receiverAddress]
     return value
 }

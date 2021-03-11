@@ -17,7 +17,6 @@ export const optionBody = {
 export const label = {
   color: 'white',
   fontSize: 12,
-  lineHeight:3,
   height: 30
 }
 export const cmdLine = {

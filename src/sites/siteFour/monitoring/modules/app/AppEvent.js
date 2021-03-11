@@ -35,7 +35,14 @@ class MexAppEvent extends React.Component {
             showMore: false,
             loading: false
         }
+        this._isMounted = false
         this.regions = props.regions
+    }
+
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
     }
 
     header = (data) => {
@@ -55,16 +62,16 @@ class MexAppEvent extends React.Component {
         this.event({ starttime, endtime }, true)
     }
 
-    filterData = (filter, dataList)=>{
+    filterData = (filter, dataList) => {
         let search = filter.search
         let valid = []
-        return dataList.filter(data=>{
+        return dataList.filter(data => {
             let mtags = data.mtags
-            appEventKeys.map(key=>{
+            appEventKeys.map(key => {
                 let filterData = key.mtags ? mtags[key.serverField] : data[key.serverField]
                 if (key.filter && filterData) {
                     valid.push(filterData.toLowerCase().includes(search.toLowerCase()))
-                } 
+                }
             })
             return valid.includes(true)
         })
@@ -75,9 +82,9 @@ class MexAppEvent extends React.Component {
         const { filter } = this.props
         return (
             <div>
-                <EventList eventData={this.filterData(filter, eventData)} filter={filter} colors={colors} keys={appEventKeys} header={this.header} itemSize={105} itemExpandSize={350} showMore={showMore}/>
+                <EventList eventData={this.filterData(filter, eventData)} filter={filter} colors={colors} keys={appEventKeys} header={this.header} itemSize={105} itemExpandSize={350} showMore={showMore} />
                 {showMore ? <div className='event-list-more' align="center">
-                    {loading ? <CircularProgress size={20}/> :
+                    {loading ? <CircularProgress size={20} /> :
                         <Tooltip title='More' onClick={this.loadMore}>
                             <IconButton>
                                 <ExpandMoreIcon />
@@ -98,34 +105,36 @@ class MexAppEvent extends React.Component {
                 dataList = [...this.state.eventData, ...dataList]
                 colors = [...this.state.colors, ...colors]
             }
-            
-            this.setState({ eventData: dataList, colors, showMore, loading: false })
+
+            this.updateState({ eventData: dataList, colors, showMore, loading: false })
         }
     }
 
     event = async (range, more) => {
-        this.setState({ loading: true }, () => {
-            sendAuthRequest(this, orgEvents({
-                match: {
-                    orgs: [isAdmin() ? this.props.org : getOrganization()],
-                    types: ["event"],
-                    tags: { app: "*" }
-                },
-                starttime: range.starttime,
-                endtime: range.endtime,
-                more: more,
-                limit: 10
-            }), this.serverResponse)
-        })
+        if (this._isMounted) {
+            this.setState({ loading: true }, () => {
+                sendAuthRequest(this, orgEvents({
+                    match: {
+                        orgs: [isAdmin() ? this.props.org : getOrganization()],
+                        types: ["event"],
+                        tags: { app: "*" }
+                    },
+                    starttime: range.starttime,
+                    endtime: range.endtime,
+                    more: more,
+                    limit: 10
+                }), this.serverResponse)
+            })
+        }
     }
-
-
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.org !== this.props.org) {
-            this.setState({ eventData: [] }, () => {
-                this.event(this.props.range)
-            })
+            if (this._isMounted) {
+                this.setState({ eventData: [] }, () => {
+                    this.event(this.props.range)
+                })
+            }
         }
         if (prevProps.range !== this.props.range) {
             this.event(this.props.range)
@@ -133,9 +142,14 @@ class MexAppEvent extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         if (!isAdmin() || this.props.org) {
             this.event(this.props.range)
         }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 }
 export default withRouter(MexAppEvent);
