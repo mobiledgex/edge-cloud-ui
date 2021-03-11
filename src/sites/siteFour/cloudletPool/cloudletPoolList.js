@@ -21,7 +21,6 @@ class ClouldetPoolList extends React.Component {
 
     onAdd = () => {
         this.setState({ currentView: <CloudletPoolReg onClose={() => this.setState({ currentView: null })} /> });
-
     }
 
     /**Action menu block */
