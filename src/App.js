@@ -1,5 +1,5 @@
 import React, { Component, Suspense, lazy } from 'react';
-import {HashRouter, Route, Switch } from "react-router-dom";
+import {BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import 'semantic-ui-css/semantic.min.css';
 //redux
@@ -18,9 +18,9 @@ import { ThemeProvider } from "@material-ui/styles";
 import { getDarkTheme, getLightTheme, THEME_TYPE } from "./themeStyle";
 import { GridLoader } from 'react-spinners';
 
+const Main = lazy(() => import('./sites/main/Main'));
 const EntranceGlob = lazy(() => import('./sites/login/entranceGlob'));
 const VerifyContent = lazy(() => import('./sites/login/verifyContent'));
-const SiteFour = lazy(() => import('./sites/siteFour/siteFour'))
 
 let self = null;
 class App extends Component {
@@ -61,8 +61,8 @@ class App extends Component {
     render() {
         return (
             <ThemeProvider theme={this.props.themeType === THEME_TYPE.DARK ? getDarkTheme() : getLightTheme()}>
-                <HashRouter>
-                <Suspense fallback={<div style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
+                <Router>
+                    <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                         <GridLoader
                             sizeUnit={"px"}
                             size={25}
@@ -72,14 +72,13 @@ class App extends Component {
                     </div>}>
                         <Switch>
                             <Route exact path='/' component={EntranceGlob} />
-                            <Route exact path='/site4' component={SiteFour} />
-                            <Route exact path='/site4/:pageId' component={SiteFour} />
+                            <Route path='/main' component={Main} />
                             <Route exact path='/logout' component={EntranceGlob} />
                             <Route exact path='/passwordreset' component={EntranceGlob} />
                             <Route exact path='/verify' component={VerifyContent} />
                         </Switch>
                     </Suspense>
-                </HashRouter>
+                </Router>
             </ThemeProvider>
 
         );

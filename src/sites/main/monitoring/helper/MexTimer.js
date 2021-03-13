@@ -1,7 +1,7 @@
 import React from 'react';
 import { Popover, Grid, Button, Divider, Box, Tooltip } from '@material-ui/core';
 import * as dateUtil from '../../../../utils/date_util'
-import * as constant from '../helper/Constant'
+import * as constant from './Constant'
 import * as moment from 'moment'
 import { Icon } from 'semantic-ui-react';
 import 'date-fns';
@@ -10,9 +10,6 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDateTimePicker,
 } from '@material-ui/pickers';
-
-
-
 
 const rangeLabel = (from, to) => {
     return <div>

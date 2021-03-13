@@ -41,10 +41,10 @@ class EntranceGlobe extends Component {
             return null
         }
         else if (localStorage.getItem(LOCAL_STRAGE_KEY)) {
-            props.history.push(`/site4/pg=${PAGE_ORGANIZATIONS}`)
+            props.history.push(`/main/${PAGE_ORGANIZATIONS}`)
         }
         else if (props.loginMode === 'login' && props.user.userToken) {
-            props.history.push(`/site4/pg=${PAGE_ORGANIZATIONS}`)
+            props.history.push(`/main/${PAGE_ORGANIZATIONS}`)
         }
         return null
     }

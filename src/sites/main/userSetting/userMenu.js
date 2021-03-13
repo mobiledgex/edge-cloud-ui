@@ -12,7 +12,7 @@ import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 import { LS_USER_META_DATA } from '../../../constant';
 import { getOrganization, isAdmin } from '../../../services/model/format';
 
-class headerGlobalMini extends React.Component {
+class UserMenu extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -22,22 +22,16 @@ class headerGlobalMini extends React.Component {
         this._isMounted = false
     }
 
-    updateState = (data)=>{
-        if(this._isMounted)
-        {
-            this.setState({...data})
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
         }
     }
 
-    logout(path) {
-        this.props.handleLogout()
-        this.props.history.push({
-            pathname: path,
-            userInfo: {}
-        });
-
+    logout = () => {
+        this.props.history.push('/logout');
     }
-    
+
     handleClick = (event) => {
         this.updateState({ anchorEl: event.currentTarget });
     };
@@ -47,7 +41,7 @@ class headerGlobalMini extends React.Component {
     }
 
     render() {
-        const { anchorEl, userInfo} = this.state
+        const { anchorEl, userInfo } = this.state
         return (
             <div style={{ marginTop: '0.4em' }}>
                 <IconButton aria-controls="event-menu" aria-haspopup="true" onClick={this.handleClick}>
@@ -60,10 +54,10 @@ class headerGlobalMini extends React.Component {
                     open={Boolean(anchorEl)}
                     onClose={this.handleClose}
                 >
-                    <Profile data={userInfo} currentUser={this.currentUser} close={this.handleClose}/>
+                    <Profile data={userInfo} currentUser={this.currentUser} close={this.handleClose} />
                     {isAdmin() || getOrganization() ? <Preferences close={this.handleClose} /> : null}
-                    <UpdatePassword close={this.handleClose} dialog={true}/>
-                    <MenuItem onClick={() => this.logout('/logout')}>
+                    <UpdatePassword close={this.handleClose} dialog={true} />
+                    <MenuItem onClick={() => this.logout()}>
                         <ExitToAppOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                         <ListItemText primary="Logout" />
                     </MenuItem>
@@ -88,7 +82,7 @@ class headerGlobalMini extends React.Component {
         this.currentUser()
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         this._isMounted = false
     }
 }
@@ -101,4 +95,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(headerGlobalMini));
+export default withRouter(connect(null, mapDispatchProps)(UserMenu));
