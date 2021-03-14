@@ -885,7 +885,7 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 
 .mexListView{
-    height: calc(100% - 48px); /* title Area Height */
+    height: calc(100vh - 117px); /* title Area Height */
 }
 
 .round_panel {
