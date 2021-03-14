@@ -3,6 +3,7 @@ import React from 'react'
 import { fields } from '../../../../../services/model/format'
 import MexMap from './ClusterMexMap'
 import MexMetric from '../../common/MexMetric'
+import { mapGridHeight } from '../../helper/Constant'
 
 const processData = (avgData) => {
     let mapData = {}
@@ -49,9 +50,10 @@ class ClusterMonitoring extends React.Component {
     render() {
         const { mapData } = this.state
         const { avgData, filter, rowSelected, range, minimize, selectedOrg, updateAvgData } = this.props
+        let selected = mapData.selected
         return (
             filter.parent.id === 'cluster' ?
-                <div className={minimize ? 'grid-charts-minimize' : 'grid-charts'}>
+                <div className='grid-charts' style={{height : mapGridHeight(minimize, selected)}}>
                     <GridList cols={4} cellHeight={300}>
                         {filter.metricType.includes('map') ?
                             <GridListTile cols={4}>

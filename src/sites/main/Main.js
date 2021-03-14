@@ -1,29 +1,21 @@
 import React from 'react';
-
-import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import { GridLoader } from "react-spinners";
-import SideNav from './defaultLayout/sideNav'
 import MexWorker from '../../services/worker/mex.worker.js'
 import { sendAuthRequest } from '../../services/model/serverWorker';
 import MexAlert from '../../hoc/alert/AlertDialog';
-import '../../css/introjs.css';
-import '../../css/introjs-dark.css';
 import { WORKER_ROLE } from '../../services/worker/constant';
 import { SHOW_ROLE } from '../../services/model/endpoints';
+import Menu from './Menu'
+import '../../css/introjs.css';
+import '../../css/introjs-dark.css';
 
-let _self = null
-
-class SiteFour extends React.Component {
+class Main extends React.Component {
     constructor(props) {
         super(props);
-        _self = this
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.state = {
-            email: store ? store.email : 'Administrator',
-            role: '',
             userRole: null,
             mexAlertMessage: undefined
         };
@@ -59,22 +51,18 @@ class SiteFour extends React.Component {
     }
 
     render() {
-        const { email, loadData } = this.state;
         return (
             <div className='view_body'>
-                {(_self.props.loadingSpinner == true) ?
+                {(this.props.loadingSpinner == true) ?
                     <div className="loadingBox" style={{ zIndex: 9999 }}>
                         <GridLoader
                             sizeUnit={"px"}
                             size={25}
                             color={'#70b2bc'}
-                            loading={_self.props.loadingSpinner}
+                            loading={this.props.loadingSpinner}
                         />
                     </div> : null}
-                <SideNav history={this.props.history} isShowHeader={this.props.isShowHeader} email={email}
-                    data={_self.props.userInfo.info} viewMode={_self.props.viewMode}
-                    userRole={this.state.userRole} />
-
+                <Menu />
                 {this.state.mexAlertMessage ?
                     <MexAlert data={this.state.mexAlertMessage}
                         onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
@@ -113,4 +101,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFour));
+export default connect(mapStateToProps, mapDispatchProps)(Main);

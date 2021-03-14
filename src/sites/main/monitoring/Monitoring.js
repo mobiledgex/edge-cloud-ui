@@ -239,7 +239,7 @@ class Monitoring extends React.Component {
                         <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} onListToolbarClear={this.onListToolbarClear} />
                     </React.Fragment> :
                         <React.Fragment>
-                            <Skeleton variant="rect" height={170} />
+                            <Skeleton variant="rect" height={180} />
                             <AppSkeleton filter={filter} />
                             <ClusterSkeleton filter={filter} />
                             <CloudletSkeleton filter={filter} />

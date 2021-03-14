@@ -885,7 +885,7 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 
 .mexListView{
-    height: calc(100% - 48px); /* title Area Height */
+    height: calc(100vh - 117px); /* title Area Height */
 }
 
 .round_panel {
@@ -1539,18 +1539,17 @@ rect.zoom {
 /* mark */
 .markBox {
     display:inline-block;
-    margin-right: 20px;
+    margin-right: 26px;
 }
 
 .markBox .mark {
     display: inline-block;
-    width: 24px;
-    line-height: 16px;
+    min-width: 25px;
+    padding: 4px;
     color:#fff;
+    margin-left: -2px;
     text-align: center;
-    padding-top: 5px;
-    padding-bottom: 3px;
-    font-size: 16px;
+    font-size: 14px;
 }
 .markBox .mark.type {
     width: 16px;
@@ -1567,7 +1566,7 @@ rect.zoom {
 }
 
 .markBox .mark.markO {
-    border-radius: 50%;
+    border-radius: 5px;
 }
 
 .markBox .mark.markA.markS {

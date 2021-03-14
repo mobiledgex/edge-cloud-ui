@@ -34,7 +34,7 @@ export const HELP_ALERTS = 'alerts'
 export const userRoles = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.DEVELOPER)) {
-            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/org-users#view-users'
+            return 'https://developers.mobiledgex.com/deployments/accounts/org-users#view-users'
         }
         else if (getUserRole().includes(constant.OPERATOR)) {
             return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#users-and-roles'
@@ -45,7 +45,7 @@ export const userRoles = (type, isDoc) => {
 export const monitoring = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.DEVELOPER)) {
-            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/monitoring'
+            return 'https://developers.mobiledgex.com/deployments/monitoring-and-metrics'
         }
         else if (getUserRole().includes(constant.OPERATOR)) {
             return 'https://operators.mobiledgex.com/operator-monitoring-and-metrics'
@@ -106,9 +106,9 @@ const autoScalePolicy = (type, isDoc) => {
         if (getUserRole().includes(constant.DEVELOPER)) {
             switch (type) {
                 case HELP_SCALE_POLICY:
-                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#auto-scale-policy'
+                    return 'https://developers.mobiledgex.com/deployments/application-runtime/autoscale'
                 case HELP_SCALE_POLICY_REG:
-                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#to-create-an-auto-scale-policy'
+                    return 'https://developers.mobiledgex.com/deployments/application-runtime/autoscale#create'
             }
         }
     }
@@ -173,9 +173,9 @@ const trustPolicy = (type, isDoc) => {
         if (getUserRole().includes(constant.DEVELOPER)) {
             switch (type) {
                 case HELP_TRUST_POLICY:
-                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#privacy-policy'
+                    return 'https://developers.mobiledgex.com/deployments/security'
                 case HELP_TRUST_POLICY_REG:
-                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#to-create-a-privacy-policy'
+                    return 'https://developers.mobiledgex.com/deployments/security#create'
             }
         }
     }
@@ -228,10 +228,10 @@ const policy = (type, isDoc) => {
         if (getUserRole().includes(constant.DEVELOPER)) {
             switch (type) {
                 case HELP_POLICY_LIST:
-                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#auto-provisioning-policy'
+                    return 'https://developers.mobiledgex.com/deployments/application-runtime/auto-prov'
                 case HELP_AUTO_PROV_REG_1:
                 case HELP_AUTO_PROV_REG_2:
-                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/manage-app-policies#to-create-an-auto-provision-policy'
+                    return 'https://developers.mobiledgex.com/deployments/application-runtime/auto-prov#create'
             }
         }
     }
@@ -317,7 +317,7 @@ const policy = (type, isDoc) => {
 const org = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole() === undefined || getUserRole().includes(constant.DEVELOPER)) {
-            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/org-users'
+            return 'https://developers.mobiledgex.com/deployments/accounts/org-users'
         }
         else if (getUserRole().includes(constant.OPERATOR)) {
             return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#create-an-organization-and-manage-users'
@@ -513,7 +513,7 @@ const cloudletPool = (type, isDoc) => {
 const flavor = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.DEVELOPER)) {
-            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/flavors'
+            return 'https://developers.mobiledgex.com/deployments/deployment-workflow/flavors'
         }
     }
     else {
@@ -581,9 +581,9 @@ const appInst = (type, isDoc) => {
         if (getUserRole().includes(constant.DEVELOPER)) {
             switch (type) {
                 case HELP_APP_INST_LIST:
-                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/app-instances'
+                    return 'https://developers.mobiledgex.com/deployments/deployment-workflow/app-instances'
                 case HELP_APP_INST_REG:
-                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/app-instances#to-provision-your-application'
+                    return 'https://developers.mobiledgex.com/deployments/deployment-workflow/app-instances#provision'
             }
         }
     }
@@ -634,18 +634,6 @@ const appInst = (type, isDoc) => {
                         element: '.formRow-6',
                         intro: 'Which cloudlet(s) do you want to deploy this application?'
                     },
-                    // {
-                    //     element: '.formRow-7',
-                    //     intro: 'If you have yet to create a cluster, you can select this to auto create cluster instance.'
-                    // },
-                    // {
-                    //     element: '.formRow-8',
-                    //     intro: 'Name of cluster instance to deploy this application.'
-                    // },
-                    // {
-                    //     element: '.formRow-9',
-                    //     intro: 'Please add instruction here'
-                    // },
                     {
                         element: '.formButton-12',
                         intro: 'Click this button to create'
@@ -660,9 +648,9 @@ const app = (type, isDoc) => {
         if (getUserRole().includes(constant.DEVELOPER)) {
             switch (type) {
                 case HELP_APP_LIST:
-                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/app-definition'
+                    return 'https://developers.mobiledgex.com/deployments/deployment-workflow/app-definition'
                 case HELP_APP_REG:
-                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/app-definition#to-specify-your-application-definition'
+                    return 'https://developers.mobiledgex.com/deployments/deployment-workflow/app-definition#create'
             }
         }
     }
@@ -757,9 +745,9 @@ const clusterInst = (type, isDoc) => {
         if (getUserRole().includes(constant.DEVELOPER)) {
             switch (type) {
                 case HELP_CLUSTER_INST_LIST:
-                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/clusters'
+                    return 'https://devstage.mobiledgex.com/deployments/deployment-workflow/clusters'
                 case HELP_CLUSTER_INST_REG:
-                    return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/clusters#to-create-a-cluster-instance'
+                    return 'https://devstage.mobiledgex.com/deployments/deployment-workflow/clusters#to-create-a-cluster-instance'
             }
         }
     }
@@ -840,7 +828,7 @@ const clusterInst = (type, isDoc) => {
 const cloudlet = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.DEVELOPER)) {
-            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/cloudlets'
+            return 'https://developers.mobiledgex.com/deployments/deployment-workflow/cloudlets'
         }
         else if (getUserRole().includes(constant.OPERATOR)) {
             switch (type) {
@@ -925,7 +913,7 @@ const cloudlet = (type, isDoc) => {
 const alerts = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.DEVELOPER)) {
-            return 'https://developers.mobiledgex.com/product-overview/console-guide-developer/monitoring#alerts'
+            return 'https://developers.mobiledgex.com/design/testing-and-debugging/alarms#alerts'
         }
         else if(getUserRole().includes(constant.OPERATOR))
         {

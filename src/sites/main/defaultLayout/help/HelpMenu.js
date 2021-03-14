@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector } from "react-redux"
 import { Menu, MenuItem, IconButton, ListItemText } from '@material-ui/core'
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import NewReleasesIcon from '@material-ui/icons/NewReleases';
@@ -12,7 +13,7 @@ const HelpMenu = (props) => {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [openNew, setOpenNew] = React.useState(false);
-
+    const viewMode = useSelector(state => state.ViewMode.mode);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -23,9 +24,9 @@ const HelpMenu = (props) => {
 
     const docClick = () => {
         setAnchorEl(null);
-        let path = tutor(props.viewMode, true)
+        let path = tutor(viewMode, true)
         if (path) {
-            window.open(tutor(props.viewMode, true), '_blank');
+            window.open(tutor(viewMode, true), '_blank');
         }
     };
 
@@ -46,12 +47,12 @@ const HelpMenu = (props) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                {isAdmin() ? null :<MenuItem onClick={docClick} disabled={!(props.viewMode && tutor(props.viewMode, true))}>
-                    <DescriptionOutlinedIcon fontSize="small" color={props.viewMode && tutor(props.viewMode, true) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
+                {isAdmin() ? null :<MenuItem onClick={docClick} disabled={!(viewMode && tutor(viewMode, true))}>
+                    <DescriptionOutlinedIcon fontSize="small" color={viewMode && tutor(viewMode, true) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
                     <ListItemText primary="Guide" />
                 </MenuItem>}
                 <MenuItem onClick={newClick}>
-                    <NewReleasesIcon fontSize="small" color={props.viewMode && tutor(props.viewMode, true) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
+                    <NewReleasesIcon fontSize="small" color={viewMode && tutor(viewMode, true) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
                     <ListItemText primary="What's new" />
                 </MenuItem>
             </Menu>

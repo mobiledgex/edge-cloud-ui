@@ -123,5 +123,5 @@ export const refreshRates = [
 ]
 
 export const mapGridHeight = (minimize, selected) => {
-    return minimize ? 'calc(100vh - 127px)' : selected === 1 ? 'calc(100vh - 342px)' : 'calc(100vh - 295px)'
+    return minimize ? 'calc(100vh - 117px)' : selected === 1 ? 'calc(100vh - 335px)' : 'calc(100vh - 287px)'
 }
