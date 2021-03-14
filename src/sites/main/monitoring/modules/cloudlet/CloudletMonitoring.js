@@ -5,6 +5,7 @@ import MexMap from './CloudletMexMap'
 import CloudletEvent from './CloudletEvent'
 import MexMetric from '../../common/MexMetric'
 import CloudletFlavorUsage from './CloudletFlavorUsage'
+import { mapGridHeight } from '../../helper/Constant'
 
 const processData = (avgData) => {
     let mapData = {}
@@ -55,9 +56,10 @@ class CloudletMonitoring extends React.Component {
     render() {
         const { mapData } = this.state
         const { avgData, filter, rowSelected, range, minimize, selectedOrg, updateAvgData, listAction } = this.props
+        let selected = mapData.selected
         return (
             filter.parent.id === 'cloudlet' ?
-                <div className={minimize ? 'grid-charts-minimize' : 'grid-charts'}>
+                <div className='grid-charts' style={{height : mapGridHeight(minimize, selected)}}>
                     <GridList cols={4} cellHeight={300}>
                         {filter.metricType.includes('map') ? <GridListTile cols={3}>
                             <MexMap data={mapData} region={filter.region} />

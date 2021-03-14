@@ -4,14 +4,14 @@ import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import { LOCAL_STRAGE_KEY, LS_USER_META_DATA } from '../../constant'
+import { LOCAL_STRAGE_KEY, LS_REGIONS, LS_USER_META_DATA } from '../../constant'
 import { PAGE_ORGANIZATIONS } from '../../constant'
 import * as serverData from '../../services/model/serverData';
 import * as serviceMC from '../../services/model/serviceMC';
 import RegistryUserForm from './signup';
 import MexOTPRegistration from './otp/MexOTPRegistration';
 import MexOTPValidation from './MexOTPValidation';
-import ResetPasswordForm from '../siteFour/userSetting/updatePassword';
+import ResetPasswordForm from '../main/userSetting/updatePassword';
 import PublicIP from 'public-ip';
 import { fields } from '../../services/model/format';
 import ReCAPTCHA from "react-google-recaptcha";
@@ -234,7 +234,7 @@ class Login extends Component {
                 email: data[fields.email],
                 operatingsystem: self.clientSysInfo.os.name,
                 browser: self.clientSysInfo.browser.name,
-                callbackurl: `https://${host}/#/verify`,
+                callbackurl: `https://${host}/verify`,
                 clientip: self.clientSysInfo.clientIP,
             },
             EnableTOTP: data[fields.otp],
@@ -301,7 +301,7 @@ class Login extends Component {
             data.map((data) => {
                 regions.push(data.Region)
             })
-            localStorage.setItem('regions', regions)
+            localStorage.setItem(LS_REGIONS, regions)
         }
     }
 
@@ -322,7 +322,7 @@ class Login extends Component {
                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(this.params))
                 this.getControllers(data.token)
                 this.validateUserName(username)
-                this.props.history.push({ pathname: `/site4/pg=${PAGE_ORGANIZATIONS}` })
+                this.props.history.push({ pathname: `/main/${PAGE_ORGANIZATIONS}` })
             }
         }
     }
@@ -364,7 +364,7 @@ class Login extends Component {
 
     onSendEmail = async (mode) => {
         if (mode === 'verify') {
-            let valid = await serverData.sendVerify(self, { email: self.state.email, callbackurl: `https://${host}/#/verify` })
+            let valid = await serverData.sendVerify(self, { email: self.state.email, callbackurl: `https://${host}/verify` })
             if (valid) {
                 self.props.handleAlertInfo('success', 'We have e-mailed your verification link')
                 this.handleClickLogin('forgotMessage')
@@ -379,7 +379,7 @@ class Login extends Component {
                 email: self.state.email,
                 operatingsystem: self.clientSysInfo.os.name,
                 browser: self.clientSysInfo.browser.name,
-                callbackurl: `https://${host}/#/passwordreset`,
+                callbackurl: `https://${host}/passwordreset`,
                 clientip: self.clientSysInfo.clientIP
             }
             let valid = await serverData.resetPasswordRequest(self, data)
@@ -427,7 +427,7 @@ class Login extends Component {
                 this.getControllers(response.data.token)
                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
                 this.validateUserName(username)
-                this.props.history.push({ pathname: `/site4/pg=${PAGE_ORGANIZATIONS}` })
+                this.props.history.push({ pathname: `/main/pg=${PAGE_ORGANIZATIONS}` })
                 this.setState({ loginOTP: undefined })
             }
         }
@@ -466,9 +466,8 @@ class Login extends Component {
         <MexOTPRegistration onComplete={this.onOTPComplete} data={this.state.totp} showDone={true} />
     )
 
-
     onReset = () => {
-        this.props.history.push({ pathname: '/logout' })
+        this.props.history.push('/logout');
         this.props.handleChangeLoginMode('login');
     }
 
