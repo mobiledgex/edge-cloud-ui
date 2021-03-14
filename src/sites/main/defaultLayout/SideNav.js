@@ -241,7 +241,7 @@ const SideNav = (props) => {
                         {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                     </IconButton>
                 </div>
-                <Divider />
+                {open ? <Divider /> : null}
                 <RoleLegend drawerOpen={open}/>
                 {getUserRole() ? <Options options={props.data} drawerOpen={open} /> : null}
             </Drawer>
