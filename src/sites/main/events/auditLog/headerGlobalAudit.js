@@ -161,6 +161,7 @@ class headerGlobalAudit extends React.Component {
             else if (this.type === this.props.showAuditLogWithOrg.type && this.type === 'event') {
                 this.setState({ isOpen: true })
             }
+            this.props.handleShowAuditLog(null)
         }
         if (prevState.isOpen !== this.state.isOpen) {
             if (this.state.isOpen) {
@@ -172,7 +173,6 @@ class headerGlobalAudit extends React.Component {
                 clearInterval(this.intervalId)
             }
         }
-        this.props.handleShowAuditLog(null)
     }
 
     initAudit = (starttime, endtime, enableInterval) => {

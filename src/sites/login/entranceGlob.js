@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Login from './login';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import { LOCAL_STRAGE_KEY, LS_USER_META_DATA, PAGE_ORGANIZATIONS } from '../../constant';
+import { LOCAL_STRAGE_KEY, LS_REGIONS, LS_USER_META_DATA, PAGE_ORGANIZATIONS } from '../../constant';
 import { GridLoader } from "react-spinners";
 import MexAlert from '../../hoc/alert/AlertDialog';
 import './style.css'
@@ -23,6 +23,7 @@ class EntranceGlobe extends Component {
         if (this.props.match.path === '/logout') {
             localStorage.removeItem(LOCAL_STRAGE_KEY);
             localStorage.removeItem(LS_USER_META_DATA);
+            localStorage.removeItem(LS_REGIONS);
         }
         else if (this.props.match.path === '/passwordreset') {
             this.props.handleChangeLoginMode('resetPass')
@@ -41,10 +42,10 @@ class EntranceGlobe extends Component {
             return null
         }
         else if (localStorage.getItem(LOCAL_STRAGE_KEY)) {
-            props.history.push(`/site4/pg=${PAGE_ORGANIZATIONS}`)
+            props.history.push(`/main/${PAGE_ORGANIZATIONS}`)
         }
         else if (props.loginMode === 'login' && props.user.userToken) {
-            props.history.push(`/site4/pg=${PAGE_ORGANIZATIONS}`)
+            props.history.push(`/main/${PAGE_ORGANIZATIONS}`)
         }
         return null
     }
