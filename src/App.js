@@ -1,5 +1,5 @@
 import React, { Component, Suspense, lazy } from 'react';
-import {BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {HashRouter as Router, Route, Switch } from "react-router-dom";
 
 import 'semantic-ui-css/semantic.min.css';
 //redux

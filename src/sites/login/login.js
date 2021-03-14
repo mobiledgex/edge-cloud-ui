@@ -234,7 +234,7 @@ class Login extends Component {
                 email: data[fields.email],
                 operatingsystem: self.clientSysInfo.os.name,
                 browser: self.clientSysInfo.browser.name,
-                callbackurl: `https://${host}/verify`,
+                callbackurl: `https://${host}/#/verify`,
                 clientip: self.clientSysInfo.clientIP,
             },
             EnableTOTP: data[fields.otp],
@@ -322,7 +322,7 @@ class Login extends Component {
                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(this.params))
                 this.getControllers(data.token)
                 this.validateUserName(username)
-                this.props.history.push({ pathname: `/main/${PAGE_ORGANIZATIONS}` })
+                this.props.history.push({ pathname: `/main/${PAGE_ORGANIZATIONS.toLowerCase()}` })
             }
         }
     }
@@ -364,7 +364,7 @@ class Login extends Component {
 
     onSendEmail = async (mode) => {
         if (mode === 'verify') {
-            let valid = await serverData.sendVerify(self, { email: self.state.email, callbackurl: `https://${host}/verify` })
+            let valid = await serverData.sendVerify(self, { email: self.state.email, callbackurl: `https://${host}/#/verify` })
             if (valid) {
                 self.props.handleAlertInfo('success', 'We have e-mailed your verification link')
                 this.handleClickLogin('forgotMessage')
@@ -379,7 +379,7 @@ class Login extends Component {
                 email: self.state.email,
                 operatingsystem: self.clientSysInfo.os.name,
                 browser: self.clientSysInfo.browser.name,
-                callbackurl: `https://${host}/passwordreset`,
+                callbackurl: `https://${host}/#/passwordreset`,
                 clientip: self.clientSysInfo.clientIP
             }
             let valid = await serverData.resetPasswordRequest(self, data)
@@ -427,7 +427,7 @@ class Login extends Component {
                 this.getControllers(response.data.token)
                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
                 this.validateUserName(username)
-                this.props.history.push({ pathname: `/main/pg=${PAGE_ORGANIZATIONS}` })
+                this.props.history.push({ pathname: `/main/pg=${PAGE_ORGANIZATIONS.toLowerCase()}` })
                 this.setState({ loginOTP: undefined })
             }
         }
