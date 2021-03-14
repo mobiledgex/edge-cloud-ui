@@ -1544,6 +1544,7 @@ rect.zoom {
 
 .markBox .mark {
     display: inline-block;
+    min-width: 25px;
     padding: 4px;
     color:#fff;
     margin-left: -2px;

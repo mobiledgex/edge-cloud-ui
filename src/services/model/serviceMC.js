@@ -61,9 +61,7 @@ export const checkExpiry = (self, message) => {
         if (isExpired && self) {
             setTimeout(() => {
                 if (self && self.props && self.props.history) {
-                    self.props.history.push({
-                        pathname: '/logout'
-                    })
+                    self.props.history.push('/logout');
                 }
             }, 2000);
         }

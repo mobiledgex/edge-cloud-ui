@@ -6,7 +6,7 @@ import 'semantic-ui-css/semantic.min.css';
 import { connect } from 'react-redux';
 import * as actions from './actions';
 import * as serverData from './services/model/serverData';
-import { LOCAL_STRAGE_KEY } from './constant'
+import { LOCAL_STRAGE_KEY, LS_REGIONS } from './constant'
 //insert pages
 import './app.css';
 import './css/index.css';
@@ -43,7 +43,7 @@ class App extends Component {
                                 regions.push(data.Region)
                             })
                         }
-                        localStorage.setItem('regions', regions)
+                        localStorage.setItem(LS_REGIONS, regions)
                         self.props.handleRegionInfo(regions)
                     }
                 }

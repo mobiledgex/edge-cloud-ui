@@ -4,7 +4,7 @@ import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import { LOCAL_STRAGE_KEY, LS_USER_META_DATA } from '../../constant'
+import { LOCAL_STRAGE_KEY, LS_REGIONS, LS_USER_META_DATA } from '../../constant'
 import { PAGE_ORGANIZATIONS } from '../../constant'
 import * as serverData from '../../services/model/serverData';
 import * as serviceMC from '../../services/model/serviceMC';
@@ -301,7 +301,7 @@ class Login extends Component {
             data.map((data) => {
                 regions.push(data.Region)
             })
-            localStorage.setItem('regions', regions)
+            localStorage.setItem(LS_REGIONS, regions)
         }
     }
 
@@ -466,9 +466,8 @@ class Login extends Component {
         <MexOTPRegistration onComplete={this.onOTPComplete} data={this.state.totp} showDone={true} />
     )
 
-
     onReset = () => {
-        this.props.history.push({ pathname: '/logout' })
+        this.props.history.push('/logout');
         this.props.handleChangeLoginMode('login');
     }
 

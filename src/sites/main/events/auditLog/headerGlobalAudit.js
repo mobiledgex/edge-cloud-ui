@@ -140,39 +140,39 @@ class headerGlobalAudit extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // if (this.props.userRole && prevProps.userRole !== this.props.userRole) {
-        //     if (this.props.userRole.includes(ADMIN)) {
-        //         this.initAudit(this.starttime, this.endtime, false)
-        //     }
-        //     else {
-        //         this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
-        //         this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
-        //         if (this._isMounted) {
-        //             this.setState({ liveData: [] })
-        //         }
-        //         this.initAudit(this.starttime, this.endtime, false)
-        //     }
-        // }
+        if (this.props.userRole && prevProps.userRole !== this.props.userRole) {
+            if (this.props.userRole.includes(ADMIN)) {
+                this.initAudit(this.starttime, this.endtime, false)
+            }
+            else {
+                this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
+                this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
+                if (this._isMounted) {
+                    this.setState({ liveData: [] })
+                }
+                this.initAudit(this.starttime, this.endtime, false)
+            }
+        }
 
-        // if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg) {
-        //     if (this.type === this.props.showAuditLogWithOrg.type && this.type === 'audit') {
-        //         this.getDataAuditOrg(this.props.showAuditLogWithOrg.org)
-        //     }
-        //     else if (this.type === this.props.showAuditLogWithOrg.type && this.type === 'event') {
-        //         this.setState({ isOpen: true })
-        //     }
-        // }
-        // if (prevState.isOpen !== this.state.isOpen) {
-        //     if (this.state.isOpen) {
-        //         this.starttime = cloneDeep(this.endtime)
-        //         this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
-        //         this.initAudit(this.starttime, this.endtime, true)
-        //     }
-        //     else {
-        //         clearInterval(this.intervalId)
-        //     }
-        // }
-        // this.props.handleShowAuditLog(null)
+        if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg) {
+            if (this.type === this.props.showAuditLogWithOrg.type && this.type === 'audit') {
+                this.getDataAuditOrg(this.props.showAuditLogWithOrg.org)
+            }
+            else if (this.type === this.props.showAuditLogWithOrg.type && this.type === 'event') {
+                this.setState({ isOpen: true })
+            }
+            this.props.handleShowAuditLog(null)
+        }
+        if (prevState.isOpen !== this.state.isOpen) {
+            if (this.state.isOpen) {
+                this.starttime = cloneDeep(this.endtime)
+                this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
+                this.initAudit(this.starttime, this.endtime, true)
+            }
+            else {
+                clearInterval(this.intervalId)
+            }
+        }
     }
 
     initAudit = (starttime, endtime, enableInterval) => {
