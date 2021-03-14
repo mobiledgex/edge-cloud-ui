@@ -242,7 +242,7 @@ const SideNav = (props) => {
                     </IconButton>
                 </div>
                 <Divider />
-                <RoleLegend />
+                <RoleLegend drawerOpen={open}/>
                 {getUserRole() ? <Options options={props.data} drawerOpen={open} /> : null}
             </Drawer>
             <main className={classes.content}>
