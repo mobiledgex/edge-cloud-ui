@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 const Organization = (props) => (
     isAdmin() || getOrganization() ?
         <IconButton disabled={true} style={{ marginTop: 4 }}>
-            <BusinessIcon fontSize='default'/>&nbsp;
+            <BusinessIcon fontSize='default' />&nbsp;
             <h5>
                 {isAdmin() ? "Mexadmin" : getOrganization()}
             </h5>
@@ -38,9 +38,9 @@ export default function Header(props) {
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
                 <MexTimezone />
-                <Organization/>
-                <EventMenu/>
-                <HelpMenu viewMode={props.viewMode} />{/*need viewmode param*/}
+                <Organization />
+                <EventMenu />
+                <HelpMenu />
                 <AlertReceiver />
                 <UserMenu />
             </div>

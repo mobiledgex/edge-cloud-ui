@@ -52,7 +52,7 @@
     "react-leaflet": "^2.7.0",
     "react-leaflet-control": "^2.1.2",
     "react-leaflet-curve": "^2.0.1",
-    "react-redux": "^6.0.0",
+    "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
     "react-spinners": "^0.9.0",
     "react-syntax-highlighter": "^15.4.3",
