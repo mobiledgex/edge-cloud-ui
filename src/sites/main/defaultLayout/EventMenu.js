@@ -54,7 +54,7 @@ const EventMenu = () => {
 
     return (
         visible() ? <div style={{ marginTop: '0.4em' }}>
-            <IconButton aria-controls="event-menu" aria-haspopup="true" onClick={handleClick}>
+            <IconButton aria-label="event-menu" aria-haspopup="true" onClick={handleClick}>
                 <EventNoteIcon />
             </IconButton>
             <Menu

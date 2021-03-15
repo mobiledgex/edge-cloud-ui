@@ -37,7 +37,7 @@ const HelpMenu = (props) => {
 
     return (
         <div style={{ marginTop: '0.4em' }}>
-            <IconButton aria-controls="event-menu" aria-haspopup="true" onClick={handleClick}>
+            <IconButton aria-label="help-menu" aria-haspopup="true" onClick={handleClick}>
                 <HelpOutlineOutlinedIcon />
             </IconButton>
             <Menu

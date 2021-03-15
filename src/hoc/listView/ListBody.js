@@ -69,7 +69,7 @@ const ListBody = (props) => {
                         onClick={(event) => handleClick(event, row)}>
                         <Checkbox
                             checked={isItemSelected}
-                            inputProps={{ 'aria-labelledby': labelId }}
+                            inputProps={{ 'aria-label': 'select all' }}
                         />
                     </TableCell> : null}
 

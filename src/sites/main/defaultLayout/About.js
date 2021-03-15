@@ -20,7 +20,7 @@ const About = (props) => {
 
     return (
         <React.Fragment>
-            <img className={props.className} src={props.src} onClick={(e)=>{setAnchorEl(e.currentTarget)}}/>
+            <img className={props.className} width={40} height={40} src={props.src} onClick={(e)=>{setAnchorEl(e.currentTarget)}}  alt="MobiledgeX"/>
             <Menu
                 id="lock-menu"
                 anchorEl={anchorEl}
@@ -44,7 +44,7 @@ const About = (props) => {
                     <ListItem>
                         <ListItemText align="center">
                             <p>
-                                <img src='/assets/brand/MobiledgeX_Logo_tm_white.svg' />
+                                <img src='/assets/brand/MobiledgeX_Logo_tm_white.svg'  alt="MobiledgeX"/>
                             </p>
                             <p>
                                 <strong>{process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'version 0.0.0'}</strong>

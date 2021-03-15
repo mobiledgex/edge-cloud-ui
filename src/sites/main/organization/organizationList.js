@@ -51,7 +51,7 @@ class OrganizationList extends React.Component {
                     <CardHeader
                         avatar={
                             <IconButton aria-label="developer" disabled={true}>
-                                <img src='/assets/images/handset-sdk-green.svg' />
+                                <img src='/assets/images/handset-sdk-green.svg'  alt="MobiledgeX"/>
                             </IconButton>
                         }
                         title={
@@ -71,7 +71,7 @@ class OrganizationList extends React.Component {
                     <CardHeader
                         avatar={
                             <IconButton aria-label="operator" disabled={true}>
-                                <img src='/assets/images/cloudlet-green.svg' />
+                                <img src='/assets/images/cloudlet-green.svg'  alt="MobiledgeX"/>
                             </IconButton>
                         }
                         title={

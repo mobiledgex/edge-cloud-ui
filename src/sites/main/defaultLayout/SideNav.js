@@ -210,7 +210,7 @@ const SideNav = (props) => {
                     <About className={clsx(classes.xLogo, { [classes.hide]: open, })} src='/assets/brand/X_Logo_green.svg' />
                     <IconButton
                         color="inherit"
-                        aria-label="open drawer"
+                        aria-label="open-drawer"
                         onClick={handleDrawerOpen}
                         edge="start"
                         className={clsx(classes.menuButton, {
@@ -237,7 +237,7 @@ const SideNav = (props) => {
             >
                 <div className={classes.toolbar}>
                     <About className={classes.logo} src='/assets/brand/logo_mex.svg' />
-                    <IconButton onClick={handleDrawerClose}>
+                    <IconButton onClick={handleDrawerClose} aria-label='drawer-control'>
                         {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                     </IconButton>
                 </div>

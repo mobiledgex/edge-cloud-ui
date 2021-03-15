@@ -6,7 +6,7 @@ import { fields } from "../../services/model/format";
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
-import zxcvbn from 'zxcvbn'
+
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Icon } from "semantic-ui-react";
 import { generate } from 'generate-password'
@@ -15,6 +15,7 @@ import { copyData } from '../../utils/file_util'
 import cloneDeep from "lodash/cloneDeep";
 import { sendRequest } from '../../services/model/serverWorker'
 import { PUBLIC_CONFIG } from '../../services/model/endpoints'
+import { load } from "../../helper/zxcvbn";
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
 
@@ -39,10 +40,6 @@ const validateConsecutive = (value) => {
     return /(.)\1\1/.test(value)
 }
 
-const calculateStrength = (value) => {
-    return zxcvbn(value).guesses / BRUTE_FORCE_GUESSES_PER_SECOND
-}
-
 const calculatePercentage = (passwordMinCrackTimeSec, score) => {
     let value = score > passwordMinCrackTimeSec ? passwordMinCrackTimeSec : score
     value = ((value - 0) / (passwordMinCrackTimeSec - 0)) * (100 - 0) + 0
@@ -56,6 +53,14 @@ class RegistryUserForm extends React.Component {
             forms: [],
             visibility: false
         }
+    }
+
+    calculateStrength = (value) => {
+        if(this.zxcvbn === undefined)
+        {
+            this.zxcvbn = load()
+        }
+        return this.zxcvbn(value).guesses / BRUTE_FORCE_GUESSES_PER_SECOND
     }
 
     validateEmail = (form) => {
@@ -102,7 +107,7 @@ class RegistryUserForm extends React.Component {
             currentForm.error = 'Too many consecutive identical characters'
             return false;
         }
-        else if (calculateStrength(value) < this.passwordMinCrackTimeSec) {
+        else if (this.calculateStrength(value) < this.passwordMinCrackTimeSec) {
             currentForm.error = 'Password is weak'
             return false;
         }
@@ -149,7 +154,7 @@ class RegistryUserForm extends React.Component {
 
     passwordGenerator = (length) => {
         let password = generate({ length, numbers: true, symbols: true, lowercase: true, uppercase: true, strict: true })
-        if (calculateStrength(password) < this.passwordMinCrackTimeSec) {
+        if (this.calculateStrength(password) < this.passwordMinCrackTimeSec) {
             return this.passwordGenerator(length + 1)
         }
         return password
@@ -171,7 +176,7 @@ class RegistryUserForm extends React.Component {
 
     passwordHelper = (form) => {
         let value = form.value ? form.value : ''
-        let score = calculateStrength(value)
+        let score = this.calculateStrength(value)
         let letterCase = validateLetterCase(value)
         let count = validateCharacterCount(value)
         let digit = validateDigit(value)
