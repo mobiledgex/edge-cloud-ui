@@ -747,7 +747,7 @@ const clusterInst = (type, isDoc) => {
                 case HELP_CLUSTER_INST_LIST:
                     return 'https://devstage.mobiledgex.com/deployments/deployment-workflow/clusters'
                 case HELP_CLUSTER_INST_REG:
-                    return 'https://devstage.mobiledgex.com/deployments/deployment-workflow/clusters#to-create-a-cluster-instance'
+                    return 'https://developers.mobiledgex.com/deployments/deployment-workflow/clusters#create'
             }
         }
     }
