@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import MexForms, { INPUT, BUTTON, POPUP_INPUT } from "../../../hoc/forms/MexForms";
 import { fields } from "../../../services/model/format";
-import zxcvbn from 'zxcvbn'
 import { Icon } from "semantic-ui-react";
 import { generate } from 'generate-password'
 import { copyData } from '../../../utils/file_util'
@@ -13,7 +12,7 @@ import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 import { resetPwd, sendRequest, updatePwd } from '../../../services/model/serverWorker'
 import { PUBLIC_CONFIG } from '../../../services/model/endpoints'
 import { Button, Dialog, DialogContent, DialogTitle, ListItemText, MenuItem, LinearProgress } from '@material-ui/core';
-
+import { load } from "../../../helper/zxcvbn";
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
 
 const validateLetterCase = (value) => {
@@ -37,10 +36,6 @@ const validateConsecutive = (value) => {
     return /(.)\1\1/.test(value)
 }
 
-const calculateStrength = (value) => {
-    return zxcvbn(value).guesses / BRUTE_FORCE_GUESSES_PER_SECOND
-}
-
 const calculatePercentage = (passwordMinCrackTimeSec, score) => {
     let value = score > passwordMinCrackTimeSec ? passwordMinCrackTimeSec : score
     value = ((value - 0) / (passwordMinCrackTimeSec - 0)) * (100 - 0) + 0
@@ -56,6 +51,14 @@ class UpdatePassword extends React.Component {
             open: false
         }
         this._isMounted = false
+    }
+
+    calculateStrength = (value) => {
+        if(this.zxcvbn === undefined)
+        {
+            this.zxcvbn = load()
+        }
+        return this.zxcvbn(value).guesses / BRUTE_FORCE_GUESSES_PER_SECOND
     }
 
     validatePassword = (currentForm) => {
@@ -80,7 +83,7 @@ class UpdatePassword extends React.Component {
             currentForm.error = 'Too many consecutive identical characters'
             return false;
         }
-        else if (calculateStrength(value) < this.passwordMinCrackTimeSec) {
+        else if (this.calculateStrength(value) < this.passwordMinCrackTimeSec) {
             currentForm.error = 'Password is weak'
             return false;
         }
@@ -159,7 +162,7 @@ class UpdatePassword extends React.Component {
 
     passwordGenerator = (length) => {
         let password = generate({ length, numbers: true, symbols: true, lowercase: true, uppercase: true, strict: true })
-        if (calculateStrength(password) < this.passwordMinCrackTimeSec) {
+        if (this.calculateStrength(password) < this.passwordMinCrackTimeSec) {
             return this.passwordGenerator(length + 1)
         }
         return password
@@ -184,7 +187,7 @@ class UpdatePassword extends React.Component {
 
     passwordHelper = (form) => {
         let value = form.value ? form.value : ''
-        let score = calculateStrength(value)
+        let score = this.calculateStrength(value)
         let letterCase = validateLetterCase(value)
         let count = validateCharacterCount(value)
         let digit = validateDigit(value)

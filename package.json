@@ -68,7 +68,8 @@
     "xterm": "^4.8.1",
     "xterm-addon-fit": "^0.5.0",
     "yaml-js": "^0.2.3",
-    "zxcvbn": "^4.4.2"
+    "zxcvbn": "^4.4.2",
+    "zxcvbn-async": "^0.0.6"
   },
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
