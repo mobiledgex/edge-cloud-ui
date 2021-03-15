@@ -43,7 +43,7 @@ class AlertGlobal extends React.Component {
         const { anchorEl, dataList, showDot } = this.state
         return (
             <div style={{ marginTop: 5 }}>
-                <IconButton onClick={this.handleClick}>
+                <IconButton onClick={this.handleClick} aria-label="alert-menu" aria-haspopup="true">
                     {showDot ? <Badge color="secondary" variant="dot">
                         <NotificationsNoneIcon />
                     </Badge> : <NotificationsNoneIcon />}

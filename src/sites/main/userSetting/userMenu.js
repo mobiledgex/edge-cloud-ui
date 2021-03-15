@@ -44,7 +44,7 @@ class UserMenu extends React.Component {
         const { anchorEl, userInfo } = this.state
         return (
             <div style={{ marginTop: '0.4em' }}>
-                <IconButton aria-controls="event-menu" aria-haspopup="true" onClick={this.handleClick}>
+                <IconButton aria-label="user-menu" aria-haspopup="true" onClick={this.handleClick}>
                     <AccountCircleOutlinedIcon />
                 </IconButton>
                 <Menu

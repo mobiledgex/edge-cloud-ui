@@ -171,9 +171,7 @@ class ListViewer extends React.Component {
                     <TableContainer style={style ? style : { height: `${getHeight(this.props)}`, overflow: 'auto', marginTop: `${this.props.selected.length > 0 ? '0px' : '-40px'}` }}>
                         <Table
                             stickyHeader
-                            aria-labelledby="tableTitle"
-                            size={'small'}
-                            aria-label="enhanced table">
+                            size={'small'}>
                             <ListHeader
                                 numSelected={this.props.selected.length}
                                 order={order}
