@@ -14,6 +14,13 @@ export const convertByteToMegaGigaByte = (bytes) => {
     else return (bytes / gigaBytes).toFixed(decimal) + " GB";
 }
 
+export const convertKBtoMB = (data) => {
+    let marker = 1024
+    let decimal  = 1;
+    let mb = marker 
+    return data < mb ? data + ' KB' :  (data/mb).toFixed(decimal) + ' MB'
+}
+
 export const convertMBToGB = (mb) => {
     let marker = 1024; // Change to 1000 if required
     let decimal = 1; // Change as required
@@ -44,6 +51,8 @@ export const unit = (type, value) => {
                 return convertMBToGB(value)
             case 5:
                 return convertGBtoTB(value)
+            case 6:
+                return convertKBtoMB(value)
             default:
                 return value
         }
