@@ -1,6 +1,7 @@
 
 import * as formatter from './format'
 import { CLUSTER_METRICS_ENDPOINT } from './endPointTypes'
+import { UNIT_BYTES, UNIT_PERCENTAGE } from '../../sites/main/monitoring/helper/unitConvertor';
 
 let fields = formatter.fields;
 
@@ -27,14 +28,14 @@ export const clusterMetricsListKeys = [
 ]
 
 export const networkMetricType = [
-    { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 6, unit: 1 },
-    { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 7, unit: 1 },
+    { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 6, unit: UNIT_BYTES },
+    { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 7, unit: UNIT_BYTES },
 ]
 
 export const clusterMetricTypeKeys = () => ([
-    { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 6, unit: 2, serverRequest: CLUSTER_METRICS_ENDPOINT },
-    { field: 'memory', serverField: 'mem', header: 'Memory', position: 6, unit: 2, serverRequest: CLUSTER_METRICS_ENDPOINT },
-    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 6, unit: 2, serverRequest: CLUSTER_METRICS_ENDPOINT },
+    { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 6, unit: UNIT_PERCENTAGE, serverRequest: CLUSTER_METRICS_ENDPOINT },
+    { field: 'memory', serverField: 'mem', header: 'Memory', position: 6, unit: UNIT_PERCENTAGE, serverRequest: CLUSTER_METRICS_ENDPOINT },
+    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 6, unit: UNIT_PERCENTAGE, serverRequest: CLUSTER_METRICS_ENDPOINT },
     { field: 'network', serverField: 'network', serverRequest: CLUSTER_METRICS_ENDPOINT, keys: networkMetricType },
     { field: 'map', header: 'Map' }
 ])
