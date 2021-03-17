@@ -35,12 +35,19 @@ class CloudletPoolReg extends React.Component {
             step: 0,
             forms: []
         }
+        this._isMounted = false
         this.isUpdate = this.props.isUpdate
         this.action = props.action
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.operatorList = []
         this.organizationList = []
         this.cloudletList = []
+    }
+
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
     }
 
     getCloudletList = async (forms, form, region, operator) => {
@@ -50,7 +57,7 @@ class CloudletPoolReg extends React.Component {
                 return cloudlet[fields.operatorName] === operator
             })
             this.updateUI(form)
-            this.setState({ forms: forms })
+            this.updateState({ forms: forms })
         }
     }
 
@@ -180,7 +187,7 @@ class CloudletPoolReg extends React.Component {
             for (let i = 0; i < step.length; i++) {
                 this.updateUI(step[i])
             }
-            this.setState({
+            this.updateState({
                 step: 1,
                 forms: step
             })
@@ -235,7 +242,7 @@ class CloudletPoolReg extends React.Component {
 
     /*Required*/
     reloadForms = () => {
-        this.setState({
+        this.updateState({
             forms: this.state.forms
         })
     }
@@ -243,22 +250,22 @@ class CloudletPoolReg extends React.Component {
     render() {
         return (
             <div className="round_panel">
-                    <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
-                        {this.props.action ? null :
-                            <Step.Group stackable='tablet' style={{ width: '100%' }}>
-                                {
-                                    stepData.map((item, i) => (
-                                        <Step active={this.state.step === i} key={i} >
-                                            <Step.Content>
-                                                <Step.Title>{item.step}</Step.Title>
-                                                <Step.Description>{item.description}</Step.Description>
-                                            </Step.Content>
-                                        </Step>
-                                    ))
-                                }
-                            </Step.Group>}
-                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                    </Item>
+                <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
+                    {this.props.action ? null :
+                        <Step.Group stackable='tablet' style={{ width: '100%' }}>
+                            {
+                                stepData.map((item, i) => (
+                                    <Step active={this.state.step === i} key={i} >
+                                        <Step.Content>
+                                            <Step.Title>{item.step}</Step.Title>
+                                            <Step.Description>{item.description}</Step.Description>
+                                        </Step.Content>
+                                    </Step>
+                                ))
+                            }
+                        </Step.Group>}
+                    <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                </Item>
             </div>
         )
     }
@@ -356,15 +363,20 @@ class CloudletPoolReg extends React.Component {
                 }
             }
 
-            this.setState({
+            this.updateState({
                 forms: forms
             })
         }
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.getFormData(this.props.data)
         this.props.handleViewMode(HELP_CLOUDLET_POOL_REG_1);
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 };
 
