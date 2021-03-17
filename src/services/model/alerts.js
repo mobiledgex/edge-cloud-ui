@@ -40,8 +40,8 @@ export const showAlertReceiverKeys = () => (
         { field: fields.username, serverField: 'User', label: 'Username', sortable: true, visible: true, filter: true },
         { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: false, filter: true },
         { field: fields.email, serverField: 'Email', label: 'Email', sortable: true, visible: false, filter: true },
-        { field: fields.pagerDutyIntegrationKey, serverField: 'PagerDutyIntegrationKey', label: 'Pager Duty Integration Key', sortable: false, visible: false, filter: true },
-        { field: fields.pagerDutyApiVersion, serverField: 'PagerDutyApiVersion', label: 'Pager Duty API Version', sortable: false, visible: false, filter: true },
+        { field: fields.pagerDutyIntegrationKey, serverField: 'PagerDutyIntegrationKey', label: 'PagerDuty Integration Key', sortable: false, visible: false, filter: true },
+        { field: fields.pagerDutyApiVersion, serverField: 'PagerDutyApiVersion', label: 'PagerDuty API Version', sortable: false, visible: false, filter: true },
         { field: fields.slackchannel, serverField: 'SlackChannel', label: 'Slack Channel', sortable: true, visible: false, filter: true },
         { field: fields.receiverAddress, label: 'Receiver Address', sortable: true, visible: true, filter: true, detailView: false },
         { field: fields.slackwebhook, serverField: 'SlackWebhook', label: 'Slack Webhook', sortable: true, visible: false },
@@ -127,7 +127,6 @@ const getKey = (data, isDelete) => {
     }
     else if (data[fields.type] === RECEIVER_TYPE_PAGER_DUTY) {
         alert['pagerdutyintegrationkey'] = data[fields.pagerDutyIntegrationKey]
-        alert['pagerdutyapiversion'] = data[fields.pagerDutyApiVersion]
     }
 
 
@@ -200,7 +199,7 @@ export const showAlerts = (data) => {
 }
 
 const customData = (value) => {
-    value[fields.receiverAddress] = value[fields.type] === 'pagerduty' ? 'NA' : value[fields.type] === 'email' ? value[fields.email] : value[fields.slackchannel]
+    value[fields.receiverAddress] = value[fields.type] === 'pagerduty' ? 'PagerDuty' : value[fields.type] === 'email' ? value[fields.email] : value[fields.slackchannel]
     value[fields.receiverAddress] = value[fields.type] + '#OS#' + value[fields.receiverAddress]
     return value
 }

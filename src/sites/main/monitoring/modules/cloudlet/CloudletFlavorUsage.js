@@ -17,8 +17,15 @@ class CloudletFlavorUsage extends React.Component {
             colors: [],
             loading: false
         }
+        this._isMounted = false
         this.orgData = []
         this.avgData = {}
+    }
+
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
     }
 
     loadMore = () => {
@@ -32,7 +39,7 @@ class CloudletFlavorUsage extends React.Component {
         const { chartData } = this.state
         const { filter, id, style } = this.props
         return (
-            chartData &&  filter.metricType.includes(chartData.metric.field) ?
+            chartData && filter.metricType.includes(chartData.metric.field) ?
                 <GridListTile cols={1} style={style}>
                     <Card style={{ height: 300 }}>
                         <LineChart id={'cloudlet-flavor-usage'} rowSelected={0} data={chartData} avgDataRegion={this.avgData} globalFilter={filter} range={this.props.range} labelPosition={5} steppedLine={true} />
@@ -50,7 +57,7 @@ class CloudletFlavorUsage extends React.Component {
             worker.postMessage({ type: WORKER_MONITORING_FLAVOR_USAGE, metricList: this.metricList, avgData: this.props.avgData, rowSelected: this.props.rowSelected, metric, region: this.props.region, avgFlavorData: this.avgData, calAvgData })
             worker.addEventListener('message', event => {
                 this.avgData = event.data.avgData
-                this.setState({ chartData: event.data.chartData })
+                this.updateState({ chartData: event.data.chartData })
             })
         }
     }
@@ -63,11 +70,11 @@ class CloudletFlavorUsage extends React.Component {
                 this.formatData(true)
             }
             else {
-                this.setState({ chartData: undefined })
+                this.updateState({ chartData: undefined })
             }
         }
         else {
-            this.setState({ chartData: undefined })
+            this.updateState({ chartData: undefined })
         }
     }
 
@@ -81,19 +88,23 @@ class CloudletFlavorUsage extends React.Component {
             endtime: range.endtime,
             selector: 'flavorusage',
         }
-        this.setState({ loading: true }, () => {
-            sendAuthRequest(this, cloudletFlavorUsageMetrics(requestData), this.serverResponse)
-        })
+        if (this._isMounted) {
+            this.setState({ loading: true }, () => {
+                sendAuthRequest(this, cloudletFlavorUsageMetrics(requestData), this.serverResponse)
+            })
+        }
     }
 
     defaultStructure = () => {
         let region = this.props.region
         let range = this.props.range
-        this.setState({
-            chartData: { metric, region }
-        }, () => {
-            this.fetchData(range, region)
-        })
+        if (this._isMounted) {
+            this.setState({
+                chartData: { metric, region }
+            }, () => {
+                this.fetchData(range, region)
+            })
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -109,7 +120,12 @@ class CloudletFlavorUsage extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.defaultStructure()
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 }
 

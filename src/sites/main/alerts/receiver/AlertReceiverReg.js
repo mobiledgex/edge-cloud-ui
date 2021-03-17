@@ -68,10 +68,6 @@ class FlavorReg extends React.Component {
         { field: fields.slackwebhook, label: 'Slack URL', formType: INPUT, placeholder: 'Enter Slack Webhook URL', rules: { required: true }, width: 8, visible: true }
     ])
 
-    pageDutyForm = () => ([
-        { field: fields.pagerDutyApiVersion, label: 'Pager Duty API Version', formType: INPUT, placeholder: 'Enter Pager Duty API version', rules: { required: true }, width: 8, visible: true },
-        { field: fields.pagerDutyIntegrationKey, label: 'Pager Duty Integration Key', formType: INPUT, placeholder: 'Enter Pager Duty integration key', rules: { required: true }, width: 8, visible: true, dataValidateFunc:this.validatePageDutyVersion }
-    ])
 
     formKeys = () => {
         return [
@@ -79,7 +75,7 @@ class FlavorReg extends React.Component {
             { field: fields.alertname, label: 'Alert Name', formType: INPUT, placeholder: 'Enter Alert Name', rules: { required: true }, visible: true, tip: 'Unique name of this receiver' },
             { field: fields.type, label: 'Receiver Type', formType: SELECT, placeholder: 'Select Receiver Type', rules: { required: true }, visible: true, tip: 'Receiver type - email, or slack' },
             { uuid: uuid(), field: fields.slack, label: 'Slack', formType: INPUT, rules: { required: true }, visible: false, forms: this.slackForm(), tip: 'Slack channel to be receiving the alert\nSlack webhook url' },
-            { uuid: uuid(), field: fields.pagerDuty, label: 'Page Duty', formType: INPUT, rules: { required: true }, visible: false, forms: this.pageDutyForm(), tip: 'PagerDuty API version\nPagerDuty integration key' },
+            { field: fields.pagerDutyIntegrationKey, label: 'PagerDuty Integration Key', formType: INPUT, placeholder: 'Enter PagerDuty integration key', rules: { required: true}, visible: false, dataValidateFunc:this.validatePageDutyVersion },
             { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true }, visible: false, tip: 'Email address receiving the alert (by default email associated with the account)' },
             { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true }, visible: true, tip: 'Alert severity level - one of "info", "warning", "error"' },
             { field: fields.selector, label: 'Selector', formType: SELECT, placeholder: 'Select Selector', rules: { required: true, disabled: true }, visible: true, tip: 'Selector for which you want to receive alerts' },
@@ -103,7 +99,7 @@ class FlavorReg extends React.Component {
             else if (form.field === fields.slack) {
                 form.visible = currentForm.value === constant.RECEIVER_TYPE_SLACK
             }
-            else if (form.field === fields.pagerDuty) {
+            else if (form.field === fields.pagerDutyIntegrationKey) {
                 form.visible = currentForm.value === constant.RECEIVER_TYPE_PAGER_DUTY
             }
         }
@@ -276,10 +272,6 @@ class FlavorReg extends React.Component {
                         if (form.field === fields.slack) {
                             data[fields.slackchannel] = multiFormData[fields.slackchannel]
                             data[fields.slackwebhook] = multiFormData[fields.slackwebhook]
-                        }
-                        else if (form.field === fields.pagerDuty) {
-                            data[fields.pagerDutyApiVersion] = multiFormData[fields.pagerDutyApiVersion]
-                            data[fields.pagerDutyIntegrationKey] = multiFormData[fields.pagerDutyIntegrationKey]
                         }
                     }
                     data[uuid] = undefined

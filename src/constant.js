@@ -57,7 +57,7 @@ export const RUN_COMMAND = 'Run Command';
 export const SHOW_LOGS = 'Show Logs';
 export const RECEIVER_TYPE_EMAIL = 'Email'
 export const RECEIVER_TYPE_SLACK = 'Slack'
-export const RECEIVER_TYPE_PAGER_DUTY = 'Pager Duty'
+export const RECEIVER_TYPE_PAGER_DUTY = 'PagerDuty'
 
 export const MAINTENANCE_STATE_NORMAL_OPERATION = 'Normal Operation'
 export const MAINTENANCE_STATE_MAINTENANCE_START = 'Maintenance Start'
