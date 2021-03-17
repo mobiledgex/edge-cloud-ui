@@ -67,3 +67,31 @@ export const sendRequests = (self, requestList, callback) => {
     }
     return worker
 }
+
+
+//Not in use, must be reimplemented 
+const postMessage = (worker, message) => new Promise((resolve, reject) => {
+    const resolution = (event) => {
+        worker.removeEventListener('message', resolution)
+        if (event.data.status && event.data.status !== 200) {
+            if (checkExpiry(self, event.data.message)) {
+                reject(event.data)
+            }
+        }
+        else {
+            resolve(event.data)
+        }
+    }
+    worker.addEventListener('message', resolution)
+    worker.postMessage(message)
+})
+
+export const sendAsyncAuthRequest = async (request) => {
+    let token = getToken(self)
+    if (token) {
+        const worker = new AlertWorker();
+        let message = { type: WORKER_SERVER, request: request, requestType: 'object', token }
+        let mc = await postMessage(worker, message)
+        return mc
+    }
+}

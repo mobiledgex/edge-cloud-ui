@@ -1,13 +1,13 @@
 import React from 'react'
 import { Line } from 'react-chartjs-2'
 import * as dateUtil from '../../../../../utils/date_util'
-import { unit } from '../../../../../utils/math_util'
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import uuid from 'uuid'
 import { Box, Card, Dialog, GridListTile, IconButton, LinearProgress } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CloseIcon from '@material-ui/icons/Close';
 import { LTTB } from 'downsample';
+import { convertUnit } from '../../helper/unitConvertor';
 
 const formatData = (rawData, avgDataRegion, globalFilter, rowSelected, labelPosition, steppedLine) => {
     let datasets = []
@@ -110,8 +110,11 @@ const optionsGenerator = (header, unitId, fullscreen, range) => {
                     labelString: header
                 },
                 ticks: {
+                    suggestedMax:1,
+                    suggestedMin:10,
+                    precision:1,
                     callback: (label, index, labels) => {
-                        return unit ? unit(unitId, label) : label
+                        return unitId ? convertUnit(unitId, label) : label
                     },
                     maxTicksLimit: fullscreen ? 15 : 5
                 }
@@ -122,7 +125,7 @@ const optionsGenerator = (header, unitId, fullscreen, range) => {
             callbacks: {
                 label: function (tooltipItem, data) {
                     var label = data.datasets[tooltipItem.datasetIndex].label
-                    let value = unit ? unit(unitId, tooltipItem.yLabel) : tooltipItem.yLabel
+                    let value = unitId ? convertUnit(unitId, tooltipItem.yLabel) : tooltipItem.yLabel
                     return `${label} : ${value ? value : 0}`
                 }
             }
