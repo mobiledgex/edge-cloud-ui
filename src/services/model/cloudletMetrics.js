@@ -1,6 +1,7 @@
 import * as formatter from './format'
 import { CLOUDLET_METRICS_ENDPOINT } from './endPointTypes'
 import { CLOUDLET_METRICS_USAGE_ENDPOINT } from './endpoints';
+import { UNIT_GB, UNIT_KB, UNIT_MB } from '../../sites/main/monitoring/helper/unitConvertor';
 
 let fields = formatter.fields;
 
@@ -38,16 +39,16 @@ export const cloudletMetricsListKeys = [
 
 export const utilizationMetricType = [
     { field: 'cpu', serverField: 'utilization', subId: 'vCpuUsed', header: 'vCpu Infra Usage', position: 4 },
-    { field: 'memory', serverField: 'utilization', subId: 'memUsed', header: 'Memory Infra Usage', position: 6, unit: 4 },
-    { field: 'disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Infra Usage', position: 8, unit: 5 },
+    { field: 'memory', serverField: 'utilization', subId: 'memUsed', header: 'Memory Infra Usage', position: 6, unit: UNIT_MB },
+    { field: 'disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Infra Usage', position: 8, unit: UNIT_GB },
 ]
 
 export const resourceUsageMetricType = [
-    { field: 'diskUsed', serverField: 'diskUsed', serverHead:'openstack-resource-usage', header: 'Disk Usage', position: 4, unit: 5 },
+    { field: 'diskUsed', serverField: 'diskUsed', serverHead:'openstack-resource-usage', header: 'Disk Usage', position: 4, unit: UNIT_GB },
     { field: 'floatingIpsUsed', serverField: 'floatingIpsUsed', serverHead:'openstack-resource-usage', header: 'Floating IP Used', position: 5 },
     { field: 'gpusUsed', serverField: 'gpusUsed', serverHead:'openstack-resource-usage', header: 'GPU Used', position: 6 },
     { field: 'instancesUsed', serverField: 'instancesUsed', serverHead:'openstack-resource-usage', header: 'Instances Used', position: 7 },
-    { field: 'ramUsed', serverField: 'ramUsed', serverHead:'openstack-resource-usage', header: 'RAM Used', position: 8, unit:6 },
+    { field: 'ramUsed', serverField: 'ramUsed', serverHead:'openstack-resource-usage', header: 'RAM Used', position: 8, unit:UNIT_KB },
     { field: 'vcpusUsed', serverField: 'vcpusUsed', serverHead:'openstack-resource-usage', header: 'vCPUs Used', position: 9 },
 ]
 

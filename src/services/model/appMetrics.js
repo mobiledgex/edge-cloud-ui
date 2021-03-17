@@ -2,6 +2,7 @@
 import * as formatter from './format'
 import { APP_INST_METRICS_ENDPOINT } from './endPointTypes'
 import { healthCheck } from '../../constant'
+import { UNIT_BYTES, UNIT_PERCENTAGE, UNIT_FLOOR } from '../../sites/main/monitoring/helper/unitConvertor';
 
 let fields = formatter.fields;
 
@@ -53,16 +54,16 @@ export const appMetricsListKeys = [
 ]
 
 export const networkMetricType = [
-    { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 10, unit: 1 },
-    { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 11, unit: 1},
+    { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 10, unit: UNIT_BYTES },
+    { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 11, unit: UNIT_BYTES},
 ]
 
 export const appInstMetricTypeKeys = () => ([
-    { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 10, unit: 2, serverRequest: APP_INST_METRICS_ENDPOINT },
-    { field: 'memory', serverField: 'mem', header: 'Memory', position: 10, unit: 1, serverRequest: APP_INST_METRICS_ENDPOINT },
-    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 10, unit: 1, serverRequest: APP_INST_METRICS_ENDPOINT },
+    { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 10, unit: UNIT_PERCENTAGE, serverRequest: APP_INST_METRICS_ENDPOINT },
+    { field: 'memory', serverField: 'mem', header: 'Memory', position: 10, unit: UNIT_BYTES, serverRequest: APP_INST_METRICS_ENDPOINT },
+    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 10, unit: UNIT_BYTES, serverRequest: APP_INST_METRICS_ENDPOINT },
     { field: 'network', serverField: 'network', serverRequest: APP_INST_METRICS_ENDPOINT, keys: networkMetricType },
-    { field: 'connections', serverField: 'connections', subId: 'active', header: 'Active Connections', position: 10, unit: 3, serverRequest: APP_INST_METRICS_ENDPOINT },
+    { field: 'connections', serverField: 'connections', subId: 'active', header: 'Active Connections', position: 10, unit: UNIT_FLOOR, serverRequest: APP_INST_METRICS_ENDPOINT },
     { field: 'map', header: 'Map' },
     { field: 'event', header: 'Event' },
     { field: 'client', header: 'Client Usage' },

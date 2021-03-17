@@ -4,8 +4,8 @@
 import maxBy from 'lodash/maxBy';
 import meanBy from 'lodash/meanBy';
 import minBy from 'lodash/minBy';
-import { unit } from '../../utils/math_util'
 import cloneDeep from 'lodash/cloneDeep';
+import { convertUnit } from '../../sites/main/monitoring/helper/unitConvertor';
 
 
 const avgCalculator = (parentId, data, metric) => {
@@ -26,9 +26,9 @@ const avgCalculator = (parentId, data, metric) => {
                     max = max ? max : 0
                     min = min ? min : 0
                 }
-                let avgUnit = metric.unit ? unit(metric.unit, avg) : avg
-                let maxUnit = metric.unit ? unit(metric.unit, max) : max
-                let minUnit = metric.unit ? unit(metric.unit, min) : min
+                let avgUnit = metric.unit ? convertUnit(metric.unit, avg, true) : avg
+                let maxUnit = metric.unit ? convertUnit(metric.unit, max, true) : max
+                let minUnit = metric.unit ? convertUnit(metric.unit, min, true) : min
                 let avgData = {}
                 avgData[metric.field] = [avgUnit, minUnit, maxUnit]
                 chartData['avgData'][valueKey] =  avgData
@@ -37,8 +37,8 @@ const avgCalculator = (parentId, data, metric) => {
                 let latestData = value[0]
                 let positionValue = latestData[metric.position] ? latestData[metric.position] : 0
                 let positionmaxValue = latestData[metric.position + 1] ? latestData[metric.position + 1] : 0
-                let convertedMaxValue = metric.unit ? unit(metric.unit, positionmaxValue) : positionmaxValue
-                let convertedValue = metric.unit ? unit(metric.unit, positionValue) : positionValue
+                let convertedMaxValue = metric.unit ? convertUnit(metric.unit, positionmaxValue, true) : positionmaxValue
+                let convertedValue = metric.unit ? convertUnit(metric.unit, positionValue, true) : positionValue
                 let avgData = {}
                 avgData[metric.field] =  `${convertedValue} / ${convertedMaxValue}`
                 chartData['avgData'][valueKey] = avgData
