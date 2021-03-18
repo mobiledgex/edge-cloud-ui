@@ -93,7 +93,7 @@ class Events extends React.Component {
                             </div>
                         </div> :
                         <div align="center">
-                            <h3 style={{ marginTop: '8vh' }}><b>No Data</b></h3>
+                            <h3 style={{ padding:'90px 0px' }}  className='chart-header'><b>No Data</b></h3>
                         </div>
                 }
             </div>

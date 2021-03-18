@@ -35,6 +35,7 @@ const optionsGenerator = (header, unitId, fullscreen, range) => {
             position: "top",
             display: fullscreen,
             labels: {
+                fontColor:'#CCC',
                 // boxWidth: 2
             }
         },

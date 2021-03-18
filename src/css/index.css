@@ -1102,6 +1102,7 @@ body, button, input, textarea, optgroup, select, textarea,
 
 .content_title_label{
     display:flex;
+    margin-top: 2px;
     align-items: center;
     font-size:25px;
     white-space: nowrap;

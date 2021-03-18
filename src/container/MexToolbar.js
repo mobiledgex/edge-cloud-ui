@@ -124,9 +124,9 @@ const MexToolbar = (props) => {
     const regionForm = () => (
         requestInfo.isRegion ?
             <Box order={2} p={1} style={{ marginTop: 4, marginRight: 12 }}>
-                <strong style={{marginRight:5}}>Region:</strong>
-                <div style={{display:'inline', cursor:'pointer'}} aria-label="regions" aria-haspopup="true" onClick={(e) => { setAnchorRegionEL(e.currentTarget) }}>
-                    <strong style={{fontSize:12, marginRight:5}}>{region.text}</strong><Icon name='chevron down' size='small'/>
+                <strong style={{ marginRight: 5 }}>Region:</strong>
+                <div style={{ display: 'inline', cursor: 'pointer' }} aria-label="regions" aria-haspopup="true" onClick={(e) => { setAnchorRegionEL(e.currentTarget) }}>
+                    <strong style={{ fontSize: 12, marginRight: 5 }}>{region.text}</strong><Icon name='chevron down' size='small' />
                 </div>
                 <Menu
                     id="toolbar-region"
@@ -187,23 +187,26 @@ const MexToolbar = (props) => {
 
     return (
         <Toolbar>
-            <label className='content_title_label'>{requestInfo.headerLabel}</label>
-            {
-                props.isDetail ?
-                    <div style={{ right: 0, position: 'absolute' }}>
-                        {getDetailView(props)}
-                    </div> :
-                    <div style={{ width: '100%' }}>
-                        <Box display="flex" justifyContent="flex-end">
-                            {dustBin()}
-                            {searchForm()}
-                            {regionForm()}
-                            {mapForm()}
-                            {addForm()}
-                            {refreshForm()}
-                        </Box>
-                    </div>
-            }
+            <div style={{ width: '100%' }}>
+                <Box display="flex" p={1} flexWrap="wrap">
+                    <Box flexGrow={1}>
+                        <label className='content_title_label'>{requestInfo.headerLabel}</label>
+                    </Box>
+                    {
+                        props.isDetail ?
+                            <div style={{ right: 0, position: 'absolute' }}>
+                                {getDetailView(props)}
+                            </div> :
+                            <React.Fragment>
+                                {dustBin()}
+                                {searchForm()}
+                                {regionForm()}
+                                {mapForm()}
+                                {addForm()}
+                                {refreshForm()}
+                            </React.Fragment>
+                    }
+                </Box></div>
         </Toolbar>
     )
 }
