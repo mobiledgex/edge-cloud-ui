@@ -1,7 +1,7 @@
 import * as formatter from './format'
 import { CLOUDLET_METRICS_ENDPOINT } from './endPointTypes'
 import { CLOUDLET_METRICS_USAGE_ENDPOINT } from './endpoints';
-import { UNIT_GB, UNIT_KB, UNIT_MB } from '../../sites/main/monitoring/helper/unitConvertor';
+import { UNIT_FLOOR, UNIT_GB, UNIT_KB, UNIT_MB } from '../../sites/main/monitoring/helper/unitConvertor';
 
 let fields = formatter.fields;
 
@@ -45,11 +45,11 @@ export const utilizationMetricType = [
 
 export const resourceUsageMetricType = [
     { field: 'diskUsed', serverField: 'diskUsed', serverHead:'openstack-resource-usage', header: 'Disk Usage', position: 4, unit: UNIT_GB },
-    { field: 'floatingIpsUsed', serverField: 'floatingIpsUsed', serverHead:'openstack-resource-usage', header: 'Floating IP Used', position: 5 },
-    { field: 'gpusUsed', serverField: 'gpusUsed', serverHead:'openstack-resource-usage', header: 'GPU Used', position: 6 },
-    { field: 'instancesUsed', serverField: 'instancesUsed', serverHead:'openstack-resource-usage', header: 'Instances Used', position: 7 },
-    { field: 'ramUsed', serverField: 'ramUsed', serverHead:'openstack-resource-usage', header: 'RAM Used', position: 8, unit:UNIT_KB },
-    { field: 'vcpusUsed', serverField: 'vcpusUsed', serverHead:'openstack-resource-usage', header: 'vCPUs Used', position: 9 },
+    { field: 'floatingIpsUsed', serverField: 'floatingIpsUsed', serverHead:'openstack-resource-usage', header: 'Floating IP Used', position: 5, unit:UNIT_FLOOR },
+    { field: 'gpusUsed', serverField: 'gpusUsed', serverHead:'openstack-resource-usage', header: 'GPU Used', position: 6, unit:UNIT_FLOOR },
+    { field: 'instancesUsed', serverField: 'instancesUsed', serverHead:'openstack-resource-usage', header: 'Instances Used', position: 7, unit:UNIT_FLOOR },
+    { field: 'ramUsed', serverField: 'ramUsed', serverHead:'openstack-resource-usage', header: 'RAM Used', position: 8, unit:UNIT_MB },
+    { field: 'vcpusUsed', serverField: 'vcpusUsed', serverHead:'openstack-resource-usage', header: 'vCPUs Used', position: 9, unit:UNIT_FLOOR },
 ]
 
 export const cloudletMetricTypeKeys = ()=>([

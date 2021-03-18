@@ -2,6 +2,7 @@
 import { fields } from "../../model/format"
 import moment from 'moment'
 import randomColor from 'randomcolor'
+import { generateDataset } from './chart'
 
 const FLAVOR_USAGE_TIME = 0
 const FLAVOR_USAGE_REGION = 1
@@ -12,6 +13,11 @@ const FLAVOR_USAGE_FLAVOR = 5
 
 const utcTime = (format, date) => {
     return moment(date).utc().format(format)
+}
+
+const processLineChartData = (chartData, avgData, inp) => {
+    const { timezone } = inp
+    chartData['datasets'] = generateDataset(chartData, avgData, timezone, 5, true)
 }
 
 const processData = (worker) => {
@@ -109,5 +115,6 @@ export const format = (worker) => {
         avgData = avgFlavorData(worker)
     }
     let chartData = processData(worker)
+    processLineChartData(chartData, avgData, worker)
     self.postMessage({ chartData, avgData })
 }

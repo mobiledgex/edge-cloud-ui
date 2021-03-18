@@ -361,10 +361,6 @@ class MexListView extends React.Component {
             })
         }
     }
-    /*
-      Stepper Block
-      Todo: Move to separate file
-      */
 
     onFilterValue = (value) => {
         if (value !== undefined && value.length >= 0) {
