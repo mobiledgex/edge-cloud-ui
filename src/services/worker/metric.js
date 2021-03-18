@@ -6,16 +6,22 @@ import meanBy from 'lodash/meanBy';
 import minBy from 'lodash/minBy';
 import cloneDeep from 'lodash/cloneDeep';
 import { convertUnit } from '../../sites/main/monitoring/helper/unitConvertor';
+import { generateDataset } from './monitoring/chart'
 
+const processLineChartData = (chartDataList, inp) => {
+    const { avgData, timezone } = inp
+    chartDataList.forEach(chartData => {
+        chartData['datasets'] = generateDataset(chartData, avgData, timezone)
+    })
+}
 
 const avgCalculator = (parentId, data, metric) => {
     let chartData = {}
     chartData = cloneDeep(data)
     chartData['avgData'] = chartData['avgData'] ? chartData['avgData'] : {}
-    Object.keys(data.values).map(valueKey=>{
-        let value = data.values[valueKey]  
-        if(value)
-        {
+    Object.keys(data.values).map(valueKey => {
+        let value = data.values[valueKey]
+        if (value) {
             if (parentId === 'appinst' || parentId === 'cluster') {
                 let avg = meanBy(value, v => (v[metric.position]))
                 let max = maxBy(value, v => (v[metric.position]))[metric.position]
@@ -31,7 +37,7 @@ const avgCalculator = (parentId, data, metric) => {
                 let minUnit = metric.unit ? convertUnit(metric.unit, min, true) : min
                 let avgData = {}
                 avgData[metric.field] = [avgUnit, minUnit, maxUnit]
-                chartData['avgData'][valueKey] =  avgData
+                chartData['avgData'][valueKey] = avgData
             }
             else {
                 let latestData = value[0]
@@ -40,7 +46,7 @@ const avgCalculator = (parentId, data, metric) => {
                 let convertedMaxValue = metric.unit ? convertUnit(metric.unit, positionmaxValue, true) : positionmaxValue
                 let convertedValue = metric.unit ? convertUnit(metric.unit, positionValue, true) : positionValue
                 let avgData = {}
-                avgData[metric.field] =  `${convertedValue} / ${convertedMaxValue}`
+                avgData[metric.field] = `${convertedValue} / ${convertedMaxValue}`
                 chartData['avgData'][valueKey] = avgData
             }
         }
@@ -53,13 +59,13 @@ const processData = (inp) => {
     let parentId = inp.parentId
     let region = inp.region
     let metricList = inp.metric.keys ? inp.metric.keys : [inp.metric]
-    
+
     let chartData = []
 
     if (dataList && dataList.length > 0) {
         dataList.map(metricData => {
             let key = Object.keys(metricData)[0]
-            metricList.map(metric=>{
+            metricList.map(metric => {
                 let objectId = metric.serverHead ? metric.serverHead : `${parentId}-${metric.serverField}`
                 if (key === objectId) {
                     if (metricData[objectId]) {
@@ -72,9 +78,10 @@ const processData = (inp) => {
                     }
                 }
             })
-            
+
         })
     }
+    processLineChartData(chartData, inp)
     self.postMessage(chartData)
 }
 

@@ -34,9 +34,9 @@ class MexAppClient extends React.Component {
         return this.validatData(stackedData) ? <HorizontalBar header='Client API Usage Count' chartData={stackedData} filter={filter} /> :
             <div className="event-list-main" align="center" style={{ textAlign: 'center', verticalAlign: 'middle' }}>
                 <div align="left" className="event-list-header">
-                    <h3>Client API Usage Count</h3>
+                    <h3 className='chart-header'>Client API Usage Count</h3>
                 </div>
-                <h3 style={{ marginTop: '8vh' }}><b>No Data</b></h3>
+                <h3 style={{ padding:'90px 0px' }}  className='chart-header'><b>No Data</b></h3>
             </div>
     }
 
