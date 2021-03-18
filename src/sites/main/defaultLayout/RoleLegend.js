@@ -25,7 +25,7 @@ const roles =
             'Cluster Instances': 'Manage',
             'Apps': 'Manage',
             'App Instances': 'Manage',
-            'Policies': 'Manage',
+            'Policies': 'View',
             'Monitoring': 'View',
             'Audit Logs': 'View'
         },
@@ -36,7 +36,7 @@ const roles =
             'Cluster Instances': 'Manage',
             'Apps': 'Manage',
             'App Instances': 'Manage',
-            'Policies': 'Manage',
+            'Policies': 'View',
             'Monitoring': 'View',
             'Audit Logs': 'View'
         },
