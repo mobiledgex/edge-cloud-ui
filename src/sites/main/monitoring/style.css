@@ -173,17 +173,14 @@
     font-size:1em;
   }
 
-
-.line-chart-header-left {
-    float: left;
-    display: inline;
+.chart-header {
+    color:#CCC;
 }
 
-
-.line-chart-header-right{
-    float: right;
-    display: inline;
-    margin-top: -10px;
+.chart-no-data{
+    padding: 50px 0;
+    font-size: 20px;
+    color:#CCC;
 }
 
 .line-skeleton{

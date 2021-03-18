@@ -6,6 +6,7 @@ import LineChart from '../../charts/linechart/MexLineChart'
 import MexWorker from '../../../../../services/worker/mex.worker.js'
 import { WORKER_MONITORING_FLAVOR_USAGE } from '../../../../../services/worker/constant'
 import { Card, GridListTile } from '@material-ui/core'
+import { timezonePref } from '../../../../../utils/sharedPreferences_util'
 
 const metric = { field: 'count', serverField: 'count', serverHead: 'cloudlet-flavor-usage', header: 'Flavor Usage', position: 4 }
 class CloudletFlavorUsage extends React.Component {
@@ -28,21 +29,14 @@ class CloudletFlavorUsage extends React.Component {
         }
     }
 
-    loadMore = () => {
-        let starttime = this.props.range.starttime
-        let eventData = this.state.eventData
-        let endtime = eventData[eventData.length - 1]['timestamp']
-        this.event({ starttime, endtime }, true)
-    }
-
     render() {
         const { chartData } = this.state
-        const { filter, id, style } = this.props
+        const { filter, id, style, rowSelected } = this.props
         return (
             chartData && filter.metricType.includes(chartData.metric.field) ?
                 <GridListTile cols={1} style={style}>
                     <Card style={{ height: 300 }}>
-                        <LineChart id={'cloudlet-flavor-usage'} rowSelected={0} data={chartData} avgDataRegion={this.avgData} globalFilter={filter} range={this.props.range} labelPosition={5} steppedLine={true} />
+                        <LineChart id={'cloudlet-flavor-usage'} rowSelected={rowSelected} disableRowSelectedFilter={true} data={chartData} avgData={this.avgData} globalFilter={filter} range={this.props.range} />
                     </Card>
                 </GridListTile> : null
         )
@@ -54,7 +48,8 @@ class CloudletFlavorUsage extends React.Component {
     formatData = (calAvgData) => {
         if (this.metricList) {
             const worker = new MexWorker();
-            worker.postMessage({ type: WORKER_MONITORING_FLAVOR_USAGE, metricList: this.metricList, avgData: this.props.avgData, rowSelected: this.props.rowSelected, metric, region: this.props.region, avgFlavorData: this.avgData, calAvgData })
+            worker.postMessage({ type: WORKER_MONITORING_FLAVOR_USAGE, metricList: this.metricList, avgData: this.props.avgData, rowSelected: this.props.rowSelected, metric, region: this.props.region, avgFlavorData: this.avgData, calAvgData, timezone:timezonePref() })
+            
             worker.addEventListener('message', event => {
                 this.avgData = event.data.avgData
                 this.updateState({ chartData: event.data.chartData })

@@ -78,7 +78,7 @@ class Events extends React.Component {
         return (
             <div className="event-list-main" id="event-list">
                 <div align="left" className="event-list-header">
-                    <h3>Events</h3>
+                    <h3 className='chart-header'>Events</h3>
                 </div>
                 {
                     eventData.length > 0 ?

@@ -1,11 +1,12 @@
 import React from 'react'
 import { fields, getOrganization, isAdmin } from '../../../../services/model/format'
 import LineChart from './linechart/MexLineChart'
-import { sendAuthRequest } from '../../../../services/model/serverWorker'
+import { sendAsyncAuthRequest } from '../../../../services/model/serverWorker'
 import { WORKER_METRIC } from '../../../../services/worker/constant'
 import MexWorker from '../../../../services/worker/mex.worker.js'
 import { metricRequest } from '../helper/Constant'
 import { Card, GridListTile } from '@material-ui/core'
+import { timezonePref } from '../../../../utils/sharedPreferences_util'
 class MexChart extends React.Component {
     constructor(props) {
         super()
@@ -55,7 +56,7 @@ class MexChart extends React.Component {
                         filter.metricType.includes(data.metric.field) ?
                             <GridListTile key={key} cols={1} style={style}>
                                 <Card style={{ height: 300 }}>
-                                    <LineChart id={key} rowSelected={rowSelected} data={data} avgDataRegion={avgData[region]} globalFilter={filter} range={range} />
+                                    <LineChart id={key} rowSelected={rowSelected} data={data} avgData={avgData[region]} globalFilter={filter} range={range} />
                                 </Card>
                             </GridListTile> : null
                     )
@@ -68,7 +69,15 @@ class MexChart extends React.Component {
             let metricList = mc.response.data
             if (metricList && metricList.length > 0) {
                 const worker = new MexWorker();
-                worker.postMessage({ type: WORKER_METRIC, metricList, parentId: parent.id, region: region, metric })
+                worker.postMessage({
+                    type: WORKER_METRIC,
+                    metricList,
+                    parentId: parent.id,
+                    region: region,
+                    metric,
+                    avgData: this.props.avgData[region],
+                    timezone: timezonePref()
+                })
                 worker.addEventListener('message', event => {
                     let chartData = event.data
                     chartData.map(data => {
@@ -88,7 +97,7 @@ class MexChart extends React.Component {
         }
     }
 
-    fetchMetricData = () => {
+    fetchMetricData = async () => {
         let parent = this.props.filter.parent
         let metric = this.props.metric
         let region = this.props.region
@@ -100,14 +109,13 @@ class MexChart extends React.Component {
             data[fields.selector] = metric.serverField
             let org = isAdmin() ? this.props.org : getOrganization()
             let request = metricRequest(metric.serverRequest, data, org)
-            sendAuthRequest(this, request).addEventListener('message', event => {
-                if (event.data.status && event.data.status !== 200) {
-                    this.updateData(undefined)
-                }
-                else {
-                    this.metricResponse(parent, metric, region, event.data)
-                }
-            });
+            let mc = await sendAsyncAuthRequest(request)
+            if (mc && mc.response && mc.response.status !== 200) {
+                this.updateData(undefined)
+            }
+            else {
+                this.metricResponse(parent, metric, region, mc)
+            }
         }
     }
 

@@ -136,7 +136,7 @@ class MexHorizontalBar extends React.Component {
         return (
             <div mex-test="component-pie-chart" className='horizontal-main' >
                 <div align="left" style={{ marginBottom: 10 }}>
-                    <h3>{header}</h3>
+                    <h3 className='chart-header'>{header}</h3>
                 </div>
                 <div style={{ height: 230, overflow: 'auto', width: '23vw' }}>
                     <div style={{ height: this.chartHeight(processedData) }}>
