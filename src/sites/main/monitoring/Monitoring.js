@@ -9,13 +9,9 @@ import * as constant from './helper/Constant'
 import * as dateUtil from '../../../utils/date_util'
 import { fields, getUserRole, isAdmin, getOrganization } from '../../../services/model/format';
 
-import ShowWorker from '../../../services/worker/monitoring/show.worker.js'
-import { sendAuthRequest, sendRequests } from '../../../services/model/serverWorker'
-
 import MonitoringToolbar from './toolbar/MonitoringToolbar'
 
 import { HELP_MONITORING } from '../../../tutorial';
-import { WORKER_MONITORING_SHOW } from '../../../services/worker/constant';
 
 import MonitoringList from './list/MonitoringList'
 import AppInstMonitoring from './modules/app/AppMonitoring'
@@ -25,9 +21,14 @@ import ClusterSkeleton from './modules/cluster/ClusterSkeleton'
 import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
 import CloudletSkeleton from './modules/cloudlet/CloudletSkeleton'
 
+//services
+import { showOrganizations } from '../../../services/model/organization';
+import ShowWorker from './services/show.worker.js'
+import { processWorker } from '../../../services/worker/interceptor'
+import { sendRequest, sendMultiRequest } from './services/service'
+
 import './common/PageMonitoringStyles.css'
 import './style.css'
-import { showOrganizations } from '../../../services/model/organization';
 
 import sortBy from 'lodash/sortBy'
 import { Skeleton } from '@material-ui/lab';
@@ -76,6 +77,7 @@ class Monitoring extends React.Component {
             listAction: undefined
         }
         this._isMounted = false
+        this.worker = ShowWorker()
         this.selectedRow = undefined
     }
 
@@ -251,62 +253,50 @@ class Monitoring extends React.Component {
         )
     }
 
-    showResponse = (parent, region, mcList, count) => {
-        const worker = new ShowWorker();
-        let avgData = this.state.avgData
-        let parentId = parent.id
-        worker.postMessage({ type: WORKER_MONITORING_SHOW, parentId, region, data: mcList, avgData, metricListKeys: parent.metricListKeys })
-        worker.addEventListener('message', event => {
-            let avgData = event.data.avgData
-            if (this._isMounted) {
-                this.setState(prevState => {
-                    let preAvgData = prevState.avgData
-                    preAvgData[region] = avgData[region]
-                    return { avgData: preAvgData }
-                }, () => {
-                    if (count === 0) {
-                        this.updateState({ loading: false, showLoaded: true })
-                    }
-                })
-            }
-        });
-    }
-
-    fetchShowData = () => {
+    fetchShowData = async () => {
         const { filter } = this.state
-        if (this.regions && this.regions.length > 0) {
-            {
-                let count = this.regions.length
-                constant.metricParentTypes.map(parent => {
-                    let parentId = parent.id
-                    if (constant.validateRole(parent.role) && parentId === filter.parent.id) {
-                        this.regions.map(region => {
-                            let showRequests = parent.showRequest
-                            let requestList = []
-                            requestList = showRequests.map(showRequest => {
-                                return showRequest({ region, org: isAdmin() ? this.state.selectedOrg : getOrganization() })
-                            })
-                            this.updateState({ loading: true })
-                            sendRequests(this, requestList).addEventListener('message', event => {
-                                count = count - 1
-                                if (event.data.status && event.data.status !== 200) {
-                                    if (count === 0) {
-                                        this.updateState({ loading: false, showLoaded: true })
-                                    }
-                                    this.props.handleAlertInfo(event.data.message)
-                                }
-                                else {
-                                    this.showResponse(parent, region, event.data, count)
-                                }
-                            });
-                        })
-                    }
+        let parent = filter.parent
+        if (this.regions && this.regions.length > 0 && constant.validateRole(parent.role)) {
+            let count = this.regions.length
+            this.updateState({ loading: true })
+            this.regions.forEach(async (region) => {
+                let showRequests = parent.showRequest
+                let requestList = []
+                requestList = showRequests.map(showRequest => {
+                    return showRequest({ region, org: isAdmin() ? this.state.selectedOrg : getOrganization() })
                 })
-            }
+                let mcList = await sendMultiRequest(this, requestList)
+                if (mcList && mcList.length > 0) {
+                    count = count - 1
+                    let response = await processWorker(this.worker, {
+                        requestList,
+                        parentId: parent.id,
+                        region,
+                        mcList,
+                        avgData: this.state.avgData,
+                        metricListKeys: parent.metricListKeys
+                    })
+                    if (response.status === 200) {
+                        let avgData = response.data
+                        if (this._isMounted) {
+                            this.setState(prevState => {
+                                let preAvgData = prevState.avgData
+                                preAvgData[region] = avgData[region]
+                                return { avgData: preAvgData }
+                            }, () => {
+                                if (count === 0) {
+                                    this.updateState({ loading: false, showLoaded: true })
+                                }
+                            })
+                        }
+                    }
+                }
+            })
         }
     }
 
-    orgResponse = (mc) => {
+    fetchOrgList = async () => {
+        let mc = await sendRequest(this, showOrganizations(), true)
         if (mc && mc.response && mc.response.status === 200) {
             let organizations = sortBy(mc.response.data, [item => item[fields.organizationName].toLowerCase()], ['asc']);
             this.updateState({ organizations })
@@ -330,7 +320,7 @@ class Monitoring extends React.Component {
         if (this._isMounted) {
             this.setState({ avgData: this.defaultStructure() }, () => {
                 if (isAdmin()) {
-                    sendAuthRequest(this, showOrganizations(), this.orgResponse)
+                    this.fetchOrgList()
                 }
                 else {
                     this.fetchShowData()
@@ -340,6 +330,7 @@ class Monitoring extends React.Component {
     }
 
     componentWillUnmount() {
+        this.worker.terminate()
         this._isMounted = false
     }
 }

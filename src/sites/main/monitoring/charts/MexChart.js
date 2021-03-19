@@ -1,12 +1,13 @@
 import React from 'react'
-import { fields, getOrganization, isAdmin } from '../../../../services/model/format'
 import LineChart from './linechart/MexLineChart'
-import { sendRequest } from '../../../../services/model/serverData'
-import { sendAsyncAuthRequest } from '../../../../services/model/serverWorker'
-import MetricWorker from '../../../../services/worker/metric.worker.js'
 import { metricRequest } from '../helper/Constant'
 import { Card, GridListTile } from '@material-ui/core'
 import { timezonePref } from '../../../../utils/sharedPreferences_util'
+//services
+import { fields, getOrganization, isAdmin } from '../../../../services/model/format'
+import { processWorker } from '../../../../services/worker/interceptor'
+import MetricWorker from '../services/metric.worker.js'
+import { sendRequest } from '../services/service'
 class MexChart extends React.Component {
     constructor(props) {
         super()
@@ -83,7 +84,7 @@ class MexChart extends React.Component {
             let request = metricRequest(metric.serverRequest, data, org)
             let mc = await sendRequest(this, request)
             if (mc && mc.response && mc.response.status === 200) {
-                let response = await sendAsyncAuthRequest(this.metricWorker, {
+                let response = await processWorker(this.metricWorker, {
                     response: { data: mc.response.data },
                     request: request,
                     parentId: parent.id,

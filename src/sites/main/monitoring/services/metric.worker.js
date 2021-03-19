@@ -5,9 +5,9 @@ import maxBy from 'lodash/maxBy';
 import meanBy from 'lodash/meanBy';
 import minBy from 'lodash/minBy';
 import cloneDeep from 'lodash/cloneDeep';
-import { convertUnit } from '../../sites/main/monitoring/helper/unitConvertor';
-import { generateDataset } from './monitoring/chart';
-import { formatData } from '../model/endpoints';
+import { convertUnit } from '../helper/unitConvertor';
+import { generateDataset } from '../../../../services/worker/monitoring/chart';
+import { formatData } from '../../../../services/model/endpoints';
 
 const processLineChartData = (chartDataList, worker) => {
     const { avgData, timezone } = worker
