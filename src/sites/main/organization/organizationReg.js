@@ -31,80 +31,6 @@ const stepData = [
     }
 ]
 
-const roles =
-{
-    Developer: [
-        {
-            'Users & Roles': 'Manage',
-            'Cloudlets': 'View',
-            'Flavors': 'View',
-            'Cluster Instances': 'Manage',
-            'Apps': 'Manage',
-            'App Instances': 'Manage',
-            'Policies': 'Manage',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        },
-        {
-            'Users & Roles': 'View',
-            'Cloudlets': 'View',
-            'Flavors': 'View',
-            'Cluster Instances': 'Manage',
-            'Apps': 'Manage',
-            'App Instances': 'Manage',
-            'Policies': 'Manage',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        },
-        {
-            'Users & Roles': 'View',
-            'Cloudlets': 'View',
-            'Flavors': 'View',
-            'Cluster Instances': 'View',
-            'Apps': 'View',
-            'App Instances': 'View',
-            'Policies': 'Manage',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        }
-    ],
-    Operator: [
-        {
-            'Users & Roles': 'Manage',
-            'Cloudlets': 'Manage',
-            'Flavors': 'disabled',
-            'Cluster Instances': 'disabled',
-            'Apps': 'disabled',
-            'App Instances': 'disabled',
-            'Policies': 'disabled',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        },
-        {
-            'Users & Roles': 'View',
-            'Cloudlets': 'Manage',
-            'Flavors': 'disabled',
-            'Cluster Instances': 'disabled',
-            'Apps': 'disabled',
-            'App Instances': 'disabled',
-            'Policies': 'disabled',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        },
-        {
-            'Users & Roles': 'View',
-            'Cloudlets': 'View',
-            'Flavors': 'disabled',
-            'Cluster Instances': 'disabled',
-            'Apps': 'disabled',
-            'App Instances': 'disabled',
-            'Policies': 'disabled',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        },
-    ]
-}
-
 const items = [
     {
         header: 'Manager',
@@ -140,8 +66,8 @@ class OrganizationReg extends React.Component {
         return (
             <List>
                 {
-                    Object.keys(roles[selectedType][i]).map((key, j) => (
-                        <div key={j} style={{ color: ((roles[selectedType][i][key] === 'Manage') ? 'rgba(255,255,255,.6)' : 'rgba(255,255,255,.6)') }}>{key + " : " + (roles[selectedType][i][key])}</div>
+                    Object.keys(constant.legendRoles[selectedType][i]).map((key, j) => (
+                        <div key={j} style={{ color: ((constant.legendRoles[selectedType][i][key] === 'Manage') ? 'rgba(255,255,255,.6)' : 'rgba(255,255,255,.6)') }}>{key + " : " + (constant.legendRoles[selectedType][i][key])}</div>
                     ))
                 }
             </List>

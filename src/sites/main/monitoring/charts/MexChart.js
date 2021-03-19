@@ -1,9 +1,9 @@
 import React from 'react'
 import { fields, getOrganization, isAdmin } from '../../../../services/model/format'
 import LineChart from './linechart/MexLineChart'
+import { sendRequest } from '../../../../services/model/serverData'
 import { sendAsyncAuthRequest } from '../../../../services/model/serverWorker'
-import { WORKER_METRIC } from '../../../../services/worker/constant'
-import MexWorker from '../../../../services/worker/mex.worker.js'
+import MetricWorker from '../../../../services/worker/metric.worker.js'
 import { metricRequest } from '../helper/Constant'
 import { Card, GridListTile } from '@material-ui/core'
 import { timezonePref } from '../../../../utils/sharedPreferences_util'
@@ -14,6 +14,7 @@ class MexChart extends React.Component {
             dataList: undefined
         }
         this._isMounted = false;
+        this.metricWorker = new MetricWorker();
     }
 
     updateData = (dataList) => {
@@ -64,39 +65,10 @@ class MexChart extends React.Component {
         )
     }
 
-    metricResponse = (parent, metric, region, mc) => {
-        if (mc && mc.response && mc.response.status === 200) {
-            let metricList = mc.response.data
-            if (metricList && metricList.length > 0) {
-                const worker = new MexWorker();
-                worker.postMessage({
-                    type: WORKER_METRIC,
-                    metricList,
-                    parentId: parent.id,
-                    region: region,
-                    metric,
-                    avgData: this.props.avgData[region],
-                    timezone: timezonePref()
-                })
-                worker.addEventListener('message', event => {
-                    let chartData = event.data
-                    chartData.map(data => {
-                        this.props.updateAvgData(region, data.metric, data.avgData)
-                    })
-                    if (this.validateData(chartData[0], this.props.avgData[region])) {
-                        this.updateData(chartData)
-                    }
-                    else {
-                        this.updateData(undefined)
-                    }
-                })
-            }
-            else {
-                this.updateData(undefined)
-            }
-        }
-    }
-
+    /**
+     * 1. Fetch metric raw data
+     * 2. Pass fetched data to metric worker to process the data and generate line chart dataset
+     */
     fetchMetricData = async () => {
         let parent = this.props.filter.parent
         let metric = this.props.metric
@@ -109,12 +81,32 @@ class MexChart extends React.Component {
             data[fields.selector] = metric.serverField
             let org = isAdmin() ? this.props.org : getOrganization()
             let request = metricRequest(metric.serverRequest, data, org)
-            let mc = await sendAsyncAuthRequest(request)
-            if (mc && mc.response && mc.response.status !== 200) {
-                this.updateData(undefined)
-            }
-            else {
-                this.metricResponse(parent, metric, region, mc)
+            let mc = await sendRequest(this, request)
+            if (mc && mc.response && mc.response.status === 200) {
+                let response = await sendAsyncAuthRequest(this.metricWorker, {
+                    response: { data: mc.response.data },
+                    request: request,
+                    parentId: parent.id,
+                    region: region,
+                    metric,
+                    avgData: this.props.avgData[region],
+                    timezone: timezonePref()
+                })
+                if (response && response.status === 200) {
+                    let chartData = response.data
+                    chartData.map(data => {
+                        this.props.updateAvgData(region, data.metric, data.avgData)
+                    })
+                    if (this.validateData(chartData[0], this.props.avgData[region])) {
+                        this.updateData(chartData)
+                    }
+                    else {
+                        this.updateData(undefined)
+                    }
+                }
+                else {
+                    this.updateData(undefined)
+                }
             }
         }
     }
@@ -163,6 +155,7 @@ class MexChart extends React.Component {
 
     componentWillUnmount() {
         this._isMounted = false
+        this.metricWorker.terminate()
     }
 }
 

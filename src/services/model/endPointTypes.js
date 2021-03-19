@@ -104,7 +104,7 @@ export const CLOUDLET_METRICS_ENDPOINT = 'metrics/cloudlet';
 export const CLUSTER_METRICS_ENDPOINT = 'metrics/cluster';
 export const APP_INST_METRICS_ENDPOINT = 'metrics/app';
 export const SHOW_APP_INST_CLIENT = 'ShowAppInstClient'
-export const CLIENT_METRICS_ENDPOINT = 'metrics/client'
+export const CLIENT_METRICS_ENDPOINT = 'metrics/clientapiusage'
 export const EVENTS_FIND = 'events/find'
 export const EVENTS_SHOW = 'events/show'
 export const SHOW_ALERT = 'ShowAlert'
@@ -295,17 +295,8 @@ export function formatData(request, response) {
         case CLOUDLET_EVENT_LOG_ENDPOINT:
             data = CloudletEvent.getData(response, request.data)
             break;
-        case APP_INST_METRICS_ENDPOINT:
-            data = AppMetrics.getData(response, request.data)
-            break;
         case CLIENT_METRICS_ENDPOINT:
             data = ClientMetrics.getData(response, request.data)
-            break;
-        case CLUSTER_METRICS_ENDPOINT:
-            data = ClusterMetrics.getData(response, request.data)
-            break;
-        case CLOUDLET_METRICS_ENDPOINT:
-            data = CloudletMetrics.getData(response, request.data)
             break;
         case SHOW_APP_INST_CLIENT:
             data = AppInstClient.getData(response, request.data)

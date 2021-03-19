@@ -514,15 +514,87 @@ export const validateRole = (roles) => {
     let valid = true
     if (roles) {
         valid = false
-        for(let role of roles)
-        {
-            if(getUserRole().includes(role))
-            {
+        for (let role of roles) {
+            if (getUserRole().includes(role)) {
                 valid = true
                 break;
             }
         }
     }
     return valid
+}
+
+export const legendRoles =
+{
+    Developer: {
+        Manager: {
+            'Users & Roles': 'Manage',
+            'Cloudlets': 'View',
+            'Flavors': 'View',
+            'Cluster Instances': 'Manage',
+            'Apps': 'Manage',
+            'App Instances': 'Manage',
+            'Policies': 'View',
+            'Monitoring': 'View',
+            'Audit Logs': 'View'
+        },
+        Contributor: {
+            'Users & Roles': 'View',
+            'Cloudlets': 'View',
+            'Flavors': 'View',
+            'Cluster Instances': 'Manage',
+            'Apps': 'Manage',
+            'App Instances': 'Manage',
+            'Policies': 'View',
+            'Monitoring': 'View',
+            'Audit Logs': 'View'
+        },
+        Viewer: {
+            'Users & Roles': 'View',
+            'Cloudlets': 'View',
+            'Flavors': 'View',
+            'Cluster Instances': 'View',
+            'Apps': 'View',
+            'App Instances': 'View',
+            'Policies': 'View',
+            'Monitoring': 'View',
+            'Audit Logs': 'View'
+        }
+    },
+    Operator: {
+        Manager: {
+            'Users & Roles': 'Manage',
+            'Cloudlets': 'Manage',
+            'Flavors': 'disabled',
+            'Cluster Instances': 'disabled',
+            'Apps': 'disabled',
+            'App Instances': 'disabled',
+            'Policies': 'disabled',
+            'Monitoring': 'View',
+            'Audit Logs': 'View'
+        },
+        Contributor: {
+            'Users & Roles': 'View',
+            'Cloudlets': 'Manage',
+            'Flavors': 'disabled',
+            'Cluster Instances': 'disabled',
+            'Apps': 'disabled',
+            'App Instances': 'disabled',
+            'Policies': 'disabled',
+            'Monitoring': 'View',
+            'Audit Logs': 'View'
+        },
+        Viewer: {
+            'Users & Roles': 'View',
+            'Cloudlets': 'View',
+            'Flavors': 'disabled',
+            'Cluster Instances': 'disabled',
+            'Apps': 'disabled',
+            'App Instances': 'disabled',
+            'Policies': 'disabled',
+            'Monitoring': 'View',
+            'Audit Logs': 'View'
+        },
+    }
 }
 

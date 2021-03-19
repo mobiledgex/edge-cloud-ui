@@ -9,7 +9,7 @@ import * as constant from './helper/Constant'
 import * as dateUtil from '../../../utils/date_util'
 import { fields, getUserRole, isAdmin, getOrganization } from '../../../services/model/format';
 
-import MexWorker from '../../../services/worker/mex.worker.js'
+import ShowWorker from '../../../services/worker/monitoring/show.worker.js'
 import { sendAuthRequest, sendRequests } from '../../../services/model/serverWorker'
 
 import MonitoringToolbar from './toolbar/MonitoringToolbar'
@@ -144,7 +144,7 @@ class Monitoring extends React.Component {
     onOrgChange = (value) => {
         let selectedOrg = value[fields.organizationName]
         if (this._isMounted) {
-            this.setState({ selectedOrg }, () => {
+            this.setState({ loading: true, showLoaded: false, selectedOrg }, () => {
                 this.setState({ avgData: this.defaultStructure() }, () => {
                     this.fetchShowData()
                 })
@@ -232,25 +232,27 @@ class Monitoring extends React.Component {
                 </Card>
                 <React.Fragment>
                     <div style={{ margin: 1 }}></div>
-                    {showLoaded ? <React.Fragment>
-                        <MonitoringList data={avgData} filter={filter} onCellClick={this.onCellClick} minimize={minimize} rowSelected={rowSelected} onToolbarClick={this.onListToolbarClick} />
-                        <AppInstMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} listAction={listAction} onListToolbarClear={this.onListToolbarClear} />
-                        <ClusterMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
-                        <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} onListToolbarClear={this.onListToolbarClear} />
-                    </React.Fragment> :
+                    {showLoaded ?
+                        <React.Fragment>
+                            <MonitoringList data={avgData} filter={filter} onCellClick={this.onCellClick} minimize={minimize} rowSelected={rowSelected} onToolbarClick={this.onListToolbarClick} />
+                            <AppInstMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} listAction={listAction} onListToolbarClear={this.onListToolbarClear} />
+                            <ClusterMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
+                            <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} onListToolbarClear={this.onListToolbarClear} />
+                        </React.Fragment> :
                         <React.Fragment>
                             <Skeleton variant="rect" height={180} />
                             <AppSkeleton filter={filter} />
                             <ClusterSkeleton filter={filter} />
                             <CloudletSkeleton filter={filter} />
-                        </React.Fragment>}
+                        </React.Fragment>
+                    }
                 </React.Fragment>
             </div>
         )
     }
 
-    showResponse = (parent, region, mcList) => {
-        const worker = new MexWorker();
+    showResponse = (parent, region, mcList, count) => {
+        const worker = new ShowWorker();
         let avgData = this.state.avgData
         let parentId = parent.id
         worker.postMessage({ type: WORKER_MONITORING_SHOW, parentId, region, data: mcList, avgData, metricListKeys: parent.metricListKeys })
@@ -260,7 +262,11 @@ class Monitoring extends React.Component {
                 this.setState(prevState => {
                     let preAvgData = prevState.avgData
                     preAvgData[region] = avgData[region]
-                    return { preAvgData }
+                    return { avgData: preAvgData }
+                }, () => {
+                    if (count === 0) {
+                        this.updateState({ loading: false, showLoaded: true })
+                    }
                 })
             }
         });
@@ -283,14 +289,14 @@ class Monitoring extends React.Component {
                             this.updateState({ loading: true })
                             sendRequests(this, requestList).addEventListener('message', event => {
                                 count = count - 1
-                                if (count === 0) {
-                                    this.updateState({ loading: false, showLoaded: true })
-                                }
                                 if (event.data.status && event.data.status !== 200) {
+                                    if (count === 0) {
+                                        this.updateState({ loading: false, showLoaded: true })
+                                    }
                                     this.props.handleAlertInfo(event.data.message)
                                 }
                                 else {
-                                    this.showResponse(parent, region, event.data)
+                                    this.showResponse(parent, region, event.data, count)
                                 }
                             });
                         })

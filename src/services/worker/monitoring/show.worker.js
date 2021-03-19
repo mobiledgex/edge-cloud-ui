@@ -88,6 +88,11 @@ const processData = (worker) => {
     self.postMessage({ avgData })
 }
 
-export const format = (worker) => {
+const format = (worker) => {
     processData(worker)
 }
+
+
+self.addEventListener("message", (event)=>{
+    format(event.data)
+});

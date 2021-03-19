@@ -22,6 +22,32 @@ const getLoader = function (rules, matcher) {
 };
 
 
+/**
+ * configures worker-loader and makes sure each worker goes to a different file, as desired.
+ * **/
+function makeMultipleWebworkersWork(config){
+    // Change the output file format so that each worker gets a unique name
+    config.output.filename = 'static/js/[name].bundle.js'
+    // Now, we add a rule for processing workers
+    return {
+
+        test: /\.worker\.(c|m)?[tj]s$/i,
+        type: "javascript/auto",
+        include:  config.module.rules[1].include,
+        use: [
+            {
+                loader: "worker-loader",
+            },
+            {
+                loader: "babel-loader",
+                options: {
+                    presets: ["@babel/preset-env"],
+                },
+            },
+        ]
+    }
+}
+
 
 
 module.exports = {
@@ -226,10 +252,7 @@ module.exports = {
                     const appendTo = oneOfRule ? oneOfRule.oneOf : webpackConfig.module.rules;
                     appendTo.push(lessRules);
                     
-                    webpackConfig.module.rules.push({
-                        test: /\.worker\.js$/,
-                        use: { loader: 'worker-loader' }
-                      })
+                    webpackConfig.module.rules.push(makeMultipleWebworkersWork(webpackConfig))
                     return webpackConfig;
                 }
             }
