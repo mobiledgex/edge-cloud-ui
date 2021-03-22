@@ -2,6 +2,22 @@ import React from 'react'
 import {Icon, Popup} from 'semantic-ui-react';
 import {fields} from './format';
 
+const TRACKED_STATE_UNKNOWN = 0
+const NOT_PRESENT = 1
+const CREATE_REQUESTED = 2
+const CREATING = 3
+const CREATE_ERROR= 4
+const READY = 5
+const UPDATE_REQUESTED = 6
+const UPDATING = 7
+const UPDATE_ERROR = 8
+const DELETE_REQUESTED = 9
+const DELETING = 10
+const DELETE_ERROR = 11
+const DELETE_PREPARE = 12
+const CRM_INITOK = 13
+const CREATING_DEPENDENCIES = 14 
+const DELETE_DONE = 15
 
 export const additionalDetail = (data) => {
     return (
@@ -40,36 +56,38 @@ export const additionalDetail = (data) => {
 
 const getStateStatus = (id) => {
     switch (id) {
-        case 0:
+        case TRACKED_STATE_UNKNOWN:
             return "Tracked State Unknown"
-        case 1:
+        case NOT_PRESENT:
             return "Not Present"
-        case 2:
+        case CREATE_REQUESTED:
             return "Create Requested"
-        case 3:
+        case CREATING:
             return "Creating"
-        case 4:
+        case CREATE_ERROR:
             return "Create Error"
-        case 5:
+        case READY:
             return "Ready"
-        case 6:
+        case UPDATE_REQUESTED:
             return "Update Requested"
-        case 7:
+        case UPDATING:
             return "Updating"
-        case 8:
+        case UPDATE_ERROR:
             return "Update Error"
-        case 9:
+        case DELETE_REQUESTED:
             return "Delete Requested"
-        case 10:
+        case DELETING:
             return "Deleting"
-        case 11:
+        case DELETE_ERROR:
             return "Delete Error"
-        case 12:
+        case DELETE_PREPARE:
             return "Delete Prepare"
-        case 13:
+        case CRM_INITOK:
             return "CRM Init"
-        case 14:
+        case CREATING_DEPENDENCIES:
             return "Creating"
+        case DELETE_DONE:
+            return "Deleted"
         default:
             return id
     }
@@ -91,24 +109,22 @@ export const showProgress = (data, isDetailView) => {
     else {
         let icon = null;
         switch (state) {
-            case 5:
-                icon = <Popup content={getStateStatus(state)} trigger={<Icon className="progressIndicator" name='check' color='green' />} />
+            case READY:
+                icon = <Popup content={getStateStatus(state)} trigger={<Icon className='progressIndicator' name='check' color='green' />} />
                 break;
-            case 3:
-            case 7:
-            case 14:
-            case 13:
-                icon = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading color='green' name='circle notch' />} />
+            case CREATING:
+            case UPDATING:
+            case CREATING_DEPENDENCIES:
+            case CRM_INITOK:
+                icon = <Popup content='View Progress' trigger={<Icon className='progressIndicator' loading color='green' name='circle notch' />} />
                 break;
-            case 10:
-            case 12:
-                icon = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading color='red' name='circle notch' />} />
+            case DELETING:
+            case DELETE_PREPARE:
+                icon = <Popup content='View Progress' trigger={<Icon className='progressIndicator' loading color='red' name='circle notch' />} />
                 break;
             default:
-                icon = <Popup content={getStateStatus(state)} trigger={<Icon className="progressIndicator" name='close' color='red' />} />
+                icon = <Popup content={getStateStatus(state)} trigger={<Icon className='progressIndicator' name='close' color='red' />} />
         }
-        return (
-            icon
-        )
+        return icon
     }
 }

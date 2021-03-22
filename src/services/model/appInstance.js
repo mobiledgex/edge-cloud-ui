@@ -8,16 +8,16 @@ let fields = formatter.fields;
 const userRole = formatter.getUserRole()
 
 export const keys = () => ([
-  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key:true },
-  { field: fields.organizationName, serverField: 'key#OS#app_key#OS#organization', sortable: true, label: 'Organization', visible: true, filter: true, group: true, key:true },
-  { field: fields.appName, serverField: 'key#OS#app_key#OS#name', sortable: true, label: 'App', visible: true, filter: true, group: true, key:true },
-  { field: fields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: true, key:true },
-  { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: true, filter: true, group: true, key:true },
-  { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true, filter: true, group: true, key:true },
+  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
+  { field: fields.organizationName, serverField: 'key#OS#app_key#OS#organization', sortable: true, label: 'Organization', visible: true, filter: true, group: true, key: true },
+  { field: fields.appName, serverField: 'key#OS#app_key#OS#name', sortable: true, label: 'App', visible: true, filter: true, group: true, key: true },
+  { field: fields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: true, key: true },
+  { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: true, filter: true, group: true, key: true },
+  { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true, filter: true, group: true, key: true },
   { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
-  { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false, key:true },
-  { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true, filter: true, group: true, key:true },
-  { field: fields.realclustername, serverField: 'real_cluster_name', sortable: true, label: 'Real Cluster Name', visible: false, filter: false},
+  { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false, key: true },
+  { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true, filter: true, group: true, key: true },
+  { field: fields.realclustername, serverField: 'real_cluster_name', sortable: true, label: 'Real Cluster Name', visible: false, filter: false },
   { field: fields.deployment, label: 'Deployment', sortable: true, visible: true, filter: true, group: true },
   { field: fields.accessType, label: 'Access Type' },
   { field: fields.uri, serverField: 'uri', label: 'URI' },
@@ -36,9 +36,18 @@ export const keys = () => ([
   { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
   { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true },
   { field: fields.autoPolicyName, label: 'Auto Prov Policy', visible: false },
-  { field: fields.trusted, label: 'Trusted', visible: true, sortable:true },
+  { field: fields.trusted, label: 'Trusted', visible: true, sortable: true },
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
+
+const getClusterOrg = (data) => {
+  if (data[fields.autoClusterInstance]) {
+    return data[fields.compatibilityVersion] === constant.CLOUDLET_COMPAT_VERSION_2_4_1 ? 'MobiledgeX' : data[fields.organizationName]
+  }
+  else {
+    return data[fields.clusterdeveloper] ? data[fields.clusterdeveloper] : data[fields.organizationName]
+  }
+}
 
 export const getAppInstanceKey = (data) => {
   return {
@@ -46,7 +55,7 @@ export const getAppInstanceKey = (data) => {
     cluster_inst_key: {
       cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName] },
       cluster_key: { name: data[fields.clusterName] ? data[fields.clusterName] : 'DefaultVMCluster' },
-      organization: data[fields.autoClusterInstance] ? 'MobiledgeX' : data[fields.clusterdeveloper] ? data[fields.clusterdeveloper] : data[fields.organizationName]
+      organization: getClusterOrg(data)
     }
   }
 }
@@ -138,6 +147,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
           let cloudletInfo = cloudletInfoList[j]
           if (appInst[fields.cloudletName] === cloudletInfo[fields.cloudletName] && appInst[fields.operatorName] === cloudletInfo[fields.operatorName]) {
             appInst[fields.cloudletStatus] = cloudletInfo[fields.state]
+            appInst[fields.compatibilityVersion] = cloudletInfo[fields.compatibilityVersion]
           }
         }
         appInst[fields.cloudletStatus] = appInst[fields.cloudletStatus] ? appInst[fields.cloudletStatus] : constant.CLOUDLET_STATUS_UNKNOWN
