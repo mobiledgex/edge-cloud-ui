@@ -8,6 +8,9 @@ export const LOCAL_STRAGE_KEY = 'PROJECT_INIT'
 export const LS_USER_META_DATA = 'usermetadata'
 export const LS_REGIONS = 'regions'
 
+export const CLOUDLET_COMPAT_VERSION_2_4 = 0
+export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1
+
 export const ADD = 'Add'
 export const UPDATE = 'Update'
 export const TYPE_JSON = 'JSON'

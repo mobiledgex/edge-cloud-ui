@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Form, Popup, Icon } from 'semantic-ui-react';
 
 const MexMultiSelect = (props) => {
-    const [selected, setSelected] = useState(props.form.value ? props.form.value : null)
+    const [selected, setSelected] = useState(props.form.value ? props.form.value : [])
 
     const onSelected = (value) => {
         setSelected(value)

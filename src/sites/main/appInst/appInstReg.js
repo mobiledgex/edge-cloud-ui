@@ -337,7 +337,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.flavorName, label: 'Flavor', formType: SELECT, placeholder: 'Select Flavor', rules: { required: false }, visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: SWITCH, visible: false, value: false, update: { edit: true } },
             { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }, { index: 5, field: fields.operatorName }, { index: 6, field: fields.cloudletName }], update: { key: true } },
-            { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, onClick: this.addConfigs, style: { color: 'white' } }], visible: false, update: { id: ['27', '27.1', '27.2'] } }
+            { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, onClick: this.addConfigs, style: { color: 'white' } }], visible: false, update: { id: ['27', '27.1', '27.2'] } },
         ]
     }
 
@@ -398,6 +398,20 @@ class ClusterInstReg extends React.Component {
         }
     }
 
+    fetchCompabilityVersion = (data)=>{
+        let version = constant.CLOUDLET_COMPAT_VERSION_2_4
+        for(let i=0;i<this.cloudletList.length;i++)
+        {
+            let cloudlet = this.cloudletList[i]
+            if(data[fields.cloudletName] === cloudlet[fields.cloudletName] && data[fields.operatorName] === cloudlet[fields.operatorName] && data[fields.region] === cloudlet[fields.region])
+            {
+                version = cloudlet[fields.compatibilityVersion]
+                break;
+            }
+        }
+        return version
+    }
+
     onCreate = async (data) => {
         if (data) {
             let forms = this.state.forms;
@@ -433,6 +447,7 @@ class ClusterInstReg extends React.Component {
                 for (let i = 0; i < cloudlets.length; i++) {
                     let cloudlet = cloudlets[i];
                     data[fields.cloudletName] = cloudlet;
+                    data[fields.compatibilityVersion] = this.fetchCompabilityVersion(data)
                     this.props.handleLoadingSpinner(true)
                     createAppInst(this, Object.assign({}, data), this.onCreateResponse)
                 }
@@ -542,6 +557,7 @@ class ClusterInstReg extends React.Component {
                 cloudlet[fields.region] = data[fields.region]
                 cloudlet[fields.cloudletName] = data[fields.cloudletName]
                 cloudlet[fields.operatorName] = data[fields.operatorName]
+                cloudlet[fields.compatibilityVersion] = data[fields.compatibilityVersion]
                 this.cloudletList.push(cloudlet)
 
                 let clusterInst = {}

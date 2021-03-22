@@ -16,6 +16,7 @@ const keys = [
     { field: fields.osMaxVCores, serverField: 'os_max_vcores' },
     { field: fields.osMaxVolGB, serverField: 'os_max_vol_gb' },
     { field: fields.flavors, serverField: 'flavors' },
+    { field: fields.compatibilityVersion, serverField: 'compatibility_version' },
 ]
 
 export const showCloudletInfos = (data, specific) => {
