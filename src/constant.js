@@ -8,6 +8,9 @@ export const LOCAL_STRAGE_KEY = 'PROJECT_INIT'
 export const LS_USER_META_DATA = 'usermetadata'
 export const LS_REGIONS = 'regions'
 
+export const CLOUDLET_COMPAT_VERSION_2_4 = 0
+export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1
+
 export const ADD = 'Add'
 export const UPDATE = 'Update'
 export const TYPE_JSON = 'JSON'
@@ -37,17 +40,6 @@ export const SELECT = 'Select'
 export const CLOUDLET = 'Cloudlet'
 export const CLUSTER_INST = 'ClusterInst'
 export const APP_INST = 'AppInst'
-export const PLATFORM_TYPE_FAKE = 'Fake'
-export const PLATFORM_TYPE_DIND = 'DIND'
-export const PLATFORM_TYPE_OPEN_STACK = 'Openstack'
-export const PLATFORM_TYPE_AZURE = 'Azure'
-export const PLATFORM_TYPE_OPEN_GCP = 'GCP'
-export const PLATFORM_TYPE_EDGEBOX = 'Edgebox'
-export const PLATFORM_TYPE_FAKEINFRA = 'Fakeinfra'
-export const PLATFORM_TYPE_VSPHERE = 'vSphere'
-export const PLATFORM_TYPE_VCD = 'VCD'
-export const PLATFORM_TYPE_AWS = 'AWS'
-export const PLATFORM_TYPE_VMPOOL = 'VM Pool'
 export const IP_SUPPORT_DYNAMIC = 'Dynamic'
 export const LIVENESS_STATIC = 'Static'
 export const APP = 'App'
@@ -58,6 +50,22 @@ export const SHOW_LOGS = 'Show Logs';
 export const RECEIVER_TYPE_EMAIL = 'Email'
 export const RECEIVER_TYPE_SLACK = 'Slack'
 export const RECEIVER_TYPE_PAGER_DUTY = 'PagerDuty'
+
+
+export const PLATFORM_TYPE_FAKE = 'Fake'
+export const PLATFORM_TYPE_DIND = 'DIND'
+export const PLATFORM_TYPE_OPEN_STACK = 'Openstack'
+export const PLATFORM_TYPE_AZURE = 'Azure'
+export const PLATFORM_TYPE_OPEN_GCP = 'GCP'
+export const PLATFORM_TYPE_EDGEBOX = 'Edgebox'
+export const PLATFORM_TYPE_FAKEINFRA = 'Fakeinfra'
+export const PLATFORM_TYPE_VSPHERE = 'vSphere'
+export const PLATFORM_TYPE_AWS_EKS = 'AWS EKS'
+export const PLATFORM_TYPE_VMPOOL = 'VM Pool'
+export const PLATFORM_TYPE_AWS_EC2 = 'AWS EC2'
+export const PLATFORM_TYPE_VCD = 'VCD'
+export const PLATFORM_TYPE_K8S_BARE_METAL = 'K8S Bare Metal'
+export const PLATFORM_TYPE_KIND = 'Kind'
 
 export const MAINTENANCE_STATE_NORMAL_OPERATION = 'Normal Operation'
 export const MAINTENANCE_STATE_MAINTENANCE_START = 'Maintenance Start'
@@ -391,11 +399,17 @@ export const PlatformType = (id) => {
         case 7:
             return PLATFORM_TYPE_VSPHERE
         case 8:
-            return PLATFORM_TYPE_AWS
+            return PLATFORM_TYPE_AWS_EKS
         case 9:
             return PLATFORM_TYPE_VMPOOL
+        case 10:
+            return PLATFORM_TYPE_AWS_EC2
         case 11:
             return PLATFORM_TYPE_VCD
+        case 12:
+            return PLATFORM_TYPE_K8S_BARE_METAL
+        case 13:
+            return PLATFORM_TYPE_KIND
         case PLATFORM_TYPE_FAKE:
             return 0
         case PLATFORM_TYPE_DIND:
@@ -412,12 +426,18 @@ export const PlatformType = (id) => {
             return 6
         case PLATFORM_TYPE_VSPHERE:
             return 7
-        case PLATFORM_TYPE_AWS:
+        case PLATFORM_TYPE_AWS_EKS:
             return 8
         case PLATFORM_TYPE_VMPOOL:
             return 9
+        case PLATFORM_TYPE_AWS_EC2:
+            return 10
         case PLATFORM_TYPE_VCD:
             return 11
+        case PLATFORM_TYPE_K8S_BARE_METAL:
+            return 12
+        case PLATFORM_TYPE_KIND:
+            return 13
         default:
             return id
     }
@@ -514,10 +534,8 @@ export const validateRole = (roles) => {
     let valid = true
     if (roles) {
         valid = false
-        for(let role of roles)
-        {
-            if(getUserRole().includes(role))
-            {
+        for (let role of roles) {
+            if (getUserRole().includes(role)) {
                 valid = true
                 break;
             }
