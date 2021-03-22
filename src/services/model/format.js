@@ -198,7 +198,8 @@ export const fields = {
     autoProvPolicies:'autoProvPolicies',
     title:'title',
     description:'description',
-    trusted:'trusted'
+    trusted:'trusted',
+    compatibilityVersion:'compatibilityVersion'
 }
 
 export const getUserRole = () => {
