@@ -101,6 +101,7 @@ export const CLOUDLET_EVENT_LOG_ENDPOINT = 'events/cloudlet';
 export const CLUSTER_EVENT_LOG_ENDPOINT = 'events/cluster';
 export const APP_INST_EVENT_LOG_ENDPOINT = 'events/app';
 export const CLOUDLET_METRICS_ENDPOINT = 'metrics/cloudlet';
+export const CLOUDLET_METRICS_USAGE_ENDPOINT = 'metrics/cloudlet/usage'
 export const CLUSTER_METRICS_ENDPOINT = 'metrics/cluster';
 export const APP_INST_METRICS_ENDPOINT = 'metrics/app';
 export const SHOW_APP_INST_CLIENT = 'ShowAppInstClient'
@@ -124,6 +125,7 @@ export const GET_CLOUDLET_RESOURCE_QUOTA_PROPS = 'GetCloudletResourceQuotaProps'
 export function getPath(request) {
     switch (request.method) {
         case CLOUDLET_METRICS_ENDPOINT:
+        case CLOUDLET_METRICS_USAGE_ENDPOINT:
         case CLUSTER_METRICS_ENDPOINT:
         case APP_INST_METRICS_ENDPOINT:
         case CLOUDLET_EVENT_LOG_ENDPOINT:

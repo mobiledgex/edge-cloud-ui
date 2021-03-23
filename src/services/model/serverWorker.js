@@ -1,5 +1,4 @@
 import ServerWorker from '../worker/server.worker.js'
-import { WORKER_SERVER } from '../worker/constant.js'
 import { checkExpiry } from './serviceMC'
 import { NEW_PASSWORD, RESET_PASSWORD, UPDATE_USER } from './endpoints.js'
 
@@ -45,7 +44,7 @@ export const resetPwd = (self, data, callback) => {
 
 export const sendRequest = (self, request, callback, token) => {
     const worker = new ServerWorker();
-    worker.postMessage({ type: WORKER_SERVER, request: request, requestType: 'object', token });
+    worker.postMessage({ request: request, requestType: 'object', token });
     if (callback) {
         responseListener(self, worker, callback)
     }
@@ -61,7 +60,7 @@ export const sendAuthRequest = (self, request, callback) => {
 
 export const sendRequests = (self, requestList, callback) => {
     const worker = new ServerWorker();
-    worker.postMessage({ type: WORKER_SERVER, request: requestList, requestType: 'array', token: getToken(self) });
+    worker.postMessage({ request: requestList, requestType: 'array', token: getToken(self) });
     if (callback) {
         responseListener(self, worker, callback)
     }

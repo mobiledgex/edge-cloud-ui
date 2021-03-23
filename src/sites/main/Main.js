@@ -3,10 +3,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import { GridLoader } from "react-spinners";
-import MexWorker from '../../services/worker/mex.worker.js'
+import RoleWorker from '../../services/worker/role.worker.js'
 import { sendAuthRequest } from '../../services/model/serverWorker';
 import MexAlert from '../../hoc/alert/AlertDialog';
-import { WORKER_ROLE } from '../../services/worker/constant';
 import { SHOW_ROLE } from '../../services/model/endpoints';
 import Menu from './Menu'
 import '../../css/introjs.css';
@@ -18,15 +17,16 @@ class Main extends React.Component {
         this.state = {
             userRole: null,
             mexAlertMessage: undefined
-        };
+        }; 
+        this.worker = new RoleWorker();
     }
 
     roleResponse = (mc) => {
         if (mc && mc.response && mc.response.status === 200) {
             let dataList = mc.response.data;
-            const worker = new MexWorker();
-            worker.postMessage({ type: WORKER_ROLE, data: dataList })
-            worker.addEventListener('message', event => {
+           
+            this.worker.postMessage({ data: dataList })
+            this.worker.addEventListener('message', event => {
                 if (event.data.isAdmin) {
                     let role = event.data.role
                     localStorage.setItem('selectRole', role)
@@ -72,6 +72,10 @@ class Main extends React.Component {
 
     componentDidMount() {
         this.userRoleInfo()
+    }
+
+    componentWillUnmount(){
+        this.worker.terminate()
     }
 };
 

@@ -2,7 +2,7 @@ import React from 'react'
 import UsageList from '../../list/UsageList'
 import { fields, getOrganization, isAdmin } from '../../../../../services/model/format'
 import { appInstUsageLogs, appUsageKeys } from '../../../../../services/model/appInstUsage'
-import { sendAuthRequest } from '../../../../../services/model/serverWorker'
+import { sendRequest } from '../../services/service'
 import { withRouter } from 'react-router-dom'
 
 class MexAppUsage extends React.Component {
@@ -28,37 +28,36 @@ class MexAppUsage extends React.Component {
     render() {
         const { usageData } = this.state
         const { regions, filter } = this.props
-        return <UsageList data={usageData} keys={appUsageKeys} filter={filter} regions={regions} header='App Usage'/>
+        return <UsageList data={usageData} keys={appUsageKeys} filter={filter} regions={regions} header='App Usage' />
     }
 
-    serverResponse = (mc) => {
-        if (mc && mc.response && mc.response.data) {
+    fetchData = async (region, range) => {
+        let mc = await sendRequest(this, appInstUsageLogs({
+            region: region,
+            starttime: range.starttime,
+            endtime: range.endtime
+        }, isAdmin() ? this.props.org : getOrganization()))
+        if (mc && mc.response && mc.response.status === 200) {
             let request = mc.request
             let region = request.data[fields.region]
             let dataList = mc.response.data
-            this.setState(prevState=>{
+            this.setState(prevState => {
                 let usageData = prevState.usageData
                 usageData[region] = dataList
-                return {usageData}
+                return { usageData }
             })
         }
     }
 
     event = async (range) => {
         this.regions.map(region => {
-            sendAuthRequest(this, appInstUsageLogs({
-                region: region,
-                starttime: range.starttime,
-                endtime: range.endtime
-            }, isAdmin() ? this.props.org : getOrganization()), this.serverResponse)
+            this.fetchData(region, range)
         })
-        
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(prevProps.org !== this.props.org)
-        {
-            this.setState({usageData: {}}, ()=>{
+        if (prevProps.org !== this.props.org) {
+            this.setState({ usageData: {} }, () => {
                 this.event(this.props.range)
             })
         }

@@ -6,7 +6,7 @@ import meanBy from 'lodash/meanBy';
 import minBy from 'lodash/minBy';
 import cloneDeep from 'lodash/cloneDeep';
 import { convertUnit } from '../helper/unitConvertor';
-import { generateDataset } from '../../../../services/worker/monitoring/chart';
+import { generateDataset } from './chart';
 import { formatData } from '../../../../services/model/endpoints';
 
 const processLineChartData = (chartDataList, worker) => {

@@ -2,7 +2,7 @@ import React from 'react'
 import EventList from '../../list/EventList'
 import { orgEvents } from '../../../../../services/model/events'
 import { getOrganization, isAdmin } from '../../../../../services/model/format'
-import { sendAuthRequest } from '../../../../../services/model/serverWorker'
+import { sendRequest } from '../../services/service'
 import randomColor from 'randomcolor'
 import { CircularProgress, IconButton, Tooltip } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -66,8 +66,21 @@ class MexAppEvent extends React.Component {
         )
     }
 
-    serverResponse = (mc) => {
-        if (mc && mc.response && mc.response.data) {
+    event = async (range, more) => {
+        this.setState({ loading: true })
+        let mc = await sendRequest(this, orgEvents({
+            match: {
+                orgs: [isAdmin() ? this.props.org : getOrganization()],
+                types: ["event"],
+                tags: { cluster: "*" },
+                names: ["*cluster*", "*Cluster*"]
+            },
+            starttime: range.starttime,
+            endtime: range.endtime,
+            more: more,
+            limit: 10
+        }))
+        if (mc && mc.response && mc.response.status === 200) {
             let more = mc.request.data.more
             let dataList = mc.response.data
             let showMore = dataList.length === 10
@@ -76,25 +89,9 @@ class MexAppEvent extends React.Component {
                 dataList = [...this.state.eventData, ...dataList]
                 colors = [...this.state.colors, ...colors]
             }
-            this.setState({ eventData: dataList, colors, showMore, loading: false })
+            this.setState({ eventData: dataList, colors, showMore})
         }
-    }
-
-    event = async (range, more) => {
-        this.setState({ loading: true }, () => {
-            sendAuthRequest(this, orgEvents({
-                match: {
-                    orgs: [isAdmin() ? this.props.org : getOrganization()],
-                    types: ["event"],
-                    tags: { cluster: "*" },
-                    names: ["*cluster*", "*Cluster*"]
-                },
-                starttime: range.starttime,
-                endtime: range.endtime,
-                more: more,
-                limit: 10
-            }), this.serverResponse)
-        })
+        this.setState({loading: false })
     }
 
     componentDidUpdate(prevProps, prevState) {
