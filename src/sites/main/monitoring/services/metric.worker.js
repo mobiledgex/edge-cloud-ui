@@ -5,11 +5,12 @@ import maxBy from 'lodash/maxBy';
 import meanBy from 'lodash/meanBy';
 import minBy from 'lodash/minBy';
 import cloneDeep from 'lodash/cloneDeep';
-import { convertUnit } from '../../sites/main/monitoring/helper/unitConvertor';
-import { generateDataset } from './monitoring/chart'
+import { convertUnit } from '../helper/unitConvertor';
+import { generateDataset } from './chart';
+import { formatData } from '../../../../services/model/endpoints';
 
-const processLineChartData = (chartDataList, inp) => {
-    const { avgData, timezone } = inp
+const processLineChartData = (chartDataList, worker) => {
+    const { avgData, timezone } = worker
     chartDataList.forEach(chartData => {
         chartData['datasets'] = generateDataset(chartData, avgData, timezone)
     })
@@ -54,37 +55,37 @@ const avgCalculator = (parentId, data, metric) => {
     return chartData
 }
 
-const processData = (inp) => {
-    let dataList = inp.metricList
-    let parentId = inp.parentId
-    let region = inp.region
-    let metricList = inp.metric.keys ? inp.metric.keys : [inp.metric]
+const processData = (worker) => {
 
+    const { metric, dataList, parentId, region } = worker
+    const metricList = metric.keys ? metric.keys : [metric]
     let chartData = []
-
-    if (dataList && dataList.length > 0) {
-        dataList.map(metricData => {
-            let key = Object.keys(metricData)[0]
-            metricList.map(metric => {
-                let objectId = metric.serverHead ? metric.serverHead : `${parentId}-${metric.serverField}`
-                if (key === objectId) {
-                    if (metricData[objectId]) {
-                        let newData = {}
-                        newData.region = region
-                        newData.metric = metric
-                        newData.values = metricData[objectId].values
-                        newData.columns = metricData[objectId].columns
-                        chartData.push(avgCalculator(parentId, newData, metric))
-                    }
+    dataList.forEach(metricData => {
+        let key = Object.keys(metricData)[0]
+        metricList.forEach(metric => {
+            let objectId = metric.serverHead ? metric.serverHead : `${parentId}-${metric.serverField}`
+            if (key === objectId) {
+                if (metricData[objectId]) {
+                    let newData = {}
+                    newData.region = region
+                    newData.metric = metric
+                    newData.values = metricData[objectId].values
+                    newData.columns = metricData[objectId].columns
+                    chartData.push(avgCalculator(parentId, newData, metric))
                 }
-            })
-
+            }
         })
-    }
-    processLineChartData(chartData, inp)
-    self.postMessage(chartData)
+
+    })
+    processLineChartData(chartData, worker)
+    self.postMessage({ status: 200, data: chartData })
 }
 
 export const format = (worker) => {
-    processData(worker)
+    const { response } = formatData(worker.request, worker.response)
+    processData({ ...worker, dataList: response.data })
 }
+
+self.addEventListener("message", (event) => {
+    format(event.data)
+});

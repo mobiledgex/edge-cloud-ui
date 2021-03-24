@@ -2,7 +2,7 @@ import React from 'react'
 import EventList from '../../list/EventList'
 import { orgEvents } from '../../../../../services/model/events'
 import { getOrganization, isAdmin } from '../../../../../services/model/format'
-import { sendAuthRequest } from '../../../../../services/model/serverWorker'
+import { sendRequest } from '../../services/service'
 import randomColor from 'randomcolor'
 import { withRouter } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -95,36 +95,33 @@ class MexAppEvent extends React.Component {
         )
     }
 
-    serverResponse = (mc) => {
-        if (mc && mc.response && mc.response.data) {
-            let more = mc.request.data.more
-            let dataList = mc.response.data
-            let showMore = dataList.length === 10
-            let colors = randomColor({ count: dataList.length, })
-            if (more) {
-                dataList = [...this.state.eventData, ...dataList]
-                colors = [...this.state.colors, ...colors]
-            }
-
-            this.updateState({ eventData: dataList, colors, showMore, loading: false })
-        }
-    }
-
     event = async (range, more) => {
         if (this._isMounted) {
-            this.setState({ loading: true }, () => {
-                sendAuthRequest(this, orgEvents({
-                    match: {
-                        orgs: [isAdmin() ? this.props.org : getOrganization()],
-                        types: ["event"],
-                        tags: { app: "*" }
-                    },
-                    starttime: range.starttime,
-                    endtime: range.endtime,
-                    more: more,
-                    limit: 10
-                }), this.serverResponse)
-            })
+            this.updateState({ loading: true })
+            let mc = await sendRequest(this, orgEvents({
+                match: {
+                    orgs: [isAdmin() ? this.props.org : getOrganization()],
+                    types: ["event"],
+                    tags: { app: "*" }
+                },
+                starttime: range.starttime,
+                endtime: range.endtime,
+                more: more,
+                limit: 10
+            }))
+            if (mc && mc.response && mc.response.status === 200) {
+                let more = mc.request.data.more
+                let dataList = mc.response.data
+                let showMore = dataList.length === 10
+                let colors = randomColor({ count: dataList.length, })
+                if (more) {
+                    dataList = [...this.state.eventData, ...dataList]
+                    colors = [...this.state.colors, ...colors]
+                }
+
+                this.updateState({ eventData: dataList, colors, showMore })
+            }
+            this.updateState({loading: false})
         }
     }
 

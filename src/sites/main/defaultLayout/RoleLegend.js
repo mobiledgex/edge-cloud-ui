@@ -1,6 +1,6 @@
 import React from 'react';
 import { ListItem, Dialog, DialogContent, IconButton, Table, TableBody, TableRow, TableCell, TableHead } from '@material-ui/core';
-import { ADMIN_MANAGER, DEVELOPER_CONTRIBUTOR, DEVELOPER_MANAGER, DEVELOPER_VIEWER, OPERATOR_CONTRIBUTOR, OPERATOR_MANAGER, OPERATOR_VIEWER } from '../../../constant';
+import { ADMIN_MANAGER, DEVELOPER_CONTRIBUTOR, DEVELOPER_MANAGER, DEVELOPER_VIEWER, legendRoles, OPERATOR_CONTRIBUTOR, OPERATOR_MANAGER, OPERATOR_VIEWER } from '../../../constant';
 import CloseIcon from '@material-ui/icons/Close';
 import { getUserRole } from '../../../services/model/format';
 
@@ -15,79 +15,7 @@ const legends = [
 ]
 
 const menuItem = ['Users & Roles', 'Cloudlets', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances', 'Policies', 'Monitoring', 'Audit Logs'];
-const roles =
-{
-    Developer: {
-        Manager: {
-            'Users & Roles': 'Manage',
-            'Cloudlets': 'View',
-            'Flavors': 'View',
-            'Cluster Instances': 'Manage',
-            'Apps': 'Manage',
-            'App Instances': 'Manage',
-            'Policies': 'View',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        },
-        Contributor: {
-            'Users & Roles': 'View',
-            'Cloudlets': 'View',
-            'Flavors': 'View',
-            'Cluster Instances': 'Manage',
-            'Apps': 'Manage',
-            'App Instances': 'Manage',
-            'Policies': 'View',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        },
-        Viewer: {
-            'Users & Roles': 'View',
-            'Cloudlets': 'View',
-            'Flavors': 'View',
-            'Cluster Instances': 'View',
-            'Apps': 'View',
-            'App Instances': 'View',
-            'Policies': 'View',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        }
-    },
-    Operator: {
-        Manager: {
-            'Users & Roles': 'Manage',
-            'Cloudlets': 'Manage',
-            'Flavors': 'disabled',
-            'Cluster Instances': 'disabled',
-            'Apps': 'disabled',
-            'App Instances': 'disabled',
-            'Policies': 'disabled',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        },
-        Contributor: {
-            'Users & Roles': 'View',
-            'Cloudlets': 'Manage',
-            'Flavors': 'disabled',
-            'Cluster Instances': 'disabled',
-            'Apps': 'disabled',
-            'App Instances': 'disabled',
-            'Policies': 'disabled',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        },
-        Viewer: {
-            'Users & Roles': 'View',
-            'Cloudlets': 'View',
-            'Flavors': 'disabled',
-            'Cluster Instances': 'disabled',
-            'Apps': 'disabled',
-            'App Instances': 'disabled',
-            'Policies': 'disabled',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        },
-    }
-}
+
 
 const LegendMark = (props) => (
     <React.Fragment>
@@ -137,12 +65,12 @@ const RoleLegend = (props) => {
 
     const renderUserRole = (type) => {
         return (localStorage.selectRole == 'AdminManager') ? (type !== 'Monitoring' && type !== 'Audit Logs' ? 'Manage' : 'View') :
-            (localStorage.selectRole == 'DeveloperManager') ? roles.Developer['Manager'][type] :
-                (localStorage.selectRole == 'DeveloperContributor') ? roles.Developer['Contributor'][type] :
-                    (localStorage.selectRole == 'DeveloperViewer') ? roles.Developer['Viewer'][type] :
-                        (localStorage.selectRole == 'OperatorManager') ? roles.Operator['Manager'][type] :
-                            (localStorage.selectRole == 'OperatorContributor') ? roles.Operator['Contributor'][type] :
-                                (localStorage.selectRole == 'OperatorViewer') ? roles.Operator['Viewer'][type] : ''
+            (localStorage.selectRole == 'DeveloperManager') ? legendRoles.Developer['Manager'][type] :
+                (localStorage.selectRole == 'DeveloperContributor') ? legendRoles.Developer['Contributor'][type] :
+                    (localStorage.selectRole == 'DeveloperViewer') ? legendRoles.Developer['Viewer'][type] :
+                        (localStorage.selectRole == 'OperatorManager') ? legendRoles.Operator['Manager'][type] :
+                            (localStorage.selectRole == 'OperatorContributor') ? legendRoles.Operator['Contributor'][type] :
+                                (localStorage.selectRole == 'OperatorViewer') ? legendRoles.Operator['Viewer'][type] : ''
     }
 
     return (

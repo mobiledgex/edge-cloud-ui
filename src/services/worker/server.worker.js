@@ -50,7 +50,7 @@ const fetchResponses = (worker) => {
         })
 }
 
-export const fetch = (worker) => {
+const fetch = (worker) => {
     switch (worker.requestType) {
         case 'object':
             fetchResponse(worker)
@@ -60,3 +60,7 @@ export const fetch = (worker) => {
             break;
     }
 }
+
+self.addEventListener("message", (event)=>{
+    fetch(event.data)
+});

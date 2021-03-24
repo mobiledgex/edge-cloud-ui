@@ -85,7 +85,7 @@ export const APP_INST_METRICS_ENDPOINT = 'metrics/app';
 export const SHOW_APP_INST_CLIENT = 'ShowAppInstClient'
 export const APP_INST_USAGE_ENDPOINT = 'usage/app'
 export const CLUSTER_INST_USAGE_ENDPOINT = 'usage/cluster'
-export const CLIENT_METRICS_ENDPOINT = 'metrics/client'
+export const CLIENT_METRICS_ENDPOINT = 'metrics/clientapiusage'
 export const EVENTS_FIND = 'events/find'
 export const EVENTS_SHOW = 'events/show'
 export const SHOW_ALERT = 'ShowAlert'
@@ -129,7 +129,9 @@ export const getPath = (request) => {
 }
 
 export const getHeader = (request) => {
-    return { 'Authorization': `Bearer ${request.token}` }
+    if (request.token) {
+        return { 'Authorization': `Bearer ${request.token}` }
+    }
 }
 
 export function formatData(request, response) {

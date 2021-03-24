@@ -1,10 +1,9 @@
 import React from 'react'
-import { sendAuthRequest } from '../../../../../services/model/serverWorker'
+import { sendRequest } from '../../services/service'
 import { cloudletFlavorUsageMetrics } from '../../../../../services/model/cloudletMetrics'
 import { getOrganization, isAdmin } from '../../../../../services/model/format'
 import LineChart from '../../charts/linechart/MexLineChart'
-import MexWorker from '../../../../../services/worker/mex.worker.js'
-import { WORKER_MONITORING_FLAVOR_USAGE } from '../../../../../services/worker/constant'
+import MexWorker from '../../services/flavor.worker.js'
 import { Card, GridListTile } from '@material-ui/core'
 import { timezonePref } from '../../../../../utils/sharedPreferences_util'
 
@@ -19,8 +18,10 @@ class CloudletFlavorUsage extends React.Component {
             loading: false
         }
         this._isMounted = false
+        this.worker = new MexWorker();
         this.orgData = []
         this.avgData = {}
+        this.mc = undefined
     }
 
     updateState = (data) => {
@@ -31,7 +32,7 @@ class CloudletFlavorUsage extends React.Component {
 
     render() {
         const { chartData } = this.state
-        const { filter, id, style, rowSelected } = this.props
+        const { filter, style, rowSelected } = this.props
         return (
             chartData && filter.metricType.includes(chartData.metric.field) ?
                 <GridListTile cols={1} style={style}>
@@ -46,31 +47,21 @@ class CloudletFlavorUsage extends React.Component {
      * 
      */
     formatData = (calAvgData) => {
-        if (this.metricList) {
-            const worker = new MexWorker();
-            worker.postMessage({ type: WORKER_MONITORING_FLAVOR_USAGE, metricList: this.metricList, avgData: this.props.avgData, rowSelected: this.props.rowSelected, metric, region: this.props.region, avgFlavorData: this.avgData, calAvgData, timezone:timezonePref() })
-            
-            worker.addEventListener('message', event => {
-                this.avgData = event.data.avgData
-                this.updateState({ chartData: event.data.chartData })
-            })
-        }
-    }
-
-    serverResponse = (mc) => {
-        if (mc && mc.response && mc.response.data) {
-            let metricList = mc.response.data
-            if (metricList.length > 0) {
-                this.metricList = metricList[0]['cloudlet-flavor-usage']
-                this.formatData(true)
-            }
-            else {
-                this.updateState({ chartData: undefined })
-            }
-        }
-        else {
-            this.updateState({ chartData: undefined })
-        }
+        this.worker.postMessage({
+            response: this.mc.response,
+            request: this.mc.request,
+            avgData: this.props.avgData,
+            rowSelected: this.props.rowSelected,
+            metric,
+            region: this.props.region,
+            avgFlavorData: this.avgData,
+            calAvgData,
+            timezone: timezonePref()
+        })
+        this.worker.addEventListener('message', event => {
+            this.avgData = event.data.avgData
+            this.updateState({ chartData: event.data.chartData })
+        })
     }
 
     fetchData = async (range, region) => {
@@ -84,9 +75,13 @@ class CloudletFlavorUsage extends React.Component {
             selector: 'flavorusage',
         }
         if (this._isMounted) {
-            this.setState({ loading: true }, () => {
-                sendAuthRequest(this, cloudletFlavorUsageMetrics(requestData), this.serverResponse)
-            })
+            this.updateState({ loading: true })
+            let mc = await sendRequest(this, cloudletFlavorUsageMetrics(requestData))
+            if (mc && mc.response && mc.response.status === 200) {
+                this.mc = mc
+                this.formatData(true)
+            }
+            this.updateState({ loading: false })
         }
     }
 
@@ -121,6 +116,7 @@ class CloudletFlavorUsage extends React.Component {
 
     componentWillUnmount() {
         this._isMounted = false
+        this.worker.terminate()
     }
 }
 
