@@ -1,8 +1,9 @@
 /* eslint-disable */
-import { fields } from "../../model/format"
+import { fields } from "../../../../services/model/format"
 import moment from 'moment'
 import randomColor from 'randomcolor'
 import { generateDataset } from './chart'
+import { formatData } from "../../../../services/model/endpoints"
 
 const FLAVOR_USAGE_TIME = 0
 const FLAVOR_USAGE_REGION = 1
@@ -15,13 +16,13 @@ const utcTime = (format, date) => {
     return moment(date).utc().format(format)
 }
 
-const processLineChartData = (chartData, avgData, inp) => {
-    const { timezone } = inp
+const processLineChartData = (chartData, avgData, worker) => {
+    const { timezone } = worker
     chartData['datasets'] = generateDataset(chartData, avgData, timezone, 5, true)
 }
 
 const processData = (worker) => {
-    let metricData = worker.metricList
+    let metricData = worker.data
     let avgDataEU = worker.avgData
     let rowSelected = worker.rowSelected
     let metric = worker.metric
@@ -71,7 +72,7 @@ const processData = (worker) => {
 }
 
 const avgFlavorData = (worker) => {
-    let metricData = worker.metricList
+    let metricData = worker.data
     let avgFlavorData = worker.avgFlavorData
     let values = metricData.values
     let columns = metricData.columns
@@ -109,12 +110,22 @@ const avgFlavorData = (worker) => {
 }
 
 export const format = (worker) => {
-    let calAvgData = worker.calAvgData
     let avgData = worker.avgFlavorData
-    if (calAvgData) {
-        avgData = avgFlavorData(worker)
+    let chartData = undefined
+    const { response } = formatData(worker.request, worker.response)
+    let dataList = response.data
+    if (dataList.length > 0) {
+        let data = dataList[0]['cloudlet-flavor-usage']
+        let calAvgData = worker.calAvgData
+        if (calAvgData) {
+            avgData = avgFlavorData({...worker, data})
+        }
+        chartData = processData({ ...worker, data })
+        processLineChartData(chartData, avgData, worker)
     }
-    let chartData = processData(worker)
-    processLineChartData(chartData, avgData, worker)
     self.postMessage({ chartData, avgData })
 }
+
+self.addEventListener("message", (event) => {
+    format(event.data)
+});

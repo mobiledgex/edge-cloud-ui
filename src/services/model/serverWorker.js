@@ -1,5 +1,4 @@
-import AlertWorker from '../worker/mex.worker.js'
-import { WORKER_SERVER } from '../worker/constant.js'
+import ServerWorker from '../worker/server.worker.js'
 import { checkExpiry } from './serviceMC'
 import { NEW_PASSWORD, RESET_PASSWORD, UPDATE_USER } from './endpoints.js'
 
@@ -42,10 +41,10 @@ export const resetPwd = (self, data, callback) => {
         callback(event.data)
     });
 }
- 
+
 export const sendRequest = (self, request, callback, token) => {
-    const worker = new AlertWorker();
-    worker.postMessage({ type: WORKER_SERVER, request: request, requestType: 'object', token });
+    const worker = new ServerWorker();
+    worker.postMessage({ request: request, requestType: 'object', token });
     if (callback) {
         responseListener(self, worker, callback)
     }
@@ -60,38 +59,10 @@ export const sendAuthRequest = (self, request, callback) => {
 }
 
 export const sendRequests = (self, requestList, callback) => {
-    const worker = new AlertWorker();
-    worker.postMessage({ type: WORKER_SERVER, request: requestList, requestType: 'array', token: getToken(self) });
+    const worker = new ServerWorker();
+    worker.postMessage({ request: requestList, requestType: 'array', token: getToken(self) });
     if (callback) {
         responseListener(self, worker, callback)
     }
     return worker
-}
-
-
-//Not in use, must be reimplemented 
-const postMessage = (worker, message) => new Promise((resolve, reject) => {
-    const resolution = (event) => {
-        worker.removeEventListener('message', resolution)
-        if (event.data.status && event.data.status !== 200) {
-            if (checkExpiry(self, event.data.message)) {
-                reject(event.data)
-            }
-        }
-        else {
-            resolve(event.data)
-        }
-    }
-    worker.addEventListener('message', resolution)
-    worker.postMessage(message)
-})
-
-export const sendAsyncAuthRequest = async (request) => {
-    let token = getToken(self)
-    if (token) {
-        const worker = new AlertWorker();
-        let message = { type: WORKER_SERVER, request: request, requestType: 'object', token }
-        let mc = await postMessage(worker, message)
-        return mc
-    }
 }

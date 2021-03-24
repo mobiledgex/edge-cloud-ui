@@ -16,3 +16,7 @@ const processData = (data) => {
 export const format = (worker) => {
     processData(worker)
 }
+
+self.addEventListener("message", (event) => {
+    format(event.data)
+});

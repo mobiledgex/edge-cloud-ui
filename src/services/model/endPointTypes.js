@@ -76,6 +76,14 @@ export const CREATE_CLOUDLET_POOL = "CreateCloudletPool";
 export const UPDATE_CLOUDLET_POOL = "UpdateCloudletPool"
 export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
 export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
+export const SHOW_POOL_ACCESS_INIVITATION  = 'cloudletpoolaccessinvitation/show'
+export const SHOW_GRANTED_POOL_ACCESS_INIVITATION  = 'cloudletpoolaccessinvitation/showgranted'
+export const CREATE_POOL_ACCESS_INIVITATION  = 'cloudletpoolaccessinvitation/create'
+export const DELETE_POOL_ACCESS_INIVITATION  = 'cloudletpoolaccessinvitation/delete'
+export const SHOW_POOL_ACCESS_CONFIRMATION  = 'cloudletpoolconfirmation/show'
+export const SHOW_GRANTED_POOL_CONFIRMATION  = 'cloudletpoolconfirmation/showgranted'
+export const CREATE_POOL_ACCESS_CONFIRMATION  = 'cloudletpoolconfirmation/create'
+export const DELETE_POOL_ACCESS_CONFIRMATION  = 'cloudletpoolconfirmation/delete'
 export const SHOW_ORG_CLOUDLET = "orgcloudlet/show";
 export const SHOW_ORG_CLOUDLET_INFO = "orgcloudletinfo/show";
 export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
@@ -101,10 +109,11 @@ export const CLOUDLET_EVENT_LOG_ENDPOINT = 'events/cloudlet';
 export const CLUSTER_EVENT_LOG_ENDPOINT = 'events/cluster';
 export const APP_INST_EVENT_LOG_ENDPOINT = 'events/app';
 export const CLOUDLET_METRICS_ENDPOINT = 'metrics/cloudlet';
+export const CLOUDLET_METRICS_USAGE_ENDPOINT = 'metrics/cloudlet/usage'
 export const CLUSTER_METRICS_ENDPOINT = 'metrics/cluster';
 export const APP_INST_METRICS_ENDPOINT = 'metrics/app';
 export const SHOW_APP_INST_CLIENT = 'ShowAppInstClient'
-export const CLIENT_METRICS_ENDPOINT = 'metrics/client'
+export const CLIENT_METRICS_ENDPOINT = 'metrics/clientapiusage'
 export const EVENTS_FIND = 'events/find'
 export const EVENTS_SHOW = 'events/show'
 export const SHOW_ALERT = 'ShowAlert'
@@ -124,6 +133,7 @@ export const GET_CLOUDLET_RESOURCE_QUOTA_PROPS = 'GetCloudletResourceQuotaProps'
 export function getPath(request) {
     switch (request.method) {
         case CLOUDLET_METRICS_ENDPOINT:
+        case CLOUDLET_METRICS_USAGE_ENDPOINT:
         case CLUSTER_METRICS_ENDPOINT:
         case APP_INST_METRICS_ENDPOINT:
         case CLOUDLET_EVENT_LOG_ENDPOINT:
@@ -295,17 +305,8 @@ export function formatData(request, response) {
         case CLOUDLET_EVENT_LOG_ENDPOINT:
             data = CloudletEvent.getData(response, request.data)
             break;
-        case APP_INST_METRICS_ENDPOINT:
-            data = AppMetrics.getData(response, request.data)
-            break;
         case CLIENT_METRICS_ENDPOINT:
             data = ClientMetrics.getData(response, request.data)
-            break;
-        case CLUSTER_METRICS_ENDPOINT:
-            data = ClusterMetrics.getData(response, request.data)
-            break;
-        case CLOUDLET_METRICS_ENDPOINT:
-            data = CloudletMetrics.getData(response, request.data)
             break;
         case SHOW_APP_INST_CLIENT:
             data = AppInstClient.getData(response, request.data)

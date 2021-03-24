@@ -1,7 +1,7 @@
 import React from 'react'
 import HorizontalBar from '../../charts/horizontalBar/MexHorizontalBar'
 import { clientMetrics } from '../../../../../services/model/clientMetrics'
-import { sendAuthRequest } from '../../../../../services/model/serverWorker'
+import { sendRequest } from '../../services/service'
 import { withRouter } from 'react-router-dom'
 import { getOrganization, isAdmin } from '../../../../../services/model/format'
 
@@ -36,11 +36,17 @@ class MexAppClient extends React.Component {
                 <div align="left" className="event-list-header">
                     <h3 className='chart-header'>Client API Usage Count</h3>
                 </div>
-                <h3 style={{ padding:'90px 0px' }}  className='chart-header'><b>No Data</b></h3>
+                <h3 style={{ padding: '90px 0px' }} className='chart-header'><b>No Data</b></h3>
             </div>
     }
 
-    serverResponse = (mc) => {
+    fetchData = async (region, range) => {
+        let mc = await sendRequest(this, clientMetrics({
+            region: region,
+            selector: "api",
+            starttime: range.starttime,
+            endtime: range.endtime
+        }, isAdmin() ? this.props.org : getOrganization()))
         if (mc && mc.response && mc.response.status === 200) {
             let data = []
             let findCloudletList = []
@@ -48,25 +54,27 @@ class MexAppClient extends React.Component {
             let verifyLocationList = []
             let labelList = []
             let dataList = mc.response.data
-            let region = mc.request.data.region
-            dataList.map(clientData => {
-                let dataObject = clientData['dme-api'].values
-                Object.keys(dataObject).map(key => {
-                    let findCloudlet = 0
-                    let registerClient = 0
-                    let verifyLocation = 0
-                    dataObject[key].map(data => {
-                        findCloudlet += data.includes('FindCloudlet') ? 1 : 0
-                        registerClient += data.includes('RegisterClient') ? 1 : 0
-                        verifyLocation += data.includes('VerifyLocation') ? 1 : 0
+            if (dataList && dataList.length > 0) {
+                let region = mc.request.data.region
+                dataList.map(clientData => {
+                    let dataObject = clientData['dme-api'].values
+                    Object.keys(dataObject).map(key => {
+                        let findCloudlet = 0
+                        let registerClient = 0
+                        let verifyLocation = 0
+                        dataObject[key].map(data => {
+                            findCloudlet += data.includes('FindCloudlet') ? 1 : 0
+                            registerClient += data.includes('RegisterClient') ? 1 : 0
+                            verifyLocation += data.includes('VerifyLocation') ? 1 : 0
+                        })
+                        findCloudletList.push(findCloudlet)
+                        registerClientList.push(registerClient)
+                        verifyLocationList.push(verifyLocation)
+                        labelList.push(`${dataObject[key][0][7]} [${dataObject[key][0][18]}]`)
+                        data.push({ key: `${region} -  ${dataObject[key][0][7]} [${dataObject[key][0][18]}]`, findCloudlet, registerClient, verifyLocation })
                     })
-                    findCloudletList.push(findCloudlet)
-                    registerClientList.push(registerClient)
-                    verifyLocationList.push(verifyLocation)
-                    labelList.push(`${dataObject[key][0][7]} [${dataObject[key][0][18]}]`)
-                    data.push({ key: `${region} -  ${dataObject[key][0][7]} [${dataObject[key][0][18]}]`, findCloudlet, registerClient, verifyLocation })
                 })
-            })
+            }
             if (this._isMounted) {
                 this.setState(prevState => {
                     let stackedData = prevState.stackedData
@@ -79,12 +87,7 @@ class MexAppClient extends React.Component {
 
     client = (range) => {
         this.regions.map(region => {
-            sendAuthRequest(this, clientMetrics({
-                region: region,
-                selector: "api",
-                starttime: range.starttime,
-                endtime: range.endtime
-            }, isAdmin() ? this.props.org : getOrganization()), this.serverResponse)
+            this.fetchData(region, range)
         })
     }
 
