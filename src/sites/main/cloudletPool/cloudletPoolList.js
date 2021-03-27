@@ -60,7 +60,7 @@ class ClouldetPoolList extends React.Component {
             id: 'CloudletPools',
             headerLabel: 'Cloudlet Pools',
             nameField: fields.poolName,
-            requestType: [showCloudletPools, showCloudletLinkOrg],
+            requestType: [showCloudletPools],
             isRegion: true,
             sortBy: [fields.poolName],
             selection:true,

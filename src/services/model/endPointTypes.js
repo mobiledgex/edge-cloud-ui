@@ -76,14 +76,13 @@ export const CREATE_CLOUDLET_POOL = "CreateCloudletPool";
 export const UPDATE_CLOUDLET_POOL = "UpdateCloudletPool"
 export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
 export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
-export const SHOW_POOL_ACCESS_INIVITATION  = 'cloudletpoolaccessinvitation/show'
-export const SHOW_GRANTED_POOL_ACCESS_INIVITATION  = 'cloudletpoolaccessinvitation/showgranted'
-export const CREATE_POOL_ACCESS_INIVITATION  = 'cloudletpoolaccessinvitation/create'
-export const DELETE_POOL_ACCESS_INIVITATION  = 'cloudletpoolaccessinvitation/delete'
+export const SHOW_POOL_ACCESS_INVITATION  = 'cloudletpoolaccessinvitation/show'
+export const CREATE_POOL_ACCESS_INVITATION  = 'cloudletpoolaccessinvitation/create'
+export const DELETE_POOL_ACCESS_INVITATION  = 'cloudletpoolaccessinvitation/delete'
 export const SHOW_POOL_ACCESS_CONFIRMATION  = 'cloudletpoolconfirmation/show'
-export const SHOW_GRANTED_POOL_CONFIRMATION  = 'cloudletpoolconfirmation/showgranted'
 export const CREATE_POOL_ACCESS_CONFIRMATION  = 'cloudletpoolconfirmation/create'
 export const DELETE_POOL_ACCESS_CONFIRMATION  = 'cloudletpoolconfirmation/delete'
+export const SHOW_POOL_ACCESS_GRANTED  = 'cloudletpoolaccessgranted/show'
 export const SHOW_ORG_CLOUDLET = "orgcloudlet/show";
 export const SHOW_ORG_CLOUDLET_INFO = "orgcloudletinfo/show";
 export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
@@ -238,12 +237,10 @@ export function getPath(request) {
         case CREATE_USER:
         case PUBLIC_CONFIG:
             return `/api/v1/${request.method}`;
-        case SHOW_CLOUDLET_LINKORG:
-            return `/api/v1/auth/orgcloudletpool/show`;
-        case CREATE_LINK_POOL_ORG:
-            return `/api/v1/auth/orgcloudletpool/create`;
+        case CREATE_POOL_ACCESS_INVITATION:
         case DELETE_LINK_POOL_ORG:
-            return `/api/v1/auth/orgcloudletpool/delete`;
+        case SHOW_CLOUDLET_LINKORG:
+            return `/api/v1/auth/${request.method}`;
         default:
             return null;
     }

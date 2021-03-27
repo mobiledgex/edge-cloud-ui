@@ -6,7 +6,7 @@ import MexForms, { MAIN_HEADER, SELECT, INPUT, DUALLIST } from '../../../hoc/for
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serverData from '../../../services/model/serverData';
-import { fields, getOrganization, updateFieldData } from '../../../services/model/format';
+import { fields, getOrganization, getUserRole, isAdmin, updateFieldData } from '../../../services/model/format';
 
 import { getOrganizationList } from '../../../services/model/organization';
 import { showOrganizations } from '../../../services/model/organization';
@@ -130,14 +130,14 @@ class CloudletPoolReg extends React.Component {
     onAddOrganizations = async () => {
         let data = this.formattedData()
         let requestDataList = []
-        let organizationList = data[fields.organizations]
+        let organizationList = isAdmin() ? data[fields.organizations] : [{ organizationName: data[fields.organizationName] }]
         if (organizationList && organizationList.length > 0) {
-            for (let i = 0; i < organizationList.length; i++) {
+            organizationList.forEach(organization => {
                 let newData = data
-                let organization = JSON.parse(organizationList[i])
+                organization = isAdmin() ? JSON.parse(organization) : organization
                 newData[fields.organizationName] = organization[fields.organizationName]
                 requestDataList.push(this.action === constant.DELETE_ORGANIZATION ? deleteLinkPoolOrg(newData) : createLinkPoolOrg(newData))
-            }
+            })
         }
         serverData.sendMultiRequest(this, requestDataList, this.organizationAddResponse)
     }
@@ -174,14 +174,15 @@ class CloudletPoolReg extends React.Component {
         }
         let isDelete = this.action === constant.DELETE_ORGANIZATION
         if (this.organizationList.length > 0) {
-            let label = isDelete ? 'Unlink' : 'Link'
+            let label = isDelete ? 'Unlink' : 'Invite'
             let step = [
-                { label: `${label} Organizations`, formType: MAIN_HEADER, visible: true },
+                { label: `${label} Organization`, formType: MAIN_HEADER, visible: true },
                 { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.poolName] },
                 { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: operator },
-                { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: true },
-                { label: `${label} Organizations`, formType: 'Button', onClick: this.onAddOrganizations },
+                { field: fields.organizationName, label: 'Organization', placeholder:'Enter Organization', formType: INPUT, rules: { required: true }, update: { edit: true }, visible: getUserRole().includes(constant.OPERATOR) },
+                { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: isAdmin() },
+                { label: `${label} Organization`, formType: 'Button', onClick: this.onAddOrganizations },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]
             for (let i = 0; i < step.length; i++) {
