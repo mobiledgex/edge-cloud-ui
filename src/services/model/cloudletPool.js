@@ -41,7 +41,6 @@ export const getKey = (data) => {
 const addLinkOrg = (poolList, linkOrgList) => {
     for (let i = 0; i < poolList.length; i++) {
         let pool = poolList[i]
-        console.log('Rahul1234', pool)
         let organizations = []
         for (let j = 0; j < linkOrgList.length; j++) {
             let linkOrg = linkOrgList[j]
