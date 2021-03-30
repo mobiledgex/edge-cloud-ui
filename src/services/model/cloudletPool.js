@@ -1,5 +1,5 @@
 import * as formatter from './format'
-import { SHOW_CLOUDLET_POOL, CREATE_CLOUDLET_POOL, DELETE_CLOUDLET_POOL, SHOW_CLOUDLET_LINKORG, UPDATE_CLOUDLET_POOL } from './endPointTypes'
+import { SHOW_CLOUDLET_POOL, CREATE_CLOUDLET_POOL, DELETE_CLOUDLET_POOL, SHOW_CLOUDLET_LINKORG, UPDATE_CLOUDLET_POOL, SHOW_POOL_ACCESS_INVITATION } from './endPointTypes'
 import * as constant from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
 
@@ -41,13 +41,14 @@ export const getKey = (data) => {
 const addLinkOrg = (poolList, linkOrgList) => {
     for (let i = 0; i < poolList.length; i++) {
         let pool = poolList[i]
+        console.log('Rahul1234', pool)
         let organizations = []
         for (let j = 0; j < linkOrgList.length; j++) {
             let linkOrg = linkOrgList[j]
-            if (pool[fields.poolName] === linkOrg[fields.poolName]) {
+            if (pool[fields.poolName] === linkOrg['CloudletPool']) {
                 pool[fields.organizationCount] += 1
                 let organization = {}
-                organization[fields.organizationName] = linkOrg[fields.organizationName]
+                organization[fields.organizationName] = linkOrg['Org']
                 organizations.push(organization)
             }
         }
@@ -55,17 +56,17 @@ const addLinkOrg = (poolList, linkOrgList) => {
     }
 }
 
-export const multiDataRequest = (keys, mcRequestList) => {
+export const multiDataRequest = (keys, mcList) => {
     let poolList = [];
     let linkOrgList = [];
-    for (let i = 0; i < mcRequestList.length; i++) {
-        let mcRequest = mcRequestList[i];
-        let request = mcRequest.request;
+    for (let i = 0; i < mcList.length; i++) {
+        let mc = mcList[i];
+        let request = mc.request;
         if (request.method === SHOW_CLOUDLET_POOL) {
-            poolList = mcRequest.response.data
+            poolList = mc.response.data
         }
-        else if (request.method === SHOW_CLOUDLET_LINKORG) {
-            linkOrgList = mcRequest.response.data
+        else if (request.method === SHOW_POOL_ACCESS_INVITATION) {
+            linkOrgList = mc.response.data
         }
     }
 

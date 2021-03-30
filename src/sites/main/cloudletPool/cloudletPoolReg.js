@@ -174,7 +174,7 @@ class CloudletPoolReg extends React.Component {
         }
         let isDelete = this.action === constant.DELETE_ORGANIZATION
         if (this.organizationList.length > 0) {
-            let label = isDelete ? 'Unlink' : 'Invite'
+            let label = isDelete ? 'Remove' : 'Invite'
             let step = [
                 { label: `${label} Organization`, formType: MAIN_HEADER, visible: true },
                 { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: region },
@@ -182,7 +182,7 @@ class CloudletPoolReg extends React.Component {
                 { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: operator },
                 { field: fields.organizationName, label: 'Organization', placeholder:'Enter Organization', formType: INPUT, rules: { required: true }, update: { edit: true }, visible: getUserRole().includes(constant.OPERATOR) },
                 { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: isAdmin() },
-                { label: `${label} Organization`, formType: 'Button', onClick: this.onAddOrganizations },
+                { label: `${label}`, formType: 'Button', onClick: this.onAddOrganizations },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]
             for (let i = 0; i < step.length; i++) {

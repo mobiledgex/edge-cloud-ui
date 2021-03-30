@@ -1,5 +1,5 @@
 import * as formatter from './format'
-import { SHOW_CLOUDLET_LINKORG, DELETE_LINK_POOL_ORG, CREATE_POOL_ACCESS_INVITATION } from './endPointTypes'
+import { SHOW_POOL_ACCESS_INVITATION, CREATE_POOL_ACCESS_INVITATION, DELETE_POOL_ACCESS_INVITATION } from './endPointTypes'
 
 const fields = formatter.fields;
 
@@ -19,7 +19,7 @@ const getKey = (data) => {
 }
 
 export const showCloudletLinkOrg = (data) => {
-    return { method: SHOW_CLOUDLET_LINKORG, data: data }
+    return { method: SHOW_POOL_ACCESS_INVITATION, data: data }
 }
 
 export const createLinkPoolOrg = (data) => {
@@ -29,7 +29,7 @@ export const createLinkPoolOrg = (data) => {
 
 export const deleteLinkPoolOrg = (data) => {
     let requestData = getKey(data)
-    return { method: DELETE_LINK_POOL_ORG, data: requestData }
+    return { method: DELETE_POOL_ACCESS_INVITATION, data: requestData }
 }
 
 const customData = (value) => {

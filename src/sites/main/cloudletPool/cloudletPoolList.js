@@ -41,8 +41,8 @@ class ClouldetPoolList extends React.Component {
     actionMenu = () => {
         return [
             { id: constant.ADD_CLOUDLET, label: 'Update', onClick: this.onActionClick, type:'Edit' },
-            { id: constant.ADD_ORGANIZATION, label: 'Link Organization', onClick: this.onActionClick, type:'Edit' },
-            { id: constant.DELETE_ORGANIZATION, label: 'Unlink Organization', onClick: this.onActionClick, type:'Edit' },
+            { id: constant.ADD_ORGANIZATION, label: 'Add Organization', onClick: this.onActionClick, type:'Edit' },
+            { id: constant.DELETE_ORGANIZATION, label: 'Remove Organization', onClick: this.onActionClick, type:'Edit' },
             { id: constant.DELETE, label: 'Delete', onClickInterept:this.showDeleteCloudletPool, onClick: deleteCloudletPool, type:'Edit' }
         ]
     }
@@ -60,7 +60,7 @@ class ClouldetPoolList extends React.Component {
             id: 'CloudletPools',
             headerLabel: 'Cloudlet Pools',
             nameField: fields.poolName,
-            requestType: [showCloudletPools],
+            requestType: [showCloudletPools, showCloudletLinkOrg],
             isRegion: true,
             sortBy: [fields.poolName],
             selection:true,

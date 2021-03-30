@@ -70,8 +70,6 @@ export const STREAM_CLUSTER_INST = "StreamClusterInst";
 export const STREAM_CLOUDLET = "StreamCloudlet";
 export const STREAM_APP_INST = "StreamAppInst";
 export const SHOW_CLOUDLET_POOL = "ShowCloudletPool";
-export const SHOW_CLOUDLET_LINKORG = "orgcloudletpool";
-export const SHOW_LINK_POOL_ORG = "orgcloudletpool";
 export const CREATE_CLOUDLET_POOL = "CreateCloudletPool";
 export const UPDATE_CLOUDLET_POOL = "UpdateCloudletPool"
 export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
@@ -85,7 +83,6 @@ export const DELETE_POOL_ACCESS_CONFIRMATION  = 'cloudletpoolconfirmation/delete
 export const SHOW_POOL_ACCESS_GRANTED  = 'cloudletpoolaccessgranted/show'
 export const SHOW_ORG_CLOUDLET = "orgcloudlet/show";
 export const SHOW_ORG_CLOUDLET_INFO = "orgcloudletinfo/show";
-export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const RUN_COMMAND = "RunCommand";
 export const SHOW_LOGS = "ShowLogs";
 export const SHOW_CONSOLE = "RunConsole";
@@ -238,8 +235,8 @@ export function getPath(request) {
         case PUBLIC_CONFIG:
             return `/api/v1/${request.method}`;
         case CREATE_POOL_ACCESS_INVITATION:
-        case DELETE_LINK_POOL_ORG:
-        case SHOW_CLOUDLET_LINKORG:
+        case DELETE_POOL_ACCESS_INVITATION:
+        case SHOW_POOL_ACCESS_INVITATION:
             return `/api/v1/auth/${request.method}`;
         default:
             return null;
@@ -289,9 +286,6 @@ export function formatData(request, response) {
             break;
         case SHOW_CLOUDLET_POOL:
             data = CloudletPool.getData(response, request.data)
-            break;
-        case SHOW_CLOUDLET_LINKORG:
-            data = CloudletLinkOrg.getData(response, request.data)
             break;
         case CLUSTER_EVENT_LOG_ENDPOINT:
             data = ClusterEvent.getData(response, request.data)
