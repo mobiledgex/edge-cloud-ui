@@ -1,5 +1,5 @@
 import * as formatter from './format'
-import { SHOW_CLOUDLET_POOL, CREATE_CLOUDLET_POOL, DELETE_CLOUDLET_POOL, SHOW_CLOUDLET_LINKORG, UPDATE_CLOUDLET_POOL, SHOW_POOL_ACCESS_INVITATION } from './endPointTypes'
+import { SHOW_CLOUDLET_POOL, CREATE_CLOUDLET_POOL, DELETE_CLOUDLET_POOL, UPDATE_CLOUDLET_POOL, SHOW_POOL_ACCESS_INVITATION } from './endPointTypes'
 import * as constant from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
 

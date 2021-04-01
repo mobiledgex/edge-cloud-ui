@@ -35,7 +35,7 @@ import { Skeleton } from '@material-ui/lab';
 import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../utils/sharedPreferences_util';
 
 const defaultParent = () => {
-    return constant.metricParentTypes[getUserRole().includes(constant.OPERATOR) ? 3 : 0]
+    return constant.metricParentTypes[getUserRole().includes(constant.OPERATOR) ? 2 : 0]
 }
 
 const defaultMetricType = (parent) => {
