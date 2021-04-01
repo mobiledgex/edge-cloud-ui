@@ -380,7 +380,6 @@ export const formatUsageData = (response, body, keys) => {
         if (response && response.data && response.data.data) {
             let dataList = response.data.data;
             if (dataList && dataList.length > 0) {
-                
                 let series = dataList[0].Series
                 let messages = dataList[0].messages
                 if (series && series.length > 0) {
