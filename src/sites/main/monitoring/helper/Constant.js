@@ -8,6 +8,8 @@ import { getUserRole } from '../../../../services/model/format'
 import { showOrgClusterInsts } from '../../../../services/model/clusterInstance'
 import { APP_INST_METRICS_ENDPOINT, CLOUDLET_METRICS_ENDPOINT, CLUSTER_METRICS_ENDPOINT } from '../../../../services/model/endPointTypes'
 import { CLOUDLET_METRICS_USAGE_ENDPOINT } from '../../../../services/model/endpoints'
+import { showCloudletPools } from '../../../../services/model/cloudletPool'
+import { cloudletPoolMetricsListKeys } from '../../../../services/model/cloudletPoolMetrics'
 
 export const DEVELOPER = mainConstant.DEVELOPER
 export const OPERATOR = mainConstant.OPERATOR
@@ -23,10 +25,12 @@ export const ACTION_RELATIVE_TIME = 7
 export const ACTION_REFRESH = 8
 export const ACTION_MINIMIZE = 9
 export const ACTION_ORG = 10
+export const ACTION_POOL_CHANGE = 11
 
 export const PARENT_APP_INST = 'appinst'
 export const PARENT_CLUSTER_INST = 'cluster'
 export const PARENT_CLOUDLET = 'cloudlet'
+export const PARENT_CLOUDLET_POOL = 'cloudletpool'
 
 export const metricType = (id) => {
     switch (id) {
@@ -35,6 +39,7 @@ export const metricType = (id) => {
         case PARENT_CLUSTER_INST:
             return clusterMetricTypeKeys()
         case PARENT_CLOUDLET:
+        case PARENT_CLOUDLET_POOL:
             return cloudletMetricTypeKeys()
     }
 }
@@ -84,6 +89,7 @@ export const metricParentTypes = [
     { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showOrgAppInsts], metricListKeys: appMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData },
     { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showOrgCloudlets, showOrgClusterInsts], metricListKeys: clusterMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER] },
     { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showOrgCloudlets], metricListKeys: cloudletMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.OPERATOR], customData: cloudletCustomData },
+    { id: PARENT_CLOUDLET_POOL, label: 'Cloudlet Pool', showRequest: [showOrgCloudlets, showCloudletPools], metricListKeys: cloudletMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.OPERATOR], customData: cloudletCustomData },
 ]
 
 export const validateRole = (roles) => {

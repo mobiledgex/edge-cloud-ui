@@ -1,10 +1,11 @@
 import React from 'react'
-import { Toolbar, Input, InputAdornment, makeStyles, Box, IconButton, Tooltip, Grid, Divider } from '@material-ui/core'
+import { Toolbar, Input, InputAdornment, makeStyles, Box, IconButton, Tooltip, Grid, Divider, Menu } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search';
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
 import * as constant from '../helper/Constant';
 import MexTimer from '../helper/MexTimer'
 import MonitoringMenu from './MonitoringMenu'
+import ToolBarPool from './ToolbarPool'
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
@@ -37,6 +38,7 @@ const MexToolbar = (props) => {
     const [search, setSearch] = React.useState('')
     const [focused, setFocused] = React.useState(false)
     const [refreshRange, setRefreshRange] = React.useState(constant.refreshRates[0])
+    const parentId = props.filter.parent.id
     /*Search Block*/
     const handleSearch = (e) => {
         let value = e ? e.target.value : ''
@@ -86,8 +88,12 @@ const MexToolbar = (props) => {
         props.onChange(constant.ACTION_METRIC_PARENT_TYPE, value)
     }
 
+    const onPoolChange = (value) => {
+        props.onChange(constant.ACTION_POOL_CHANGE, value)
+    }
+
     const onMetricTypeChange = (values) => {
-         props.onChange(constant.ACTION_METRIC_TYPE, values)
+        props.onChange(constant.ACTION_METRIC_TYPE, values)
     }
 
     const onSummaryChange = (value) => {
@@ -139,27 +145,42 @@ const MexToolbar = (props) => {
     )
 
     const showSummary = () => {
-        return props.filter.parent.id !== constant.PARENT_CLOUDLET
+        return parentId !== constant.PARENT_CLOUDLET
     }
 
     const showOrg = () => {
         return isAdmin() && props.organizations.length > 0
     }
+
+    const showPool = (order) => {
+        let poolData = props.poolData
+        if (parentId === constant.PARENT_CLOUDLET_POOL && poolData) {     
+            return <MonitoringMenu order={order}  data={poolData} header={true} labelKey='poolName' default={false} onChange={onPoolChange} placeHolder={'Select Pool'}/>
+        }
+    }
+
+    const showRegion = (order) => {
+        if (parentId !== constant.PARENT_CLOUDLET_POOL) {     
+            return <MonitoringMenu order={order} data={props.regions} default={props.filter.region} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onRegionChange} tip='Region' />            
+        }
+    }
+
     return (
         <Toolbar>
             <label className='monitoring-header'>Monitoring</label>
             {
                 <div style={{ width: '100%' }}>
                     <Box display="flex" justifyContent="flex-end">
-                        {showOrg() ? <MonitoringMenu order={1} data={props.organizations} labelKey={fields.organizationName} onChange={onOrgChange} placeHolder={'Select Org'} disableDefault={true} search={true}/> : null}
+                        {showOrg() ? <MonitoringMenu order={1} data={props.organizations} labelKey={fields.organizationName} onChange={onOrgChange} placeHolder={'Select Org'} disableDefault={true} search={true} /> : null}
                         <MexTimer order={2} onChange={onTimeRangeChange} onRelativeChange={onRelativeTimeChange} range={props.range} duration={props.duration} />
                         <MonitoringMenu order={3} data={constant.metricParentTypes} labelKey='label' onChange={onMetricParentTypeChange} default={props.filter.parent} />
-                        <MonitoringMenu order={4} data={props.regions} default={props.filter.region} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onRegionChange} tip='Region' />
-                        <MonitoringMenu order={5} data={constant.visibility(props.filter.parent.id)} default={props.filter.metricType} labelKey='header' multiple={true} field={'field'} type={'metricType'} icon={<VisibilityOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onMetricTypeChange} tip='Visibility' />
-                        {showSummary() ? <MonitoringMenu order={6} data={constant.summaryList} labelKey='label' onChange={onSummaryChange} /> : null}
-                        {renderRefresh(7)}
-                        {searchForm(8)}
-                        {renderMinimize(9)}
+                        {showPool(4)}
+                        {showRegion(5)}
+                        <MonitoringMenu order={6} data={constant.visibility(parentId)} default={props.filter.metricType} labelKey='header' multiple={true} field={'field'} type={'metricType'} icon={<VisibilityOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onMetricTypeChange} tip='Visibility' />
+                        {showSummary() ? <MonitoringMenu order={7} data={constant.summaryList} labelKey='label' onChange={onSummaryChange} /> : null}
+                        {renderRefresh(8)}
+                        {searchForm(9)}
+                        {renderMinimize(10)}
                     </Box>
                 </div>
             }

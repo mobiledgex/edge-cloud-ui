@@ -94,12 +94,13 @@ export const fetchLocation = (avgValues, metricData, showList) => {
 }
 
 export const appInstMetrics = (data, org) => {
-    data.appinst = {
-        app_key: {
-            organization: org
+    if (org) {
+        data.appinst = {
+            app_key: {
+                organization: org
+            }
         }
     }
-
     return { method: APP_INST_METRICS_ENDPOINT, data: data, keys: appMetricsKeys }
 }
 

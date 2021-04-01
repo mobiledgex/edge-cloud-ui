@@ -76,7 +76,7 @@ export const multiDataRequest = (keys, mcList) => {
 }
 
 export const showCloudletPools = (data) => {
-    return { method: SHOW_CLOUDLET_POOL, data: data }
+    return { method: SHOW_CLOUDLET_POOL, data: data, keys: keys() }
 }
 
 export const createCloudletPool = (data) => {

@@ -380,17 +380,16 @@ export const formatUsageData = (response, body, keys) => {
         if (response && response.data && response.data.data) {
             let dataList = response.data.data;
             if (dataList && dataList.length > 0) {
+                
                 let series = dataList[0].Series
                 let messages = dataList[0].messages
                 if (series && series.length > 0) {
                     series.map(data => {
                         let columns = data.columns
                         let values = data.values
-                        let i = 0
-                        for (; i < values.length; i++) {
-                            let value = values[i]
+                        for (let value of values) {
                             if (value.includes('MEXPrometheusAppName')) {
-                                continue
+                                continue;
                             }
                             let data = {}
                             columns.map((column, i) => {
