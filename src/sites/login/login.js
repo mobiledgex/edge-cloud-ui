@@ -322,7 +322,7 @@ class Login extends Component {
                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(this.params))
                 this.getControllers(data.token)
                 this.validateUserName(username)
-                this.props.history.push({ pathname: `/main/${PAGE_ORGANIZATIONS.toLowerCase()}` })
+                this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
             }
         }
     }
@@ -427,7 +427,7 @@ class Login extends Component {
                 this.getControllers(response.data.token)
                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
                 this.validateUserName(username)
-                this.props.history.push({ pathname: `/main/pg=${PAGE_ORGANIZATIONS.toLowerCase()}` })
+                this.props.history.push(`/main/pg=${PAGE_ORGANIZATIONS.toLowerCase()}`)
                 this.setState({ loginOTP: undefined })
             }
         }

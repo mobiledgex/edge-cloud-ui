@@ -44,10 +44,13 @@ class AlertGlobal extends React.Component {
         return (
             <div style={{ marginTop: 5 }}>
                 <IconButton onClick={this.handleClick} aria-label="alert-menu" aria-haspopup="true">
-                    {showDot ? <Badge color="secondary" variant="dot">
-                        <NotificationsNoneIcon />
-                    </Badge> : <NotificationsNoneIcon />}
-
+                    {
+                        showDot ?
+                            <Badge color="secondary" variant="dot">
+                                <NotificationsNoneIcon />
+                            </Badge> :
+                            <NotificationsNoneIcon />
+                    }
                 </IconButton>
                 <Popover
                     id={'Alert Receiver'}
@@ -106,7 +109,7 @@ class AlertGlobal extends React.Component {
             this.regions.map(region => {
                 sendAuthRequest(this, showAlerts({ region }), this.serverResponse)
             })
-        }, 60 * 1000);
+        }, 10 * 60 * 1000);
     }
 
     componentDidMount() {

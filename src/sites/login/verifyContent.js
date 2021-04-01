@@ -33,7 +33,7 @@ class VerifyContent extends Component {
 
     onAlertClose = () => {
         this.setState({ mexAlertMessage: undefined, open:false })
-        this.props.history.push({ pathname: '/' })
+        this.props.history.push('/')
     }
 
     render() {

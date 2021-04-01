@@ -23,11 +23,11 @@ class AlertLocal extends React.Component {
 
     renderAlertPreferences = () => {
         this.props.handleClose()
-        this.props.handlePageRedirect(PAGE_ALERTS)
+        this.props.history.push('/main/alerts')
     }
 
     renderToolbar = () => (
-        <div className="alert-toolbar ">
+        <div className="alert-toolbar">
             <div className="alert-toolbar-left">
                 <Typography variant="h6">Alerts</Typography>
             </div>
@@ -109,6 +109,7 @@ class AlertLocal extends React.Component {
             <React.Fragment>
                 {this.renderToolbar()}
                 <br />
+                <Divider/>
                 <div className='alert-local-list'>
                     {this.renderList()}
                 </div>
