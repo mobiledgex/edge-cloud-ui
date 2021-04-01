@@ -8,14 +8,6 @@ import cloneDeep from 'lodash/cloneDeep';
 import { convertUnit } from '../helper/unitConvertor';
 import { generateDataset } from './chart';
 import { formatData } from '../../../../services/model/endpoints';
-import randomColor from 'randomcolor';
-
-const defaultFields = (data) => {
-    data['color'] = randomColor({
-        count: 1,
-    })[0]
-    data['selected'] = false
-}
 
 const processLineChartData = (chartDataList, worker) => {
     const { avgData, timezone } = worker
@@ -65,7 +57,7 @@ const avgCalculator = (parentId, data, metric) => {
 
 const processData = (worker) => {
 
-    const { metric, dataList, parentId, region, avgData, request } = worker
+    const { metric, dataList, parentId, region } = worker
     const metricList = metric.keys ? metric.keys : [metric]
     let chartData = []
     dataList.forEach(metricData => {
@@ -85,32 +77,8 @@ const processData = (worker) => {
         })
 
     })
-    if (worker.calculateAvgData) {
-        let newAvgData = avgData ? avgData : {}
-        chartData.forEach(item => {
-            let avgDataKeys = Object.keys(item['avgData'])
-            let columns = item.columns
-            avgDataKeys.forEach(avgDataKey => {
-                let value = item.values[avgDataKey][0]
-                if (newAvgData[avgDataKey] === undefined) {
-                    newAvgData[avgDataKey] = {}
-                    defaultFields(newAvgData[avgDataKey])
-                    columns.forEach((column, i) => {
-                        if (column.field) {
-                            newAvgData[avgDataKey][column.field] = value[i]
-                        }
-                    })
-                }
-                newAvgData[avgDataKey][metric.serverField] = metric.unit ? convertUnit(metric.unit, value[metric.position], true) : value[metric.position]
-            })
-        })
-        processLineChartData(chartData, {...worker, avgData:newAvgData}) 
-        self.postMessage({ status: 200, data: { chartData, avgData: newAvgData } })
-    }
-    else { 
-        processLineChartData(chartData, worker) 
-        self.postMessage({ status: 200, data: chartData })
-    }
+    processLineChartData(chartData, worker)
+    self.postMessage({ status: 200, data: chartData })
 }
 
 export const format = (worker) => {
