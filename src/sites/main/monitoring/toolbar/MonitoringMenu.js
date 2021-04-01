@@ -102,18 +102,7 @@ const MonitoringMenu = (props) => {
             >
                 {props.search ? <div style={{ marginRight: 10, marginLeft: 10, marginBottom: 5 }}><SearchFilter onFilter={onFilter} /></div> : null}
                 <div style={{ maxHeight: 300, overflow: 'auto', }}>
-                    {props.header ? Object.keys(props.data).map(header => {
-                        let dataList = props.data[header]
-                        return (
-                            dataList.length > 0 ? <React.Fragment key={header}>
-                                <ListItem disabled={true}>
-                                    <ListItemText>Region: {header}</ListItemText>
-                                </ListItem>
-                                {fetchList(props.data[header])}
-                            </React.Fragment> : null
-                        )
-                    }) : fetchList(props.data)}
-
+                    {fetchList(props.data)}
                 </div>
             </Menu>
         </Box>
