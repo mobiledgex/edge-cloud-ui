@@ -116,8 +116,7 @@ const MexChartList = (props) => {
   const onToolbar = (action) => {
     props.onToolbarClick(action)
   }
-
-
+  
   return (
     <Collapse in={!props.minimize}>
       {props.rowSelected === 1 && actions && actions.length > 0 ? <ListToolbar actions={actions} click={onToolbar} /> : null}

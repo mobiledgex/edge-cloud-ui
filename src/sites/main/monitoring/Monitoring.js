@@ -19,7 +19,6 @@ import AppSkeleton from './modules/app/AppSkeleton'
 import ClusterMonitoring from './modules/cluster/ClusterMonitoring'
 import ClusterSkeleton from './modules/cluster/ClusterSkeleton'
 import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
-import CloudletPoolMonitoring from './modules/cloudletpool/CloudletPoolMonitoring'
 import CloudletSkeleton from './modules/cloudlet/CloudletSkeleton'
 
 //services
@@ -70,13 +69,12 @@ class Monitoring extends React.Component {
             duration: constant.relativeTimeRanges[0],
             range: timeRangeInMin(constant.relativeTimeRanges[0].duration),
             organizations: [],
-            filter: { region: defaultRegion(this.regions), search: '', parent, metricType: defaultMetricType(parent), summary: constant.summaryList[0], pool:undefined },
+            filter: { region: defaultRegion(this.regions), search: '', parent, metricType: defaultMetricType(parent), summary: constant.summaryList[0] },
             avgData: {},
             rowSelected: 0,
             selectedOrg: undefined,
             showLoaded: false,
             listAction: undefined,
-            poolData: undefined
         }
         this._isMounted = false
         this.worker = ShowWorker()
@@ -156,20 +154,8 @@ class Monitoring extends React.Component {
         }
     }
 
-    onPoolChange = (cloudletPool) => {
-        let region = cloudletPool[fields.region]
-        if (this._isMounted) {
-            this.setState(prevState => {
-                let filter = prevState.filter
-                filter.region = [region]
-                filter.pool = cloudletPool
-                return { filter }
-            })
-        }
-    }
-
     onToolbar = async (action, value) => {
-        if (action === constant.ACTION_POOL_CHANGE || action === constant.ACTION_ORG || action === constant.ACTION_MINIMIZE || action === constant.ACTION_REFRESH_RATE || action === constant.ACTION_TIME_RANGE || action === constant.ACTION_RELATIVE_TIME || action === constant.ACTION_REFRESH) {
+        if (action === constant.ACTION_ORG || action === constant.ACTION_MINIMIZE || action === constant.ACTION_REFRESH_RATE || action === constant.ACTION_TIME_RANGE || action === constant.ACTION_RELATIVE_TIME || action === constant.ACTION_REFRESH) {
             switch (action) {
                 case constant.ACTION_REFRESH_RATE:
                     this.onRefreshChange(value)
@@ -188,9 +174,6 @@ class Monitoring extends React.Component {
                     break;
                 case constant.ACTION_ORG:
                     this.onOrgChange(value)
-                    break;
-                case constant.ACTION_POOL_CHANGE:
-                    this.onPoolChange(value)
                     break;
             }
         }
@@ -241,10 +224,6 @@ class Monitoring extends React.Component {
         }
     }
 
-    updatePoolAvgData = (data)=>{
-        this.setState({avgData:data})
-    }
-
     renderMonitoringParent = () => {
         const { minimize, filter, range, avgData, rowSelected, selectedOrg, listAction } = this.state
         let parentId = filter.parent.id
@@ -257,18 +236,15 @@ class Monitoring extends React.Component {
         else if (parentId === constant.PARENT_CLOUDLET) {
             return <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} onListToolbarClear={this.onListToolbarClear} />
         }
-        else if (parentId === constant.PARENT_CLOUDLET_POOL) {
-            return <CloudletPoolMonitoring avgData={avgData} filter={filter} updateAvgData={this.updatePoolAvgData} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
-        }
     }
 
     render() {
-        const { loading, minimize, filter, range, duration, organizations, avgData, rowSelected, showLoaded, poolData } = this.state
+        const { loading, minimize, filter, range, duration, organizations, avgData, rowSelected, showLoaded } = this.state
         return (
             <div style={{ flexGrow: 1 }} mex-test="component-monitoring">
                 <Card>
                     {loading ? <LinearProgress /> : null}
-                    <MonitoringToolbar regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} poolData={poolData} />
+                    <MonitoringToolbar regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} />
                 </Card>
                 <React.Fragment>
                     <div style={{ margin: 1 }}></div>
@@ -295,7 +271,7 @@ class Monitoring extends React.Component {
         let parentId = parent.id
         if (this.regions && this.regions.length > 0 && constant.validateRole(parent.role)) {
             let count = this.regions.length
-            this.updateState({ loading: true, poolData: undefined })
+            this.updateState({ loading: true })
             this.regions.forEach(async (region) => {
                 let showRequests = parent.showRequest
                 let requestList = []
@@ -317,16 +293,9 @@ class Monitoring extends React.Component {
                         let avgData = response.data
                         if (this._isMounted) {
                             this.setState(prevState => {
-                                if (parentId === constant.PARENT_CLOUDLET_POOL) {
-                                    let prePoolData = prevState.poolData ? prevState.poolData : {}
-                                    prePoolData[region] = avgData[region]
-                                    return { poolData: prePoolData }
-                                }
-                                else {
-                                    let preAvgData = prevState.avgData
-                                    preAvgData[region] = avgData[region]
-                                    return { avgData: preAvgData }
-                                }
+                                let preAvgData = prevState.avgData
+                                preAvgData[region] = avgData[region]
+                                return { avgData: preAvgData }
                             }, () => {
                                 if (count === 0) {
                                     this.updateState({ loading: false, showLoaded: true })
