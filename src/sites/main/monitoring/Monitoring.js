@@ -74,7 +74,7 @@ class Monitoring extends React.Component {
             rowSelected: 0,
             selectedOrg: undefined,
             showLoaded: false,
-            listAction: undefined,
+            listAction: undefined
         }
         this._isMounted = false
         this.worker = ShowWorker()
