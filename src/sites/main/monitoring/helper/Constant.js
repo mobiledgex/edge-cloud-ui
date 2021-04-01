@@ -8,8 +8,6 @@ import { getUserRole } from '../../../../services/model/format'
 import { showOrgClusterInsts } from '../../../../services/model/clusterInstance'
 import { APP_INST_METRICS_ENDPOINT, CLOUDLET_METRICS_ENDPOINT, CLUSTER_METRICS_ENDPOINT } from '../../../../services/model/endPointTypes'
 import { CLOUDLET_METRICS_USAGE_ENDPOINT } from '../../../../services/model/endpoints'
-import { showCloudletPools } from '../../../../services/model/cloudletPool'
-import { cloudletPoolMetricsListKeys } from '../../../../services/model/cloudletPoolMetrics'
 
 export const DEVELOPER = mainConstant.DEVELOPER
 export const OPERATOR = mainConstant.OPERATOR
