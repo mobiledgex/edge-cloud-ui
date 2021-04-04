@@ -31,7 +31,7 @@ const pages = [
     { divider: true },
     { label: 'Cloudlets', icon: 'cloud_queue', id: constant.PAGE_CLOUDLETS, path:'cloudlets' },
     { label: 'Cloudlet Pools', icon: 'cloud_circle', id: constant.PAGE_CLOUDLET_POOLS, path:'cloudlet-pools', roles: [constant.ADMIN, constant.OPERATOR] },
-    { label: 'Private Cloudlet Access', icon: 'cloud_circle', id: constant.PAGE_POOL_ACCESS, path:'pool-access', roles: [constant.ADMIN, constant.DEVELOPER] },
+    { label: 'Private Cloudlet Access', icon: 'cloud_circle', id: constant.PAGE_POOL_ACCESS, path:'pool-access', roles: [constant.DEVELOPER] },
     { label: 'Flavors', icon: 'free_breakfast', id: constant.PAGE_FLAVORS, path:'flavors', roles: [constant.ADMIN, constant.DEVELOPER] },
     { label: 'Cluster Instances', icon: 'storage', id: constant.PAGE_CLUSTER_INSTANCES, path:'cluster-insts', roles: [constant.ADMIN, constant.DEVELOPER] },
     { label: 'Apps', icon: 'apps', id: constant.PAGE_APPS, path:'apps', roles: [constant.ADMIN, constant.DEVELOPER] },

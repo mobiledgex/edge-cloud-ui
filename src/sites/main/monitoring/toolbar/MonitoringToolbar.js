@@ -147,6 +147,20 @@ const MexToolbar = (props) => {
         return isAdmin() && props.organizations.length > 0
     }
 
+    const parentType = () => {
+        let isPrivate = props.isPrivate
+        if (isPrivate) {
+            return constant.metricParentTypes().map(parent => {
+                if(parent.id === constant.PARENT_APP_INST || parent.id === constant.PARENT_CLUSTER_INST )
+                {
+                    parent.role.push(constant.OPERATOR)    
+                }
+                return parent
+            })
+        }
+        return constant.metricParentTypes()
+    }
+
     return (
         <Toolbar>
             <label className='monitoring-header'>Monitoring</label>
@@ -155,8 +169,8 @@ const MexToolbar = (props) => {
                     <Box display="flex" justifyContent="flex-end">
                         {showOrg() ? <MonitoringMenu order={1} data={props.organizations} labelKey={fields.organizationName} onChange={onOrgChange} placeHolder={'Select Org'} disableDefault={true} search={true} /> : null}
                         <MexTimer order={2} onChange={onTimeRangeChange} onRelativeChange={onRelativeTimeChange} range={props.range} duration={props.duration} />
-                        <MonitoringMenu order={3} data={constant.metricParentTypes} labelKey='label' onChange={onMetricParentTypeChange} default={props.filter.parent} />
-                        <MonitoringMenu order={4} data={props.regions} default={props.filter.region} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onRegionChange} tip='Region' />  
+                        <MonitoringMenu order={3} data={parentType()} labelKey='label' onChange={onMetricParentTypeChange} default={props.filter.parent} />
+                        <MonitoringMenu order={4} data={props.regions} default={props.filter.region} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onRegionChange} tip='Region' />
                         <MonitoringMenu order={5} data={constant.visibility(parentId)} default={props.filter.metricType} labelKey='header' multiple={true} field={'field'} type={'metricType'} icon={<VisibilityOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onMetricTypeChange} tip='Visibility' />
                         {showSummary() ? <MonitoringMenu order={6} data={constant.summaryList} labelKey='label' onChange={onSummaryChange} /> : null}
                         {renderRefresh(7)}

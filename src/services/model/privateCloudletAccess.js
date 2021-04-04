@@ -24,17 +24,19 @@ const getRequestData = (data) => {
 }
 
 export const createInvitation = (data) => {
-    return { method: CREATE_POOL_ACCESS_INVITATION, data: getRequestData(data), success: 'Invitation Created'  }
+    return { method: CREATE_POOL_ACCESS_INVITATION, data: getRequestData(data), success: 'Invitation Created' }
 }
 export const createConfirmation = (data) => {
     return { method: CREATE_POOL_ACCESS_CONFIRMATION, data: getRequestData(data), success: 'Access Granted' }
 }
 
 export const showConfirmation = (data) => {
+    data = data ? data : {}
     return { method: SHOW_POOL_ACCESS_CONFIRMATION, data, keys: keys() }
 }
 
 export const showInvitation = (data) => {
+    data = data ? data : {}
     return { method: SHOW_POOL_ACCESS_INVITATION, data, keys: keys() }
 }
 
@@ -47,6 +49,7 @@ export const deleteInvitation = (data) => {
 }
 
 export const accessGranted = (data) => {
+    data = data ? data : {}
     return { method: SHOW_POOL_ACCESS_GRANTED, data }
 }
 

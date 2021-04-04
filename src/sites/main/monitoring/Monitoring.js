@@ -33,11 +33,11 @@ import './style.css'
 import sortBy from 'lodash/sortBy'
 import { Skeleton } from '@material-ui/lab';
 import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../utils/sharedPreferences_util';
-import { poolAccessGranted } from '../../../services/model/cloudletLinkOrg';
+import { accessGranted } from '../../../services/model/privateCloudletAccess';
 import { OPERATOR } from '../../../constant';
 
 const defaultParent = () => {
-    return constant.metricParentTypes[getUserRole().includes(constant.OPERATOR) ? 2 : 0]
+    return constant.metricParentTypes()[getUserRole().includes(constant.OPERATOR) ? 2 : 0]
 }
 
 const defaultMetricType = (parent) => {
@@ -76,12 +76,13 @@ class Monitoring extends React.Component {
             rowSelected: 0,
             selectedOrg: undefined,
             showLoaded: false,
-            listAction: undefined
+            listAction: undefined,
+            isPrivate: false
         }
         this._isMounted = false
         this.worker = ShowWorker()
         this.selectedRow = undefined
-        this.isPrivate = false
+        this.privateRegions = []
     }
 
     updateState = (data) => {
@@ -140,19 +141,9 @@ class Monitoring extends React.Component {
 
     onParentChange = async () => {
         if (getUserRole().includes(OPERATOR) && this.state.filter.parent.id !== constant.PARENT_CLOUDLET) {
-            let mc = await sendRequest(this, poolAccessGranted())
-            if (mc.response && mc.response.status === 200) {
-                let dataList = mc.response.data
-                let regions = new Set()
-                dataList.forEach(data => {
-                    regions.add(data.Region)
-                })
-                this.isPrivate = true
-                this.regions = Array.from(regions)
-            }
+            this.regions = this.privateRegions
         }
         else {
-            this.isPrivate = false
             this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         }
         this.setState(prevState => {
@@ -246,13 +237,13 @@ class Monitoring extends React.Component {
     }
 
     renderMonitoringParent = () => {
-        const { minimize, filter, range, avgData, rowSelected, selectedOrg, listAction } = this.state
+        const { minimize, filter, range, avgData, rowSelected, selectedOrg, listAction, isPrivate } = this.state
         let parentId = filter.parent.id
         if (parentId === constant.PARENT_APP_INST) {
-            return <AppInstMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} listAction={listAction} onListToolbarClear={this.onListToolbarClear} isPrivate={this.isPrivate} />
+            return <AppInstMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} listAction={listAction} onListToolbarClear={this.onListToolbarClear} isPrivate={isPrivate} />
         }
         else if (parentId === constant.PARENT_CLUSTER_INST) {
-            return <ClusterMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} isPrivate={this.isPrivate} />
+            return <ClusterMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} isPrivate={isPrivate} />
         }
         else if (parentId === constant.PARENT_CLOUDLET) {
             return <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} onListToolbarClear={this.onListToolbarClear} />
@@ -260,12 +251,12 @@ class Monitoring extends React.Component {
     }
 
     render() {
-        const { loading, minimize, filter, range, duration, organizations, avgData, rowSelected, showLoaded } = this.state
+        const { loading, minimize, filter, range, duration, organizations, avgData, rowSelected, showLoaded, isPrivate } = this.state
         return (
             <div style={{ flexGrow: 1 }} mex-test="component-monitoring">
                 <Card>
                     {loading ? <LinearProgress /> : null}
-                    <MonitoringToolbar regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} />
+                    <MonitoringToolbar regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} isPrivate={isPrivate} />
                 </Card>
                 <React.Fragment>
                     <div style={{ margin: 1 }}></div>
@@ -287,7 +278,7 @@ class Monitoring extends React.Component {
     }
 
     fetchShowData = async () => {
-        const { filter } = this.state
+        const { filter, isPrivate } = this.state
         let parent = filter.parent
         let parentId = parent.id
         if (this.regions && this.regions.length > 0 && constant.validateRole(parent.role)) {
@@ -298,7 +289,7 @@ class Monitoring extends React.Component {
                 let requestList = []
                 requestList = showRequests.map(showRequest => {
                     let org = isAdmin() ? this.state.selectedOrg : getOrganization()
-                    return showRequest({ region, org }, this.isPrivate)
+                    return showRequest({ region, org }, isPrivate)
                 })
                 let mcList = await sendMultiRequest(this, requestList)
                 if (mcList && mcList.length > 0) {
@@ -349,10 +340,28 @@ class Monitoring extends React.Component {
         return avgData
     }
 
+    checkPrivatePoolExist = async () => {
+        if (getUserRole().includes(OPERATOR)) {
+            let mc = await sendRequest(this, accessGranted())
+            if (mc.response && mc.response.status === 200) {
+                let dataList = mc.response.data
+                if (dataList.length > 0) {
+                    let regions = new Set()
+                    dataList.forEach(data => {
+                        regions.add(data.Region)
+                    })
+                    this.privateRegions = Array.from(regions)
+                    this.setState({ isPrivate: true })
+                }
+            }
+        }
+    }
+
     componentDidMount() {
         this._isMounted = true
         this.props.handleViewMode(HELP_MONITORING)
         if (this._isMounted) {
+            this.checkPrivatePoolExist()
             this.setState({ avgData: this.defaultStructure() }, () => {
                 if (isAdmin()) {
                     this.fetchOrgList()

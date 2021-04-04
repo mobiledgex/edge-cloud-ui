@@ -8,7 +8,7 @@ import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 import { deleteCloudletPool } from '../../../services/model/cloudletPool';
 import { sendRequest } from '../monitoring/services/service'
-import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/poolAccess';
+import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/privateCloudletAccess';
 import { Icon } from 'semantic-ui-react';
 
 class ClouldetPoolList extends React.Component {

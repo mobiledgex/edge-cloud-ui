@@ -20,7 +20,7 @@ import * as AppInstClient from './appInstClient';
 import * as Alerts from './alerts';
 import * as BillingOrg from './billingOrg';
 import * as Events from './events';
-import * as poolAccess from './poolAccess';
+import * as poolAccess from './privateCloudletAccess';
 
 export const SHOW_ORG = "org/show";
 export const CREATE_ORG = "createOrg";
@@ -314,6 +314,7 @@ export function formatData(request, response) {
             break;
         case SHOW_POOL_ACCESS_CONFIRMATION:
         case SHOW_POOL_ACCESS_INVITATION:
+        case SHOW_POOL_ACCESS_GRANTED:
             data = poolAccess.getData(response, request.data)
             break;
         default:

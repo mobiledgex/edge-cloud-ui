@@ -7,9 +7,9 @@ import { connect } from 'react-redux';
 import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 import { keys, showCloudletPools, deleteCloudletPool, multiDataRequest } from '../../../services/model/cloudletPool';
-import { showCloudletLinkOrg } from '../../../services/model/cloudletLinkOrg';
 import CloudletPoolReg from './cloudletPoolReg';
 import {HELP_CLOUDLET_POOL_LIST} from "../../../tutorial";
+import { accessGranted, showInvitation } from '../../../services/model/privateCloudletAccess';
 class ClouldetPoolList extends React.Component {
     constructor(props) {
         super(props);
@@ -60,7 +60,7 @@ class ClouldetPoolList extends React.Component {
             id: 'CloudletPools',
             headerLabel: 'Cloudlet Pools',
             nameField: fields.poolName,
-            requestType: [showCloudletPools, showCloudletLinkOrg],
+            requestType: [showCloudletPools, showInvitation, accessGranted],
             isRegion: true,
             sortBy: [fields.poolName],
             selection:true,

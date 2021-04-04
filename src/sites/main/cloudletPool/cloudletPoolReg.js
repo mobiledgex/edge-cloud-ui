@@ -12,7 +12,7 @@ import { getOrganizationList } from '../../../services/model/organization';
 import { showOrganizations } from '../../../services/model/organization';
 import { getOrgCloudletList } from '../../../services/model/cloudlet';
 import { createCloudletPool, updateCloudletPool } from '../../../services/model/cloudletPool';
-import { createLinkPoolOrg, deleteLinkPoolOrg } from '../../../services/model/cloudletLinkOrg';
+import { createInvitation, deleteInvitation } from '../../../services/model/privateCloudletAccess';
 
 import * as constant from '../../../constant';
 import { HELP_CLOUDLET_POOL_REG_3, HELP_CLOUDLET_POOL_REG_1 } from "../../../tutorial";
@@ -121,10 +121,10 @@ class CloudletPoolReg extends React.Component {
             })
             if (valid) {
                 if (mcList.length === 1) {
-                    this.props.handleAlertInfo('success', `Invitation for organization ${data['org']} created successfully by cloudlet pool ${data['cloudletpool']}`)
+                    this.props.handleAlertInfo('success', `Invitation for organization ${data['Org']} created successfully by cloudlet pool ${data['CloudletPoolOrg']}`)
                 }
                 else {
-                    this.props.handleAlertInfo('success', `Invitation created successfully by cloudlet pool ${data['cloudletpool']}`)
+                    this.props.handleAlertInfo('success', `Invitation created successfully by cloudlet pool ${data['CloudletPoolOrg']}`)
                     this.props.onClose(true)
                 }
             }
@@ -143,8 +143,13 @@ class CloudletPoolReg extends React.Component {
             })
         }
 
-        if (valid) {
-            this.props.handleAlertInfo('success', `Organizations removed successfully from  cloudlet pool ${data['cloudletpool']}`)
+        if (valid && data) {
+            if (mcList.length === 1) {
+                this.props.handleAlertInfo('success', `Organization ${data['Org']} removed successfully from cloudlet pool ${data['CloudletPoolOrg']}`)
+            }
+            else {
+                this.props.handleAlertInfo('success', `Organizations removed successfully from  cloudlet pool ${data['CloudletPoolOrg']}`)
+            }
             this.props.onClose(true)
         }
     }
@@ -158,8 +163,9 @@ class CloudletPoolReg extends React.Component {
             organizationList.forEach(organization => {
                 let newData = data
                 organization = (isAdmin() || this.isOrgDelete) ? JSON.parse(organization) : organization
-                newData[fields.organizationName] = organization[fields.organizationName]
-                requestDataList.push(this.isOrgDelete ? deleteLinkPoolOrg(newData) : createLinkPoolOrg(newData))
+                newData[fields.developerOrg] = organization[fields.organizationName]
+                newData[fields.operatorOrg] = data[fields.operatorName]
+                requestDataList.push(this.isOrgDelete ? deleteInvitation(newData) : createInvitation(newData))
             })
         }
         serverData.sendMultiRequest(this, requestDataList, responseCallback)

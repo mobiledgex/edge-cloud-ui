@@ -1,22 +1,24 @@
 import * as formatter from './format'
-import { SHOW_CLOUDLET_POOL, CREATE_CLOUDLET_POOL, DELETE_CLOUDLET_POOL, UPDATE_CLOUDLET_POOL, SHOW_POOL_ACCESS_INVITATION } from './endPointTypes'
+import { SHOW_CLOUDLET_POOL, CREATE_CLOUDLET_POOL, DELETE_CLOUDLET_POOL, UPDATE_CLOUDLET_POOL, SHOW_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_GRANTED } from './endPointTypes'
 import * as constant from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
+import isEqual from 'lodash/isEqual';
+import omit from 'lodash/omit';
 
 const fields = formatter.fields;
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter:true, key:true },
-    { field: fields.poolName, serverField: 'key#OS#name', label: 'Pool Name', sortable: true, visible: true, filter:true, key:true },
-    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, key:true },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.poolName, serverField: 'key#OS#name', label: 'Pool Name', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, key: true },
     { field: fields.cloudletCount, label: 'Number of  Clouldlets', sortable: true, visible: true },
     { field: fields.organizationCount, label: 'Number of Organizations', sortable: true, visible: true },
     {
-        field: fields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets', dataType:constant.TYPE_STRING
+        field: fields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets', dataType: constant.TYPE_STRING
     },
     {
         field: fields.organizations, label: 'Organizations',
-        keys: [{ field: fields.organizationName, label: 'Organization Name' }]
+        keys: [{ field: fields.organizationName, label: 'Organization Name' }, { field: fields.grant, label: 'Access Granted' }]
     },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
@@ -38,16 +40,17 @@ export const getKey = (data) => {
     })
 }
 
-const addLinkOrg = (poolList, linkOrgList) => {
+const formatInvitation = (poolList, invitationList) => {
     for (let i = 0; i < poolList.length; i++) {
         let pool = poolList[i]
         let organizations = []
-        for (let j = 0; j < linkOrgList.length; j++) {
-            let linkOrg = linkOrgList[j]
-            if (pool[fields.poolName] === linkOrg['CloudletPool']) {
+        for (let j = 0; j < invitationList.length; j++) {
+            let invitation = invitationList[j]
+            if (pool[fields.poolName] === invitation[fields.poolName]) {
                 pool[fields.organizationCount] += 1
                 let organization = {}
-                organization[fields.organizationName] = linkOrg['Org']
+                organization[fields.organizationName] = invitation[fields.developerOrg]
+                organization[fields.grant] = invitation[fields.grant]
                 organizations.push(organization)
             }
         }
@@ -57,7 +60,8 @@ const addLinkOrg = (poolList, linkOrgList) => {
 
 export const multiDataRequest = (keys, mcList) => {
     let poolList = [];
-    let linkOrgList = [];
+    let invitationList = [];
+    let grantList = []
     for (let i = 0; i < mcList.length; i++) {
         let mc = mcList[i];
         let request = mc.request;
@@ -65,12 +69,26 @@ export const multiDataRequest = (keys, mcList) => {
             poolList = mc.response.data
         }
         else if (request.method === SHOW_POOL_ACCESS_INVITATION) {
-            linkOrgList = mc.response.data
+            invitationList = mc.response.data
+        }
+        else if (request.method === SHOW_POOL_ACCESS_GRANTED) {
+            grantList = mc.response.data
         }
     }
 
+    if (invitationList.length > 0) {
+        invitationList.forEach(invitation => {
+            invitation[fields.grant] = 'No'
+            for(let grant of grantList){
+                if (isEqual(omit(invitation, [fields.uuid, fields.grant]), omit(grant, [fields.uuid]))) {
+                    invitation[fields.grant] = 'Yes'
+                    break;
+                }
+            }
+        })
+    }
     if (poolList && poolList.length > 0) {
-        addLinkOrg(poolList, linkOrgList)
+        formatInvitation(poolList, invitationList)
     }
     return poolList;
 }
