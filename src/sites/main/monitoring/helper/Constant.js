@@ -47,12 +47,12 @@ export const monitoringActions = (id)=>{
     }
 }
 
-export const metricRequest = (method, data, org) =>{
+export const metricRequest = (method, data, org, isPrivate) =>{
     switch (method) {
         case APP_INST_METRICS_ENDPOINT:
-            return appInstMetrics(data, org)
+            return appInstMetrics(data, org, isPrivate)
         case CLUSTER_METRICS_ENDPOINT:
-            return clusterMetrics(data, org)
+            return clusterMetrics(data, org, isPrivate)
         case CLOUDLET_METRICS_ENDPOINT:
             return cloudletMetrics(data, org)
         case CLOUDLET_METRICS_USAGE_ENDPOINT:
@@ -81,8 +81,8 @@ export const summaryList = [
 ]
 
 export const metricParentTypes = [
-    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showOrgAppInsts], metricListKeys: appMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData },
-    { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showOrgCloudlets, showOrgClusterInsts], metricListKeys: clusterMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER] },
+    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showOrgAppInsts], metricListKeys: appMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER, mainConstant.OPERATOR], fetchLocation: fetchLocation, customData: appCustomData },
+    { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showOrgCloudlets, showOrgClusterInsts], metricListKeys: clusterMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER, mainConstant.OPERATOR] },
     { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showOrgCloudlets], metricListKeys: cloudletMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.OPERATOR], customData: cloudletCustomData }
 ]
 

@@ -33,6 +33,8 @@ import './style.css'
 import sortBy from 'lodash/sortBy'
 import { Skeleton } from '@material-ui/lab';
 import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../utils/sharedPreferences_util';
+import { poolAccessGranted } from '../../../services/model/cloudletLinkOrg';
+import { OPERATOR } from '../../../constant';
 
 const defaultParent = () => {
     return constant.metricParentTypes[getUserRole().includes(constant.OPERATOR) ? 2 : 0]
@@ -79,6 +81,7 @@ class Monitoring extends React.Component {
         this._isMounted = false
         this.worker = ShowWorker()
         this.selectedRow = undefined
+        this.isPrivate = false
     }
 
     updateState = (data) => {
@@ -135,12 +138,30 @@ class Monitoring extends React.Component {
         this.updateState({ range: timeRangeInMin(this.state.duration.duration) })
     }
 
-    onParentChange = () => {
-        if (this._isMounted) {
-            this.setState({ showLoaded: false, avgData: this.defaultStructure() }, () => {
-                this.fetchShowData()
-            })
+    onParentChange = async () => {
+        if (getUserRole().includes(OPERATOR) && this.state.filter.parent.id !== constant.PARENT_CLOUDLET) {
+            let mc = await sendRequest(this, poolAccessGranted())
+            if (mc.response && mc.response.status === 200) {
+                let dataList = mc.response.data
+                let regions = new Set()
+                dataList.forEach(data => {
+                    regions.add(data.Region)
+                })
+                this.isPrivate = true
+                this.regions = Array.from(regions)
+            }
         }
+        else {
+            this.isPrivate = false
+            this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        }
+        this.setState(prevState => {
+            let filter = prevState.filter
+            filter.region = this.regions
+            return { filter }
+        }, () => {
+            this.fetchShowData()
+        })
     }
 
     onOrgChange = (value) => {
@@ -188,7 +209,7 @@ class Monitoring extends React.Component {
                         case constant.ACTION_METRIC_PARENT_TYPE:
                             filter.parent = value
                             filter.metricType = defaultMetricType(value)
-                            break;
+                            return { filter, showLoaded: false, avgData: this.defaultStructure() }
                         case constant.ACTION_METRIC_TYPE:
                             filter.metricType = value
                             break;
@@ -199,7 +220,7 @@ class Monitoring extends React.Component {
                             filter.search = value
                             break;
                     }
-                    return filter
+                    return { filter }
                 }, () => {
                     if (action === constant.ACTION_METRIC_PARENT_TYPE) {
                         this.onParentChange()
@@ -228,10 +249,10 @@ class Monitoring extends React.Component {
         const { minimize, filter, range, avgData, rowSelected, selectedOrg, listAction } = this.state
         let parentId = filter.parent.id
         if (parentId === constant.PARENT_APP_INST) {
-            return <AppInstMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} listAction={listAction} onListToolbarClear={this.onListToolbarClear} />
+            return <AppInstMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} listAction={listAction} onListToolbarClear={this.onListToolbarClear} isPrivate={this.isPrivate} />
         }
         else if (parentId === constant.PARENT_CLUSTER_INST) {
-            return <ClusterMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} />
+            return <ClusterMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} isPrivate={this.isPrivate} />
         }
         else if (parentId === constant.PARENT_CLOUDLET) {
             return <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} onListToolbarClear={this.onListToolbarClear} />
@@ -276,7 +297,8 @@ class Monitoring extends React.Component {
                 let showRequests = parent.showRequest
                 let requestList = []
                 requestList = showRequests.map(showRequest => {
-                    return showRequest({ region, org: isAdmin() ? this.state.selectedOrg : getOrganization() })
+                    let org = isAdmin() ? this.state.selectedOrg : getOrganization()
+                    return showRequest({ region, org }, this.isPrivate)
                 })
                 let mcList = await sendMultiRequest(this, requestList)
                 if (mcList && mcList.length > 0) {

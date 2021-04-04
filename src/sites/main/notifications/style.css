@@ -11,7 +11,8 @@
 }
 
 .alert-local-list {
-    max-height: calc(50vh - 200px);
+    max-height: 40vh;
+    min-height: 10vh;
     overflow: auto; 
     width: 100% ;
 }

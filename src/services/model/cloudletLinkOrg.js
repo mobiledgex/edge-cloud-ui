@@ -1,5 +1,5 @@
 import * as formatter from './format'
-import { SHOW_POOL_ACCESS_INVITATION, CREATE_POOL_ACCESS_INVITATION, DELETE_POOL_ACCESS_INVITATION } from './endPointTypes'
+import { SHOW_POOL_ACCESS_INVITATION, CREATE_POOL_ACCESS_INVITATION, DELETE_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_GRANTED } from './endPointTypes'
 
 const fields = formatter.fields;
 
@@ -30,6 +30,10 @@ export const createLinkPoolOrg = (data) => {
 export const deleteLinkPoolOrg = (data) => {
     let requestData = getKey(data)
     return { method: DELETE_POOL_ACCESS_INVITATION, data: requestData }
+}
+
+export const poolAccessGranted = () => {
+    return { method: SHOW_POOL_ACCESS_GRANTED, data: {} }
 }
 
 const customData = (value) => {

@@ -10,6 +10,7 @@ import Account from './accounts/accountList';
 import User from './userRole/userList';
 import Cloudlet from './cloudlets/cloudletList';
 import CloudletPool from './cloudletPool/cloudletPoolList';
+import PoolAccess from './poolAccess/PoolAccess';
 import Flavor from './flavors/flavorList';
 import App from './apps/appList';
 import AppInst from './appInst/appInstList';
@@ -18,7 +19,7 @@ import AutoProvPolicy from './policies/autoProvPolicyList/autoProvPolicyList';
 import TrustPolicy from './policies/trustPolicy/trustPolicyList';
 import AutoScalePolicy from './policies/autoScalePolicy/autoScalePolicyList';
 import Monitoring from './monitoring/Monitoring';
-import AlertReceiver from './alerts/receiver/AlertReceiver';
+import AlertReceiver from './notifications/alerts/receiver/AlertReceiver';
 import BillingOrg from './billingOrg/BillingOrgList';
 
 import * as constant from '../../constant';
@@ -30,6 +31,7 @@ const pages = [
     { divider: true },
     { label: 'Cloudlets', icon: 'cloud_queue', id: constant.PAGE_CLOUDLETS, path:'cloudlets' },
     { label: 'Cloudlet Pools', icon: 'cloud_circle', id: constant.PAGE_CLOUDLET_POOLS, path:'cloudlet-pools', roles: [constant.ADMIN, constant.OPERATOR] },
+    { label: 'Private Cloudlet Access', icon: 'cloud_circle', id: constant.PAGE_POOL_ACCESS, path:'pool-access', roles: [constant.ADMIN, constant.DEVELOPER] },
     { label: 'Flavors', icon: 'free_breakfast', id: constant.PAGE_FLAVORS, path:'flavors', roles: [constant.ADMIN, constant.DEVELOPER] },
     { label: 'Cluster Instances', icon: 'storage', id: constant.PAGE_CLUSTER_INSTANCES, path:'cluster-insts', roles: [constant.ADMIN, constant.DEVELOPER] },
     { label: 'Apps', icon: 'apps', id: constant.PAGE_APPS, path:'apps', roles: [constant.ADMIN, constant.DEVELOPER] },
@@ -42,7 +44,7 @@ const pages = [
         ]
     },
     { label: 'Monitoring', icon: 'tv', id: constant.PAGE_MONITORING, path:'monitoring' },
-    { label: 'Alert Receivers', icon: 'notifications_none', id: constant.PAGE_ALERTS, path:'alerts' },
+    { label: 'Alert Receivers', icon: 'notification_important', id: constant.PAGE_ALERTS, path:'alerts' },
     { label: 'Billing', icon: 'payment', id: constant.PAGE_BILLING_ORG, path:'billing-org', roles: [constant.ADMIN] }
 ]
 
@@ -78,6 +80,8 @@ const renderPage = (id) => {
             return AlertReceiver
         case constant.PAGE_BILLING_ORG:
             return BillingOrg
+        case constant.PAGE_POOL_ACCESS:
+            return PoolAccess
     }
 }
 

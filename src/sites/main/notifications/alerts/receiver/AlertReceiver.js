@@ -1,18 +1,18 @@
 import React from 'react';
-import MexListView from '../../../../container/MexListView';
+import MexListView from '../../../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 
-import { fields } from '../../../../services/model/format';
-import { showAlertReceiver, deleteAlertReceiver, showAlertReceiverKeys } from '../../../../services/model/alerts';
+import { fields } from '../../../../../services/model/format';
+import { showAlertReceiver, deleteAlertReceiver, showAlertReceiverKeys } from '../../../../../services/model/alerts';
 import Reg from './AlertReceiverReg';
 import { Chip } from '@material-ui/core';
 import WarningOutlineIcon from '@material-ui/icons/WarningOutlined';
 import InfoOutlineIcon from '@material-ui/icons/InfoOutlined';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import { Icon } from 'semantic-ui-react';
-import { HELP_ALERTS } from '../../../../tutorial';
+import { HELP_ALERTS } from '../../../../../tutorial';
 class AlertList extends React.Component {
     constructor(props) {
         super(props);
@@ -62,7 +62,7 @@ class AlertList extends React.Component {
     }
 
     renderSeverity = (data, isDetailView) => {
-        let id = isDetailView ? data : data[fields.severity]
+        let id = data[fields.severity]
         let color = '#ff4444'
         let label = 'Error'
         let icon = <ErrorOutlineIcon />
@@ -96,7 +96,7 @@ class AlertList extends React.Component {
     }
 
     renderType = (data, isDetailView) => {
-        let id = isDetailView ? data : data[fields.receiverAddress]
+        let id = data[fields.receiverAddress]
         let ids = id.split('#OS#')
         let label = ids[1]
         let icon = undefined

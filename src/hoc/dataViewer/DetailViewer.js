@@ -54,64 +54,6 @@ const getArray = (dataList) => {
     return value
 }
 
-const getData = (data, item) => {
-    if (data !== undefined) {
-        return (
-            item.dataType === constant.TYPE_ARRAY ?
-                getArray(data) :
-                item.dataType === constant.TYPE_URL ?
-                    getURL(data) :
-                    item.dataType === constant.TYPE_DATE ?
-                        getDate(data, item) :
-                        item.dataType === constant.TYPE_JSON ?
-                            getHighLighter('json', JSON.stringify(data, null, 1)) :
-                            item.dataType === constant.TYPE_YAML ?
-                                getHighLighter('yaml', data.toString()) :
-                                <div style={{ wordBreak: 'break-all' }}>{item.customizedData ? item.customizedData(data, true) : data}</div>
-        )
-    }
-}
-
-
-const subView = (keys, dataList) => {
-    return (
-        <Table size='small'>
-            {keys.length > 1 ? <TableHead>
-                <TableRow>
-                    {keys.map((item, i) => {
-                        return <TableCell key={i}>{item.label}</TableCell>
-                    })}
-                </TableRow>
-            </TableHead> : null}
-            <TableBody>
-                {dataList.map((data, i) => {
-                    return (
-                        <TableRow key={i} style={{ backgroundColor: i % 2 === 0 ? '#1E2123' : 'transparent' }}>{(
-                            keys.map((item, j) => {
-                                return (
-                                    <TableCell key={j} style={{borderBottom: "none"}}>
-                                        {getData(data[item.field], item)}
-                                    </TableCell>)
-                            }))
-                        }
-                        </TableRow>)
-                })}
-            </TableBody>
-        </Table>
-    )
-}
-
-const getRow = (id, item, data) => {
-    return (
-        <TableRow key={id}>
-            <TableCell style={{borderBottom: "none", verticalAlign: 'text-top', width: '20%'}}>{item.label}</TableCell>
-            <TableCell style={{borderBottom: "none"}}>
-                {getData(data, item)}
-            </TableCell>
-        </TableRow>
-    )
-}
-
 const isArrayString = (item, data)=>
 {
     return Array.isArray(data) && item.dataType === constant.TYPE_STRING
@@ -144,6 +86,65 @@ const getArrayRow = (id, item, dataList) => {
 
 const MexDetailViewer = (props) => {
     let detailData = props.detailData;
+
+    const getData = (data, item) => {
+        if (data !== undefined) {
+            return (
+                item.dataType === constant.TYPE_ARRAY ?
+                    getArray(data) :
+                    item.dataType === constant.TYPE_URL ?
+                        getURL(data) :
+                        item.dataType === constant.TYPE_DATE ?
+                            getDate(data, item) :
+                            item.dataType === constant.TYPE_JSON ?
+                                getHighLighter('json', JSON.stringify(data, null, 1)) :
+                                item.dataType === constant.TYPE_YAML ?
+                                    getHighLighter('yaml', data.toString()) :
+                                    <div style={{ wordBreak: 'break-all' }}>{item.customizedData ? item.customizedData(detailData, true) : data}</div>
+            )
+        }
+    }
+    
+    
+    const subView = (keys, dataList) => {
+        return (
+            <Table size='small'>
+                {keys.length > 1 ? <TableHead>
+                    <TableRow>
+                        {keys.map((item, i) => {
+                            return <TableCell key={i}>{item.label}</TableCell>
+                        })}
+                    </TableRow>
+                </TableHead> : null}
+                <TableBody>
+                    {dataList.map((data, i) => {
+                        return (
+                            <TableRow key={i} style={{ backgroundColor: i % 2 === 0 ? '#1E2123' : 'transparent' }}>{(
+                                keys.map((item, j) => {
+                                    return (
+                                        <TableCell key={j} style={{borderBottom: "none"}}>
+                                            {getData(data[item.field], item)}
+                                        </TableCell>)
+                                }))
+                            }
+                            </TableRow>)
+                    })}
+                </TableBody>
+            </Table>
+        )
+    }
+    
+    const getRow = (id, item, data) => {
+        return (
+            <TableRow key={id}>
+                <TableCell style={{borderBottom: "none", verticalAlign: 'text-top', width: '20%'}}>{item.label}</TableCell>
+                <TableCell style={{borderBottom: "none"}}>
+                    {getData(data, item)}
+                </TableCell>
+            </TableRow>
+        )
+    }
+
     return (
         <Table style={{width: '100%', backgroundColor: '#292c33', border: 'none'}}>
             <TableBody>

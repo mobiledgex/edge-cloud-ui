@@ -71,13 +71,7 @@ class BillingOrg extends React.Component {
         })
     }
 
-    customizedData = () => {
-
-    }
-
-
     componentDidMount() {
-        this.customizedData()
     }
 
     render() {

@@ -3,14 +3,15 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Chip, Collapse, Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core'
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
-import { PAGE_ALERTS, formatData, regions } from '../../../constant';
-import { showAlertKeys } from '../../../services/model/alerts'
-import * as actions from '../../../actions';
+import { PAGE_ALERTS, formatData, regions } from '../../../../constant';
+import { showAlertKeys } from '../../../../services/model/alerts'
+import * as actions from '../../../../actions';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { fields } from '../../../services/model/format';
+import { fields } from '../../../../services/model/format';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
+import NotificationImportantOutlinedIcon from '@material-ui/icons/NotificationImportantOutlined';
 
 class AlertLocal extends React.Component {
     constructor(props) {
@@ -29,7 +30,10 @@ class AlertLocal extends React.Component {
     renderToolbar = () => (
         <div className="alert-toolbar">
             <div className="alert-toolbar-left">
-                <Typography variant="h6">Alerts</Typography>
+                <Typography>
+                    <NotificationImportantOutlinedIcon style={{ position: 'relative', top: '5px', marginRight:10 }} />
+                    <strong>Alerts</strong>
+                </Typography>
             </div>
             <div className="alert-toolbar-right">
                 <IconButton size="small" onClick={this.renderAlertPreferences}><SettingsOutlinedIcon /></IconButton>
@@ -58,9 +62,9 @@ class AlertLocal extends React.Component {
 
     header = (data) => {
         return (
-            <div style={{width:500}}>
+            <div style={{ width: 500 }}>
                 <h4><b>{data[fields.title]}</b>{this.renderState(data)}</h4>
-                <h5 style={{color:'#A9A9A9'}}>{data[fields.description]}</h5>
+                <h5 style={{ color: '#A9A9A9' }}>{data[fields.description]}</h5>
                 <div style={{ marginTop: 10 }}></div>
                 <Chip component="div" variant="outlined" size="small" label={`Region: ${data[fields.region]}`} style={{ marginBottom: 5, marginRight: 5 }} />
                 {data[fields.appDeveloper] ? <Chip component="div" variant="outlined" size="small" label={`Developer: ${data[fields.appDeveloper]}`} style={{ marginBottom: 5, marginRight: 5 }} /> : null}
@@ -109,7 +113,6 @@ class AlertLocal extends React.Component {
             <React.Fragment>
                 {this.renderToolbar()}
                 <br />
-                <Divider/>
                 <div className='alert-local-list'>
                     {this.renderList()}
                 </div>

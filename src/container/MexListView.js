@@ -216,6 +216,14 @@ class MexListView extends React.Component {
         serverData.sendWSRequest(this, action.onClick(data), this.onDeleteWSResponse, data)
     }
 
+    onAccess = async (action, data) => {
+        let mc = await serverData.sendRequest(this, action.onClick(data))
+        if (mc && mc.response && mc.response.status === 200) {
+            this.props.handleAlertInfo('success', `${mc.request.success}`)
+            this.dataFromServer(this.selectedRegion)
+        }
+    }
+
     onDialogClose = (valid) => {
         let action = this.state.dialogMessageInfo.action;
         let isMultiple = this.state.dialogMessageInfo.isMultiple;
@@ -242,7 +250,8 @@ class MexListView extends React.Component {
                 })
             }
             else {
-                switch (action.label) {
+                let id = action.id ? action.id : action.label
+                switch (id) {
                     case 'Delete':
                         this.onDelete(action, data)
                         break;
@@ -256,6 +265,10 @@ class MexListView extends React.Component {
                     case 'Power Off':
                     case 'Reboot':
                         this.onPowerState(action, data)
+                        break;
+                    case constant.ACTION_POOL_ACCESS_GRANT:
+                    case constant.ACTION_POOL_ACCESS_REMOVE:
+                        this.onAccess(action, data)
                         break;
                 }
             }
@@ -274,7 +287,8 @@ class MexListView extends React.Component {
         let data = this.selectedRow;
         let valid = action.onClickInterept ? action.onClickInterept(action, data) : true
         if (valid) {
-            switch (action.label) {
+            let id = action.id ? action.id : action.label
+            switch (id) {
                 case 'Delete':
                     this.onWarning(action, 'delete', false, data)
                     break
@@ -293,6 +307,12 @@ class MexListView extends React.Component {
                 case 'Reboot':
                     this.onWarning(action, 'reboot', false, data)
                     break;
+                case constant.ACTION_POOL_ACCESS_GRANT:
+                    this.onWarning(action, 'grant access to cloudlet pool', false, data)
+                    break;
+                case constant.ACTION_POOL_ACCESS_REMOVE:
+                    this.onWarning(action, 'remove access from cloudlet pool', false, data)
+                    break;
                 default:
                     action.onClick(action, data)
             }
@@ -304,7 +324,7 @@ class MexListView extends React.Component {
         if (mapDataList) {
             filterList = mapDataList
         }
-        this.setState({filterList}) 
+        this.setState({ filterList })
     }
 
     groupActionClose = (action, dataList) => {
@@ -318,7 +338,7 @@ class MexListView extends React.Component {
             <div className="mexListView">
                 {isMap ?
                     <div className='panel_worldmap' style={{ height: 400 }}>
-                        <ListMexMap onClick={this.onMapMarkerClick} id={this.requestInfo.id} dataList={this.state.filterList} region={this.selectedRegion}/>
+                        <ListMexMap onClick={this.onMapMarkerClick} id={this.requestInfo.id} dataList={this.state.filterList} region={this.selectedRegion} />
                     </div> : null
                 }
                 <MexListViewer keys={this.keys} dataList={this.state.filterList}
@@ -451,7 +471,7 @@ class MexListView extends React.Component {
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.specificDataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
-                <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap}/>
+                <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} />
                 {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
                 {this.state.currentView ? this.state.currentView : this.listView()}
                 <MexMessageMultiNorm data={deleteMultiple} close={this.onDeleteMulClose} />

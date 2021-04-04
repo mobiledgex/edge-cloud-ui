@@ -114,6 +114,10 @@ export const fields = {
     actions: 'actions',
     manage: 'manage',
     poolName: 'poolName',
+    operatorOrg:'operatorOrg',
+    developerOrg:'developerOrg',
+    invite:'invite',
+    confirm:'confirm',
     clusterinst: 'clusterinst',
     container_ids: 'container_ids',
     openRCData: 'openRCData',
@@ -284,7 +288,7 @@ export const formatData = (response, body, keys, customData, isUnique) => {
                     let data = jsonData[i].data ? jsonData[i].data : jsonData[i];
                     let value = {}
                     map(value, data, keys)
-                    if (body) { value.region = body.region }
+                    if (body && value.region === undefined) { value.region = body.region }
                     value.uuid = (isUnique) ? generateUUID(keys, value) : uuid()
                     let newValue = customData ? customData(value) : value
                     if (newValue) {

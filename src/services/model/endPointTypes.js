@@ -9,9 +9,6 @@ import * as CloudletInfo from './cloudletInfo';
 import * as ClusterInstance from './clusterInstance';
 import * as ClusterEvent from './clusterEvent';
 import * as AppInstEvent from './appInstEvent';
-import * as AppMetrics from './appMetrics';
-import * as ClusterMetrics from './clusterMetrics';
-import * as CloudletMetrics from './cloudletMetrics';
 import * as ClientMetrics from './clientMetrics';
 import * as Flavor from './flavor';
 import * as AppInstance from './appInstance';
@@ -19,11 +16,11 @@ import * as AutoProvPolicy from './autoProvisioningPolicy';
 import * as TrustPolicy from './trustPolicy';
 import * as AutoScalePolicy from './autoScalePolicy';
 import * as CloudletPool from './cloudletPool';
-import * as CloudletLinkOrg from './cloudletLinkOrg';
 import * as AppInstClient from './appInstClient';
 import * as Alerts from './alerts';
 import * as BillingOrg from './billingOrg';
 import * as Events from './events';
+import * as poolAccess from './poolAccess';
 
 export const SHOW_ORG = "org/show";
 export const CREATE_ORG = "createOrg";
@@ -73,13 +70,13 @@ export const SHOW_CLOUDLET_POOL = "ShowCloudletPool";
 export const CREATE_CLOUDLET_POOL = "CreateCloudletPool";
 export const UPDATE_CLOUDLET_POOL = "UpdateCloudletPool";
 export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
-export const SHOW_POOL_ACCESS_INVITATION  = 'cloudletpoolaccessinvitation/show'
-export const CREATE_POOL_ACCESS_INVITATION  = 'cloudletpoolaccessinvitation/create'
-export const DELETE_POOL_ACCESS_INVITATION  = 'cloudletpoolaccessinvitation/delete'
-export const SHOW_POOL_ACCESS_CONFIRMATION  = 'cloudletpoolconfirmation/show'
-export const CREATE_POOL_ACCESS_CONFIRMATION  = 'cloudletpoolconfirmation/create'
-export const DELETE_POOL_ACCESS_CONFIRMATION  = 'cloudletpoolconfirmation/delete'
-export const SHOW_POOL_ACCESS_GRANTED  = 'cloudletpoolaccessgranted/show'
+export const SHOW_POOL_ACCESS_INVITATION = 'cloudletpoolaccessinvitation/show'
+export const CREATE_POOL_ACCESS_INVITATION = 'cloudletpoolaccessinvitation/create'
+export const DELETE_POOL_ACCESS_INVITATION = 'cloudletpoolaccessinvitation/delete'
+export const SHOW_POOL_ACCESS_CONFIRMATION = 'cloudletpoolaccessconfirmation/show'
+export const CREATE_POOL_ACCESS_CONFIRMATION = 'cloudletpoolaccessconfirmation/create'
+export const DELETE_POOL_ACCESS_CONFIRMATION = 'cloudletpoolaccessconfirmation/delete'
+export const SHOW_POOL_ACCESS_GRANTED = 'cloudletpoolaccessgranted/show'
 export const SHOW_ORG_CLOUDLET = "orgcloudlet/show";
 export const SHOW_ORG_CLOUDLET_INFO = "orgcloudletinfo/show";
 export const RUN_COMMAND = "RunCommand";
@@ -137,9 +134,9 @@ export function getPath(request) {
         case CLIENT_METRICS_ENDPOINT:
         case EVENTS_FIND:
         case EVENTS_SHOW:
-        case ALERT_SHOW_RECEIVER:  
-        case ALERT_CREATE_RECEIVER: 
-        case ALERT_DELETE_RECEIVER:   
+        case ALERT_SHOW_RECEIVER:
+        case ALERT_CREATE_RECEIVER:
+        case ALERT_DELETE_RECEIVER:
         case SHOW_ORG:
         case SHOW_ORG_CLOUDLET:
         case SHOW_ORG_CLOUDLET_INFO:
@@ -236,6 +233,10 @@ export function getPath(request) {
         case CREATE_POOL_ACCESS_INVITATION:
         case DELETE_POOL_ACCESS_INVITATION:
         case SHOW_POOL_ACCESS_INVITATION:
+        case SHOW_POOL_ACCESS_CONFIRMATION:
+        case CREATE_POOL_ACCESS_CONFIRMATION:
+        case DELETE_POOL_ACCESS_CONFIRMATION:
+        case SHOW_POOL_ACCESS_GRANTED:
             return `/api/v1/auth/${request.method}`;
         default:
             return null;
@@ -310,6 +311,10 @@ export function formatData(request, response) {
         case EVENTS_SHOW:
         case EVENTS_FIND:
             data = Events.getData(response, request.data)
+            break;
+        case SHOW_POOL_ACCESS_CONFIRMATION:
+        case SHOW_POOL_ACCESS_INVITATION:
+            data = poolAccess.getData(response, request.data)
             break;
         default:
             data = undefined;

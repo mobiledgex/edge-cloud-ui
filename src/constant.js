@@ -11,6 +11,9 @@ export const LS_REGIONS = 'regions'
 export const CLOUDLET_COMPAT_VERSION_2_4 = 0
 export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1
 
+export const ACTION_POOL_ACCESS_GRANT = 'Grant'
+export const ACTION_POOL_ACCESS_REMOVE = 'Remove'
+
 export const ADD = 'Add'
 export const UPDATE = 'Update'
 export const TYPE_JSON = 'JSON'
@@ -131,6 +134,7 @@ export const PAGE_USER_ROLES = 'UserRoles'
 export const PAGE_ACCOUNTS = 'Accounts'
 export const PAGE_CLOUDLETS = 'Cloudlets'
 export const PAGE_CLOUDLET_POOLS = 'CloudletPools'
+export const PAGE_POOL_ACCESS = 'PoolAccess'
 export const PAGE_FLAVORS = 'Flavors'
 export const PAGE_CLUSTER_INSTANCES = 'ClusterInstances'
 export const PAGE_APPS = 'Apps'

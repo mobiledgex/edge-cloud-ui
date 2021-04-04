@@ -1,25 +1,25 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, MAIN_HEADER } from '../../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, MAIN_HEADER } from '../../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../../../../actions';
-import { fields, getOrganization, getUserRole, isAdmin } from '../../../../services/model/format';
+import * as actions from '../../../../../actions';
+import { fields, getOrganization, getUserRole, isAdmin } from '../../../../../services/model/format';
 //model
-import { createAlertReceiver } from '../../../../services/model/alerts';
-import { currentUser } from '../../../../services/model/serverData';
-import { sendRequests } from '../../../../services/model/serverWorker'
-import * as constant from '../../../../constant'
-import * as endpoints from '../../../../services/model/endpoints'
-import { showOrganizations } from '../../../../services/model/organization';
-import { showCloudlets } from '../../../../services/model/cloudlet';
-import { showAppInsts } from '../../../../services/model/appInstance';
-import { showClusterInsts } from '../../../../services/model/clusterInstance';
+import { createAlertReceiver } from '../../../../../services/model/alerts';
+import { currentUser } from '../../../../../services/model/serverData';
+import { sendRequests } from '../../../../../services/model/serverWorker'
+import * as constant from '../../../../../constant'
+import * as endpoints from '../../../../../services/model/endpoints'
+import { showOrganizations } from '../../../../../services/model/organization';
+import { showCloudlets } from '../../../../../services/model/cloudlet';
+import { showAppInsts } from '../../../../../services/model/appInstance';
+import { showClusterInsts } from '../../../../../services/model/clusterInstance';
 import uuid from 'uuid'
 import cloneDeep from 'lodash/cloneDeep';
 import { Grid, LinearProgress } from '@material-ui/core'
-import { resetFormValue } from '../../../../hoc/forms/helper/constant';
+import { resetFormValue } from '../../../../../hoc/forms/helper/constant';
 
 const RECEIVER_TYPE = [constant.RECEIVER_TYPE_EMAIL, constant.RECEIVER_TYPE_SLACK, constant.RECEIVER_TYPE_PAGER_DUTY]
 const RECEIVER_SEVERITY = ["Info", "Warning", "Error"]

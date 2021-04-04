@@ -5,11 +5,13 @@ import Popover from '@material-ui/core/Popover';
 import { Badge, IconButton } from '@material-ui/core';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import { showAlerts } from '../../../services/model/alerts'
-import { sendAuthRequest } from '../../../services/model/serverWorker'
 import * as constant from '../../../constant'
-import AlertLocal from './AlertLocal'
+import Alerts from './alerts/Alerts'
 import './style.css'
 import { getOrganization } from '../../../services/model/format';
+
+import notificationWorker from './services/notifcation.worker.js'
+import { getToken } from '../monitoring/services/service';
 
 class AlertGlobal extends React.Component {
 
@@ -23,6 +25,7 @@ class AlertGlobal extends React.Component {
         this._isMounted = false
         this.intervalId = undefined
         this.regions = constant.regions()
+        this.worker = new notificationWorker()
     }
 
     updateState = (data) => {
@@ -67,52 +70,49 @@ class AlertGlobal extends React.Component {
                     }}
                 >
                     <div style={{ width: 500 }}>
-                        <AlertLocal data={dataList} handleClose={this.handleClose} />
+                        <Alerts data={dataList} handleClose={this.handleClose} />
                     </div>
                 </Popover>
             </div>
         );
     }
 
-    serverResponse = (mc) => {
-        if (mc && mc.response && mc.response.status === 200) {
-            let data = mc.response.data
-            if (data && data.length > 0) {
-                let region = mc.request.data.region
+    workerListener = () => {
+        this.worker.addEventListener('message', (event) => {
+            let response = event.data
+            if (response.status === 200) {
+                let data = response.data
+                localStorage.setItem('LatestAlert', data.activeAt)
+                let showDot = data.showDot
                 if (this._isMounted) {
                     this.setState(prevState => {
                         let dataList = prevState.dataList
-                        let latestData = data[data.length - 1]
-                        let activeAt = localStorage.getItem('LatestAlert')
-                        let showDot = false
-                        if (activeAt) {
-                            showDot = latestData.activeAt > activeAt
-                        }
-                        else {
-                            showDot = true
-                        }
-                        localStorage.setItem('LatestAlert', latestData.activeAt)
-                        dataList[region] = data
+                        dataList[data.region] = data.data
                         return { dataList, showDot }
                     })
                 }
             }
-        }
+        })
+    }
+
+    sendRequest = (region) => {
+        this.worker.postMessage({ token: getToken(this), request: showAlerts({ region }) })
     }
 
     fetchdata = () => {
         this.regions.map(region => {
-            sendAuthRequest(this, showAlerts({ region }), this.serverResponse)
+            this.sendRequest(region)
         })
 
         this.intervalId = setInterval(() => {
             this.regions.map(region => {
-                sendAuthRequest(this, showAlerts({ region }), this.serverResponse)
+                this.sendRequest(region)
             })
         }, 10 * 60 * 1000);
     }
 
     componentDidMount() {
+        this.workerListener()
         this._isMounted = true
         let userRole = this.props.userRole
         if (getOrganization() || (userRole && userRole.includes(constant.ADMIN))) {
@@ -138,6 +138,8 @@ class AlertGlobal extends React.Component {
         if (this.intervalId) {
             clearInterval(this.intervalId)
         }
+        this.worker.removeEventListener('message', () => { })
+        this.worker.terminate()
     }
 }
 

@@ -140,34 +140,36 @@ class AppInstList extends React.Component {
      **/
 
     getUpdate = (data, isDetailView) => {
+        let value = data[fields.region]
         return (
-            isDetailView ? data :
+            isDetailView ? value :
                 data[fields.updateAvailable] ?
                     <Tooltip title={<div><strong style={{ fontSize: 13 }}>{`Current Version: ${data[fields.revision]}`}</strong><br /><br /><strong style={{ fontSize: 13 }}>{`Available Version: ${data[fields.appRevision]}`}</strong></div>}>
-                        <label><Icon color={'orange'} name={'arrow alternate circle up outline'} />&nbsp;{data[fields.region]}  </label>
+                        <label><Icon color={'orange'} name={'arrow alternate circle up outline'} />&nbsp;{value}</label>
                     </Tooltip> :
-                    <label>{data[fields.region]}</label>
+                    <label>{value}</label>
         )
     }
 
     showPowerState = (data, isDetailView) => {
         if (isDetailView) {
-            return constant.PowerState(data)
+            return constant.PowerState(data[fields.powerState])
         }
     }
 
     showHealthCheck = (data, isDetailView) => {
+        let healthCheck = data[fields.healthCheck]
         if (isDetailView) {
-            return constant.healthCheck(data)
+            return constant.healthCheck(healthCheck)
         }
         else {
             let icon = null;
-            switch (data[fields.healthCheck]) {
+            switch (healthCheck) {
                 case 3:
-                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='check' color='green' />} />
+                    icon = <Popup content={constant.healthCheck(healthCheck)} trigger={<Icon className="progressIndicator" name='check' color='green' />} />
                     break;
                 default:
-                    icon = <Popup content={constant.healthCheck(data[fields.healthCheck])} trigger={<Icon className="progressIndicator" name='close' color='red' />} />
+                    icon = <Popup content={constant.healthCheck(healthCheck)} trigger={<Icon className="progressIndicator" name='close' color='red' />} />
             }
             return (
                 icon
