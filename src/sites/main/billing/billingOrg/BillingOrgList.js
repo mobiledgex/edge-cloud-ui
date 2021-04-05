@@ -1,14 +1,18 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import * as actions from '../../../actions';
+import * as actions from '../../../../actions';
 //redux
 import { connect } from 'react-redux';
 
-import MexListView from '../../../container/MexListView';
-import { fields } from '../../../services/model/format';
-import { showBillingOrg, deleteBillingOrg, keys } from '../../../services/model/billingOrg';
+import MexListView from '../../../../container/MexListView';
+import { fields } from '../../../../services/model/format';
+import { showBillingOrg, deleteBillingOrg, keys } from '../../../../services/model/billingOrg';
+
+
+import Invoices from '../invoices/Invoices';
 import Reg from './BillingOrgReg';
-import {validateRole, operatorRoles, BILLING_REMOVE_CHILD, BILLING_TYPE_PARENT, BILLING_ADD_CHILD, PAGE_BILLING_ORG} from '../../../constant'
+
+import {validateRole, operatorRoles, BILLING_REMOVE_CHILD, BILLING_TYPE_PARENT, BILLING_ADD_CHILD, PAGE_BILLING_ORG} from '../../../../constant'
 class BillingOrg extends React.Component {
     constructor(props) {
         super(props);
@@ -42,9 +46,14 @@ class BillingOrg extends React.Component {
         return data[fields.type] === BILLING_TYPE_PARENT.toLowerCase()
     }
 
+    invoices = async (action, data)=>{
+        this.setState({ currentView: <Invoices data={data} onClose={this.onRegClose} /> }); 
+    }
+
     actionMenu = () => {
         return [
             // { label: 'Update', onClick: this.onAdd, type: 'Edit' },
+            { label: 'Invoices', onClick: this.invoices, icon: 'delete', warning: 'delete all the selected billing org', type: 'Edit' },
             { id: BILLING_ADD_CHILD, label: 'Add Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
             { id: BILLING_REMOVE_CHILD, label: 'Remove Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
             { label: 'Delete', onClick: deleteBillingOrg, type: 'Edit' }

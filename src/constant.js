@@ -147,6 +147,7 @@ export const PAGE_MONITORING = 'Monitoring'
 export const PAGE_MONITORING_RELOAD = 'Reload'
 export const PAGE_ALERTS = 'AlertReceivers'
 export const PAGE_BILLING_ORG = 'BillingOrg'
+export const PAGE_INVOICES = 'Invoices'
 
 export const BILLING_TYPE_SELF = 'Self'
 export const BILLING_TYPE_PARENT = 'Parent'
@@ -620,5 +621,9 @@ export const legendRoles =
             'Audit Logs': 'View'
         },
     }
+}
+
+export const toFirstUpperCase = (data) => {
+    return data.charAt(0).toUpperCase() + data.slice(1)
 }
 

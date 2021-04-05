@@ -21,6 +21,7 @@ import * as Alerts from './alerts';
 import * as BillingOrg from './billingOrg';
 import * as Events from './events';
 import * as poolAccess from './privateCloudletAccess';
+import * as invoices from './invoices';
 
 export const SHOW_ORG = "org/show";
 export const CREATE_ORG = "createOrg";
@@ -120,6 +121,7 @@ export const UPDATE_BILLING_ORG = 'billingorg/update'
 export const BILLING_ORG_ADD_CHILD = 'billingorg/addchild'
 export const BILLING_ORG_REMOVE_CHILD = 'billingorg/removechild'
 export const DELETE_BILLING_ORG = 'billingorg/delete'
+export const INVOICE_BILLING = 'billingorg/invoice'
 export const GET_CLOUDLET_RESOURCE_QUOTA_PROPS = 'GetCloudletResourceQuotaProps'
 
 export function getPath(request) {
@@ -146,9 +148,17 @@ export function getPath(request) {
         case CREATE_BILLING_ORG:
         case UPDATE_BILLING_ORG:
         case DELETE_BILLING_ORG:
+        case INVOICE_BILLING:
         case BILLING_ORG_ADD_CHILD:
         case BILLING_ORG_REMOVE_CHILD:
-            return `/api/v1/auth/${request.method}`
+        case CREATE_POOL_ACCESS_INVITATION:
+        case DELETE_POOL_ACCESS_INVITATION:
+        case SHOW_POOL_ACCESS_INVITATION:
+        case SHOW_POOL_ACCESS_CONFIRMATION:
+        case CREATE_POOL_ACCESS_CONFIRMATION:
+        case DELETE_POOL_ACCESS_CONFIRMATION:
+        case SHOW_POOL_ACCESS_GRANTED:
+            return `/api/v1/auth/${request.method}`;
         case DELETE_ORG:
             return '/api/v1/auth/org/delete';
         case CREATE_ORG:
@@ -230,14 +240,6 @@ export function getPath(request) {
         case CREATE_USER:
         case PUBLIC_CONFIG:
             return `/api/v1/${request.method}`;
-        case CREATE_POOL_ACCESS_INVITATION:
-        case DELETE_POOL_ACCESS_INVITATION:
-        case SHOW_POOL_ACCESS_INVITATION:
-        case SHOW_POOL_ACCESS_CONFIRMATION:
-        case CREATE_POOL_ACCESS_CONFIRMATION:
-        case DELETE_POOL_ACCESS_CONFIRMATION:
-        case SHOW_POOL_ACCESS_GRANTED:
-            return `/api/v1/auth/${request.method}`;
         default:
             return null;
     }
@@ -316,6 +318,9 @@ export function formatData(request, response) {
         case SHOW_POOL_ACCESS_INVITATION:
         case SHOW_POOL_ACCESS_GRANTED:
             data = poolAccess.getData(response, request.data)
+            break;
+        case INVOICE_BILLING:
+            data = invoices.getData(response, request.data)
             break;
         default:
             data = undefined;

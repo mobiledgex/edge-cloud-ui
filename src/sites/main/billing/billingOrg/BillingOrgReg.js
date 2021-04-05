@@ -1,16 +1,16 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import * as actions from '../../../actions';
+import * as actions from '../../../../actions';
 import { connect } from 'react-redux';
-import MexForms, { SELECT, INPUT, MAIN_HEADER, BUTTON, DUALLIST } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, INPUT, MAIN_HEADER, BUTTON, DUALLIST } from '../../../../hoc/forms/MexForms';
 import { Grid } from '@material-ui/core'
-import { fields, getOrganization } from '../../../services/model/format';
-import { BILLING_ADD_CHILD, DEVELOPER, BILLING_REMOVE_CHILD, validatePhone } from '../../../constant';
-import { resetFormValue } from '../../../hoc/forms/helper/constant';
-import { createBillingOrg, addBillingChild, removeBillingChild } from '../../../services/model/billingOrg';
-import { getOrganizationList } from '../../../services/model/organization';
-import { BILLING_TYPE_PARENT, BILLING_TYPE_SELF } from '../../../constant';
-import * as serverData from '../../../services/model/serverData';
+import { fields, getOrganization } from '../../../../services/model/format';
+import { BILLING_ADD_CHILD, DEVELOPER, BILLING_REMOVE_CHILD, validatePhone } from '../../../../constant';
+import { resetFormValue } from '../../../../hoc/forms/helper/constant';
+import { createBillingOrg, addBillingChild, removeBillingChild } from '../../../../services/model/billingOrg';
+import { getOrganizationList } from '../../../../services/model/organization';
+import { BILLING_TYPE_PARENT, BILLING_TYPE_SELF } from '../../../../constant';
+import * as serverData from '../../../../services/model/serverData';
 
 class BillingOrgReg extends React.Component {
     constructor(props) {

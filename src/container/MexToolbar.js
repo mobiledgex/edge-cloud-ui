@@ -1,11 +1,12 @@
 import React from 'react'
 import { isViewer } from '../services/model/format';
-import { Toolbar, Input, InputAdornment, IconButton, Switch, makeStyles, Box, Menu, ListItem, ListItemText } from '@material-ui/core'
+import { Toolbar, Input, InputAdornment, IconButton, Switch, makeStyles, Box, Menu, ListItem, ListItemText, Tooltip } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { Dustbin } from '../hoc/listView/mex_dnd/Dustbin';
 import { Icon } from 'semantic-ui-react';
 
@@ -17,6 +18,7 @@ export const ACTION_CLOSE = 4
 export const ACTION_MAP = 5
 export const ACTION_SEARCH = 6;
 export const ACTION_CLEAR = 7;
+export const ACTION_BACK = 8
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
@@ -185,12 +187,28 @@ const MexToolbar = (props) => {
         props.requestInfo.grouping ? <Box order={1} style={{ marginTop: 5 }}><Dustbin dropList={props.dropList} onRemove={props.onRemoveDropItem} /></Box> : null
     )
 
+    const renderBack = () => (
+        props.requestInfo.back ?
+            <Box>
+                <Tooltip title={<strong style={{fontSize:13}}>Back</strong>}>
+                    <IconButton aria-label="back" style={{ marginTop: -3, marginLeft:-20 }} onClick={(e) => { props.requestInfo.back() }}>
+                        <ArrowBackIosIcon style={{ color: '#76ff03' }} />
+                    </IconButton>
+                </Tooltip>
+            </Box> : null
+    )
+
     return (
         <Toolbar>
             <div style={{ width: '100%' }}>
                 <Box display="flex" p={1} flexWrap="wrap">
                     <Box flexGrow={1}>
-                        <label className='content_title_label'>{requestInfo.headerLabel}</label>
+                        <Box display="flex">
+                            {renderBack()}
+                            <Box>
+                                <label className='content_title_label'>{requestInfo.headerLabel}</label>
+                            </Box>
+                        </Box>
                     </Box>
                     {
                         props.isDetail ?

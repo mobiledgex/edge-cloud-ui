@@ -46,8 +46,8 @@ class ClouldetPoolList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: 'PoolAccess',
-            headerLabel: 'Private Cloudlet Access',
+            id: constant.PAGE_POOL_ACCESS,
+            headerLabel: 'Cloudlet Pools',
             nameField: fields.poolName,
             requestType: [showConfirmation, showInvitation],
             sortBy: [fields.poolName],

@@ -20,32 +20,32 @@ import TrustPolicy from './policies/trustPolicy/trustPolicyList';
 import AutoScalePolicy from './policies/autoScalePolicy/autoScalePolicyList';
 import Monitoring from './monitoring/Monitoring';
 import AlertReceiver from './notifications/alerts/receiver/AlertReceiver';
-import BillingOrg from './billingOrg/BillingOrgList';
+import BillingOrg from './billing/billingOrg/BillingOrgList';
 
 import * as constant from '../../constant';
 
 const pages = [
-    { label: 'Organizations', icon: 'supervisor_account', id: constant.PAGE_ORGANIZATIONS, path:'organizations' },
-    { label: 'Users & Roles', icon: 'assignment_ind', id: constant.PAGE_USER_ROLES, path:'user-roles' },
-    { label: 'Accounts', icon: 'dvr', id: constant.PAGE_ACCOUNTS, path:'accounts', roles: [constant.ADMIN]  },
+    { label: 'Organizations', icon: 'supervisor_account', id: constant.PAGE_ORGANIZATIONS, path: 'organizations' },
+    { label: 'Users & Roles', icon: 'assignment_ind', id: constant.PAGE_USER_ROLES, path: 'user-roles' },
+    { label: 'Accounts', icon: 'dvr', id: constant.PAGE_ACCOUNTS, path: 'accounts', roles: [constant.ADMIN] },
     { divider: true },
-    { label: 'Cloudlets', icon: 'cloud_queue', id: constant.PAGE_CLOUDLETS, path:'cloudlets' },
-    { label: 'Cloudlet Pools', icon: 'cloud_circle', id: constant.PAGE_CLOUDLET_POOLS, path:'cloudlet-pools', roles: [constant.ADMIN, constant.OPERATOR] },
-    { label: 'Private Cloudlet Access', icon: 'cloud_circle', id: constant.PAGE_POOL_ACCESS, path:'pool-access', roles: [constant.DEVELOPER] },
-    { label: 'Flavors', icon: 'free_breakfast', id: constant.PAGE_FLAVORS, path:'flavors', roles: [constant.ADMIN, constant.DEVELOPER] },
-    { label: 'Cluster Instances', icon: 'storage', id: constant.PAGE_CLUSTER_INSTANCES, path:'cluster-insts', roles: [constant.ADMIN, constant.DEVELOPER] },
-    { label: 'Apps', icon: 'apps', id: constant.PAGE_APPS, path:'apps', roles: [constant.ADMIN, constant.DEVELOPER] },
-    { label: 'App Instances', icon: 'games', id: constant.PAGE_APP_INSTANCES, path:'app-insts', roles: [constant.ADMIN, constant.DEVELOPER] },
+    { label: 'Cloudlets', icon: 'cloud_queue', id: constant.PAGE_CLOUDLETS, path: 'cloudlets' },
+    { label: 'Cloudlet Pools', icon: 'cloud_circle', id: constant.PAGE_CLOUDLET_POOLS, path: 'cloudlet-pools', roles: [constant.ADMIN, constant.OPERATOR] },
+    { label: 'Cloudlet Pools', icon: 'cloud_circle', id: constant.PAGE_POOL_ACCESS, path: 'pool-access', roles: [constant.DEVELOPER] },
+    { label: 'Flavors', icon: 'free_breakfast', id: constant.PAGE_FLAVORS, path: 'flavors', roles: [constant.ADMIN, constant.DEVELOPER] },
+    { label: 'Cluster Instances', icon: 'storage', id: constant.PAGE_CLUSTER_INSTANCES, path: 'cluster-insts', roles: [constant.ADMIN, constant.DEVELOPER] },
+    { label: 'Apps', icon: 'apps', id: constant.PAGE_APPS, path: 'apps', roles: [constant.ADMIN, constant.DEVELOPER] },
+    { label: 'App Instances', icon: 'games', id: constant.PAGE_APP_INSTANCES, path: 'app-insts', roles: [constant.ADMIN, constant.DEVELOPER] },
     {
         label: 'Policies', icon: 'track_changes', id: constant.PAGE_POLICIES, sub: true, options: [
-            { label: 'Auto Provisioning Policy', icon: 'group_work', id: constant.PAGE_AUTO_PROVISIONING_POLICY, path:'auto-prov-policy', roles: [constant.ADMIN, constant.DEVELOPER] },
-            { label: 'Trust Policy', icon: 'policy', id: constant.PAGE_TRUST_POLICY, path:'trust-policy' },
-            { label: 'Auto Scale Policy', icon: 'landscape', id: constant.PAGE_AUTO_SCALE_POLICY, path:'auto-scale-policy', roles: [constant.ADMIN, constant.DEVELOPER] },
+            { label: 'Auto Provisioning Policy', icon: 'group_work', id: constant.PAGE_AUTO_PROVISIONING_POLICY, path: 'auto-prov-policy', roles: [constant.ADMIN, constant.DEVELOPER] },
+            { label: 'Trust Policy', icon: 'policy', id: constant.PAGE_TRUST_POLICY, path: 'trust-policy' },
+            { label: 'Auto Scale Policy', icon: 'landscape', id: constant.PAGE_AUTO_SCALE_POLICY, path: 'auto-scale-policy', roles: [constant.ADMIN, constant.DEVELOPER] },
         ]
     },
-    { label: 'Monitoring', icon: 'tv', id: constant.PAGE_MONITORING, path:'monitoring' },
-    { label: 'Alert Receivers', icon: 'notification_important', id: constant.PAGE_ALERTS, path:'alerts' },
-    { label: 'Billing', icon: 'payment', id: constant.PAGE_BILLING_ORG, path:'billing-org', roles: [constant.ADMIN] }
+    { label: 'Monitoring', icon: 'tv', id: constant.PAGE_MONITORING, path: 'monitoring' },
+    { label: 'Alert Receivers', icon: 'notification_important', id: constant.PAGE_ALERTS, path: 'alerts' },
+    { label: 'Billing', icon: 'payment', id: constant.PAGE_BILLING_ORG, path: 'billing-org', roles: [constant.ADMIN] },
 ]
 
 const renderPage = (id) => {
