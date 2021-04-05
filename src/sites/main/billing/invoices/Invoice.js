@@ -23,6 +23,7 @@ const customerInfo = [
 
 const sellerInfo = [
     { label: 'Name', field: 'name', header: true },
+    { label: 'Phone', field: 'phone' },
 ]
 
 const amountSummary = [
@@ -97,7 +98,8 @@ class Invoice extends React.Component {
                     form.header ?
                         <Typography key={i} gutterBottom variant="h5" component="h2">
                             {info['name']}
-                        </Typography> : null
+                        </Typography> :
+                        <p key={i}>{info[form.field]}</p>
                 ))}
             </Box>
         )
@@ -181,12 +183,12 @@ class Invoice extends React.Component {
                                     </Typography>
                                 </Box>
                                 <Box>
-                                    <Tooltip title={<strong style={{fontSize:13}}>PDF</strong>}>
+                                    <Tooltip title={<strong style={{ fontSize: 13 }}>PDF</strong>}>
                                         <IconButton onClick={this.toPdf}><PictureAsPdfOutlinedIcon /></IconButton>
                                     </Tooltip>
                                 </Box>
                                 <Box>
-                                    <Tooltip title={<strong style={{fontSize:13}}>Close</strong>}>
+                                    <Tooltip title={<strong style={{ fontSize: 13 }}>Close</strong>}>
                                         <IconButton onClick={close}><CloseOutlinedIcon /></IconButton>
                                     </Tooltip>
                                 </Box>

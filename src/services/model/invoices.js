@@ -32,7 +32,7 @@ export const keys = () => ([
     { field: 'discountAmount', serverField: 'discount_amount', label: 'Discount Amount', visible: false, detailView: false },
     { field: 'subtotalAmount', serverField: 'subtotal_amount', label: 'Subtotal Amount', visible: false, detailView: false },
     { field: 'taxAmount', serverField: 'tax_amount', label: 'Tax Amount', visible: false, detailView: false },
-    { field: 'totalAmount', serverField: 'total_amount', label: 'Total Amount', visible: true, detailView: false },
+    { field: 'totalAmount', serverField: 'total_amount', label: 'Total Amount', visible: true },
     { field: 'dueAmount', serverField: 'due_amount', label: 'Amount Due', visible: true },
     { field: 'items', serverField: 'line_items', label: 'Item', visible: false, dataType: TYPE_JSON, detailView: false },
     { field: 'customer', serverField: 'customer', label: 'Customer', visible: false, dataType: TYPE_JSON, detailView: false },
@@ -55,6 +55,9 @@ const formatInvoiceNo = (value)=>{
 
 const customData = (value) => {
     value['name'] = `${value['firstname']} ${value['lastname']}`
+    //remove once bug is fixed, total amount is not available in current implementation
+    value['totalAmount'] = value['totalAmount'] ? value['totalAmount'] : '0.0$'
+    value['dueAmount'] = `${value['dueAmount']}$` 
     formatInvoiceNo(value)
     return value
 }
