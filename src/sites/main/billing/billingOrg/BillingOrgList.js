@@ -73,7 +73,7 @@ class BillingOrg extends React.Component {
             nameField: fields.name,
             requestType: [showBillingOrg],
             sortBy: [fields.name],
-            selection: true,
+            // selection: true,
             keys: this.keys,
             onAdd: validateRole(operatorRoles) ? this.onReg : undefined,
             grouping: false
