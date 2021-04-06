@@ -4,20 +4,6 @@ import * as formatter from './format'
 
 let fields = formatter.fields
 
-// export const keys = () => ([
-//     { field: 'uuid', serverField: 'uid', label: 'ID' },
-//     { field: 'number', serverField: 'number', label: 'Number', visible: true },
-//     { field: 'issueDate', serverField: 'issue_date', label: 'Issued At', visible: true },
-//     { field: 'dueDate', serverField: 'due_date', label: 'Due Date', visible: true },
-//     { field: 'firstname', serverField: 'customer#OS#first_name', label: 'First Name' },
-//     { field: 'lastname', serverField: 'customer#OS#last_name', label: 'Last Name' },
-//     { field: 'name', label: 'Name', visible: true },
-//     { field: 'Status', serverField: 'status', label: 'Status', visible: false },
-//     { field: 'totalAmount', serverField: 'total_amount', label: 'Total Amount', visible: true },
-//     { field: 'dueAmount', serverField: 'due_amount', label: 'Amount Due', visible: true },
-//     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
-// ])
-
 export const keys = () => ([
     { field: 'uuid', serverField: 'uid', label: 'ID' },
     { field: 'number', serverField: 'number', label: 'Number', visible: true },
@@ -55,9 +41,6 @@ const formatInvoiceNo = (value)=>{
 
 const customData = (value) => {
     value['name'] = `${value['firstname']} ${value['lastname']}`
-    //remove once bug is fixed, total amount is not available in current implementation
-    value['totalAmount'] = value['totalAmount'] ? value['totalAmount'] : '0.0$'
-    value['dueAmount'] = `${value['dueAmount']}$` 
     formatInvoiceNo(value)
     return value
 }
