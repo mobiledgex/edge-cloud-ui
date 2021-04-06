@@ -12,7 +12,7 @@ import { getOrganizationList } from '../../../services/model/organization';
 import { showOrganizations } from '../../../services/model/organization';
 import { getOrgCloudletList } from '../../../services/model/cloudlet';
 import { createCloudletPool, updateCloudletPool } from '../../../services/model/cloudletPool';
-import { createInvitation, deleteInvitation } from '../../../services/model/privateCloudletAccess';
+import { createConfirmation, createInvitation, deleteConfirmation, deleteInvitation } from '../../../services/model/privateCloudletAccess';
 
 import * as constant from '../../../constant';
 import { HELP_CLOUDLET_POOL_REG_3, HELP_CLOUDLET_POOL_REG_1 } from "../../../tutorial";
@@ -38,7 +38,7 @@ class CloudletPoolReg extends React.Component {
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
         this.action = props.action
-        this.isOrgDelete = this.action === constant.DELETE_ORGANIZATION
+        this.isOrgDelete = this.action === constant.DELETE_ORGANIZATION || this.action === constant.ACTION_ADMIN_ACCESS_REMOVE
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.operatorList = []
         this.organizationList = []
@@ -120,11 +120,15 @@ class CloudletPoolReg extends React.Component {
                 }
             })
             if (valid) {
+                let msg = this.action === constant.ACTION_ADMIN_ACCESS_CONFIRM ? 'Confirmation' : 'Invitation'
                 if (mcList.length === 1) {
-                    this.props.handleAlertInfo('success', `Invitation for organization ${data['Org']} created successfully by cloudlet pool ${data['CloudletPoolOrg']}`)
+                    this.props.handleAlertInfo('success', `${msg} created for organization ${data['Org']} successfully by cloudlet pool ${data['CloudletPoolOrg']}`)
+                    if (isAdmin()) {
+                        this.props.onClose(true)
+                    }
                 }
                 else {
-                    this.props.handleAlertInfo('success', `Invitation created successfully by cloudlet pool ${data['CloudletPoolOrg']}`)
+                    this.props.handleAlertInfo('success', `${msg} created successfully by cloudlet pool ${data['CloudletPoolOrg']}`)
                     this.props.onClose(true)
                 }
             }
@@ -143,12 +147,18 @@ class CloudletPoolReg extends React.Component {
             })
         }
 
+        let msg = 'Invitation'
+        if(this.action === constant.ACTION_ADMIN_ACCESS_REMOVE)
+        {
+            msg = 'Confirmation'
+        }
+
         if (valid && data) {
             if (mcList.length === 1) {
-                this.props.handleAlertInfo('success', `Organization ${data['Org']} removed successfully from cloudlet pool ${data['CloudletPoolOrg']}`)
+                this.props.handleAlertInfo('success', `${msg} removed successfully from cloudlet pool ${data['CloudletPoolOrg']} for Organization ${data['Org']}`)
             }
             else {
-                this.props.handleAlertInfo('success', `Organizations removed successfully from  cloudlet pool ${data['CloudletPoolOrg']}`)
+                this.props.handleAlertInfo('success', `${msg} removed successfully from cloudlet pool ${data['CloudletPoolOrg']}`)
             }
             this.props.onClose(true)
         }
@@ -165,7 +175,24 @@ class CloudletPoolReg extends React.Component {
                 organization = (isAdmin() || this.isOrgDelete) ? JSON.parse(organization) : organization
                 newData[fields.developerOrg] = organization[fields.organizationName]
                 newData[fields.operatorOrg] = data[fields.operatorName]
-                requestDataList.push(this.isOrgDelete ? deleteInvitation(newData) : createInvitation(newData))
+                let request = undefined
+                switch (this.action) {
+                    case constant.ACTION_ADMIN_ACCESS_REMOVE:
+                        request = deleteConfirmation
+                        break;
+                    case constant.ACTION_ADMIN_ACCESS_CONFIRM:
+                        request = createConfirmation
+                        break;
+                    case constant.ADD_ORGANIZATION:
+                        request = createInvitation
+                        break;
+                    case constant.DELETE_ORGANIZATION:
+                        request = deleteInvitation
+                        break;
+                }
+                if (request) {
+                    requestDataList.push(request(newData))
+                }
             })
         }
         serverData.sendMultiRequest(this, requestDataList, responseCallback)
@@ -191,7 +218,9 @@ class CloudletPoolReg extends React.Component {
         let region = data[fields.region];
         let operator = data[fields.operatorName];
         let selectedDatas = data[fields.organizations]
+        let errorMsg = 'No org to remove'
         if (!this.props.action || this.action === constant.ADD_ORGANIZATION) {
+            errorMsg = 'No org to invite'
             let mcRequest = await serverData.sendRequest(this, showOrganizations())
             if (mcRequest && mcRequest.response) {
                 this.organizationList = mcRequest.response.data
@@ -200,11 +229,30 @@ class CloudletPoolReg extends React.Component {
                 }
             }
         }
+        else if (this.action === constant.ACTION_ADMIN_ACCESS_CONFIRM) {
+            errorMsg = 'No org to confirm'
+            this.organizationList = selectedDatas.filter(org => {
+                return org.grant === constant.NO
+            })
+        }
+        else if (this.action === constant.ACTION_ADMIN_ACCESS_REMOVE) {
+            this.organizationList = selectedDatas.filter(org => {
+                return org.grant === constant.YES
+            })
+        }
         else {
             this.organizationList = selectedDatas;
         }
         if (this.organizationList.length > 0) {
-            let label = this.isOrgDelete ? 'Remove' : 'Invite'
+            let label = 'Remove'
+            switch (this.action) {
+                case constant.ACTION_ADMIN_ACCESS_CONFIRM:
+                    label = 'Confirm'
+                    break;
+                case constant.ADD_ORGANIZATION:
+                    label = 'Invite'
+                    break;
+            }
             let step = [
                 { label: `${label} Organizations`, formType: MAIN_HEADER, visible: true },
                 { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: region },
@@ -225,7 +273,7 @@ class CloudletPoolReg extends React.Component {
             this.props.handleViewMode(HELP_CLOUDLET_POOL_REG_3)
         }
         else {
-            this.props.handleAlertInfo('error', `No organizations to ${this.isOrgDelete ? 'unlink' : 'link'}`)
+            this.props.handleAlertInfo('error', errorMsg)
             this.props.onClose(false)
         }
     }
@@ -372,7 +420,7 @@ class CloudletPoolReg extends React.Component {
             }
         }
 
-        if (this.action === constant.ADD_ORGANIZATION || this.isOrgDelete) {
+        if (this.props.org) {
             this.selectOrganization(data, false)
         }
         else {

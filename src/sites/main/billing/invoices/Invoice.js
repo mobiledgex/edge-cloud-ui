@@ -213,7 +213,7 @@ class Invoice extends React.Component {
                                     <div className='invoice-status'>
                                         <Grid container >
                                             <Grid item xs={4} className='invoice-status-left'>
-                                                {/* <strong>{data['status'].toUpperCase()}</strong> */}
+                                                <strong>{data['status'] ? data['status'].toUpperCase() : ''}</strong>
                                                 <strong>PAID</strong>
                                             </Grid>
                                             <Grid item xs={8} className='invoice-status-right'>

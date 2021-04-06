@@ -31,7 +31,7 @@ class ClouldetPoolList extends React.Component {
     /**Action menu block */
     actionMenu = () => {
         return [
-            { id: constant.ACTION_POOL_ACCESS_GRANT, label: 'Grant Access', visible: this.onCreateVisible, onClick: createConfirmation },
+            { id: constant.ACTION_POOL_ACCESS_CONFIRM, label: 'Confirm Access', visible: this.onCreateVisible, onClick: createConfirmation },
             { id: constant.ACTION_POOL_ACCESS_REMOVE, label: 'Remove Access', visible: this.onDeleteVisible, onClick: deleteConfirmation },
         ]
     }

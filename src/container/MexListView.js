@@ -266,7 +266,7 @@ class MexListView extends React.Component {
                     case 'Reboot':
                         this.onPowerState(action, data)
                         break;
-                    case constant.ACTION_POOL_ACCESS_GRANT:
+                    case constant.ACTION_POOL_ACCESS_CONFIRM:
                     case constant.ACTION_POOL_ACCESS_REMOVE:
                         this.onAccess(action, data)
                         break;
@@ -307,8 +307,8 @@ class MexListView extends React.Component {
                 case 'Reboot':
                     this.onWarning(action, 'reboot', false, data)
                     break;
-                case constant.ACTION_POOL_ACCESS_GRANT:
-                    this.onWarning(action, 'grant access to cloudlet pool', false, data)
+                case constant.ACTION_POOL_ACCESS_CONFIRM:
+                    this.onWarning(action, 'confirm access to cloudlet pool', false, data)
                     break;
                 case constant.ACTION_POOL_ACCESS_REMOVE:
                     this.onWarning(action, 'remove access from cloudlet pool', false, data)

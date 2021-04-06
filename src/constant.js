@@ -11,8 +11,10 @@ export const LS_REGIONS = 'regions'
 export const CLOUDLET_COMPAT_VERSION_2_4 = 0
 export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1
 
-export const ACTION_POOL_ACCESS_GRANT = 'Grant'
+export const ACTION_POOL_ACCESS_CONFIRM = 'Confirm'
 export const ACTION_POOL_ACCESS_REMOVE = 'Remove'
+export const ACTION_ADMIN_ACCESS_CONFIRM = 'AdminConfirm'
+export const ACTION_ADMIN_ACCESS_REMOVE = 'AdminRemove'
 
 export const ADD = 'Add'
 export const UPDATE = 'Update'
