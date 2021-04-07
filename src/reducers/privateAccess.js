@@ -1,13 +1,13 @@
 import * as types from '../actions/ActionTypes';
 
 const initialState = {
-    step: null
+    data: null
 };
-export default function changeRegion( state = initialState, action) {
+export default function privateAccess( state = initialState, action) {
     switch( action.type ) {
-        case types.CHANGE_STEP :
+        case types.PRIVATE_ACCESS_EXIST :
             return Object.assign({}, state, {
-                step:action.step
+                data:action.isPrivate
             })
             break;
         default:

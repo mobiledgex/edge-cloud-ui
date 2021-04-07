@@ -524,7 +524,6 @@ const mapStateToProps = state => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleChangeTab: (data) => { dispatch(actions.changeTab(data)) },
         handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data)) },
         handleCreateAccount: (data) => { dispatch(actions.createAccount(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }

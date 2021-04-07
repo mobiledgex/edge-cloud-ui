@@ -5,11 +5,13 @@ import * as actions from '../../actions';
 import { GridLoader } from "react-spinners";
 import RoleWorker from '../../services/worker/role.worker.js'
 import { sendAuthRequest } from '../../services/model/serverWorker';
+import { sendRequest } from './monitoring/services/service';
 import MexAlert from '../../hoc/alert/AlertDialog';
 import { SHOW_ROLE } from '../../services/model/endpoints';
 import Menu from './Menu'
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
+import { accessGranted } from '../../services/model/privateCloudletAccess';
 
 class Main extends React.Component {
     constructor(props) {
@@ -17,14 +19,14 @@ class Main extends React.Component {
         this.state = {
             userRole: null,
             mexAlertMessage: undefined
-        }; 
+        };
         this.worker = new RoleWorker();
     }
 
     roleResponse = (mc) => {
         if (mc && mc.response && mc.response.status === 200) {
             let dataList = mc.response.data;
-           
+
             this.worker.postMessage({ data: dataList })
             this.worker.addEventListener('message', event => {
                 if (event.data.isAdmin) {
@@ -37,8 +39,20 @@ class Main extends React.Component {
         }
     }
 
+    accessGrantedResponse = (mc) => {
+
+    }
+
     userRoleInfo = () => {
         sendAuthRequest(this, { method: SHOW_ROLE }, this.roleResponse)
+        sendRequest(this, accessGranted()).then(mc => {
+            if (mc.response && mc.response.status === 200) {
+                let dataList = mc.response.data
+                if (dataList.length > 0) {
+                    this.props.handlePrivateAccess(true)
+                }
+            }
+        })
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -74,7 +88,7 @@ class Main extends React.Component {
         this.userRoleInfo()
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         this.worker.terminate()
     }
 };
@@ -82,26 +96,20 @@ class Main extends React.Component {
 const mapStateToProps = (state) => {
     let viewMode = (state.ViewMode) ? state.ViewMode.mode : null;
     return {
-        isShowHeader: state.HeaderReducer.isShowHeader,
         userInfo: state.userInfo ? state.userInfo : null,
         loadingSpinner: state.loadingSpinner.loading ? state.loadingSpinner.loading : null,
-        alertInfo: {
-            mode: state.alertInfo.mode,
-            msg: state.alertInfo.msg
-        },
-        viewMode: viewMode
+        alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg },
+        viewMode: viewMode,
+        isPrivate: state.privateAccess.data
     }
 };
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => {
-            dispatch(actions.loadingSpinner(data))
-        },
-        handleAlertInfo: (mode, msg) => {
-            dispatch(actions.alertInfo(mode, msg))
-        },
-        handleUserRole: (data) => { dispatch(actions.showUserRole(data)) }
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
+        handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) }
     };
 };
 

@@ -1,9 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { Chip, Collapse, Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core'
+import { Chip, Collapse, Divider, IconButton, List, ListItem, ListItemText, Typography } from '@material-ui/core'
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
-import { PAGE_ALERTS, formatData, regions } from '../../../../constant';
 import { showAlertKeys } from '../../../../services/model/alerts'
 import * as actions from '../../../../actions';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
@@ -124,10 +123,4 @@ class AlertLocal extends React.Component {
     }
 }
 
-const mapDispatchProps = (dispatch) => {
-    return {
-        handlePageRedirect: (mode, msg) => { dispatch(actions.redirectPage(mode, msg)) },
-    };
-};
-
-export default withRouter(connect(null, mapDispatchProps)(AlertLocal));
+export default withRouter(connect(null, null)(AlertLocal));

@@ -24,7 +24,7 @@ const stepData = [
     },
     {
         step: "Step 2",
-        description: "Add Organizations"
+        description: "Invite Organizations"
     }
 ]
 
@@ -148,8 +148,7 @@ class CloudletPoolReg extends React.Component {
         }
 
         let msg = 'Invitation'
-        if(this.action === constant.ACTION_ADMIN_ACCESS_REMOVE)
-        {
+        if (this.action === constant.ACTION_ADMIN_ACCESS_REMOVE) {
             msg = 'Confirmation'
         }
 
@@ -244,13 +243,17 @@ class CloudletPoolReg extends React.Component {
             this.organizationList = selectedDatas;
         }
         if (this.organizationList.length > 0) {
-            let label = 'Remove'
+            let label = 'Invite'
             switch (this.action) {
                 case constant.ACTION_ADMIN_ACCESS_CONFIRM:
                     label = 'Confirm'
                     break;
                 case constant.ADD_ORGANIZATION:
                     label = 'Invite'
+                    break;
+                case constant.ACTION_ADMIN_ACCESS_REMOVE:
+                case constant.DELETE_ORGANIZATION:
+                    label = 'Remove'
                     break;
             }
             let step = [
