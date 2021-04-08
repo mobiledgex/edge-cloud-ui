@@ -1,0 +1,18 @@
+.alert-toolbar {
+    padding: 10px;
+    height: 30px;
+}
+.alert-toolbar-left {
+    float: left;
+}
+
+.alert-toolbar-right {
+    float: right;
+}
+
+.alert-local-list {
+    max-height: 40vh;
+    min-height: 10vh;
+    overflow: auto; 
+    width: 100% ;
+}

@@ -31,6 +31,12 @@ class CloudletEvent extends React.Component {
         this.regions = props.regions
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
     header = (data) => {
         let cloudlet = data['cloudlet']
         return (
@@ -68,39 +74,37 @@ class CloudletEvent extends React.Component {
     }
 
     event = async (range, more) => {
-        if (this._isMounted) {
-            this.setState({ loading: true })
-            let mc = await sendRequest(this, orgEvents({
-                match: {
-                    orgs: [isAdmin() ? this.props.org : getOrganization()],
-                    types: ["event"],
-                    tags: { cloudlet: "*" },
-                    names: ["*cloudlet*", "*Cloudlet*"],
-                },
-                starttime: range.starttime,
-                endtime: range.endtime,
-                more: more,
-                limit: 10
-            }))
-            if (mc && mc.response && mc.response.status === 200) {
-                let more = mc.request.data.more
-                let dataList = mc.response.data
-                let showMore = dataList.length === 10
-                let colors = randomColor({ count: dataList.length, })
-                if (more) {
-                    dataList = [...this.state.eventData, ...dataList]
-                    colors = [...this.state.colors, ...colors]
-                }
-                if (this._isMounted) {
-                    this.setState({ eventData: dataList, colors, showMore })
-                }
+        this.updateState({ loading: true })
+        let mc = await sendRequest(this, orgEvents({
+            match: {
+                orgs: [isAdmin() ? this.props.org : getOrganization()],
+                types: ["event"],
+                tags: { cloudlet: "*" },
+                names: ["*cloudlet*", "*Cloudlet*"],
+            },
+            starttime: range.starttime,
+            endtime: range.endtime,
+            more: more,
+            limit: 10
+        }))
+        if (mc && mc.response && mc.response.status === 200) {
+            let more = mc.request.data.more
+            let dataList = mc.response.data
+            let showMore = dataList.length === 10
+            let colors = randomColor({ count: dataList.length, })
+            if (more) {
+                dataList = [...this.state.eventData, ...dataList]
+                colors = [...this.state.colors, ...colors]
             }
-            this.setState({loading: false})
+
+            this.updateState({ eventData: dataList, colors, showMore })
+
         }
+        this.updateState({ loading: false })
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.org !== this.props.org) {
+        if (prevProps.org !== this.props.org && this._isMounted) {
             this.setState({ eventData: [] }, () => {
                 this.event(this.props.range)
             })

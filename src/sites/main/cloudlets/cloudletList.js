@@ -9,7 +9,7 @@ import { fields, getOrganization, isAdmin } from '../../../services/model/format
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './cloudletReg';
-import {validateRole, operatorRoles, INFRA_API_ACCESS_RESTRICTED, showYesNo, COLOR_RED, COLOR_GREEN} from '../../../constant'
+import {validateRole, operatorRoles, INFRA_API_ACCESS_RESTRICTED} from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
 import { Icon, Popup } from 'semantic-ui-react';
@@ -117,7 +117,7 @@ class CloudletList extends React.Component {
     * Customized data block
     **/
     getCloudletInfoState = (data, isDetailView) => {
-        let id = isDetailView ? data : data[fields.cloudletStatus]
+        let id = data[fields.cloudletStatus]
         let state = 'Not Present';
         let color = 'red'
         switch (id) {

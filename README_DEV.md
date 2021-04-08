@@ -1,28 +1,9 @@
-### 라우터
-1. 주소창에 입력한 주소값으로 페이지 이동
-    - 주소값 : window.location.pathname
-    - 페이지이동 : <Redirect push to={this.state.directLink} />
-    - 페이지이동 : this.router.history.push(pathName);
 #MEX
-
-#### HighChart
-1. react highchart : https://www.highcharts.com/blog/post/192-use-highcharts-to-create-charts-in-react/
-2. $ npm install highcharts --save
-
-1. https://github.com/whawker/react-jsx-highcharts
-
-1. http://beomy.tistory.com/37
-2. npm install --save react-highcharts highcharts-drilldown
-
-1.
-출처: http://beomy.tistory.com/37 [beomy]
 #### spinner or loader
 - http://www.davidhu.io/react-spinners/
-
 #### Router v.4
  - react-router-dom을 사용
     1. https://perfectacle.github.io/2017/03/25/react-router-v4/
-
 
 #### transitions
     - https://medium.com/appifycanada/animations-with-reacttransitiongroup-4972ad7da286
@@ -36,7 +17,7 @@
     - https://velopert.com/1552
 
 
-#### JSON server 가상 운영
+#### JSON server
     - https://jsonplaceholder.typicode.com/
     - npm install -g json-server
 
@@ -56,11 +37,9 @@
     }
     Now if you go to http://localhost:3004/posts/1, you'll get
 
-#### graphQL 사용 예정
+#### graphQL
     - tutorial : https://medium.com/react-weekly/implementing-graphql-in-your-redux-app-dad7acf39e1b
     - 이미 구현 된 redux에 적용하는 방법을 위에서 설명 함
-
-
 #### scroll box
  - http://smikhalevski.github.io/react-scroll-box/
  - https://www.npmjs.com/package/react-scroll-box
@@ -128,61 +107,17 @@
   
   curl -X POST "https://mexdemo.ctrl.mobiledgex.net:36001/show/operator" -H "accept: application/json" -H "Content-Type: application/json" --cacert mex-ca.crt --key mex-client.key --cert mex-client.crt
 
-#### SSL을 node.js에서 인증하기
- - https://www.namecheap.com/support/knowledgebase/article.aspx/9705/33/installing-a-ssl-certificate-on-nodejs
-
-
-### Login , Mongodb, bcrypt
-- https://medium.com/front-end-weekly/how-to-create-a-simple-authorization-login-using-bcrypt-react-and-ajax-d71ed919f5cb
-- https://medium.com/@kouohhashi/simple-authentication-with-react-and-mongodb-dd2828cc4f16
-- https://github.com/kouohhashi/react_mongo_accounts
-
-
-### PM2 사용하여 서버 실행
-- pm2 start app.js --interpreter ./node_modules/.bin/babel-node –
-- npm install -g babel-cli
-- pm2 start --interpreter babel-node server.js
-
-
 ### React 최적화방안
 - https://marmelab.com/blog/2017/02/06/react-is-slow-react-is-fast.html 
-
-
 ### react drag rect zoom
 - http://bl.ocks.org/jasondavies/3689931 
-
-### popup
-
-
-### Login - JWT
-- jwt
-
-
-
-### Debugging in Intellij IDE
-- https로 실행되도록 설정
-- middle웨어 3030도 마찬가지로 크롬브라우져에서 탭을 옆에 생성하고 보안인증 허락
-
-
-### redux-form
- - semantic ur + redux-form 
-   https://codesandbox.io/s/jn0w4mxm5 
-
-
-### 버블차트
-- https://d3indepth.com/layouts/
-
-
 ### Timeline horizontal
 - http://sherubthakur.github.io/react-horizontal-timeline/
 https://github.com/andyfaizan/react-horizontal-timeline
-
 ### Tabulator
 - http://tabulator.info/
-
 ### Dual list box
  - https://github.com/jakezatecky/react-dual-listbox
- 
  
 ### dendrogram ( n to n connectivity) sanky diagram
 - https://plnkr.co/edit/1lRltYI5mi35FkDrDLPG?p=preview

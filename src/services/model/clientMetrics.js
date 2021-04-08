@@ -26,10 +26,8 @@ export const clientMetricsKeys = [
     { label: 'Version', serverField: 'ver', visible: true, groupBy: false },
 ]
 
-export const clientMetrics = (data, org) => {
-    data.appinst = {
-        app_key: { organization: org }
-    }
+export const clientMetrics = (data, organization, isPrivate) => {
+    data.appinst = isPrivate ? { cluster_inst_key: { cloudlet_key: { organization } } } : { app_key: { organization } }
     return { method: CLIENT_METRICS_ENDPOINT, data: data, keys: clientMetricsKeys }
 }
 

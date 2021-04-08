@@ -40,7 +40,7 @@ class ClusterMonitoring extends React.Component {
         this.state = {
             mapData: {}
         }
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        this.regions = props.regions
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -49,7 +49,7 @@ class ClusterMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { avgData, filter, rowSelected, range, minimize, selectedOrg, updateAvgData } = this.props
+        const { avgData, filter, rowSelected, range, minimize, selectedOrg, updateAvgData, isPrivate } = this.props
         let selected = mapData.selected
         return (
             filter.parent.id === 'cluster' ?
@@ -59,7 +59,7 @@ class ClusterMonitoring extends React.Component {
                             <GridListTile cols={4}>
                                 <MexMap data={mapData} region={filter.region} />
                             </GridListTile> : null}
-                            <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg}/>
+                            <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} isPrivate={isPrivate}/>
                     </GridList> 
                 </div> : null
         )

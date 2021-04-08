@@ -5,11 +5,11 @@ import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 import * as constant from '../../../constant';
-import { fields } from '../../../services/model/format';
+import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showCloudletPools, deleteCloudletPool, multiDataRequest } from '../../../services/model/cloudletPool';
-import { showCloudletLinkOrg } from '../../../services/model/cloudletLinkOrg';
 import CloudletPoolReg from './cloudletPoolReg';
 import {HELP_CLOUDLET_POOL_LIST} from "../../../tutorial";
+import { accessGranted, createConfirmation, deleteConfirmation, showInvitation } from '../../../services/model/privateCloudletAccess';
 class ClouldetPoolList extends React.Component {
     constructor(props) {
         super(props);
@@ -25,7 +25,7 @@ class ClouldetPoolList extends React.Component {
 
     /**Action menu block */
     onActionClick = (action, data) => {
-        this.setState({ currentView: <CloudletPoolReg data={data} isUpdate={action ? true : false} action={action.id} onClose={() => this.setState({ currentView: null })} /> });
+        this.setState({ currentView: <CloudletPoolReg data={data} org={true} isUpdate={action ? true : false} action={action.id} onClose={() => this.setState({ currentView: null })} /> });
     }
 
     showDeleteCloudletPool = (action, data) => {
@@ -38,11 +38,17 @@ class ClouldetPoolList extends React.Component {
         return valid;
     }
 
+    onConfirmVisible = (data) => {
+        return isAdmin()
+    }
+
     actionMenu = () => {
         return [
             { id: constant.ADD_CLOUDLET, label: 'Update', onClick: this.onActionClick, type:'Edit' },
-            { id: constant.ADD_ORGANIZATION, label: 'Link Organization', onClick: this.onActionClick, type:'Edit' },
-            { id: constant.DELETE_ORGANIZATION, label: 'Unlink Organization', onClick: this.onActionClick, type:'Edit' },
+            { id: constant.ADD_ORGANIZATION, label: 'Invite Organization', onClick: this.onActionClick, type:'Edit' },
+            { id: constant.DELETE_ORGANIZATION, label: 'Remove Organization', onClick: this.onActionClick, type:'Edit' },
+            { id: constant.ACTION_ADMIN_ACCESS_CONFIRM, label: 'Confirm Access', visible: this.onConfirmVisible, onClick: this.onActionClick, type:'Edit'  },
+            { id: constant.ACTION_ADMIN_ACCESS_REMOVE, label: 'Remove Access', visible: this.onConfirmVisible, onClick: this.onActionClick, type:'Edit'  },
             { id: constant.DELETE, label: 'Delete', onClickInterept:this.showDeleteCloudletPool, onClick: deleteCloudletPool, type:'Edit' }
         ]
     }
@@ -60,7 +66,7 @@ class ClouldetPoolList extends React.Component {
             id: 'CloudletPools',
             headerLabel: 'Cloudlet Pools',
             nameField: fields.poolName,
-            requestType: [showCloudletPools, showCloudletLinkOrg],
+            requestType: [showCloudletPools, showInvitation, accessGranted],
             isRegion: true,
             sortBy: [fields.poolName],
             selection:true,

@@ -10,6 +10,8 @@ import { SHOW_ROLE } from '../../services/model/endpoints';
 import Menu from './Menu'
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
+import { DEVELOPER, OPERATOR, validatePrivateAccess } from '../../constant';
+import { getUserRole } from '../../services/model/format';
 
 class Main extends React.Component {
     constructor(props) {
@@ -17,18 +19,18 @@ class Main extends React.Component {
         this.state = {
             userRole: null,
             mexAlertMessage: undefined
-        }; 
+        };
         this.worker = new RoleWorker();
     }
 
     roleResponse = (mc) => {
         if (mc && mc.response && mc.response.status === 200) {
             let dataList = mc.response.data;
-           
             this.worker.postMessage({ data: dataList })
-            this.worker.addEventListener('message', event => {
+            this.worker.addEventListener('message', (event) => {
                 if (event.data.isAdmin) {
                     let role = event.data.role
+                    localStorage.setItem('selectOrg', undefined)
                     localStorage.setItem('selectRole', role)
                     this.props.handleUserRole(role)
                     this.setState({ userRole: role });
@@ -70,11 +72,23 @@ class Main extends React.Component {
         );
     }
 
-    componentDidMount() {
+    validateRole = async () => {
+        if (getUserRole().includes(OPERATOR) || getUserRole().includes(DEVELOPER)) {
+            if (getUserRole().includes(OPERATOR)) {
+                let privateAccess = await validatePrivateAccess(this, getUserRole())
+                this.props.handlePrivateAccess(privateAccess)
+            }
+            this.props.handleUserRole(getUserRole())
+        }
         this.userRoleInfo()
     }
 
-    componentWillUnmount(){
+    componentDidMount() {
+        this.props.handleUserRole(undefined)
+        this.validateRole()
+    }
+
+    componentWillUnmount() {
         this.worker.terminate()
     }
 };
@@ -82,26 +96,19 @@ class Main extends React.Component {
 const mapStateToProps = (state) => {
     let viewMode = (state.ViewMode) ? state.ViewMode.mode : null;
     return {
-        isShowHeader: state.HeaderReducer.isShowHeader,
         userInfo: state.userInfo ? state.userInfo : null,
         loadingSpinner: state.loadingSpinner.loading ? state.loadingSpinner.loading : null,
-        alertInfo: {
-            mode: state.alertInfo.mode,
-            msg: state.alertInfo.msg
-        },
+        alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg },
         viewMode: viewMode
     }
 };
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => {
-            dispatch(actions.loadingSpinner(data))
-        },
-        handleAlertInfo: (mode, msg) => {
-            dispatch(actions.alertInfo(mode, msg))
-        },
-        handleUserRole: (data) => { dispatch(actions.showUserRole(data)) }
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
+        handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) }
     };
 };
 

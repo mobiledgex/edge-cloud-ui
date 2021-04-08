@@ -308,8 +308,8 @@ class Login extends Component {
     validateUserName = (username) => {
         if (username !== localStorage.getItem('userInfo')) {
             localStorage.setItem('userInfo', self.state.username)
-            localStorage.removeItem('selectOrg')
-            localStorage.removeItem('selectRole')
+            // localStorage.removeItem('selectOrg')
+            // localStorage.removeItem('selectRole')
         }
     }
 
@@ -322,7 +322,7 @@ class Login extends Component {
                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(this.params))
                 this.getControllers(data.token)
                 this.validateUserName(username)
-                this.props.history.push({ pathname: `/main/${PAGE_ORGANIZATIONS.toLowerCase()}` })
+                this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
             }
         }
     }
@@ -427,7 +427,7 @@ class Login extends Component {
                 this.getControllers(response.data.token)
                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
                 this.validateUserName(username)
-                this.props.history.push({ pathname: `/main/pg=${PAGE_ORGANIZATIONS.toLowerCase()}` })
+                this.props.history.push(`/main/pg=${PAGE_ORGANIZATIONS.toLowerCase()}`)
                 this.setState({ loginOTP: undefined })
             }
         }
@@ -524,7 +524,6 @@ const mapStateToProps = state => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleChangeTab: (data) => { dispatch(actions.changeTab(data)) },
         handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data)) },
         handleCreateAccount: (data) => { dispatch(actions.createAccount(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }

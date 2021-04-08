@@ -6,7 +6,7 @@ export const fields = {
     uuid: 'uuid',
     region: 'region',
     clusterName: 'clusterName',
-    realclustername:'realclustername',
+    realclustername: 'realclustername',
     organizationName: 'organizationName',
     billingOrgName: 'billingOrgName',
     operatorName: 'operatorName',
@@ -31,18 +31,18 @@ export const fields = {
     physicalName: 'physicalName',
     platformType: 'platformType',
     type: 'type',
-    firstName:'firstName',
-    lastName:'lastName',
-    name:'name',
-    alertThreshold:'alertThreshold',
-    resourceValue:'resourceValue',
-    resourceName:'resourceName',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    name: 'name',
+    alertThreshold: 'alertThreshold',
+    resourceValue: 'resourceValue',
+    resourceName: 'resourceName',
     address: 'address',
     phone: 'phone',
-    country:'country',
-    city:'city',
-    postalCode:'postalCode',
-    children:'children',
+    country: 'country',
+    city: 'city',
+    postalCode: 'postalCode',
+    children: 'children',
     trustPolicyName: 'trustPolicyName',
     outboundSecurityRules: 'outboundSecurityRules',
     outboundSecurityRuleMulti: 'outboundSecurityRuleMulti',
@@ -114,6 +114,11 @@ export const fields = {
     actions: 'actions',
     manage: 'manage',
     poolName: 'poolName',
+    operatorOrg: 'operatorOrg',
+    developerOrg: 'developerOrg',
+    invite: 'invite',
+    confirm: 'confirm',
+    grant: 'grant',
     clusterinst: 'clusterinst',
     container_ids: 'container_ids',
     openRCData: 'openRCData',
@@ -123,16 +128,16 @@ export const fields = {
     containerVersion: 'containerVersion',
     vmImageVersion: 'vmImageVersion',
     configs: 'configs',
-    configmulti:'configmulti',
+    configmulti: 'configmulti',
     config: 'config',
     kind: 'kind',
-    ocPort:'ocPort',
-    ocRemoteIP:'ocRemoteIP',
-    ocProtocol:'ocProtocol',
+    ocPort: 'ocPort',
+    ocRemoteIP: 'ocRemoteIP',
+    ocProtocol: 'ocProtocol',
     annotations: 'annotations',
-    annotationmulti:'annotationmulti',
-    requiredOutboundConnections:'requiredOutboundConnections',
-    requiredOutboundConnectionmulti:'requiredOutboundConnectionsmulti',
+    annotationmulti: 'annotationmulti',
+    requiredOutboundConnections: 'requiredOutboundConnections',
+    requiredOutboundConnectionmulti: 'requiredOutboundConnectionsmulti',
     key: 'key',
     value: 'value',
     publicImages: 'publicImages',
@@ -167,7 +172,7 @@ export const fields = {
     apps: 'apps',
     eventType: 'eventType',
     resourceQuotas: 'resourceQuotas',
-    defaultResourceAlertThreshold:'defaultResourceAlertThreshold',
+    defaultResourceAlertThreshold: 'defaultResourceAlertThreshold',
     time: 'time',
     starttime: 'starttime',
     endtime: 'endtime',
@@ -183,23 +188,23 @@ export const fields = {
     alertname: 'alertname',
     envoyclustername: 'envoyclustername',
     slackchannel: 'slackchannel',
-    pagerDutyIntegrationKey:'pagerDutyIntegrationKey',
-    pagerDutyApiVersion:'pagerDutyApiVersion',
+    pagerDutyIntegrationKey: 'pagerDutyIntegrationKey',
+    pagerDutyApiVersion: 'pagerDutyApiVersion',
     slackwebhook: 'slackwebhook',
     severity: 'severity',
     slack: 'slack',
-    pagerDuty:'pagerDuty',
+    pagerDuty: 'pagerDuty',
     appCloudlet: 'appCloudlet',
     appOperator: 'appOperator',
     receiverAddress: 'receiverAddress',
     otp: 'otp',
     port: 'port',
     appRevision: 'appRevision',
-    autoProvPolicies:'autoProvPolicies',
-    title:'title',
-    description:'description',
-    trusted:'trusted',
-    compatibilityVersion:'compatibilityVersion'
+    autoProvPolicies: 'autoProvPolicies',
+    title: 'title',
+    description: 'description',
+    trusted: 'trusted',
+    compatibilityVersion: 'compatibilityVersion'
 }
 
 export const getUserRole = () => {
@@ -263,11 +268,10 @@ const map = (value, currentObject, keys) => {
     return value
 }
 
-export const generateUUID = (keys, data)=>{
+export const generateUUID = (keys, data) => {
     let key = ''
-    keys.map(item=>{
-        if(item.key)
-        {
+    keys.map(item => {
+        if (item.key) {
             key = key + data[item.field]
         }
     })
@@ -284,12 +288,44 @@ export const formatData = (response, body, keys, customData, isUnique) => {
                     let data = jsonData[i].data ? jsonData[i].data : jsonData[i];
                     let value = {}
                     map(value, data, keys)
-                    if (body) { value.region = body.region }
+                    if (body && value.region === undefined) { value.region = body.region }
                     value.uuid = (isUnique) ? generateUUID(keys, value) : uuid()
                     let newValue = customData ? customData(value) : value
                     if (newValue) {
                         values.push(newValue)
                     }
+                }
+            }
+        }
+    }
+    catch (e) {
+        console.log('Response Error', e)
+    }
+    return values
+}
+
+export const formatChargifyData = (response, body, keys, customData) => {
+    let values = [];
+    try {
+        if (response.data) {
+            let invoices = response.data
+            if (invoices) {
+                for (let data of invoices) {
+                    let value = {}
+                    map(value, data, keys)
+                    let newValue = customData ? customData(value) : value
+                    if (newValue) {
+                        values.push(newValue)
+                    }
+                }
+            }
+            else {
+                let data = response.data
+                let value = {}
+                map(value, data, keys)
+                let newValue = customData ? customData(value) : value
+                if (newValue) {
+                    values.push(newValue)
                 }
             }
         }
@@ -386,11 +422,9 @@ export const formatUsageData = (response, body, keys) => {
                     series.map(data => {
                         let columns = data.columns
                         let values = data.values
-                        let i = 0
-                        for (; i < values.length; i++) {
-                            let value = values[i]
+                        for (let value of values) {
                             if (value.includes('MEXPrometheusAppName')) {
-                                continue
+                                continue;
                             }
                             let data = {}
                             columns.map((column, i) => {

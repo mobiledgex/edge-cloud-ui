@@ -40,10 +40,8 @@ export const clusterMetricTypeKeys = () => ([
     { field: 'map', header: 'Map' }
 ])
 
-export const clusterMetrics = (data, org) => {
-    data.clusterinst = {
-        organization: org
-    }
+export const clusterMetrics = (data, organization, isPrivate) => {
+    data.clusterinst = isPrivate ? { cloudlet_key: { organization } } : { organization }
     return { method: CLUSTER_METRICS_ENDPOINT, data: data, keys: clusterMetricsKeys }
 }
 

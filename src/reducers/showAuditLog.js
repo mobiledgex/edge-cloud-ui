@@ -3,7 +3,7 @@ import * as types from '../actions/ActionTypes';
 const initialState = {
     audit: null
 };
-export default function checkedAudit( state = initialState, action) {
+export default function showAuditLog( state = initialState, action) {
     switch( action.type ) {
         case types.SHOW_AUDIT :
             return Object.assign({}, state, {

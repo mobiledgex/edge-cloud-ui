@@ -74,6 +74,7 @@ class MexChart extends React.Component {
         let parent = this.props.filter.parent
         let metric = this.props.metric
         let region = this.props.region
+        let isPrivate = this.props.isPrivate
         if (metric.serverRequest) {
             let data = {}
             data[fields.region] = region
@@ -81,7 +82,7 @@ class MexChart extends React.Component {
             data[fields.endtime] = this.props.range.endtime
             data[fields.selector] = metric.serverField
             let org = isAdmin() ? this.props.org : getOrganization()
-            let request = metricRequest(metric.serverRequest, data, org)
+            let request = metricRequest(metric.serverRequest, data, org, isPrivate)
             let mc = await sendRequest(this, request)
             if (mc && mc.response && mc.response.status === 200) {
                 let response = await processWorker(this.metricWorker, {

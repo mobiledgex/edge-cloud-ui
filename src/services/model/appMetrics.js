@@ -55,7 +55,7 @@ export const appMetricsListKeys = [
 
 export const networkMetricType = [
     { field: 'sent', serverField: 'network', subId: 'sendBytes', header: 'Network Sent', position: 10, unit: UNIT_BYTES },
-    { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 11, unit: UNIT_BYTES},
+    { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 11, unit: UNIT_BYTES },
 ]
 
 export const appInstMetricTypeKeys = () => ([
@@ -93,13 +93,10 @@ export const fetchLocation = (avgValues, metricData, showList) => {
     return avgValues
 }
 
-export const appInstMetrics = (data, org) => {
-    data.appinst = {
-        app_key: {
-            organization: org
-        }
+export const appInstMetrics = (data, organization, isPrivate) => {
+    if (organization) {
+        data.appinst = isPrivate ? { cluster_inst_key: { cloudlet_key: { organization } } } : { app_key: { organization } }
     }
-
     return { method: APP_INST_METRICS_ENDPOINT, data: data, keys: appMetricsKeys }
 }
 

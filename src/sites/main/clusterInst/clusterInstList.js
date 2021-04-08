@@ -86,6 +86,12 @@ class ClusterInstView extends React.Component {
     /**
    * Customized data block
    **/
+    showYesNo = (data, isDetailView) => {
+        if (isDetailView) {
+            return data[fields.reservable] ? YES : NO
+        }
+    }
+
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
@@ -93,7 +99,7 @@ class ClusterInstView extends React.Component {
                 key.customizedData = shared.showProgress
             }
             if (key.field === fields.reservable) {
-                key.customizedData = constant.showYesNo
+                key.customizedData = this.showYesNo
             }
         }
     }

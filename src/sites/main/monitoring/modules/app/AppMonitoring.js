@@ -61,7 +61,7 @@ class AppMonitoring extends React.Component {
             mapData: {},
             healthData: {}
         }
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        this.regions = props.regions
     }
     
     static getDerivedStateFromProps(props, state) {
@@ -70,7 +70,7 @@ class AppMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { avgData, filter, range, rowSelected, minimize, selectedOrg, updateAvgData, onListToolbarClear, listAction } = this.props
+        const { avgData, filter, range, rowSelected, minimize, selectedOrg, updateAvgData, onListToolbarClear, listAction, isPrivate } = this.props
         let selected = mapData.selected
         return (
             filter.parent.id === 'appinst' ?
@@ -79,7 +79,7 @@ class AppMonitoring extends React.Component {
                         {filter.metricType.includes('client') ?
                             <GridListTile cols={1}>
                                 <Card style={{ height: 300, width: '100%' }}>
-                                    <AppClient regions={this.regions} filter={filter} range={range} org={selectedOrg} />
+                                    <AppClient regions={this.regions} filter={filter} range={range} org={selectedOrg} isPrivate={isPrivate}/>
                                 </Card>
                             </GridListTile> : null}
                         {filter.metricType.includes('map') ?
@@ -92,7 +92,7 @@ class AppMonitoring extends React.Component {
                                     <AppEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} avgData={avgData}/>
                                 </Card>
                             </GridListTile> : null}
-                        <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
+                        <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} isPrivate={isPrivate}/>
                     </GridList> 
                 </div> : null
         )

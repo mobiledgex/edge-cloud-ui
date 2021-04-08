@@ -65,6 +65,29 @@ const MonitoringMenu = (props) => {
         }
     }
 
+    const fetchList = (dataList) => {
+        return dataList.map((item, i) => {
+            let itemData = props.labelKey ? item[props.labelKey] : item
+            if (itemData.toLowerCase().includes(filterText)) {
+                let valid = item.role ? validateRole(item.role) : true
+                let selectedValue = props.value ? props.value : value
+                return valid ? <ListItem key={i} role={undefined} dense button onClick={() => { onChange(props.field ? item[props.field] : item) }}>
+                    {props.multiple ?
+                        <ListItemIcon>
+                            <Checkbox
+                                edge="start"
+                                checked={selectedValue.includes(props.field ? item[props.field] : item)}
+                                tabIndex={-1}
+                                disableRipple
+                                inputProps={{ 'aria-labelledby': 1 }}
+                            />
+                        </ListItemIcon> : null}
+                    <ListItemText id={1} primary={itemData} />{props.showTick && selectedValue === item ? <CheckIcon style={{ marginLeft: 10 }} /> : null}
+                </ListItem> : null
+            }
+        })
+    }
+
     return (
         <Box order={props.order}>
             {props.tip ? <Tooltip title={<strong style={{ fontSize: 13 }}>{props.tip}</strong>} arrow>
@@ -79,26 +102,7 @@ const MonitoringMenu = (props) => {
             >
                 {props.search ? <div style={{ marginRight: 10, marginLeft: 10, marginBottom: 5 }}><SearchFilter onFilter={onFilter} /></div> : null}
                 <div style={{ maxHeight: 300, overflow: 'auto', }}>
-                    {props.data.map((item, i) => {
-                        let itemData = props.labelKey ? item[props.labelKey] : item
-                        if (itemData.toLowerCase().includes(filterText)) {
-                            let valid = item.role ? validateRole(item.role) : true
-                            let selectedValue = props.value ? props.value : value
-                            return valid ? <ListItem key={i} role={undefined} dense button onClick={() => { onChange(props.field ? item[props.field] : item) }}>
-                                {props.multiple ?
-                                    <ListItemIcon>
-                                        <Checkbox
-                                            edge="start"
-                                            checked={selectedValue.includes(props.field ? item[props.field] : item)}
-                                            tabIndex={-1}
-                                            disableRipple
-                                            inputProps={{ 'aria-labelledby': 1 }}
-                                        />
-                                    </ListItemIcon> : null}
-                                <ListItemText id={1} primary={itemData} />{props.showTick && selectedValue === item ? <CheckIcon style={{ marginLeft: 10 }} /> : null}
-                            </ListItem> : null
-                        }
-                    })}
+                    {fetchList(props.data)}
                 </div>
             </Menu>
         </Box>
