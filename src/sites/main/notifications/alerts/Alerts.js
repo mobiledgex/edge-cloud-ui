@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Chip, Collapse, Divider, IconButton, List, ListItem, ListItemText, Typography } from '@material-ui/core'
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
-import { showAlertKeys } from '../../../../services/model/alerts'
-import * as actions from '../../../../actions';
+import { formatData, regions } from '../../../../constant';
+import { showAlertKeys } from '../../../../services/model/alerts';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { fields } from '../../../../services/model/format';

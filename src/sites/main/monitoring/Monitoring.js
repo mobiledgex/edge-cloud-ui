@@ -33,8 +33,8 @@ import './style.css'
 import sortBy from 'lodash/sortBy'
 import { Skeleton } from '@material-ui/lab';
 import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../utils/sharedPreferences_util';
-import { accessGranted } from '../../../services/model/privateCloudletAccess';
 import { OPERATOR } from '../../../constant';
+import isEqual from 'lodash/isEqual';
 
 const defaultParent = () => {
     return constant.metricParentTypes()[getUserRole().includes(constant.OPERATOR) ? 2 : 0]
@@ -82,7 +82,6 @@ class Monitoring extends React.Component {
         this._isMounted = false
         this.worker = ShowWorker()
         this.selectedRow = undefined
-        this.privateRegions = []
     }
 
     updateState = (data) => {
@@ -340,28 +339,28 @@ class Monitoring extends React.Component {
         return avgData
     }
 
-    checkPrivatePoolExist = async () => {
-        if (getUserRole().includes(OPERATOR)) {
-            let mc = await sendRequest(this, accessGranted())
-            if (mc.response && mc.response.status === 200) {
-                let dataList = mc.response.data
-                if (dataList.length > 0) {
-                    let regions = new Set()
-                    dataList.forEach(data => {
-                        regions.add(data.Region)
-                    })
-                    this.privateRegions = Array.from(regions)
-                    this.setState({ isPrivate: true })
-                }
+    componentDidUpdate(preProps, preState) {
+        let privateAccess = this.props.privateAccess
+        if (privateAccess && !isEqual(preProps.privateAccess, privateAccess)) {
+            this.isAccessPrivate(privateAccess)
+        }
+    }
+
+    isAccessPrivate = (privateAccess) => {
+        if (privateAccess) {
+            let isPrivate = privateAccess.isPrivate
+            if (isPrivate) {
+                this.privateRegions = privateAccess.regions
             }
+            this.setState({ isPrivate })
         }
     }
 
     componentDidMount() {
         this._isMounted = true
+        this.isAccessPrivate(this.props.privateAccess)
         this.props.handleViewMode(HELP_MONITORING)
         if (this._isMounted) {
-            this.checkPrivatePoolExist()
             this.setState({ avgData: this.defaultStructure() }, () => {
                 if (isAdmin()) {
                     this.fetchOrgList()
@@ -379,6 +378,12 @@ class Monitoring extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        privateAccess: state.privateAccess.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
@@ -386,4 +391,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(Monitoring));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(Monitoring));

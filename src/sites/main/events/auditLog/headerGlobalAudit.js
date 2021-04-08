@@ -9,7 +9,6 @@ import HeaderAuditLog from "./HeaderAuditLog"
 import * as dateUtil from '../../../../utils/date_util'
 import cloneDeep from 'lodash/cloneDeep'
 import { ADMIN } from '../../../../constant';
-import { getOrganization } from '../../../../services/model/format';
 let _self = null;
 
 const CON_LIMIT = 25
@@ -35,7 +34,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     getDataAuditOrg = async (orgName) => {
-        let mcRequest = await showAudits(_self, { match: { orgs: [orgName] }, type: 'audit' })
+        let mcRequest = await showAudits(_self, { match: { orgs: [orgName] }, type: 'audit' }, true, this.isPrivate)
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
                 if (this._isMounted) {
@@ -75,8 +74,8 @@ class headerGlobalAudit extends React.Component {
             isLive ? this.setState({ loading: true }) : this.setState({ historyLoading: true })
         }
         limit = limit ? limit : CON_LIMIT
-        let match = {tags}
-        let mcRequest = await showAudits(_self, { starttime, endtime, limit: parseInt(limit), type: this.type, match }, false)
+        let match = { tags }
+        let mcRequest = await showAudits(_self, { starttime, endtime, limit: parseInt(limit), type: this.type, match }, false, this.isPrivate)
         if (this._isMounted) {
             this.setState({ historyLoading: false, loading: false, limit: 25 })
         }
@@ -117,7 +116,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     loadData = (starttime, endtime, limit, tags) => {
-        this.setState({historyList:[]})
+        this.setState({ historyList: [] })
         this.getDataAudit(starttime, endtime, limit, tags)
     }
 
@@ -140,6 +139,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        this.isPrivate = this.props.privateAccess
         if (this.props.userRole && prevProps.userRole !== this.props.userRole) {
             if (this.props.userRole.includes(ADMIN)) {
                 this.initAudit(this.starttime, this.endtime, false)
@@ -190,10 +190,6 @@ class headerGlobalAudit extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
-        let userRole = this.props.userRole
-        if (getOrganization() || (userRole && userRole.includes(ADMIN))) {
-            this.initAudit(this.starttime, this.endtime, false)
-        }
     }
 
     componentWillUnmount = () => {
@@ -208,6 +204,7 @@ function mapStateToProps(state) {
     return {
         showAuditLogWithOrg: state.showAuditLog.audit,
         userRole: state.showUserRole ? state.showUserRole.role : null,
+        privateAccess: state.privateAccess.data
     }
 }
 const mapDispatchProps = (dispatch) => {

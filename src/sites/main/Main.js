@@ -5,13 +5,13 @@ import * as actions from '../../actions';
 import { GridLoader } from "react-spinners";
 import RoleWorker from '../../services/worker/role.worker.js'
 import { sendAuthRequest } from '../../services/model/serverWorker';
-import { sendRequest } from './monitoring/services/service';
 import MexAlert from '../../hoc/alert/AlertDialog';
 import { SHOW_ROLE } from '../../services/model/endpoints';
 import Menu from './Menu'
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
-import { accessGranted } from '../../services/model/privateCloudletAccess';
+import { DEVELOPER, OPERATOR, validatePrivateAccess } from '../../constant';
+import { getUserRole } from '../../services/model/format';
 
 class Main extends React.Component {
     constructor(props) {
@@ -26,11 +26,11 @@ class Main extends React.Component {
     roleResponse = (mc) => {
         if (mc && mc.response && mc.response.status === 200) {
             let dataList = mc.response.data;
-
             this.worker.postMessage({ data: dataList })
-            this.worker.addEventListener('message', event => {
+            this.worker.addEventListener('message', (event) => {
                 if (event.data.isAdmin) {
                     let role = event.data.role
+                    localStorage.setItem('selectOrg', undefined)
                     localStorage.setItem('selectRole', role)
                     this.props.handleUserRole(role)
                     this.setState({ userRole: role });
@@ -39,20 +39,8 @@ class Main extends React.Component {
         }
     }
 
-    accessGrantedResponse = (mc) => {
-
-    }
-
     userRoleInfo = () => {
         sendAuthRequest(this, { method: SHOW_ROLE }, this.roleResponse)
-        sendRequest(this, accessGranted()).then(mc => {
-            if (mc.response && mc.response.status === 200) {
-                let dataList = mc.response.data
-                if (dataList.length > 0) {
-                    this.props.handlePrivateAccess(true)
-                }
-            }
-        })
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -84,8 +72,20 @@ class Main extends React.Component {
         );
     }
 
-    componentDidMount() {
+    validateRole = async () => {
+        if (getUserRole().includes(OPERATOR) || getUserRole().includes(DEVELOPER)) {
+            if (getUserRole().includes(OPERATOR)) {
+                let privateAccess = await validatePrivateAccess(this, getUserRole())
+                this.props.handlePrivateAccess(privateAccess)
+            }
+            this.props.handleUserRole(getUserRole())
+        }
         this.userRoleInfo()
+    }
+
+    componentDidMount() {
+        this.props.handleUserRole(undefined)
+        this.validateRole()
     }
 
     componentWillUnmount() {
@@ -99,8 +99,7 @@ const mapStateToProps = (state) => {
         userInfo: state.userInfo ? state.userInfo : null,
         loadingSpinner: state.loadingSpinner.loading ? state.loadingSpinner.loading : null,
         alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg },
-        viewMode: viewMode,
-        isPrivate: state.privateAccess.data
+        viewMode: viewMode
     }
 };
 

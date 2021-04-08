@@ -1,4 +1,6 @@
 import { fields, getUserRole } from "./services/model/format"
+import { accessGranted } from "./services/model/privateCloudletAccess"
+import { sendRequest } from "./sites/main/monitoring/services/service"
 import { time } from './utils/date_util'
 
 export const COLOR_GREEN = '#388E3C'
@@ -623,6 +625,30 @@ export const legendRoles =
             'Audit Logs': 'View'
         },
     }
+}
+
+export const validatePrivateAccess = async (self, role) => {
+    let privateAccess = undefined
+    if (role.includes(OPERATOR)) {
+        let mc = await sendRequest(self, accessGranted())
+        if (mc.response && mc.response.status === 200) {
+            let dataList = mc.response.data
+            if (dataList.length > 0) {
+                let regions = new Set()
+                dataList.forEach(data => {
+                    regions.add(data.Region)
+                })
+                privateAccess = { isPrivate: true, regions: Array.from(regions) }
+            }
+            else {
+                privateAccess = { isPrivate: false }
+            }
+        }
+        else {
+            privateAccess = { isPrivate: false }
+        }
+    }
+    return privateAccess
 }
 
 export const toFirstUpperCase = (data) => {

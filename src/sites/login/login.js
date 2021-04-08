@@ -308,8 +308,8 @@ class Login extends Component {
     validateUserName = (username) => {
         if (username !== localStorage.getItem('userInfo')) {
             localStorage.setItem('userInfo', self.state.username)
-            localStorage.removeItem('selectOrg')
-            localStorage.removeItem('selectRole')
+            // localStorage.removeItem('selectOrg')
+            // localStorage.removeItem('selectRole')
         }
     }
 
