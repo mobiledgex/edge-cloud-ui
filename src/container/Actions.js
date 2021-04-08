@@ -1,0 +1,10 @@
+export const ACTION_LABEL = 'ActionLabel'
+export const ACTION_WARNING = 'ActionWarning'
+export const ACTION_CLICK = 'ActionClick'
+export const ACTION_DISABLE = 'ActionDisable'
+
+export const ACTION_AUDIT = 'ACTION_AUDIT'
+export const ACTION_ADD_USER = 'ACTION_ADD_USER'
+export const ACTION_EDGE_BOX_ENABLE = 'ACTION_EDGE_BOX_ENABLE'
+export const ACTION_UPDATE = 'ACTION_UPDATE'
+export const ACTION_DELETE = 'ACTION_DELETE'

@@ -27,6 +27,7 @@ export const SHOW_ORG = "org/show";
 export const CREATE_ORG = "createOrg";
 export const DELETE_ORG = "deleteOrg";
 export const UPDATE_ORG = "updateOrg";
+export const EDGEBOX_ONLY = 'restricted/org/update';
 export const SHOW_AUDIT_ORG = "Auditshoworg";
 export const SHOW_USERS = "ShowUsers";
 export const DELETE_USER = "DeleteUser";
@@ -158,6 +159,7 @@ export function getPath(request) {
         case CREATE_POOL_ACCESS_CONFIRMATION:
         case DELETE_POOL_ACCESS_CONFIRMATION:
         case SHOW_POOL_ACCESS_GRANTED:
+        case EDGEBOX_ONLY:
             return `/api/v1/auth/${request.method}`;
         case DELETE_ORG:
             return '/api/v1/auth/org/delete';

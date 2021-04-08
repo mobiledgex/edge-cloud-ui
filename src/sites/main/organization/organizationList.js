@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
 import { fields, isViewer } from '../../../services/model/format';
-import { keys, showOrganizations, deleteOrganization } from '../../../services/model/organization';
+import { keys, showOrganizations, deleteOrganization, edgeboxOnlyAPI } from '../../../services/model/organization';
 import OrganizationReg from './organizationReg';
 import * as serverData from '../../../services/model/serverData'
 import * as shared from '../../../services/model/shared';
@@ -14,7 +14,9 @@ import * as shared from '../../../services/model/shared';
 import { Button, Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core';
 import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-
+import { Icon } from 'semantic-ui-react';
+import { ACTION_ADD_USER, ACTION_AUDIT, ACTION_DELETE, ACTION_DISABLE, ACTION_EDGE_BOX_ENABLE, ACTION_LABEL, ACTION_UPDATE, ACTION_WARNING } from '../../../container/Actions';
+import { sendRequest } from '../monitoring/services/service'
 
 class OrganizationList extends React.Component {
     constructor(props) {
@@ -93,7 +95,7 @@ class OrganizationList extends React.Component {
     )
 
     /**Action menu block */
-    onAudit = (action, data) => {
+    onAudit = (audit, data) => {
         this.props.handleShowAuditLog({ type: 'audit', org: data[fields.organizationName] })
     }
 
@@ -108,10 +110,29 @@ class OrganizationList extends React.Component {
         }
     }
 
+    actionEnableEdgeBox = async (action, data) => {
+        let mc = await sendRequest(this, edgeboxOnlyAPI(data))
+        if (mc && mc.response && mc.response.status === 200) {
+            return `Edgebox ${data[fields.edgeboxOnly] ? 'disabled' : 'enabled'} successfully for organization ${data[fields.organizationName]}`
+        }
+    }
+
+    edgeBoxActionType = (type, data) => {
+        switch (type) {
+            case ACTION_LABEL:
+                return data[fields.edgeboxOnly] ? 'Disable Edgebox' : 'Enable Edgebox'
+            case ACTION_WARNING:
+                return `${data[fields.edgeboxOnly] ? 'disable' : 'enable'} edgebox feature for`
+            case ACTION_DISABLE:
+                return data[fields.type].includes(constant.DEVELOPER.toLowerCase())
+        }
+    }
+
     actionMenu = () => {
         return [
             { label: 'Audit', onClick: this.onAudit },
             { label: 'Add User', onClick: this.onAddUser, type: 'Edit' },
+            { id: ACTION_EDGE_BOX_ENABLE, label: this.edgeBoxActionType, onClick: this.actionEnableEdgeBox, type: 'Edit', warning: this.edgeBoxActionType, disable:this.edgeBoxActionType },
             { label: 'Update', onClick: this.onUpdate, type: 'Edit' },
             { label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type: 'Edit' }
         ]
@@ -131,8 +152,6 @@ class OrganizationList extends React.Component {
                 <label>Manage</label>
             </Button>)
     }
-
-
 
     onManage = async (key, data) => {
         if (this.props.roleInfo) {
@@ -217,11 +236,25 @@ class OrganizationList extends React.Component {
         }
     }
 
+    edgeboxOnly = (data, isDetail) => {
+        let edgeboxOnly = data[fields.edgeboxOnly]
+        let isOperator = data[fields.type].includes(constant.OPERATOR.toLowerCase())
+        if (isDetail) {
+            return edgeboxOnly ? constant.YES : constant.NO
+        }
+        else {
+            return <Icon name={edgeboxOnly ? 'check' : 'close'} style={{ color: isOperator ? edgeboxOnly ? constant.COLOR_GREEN : constant.COLOR_RED : '#9E9E9E' }} />
+        }
+    }
+
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
             if (key.field === fields.manage) {
                 this.getUserRoles(key)
+            }
+            else if (key.field === fields.edgeboxOnly) {
+                key.customizedData = this.edgeboxOnly
             }
         }
     }

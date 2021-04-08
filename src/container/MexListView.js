@@ -21,6 +21,7 @@ import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import ListMexMap from './map/ListMexMap'
 import cloneDeep from 'lodash/cloneDeep';
 import { sendRequests } from '../services/model/serverWorker'
+import { ACTION_EDGE_BOX_ENABLE, ACTION_WARNING } from './Actions';
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -224,7 +225,7 @@ class MexListView extends React.Component {
         }
     }
 
-    onDialogClose = (valid) => {
+    onDialogClose = async (valid) => {
         let action = this.state.dialogMessageInfo.action;
         let isMultiple = this.state.dialogMessageInfo.isMultiple;
         let data = this.state.dialogMessageInfo.data;
@@ -270,6 +271,13 @@ class MexListView extends React.Component {
                     case constant.ACTION_POOL_ACCESS_REMOVE:
                         this.onAccess(action, data)
                         break;
+                    case ACTION_EDGE_BOX_ENABLE:
+                        let msg = await action.onClick(action, data)
+                        if (msg) {
+                            this.props.handleAlertInfo('success', msg)
+                            this.dataFromServer(this.selectedRegion)
+                        }
+                        break;
                 }
             }
         }
@@ -287,34 +295,40 @@ class MexListView extends React.Component {
         let data = this.selectedRow;
         let valid = action.onClickInterept ? action.onClickInterept(action, data) : true
         if (valid) {
-            let id = action.id ? action.id : action.label
-            switch (id) {
-                case 'Delete':
-                    this.onWarning(action, 'delete', false, data)
-                    break
-                case 'Upgrade':
-                    this.onWarning(action, 'upgrade', false, data)
-                    break;
-                case 'Refresh':
-                    this.onWarning(action, 'refresh', false, data)
-                    break;
-                case 'Power On':
-                    this.onWarning(action, 'power on', false, data)
-                    break;
-                case 'Power Off':
-                    this.onWarning(action, 'power off', false, data)
-                    break;
-                case 'Reboot':
-                    this.onWarning(action, 'reboot', false, data)
-                    break;
-                case constant.ACTION_POOL_ACCESS_CONFIRM:
-                    this.onWarning(action, 'confirm access to cloudlet pool', false, data)
-                    break;
-                case constant.ACTION_POOL_ACCESS_REMOVE:
-                    this.onWarning(action, 'remove access from cloudlet pool', false, data)
-                    break;
-                default:
-                    action.onClick(action, data)
+            if (action.warning) {
+                let warning = typeof action.warning === 'function' ? action.warning(ACTION_WARNING, data) : action.warning
+                this.onWarning(action, warning, false, data)
+            }
+            else {
+                let id = action.id ? action.id : action.label
+                switch (id) {
+                    case 'Delete':
+                        this.onWarning(action, 'delete', false, data)
+                        break
+                    case 'Upgrade':
+                        this.onWarning(action, 'upgrade', false, data)
+                        break;
+                    case 'Refresh':
+                        this.onWarning(action, 'refresh', false, data)
+                        break;
+                    case 'Power On':
+                        this.onWarning(action, 'power on', false, data)
+                        break;
+                    case 'Power Off':
+                        this.onWarning(action, 'power off', false, data)
+                        break;
+                    case 'Reboot':
+                        this.onWarning(action, 'reboot', false, data)
+                        break;
+                    case constant.ACTION_POOL_ACCESS_CONFIRM:
+                        this.onWarning(action, 'confirm access to cloudlet pool', false, data)
+                        break;
+                    case constant.ACTION_POOL_ACCESS_REMOVE:
+                        this.onWarning(action, 'remove access from cloudlet pool', false, data)
+                        break;
+                    default:
+                        action.onClick(action, data)
+                }
             }
         }
     }

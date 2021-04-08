@@ -70,7 +70,7 @@ class CloudletList extends React.Component {
         return data[fields.infraApiAccess] === INFRA_API_ACCESS_RESTRICTED
     }
 
-    onEditDisable = (data) => {
+    onEditDisable = (type, data) => {
         let disable = isAdmin() || data[fields.operatorName] === getOrganization()
         return !disable
     }
