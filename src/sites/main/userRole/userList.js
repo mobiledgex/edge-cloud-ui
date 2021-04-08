@@ -23,12 +23,12 @@ class UserList extends React.Component {
 
     /**Action menu block */
     getDeleteActionMessage = (action, data) => {
-            return `Are you sure you want to remove ${data[fields.username]} from Organization ${data[fields.organizationName]}?`
+        return `Are you sure you want to remove ${data[fields.username]} from Organization ${data[fields.organizationName]}?`
     }
 
     actionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage, type:'Edit' }
+            { label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage, type: 'Edit' }
         ]
     }
 
@@ -46,10 +46,10 @@ class UserList extends React.Component {
             nameField: fields.username,
             requestType: [showUsers],
             sortBy: [fields.username],
-            selection:true,
+            selection: true,
             keys: this.keys,
             viewMode: HELP_USER_ROLES,
-            grouping : true
+            grouping: true
         })
     }
 
@@ -58,11 +58,11 @@ class UserList extends React.Component {
   **/
 
     roleMark = (data, isDetailView) => {
+        let role = data[fields.role]
         if (isDetailView) {
-            return data
+            return role
         }
         else {
-            let role = data[fields.role]
             let symbol = (role.indexOf('Admin') !== -1 && role.indexOf('Manager') !== -1) ? <div className="mark markA markS">S</div> :
                 (role.indexOf('Developer') !== -1 && role.indexOf('Manager') !== -1) ?
                     <div className="mark markD markM">M</div> :
@@ -85,7 +85,7 @@ class UserList extends React.Component {
         }
 
     }
-    
+
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
@@ -106,7 +106,7 @@ class UserList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu}/>
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu} />
         )
     }
 };

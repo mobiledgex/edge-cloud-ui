@@ -4,12 +4,13 @@ import { Icon } from 'semantic-ui-react';
 import { fields } from './services/model/format';
 
 export const customizedTrusted = (data, isDetailView) => {
+    let trusted = data[fields.trusted] 
     if (isDetailView) {
-        return showYesNo(data, isDetailView)
+        return showYesNo(trusted, isDetailView)
     }
     else {
-        let color = data[fields.trusted] ? 'green' : 'red'
-        let icon = data[fields.trusted] ? 'check' : 'close'
+        let color = trusted ? 'green' : 'red'
+        let icon = trusted ? 'check' : 'close'
         return <Icon className={'progressIndicator'} color={color} name={icon} />
     }
 }

@@ -8,11 +8,11 @@ import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 let fields = formatter.fields;
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key:true },
-    { field: fields.clusterName, serverField: 'key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster', visible: true, filter: true, key:true, key:true },
-    { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true, filter: true, group: true, key:true },
-    { field: fields.operatorName, serverField: 'key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: true, filter: true, group: true, key:true },
-    { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true, filter: true, group: true, key:true },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
+    { field: fields.clusterName, serverField: 'key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster', visible: true, filter: true, key: true, key: true },
+    { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true, filter: true, group: true, key: true },
+    { field: fields.operatorName, serverField: 'key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: true, filter: true, group: true, key: true },
+    { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true, filter: true, group: true, key: true },
     { field: fields.flavorName, serverField: 'flavor#OS#name', sortable: true, label: 'Flavor', visible: true, filter: true, group: true },
     { field: fields.ipAccess, serverField: 'ip_access', label: 'IP Access', sortable: true, visible: true, filter: true },
     { field: fields.autoScalePolicyName, serverField: 'auto_scale_policy', label: 'Auto Scale Policy' },
@@ -126,10 +126,12 @@ export const showClusterInsts = (data, isSpecific) => {
     return { method: SHOW_CLUSTER_INST, data: requestData, keys: keys() }
 }
 
-export const showOrgClusterInsts = (data) => {
-    let requestData = {}
-    requestData.region = data.region
-    requestData.clusterinst = { key: { organization: data.org } }
+export const showOrgClusterInsts = (data, isPrivate) => {
+    let organization = data.org
+    let requestData = { region: data.region }
+    if (!isPrivate) {
+        requestData.clusterinst = { key: { organization } }
+    }
     return { method: SHOW_CLUSTER_INST, data: requestData, keys: keys() }
 }
 

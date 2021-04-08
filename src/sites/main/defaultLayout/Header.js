@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import MexTimezone from './timezone/MexTimezone'
 import HelpMenu from './help/HelpMenu'
 import EventMenu from './EventMenu'
-import AlertReceiver from '../alerts/AlertGlobal'
+import Notifications from '../notifications/Notifications'
 import UserMenu from '../userSetting/userMenu';
 import { getOrganization, isAdmin } from '../../../services/model/format';
 import BusinessIcon from '@material-ui/icons/Business';
@@ -41,7 +41,7 @@ export default function Header(props) {
                 <Organization />
                 <EventMenu />
                 <HelpMenu />
-                <AlertReceiver />
+                <Notifications />
                 <UserMenu />
             </div>
         </React.Fragment>

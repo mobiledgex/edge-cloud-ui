@@ -9,9 +9,6 @@ import * as CloudletInfo from './cloudletInfo';
 import * as ClusterInstance from './clusterInstance';
 import * as ClusterEvent from './clusterEvent';
 import * as AppInstEvent from './appInstEvent';
-import * as AppMetrics from './appMetrics';
-import * as ClusterMetrics from './clusterMetrics';
-import * as CloudletMetrics from './cloudletMetrics';
 import * as ClientMetrics from './clientMetrics';
 import * as Flavor from './flavor';
 import * as AppInstance from './appInstance';
@@ -19,11 +16,12 @@ import * as AutoProvPolicy from './autoProvisioningPolicy';
 import * as TrustPolicy from './trustPolicy';
 import * as AutoScalePolicy from './autoScalePolicy';
 import * as CloudletPool from './cloudletPool';
-import * as CloudletLinkOrg from './cloudletLinkOrg';
 import * as AppInstClient from './appInstClient';
 import * as Alerts from './alerts';
 import * as BillingOrg from './billingOrg';
 import * as Events from './events';
+import * as poolAccess from './privateCloudletAccess';
+import * as invoices from './invoices';
 
 export const SHOW_ORG = "org/show";
 export const CREATE_ORG = "createOrg";
@@ -70,23 +68,18 @@ export const STREAM_CLUSTER_INST = "StreamClusterInst";
 export const STREAM_CLOUDLET = "StreamCloudlet";
 export const STREAM_APP_INST = "StreamAppInst";
 export const SHOW_CLOUDLET_POOL = "ShowCloudletPool";
-export const SHOW_CLOUDLET_LINKORG = "orgcloudletpool";
-export const SHOW_LINK_POOL_ORG = "orgcloudletpool";
 export const CREATE_CLOUDLET_POOL = "CreateCloudletPool";
-export const UPDATE_CLOUDLET_POOL = "UpdateCloudletPool"
-export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
+export const UPDATE_CLOUDLET_POOL = "UpdateCloudletPool";
 export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
-export const SHOW_POOL_ACCESS_INIVITATION  = 'cloudletpoolaccessinvitation/show'
-export const SHOW_GRANTED_POOL_ACCESS_INIVITATION  = 'cloudletpoolaccessinvitation/showgranted'
-export const CREATE_POOL_ACCESS_INIVITATION  = 'cloudletpoolaccessinvitation/create'
-export const DELETE_POOL_ACCESS_INIVITATION  = 'cloudletpoolaccessinvitation/delete'
-export const SHOW_POOL_ACCESS_CONFIRMATION  = 'cloudletpoolconfirmation/show'
-export const SHOW_GRANTED_POOL_CONFIRMATION  = 'cloudletpoolconfirmation/showgranted'
-export const CREATE_POOL_ACCESS_CONFIRMATION  = 'cloudletpoolconfirmation/create'
-export const DELETE_POOL_ACCESS_CONFIRMATION  = 'cloudletpoolconfirmation/delete'
+export const SHOW_POOL_ACCESS_INVITATION = 'cloudletpoolaccessinvitation/show'
+export const CREATE_POOL_ACCESS_INVITATION = 'cloudletpoolaccessinvitation/create'
+export const DELETE_POOL_ACCESS_INVITATION = 'cloudletpoolaccessinvitation/delete'
+export const SHOW_POOL_ACCESS_CONFIRMATION = 'cloudletpoolaccessconfirmation/show'
+export const CREATE_POOL_ACCESS_CONFIRMATION = 'cloudletpoolaccessconfirmation/create'
+export const DELETE_POOL_ACCESS_CONFIRMATION = 'cloudletpoolaccessconfirmation/delete'
+export const SHOW_POOL_ACCESS_GRANTED = 'cloudletpoolaccessgranted/show'
 export const SHOW_ORG_CLOUDLET = "orgcloudlet/show";
 export const SHOW_ORG_CLOUDLET_INFO = "orgcloudletinfo/show";
-export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const RUN_COMMAND = "RunCommand";
 export const SHOW_LOGS = "ShowLogs";
 export const SHOW_CONSOLE = "RunConsole";
@@ -128,6 +121,7 @@ export const UPDATE_BILLING_ORG = 'billingorg/update'
 export const BILLING_ORG_ADD_CHILD = 'billingorg/addchild'
 export const BILLING_ORG_REMOVE_CHILD = 'billingorg/removechild'
 export const DELETE_BILLING_ORG = 'billingorg/delete'
+export const INVOICE_BILLING = 'billingorg/invoice'
 export const GET_CLOUDLET_RESOURCE_QUOTA_PROPS = 'GetCloudletResourceQuotaProps'
 
 export function getPath(request) {
@@ -142,9 +136,9 @@ export function getPath(request) {
         case CLIENT_METRICS_ENDPOINT:
         case EVENTS_FIND:
         case EVENTS_SHOW:
-        case ALERT_SHOW_RECEIVER:  
-        case ALERT_CREATE_RECEIVER: 
-        case ALERT_DELETE_RECEIVER:   
+        case ALERT_SHOW_RECEIVER:
+        case ALERT_CREATE_RECEIVER:
+        case ALERT_DELETE_RECEIVER:
         case SHOW_ORG:
         case SHOW_ORG_CLOUDLET:
         case SHOW_ORG_CLOUDLET_INFO:
@@ -154,9 +148,17 @@ export function getPath(request) {
         case CREATE_BILLING_ORG:
         case UPDATE_BILLING_ORG:
         case DELETE_BILLING_ORG:
+        case INVOICE_BILLING:
         case BILLING_ORG_ADD_CHILD:
         case BILLING_ORG_REMOVE_CHILD:
-            return `/api/v1/auth/${request.method}`
+        case CREATE_POOL_ACCESS_INVITATION:
+        case DELETE_POOL_ACCESS_INVITATION:
+        case SHOW_POOL_ACCESS_INVITATION:
+        case SHOW_POOL_ACCESS_CONFIRMATION:
+        case CREATE_POOL_ACCESS_CONFIRMATION:
+        case DELETE_POOL_ACCESS_CONFIRMATION:
+        case SHOW_POOL_ACCESS_GRANTED:
+            return `/api/v1/auth/${request.method}`;
         case DELETE_ORG:
             return '/api/v1/auth/org/delete';
         case CREATE_ORG:
@@ -238,12 +240,6 @@ export function getPath(request) {
         case CREATE_USER:
         case PUBLIC_CONFIG:
             return `/api/v1/${request.method}`;
-        case SHOW_CLOUDLET_LINKORG:
-            return `/api/v1/auth/orgcloudletpool/show`;
-        case CREATE_LINK_POOL_ORG:
-            return `/api/v1/auth/orgcloudletpool/create`;
-        case DELETE_LINK_POOL_ORG:
-            return `/api/v1/auth/orgcloudletpool/delete`;
         default:
             return null;
     }
@@ -293,9 +289,6 @@ export function formatData(request, response) {
         case SHOW_CLOUDLET_POOL:
             data = CloudletPool.getData(response, request.data)
             break;
-        case SHOW_CLOUDLET_LINKORG:
-            data = CloudletLinkOrg.getData(response, request.data)
-            break;
         case CLUSTER_EVENT_LOG_ENDPOINT:
             data = ClusterEvent.getData(response, request.data)
             break;
@@ -320,6 +313,14 @@ export function formatData(request, response) {
         case EVENTS_SHOW:
         case EVENTS_FIND:
             data = Events.getData(response, request.data)
+            break;
+        case SHOW_POOL_ACCESS_CONFIRMATION:
+        case SHOW_POOL_ACCESS_INVITATION:
+        case SHOW_POOL_ACCESS_GRANTED:
+            data = poolAccess.getData(response, request.data)
+            break;
+        case INVOICE_BILLING:
+            data = invoices.getData(response, request.data)
             break;
         default:
             data = undefined;

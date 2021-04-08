@@ -11,8 +11,6 @@ import { Collapse } from '@material-ui/core';
 import ListToolbar from './MonitoringListToolbar'
 import { monitoringActions } from '../helper/Constant';
 
-
-
 const MexChartList = (props) => {
 
   const data = props.data

@@ -25,7 +25,7 @@ class AccountList extends React.Component {
         this.keys = keys();
     }
 
-   
+
 
     /**Action menu block */
     deleteVisible = (data) => {
@@ -34,7 +34,7 @@ class AccountList extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Delete', visible:this.deleteVisible, onClick: deleteAccount, type:'Edit' }
+            { label: 'Delete', visible: this.deleteVisible, onClick: deleteAccount, type: 'Edit' }
         ]
     }
 
@@ -50,11 +50,11 @@ class AccountList extends React.Component {
             id: 'accounts',
             headerLabel: 'Accounts',
             nameField: fields.username,
-            selection:true,
+            selection: true,
             requestType: [showAccounts],
             sortBy: [fields.username],
             keys: this.keys,
-            viewMode : null
+            viewMode: null
         })
     }
 
@@ -76,11 +76,11 @@ class AccountList extends React.Component {
     }
 
     getLock = (data, isDetailView) => {
+        let lock = data[fields.locked]
         if (isDetailView) {
-            return data ? 'Yes' : 'No'
+            return lock ? 'Yes' : 'No'
         }
         else {
-            let lock = data[fields.locked];
             return (
                 <Icon name={lock === true ? 'lock' : 'lock open'} style={{ color: lock === true ? '#6a6a6a' : 'rgba(136,221,0,.9)' }} onClick={() => this.onLocking(data)} />
             )
@@ -120,12 +120,13 @@ class AccountList extends React.Component {
     }
 
     getEmailVerfied = (data, isDetailView) => {
+        let emailVerified = data[fields.emailVerified]
         if (isDetailView) {
-            return data ? 'Yes' : 'No'
+            return emailVerified ? 'Yes' : 'No'
         }
         else {
             return (
-                (data[fields.emailVerified] === true) ? <Icon name='check' style={{ color: 'rgba(136,221,0,.9)' }} />
+                emailVerified ? <Icon name='check' style={{ color: 'rgba(136,221,0,.9)' }} />
                     :
                     <Button onClick={() => this.sendEmailWarning(data[fields.username], data[fields.email])}>Verify</Button>
             )
@@ -155,7 +156,7 @@ class AccountList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <div style={{ width: '100%', height:'100%' }}>
+                <div style={{ width: '100%', height: '100%' }}>
                     <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                     <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} refreshToggle={this.state.refreshViewToggle} groupActionMenu={this.groupActionMenu} />
                 </div>

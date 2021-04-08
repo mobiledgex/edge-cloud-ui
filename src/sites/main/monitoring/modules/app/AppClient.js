@@ -46,7 +46,7 @@ class MexAppClient extends React.Component {
             selector: "api",
             starttime: range.starttime,
             endtime: range.endtime
-        }, isAdmin() ? this.props.org : getOrganization()))
+        }, isAdmin() ? this.props.org : getOrganization(), this.props.isPrivate))
         if (mc && mc.response && mc.response.status === 200) {
             let data = []
             let findCloudletList = []

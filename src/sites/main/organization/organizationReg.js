@@ -13,7 +13,7 @@ import { fields } from '../../../services/model/format';
 //model
 import { keys, createOrganization, updateOrganization } from '../../../services/model/organization';
 import { addUser } from '../../../services/model/users';
-import { HELP_ORG_REG_3, HELP_ORG_REG_2, HELP_ORG_REG_1 } from "../../../tutorial";
+import { HELP_ORG_REG_3, HELP_ORG_REG_2, HELP_ORG_REG_1, userRoles } from "../../../tutorial";
 import { Grid, List } from "@material-ui/core";
 
 const stepData = [
@@ -36,19 +36,35 @@ const items = [
         header: 'Manager',
         description: `Leverage agile frameworks to provide a robust synopsis \n\r for high level overviews.`,
         meta: 'ROI: 30%',
+        key: 'Manager'
     },
     {
         header: 'Contributor',
         description: 'Bring to the table win-win survival strategies to ensure proactive domination.',
         meta: 'ROI: 34%',
+        key: 'Contributor'
     },
     {
         header: 'Viewer',
         description:
             'Capitalise on low hanging fruit to identify a ballpark value added activity to beta test.',
         meta: 'ROI: 27%',
+        key: 'Viewer'
     },
 ]
+
+const makeRoleList = (i, key, type) => {
+    let roles = constant.legendRoles[type][key]
+    return (
+        <List>
+            {
+                Object.keys(roles).map((key, j) => (
+                    <div key={`${i}_${j}`} style={{ color: 'rgba(255,255,255,.6)' }}>{key + " : " + (roles[key])}</div>
+                ))
+            }
+        </List>
+    )
+}
 
 class OrganizationReg extends React.Component {
     constructor(props) {
@@ -62,33 +78,21 @@ class OrganizationReg extends React.Component {
         this.organizationInfo = null
     }
 
-    makeRoleList = (selectedType, i) => {
-        return (
-            <List>
-                {
-                    Object.keys(constant.legendRoles[selectedType][i]).map((key, j) => (
-                        <div key={j} style={{ color: ((constant.legendRoles[selectedType][i][key] === 'Manage') ? 'rgba(255,255,255,.6)' : 'rgba(255,255,255,.6)') }}>{key + " : " + (constant.legendRoles[selectedType][i][key])}</div>
-                    ))
-                }
-            </List>
-        )
-    }
+    
 
-    makeCardContent = (item, i, type) => (
+    makeCardContent = (i, item, type) => (
         <Grid container key={i}>
             <Card style={{ backgroundColor: '#18191E' }}>
                 <Card.Content>
                     <h4 style={{ color: '#A3A3A5', border: 'none', fontWeight: 700 }}>{type} {item['header']}</h4>
                     <Card.Description>
-                        {this.makeRoleList(type, i)}
+                        {makeRoleList(i, item['key'], type)}
                     </Card.Description>
                 </Card.Content>
             </Card>
             <br />
         </Grid>
     )
-
-
 
     checkForms = (form, forms, isInit) => {
 
@@ -213,7 +217,7 @@ class OrganizationReg extends React.Component {
                                     ))
                                 }
                             </Step.Group>
-                            <br/>
+                            <br />
                         </div>}
                     {this.state.step === 2 ?
                         this.getStep3() :
@@ -224,7 +228,7 @@ class OrganizationReg extends React.Component {
                             {this.state.step === 1 ?
                                 <Grid item xs={2}>
                                     {items.map((item, i) => (
-                                        this.makeCardContent(item, i, this.type)
+                                        this.makeCardContent(i, item, this.type)
                                     ))}
                                 </Grid> : null}
                         </Grid>}

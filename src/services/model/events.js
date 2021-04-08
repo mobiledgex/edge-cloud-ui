@@ -11,10 +11,13 @@ export const showEvents = async (self, data, showSpinner) => {
     return mcRequest
 }
 
-export const showAudits = async (self, data, showSpinner) => {
+export const showAudits = async (self, data, showSpinner, isPrivate) => {
     let match = data.match ? data.match : {}
     match.types = [data.type]
-    match.orgs = getOrganization() ? [getOrganization()] : undefined
+    if(!isPrivate)
+    {
+        match.orgs = getOrganization() ? [getOrganization()] : undefined
+    }
     data.match = match
     let mcRequest = await serverData.sendRequest(self, { method: EVENTS_SHOW, data: data, showSpinner: showSpinner })
     return mcRequest

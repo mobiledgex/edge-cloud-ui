@@ -184,10 +184,12 @@ export const showAppInsts = (data, isSpecific) => {
   return { method: SHOW_APP_INST, data: requestData, keys: keys() }
 }
 
-export const showOrgAppInsts = (data) => {
-  let requestData = {}
-  requestData.region = data.region
-  requestData.appinst = { key: { app_key: { organization: data.org } } }
+export const showOrgAppInsts = (data, isPrivate) => {
+  let organization = data.org
+  let requestData = { region: data.region }
+  if (!isPrivate) {
+    requestData.appinst = { key: { app_key: { organization } } }
+  }
   return { method: SHOW_APP_INST, data: requestData, keys: keys() }
 }
 

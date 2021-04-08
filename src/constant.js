@@ -1,4 +1,6 @@
 import { fields, getUserRole } from "./services/model/format"
+import { accessGranted } from "./services/model/privateCloudletAccess"
+import { sendRequest } from "./sites/main/monitoring/services/service"
 import { time } from './utils/date_util'
 
 export const COLOR_GREEN = '#388E3C'
@@ -10,6 +12,11 @@ export const LS_REGIONS = 'regions'
 
 export const CLOUDLET_COMPAT_VERSION_2_4 = 0
 export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1
+
+export const ACTION_POOL_ACCESS_CONFIRM = 'Confirm'
+export const ACTION_POOL_ACCESS_REMOVE = 'Remove'
+export const ACTION_ADMIN_ACCESS_CONFIRM = 'AdminConfirm'
+export const ACTION_ADMIN_ACCESS_REMOVE = 'AdminRemove'
 
 export const ADD = 'Add'
 export const UPDATE = 'Update'
@@ -131,6 +138,7 @@ export const PAGE_USER_ROLES = 'UserRoles'
 export const PAGE_ACCOUNTS = 'Accounts'
 export const PAGE_CLOUDLETS = 'Cloudlets'
 export const PAGE_CLOUDLET_POOLS = 'CloudletPools'
+export const PAGE_POOL_ACCESS = 'PoolAccess'
 export const PAGE_FLAVORS = 'Flavors'
 export const PAGE_CLUSTER_INSTANCES = 'ClusterInstances'
 export const PAGE_APPS = 'Apps'
@@ -143,6 +151,7 @@ export const PAGE_MONITORING = 'Monitoring'
 export const PAGE_MONITORING_RELOAD = 'Reload'
 export const PAGE_ALERTS = 'AlertReceivers'
 export const PAGE_BILLING_ORG = 'BillingOrg'
+export const PAGE_INVOICES = 'Invoices'
 
 export const BILLING_TYPE_SELF = 'Self'
 export const BILLING_TYPE_PARENT = 'Parent'
@@ -616,5 +625,33 @@ export const legendRoles =
             'Audit Logs': 'View'
         },
     }
+}
+
+export const validatePrivateAccess = async (self, role) => {
+    let privateAccess = undefined
+    if (role.includes(OPERATOR)) {
+        let mc = await sendRequest(self, accessGranted())
+        if (mc.response && mc.response.status === 200) {
+            let dataList = mc.response.data
+            if (dataList.length > 0) {
+                let regions = new Set()
+                dataList.forEach(data => {
+                    regions.add(data.Region)
+                })
+                privateAccess = { isPrivate: true, regions: Array.from(regions) }
+            }
+            else {
+                privateAccess = { isPrivate: false }
+            }
+        }
+        else {
+            privateAccess = { isPrivate: false }
+        }
+    }
+    return privateAccess
+}
+
+export const toFirstUpperCase = (data) => {
+    return data.charAt(0).toUpperCase() + data.slice(1)
 }
 

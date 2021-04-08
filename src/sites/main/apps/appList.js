@@ -77,11 +77,18 @@ class AppList extends React.Component {
     /**
      * Customized data block
     **/
+
+    showYesNo = (data, isDetailView) => {
+        if (isDetailView) {
+            return data[fields.scaleWithCluster] ? YES : NO
+        }
+    }
+
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
             if (key.field === fields.scaleWithCluster) {
-                key.customizedData = constant.showYesNo
+                key.customizedData = this.showYesNo
             }
             else if (key.field === fields.trusted) {
                 key.customizedData = customizedTrusted

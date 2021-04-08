@@ -14,6 +14,8 @@ import * as shared from '../../../services/model/shared';
 import { Button, Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core';
 import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+
+
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
@@ -45,50 +47,50 @@ class OrganizationList extends React.Component {
     }
 
     customToolbar = () =>
-        (
-            isViewer() ? null : <Box display='flex'>
-                <Card style={{ margin: 10, width: '50%', maxHeight: 200, overflow: 'auto' }}>
-                    <CardHeader
-                        avatar={
-                            <IconButton aria-label="developer" disabled={true}>
-                                <img src='/assets/images/handset-sdk-green.svg'  alt="MobiledgeX"/>
-                            </IconButton>
-                        }
-                        title={
-                            <Typography>
-                                Create Organization to Run Apps on Telco Edge (Developers)
+    (
+        isViewer() ? null : <Box display='flex'>
+            <Card style={{ margin: 10, width: '50%', maxHeight: 200, overflow: 'auto' }}>
+                <CardHeader
+                    avatar={
+                        <IconButton aria-label="developer" disabled={true}>
+                            <img src='/assets/images/handset-sdk-green.svg' alt="MobiledgeX" />
+                        </IconButton>
+                    }
+                    title={
+                        <Typography>
+                            Create Organization to Run Apps on Telco Edge (Developers)
                             </Typography>
-                        }
-                        // subheader="Dynamically scale and deploy applications on Telco Edge geographically close to your end-users. Deploying to MobiledgeX's cloudlets provides applications the advantage of low latency, which can be extremely useful for real-time applications such as Augmented Reality, Mobile Gaming, Self-Driving Cars, Drones, etc."
-                        action={
-                            <IconButton aria-label="developer" onClick={() => { this.onAdd(constant.DEVELOPER) }}>
-                                <ArrowForwardIosIcon style={{ fontSize: 20, color: '#76ff03' }} />
-                            </IconButton>
-                        }
-                    />
-                </Card>
-                <Card style={{ margin: 10, width: '50%', maxHeight: 200, overflow: 'auto' }}>
-                    <CardHeader
-                        avatar={
-                            <IconButton aria-label="operator" disabled={true}>
-                                <img src='/assets/images/cloudlet-green.svg'  alt="MobiledgeX"/>
-                            </IconButton>
-                        }
-                        title={
-                            <Typography>
-                                Create Organization to Host Telco Edge (Operators)
+                    }
+                    // subheader="Dynamically scale and deploy applications on Telco Edge geographically close to your end-users. Deploying to MobiledgeX's cloudlets provides applications the advantage of low latency, which can be extremely useful for real-time applications such as Augmented Reality, Mobile Gaming, Self-Driving Cars, Drones, etc."
+                    action={
+                        <IconButton aria-label="developer" onClick={() => { this.onAdd(constant.DEVELOPER) }}>
+                            <ArrowForwardIosIcon style={{ fontSize: 20, color: '#76ff03' }} />
+                        </IconButton>
+                    }
+                />
+            </Card>
+            <Card style={{ margin: 10, width: '50%', maxHeight: 200, overflow: 'auto' }}>
+                <CardHeader
+                    avatar={
+                        <IconButton aria-label="operator" disabled={true}>
+                            <img src='/assets/images/cloudlet-green.svg' alt="MobiledgeX" />
+                        </IconButton>
+                    }
+                    title={
+                        <Typography>
+                            Create Organization to Host Telco Edge (Operators)
                             </Typography>
-                        }
-                        // subheader='Register your cloudlet by providing MobiledgeX with a pool of compute resources and access to the OpenStack API endpoint by specifying a few required parameters, such as dynamic IP addresses, cloudlet names, location of cloudlets, certs, and more, using the Edge-Cloud Console. MobiledgeX relies on this information to remotely access the cloudlets to determine resource requirements as well as dynamically track usage.'
-                        action={
-                            <IconButton aria-label="operator" onClick={() => { this.onAdd(constant.OPERATOR) }}>
-                                <ArrowForwardIosIcon style={{ fontSize: 20, color: '#76ff03' }} />
-                            </IconButton>
-                        }
-                    />
-                </Card>
-            </Box>
-        )
+                    }
+                    // subheader='Register your cloudlet by providing MobiledgeX with a pool of compute resources and access to the OpenStack API endpoint by specifying a few required parameters, such as dynamic IP addresses, cloudlet names, location of cloudlets, certs, and more, using the Edge-Cloud Console. MobiledgeX relies on this information to remotely access the cloudlets to determine resource requirements as well as dynamically track usage.'
+                    action={
+                        <IconButton aria-label="operator" onClick={() => { this.onAdd(constant.OPERATOR) }}>
+                            <ArrowForwardIosIcon style={{ fontSize: 20, color: '#76ff03' }} />
+                        </IconButton>
+                    }
+                />
+            </Card>
+        </Box>
+    )
 
     /**Action menu block */
     onAudit = (action, data) => {
@@ -130,12 +132,17 @@ class OrganizationList extends React.Component {
             </Button>)
     }
 
-    onManage = (key, data) => {
+
+
+    onManage = async (key, data) => {
         if (this.props.roleInfo) {
             let roleInfoList = this.props.roleInfo;
             for (let i = 0; i < roleInfoList.length; i++) {
                 let roleInfo = roleInfoList[i];
                 if (roleInfo.org === data[fields.organizationName]) {
+                    this.props.handlePrivateAccess(undefined)
+                    let privateAccess = await constant.validatePrivateAccess(this, roleInfo.role)
+                    this.props.handlePrivateAccess(privateAccess)
                     localStorage.setItem('selectOrg', data[fields.organizationName])
                     localStorage.setItem('selectRole', roleInfo.role)
                     this.props.handleUserRole(roleInfo.role)
@@ -146,7 +153,7 @@ class OrganizationList extends React.Component {
                 }
             }
         }
-        this.setState({tableHeight : isViewer() ? undefined : 280})
+        this.setState({ tableHeight: isViewer() ? undefined : 280 })
     }
     /*
         Manage Block
@@ -175,11 +182,11 @@ class OrganizationList extends React.Component {
     }
 
     render() {
-        const {tableHeight} = this.state
+        const { tableHeight } = this.state
         return (
             this.state.currentView ? this.state.currentView :
                 <div style={{ width: '100%', height: '100%' }}>
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight}/>
+                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight} />
                 </div>
         )
     }
@@ -243,7 +250,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
-        handleShowAuditLog: (data) => { dispatch(actions.showAuditLog(data)) }
+        handleShowAuditLog: (data) => { dispatch(actions.showAuditLog(data)) },
+        handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) }
     };
 };
 

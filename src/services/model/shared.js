@@ -104,7 +104,7 @@ export const showYesNo = (data, isDetailView)=>
 export const showProgress = (data, isDetailView) => {
     let state = data[fields.state]
     if (isDetailView) {
-        return getStateStatus(data)
+        return getStateStatus(state)
     }
     else {
         let icon = null;
