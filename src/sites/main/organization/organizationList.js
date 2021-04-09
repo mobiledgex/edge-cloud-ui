@@ -15,7 +15,7 @@ import { Button, Box, Card, IconButton, Typography, CardHeader } from '@material
 import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { Icon } from 'semantic-ui-react';
-import { ACTION_ADD_USER, ACTION_AUDIT, ACTION_DELETE, ACTION_DISABLE, ACTION_EDGE_BOX_ENABLE, ACTION_LABEL, ACTION_UPDATE, ACTION_WARNING } from '../../../container/Actions';
+import {ACTION_DELETE, ACTION_DISABLE, ACTION_EDGE_BOX_ENABLE, ACTION_LABEL, ACTION_UPDATE, ACTION_WARNING } from '../../../container/Actions';
 import { sendRequest } from '../monitoring/services/service'
 
 class OrganizationList extends React.Component {
@@ -61,7 +61,7 @@ class OrganizationList extends React.Component {
                     title={
                         <Typography>
                             Create Organization to Run Apps on Telco Edge (Developers)
-                            </Typography>
+                        </Typography>
                     }
                     // subheader="Dynamically scale and deploy applications on Telco Edge geographically close to your end-users. Deploying to MobiledgeX's cloudlets provides applications the advantage of low latency, which can be extremely useful for real-time applications such as Augmented Reality, Mobile Gaming, Self-Driving Cars, Drones, etc."
                     action={
@@ -81,7 +81,7 @@ class OrganizationList extends React.Component {
                     title={
                         <Typography>
                             Create Organization to Host Telco Edge (Operators)
-                            </Typography>
+                        </Typography>
                     }
                     // subheader='Register your cloudlet by providing MobiledgeX with a pool of compute resources and access to the OpenStack API endpoint by specifying a few required parameters, such as dynamic IP addresses, cloudlet names, location of cloudlets, certs, and more, using the Edge-Cloud Console. MobiledgeX relies on this information to remotely access the cloudlets to determine resource requirements as well as dynamically track usage.'
                     action={
@@ -95,7 +95,7 @@ class OrganizationList extends React.Component {
     )
 
     /**Action menu block */
-    onAudit = (audit, data) => {
+    onAudit = (action, data) => {
         this.props.handleShowAuditLog({ type: 'audit', org: data[fields.organizationName] })
     }
 
@@ -110,14 +110,15 @@ class OrganizationList extends React.Component {
         }
     }
 
-    actionEnableEdgeBox = async (action, data) => {
+    onEdgebox = async (action, data, callback) => {
         let mc = await sendRequest(this, edgeboxOnlyAPI(data))
         if (mc && mc.response && mc.response.status === 200) {
-            return `Edgebox ${data[fields.edgeboxOnly] ? 'disabled' : 'enabled'} successfully for organization ${data[fields.organizationName]}`
+            this.props.handleAlertInfo('success', `Edgebox ${data[fields.edgeboxOnly] ? 'disabled' : 'enabled'} successfully for organization ${data[fields.organizationName]}`)
+            callback(mc)
         }
     }
 
-    edgeBoxActionType = (type, data) => {
+    onPreEdgebox = (type, action, data) => {
         switch (type) {
             case ACTION_LABEL:
                 return data[fields.edgeboxOnly] ? 'Disable Edgebox' : 'Enable Edgebox'
@@ -132,9 +133,9 @@ class OrganizationList extends React.Component {
         return [
             { label: 'Audit', onClick: this.onAudit },
             { label: 'Add User', onClick: this.onAddUser, type: 'Edit' },
-            { id: ACTION_EDGE_BOX_ENABLE, label: this.edgeBoxActionType, onClick: this.actionEnableEdgeBox, type: 'Edit', warning: this.edgeBoxActionType, disable:this.edgeBoxActionType },
-            { label: 'Update', onClick: this.onUpdate, type: 'Edit' },
-            { label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type: 'Edit' }
+            { id: ACTION_EDGE_BOX_ENABLE, label: this.onPreEdgebox, type: 'Edit', warning: this.onPreEdgebox, disable: this.onPreEdgebox, onClick: this.onEdgebox },
+            { id: ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
+            { id: ACTION_DELETE, label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type: 'Edit' }
         ]
     }
 
@@ -281,6 +282,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
         handleShowAuditLog: (data) => { dispatch(actions.showAuditLog(data)) },

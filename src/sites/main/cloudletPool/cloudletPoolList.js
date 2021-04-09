@@ -9,7 +9,8 @@ import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showCloudletPools, deleteCloudletPool, multiDataRequest } from '../../../services/model/cloudletPool';
 import CloudletPoolReg from './cloudletPoolReg';
 import {HELP_CLOUDLET_POOL_LIST} from "../../../tutorial";
-import { accessGranted, createConfirmation, deleteConfirmation, showInvitation } from '../../../services/model/privateCloudletAccess';
+import { accessGranted, showInvitation } from '../../../services/model/privateCloudletAccess';
+import { ACTION_POOL_ACCESS_ADMIN_CONFIRM, ACTION_POOL_ACCESS_ADMIN_REMOVE } from '../../../container/Actions';
 class ClouldetPoolList extends React.Component {
     constructor(props) {
         super(props);
@@ -47,8 +48,8 @@ class ClouldetPoolList extends React.Component {
             { id: constant.ADD_CLOUDLET, label: 'Update', onClick: this.onActionClick, type:'Edit' },
             { id: constant.ADD_ORGANIZATION, label: 'Invite Organization', onClick: this.onActionClick, type:'Edit' },
             { id: constant.DELETE_ORGANIZATION, label: 'Remove Organization', onClick: this.onActionClick, type:'Edit' },
-            { id: constant.ACTION_ADMIN_ACCESS_CONFIRM, label: 'Confirm Access', visible: this.onConfirmVisible, onClick: this.onActionClick, type:'Edit'  },
-            { id: constant.ACTION_ADMIN_ACCESS_REMOVE, label: 'Remove Access', visible: this.onConfirmVisible, onClick: this.onActionClick, type:'Edit'  },
+            { id: ACTION_POOL_ACCESS_ADMIN_CONFIRM, label: 'Confirm Access', visible: this.onConfirmVisible, onClick: this.onActionClick, type:'Edit'  },
+            { id: ACTION_POOL_ACCESS_ADMIN_REMOVE, label: 'Remove Access', visible: this.onConfirmVisible, onClick: this.onActionClick, type:'Edit'  },
             { id: constant.DELETE, label: 'Delete', onClickInterept:this.showDeleteCloudletPool, onClick: deleteCloudletPool, type:'Edit' }
         ]
     }

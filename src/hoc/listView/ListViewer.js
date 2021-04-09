@@ -94,7 +94,7 @@ class ListViewer extends React.Component {
     actionLabel = (action, data)=>{
         if(typeof action.label === 'function')
         {
-            return action.label(ACTION_LABEL, data)
+            return action.label(ACTION_LABEL, action, data)
         }
         else
         {
@@ -118,7 +118,7 @@ class ListViewer extends React.Component {
                                     <MenuList autoFocusItem={Boolean(actionEl)} id="menu-list-grow" >
                                         {this.actionMenu.map((action, i) => {
                                             let visible = canEdit(viewerEdit, action) ? action.visible ? action.visible(selectedRow) : true : false
-                                            return visible ? <MenuItem key={i} onClick={(e) => { this.actionClose(action) }} disabled={action.disable ? action.disable(ACTION_DISABLE, selectedRow) : false}>{this.actionLabel(action, selectedRow)}</MenuItem> : null
+                                            return visible ? <MenuItem key={i} onClick={(e) => { this.actionClose(action) }} disabled={action.disable ? action.disable(ACTION_DISABLE, action, selectedRow) : false}>{this.actionLabel(action, selectedRow)}</MenuItem> : null
                                         })}
                                     </MenuList>
                                 </ClickAwayListener>

@@ -30,7 +30,7 @@ class Main extends React.Component {
             this.worker.addEventListener('message', (event) => {
                 if (event.data.isAdmin) {
                     let role = event.data.role
-                    localStorage.setItem('selectOrg', undefined)
+                    localStorage.removeItem('selectOrg')
                     localStorage.setItem('selectRole', role)
                     this.props.handleUserRole(role)
                     this.setState({ userRole: role });

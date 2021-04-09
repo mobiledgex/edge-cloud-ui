@@ -3,7 +3,7 @@ import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../hoc/mexmap/MexMap'
 import { Icon } from 'semantic-ui-react'
 import { Marker, Popup } from "react-leaflet";
 import { fields } from '../../services/model/format';
-import { CLUSTER_INST } from '../../constant';
+import { CLUSTER_INST, PAGE_CLOUDLETS } from '../../constant';
 import Legend from './MapLegend'
 import { mapLegendColor, renderSVG } from '../../hoc/mexmap/constant';
 
@@ -48,7 +48,7 @@ class ListMexMap extends React.Component {
 
     renderLabel = (id, data) => {
         switch (id) {
-            case 'Cloudlets':
+            case PAGE_CLOUDLETS:
                 return data[fields.cloudletName]
             case CLUSTER_INST:
                 return data[fields.clusterName]
