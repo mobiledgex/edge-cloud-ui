@@ -13,6 +13,7 @@ import InfoOutlineIcon from '@material-ui/icons/InfoOutlined';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import { Icon } from 'semantic-ui-react';
 import { HELP_ALERTS } from '../../../../../tutorial';
+import { ACTION_DELETE } from '../../../../../container/Actions';
 class AlertList extends React.Component {
     constructor(props) {
         super(props);
@@ -35,7 +36,7 @@ class AlertList extends React.Component {
     actionMenu = () => {
         return [
             // { label: 'Update', onClick: this.onAdd, type: 'Edit' },
-            { label: 'Delete', onClick: deleteAlertReceiver, type: 'Edit' }
+            { id: ACTION_DELETE, label: 'Delete', onClick: deleteAlertReceiver, type: 'Edit' }
         ]
     }
 
