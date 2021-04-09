@@ -150,8 +150,6 @@ export const PAGE_INVOICES = 'Invoices'
 
 export const BILLING_TYPE_SELF = 'Self'
 export const BILLING_TYPE_PARENT = 'Parent'
-export const BILLING_ADD_CHILD = 'AddChild'
-export const BILLING_REMOVE_CHILD = 'RemoveChild'
 
 const dataFormatter = (type, value) => {
     switch (type) {

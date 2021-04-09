@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import MexForms, { SELECT, INPUT, MAIN_HEADER, BUTTON, DUALLIST } from '../../../../hoc/forms/MexForms';
 import { Grid } from '@material-ui/core'
 import { fields, getOrganization } from '../../../../services/model/format';
-import { BILLING_ADD_CHILD, DEVELOPER, BILLING_REMOVE_CHILD, validatePhone } from '../../../../constant';
+import { DEVELOPER, validatePhone } from '../../../../constant';
+import { ACTION_BILLING_REMOVE_CHILD, ACTION_BILLING_ADD_CHILD } from '../../../../container/Actions';
 import { resetFormValue } from '../../../../hoc/forms/helper/constant';
 import { createBillingOrg, addBillingChild, removeBillingChild } from '../../../../services/model/billingOrg';
 import { getOrganizationList } from '../../../../services/model/organization';
@@ -46,7 +47,7 @@ class BillingOrgReg extends React.Component {
 
     formChildKeys = () => {
         return [
-            { label: `${this.actionId === BILLING_ADD_CHILD ? 'Add Child' : 'Remove Child'}`, formType: MAIN_HEADER, visible: true },
+            { label: `${this.actionId === ACTION_BILLING_ADD_CHILD ? 'Add Child' : 'Remove Child'}`, formType: MAIN_HEADER, visible: true },
             { field: fields.name, label: 'Name', formType: INPUT, placeholder: 'Enter Billing Group Name', rules: { disabled: true }, visible: true, tip: 'Billing group' },
             { field: fields.organizations, label: 'Organization', formType: DUALLIST, placeholder: 'Select Organization', visible: true },
         ]
@@ -103,17 +104,17 @@ class BillingOrgReg extends React.Component {
         }
 
         if (valid) {
-            let msg = this.actionId === BILLING_ADD_CHILD ? 'added' : 'removed'
+            let msg = this.actionId === ACTION_BILLING_ADD_CHILD ? 'added' : 'removed'
             this.props.handleAlertInfo('success', `Billing org ${msg} successfully`)
             this.props.onClose(true)
         }
     }
 
     onCreate = async (data) => {
-        if (this.actionId === BILLING_ADD_CHILD || this.actionId === BILLING_REMOVE_CHILD) {
+        if (this.actionId === ACTION_BILLING_ADD_CHILD || this.actionId === ACTION_BILLING_REMOVE_CHILD) {
             let organizations = data[fields.organizations]
             let requestList = []
-            let requestType = this.actionId === BILLING_REMOVE_CHILD ? removeBillingChild : addBillingChild
+            let requestType = this.actionId === ACTION_BILLING_REMOVE_CHILD ? removeBillingChild : addBillingChild
             organizations.map(children => {
                 requestList.push(requestType({ name: data[fields.name], children }))
             })
@@ -161,7 +162,7 @@ class BillingOrgReg extends React.Component {
                             form.options = this.organizationList
                             break;
                         case fields.organizations:
-                            form.options = this.actionId === BILLING_REMOVE_CHILD ? this.removeBillingOrgList(this.billingOrgList) : this.addBillingOrgList(this.organizationList)
+                            form.options = this.actionId === ACTION_BILLING_REMOVE_CHILD ? this.removeBillingOrgList(this.billingOrgList) : this.addBillingOrgList(this.organizationList)
                             break;
                     }
                 }
@@ -210,7 +211,7 @@ class BillingOrgReg extends React.Component {
 
         forms = data ? this.formChildKeys() : this.formKeys()
         
-        let createLabel = this.actionId ? this.actionId === BILLING_ADD_CHILD ? 'Add' : 'Remove' : this.isUpdate ? 'Update' : 'Create'
+        let createLabel = this.actionId ? this.actionId === ACTION_BILLING_ADD_CHILD ? 'Add' : 'Remove' : this.isUpdate ? 'Update' : 'Create'
         forms.push(
             { label: createLabel, formType: BUTTON, onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: BUTTON, onClick: this.onAddCancel })
