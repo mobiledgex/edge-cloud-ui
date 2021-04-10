@@ -11,6 +11,7 @@ import AppInstReg from '../appInst/appInstReg';
 import { HELP_APP_LIST } from "../../../tutorial";
 import { Icon } from 'semantic-ui-react';
 import { customizedTrusted } from '../../../constantUI';
+import { ACTION_DELETE, ACTION_UPDATE } from '../../../container/Actions';
 class AppList extends React.Component {
     constructor(props) {
         super(props);
@@ -39,8 +40,8 @@ class AppList extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onAdd, type: 'Edit' },
-            { label: 'Delete', onClick: deleteApp, type: 'Edit' },
+            { id: ACTION_UPDATE, label: 'Update', onClick: this.onAdd, type: 'Edit' },
+            { id: ACTION_DELETE, label: 'Delete', onClick: deleteApp, type: 'Edit' },
             { label: 'Create Instance', onClick: this.onLaunch, type: 'Edit' }
         ]
     }

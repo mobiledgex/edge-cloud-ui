@@ -16,7 +16,8 @@ import { Dialog, Tooltip } from '@material-ui/core';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_APP_INST_LIST } from "../../../tutorial";
 import { customizedTrusted } from '../../../constantUI';
-
+import { ACTION_DELETE, ACTION_UPDATE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_TERMINAL, ACTION_UPGRADE, ACTION_REFRESH, ACTION_REBOOT } from '../../../container/Actions';
+import * as serverData from '../../../services/model/serverData'
 class AppInstList extends React.Component {
     constructor(props) {
         super(props);
@@ -72,7 +73,7 @@ class AppInstList extends React.Component {
     }
 
     onPowerStateVisible = (data) => {
-        return data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM && data[fields.accessType] !== constant.ACCESS_TYPE_LOAD_BALANCER
+        return data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM
     }
 
     onUpgradeVisible = (data) => {
@@ -96,16 +97,36 @@ class AppInstList extends React.Component {
         }
     }
 
+    onPowerState = (action, data, callback) => {
+        let powerState = constant.PowerState(constant.POWER_STATE_POWER_STATE_UNKNOWN)
+
+        switch (action.id) {
+            case ACTION_POWER_ON:
+                powerState = constant.PowerState(constant.POWER_STATE_POWER_ON)
+                break;
+            case ACTION_POWER_OFF:
+                powerState = constant.PowerState(constant.POWER_STATE_POWER_OFF)
+                break;
+            case ACTION_REBOOT:
+                powerState = constant.PowerState(constant.POWER_STATE_REBOOT)
+                break;
+        }
+        data[fields.powerState] = powerState
+        this.props.handleLoadingSpinner(true)
+        serverData.sendWSRequest(this, changePowerState(data), callback, data)
+
+    }
+
     actionMenu = () => {
         return [
-            { label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Edit' },
-            { label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, type: 'Edit' },
-            { label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader },
-            { label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader, type: 'Edit', dialogNote: this.getDialogNote },
-            { label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
-            { label: 'Power On', visible: this.onPowerStateVisible, onClick: changePowerState },
-            { label: 'Power Off', visible: this.onPowerStateVisible, onClick: changePowerState },
-            { label: 'Reboot', visible: this.onPowerStateVisible, onClick: changePowerState }
+            { id: ACTION_UPDATE, label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Edit' },
+            { id: ACTION_UPGRADE, label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, type: 'Edit', warning: 'upgrade' },
+            { id: ACTION_REFRESH, label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, warning: 'refresh' },
+            { id: ACTION_DELETE, label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader, type: 'Edit', dialogNote: this.getDialogNote },
+            { id: ACTION_TERMINAL, label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
+            { id: ACTION_POWER_ON, label: 'Power On', visible: this.onPowerStateVisible, onClick: this.onPowerState, warning: 'power on' },
+            { id: ACTION_POWER_OFF, label: 'Power Off', visible: this.onPowerStateVisible, onClick: this.onPowerState, warning: 'power off' },
+            { id: ACTION_REBOOT, label: 'Reboot', visible: this.onPowerStateVisible, onClick: this.onPowerState, warning: 'reboot' }
         ]
     }
 

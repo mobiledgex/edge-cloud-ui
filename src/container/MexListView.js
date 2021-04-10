@@ -20,7 +20,7 @@ import { prefixSearchPref, showMapPref } from '../utils/sharedPreferences_util';
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import ListMexMap from './map/ListMexMap'
 import cloneDeep from 'lodash/cloneDeep';
-import { sendRequests } from '../services/model/serverWorker'
+import { ACTION_DELETE, ACTION_EDGE_BOX_ENABLE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_REBOOT, ACTION_UPDATE, ACTION_UPGRADE, ACTION_WARNING, ACTION_POOL_ACCESS_DEVELOPER } from './Actions';
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -89,13 +89,13 @@ class MexListView extends React.Component {
         }
     }
 
-    onDeleteWSResponse = (mcRequest) => {
-        if (mcRequest && mcRequest.response && mcRequest.response.data) {
-            let data = mcRequest.response.data
+    onDeleteWSResponse = (mc) => {
+        if (mc && mc.response && mc.response.data) {
+            let data = mc.response.data
             let code = data.code
             let message = data.data.message
-            mcRequest.wsObj.close()
-            code === 200 ? this.specificDataFromServer(mcRequest.request) : this.props.handleAlertInfo('error', message)
+            mc.wsObj.close()
+            code === 200 ? this.specificDataFromServer(mc.request) : this.props.handleAlertInfo('error', message)
         }
         this.props.handleLoadingSpinner(false)
     }
@@ -110,9 +110,9 @@ class MexListView extends React.Component {
             }
             else {
                 let valid = false
-                let mcRequest = await serverData.sendRequest(this, action.onClick(data))
-                if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                    this.props.handleAlertInfo('success', `${mcRequest.request.success}`)
+                let mc = await serverData.sendRequest(this, action.onClick(data))
+                if (mc && mc.response && mc.response.status === 200) {
+                    this.props.handleAlertInfo('success', `${mc.request.success}`)
                     filterList.splice(filterList.indexOf(data), 1)
                     dataList.splice(dataList.indexOf(data), 1)
                     if (this._isMounted) {
@@ -122,8 +122,8 @@ class MexListView extends React.Component {
                 }
                 if (action.onFinish) {
                     let error = undefined
-                    if (mcRequest.error && mcRequest.error.response && mcRequest.error.response.data) {
-                        error = mcRequest.error.response.data
+                    if (mc.error && mc.error.response && mc.error.response.data) {
+                        error = mc.error.response.data
                     }
                     action.onFinish(data, valid, error)
                 }
@@ -131,19 +131,19 @@ class MexListView extends React.Component {
         }
     }
 
-    onMultiResponse = (mcRequest) => {
-        let orgData = mcRequest.request.orgData
+    onMultiResponse = (mc) => {
+        let orgData = mc.request.orgData
         let data = orgData.data
         let action = orgData.action
         this.props.handleLoadingSpinner(false)
-        if (mcRequest) {
+        if (mc) {
             let responseData = undefined;
-            if (mcRequest.response && mcRequest.response.data) {
-                responseData = mcRequest.response.data;
+            if (mc.response && mc.response.data) {
+                responseData = mc.response.data;
             }
             let labels = action.multiStepperHeader
             if (this._isMounted) {
-                this.setState({ multiStepsArray: updateStepper(this.state.multiStepsArray, labels, data, responseData, mcRequest.wsObj) })
+                this.setState({ multiStepsArray: updateStepper(this.state.multiStepsArray, labels, data, responseData, mc.wsObj) })
             }
         }
     }
@@ -171,16 +171,16 @@ class MexListView extends React.Component {
             serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, { action: action, data: data })
         }
         else {
-            let mcRequest = await serverData.sendRequest(this, action.onClick(data))
+            let mc = await serverData.sendRequest(this, action.onClick(data))
             let message = ''
             let code = 404
-            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                code = mcRequest.response.status
-                message = mcRequest.request.success
+            if (mc && mc.response && mc.response.status === 200) {
+                code = mc.response.status
+                message = mc.request.success
             }
-            else if (mcRequest && mcRequest.error && mcRequest.error.response) {
-                code = mcRequest.error.response.status
-                message = mcRequest.error.response.data.message
+            else if (mc && mc.error && mc.error.response) {
+                code = mc.error.response.status
+                message = mc.error.response.data.message
             }
             this.setState(prevState => {
                 let deleteMultiple = prevState.deleteMultiple
@@ -198,33 +198,7 @@ class MexListView extends React.Component {
         }
     }
 
-    onPowerState = (action, data) => {
-        let powerState = constant.PowerState(constant.POWER_STATE_POWER_STATE_UNKNOWN)
-        switch (action.label) {
-            case 'Power On':
-                powerState = constant.PowerState(constant.POWER_STATE_POWER_ON)
-                break;
-            case 'Power Off':
-                powerState = constant.PowerState(constant.POWER_STATE_POWER_OFF)
-                break;
-            case 'Reboot':
-                powerState = constant.PowerState(constant.POWER_STATE_REBOOT)
-                break;
-        }
-        data[fields.powerState] = powerState
-        this.props.handleLoadingSpinner(true)
-        serverData.sendWSRequest(this, action.onClick(data), this.onDeleteWSResponse, data)
-    }
-
-    onAccess = async (action, data) => {
-        let mc = await serverData.sendRequest(this, action.onClick(data))
-        if (mc && mc.response && mc.response.status === 200) {
-            this.props.handleAlertInfo('success', `${mc.request.success}`)
-            this.dataFromServer(this.selectedRegion)
-        }
-    }
-
-    onDialogClose = (valid) => {
+    onDialogClose = async (valid) => {
         let action = this.state.dialogMessageInfo.action;
         let isMultiple = this.state.dialogMessageInfo.isMultiple;
         let data = this.state.dialogMessageInfo.data;
@@ -252,23 +226,23 @@ class MexListView extends React.Component {
             else {
                 let id = action.id ? action.id : action.label
                 switch (id) {
-                    case 'Delete':
+                    case ACTION_DELETE:
                         this.onDelete(action, data)
                         break;
-                    case 'Upgrade':
+                    case ACTION_UPGRADE:
                         this.onUpdate(action, data)
                         break;
-                    case 'Refresh':
+                    case ACTION_REFRESH:
                         this.onUpdate(action, data, true)
                         break;
-                    case 'Power On':
-                    case 'Power Off':
-                    case 'Reboot':
-                        this.onPowerState(action, data)
+                    case ACTION_POWER_ON:
+                    case ACTION_POWER_OFF:
+                    case ACTION_REBOOT:
+                        action.onClick(action, data, this.onDeleteWSResponse)
                         break;
-                    case constant.ACTION_POOL_ACCESS_CONFIRM:
-                    case constant.ACTION_POOL_ACCESS_REMOVE:
-                        this.onAccess(action, data)
+                    case ACTION_POOL_ACCESS_DEVELOPER:
+                    case ACTION_EDGE_BOX_ENABLE:
+                        action.onClick(action, data, ()=>{this.dataFromServer(this.selectedRegion)})
                         break;
                 }
             }
@@ -287,34 +261,19 @@ class MexListView extends React.Component {
         let data = this.selectedRow;
         let valid = action.onClickInterept ? action.onClickInterept(action, data) : true
         if (valid) {
-            let id = action.id ? action.id : action.label
-            switch (id) {
-                case 'Delete':
-                    this.onWarning(action, 'delete', false, data)
-                    break
-                case 'Upgrade':
-                    this.onWarning(action, 'upgrade', false, data)
-                    break;
-                case 'Refresh':
-                    this.onWarning(action, 'refresh', false, data)
-                    break;
-                case 'Power On':
-                    this.onWarning(action, 'power on', false, data)
-                    break;
-                case 'Power Off':
-                    this.onWarning(action, 'power off', false, data)
-                    break;
-                case 'Reboot':
-                    this.onWarning(action, 'reboot', false, data)
-                    break;
-                case constant.ACTION_POOL_ACCESS_CONFIRM:
-                    this.onWarning(action, 'confirm access to cloudlet pool', false, data)
-                    break;
-                case constant.ACTION_POOL_ACCESS_REMOVE:
-                    this.onWarning(action, 'remove access from cloudlet pool', false, data)
-                    break;
-                default:
-                    action.onClick(action, data)
+            if (action.warning) {
+                let warning = typeof action.warning === 'function' ? action.warning(ACTION_WARNING, action, data) : action.warning
+                this.onWarning(action, warning, false, data)
+            }
+            else {
+                let id = action.id ? action.id : action.label
+                switch (id) {
+                    case ACTION_DELETE:
+                        this.onWarning(action, 'delete', false, data)
+                        break
+                    default:
+                        action.onClick(action, data)
+                }
             }
         }
     }
@@ -453,7 +412,7 @@ class MexListView extends React.Component {
         let requestType = this.requestInfo.requestType
         data.uuid = uuid
         let requestList = []
-        if (this.requestInfo.id === 'Cloudlets') {
+        if (this.requestInfo.id === constant.PAGE_CLOUDLETS) {
             requestType.map(request => {
                 requestList.push(request(data, true))
             })
@@ -461,7 +420,7 @@ class MexListView extends React.Component {
         else {
             requestList.push(requestType[0](data, true))
         }
-        sendRequests(this, requestList, this.specificResponse)
+        serverData.sendMultiRequest(this, requestList, this.specificResponse)
     }
 
     render() {
@@ -531,27 +490,27 @@ class MexListView extends React.Component {
         return filterList;
     }
 
-    onServerResponse = (mcRequestList) => {
+    onServerResponse = (mcList) => {
         this.requestCount -= 1
         let requestInfo = this.requestInfo
         let newDataList = []
 
-        if (mcRequestList && mcRequestList.length > 0) {
+        if (mcList && mcList.length > 0) {
             if (this.props.multiDataRequest) {
-                newDataList = this.props.multiDataRequest(requestInfo.keys, mcRequestList)
+                newDataList = this.props.multiDataRequest(requestInfo.keys, mcList)
             }
             else {
-                let mcRequest = mcRequestList[0]
-                if (mcRequest.response && mcRequest.response.data) {
-                    newDataList = mcRequest.response.data
+                let mc = mcList[0]
+                if (mc.response && mc.response.data) {
+                    newDataList = mc.response.data
                 }
             }
 
         }
 
         let dataList = cloneDeep(this.state.dataList)
-        if (mcRequestList && mcRequestList.length > 0 && dataList.length > 0) {
-            let requestData = mcRequestList[0].request.data
+        if (mcList && mcList.length > 0 && dataList.length > 0) {
+            let requestData = mcList[0].request.data
             if (requestData.region) {
                 dataList = dataList.filter(function (obj) {
                     return obj[fields.region] !== requestData.region;

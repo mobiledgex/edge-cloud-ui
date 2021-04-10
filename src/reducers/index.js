@@ -13,6 +13,7 @@ import showAuditLog from './showAuditLog';
 import ThemeReducer from "./ThemeReducer";
 import ViewMode from "./ViewMode";
 import privateAccess from './privateAccess'
+import organizationInfo from './organizationInfo'
 import { USER_LOGGED_OUT } from '../actions/ActionTypes';
 
 const appReducer = combineReducers({
@@ -29,6 +30,7 @@ const appReducer = combineReducers({
     ThemeReducer,
     ViewMode,
     privateAccess,
+    organizationInfo,
     form: formReducer
 });
 

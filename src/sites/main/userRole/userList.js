@@ -7,6 +7,7 @@ import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 import { keys, showUsers, deleteUser } from '../../../services/model/users';
 import { HELP_USER_ROLES } from '../../../tutorial';
+import { ACTION_DELETE } from '../../../container/Actions';
 
 class UserList extends React.Component {
     constructor(props) {
@@ -28,7 +29,7 @@ class UserList extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage, type: 'Edit' }
+            { id: ACTION_DELETE, label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage, type: 'Edit' }
         ]
     }
 

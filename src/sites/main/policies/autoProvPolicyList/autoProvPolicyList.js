@@ -13,6 +13,7 @@ import { showApps } from '../../../../services/model/app';
 //list
 import MexListView from '../../../../container/MexListView';
 import { HELP_POLICY_LIST } from "../../../../tutorial";
+import { ACTION_DELETE, ACTION_UPDATE } from '../../../../container/Actions';
 class AutoProvPolicy extends React.Component {
     constructor(props) {
         super(props);
@@ -64,10 +65,10 @@ class AutoProvPolicy extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onAdd, type: 'Edit' },
+            { id: ACTION_UPDATE, label: 'Update', onClick: this.onAdd, type: 'Edit' },
             { label: 'Add Cloudlet', onClick: this.onAddCloudlet, type: 'Edit' },
             { label: 'Delete Cloudlet', visible: this.onDeleteCloudletVisible, onClick: this.onDeleteCloudlet, type: 'Edit' },
-            { label: 'Delete', onClick: deleteAutoProvPolicy, onFinish: this.onDelete, type: 'Edit' }]
+            { id: ACTION_DELETE, label: 'Delete', onClick: deleteAutoProvPolicy, onFinish: this.onDelete, type: 'Edit' }]
     }
 
     groupActionMenu = () => {

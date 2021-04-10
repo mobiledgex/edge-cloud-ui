@@ -1,7 +1,7 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
-import { SHOW_ORG, CREATE_ORG, UPDATE_ORG, DELETE_ORG } from './endPointTypes'
+import { SHOW_ORG, CREATE_ORG, UPDATE_ORG, DELETE_ORG, EDGEBOX_ONLY } from './endPointTypes'
 
 let fields = formatter.fields;
 
@@ -10,6 +10,7 @@ export const keys = () => ([
     { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true, filter: true, group: true },
     { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: true },
     { field: fields.address, serverField: 'Address', label: 'Address', sortable: true, visible: true },
+    { field: fields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', visible: true, roles: [constant.ADMIN_MANAGER] },
     { field: fields.publicImages, serverField: 'PublicImages', label: 'Public Image', sortable: true, visible: true },
     {
         field: fields.userList, label: 'User List', sortable: true, visible: false,
@@ -66,8 +67,19 @@ export const deleteOrganization = (data) => {
     return { method: DELETE_ORG, data: requestData, success: `Organization ${data[fields.organizationName]} deleted successfully` }
 }
 
+export const edgeboxOnlyAPI = (data) => {
+    let requestData = {
+        edgeboxonly: data[fields.edgeboxOnly] ? false : true,
+        name: data[fields.organizationName]
+    }
+    return { method: EDGEBOX_ONLY, data: requestData }
+}
+
 const customData = (value) => {
     value[fields.publicImages] = value[fields.publicImages] ? constant.YES : constant.NO
+    if (value[fields.type] === constant.OPERATOR.toLowerCase()) {
+        value[fields.edgeboxOnly] = value[fields.edgeboxOnly] ? value[fields.edgeboxOnly] : false
+    }
     return value
 }
 

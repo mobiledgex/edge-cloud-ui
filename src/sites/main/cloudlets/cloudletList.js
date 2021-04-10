@@ -4,12 +4,13 @@ import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
+import {edgeboxOnly, getOrganization, isOperator} from '../../../reducers/organizationInfo'
 
-import { fields, getOrganization, isAdmin } from '../../../services/model/format';
+import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './cloudletReg';
-import {validateRole, operatorRoles, INFRA_API_ACCESS_RESTRICTED} from '../../../constant'
+import { validateRole, operatorRoles, INFRA_API_ACCESS_RESTRICTED, PAGE_CLOUDLETS, OPERATOR } from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
 import { Icon, Popup } from 'semantic-ui-react';
@@ -17,12 +18,13 @@ import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 import { getCloudletManifest, revokeAccessKey } from '../../../services/model/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import { customizedTrusted } from '../../../constantUI';
+import { ACTION_DISABLE, ACTION_DELETE, ACTION_UPDATE } from '../../../container/Actions';
 class CloudletList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentView: null,
-            dialogMessageInfo:{}
+            dialogMessageInfo: {}
         }
         this._isMounted = false;
         this.action = '';
@@ -56,8 +58,8 @@ class CloudletList extends React.Component {
                 if (response.data && response.data.message) {
                     let message = response.data.message
                     if (message === 'Cloudlet has access key registered, please revoke the current access key first so a new one can be generated for the manifest') {
-                        let message= 'Cloudlet has access key registered, click on yes if you would like to revoke the current access key, so a new one can be generated for the manifest'
-                        this.setState({ dialogMessageInfo: { message, data:data } })
+                        let message = 'Cloudlet has access key registered, click on yes if you would like to revoke the current access key, so a new one can be generated for the manifest'
+                        this.setState({ dialogMessageInfo: { message, data: data } })
                     }
                 }
 
@@ -70,15 +72,17 @@ class CloudletList extends React.Component {
         return data[fields.infraApiAccess] === INFRA_API_ACCESS_RESTRICTED
     }
 
-    onEditDisable = (data) => {
-        let disable = isAdmin() || data[fields.operatorName] === getOrganization()
-        return !disable
+    onPreAction = (type, action, data) => {
+        if (type === ACTION_DISABLE) {
+            let disable = isAdmin() || data[fields.operatorName] === getOrganization(this)
+            return !disable
+        }
     }
 
     actionMenu = () => {
         return [
-            { label: 'Update', disable:this.onEditDisable, onClick: this.onAdd, type: 'Edit' },
-            { label: 'Delete', disable:this.onEditDisable, onClick: deleteCloudlet, ws: true, type: 'Edit' },
+            { label: ACTION_UPDATE, disable: this.onPreAction, onClick: this.onAdd, type: 'Edit' },
+            { label: ACTION_DELETE, disable: this.onPreAction, onClick: deleteCloudlet, ws: true, type: 'Edit' },
             { label: 'Show Manifest', visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest }
         ]
     }
@@ -93,10 +97,16 @@ class CloudletList extends React.Component {
         return data[fields.infraApiAccess] === 'Restricted' && data[fields.cloudletStatus] !== 2
     }
 
+    canAdd = ()=>{
+        if(validateRole(operatorRoles) && !(isOperator(this) && edgeboxOnly(this)))
+        {
+            return this.onAdd
+        }
+    }
 
     requestInfo = () => {
         return ({
-            id: 'Cloudlets',
+            id: PAGE_CLOUDLETS,
             headerLabel: 'Cloudlets',
             nameField: fields.cloudletName,
             requestType: [showCloudlets, showCloudletInfos],
@@ -107,7 +117,7 @@ class CloudletList extends React.Component {
             selection: true,
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
-            onAdd: validateRole(operatorRoles) ? this.onAdd : undefined,
+            onAdd: this.canAdd(),
             viewMode: HELP_CLOUDLET_LIST,
             grouping: true
         })
@@ -194,13 +204,11 @@ class CloudletList extends React.Component {
         this.customizedData()
     }
 
-    onDialogClose = async (valid, data)=>{
+    onDialogClose = async (valid, data) => {
         this.setState({ dialogMessageInfo: {} })
-        if(valid)
-        {
+        if (valid) {
             let mc = await revokeAccessKey(this, data)
-            if(mc && mc.response && mc.response.status === 200)
-            {
+            if (mc && mc.response && mc.response.status === 200) {
                 this.onCloudletManifest(undefined, data)
             }
         }
@@ -211,7 +219,7 @@ class CloudletList extends React.Component {
             this.state.currentView ? this.state.currentView :
                 <React.Fragment>
                     <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
-                    <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose}/>
+                    <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 </React.Fragment>
         )
     }
@@ -221,10 +229,16 @@ class CloudletList extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo : state.organizationInfo.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(CloudletList));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(CloudletList));
