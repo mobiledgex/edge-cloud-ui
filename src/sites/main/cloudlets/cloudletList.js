@@ -4,12 +4,13 @@ import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
+import {edgeboxOnly, getOrganization, isOperator} from '../../../reducers/organizationInfo'
 
-import { fields, getOrganization, isAdmin } from '../../../services/model/format';
+import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './cloudletReg';
-import { validateRole, operatorRoles, INFRA_API_ACCESS_RESTRICTED, PAGE_CLOUDLETS } from '../../../constant'
+import { validateRole, operatorRoles, INFRA_API_ACCESS_RESTRICTED, PAGE_CLOUDLETS, OPERATOR } from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Button } from 'semantic-ui-react';
 import { Icon, Popup } from 'semantic-ui-react';
@@ -73,7 +74,7 @@ class CloudletList extends React.Component {
 
     onPreAction = (type, action, data) => {
         if (type === ACTION_DISABLE) {
-            let disable = isAdmin() || data[fields.operatorName] === getOrganization()
+            let disable = isAdmin() || data[fields.operatorName] === getOrganization(this)
             return !disable
         }
     }
@@ -96,6 +97,12 @@ class CloudletList extends React.Component {
         return data[fields.infraApiAccess] === 'Restricted' && data[fields.cloudletStatus] !== 2
     }
 
+    canAdd = ()=>{
+        if(validateRole(operatorRoles) && !(isOperator(this) && edgeboxOnly(this)))
+        {
+            return this.onAdd
+        }
+    }
 
     requestInfo = () => {
         return ({
@@ -110,7 +117,7 @@ class CloudletList extends React.Component {
             selection: true,
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
-            onAdd: validateRole(operatorRoles) ? this.onAdd : undefined,
+            onAdd: this.canAdd(),
             viewMode: HELP_CLOUDLET_LIST,
             grouping: true
         })
@@ -222,10 +229,16 @@ class CloudletList extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo : state.organizationInfo.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(CloudletList));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(CloudletList));

@@ -12,6 +12,7 @@ import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
 import { DEVELOPER, OPERATOR, validatePrivateAccess } from '../../constant';
 import { getUserRole } from '../../services/model/format';
+import * as ls from '../../helper/ls';
 
 class Main extends React.Component {
     constructor(props) {
@@ -31,6 +32,7 @@ class Main extends React.Component {
                 if (event.data.isAdmin) {
                     let role = event.data.role
                     localStorage.removeItem('selectOrg')
+                    localStorage.removeItem(ls.LS_ORGANIZATION_INFO)
                     localStorage.setItem('selectRole', role)
                     this.props.handleUserRole(role)
                     this.setState({ userRole: role });
@@ -78,6 +80,7 @@ class Main extends React.Component {
                 let privateAccess = await validatePrivateAccess(this, getUserRole())
                 this.props.handlePrivateAccess(privateAccess)
             }
+            this.props.handleOrganizationInfo(ls.organizationInfo())
             this.props.handleUserRole(getUserRole())
         }
         this.userRoleInfo()
@@ -108,7 +111,8 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
-        handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) }
+        handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) },
+        handleOrganizationInfo: (data) => { dispatch(actions.organizationInfo(data)) }
     };
 };
 

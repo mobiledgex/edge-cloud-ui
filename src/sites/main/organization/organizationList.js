@@ -15,8 +15,9 @@ import { Button, Box, Card, IconButton, Typography, CardHeader } from '@material
 import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { Icon } from 'semantic-ui-react';
-import {ACTION_DELETE, ACTION_DISABLE, ACTION_EDGE_BOX_ENABLE, ACTION_LABEL, ACTION_UPDATE, ACTION_WARNING } from '../../../container/Actions';
+import { ACTION_DELETE, ACTION_DISABLE, ACTION_EDGE_BOX_ENABLE, ACTION_LABEL, ACTION_UPDATE, ACTION_WARNING } from '../../../container/Actions';
 import { sendRequest } from '../monitoring/services/service'
+import { LS_ORGANIZATION_INFO, ls_setOrganizationInfo } from '../../../helper/ls';
 
 class OrganizationList extends React.Component {
     constructor(props) {
@@ -154,6 +155,17 @@ class OrganizationList extends React.Component {
             </Button>)
     }
 
+    cacheOrgInfo = (data, roleInfo) => {
+        let organizationInfo = {}
+        organizationInfo[fields.organizationName] = data[fields.organizationName]
+        organizationInfo[fields.type] = data[fields.type]
+        organizationInfo[fields.edgeboxOnly] = data[fields.edgeboxOnly]
+        organizationInfo[fields.role] = roleInfo[fields.role]
+        organizationInfo[fields.username] = roleInfo[fields.username]
+        this.props.handleOrganizationInfo(organizationInfo)
+        localStorage.setItem(LS_ORGANIZATION_INFO, JSON.stringify(organizationInfo))
+    }
+
     onManage = async (key, data) => {
         if (this.props.roleInfo) {
             let roleInfoList = this.props.roleInfo;
@@ -166,6 +178,7 @@ class OrganizationList extends React.Component {
                     localStorage.setItem('selectOrg', data[fields.organizationName])
                     localStorage.setItem('selectRole', roleInfo.role)
                     this.props.handleUserRole(roleInfo.role)
+                    this.cacheOrgInfo(data, roleInfo)
                     if (this._isMounted) {
                         this.forceUpdate()
                     }
@@ -286,7 +299,8 @@ const mapDispatchProps = (dispatch) => {
         handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
         handleShowAuditLog: (data) => { dispatch(actions.showAuditLog(data)) },
-        handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) }
+        handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) },
+        handleOrganizationInfo: (data) => { dispatch(actions.organizationInfo(data)) }
     };
 };
 
