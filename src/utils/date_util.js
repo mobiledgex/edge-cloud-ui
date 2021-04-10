@@ -1,5 +1,5 @@
 import * as moment from 'moment'
-import {timezonePref} from './sharedPreferences_util'
+import { timezonePref } from './sharedPreferences_util'
 import momentTimezone from "moment-timezone";
 
 export const FORMAT_FULL_DATE = 'YYYY-MM-DD'
@@ -14,39 +14,33 @@ export const FORMAT_FULL_TIME_12_A = `${FORMAT_FULL_TIME_12} ${FORMAT_AM_PM}`
 export const FORMAT_DATE_24_HH_mm = `${FORMAT_FULL_DATE} ${FORMAT_TIME_HH_mm}`
 export const FORMAT_FULL_T_Z = `${FORMAT_FULL_DATE}T${FORMAT_FULL_TIME}Z`
 export const FORMAT_FULL_T = `${FORMAT_FULL_DATE}T${FORMAT_FULL_TIME}`
+export const ONE_DAY = 86400000
 
-export const timezoneName = ()=>
-{
+export const timezoneName = () => {
     return moment.tz.guess()
 }
 
-export const timezoneOffset = ()=>
-{
+export const timezoneOffset = () => {
     return moment().utcOffset()
 }
 
-export const timezones = ()=>
-{
+export const timezones = () => {
     return moment.tz.names()
 }
 
-export const currentTimeInMilli = () =>
-{
+export const currentTimeInMilli = () => {
     return moment().valueOf()
 }
 
-export const timeInMilli = (date) =>
-{
+export const timeInMilli = (date) => {
     return moment.tz(date, timezonePref()).valueOf()
 }
 
-export const convertToUnix = (date) =>
-{
+export const convertToUnix = (date) => {
     return moment(date).unix()
 }
 
-export const convertToTimezone = (date)=>
-{
+export const convertToTimezone = (date) => {
     return date ? moment.tz(date, timezonePref()) : moment.tz(timezonePref())
 }
 
@@ -79,9 +73,12 @@ export const subtractDays = (value, date) => {
     return value ? obj.subtract(value, 'days') : obj.subtract('days')
 }
 
-export const isAfter = (start, end) =>
-{
+export const isAfter = (start, end) => {
     return moment(start).isAfter(end)
+}
+
+export const diff = (start, end) => {
+    return moment(end).diff(start)
 }
 
 export const subtractMins = (value, date, isUtc) => {
