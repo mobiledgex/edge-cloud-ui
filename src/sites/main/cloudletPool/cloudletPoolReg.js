@@ -16,6 +16,7 @@ import { createConfirmation, createInvitation, deleteConfirmation, deleteInvitat
 
 import * as constant from '../../../constant';
 import { HELP_CLOUDLET_POOL_REG_3, HELP_CLOUDLET_POOL_REG_1 } from "../../../tutorial";
+import { ACTION_POOL_ACCESS_ADMIN_CONFIRM, ACTION_POOL_ACCESS_ADMIN_REMOVE } from '../../../container/Actions';
 
 const stepData = [
     {
@@ -38,7 +39,7 @@ class CloudletPoolReg extends React.Component {
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
         this.action = props.action
-        this.isOrgDelete = this.action === constant.DELETE_ORGANIZATION || this.action === constant.ACTION_ADMIN_ACCESS_REMOVE
+        this.isOrgDelete = this.action === constant.DELETE_ORGANIZATION || this.action === ACTION_POOL_ACCESS_ADMIN_REMOVE
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.operatorList = []
         this.organizationList = []
@@ -120,7 +121,7 @@ class CloudletPoolReg extends React.Component {
                 }
             })
             if (valid) {
-                let msg = this.action === constant.ACTION_ADMIN_ACCESS_CONFIRM ? 'Confirmation' : 'Invitation'
+                let msg = this.action === ACTION_POOL_ACCESS_ADMIN_CONFIRM ? 'Confirmation' : 'Invitation'
                 if (mcList.length === 1) {
                     this.props.handleAlertInfo('success', `${msg} created for organization ${data['Org']} successfully by cloudlet pool ${data['CloudletPoolOrg']}`)
                     if (isAdmin()) {
@@ -148,7 +149,7 @@ class CloudletPoolReg extends React.Component {
         }
 
         let msg = 'Invitation'
-        if (this.action === constant.ACTION_ADMIN_ACCESS_REMOVE) {
+        if (this.action === ACTION_POOL_ACCESS_ADMIN_REMOVE) {
             msg = 'Confirmation'
         }
 
@@ -176,10 +177,10 @@ class CloudletPoolReg extends React.Component {
                 newData[fields.operatorOrg] = data[fields.operatorName]
                 let request = undefined
                 switch (this.action) {
-                    case constant.ACTION_ADMIN_ACCESS_REMOVE:
+                    case ACTION_POOL_ACCESS_ADMIN_REMOVE:
                         request = deleteConfirmation
                         break;
-                    case constant.ACTION_ADMIN_ACCESS_CONFIRM:
+                    case ACTION_POOL_ACCESS_ADMIN_CONFIRM:
                         request = createConfirmation
                         break;
                     case constant.ADD_ORGANIZATION:
@@ -228,13 +229,13 @@ class CloudletPoolReg extends React.Component {
                 }
             }
         }
-        else if (this.action === constant.ACTION_ADMIN_ACCESS_CONFIRM) {
+        else if (this.action === ACTION_POOL_ACCESS_ADMIN_CONFIRM) {
             errorMsg = 'No org to confirm'
             this.organizationList = selectedDatas.filter(org => {
                 return org.grant === constant.NO
             })
         }
-        else if (this.action === constant.ACTION_ADMIN_ACCESS_REMOVE) {
+        else if (this.action === ACTION_POOL_ACCESS_ADMIN_REMOVE) {
             this.organizationList = selectedDatas.filter(org => {
                 return org.grant === constant.YES
             })
@@ -245,13 +246,13 @@ class CloudletPoolReg extends React.Component {
         if (this.organizationList.length > 0) {
             let label = 'Invite'
             switch (this.action) {
-                case constant.ACTION_ADMIN_ACCESS_CONFIRM:
+                case ACTION_POOL_ACCESS_ADMIN_CONFIRM:
                     label = 'Confirm'
                     break;
                 case constant.ADD_ORGANIZATION:
                     label = 'Invite'
                     break;
-                case constant.ACTION_ADMIN_ACCESS_REMOVE:
+                case ACTION_POOL_ACCESS_ADMIN_REMOVE:
                 case constant.DELETE_ORGANIZATION:
                     label = 'Remove'
                     break;

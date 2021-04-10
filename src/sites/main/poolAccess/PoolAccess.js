@@ -6,10 +6,10 @@ import * as actions from '../../../actions';
 import { connect } from 'react-redux';
 import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
-import { deleteCloudletPool } from '../../../services/model/cloudletPool';
-import { sendRequest } from '../monitoring/services/service'
+import * as serverData from '../../../services/model/serverData'
 import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/privateCloudletAccess';
 import { Icon } from 'semantic-ui-react';
+import { ACTION_LABEL, ACTION_POOL_ACCESS_DEVELOPER, ACTION_WARNING } from '../../../container/Actions';
 
 class ClouldetPoolList extends React.Component {
     constructor(props) {
@@ -20,29 +20,31 @@ class ClouldetPoolList extends React.Component {
         this.keys = keys();
     }
 
-    onDeleteVisible = (data) => {
-        return data[fields.invite] && data[fields.confirm]
+    onPrePoolAccess = (type, action, data) => {
+        let isRemove = data[fields.invite] && data[fields.confirm]
+        if (type === ACTION_LABEL) {
+            return isRemove ? 'Remove Access' : 'Confirm Access'
+        }
+        else if (type === ACTION_WARNING) {
+            return `${isRemove ? 'remove' : 'confirm'} access to cloudlet pool`
+        }
     }
 
-    onCreateVisible = (data) => {
-        return data[fields.invite] && !data[fields.confirm]
+    onPoolAccess = async (action, data, callback) => {
+        let isRemove = data[fields.invite] && data[fields.confirm]
+        let request = isRemove ? deleteConfirmation : createConfirmation
+        let mc = await serverData.sendRequest(this, request(data))
+        if (mc && mc.response && mc.response.status === 200) {
+            this.props.handleAlertInfo('success', `${isRemove ? 'Access Removed' : 'Access Granted'}`)
+            callback()
+        }
     }
 
-    /**Action menu block */
     actionMenu = () => {
         return [
-            { id: constant.ACTION_POOL_ACCESS_CONFIRM, label: 'Confirm Access', visible: this.onCreateVisible, onClick: createConfirmation },
-            { id: constant.ACTION_POOL_ACCESS_REMOVE, label: 'Remove Access', visible: this.onDeleteVisible, onClick: deleteConfirmation },
+            { id: ACTION_POOL_ACCESS_DEVELOPER, label: this.onPrePoolAccess, warning: this.onPrePoolAccess, onClick: this.onPoolAccess},
         ]
     }
-
-    groupActionMenu = () => {
-        return [
-            { label: 'Delete', onClick: deleteCloudletPool, icon: 'delete', warning: 'delete all the selected cloudlet pool', type: 'Edit' },
-        ]
-    }
-
-    /*Action menu block*/
 
     requestInfo = () => {
         return ({
@@ -59,7 +61,7 @@ class ClouldetPoolList extends React.Component {
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
         )
     }
 

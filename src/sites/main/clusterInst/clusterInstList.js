@@ -15,6 +15,7 @@ import MexListView from '../../../container/MexListView';
 //reg
 import ClusterInstReg from './clusterInstReg';
 import { HELP_CLUSTER_INST_LIST } from "../../../tutorial";
+import { ACTION_DELETE, ACTION_UPDATE } from '../../../container/Actions';
 
 class ClusterInstView extends React.Component {
     constructor(props) {
@@ -54,8 +55,8 @@ class ClusterInstView extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onAdd, visible: this.updateVisible, type: 'Edit' },
-            { label: 'Delete', onClick: deleteClusterInst, dialogMessage: this.getDeleteActionMessage, ws: true, type: 'Edit' }
+            { id: ACTION_UPDATE, label: 'Update', onClick: this.onAdd, visible: this.updateVisible, type: 'Edit' },
+            { id: ACTION_DELETE, label: 'Delete', onClick: deleteClusterInst, dialogMessage: this.getDeleteActionMessage, ws: true, type: 'Edit' }
         ]
     }
 

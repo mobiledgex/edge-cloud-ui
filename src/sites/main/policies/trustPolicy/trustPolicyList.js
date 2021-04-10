@@ -10,6 +10,7 @@ import { keys, fields, showTrustPolicies, deleteTrustPolicy, multiDataRequest } 
 import { showCloudlets } from '../../../../services/model/cloudlet';
 import { HELP_TRUST_POLICY } from "../../../../tutorial";
 import { validateRole, operatorRoles } from '../../../../constant';
+import { ACTION_DELETE, ACTION_UPDATE } from '../../../../container/Actions';
 
 class TrustPolicy extends React.Component {
     constructor(props) {
@@ -48,8 +49,8 @@ class TrustPolicy extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onUpdate, type: 'Edit' },
-            { label: 'Delete', onClick: deleteTrustPolicy, onFinish: this.onDelete, type: 'Edit' }
+            { id: ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
+            { id: ACTION_DELETE, label: 'Delete', onClick: deleteTrustPolicy, onFinish: this.onDelete, type: 'Edit' }
         ]
     }
 

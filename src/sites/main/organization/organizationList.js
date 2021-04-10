@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
 import { fields, isViewer } from '../../../services/model/format';
-import { keys, showOrganizations, deleteOrganization } from '../../../services/model/organization';
+import { keys, showOrganizations, deleteOrganization, edgeboxOnlyAPI } from '../../../services/model/organization';
 import OrganizationReg from './organizationReg';
 import * as serverData from '../../../services/model/serverData'
 import * as shared from '../../../services/model/shared';
@@ -14,7 +14,10 @@ import * as shared from '../../../services/model/shared';
 import { Button, Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core';
 import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-
+import { Icon } from 'semantic-ui-react';
+import { ACTION_DELETE, ACTION_DISABLE, ACTION_EDGE_BOX_ENABLE, ACTION_LABEL, ACTION_UPDATE, ACTION_WARNING } from '../../../container/Actions';
+import { sendRequest } from '../monitoring/services/service'
+import { LS_ORGANIZATION_INFO, ls_setOrganizationInfo } from '../../../helper/ls';
 
 class OrganizationList extends React.Component {
     constructor(props) {
@@ -59,7 +62,7 @@ class OrganizationList extends React.Component {
                     title={
                         <Typography>
                             Create Organization to Run Apps on Telco Edge (Developers)
-                            </Typography>
+                        </Typography>
                     }
                     // subheader="Dynamically scale and deploy applications on Telco Edge geographically close to your end-users. Deploying to MobiledgeX's cloudlets provides applications the advantage of low latency, which can be extremely useful for real-time applications such as Augmented Reality, Mobile Gaming, Self-Driving Cars, Drones, etc."
                     action={
@@ -79,7 +82,7 @@ class OrganizationList extends React.Component {
                     title={
                         <Typography>
                             Create Organization to Host Telco Edge (Operators)
-                            </Typography>
+                        </Typography>
                     }
                     // subheader='Register your cloudlet by providing MobiledgeX with a pool of compute resources and access to the OpenStack API endpoint by specifying a few required parameters, such as dynamic IP addresses, cloudlet names, location of cloudlets, certs, and more, using the Edge-Cloud Console. MobiledgeX relies on this information to remotely access the cloudlets to determine resource requirements as well as dynamically track usage.'
                     action={
@@ -108,12 +111,32 @@ class OrganizationList extends React.Component {
         }
     }
 
+    onEdgebox = async (action, data, callback) => {
+        let mc = await sendRequest(this, edgeboxOnlyAPI(data))
+        if (mc && mc.response && mc.response.status === 200) {
+            this.props.handleAlertInfo('success', `Edgebox ${data[fields.edgeboxOnly] ? 'disabled' : 'enabled'} successfully for organization ${data[fields.organizationName]}`)
+            callback(mc)
+        }
+    }
+
+    onPreEdgebox = (type, action, data) => {
+        switch (type) {
+            case ACTION_LABEL:
+                return data[fields.edgeboxOnly] ? 'Disable Edgebox' : 'Enable Edgebox'
+            case ACTION_WARNING:
+                return `${data[fields.edgeboxOnly] ? 'disable' : 'enable'} edgebox feature for`
+            case ACTION_DISABLE:
+                return data[fields.type].includes(constant.DEVELOPER.toLowerCase())
+        }
+    }
+
     actionMenu = () => {
         return [
             { label: 'Audit', onClick: this.onAudit },
             { label: 'Add User', onClick: this.onAddUser, type: 'Edit' },
-            { label: 'Update', onClick: this.onUpdate, type: 'Edit' },
-            { label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type: 'Edit' }
+            { id: ACTION_EDGE_BOX_ENABLE, label: this.onPreEdgebox, type: 'Edit', warning: this.onPreEdgebox, disable: this.onPreEdgebox, onClick: this.onEdgebox },
+            { id: ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
+            { id: ACTION_DELETE, label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type: 'Edit' }
         ]
     }
 
@@ -132,7 +155,16 @@ class OrganizationList extends React.Component {
             </Button>)
     }
 
-
+    cacheOrgInfo = (data, roleInfo) => {
+        let organizationInfo = {}
+        organizationInfo[fields.organizationName] = data[fields.organizationName]
+        organizationInfo[fields.type] = data[fields.type]
+        organizationInfo[fields.edgeboxOnly] = data[fields.edgeboxOnly]
+        organizationInfo[fields.role] = roleInfo[fields.role]
+        organizationInfo[fields.username] = roleInfo[fields.username]
+        this.props.handleOrganizationInfo(organizationInfo)
+        localStorage.setItem(LS_ORGANIZATION_INFO, JSON.stringify(organizationInfo))
+    }
 
     onManage = async (key, data) => {
         if (this.props.roleInfo) {
@@ -146,6 +178,7 @@ class OrganizationList extends React.Component {
                     localStorage.setItem('selectOrg', data[fields.organizationName])
                     localStorage.setItem('selectRole', roleInfo.role)
                     this.props.handleUserRole(roleInfo.role)
+                    this.cacheOrgInfo(data, roleInfo)
                     if (this._isMounted) {
                         this.forceUpdate()
                     }
@@ -217,11 +250,25 @@ class OrganizationList extends React.Component {
         }
     }
 
+    edgeboxOnly = (data, isDetail) => {
+        let edgeboxOnly = data[fields.edgeboxOnly]
+        let isOperator = data[fields.type].includes(constant.OPERATOR.toLowerCase())
+        if (isDetail) {
+            return edgeboxOnly ? constant.YES : constant.NO
+        }
+        else {
+            return <Icon name={edgeboxOnly ? 'check' : 'close'} style={{ color: isOperator ? edgeboxOnly ? constant.COLOR_GREEN : constant.COLOR_RED : '#9E9E9E' }} />
+        }
+    }
+
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
             if (key.field === fields.manage) {
                 this.getUserRoles(key)
+            }
+            else if (key.field === fields.edgeboxOnly) {
+                key.customizedData = this.edgeboxOnly
             }
         }
     }
@@ -248,10 +295,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
         handleShowAuditLog: (data) => { dispatch(actions.showAuditLog(data)) },
-        handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) }
+        handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) },
+        handleOrganizationInfo: (data) => { dispatch(actions.organizationInfo(data)) }
     };
 };
 

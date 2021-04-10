@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showFlavors, deleteFlavor } from '../../../services/model/flavor';
 import FlavorReg from './flavorReg';
-import {HELP_FLAVOR_LIST} from "../../../tutorial";
+import { HELP_FLAVOR_LIST } from "../../../tutorial";
+import { ACTION_DELETE } from '../../../container/Actions';
 
 class FlavorList extends React.Component {
     constructor(props) {
@@ -19,19 +20,18 @@ class FlavorList extends React.Component {
         this.keys = keys();
     }
 
-    onRegClose = (isEdited)=>
-    {
+    onRegClose = (isEdited) => {
         this.setState({ currentView: null })
     }
 
     onAdd = () => {
-        this.setState({ currentView: <FlavorReg onClose={this.onRegClose}/> });
+        this.setState({ currentView: <FlavorReg onClose={this.onRegClose} /> });
     }
 
     /**Action menu block */
     actionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteFlavor, type:'Edit' }
+            { id: ACTION_DELETE, label: 'Delete', onClick: deleteFlavor, type: 'Edit' }
         ]
     }
 
@@ -48,20 +48,20 @@ class FlavorList extends React.Component {
             id: 'Flavors',
             headerLabel: 'Flavors',
             nameField: fields.flavorName,
-            isRegion:true,
+            isRegion: true,
             requestType: [showFlavors],
             sortBy: [fields.region, fields.flavorName],
-            selection:true,
+            selection: true,
             keys: this.keys,
             onAdd: isAdmin() ? this.onAdd : undefined,
-            viewMode : HELP_FLAVOR_LIST
+            viewMode: HELP_FLAVOR_LIST
         })
     }
 
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu}/>
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu} />
         )
     }
 };

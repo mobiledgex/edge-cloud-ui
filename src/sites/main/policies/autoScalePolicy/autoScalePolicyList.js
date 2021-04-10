@@ -8,6 +8,7 @@ import * as actions from '../../../../actions';
 import AutoScalePolicyReg from './autoScalePolicyReg'
 import { keys, fields, showAutoScalePolicies, deleteAutoScalePolicy } from '../../../../services/model/autoScalePolicy';
 import {HELP_SCALE_POLICY} from "../../../../tutorial";
+import { ACTION_DELETE, ACTION_UPDATE } from '../../../../container/Actions';
 class AutoScalePolicy extends React.Component {
     constructor(props) {
         super(props);
@@ -27,13 +28,13 @@ class AutoScalePolicy extends React.Component {
     }
 
     onUpdate = (action, data) => {
-        this.setState({ currentView: <AutoScalePolicyReg data={data} action='Update' onClose={this.onRegClose}/> })
+        this.setState({ currentView: <AutoScalePolicyReg data={data} action='Update' onClose={this.onRegClose} /> })
     }
 
     actionMenu = () => {
         return [
-            { label: 'Update', onClick: this.onUpdate, type:'Edit' },
-            { label: 'Delete', onClick: deleteAutoScalePolicy, type:'Edit' }
+            { id: ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
+            { id: ACTION_DELETE, label: 'Delete', onClick: deleteAutoScalePolicy, type: 'Edit' }
         ]
     }
 

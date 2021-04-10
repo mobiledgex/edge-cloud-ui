@@ -149,6 +149,7 @@ export const fields = {
     restagmap: 'restagmap',
     powerState: 'powerState',
     tls: 'tls',
+    edgeboxOnly: 'edgeboxOnly',
     userList: 'userList',
     infraApiAccess: 'infraApiAccess',
     infraFlavorName: 'infraFlavorName',

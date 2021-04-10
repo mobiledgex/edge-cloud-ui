@@ -102,3 +102,10 @@ export function privateAccess(isPrivate) {
         isPrivate
     }
 }
+
+export function organizationInfo(data) {
+    return {
+        type: types.ORGANIZATION_INFO,
+        data
+    }
+}

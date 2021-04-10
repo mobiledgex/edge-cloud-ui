@@ -9,6 +9,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { getUserRole } from '../../services/model/format'
 import { StyledTableRow, StyledTableCell, stableSort, getComparator } from './ListConstant'
+import { ACTION_DISABLE, ACTION_LABEL } from '../../container/Actions'
 
 const canEdit = (viewerEdit, action) => {
     let valid = true
@@ -90,6 +91,17 @@ class ListViewer extends React.Component {
         this.columnLength += 1
     }
 
+    actionLabel = (action, data)=>{
+        if(typeof action.label === 'function')
+        {
+            return action.label(ACTION_LABEL, action, data)
+        }
+        else
+        {
+            return action.label
+        }
+    }
+
     actionMenuView = () => {
         const { actionEl, selectedRow } = this.state
         const {viewerEdit} = this.props
@@ -106,7 +118,7 @@ class ListViewer extends React.Component {
                                     <MenuList autoFocusItem={Boolean(actionEl)} id="menu-list-grow" >
                                         {this.actionMenu.map((action, i) => {
                                             let visible = canEdit(viewerEdit, action) ? action.visible ? action.visible(selectedRow) : true : false
-                                            return visible ? <MenuItem key={i} onClick={(e) => { this.actionClose(action) }} disabled={action.disable ? action.disable(selectedRow) : false}>{action.label}</MenuItem> : null
+                                            return visible ? <MenuItem key={i} onClick={(e) => { this.actionClose(action) }} disabled={action.disable ? action.disable(ACTION_DISABLE, action, selectedRow) : false}>{this.actionLabel(action, selectedRow)}</MenuItem> : null
                                         })}
                                     </MenuList>
                                 </ClickAwayListener>
