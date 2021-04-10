@@ -1,11 +1,13 @@
 
 import React from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import * as actions from '../../../../actions';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import {
     MuiPickersUtilsProvider,
-    KeyboardTimePicker,
-    KeyboardDatePicker,
+    KeyboardDateTimePicker,
 } from '@material-ui/pickers';
 import { TextField, Button, Grid, Accordion, AccordionSummary, AccordionDetails, IconButton, Typography, Box, Divider } from '@material-ui/core';
 import * as dateUtil from '../../../../utils/date_util'
@@ -25,9 +27,8 @@ const startDate = dateUtil.subtractMonth(1).valueOf()
 
 const defaultState = () => {
     return {
-        selectedDate: new Date(dateUtil.currentTime(dateUtil.FORMAT_FULL_T)),
-        starttime: new Date(dateUtil.currentTime(dateUtil.FORMAT_FULL_T)),
-        endtime: new Date(dateUtil.currentTime(dateUtil.FORMAT_FULL_T)),
+        startDate: dateUtil.currentDate(),
+        endDate: dateUtil.currentDate(),
         limit: 25,
         renderTags: [],
         hideFilter: false,
@@ -39,7 +40,6 @@ const defaultState = () => {
 const auditHelp = [
     <p>By default audit/event log provides current logs with default limit of 25 which is refreshed at a fixed interval</p>,
     <p>Click on <FilterListRoundedIcon style={{ verticalAlign: -6 }} />  icon to fetch specific data</p>,
-    <p>If startime is greater than endtime, starttime date will be changed to previous day</p>,
     <p>Maximum 24 hours data can be fetched</p>
 ]
 class MaterialUIPickers extends React.Component {
@@ -61,16 +61,12 @@ class MaterialUIPickers extends React.Component {
         })
     };
 
-    handleDateChange = (selectedDate) => {
-        this.setState({ selectedDate });
+    handleStartDate = (startDate) => {
+        this.setState({ startDate });
     };
 
-    handleStartime = (starttime) => {
-        this.setState({ starttime });
-    };
-
-    handleEndtime = (endtime) => {
-        this.setState({ endtime });
+    handleEndDate = (endDate) => {
+        this.setState({ endDate });
     };
 
     handleLimit = (e) => {
@@ -79,35 +75,37 @@ class MaterialUIPickers extends React.Component {
     };
 
     onSubmit = () => {
-        const { selectedDate, starttime, endtime, limit, tags } = this.state
-        let date = moment(selectedDate).format(dateUtil.FORMAT_FULL_DATE)
-        let st = date + ' ' + moment(starttime).format(dateUtil.FORMAT_TIME_HH_mm) + ':00'
-        let et = date + ' ' + moment(endtime).format(dateUtil.FORMAT_TIME_HH_mm) + ':59'
+        const { startDate, endDate, limit, tags } = this.state
+        let st = moment(startDate).format(dateUtil.FORMAT_DATE_24_HH_mm) + ':00'
+        let et = moment(endDate).format(dateUtil.FORMAT_DATE_24_HH_mm) + ':59'
 
         if (dateUtil.isAfter(st, et)) {
-            et, st = st, et
-            st = dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, dateUtil.subtractDays(1, st))
+            this.props.handleAlertInfo('error', 'Start date cannot be greater than end date')
         }
-
-
-        let utcst = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, st)
-        let utcet = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, et)
-
-        let filter = { starttime: utcst, endtime: utcet, limit: limit.length > 0 ? limit : 25 }
-
-        let tagIdList = Object.keys(tags)
-        if (tagIdList.length > 0) {
-            let customTags = {}
-            tagIdList.map(id => {
-                if (tags[id]) {
-                    customTags[tags[id]['key']] = tags[id]['value']
-                }
-            })
-            filter['tags'] = customTags
+        else if(dateUtil.diff(st, et) > dateUtil.ONE_DAY){
+            this.props.handleAlertInfo('error', 'Date difference cannot be greater than one day')
         }
-        this.onHideFilter(true)
-        this.props.onSelectedDate(`${dateUtil.time(dateUtil.FORMAT_DATE_24_HH_mm, st)} - ${dateUtil.time(dateUtil.FORMAT_DATE_24_HH_mm, et)}`)
-        this.props.onFilter(filter)
+        else {
+
+            let utcst = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, st)
+            let utcet = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, et)
+
+            let filter = { starttime: utcst, endtime: utcet, limit: limit.length > 0 ? limit : 25 }
+
+            let tagIdList = Object.keys(tags)
+            if (tagIdList.length > 0) {
+                let customTags = {}
+                tagIdList.map(id => {
+                    if (tags[id]) {
+                        customTags[tags[id]['key']] = tags[id]['value']
+                    }
+                })
+                filter['tags'] = customTags
+            }
+            this.onHideFilter(true)
+            this.props.onSelectedDate(`${dateUtil.time(dateUtil.FORMAT_DATE_24_HH_mm, st)} - ${dateUtil.time(dateUtil.FORMAT_DATE_24_HH_mm, et)}`)
+            this.props.onFilter(filter)
+        }
     }
 
     onClose = (e) => {
@@ -161,7 +159,7 @@ class MaterialUIPickers extends React.Component {
     }
 
     render() {
-        const { selectedDate, starttime, endtime, expanded, limit, renderTags, tags, hideFilter, help } = this.state
+        const { startDate, endDate, expanded, limit, renderTags, tags, hideFilter, help } = this.state
         const { isOrg } = this.props
         return (
             <React.Fragment>
@@ -178,7 +176,7 @@ class MaterialUIPickers extends React.Component {
                         </div>}
                         <div onClick={(e) => { e.stopPropagation() }} align={'center'} style={{ width: '100%', height: 50 }}>
                             <div style={{ position: 'absolute', right: 0, top: 2 }}>
-                                <Help data={auditHelp}/>
+                                <Help data={auditHelp} />
                                 <IconButton onClick={this.onClose}>
                                     <CloseIcon fontSize={'small'} />
                                 </IconButton>
@@ -204,26 +202,39 @@ class MaterialUIPickers extends React.Component {
                             </Box>
                             {hideFilter ? null : <React.Fragment>
                                 <Grid container justify="space-around">
-                                    <div style={{ width: 150 }}>
+                                    <div style={{ width: 170 }}>
                                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                            <KeyboardDatePicker
-                                                disableToolbar
+                                            <KeyboardDateTimePicker
+                                                value={startDate}
+                                                disableFuture
                                                 variant="inline"
-                                                format={"MM/dd/yyyy"}
-                                                margin="normal"
-                                                id="date-picker-inline"
-                                                label="Date"
-                                                autoOk={true}
-                                                value={selectedDate}
-                                                //shouldDisableDate={disableDates}
-                                                onChange={this.handleDateChange}
+                                                onChange={(date) => { this.handleStartDate(date) }}
+                                                label="From"
+                                                format='yyyy/MM/dd HH:mm'
                                                 KeyboardButtonProps={{
-                                                    'aria-label': 'change date',
+                                                    'aria-label': 'change from date',
                                                 }}
                                             />
                                         </MuiPickersUtilsProvider>
                                     </div>
-                                    <div style={{ width: 150, marginTop: 15 }}>
+                                    <div style={{ width: 170 }}>
+                                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                            <KeyboardDateTimePicker
+                                                value={endDate}
+                                                disableFuture
+                                                variant="inline"
+                                                onChange={(date) => { this.handleEndDate(date) }}
+                                                label="To"
+                                                format='yyyy/MM/dd HH:mm'
+                                                KeyboardButtonProps={{
+                                                    'aria-label': 'change to date',
+                                                }}
+                                            />
+                                        </MuiPickersUtilsProvider>
+                                    </div>
+                                </Grid>
+                                <Grid container justify="space-around">
+                                    <div style={{ width: 170, marginTop: 15 }}>
                                         <TextField
                                             label="Limit"
                                             fullWidth
@@ -232,39 +243,8 @@ class MaterialUIPickers extends React.Component {
                                             onChange={this.handleLimit}
                                             placeholder={'Search'} />
                                     </div>
-                                </Grid>
-                                <Grid container justify="space-around">
-                                    <div style={{ width: 150 }}>
-                                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                            <KeyboardTimePicker
-                                                margin="normal"
-                                                id="time-picker"
-                                                variant="inline"
-                                                label="Start Time"
-                                                autoOk={true}
-                                                value={starttime}
-                                                onChange={this.handleStartime}
-                                                KeyboardButtonProps={{
-                                                    'aria-label': 'change time',
-                                                }}
-                                            />
-                                        </MuiPickersUtilsProvider>
-                                    </div>
-                                    <div style={{ width: 150 }}>
-                                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                            <KeyboardTimePicker
-                                                margin="normal"
-                                                id="time-picker"
-                                                variant="inline"
-                                                label="End Time"
-                                                autoOk={true}
-                                                value={endtime}
-                                                onChange={this.handleEndtime}
-                                                KeyboardButtonProps={{
-                                                    'aria-label': 'change time',
-                                                }}
-                                            />
-                                        </MuiPickersUtilsProvider>
+                                    <div style={{ width: 160 }}>
+
                                     </div>
                                 </Grid>
                                 <Box display="flex" p={1}>
@@ -299,4 +279,10 @@ class MaterialUIPickers extends React.Component {
     };
 }
 
-export default MaterialUIPickers
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+    };
+};
+
+export default withRouter(connect(null, mapDispatchProps)(MaterialUIPickers));
