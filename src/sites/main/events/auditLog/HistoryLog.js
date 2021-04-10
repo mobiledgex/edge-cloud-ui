@@ -22,13 +22,10 @@ import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 import moment from 'moment'
 import Help from './Help'
 
-const endDate = dateUtil.currentTimeInMilli()
-const startDate = dateUtil.subtractMonth(1).valueOf()
-
 const defaultState = () => {
     return {
-        startDate: dateUtil.currentDate(),
-        endDate: dateUtil.currentDate(),
+        startDate: `${dateUtil.time(dateUtil.FORMAT_FULL_DATE, dateUtil.currentDate())} 00:00:00`,
+        endDate: `${dateUtil.time(dateUtil.FORMAT_FULL_DATE, dateUtil.currentDate())} 23:59:59`,
         limit: 25,
         renderTags: [],
         hideFilter: false,
@@ -111,11 +108,6 @@ class MaterialUIPickers extends React.Component {
     onClose = (e) => {
         this.props.onClose()
         e.stopPropagation();
-    }
-
-    disableDates = (date) => {
-        let time = date.getTime()
-        return time < startDate || time > endDate
     }
 
     onTagsChange = (uuid, key, value) => {
