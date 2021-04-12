@@ -3,20 +3,17 @@ import Login from './login';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import { LOCAL_STRAGE_KEY, LS_REGIONS, LS_USER_META_DATA, PAGE_ORGANIZATIONS } from '../../constant';
-import { GridLoader } from "react-spinners";
+import  Spinner from '../../hoc/loader/Spinner';
 import MexAlert from '../../hoc/alert/AlertDialog';
 import './style.css'
-let self = null;
 class EntranceGlobe extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             signup: false,
             mexAlertMessage: undefined
         }
-        self = this;
     }
 
     componentDidMount() {
@@ -28,6 +25,10 @@ class EntranceGlobe extends Component {
         else if (this.props.match.path === '/passwordreset') {
             this.props.handleChangeLoginMode('resetPass')
         }
+        else if(localStorage.getItem(LOCAL_STRAGE_KEY))
+        {
+            this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
+        }
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -37,29 +38,21 @@ class EntranceGlobe extends Component {
             props.handleAlertInfo(undefined, undefined);
             return { mexAlertMessage: alertInfo }
         }
-        
         if (props.match.path === '/passwordreset') {
             return null
-        }
-        else if (localStorage.getItem(LOCAL_STRAGE_KEY)) {
-            props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
-        }
-        else if (props.loginMode === 'login' && props.user.userToken) {
-            props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
         }
         return null
     }
 
-    handleClickLogin(mode) {
-        self.setState({ signup: mode === 'signup'}, ()=>{
-            self.props.handleChangeLoginMode(mode)
+    handleClickLogin = (mode) => {
+        this.setState({ signup: mode === 'signup' }, () => {
+            this.props.handleChangeLoginMode(mode)
         })
     }
 
-    onSignUp = ()=>
-    {
-        this.setState({signup:false})
-        self.props.handleChangeLoginMode('signuped')
+    onSignUp = () => {
+        this.setState({ signup: false })
+        this.props.handleChangeLoginMode('signuped')
     }
 
     render() {
@@ -72,22 +65,14 @@ class EntranceGlobe extends Component {
                 <div style={{ position: 'absolute', width: '100%', height: '100vh', justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
                     <div className='login_head' >
                         <div className='intro_login'>
-                            <img src='/assets/brand/MobiledgeX_Logo_tm_white.svg' width={200} alt="MobiledgeX"/>
+                            <img src='/assets/brand/MobiledgeX_Logo_tm_white.svg' width={200} alt="MobiledgeX" />
                             <Login location={this.props.location} history={this.props.history} signup={this.state.signup} onSignUp={this.onSignUp}></Login>
                         </div>
                     </div>
                 </div>
                 {this.state.mexAlertMessage ?
                     <MexAlert data={this.state.mexAlertMessage} onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
-                {(self.props.loadingSpinner == true) ?
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                        <GridLoader
-                            sizeUnit={"px"}
-                            size={25}
-                            color={'#70b2bc'}
-                            loading={self.props.loadingSpinner}
-                        />
-                    </div> : null}
+                <Spinner/>
             </div>
         )
     }
@@ -95,10 +80,8 @@ class EntranceGlobe extends Component {
 function mapStateToProps(state) {
     return {
         user: state.user,
-        userInfo: state.userInfo ? state.userInfo : null,
         loginMode: state.loginMode ? state.loginMode.mode : null,
-        alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg },
-        loadingSpinner: state.loadingSpinner.loading ? state.loadingSpinner.loading : null,
+        alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg }
     }
 }
 const mapDispatchProps = (dispatch) => {
