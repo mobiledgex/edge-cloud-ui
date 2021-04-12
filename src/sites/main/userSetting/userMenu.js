@@ -2,22 +2,19 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as serverData from '../../../services/model/serverData';
 import Profile from './profile';
 import UpdatePassword from './updatePassword';
 import Preferences from './preferences/preferences';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import { IconButton, ListItemText, Menu, MenuItem } from '@material-ui/core';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
-import { LS_USER_META_DATA } from '../../../constant';
 import { getOrganization, isAdmin } from '../../../services/model/format';
 
 class UserMenu extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            anchorEl: null,
-            userInfo: {}
+            anchorEl: null
         }
         this._isMounted = false
     }
@@ -41,7 +38,8 @@ class UserMenu extends React.Component {
     }
 
     render() {
-        const { anchorEl, userInfo } = this.state
+        const { anchorEl } = this.state
+        const { userInfo } = this.props
         return (
             <div style={{ marginTop: '0.4em' }}>
                 <IconButton aria-label="user-menu" aria-haspopup="true" onClick={this.handleClick}>
@@ -66,20 +64,9 @@ class UserMenu extends React.Component {
         )
     }
 
-    currentUser = async () => {
-        let mc = await serverData.currentUser(this);
-        if (mc && mc.response && mc.response.data) {
-            if (this._isMounted) {
-                this.setState({ userInfo: mc.response.data }, () => {
-                    localStorage.setItem(LS_USER_META_DATA, this.state.userInfo.Metadata)
-                })
-            }
-        }
-    }
-
     componentDidMount() {
         this._isMounted = true
-        this.currentUser()
+        console.log('Rahul1234', 'Mounted')
     }
 
     componentWillUnmount() {
@@ -87,6 +74,11 @@ class UserMenu extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        userInfo: state.userInfo.data
+    }
+};
 
 const mapDispatchProps = (dispatch) => {
     return {
@@ -94,4 +86,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(UserMenu));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(UserMenu));

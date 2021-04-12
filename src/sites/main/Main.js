@@ -13,13 +13,30 @@ import '../../css/introjs-dark.css';
 import { DEVELOPER, OPERATOR, validatePrivateAccess } from '../../constant';
 import { getUserRole } from '../../services/model/format';
 import * as ls from '../../helper/ls';
+import { sendRequest } from './monitoring/services/service'
+import { currentUser } from '../../services/model/serverData';
 
+const LoadSpinner = (props) => {
+    const { loadingSpinner } = props
+    return (
+        loadingSpinner ?
+            <div className="loadingBox" style={{ zIndex: 9999 }}>
+                <GridLoader
+                    sizeUnit={"px"}
+                    size={25}
+                    color={'#70b2bc'}
+                    loading={loadingSpinner}
+                />
+            </div> : null
+    )
+}
 class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             userRole: null,
-            mexAlertMessage: undefined
+            mexAlertMessage: undefined,
+            tokenValid: false
         };
         this.worker = new RoleWorker();
     }
@@ -55,18 +72,12 @@ class Main extends React.Component {
     }
 
     render() {
+        const { tokenValid } = this.state
+        const { loadingSpinner } = this.props
         return (
             <div className='view_body'>
-                {(this.props.loadingSpinner == true) ?
-                    <div className="loadingBox" style={{ zIndex: 9999 }}>
-                        <GridLoader
-                            sizeUnit={"px"}
-                            size={25}
-                            color={'#70b2bc'}
-                            loading={this.props.loadingSpinner}
-                        />
-                    </div> : null}
-                <Menu />
+                <LoadSpinner loadingSpinner={loadingSpinner} />
+                {tokenValid ? <Menu /> : null}
                 {this.state.mexAlertMessage ?
                     <MexAlert data={this.state.mexAlertMessage}
                         onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
@@ -86,9 +97,20 @@ class Main extends React.Component {
         this.userRoleInfo()
     }
 
+    validateToken = async () => {
+        let mc = await currentUser(this)
+        if (mc && mc.response && mc.response.status === 200) {
+            let userInfo = mc.response.data
+            localStorage.setItem(ls.LS_USER_META_DATA, userInfo.Metadata)
+            this.props.handleUserInfo(userInfo)
+            this.setState({ tokenValid: true })
+            this.validateRole()
+        }
+    }
+
     componentDidMount() {
         this.props.handleUserRole(undefined)
-        this.validateRole()
+        this.validateToken()
     }
 
     componentWillUnmount() {
@@ -112,7 +134,8 @@ const mapDispatchProps = (dispatch) => {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
         handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) },
-        handleOrganizationInfo: (data) => { dispatch(actions.organizationInfo(data)) }
+        handleOrganizationInfo: (data) => { dispatch(actions.organizationInfo(data)) },
+        handleUserInfo: (data) => { dispatch(actions.userInfo(data)) },
     };
 };
 

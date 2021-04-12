@@ -17,7 +17,7 @@ import { fields } from '../../services/model/format';
 import ReCAPTCHA from "react-google-recaptcha";
 import { CURRENT_USER } from '../../services/model/endpoints';
 import LoginForm from './LoginForm'
-import { Checkbox, FormControlLabel } from '@material-ui/core';
+
 
 const host = window.location.host;
 let self = null;
@@ -308,8 +308,6 @@ class Login extends Component {
     validateUserName = (username) => {
         if (username !== localStorage.getItem('userInfo')) {
             localStorage.setItem('userInfo', self.state.username)
-            // localStorage.removeItem('selectOrg')
-            // localStorage.removeItem('selectRole')
         }
     }
 
@@ -317,6 +315,7 @@ class Login extends Component {
         if (data.token) {
             let mc = await serviceMC.sendSyncRequest(this, { method: CURRENT_USER, token: data.token })
             if (mc && mc.response && mc.response.status === 200) {
+                console.log('Rahul1234', mc)
                 localStorage.setItem(LS_USER_META_DATA, mc.response.data.Metadata)
                 this.params['userToken'] = data.token
                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(this.params))
