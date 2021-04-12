@@ -9,10 +9,10 @@ export function viewMode(mode) {
     };
 }
 
-export function userInfo(info) {
+export function userInfo(data) {
     return {
         type: types.USER_INFO,
-        info
+        data
     }
 }
 

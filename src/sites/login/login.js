@@ -1,13 +1,12 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Button, Input, Icon, Grid } from 'semantic-ui-react'
+import { Container, Button, Input, Grid } from 'semantic-ui-react'
 import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import { LOCAL_STRAGE_KEY, LS_REGIONS, LS_USER_META_DATA } from '../../constant'
+import { LOCAL_STRAGE_KEY } from '../../constant'
 import { PAGE_ORGANIZATIONS } from '../../constant'
 import * as serverData from '../../services/model/serverData';
-import * as serviceMC from '../../services/model/serviceMC';
 import RegistryUserForm from './signup';
 import MexOTPRegistration from './otp/MexOTPRegistration';
 import MexOTPValidation from './MexOTPValidation';
@@ -15,9 +14,8 @@ import ResetPasswordForm from '../main/userSetting/updatePassword';
 import PublicIP from 'public-ip';
 import { fields } from '../../services/model/format';
 import ReCAPTCHA from "react-google-recaptcha";
-import { CURRENT_USER } from '../../services/model/endpoints';
 import LoginForm from './LoginForm'
-import { Checkbox, FormControlLabel } from '@material-ui/core';
+
 
 const host = window.location.host;
 let self = null;
@@ -226,7 +224,7 @@ class Login extends Component {
     }
 
     createUser = async (data) => {
-        let mcRequest = await serverData.createUser(self, {
+        let mc = await serverData.createUser(self, {
             name: data[fields.username],
             passhash: data[fields.password],
             email: data[fields.email],
@@ -239,10 +237,10 @@ class Login extends Component {
             },
             EnableTOTP: data[fields.otp],
         })
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                let request = mcRequest.request;
+        if (mc) {
+            if (mc.response) {
+                let response = mc.response;
+                let request = mc.request;
                 if (request.data.EnableTOTP) {
                     this.setState({ totp: { requestData: request.data, responseData: response.data } })
                 }
@@ -293,37 +291,11 @@ class Login extends Component {
         this.props.handleChangeLoginMode('login')
     }
 
-    getControllers = async (token) => {
-        let mcRequest = await serverData.controllers(self, token)
-        if (mcRequest && mcRequest.response && mcRequest.response.data) {
-            let data = mcRequest.response.data
-            let regions = []
-            data.map((data) => {
-                regions.push(data.Region)
-            })
-            localStorage.setItem(LS_REGIONS, regions)
-        }
-    }
-
-    validateUserName = (username) => {
-        if (username !== localStorage.getItem('userInfo')) {
-            localStorage.setItem('userInfo', self.state.username)
-            // localStorage.removeItem('selectOrg')
-            // localStorage.removeItem('selectRole')
-        }
-    }
-
-    fetchInitDataBeforeLogin = async (username, data) => {
+    loadMainPage = (data) => {
         if (data.token) {
-            let mc = await serviceMC.sendSyncRequest(this, { method: CURRENT_USER, token: data.token })
-            if (mc && mc.response && mc.response.status === 200) {
-                localStorage.setItem(LS_USER_META_DATA, mc.response.data.Metadata)
-                this.params['userToken'] = data.token
-                localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(this.params))
-                this.getControllers(data.token)
-                this.validateUserName(username)
-                this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
-            }
+            this.params['userToken'] = data.token
+            localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(this.params))
+            this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
         }
     }
 
@@ -332,18 +304,14 @@ class Login extends Component {
             email: username,
             password: password,
         }
-
-        let mcRequest = await serverData.login(self, { username, password })
-        if (mcRequest && mcRequest.response) {
-            let response = mcRequest.response;
-            if (response.data) {
-                this.fetchInitDataBeforeLogin(username, response.data)
-            }
+        let mc = await serverData.login(self, { username, password })
+        if (mc && mc.response && mc.response.status === 200) {
+            this.loadMainPage(mc.response.data)
         }
-        else if (mcRequest && mcRequest.error) {
-            let response = mcRequest.error.response
+        else if (mc && mc.error) {
+            let response = mc.error.response
             if (response.status === 511) {
-                this.setState({ loginOTP: mcRequest.request.data })
+                this.setState({ loginOTP: mc.request.data })
             }
             else {
                 let errorMessage = 'Invalid username/password'
@@ -419,22 +387,18 @@ class Login extends Component {
     onOTPValidation = async (otp) => {
         let data = this.state.loginOTP
         let username = data.username
-        let mcRequest = await serverData.login(self, { username: username, password: data.password, totp: otp })
-        if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-            let response = mcRequest.response;
-            if (response.data.token) {
-                self.params['userToken'] = response.data.token
-                this.getControllers(response.data.token)
-                localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
-                this.validateUserName(username)
-                this.props.history.push(`/main/pg=${PAGE_ORGANIZATIONS.toLowerCase()}`)
+        let mc = await serverData.login(this, { username: username, password: data.password, totp: otp })
+        if (mc && mc.response && mc.response.status === 200) {
+            let data = mc.response.data;
+            if (data.token) {
+                this.loadMainPage(data)
                 this.setState({ loginOTP: undefined })
             }
         }
-        else if (mcRequest && mcRequest.error) {
-            let response = mcRequest.error.response
+        else if (mc && mc.error) {
+            let response = mc.error.response
             if (response.status === 511) {
-                this.setState({ loginOTP: mcRequest.request.data })
+                this.setState({ loginOTP: mc.request.data })
             }
             else {
                 let errorMessage = 'Invalid username/password'

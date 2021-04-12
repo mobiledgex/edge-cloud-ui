@@ -105,16 +105,6 @@ export const sendVerify = async (self, data) => {
     return valid
 }
 
-export const currentUser = async (self) => {
-    let mcRequest = await sendRequest(self, { method: CURRENT_USER })
-    return mcRequest
-}
-
-export const controllers = async (self, token) => {
-    let mcRequest = await serviceMC.sendSyncRequest(self, { method: SHOW_CONTROLLER, token: token })
-    return mcRequest
-}
-
 export const verifyEmail = async (self, data) => {
     let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: VERIFY_EMAIL, data: data })
     return mcRequest

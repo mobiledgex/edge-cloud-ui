@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
-import {edgeboxOnly, getOrganization, isOperator} from '../../../reducers/organizationInfo'
+import { edgeboxOnly, getOrganization, isOperator } from '../../../reducers/organizationInfo'
 
 import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
@@ -18,7 +18,7 @@ import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 import { getCloudletManifest, revokeAccessKey } from '../../../services/model/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import { customizedTrusted } from '../../../constantUI';
-import { ACTION_DISABLE, ACTION_DELETE, ACTION_UPDATE } from '../../../container/Actions';
+import { ACTION_DISABLE, ACTION_DELETE, ACTION_UPDATE, ACTION_MANIFEST } from '../../../container/Actions';
 class CloudletList extends React.Component {
     constructor(props) {
         super(props);
@@ -81,9 +81,9 @@ class CloudletList extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: ACTION_UPDATE, disable: this.onPreAction, onClick: this.onAdd, type: 'Edit' },
-            { label: ACTION_DELETE, disable: this.onPreAction, onClick: deleteCloudlet, ws: true, type: 'Edit' },
-            { label: 'Show Manifest', visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest }
+            { id: ACTION_UPDATE, label: 'Update', disable: this.onPreAction, onClick: this.onAdd, type: 'Edit' },
+            { id: ACTION_DELETE, label: 'Delete', disable: this.onPreAction, onClick: deleteCloudlet, ws: true, type: 'Edit' },
+            { id: ACTION_MANIFEST, label: 'Show Manifest', disable: this.onPreAction, visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest }
         ]
     }
 
@@ -97,9 +97,8 @@ class CloudletList extends React.Component {
         return data[fields.infraApiAccess] === 'Restricted' && data[fields.cloudletStatus] !== 2
     }
 
-    canAdd = ()=>{
-        if(validateRole(operatorRoles) && !(isOperator(this) && edgeboxOnly(this)))
-        {
+    canAdd = () => {
+        if (validateRole(operatorRoles) && !(isOperator(this) && edgeboxOnly(this))) {
             return this.onAdd
         }
     }
@@ -231,7 +230,7 @@ class CloudletList extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo : state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data
     }
 };
 
