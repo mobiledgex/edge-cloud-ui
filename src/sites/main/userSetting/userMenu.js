@@ -66,7 +66,6 @@ class UserMenu extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
-        console.log('Rahul1234', 'Mounted')
     }
 
     componentWillUnmount() {

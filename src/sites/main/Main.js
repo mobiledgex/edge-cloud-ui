@@ -2,64 +2,26 @@ import React from 'react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import { GridLoader } from "react-spinners";
+import Spinner from '../../hoc/loader/Spinner'
 import RoleWorker from '../../services/worker/role.worker.js'
 import { sendAuthRequest } from '../../services/model/serverWorker';
 import MexAlert from '../../hoc/alert/AlertDialog';
-import { SHOW_ROLE } from '../../services/model/endpoints';
+import { CURRENT_USER, SHOW_ROLE, SHOW_CONTROLLER } from '../../services/model/endpoints';
 import Menu from './Menu'
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
-import { DEVELOPER, OPERATOR, validatePrivateAccess } from '../../constant';
+import { LS_REGIONS, OPERATOR, validatePrivateAccess } from '../../constant';
 import { getUserRole } from '../../services/model/format';
 import * as ls from '../../helper/ls';
-import { sendRequest } from './monitoring/services/service'
-import { currentUser } from '../../services/model/serverData';
-
-const LoadSpinner = (props) => {
-    const { loadingSpinner } = props
-    return (
-        loadingSpinner ?
-            <div className="loadingBox" style={{ zIndex: 9999 }}>
-                <GridLoader
-                    sizeUnit={"px"}
-                    size={25}
-                    color={'#70b2bc'}
-                    loading={loadingSpinner}
-                />
-            </div> : null
-    )
-}
+import { sendMultiRequest } from './monitoring/services/service'
 class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            userRole: null,
             mexAlertMessage: undefined,
             tokenValid: false
         };
         this.worker = new RoleWorker();
-    }
-
-    roleResponse = (mc) => {
-        if (mc && mc.response && mc.response.status === 200) {
-            let dataList = mc.response.data;
-            this.worker.postMessage({ data: dataList })
-            this.worker.addEventListener('message', (event) => {
-                if (event.data.isAdmin) {
-                    let role = event.data.role
-                    localStorage.removeItem('selectOrg')
-                    localStorage.removeItem(ls.LS_ORGANIZATION_INFO)
-                    localStorage.setItem('selectRole', role)
-                    this.props.handleUserRole(role)
-                    this.setState({ userRole: role });
-                }
-            });
-        }
-    }
-
-    userRoleInfo = () => {
-        sendAuthRequest(this, { method: SHOW_ROLE }, this.roleResponse)
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -73,44 +35,75 @@ class Main extends React.Component {
 
     render() {
         const { tokenValid } = this.state
-        const { loadingSpinner } = this.props
         return (
             <div className='view_body'>
-                <LoadSpinner loadingSpinner={loadingSpinner} />
+                <Spinner />
                 {tokenValid ? <Menu /> : null}
-                {this.state.mexAlertMessage ?
-                    <MexAlert data={this.state.mexAlertMessage}
-                        onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
+                {this.state.mexAlertMessage ? <MexAlert data={this.state.mexAlertMessage} onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
             </div>
         );
     }
 
-    validateRole = async () => {
-        if (getUserRole().includes(OPERATOR) || getUserRole().includes(DEVELOPER)) {
-            if (getUserRole().includes(OPERATOR)) {
-                let privateAccess = await validatePrivateAccess(this, getUserRole())
-                this.props.handlePrivateAccess(privateAccess)
+    validateAdmin = (dataList) => {
+        this.worker.postMessage({ data: dataList })
+        this.worker.addEventListener('message', async (event) => {
+            if (event.data.isAdmin) {
+                let role = event.data.role
+                localStorage.removeItem('selectOrg')
+                localStorage.removeItem(ls.LS_ORGANIZATION_INFO)
+                localStorage.setItem('selectRole', role)
+                this.props.handleUserRole(role)
             }
-            this.props.handleOrganizationInfo(ls.organizationInfo())
-            this.props.handleUserRole(getUserRole())
-        }
-        this.userRoleInfo()
+            else {
+                if (getUserRole().includes(OPERATOR)) {
+                    let privateAccess = await validatePrivateAccess(this, getUserRole())
+                    this.props.handlePrivateAccess(privateAccess)
+                }
+                this.props.handleOrganizationInfo(ls.organizationInfo())
+                this.props.handleUserRole(getUserRole())
+            }
+        });
     }
 
-    validateToken = async () => {
-        let mc = await currentUser(this)
-        if (mc && mc.response && mc.response.status === 200) {
-            let userInfo = mc.response.data
-            localStorage.setItem(ls.LS_USER_META_DATA, userInfo.Metadata)
-            this.props.handleUserInfo(userInfo)
-            this.setState({ tokenValid: true })
-            this.validateRole()
+    loadInitData = async () => {
+        this.props.handleLoadingSpinner(true)
+        let requestList = []
+        requestList.push({ method: CURRENT_USER })
+        requestList.push({ method: SHOW_CONTROLLER })
+        requestList.push({ method: SHOW_ROLE })
+
+        let mcList = await sendMultiRequest(this, requestList)
+
+        if (mcList && mcList.length > 0) {
+            mcList.map(mc => {
+                if (mc.response && mc.response.status === 200) {
+                    let request = mc.request
+                    let data = mc.response.data
+                    if (request.method === CURRENT_USER) {
+                        localStorage.setItem(ls.LS_USER_META_DATA, data.Metadata)
+                        this.props.handleUserInfo(data)
+                    }
+                    else if (request.method === SHOW_ROLE) {
+                        this.validateAdmin(data)
+                    }
+                    else if (request.method === SHOW_CONTROLLER) {
+                        let regions = data.map(item => { return item.Region })
+                        localStorage.setItem(LS_REGIONS, regions)
+                        this.props.handleRegionInfo(regions)
+                    }
+                }
+            })
+            if (this.props.userInfo) {
+                this.setState({ tokenValid: true })
+            }
         }
+
+        this.props.handleLoadingSpinner(false)
     }
 
     componentDidMount() {
         this.props.handleUserRole(undefined)
-        this.validateToken()
+        this.loadInitData()
     }
 
     componentWillUnmount() {
@@ -119,12 +112,10 @@ class Main extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    let viewMode = (state.ViewMode) ? state.ViewMode.mode : null;
     return {
-        userInfo: state.userInfo ? state.userInfo : null,
-        loadingSpinner: state.loadingSpinner.loading ? state.loadingSpinner.loading : null,
+        userInfo: state.userInfo ? state.userInfo.data : null,
         alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg },
-        viewMode: viewMode
+        viewMode: state.ViewMode ? state.ViewMode.mode : null
     }
 };
 
@@ -136,6 +127,7 @@ const mapDispatchProps = (dispatch) => {
         handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) },
         handleOrganizationInfo: (data) => { dispatch(actions.organizationInfo(data)) },
         handleUserInfo: (data) => { dispatch(actions.userInfo(data)) },
+        handleRegionInfo: (data) => { dispatch(actions.regionInfo(data)) },
     };
 };
 
