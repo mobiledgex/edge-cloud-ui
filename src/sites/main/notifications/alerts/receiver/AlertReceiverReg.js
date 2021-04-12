@@ -8,7 +8,6 @@ import * as actions from '../../../../../actions';
 import { fields, getOrganization, getUserRole, isAdmin } from '../../../../../services/model/format';
 //model
 import { createAlertReceiver } from '../../../../../services/model/alerts';
-import { currentUser } from '../../../../../services/model/serverData';
 import { sendRequests } from '../../../../../services/model/serverWorker'
 import * as constant from '../../../../../constant'
 import * as endpoints from '../../../../../services/model/endpoints'
@@ -52,7 +51,7 @@ class FlavorReg extends React.Component {
         this.clusterInstList = []
     }
 
-    validatePageDutyVersion = (form)=>{
+    validatePageDutyVersion = (form) => {
         if (form.value.length !== 32) {
             form.error = 'PagerDuty Integration Key must contain 32 characters'
             return false;
@@ -75,7 +74,7 @@ class FlavorReg extends React.Component {
             { field: fields.alertname, label: 'Alert Name', formType: INPUT, placeholder: 'Enter Alert Name', rules: { required: true }, visible: true, tip: 'Unique name of this receiver' },
             { field: fields.type, label: 'Receiver Type', formType: SELECT, placeholder: 'Select Receiver Type', rules: { required: true }, visible: true, tip: 'Receiver type - email, or slack' },
             { uuid: uuid(), field: fields.slack, label: 'Slack', formType: INPUT, rules: { required: true }, visible: false, forms: this.slackForm(), tip: 'Slack channel to be receiving the alert\nSlack webhook url' },
-            { field: fields.pagerDutyIntegrationKey, label: 'PagerDuty Integration Key', formType: INPUT, placeholder: 'Enter PagerDuty integration key', rules: { required: true}, visible: false, dataValidateFunc:this.validatePageDutyVersion },
+            { field: fields.pagerDutyIntegrationKey, label: 'PagerDuty Integration Key', formType: INPUT, placeholder: 'Enter PagerDuty integration key', rules: { required: true }, visible: false, dataValidateFunc: this.validatePageDutyVersion },
             { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true }, visible: false, tip: 'Email address receiving the alert (by default email associated with the account)' },
             { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true }, visible: true, tip: 'Alert severity level - one of "info", "warning", "error"' },
             { field: fields.selector, label: 'Selector', formType: SELECT, placeholder: 'Select Selector', rules: { required: true, disabled: true }, visible: true, tip: 'Selector for which you want to receive alerts' },
@@ -359,10 +358,7 @@ class FlavorReg extends React.Component {
             await this.loadDefaultData(data)
         }
         else {
-            let mc = await currentUser(this)
-            if (mc && mc.response && mc.response.status === 200) {
-                this.email = mc.response.data.Email
-            }
+            this.email = this.props.userInfo.Email
         }
 
         let forms = this.formKeys()
@@ -487,6 +483,12 @@ class FlavorReg extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        userInfo: state.userInfo.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
@@ -495,4 +497,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(FlavorReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(FlavorReg));

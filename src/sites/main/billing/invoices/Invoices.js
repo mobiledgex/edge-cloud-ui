@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react'
-import { GridLoader } from 'react-spinners';
+import Spinner from '../../../../hoc/loader/Spinner';
 import { PAGE_INVOICES } from '../../../../constant';
 
 import MexListView from '../../../../container/MexListView';
@@ -59,14 +59,7 @@ class Invoices extends React.Component {
         return (
             <React.Fragment>
                 {currentView ? currentView : <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} />}
-                <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                    <GridLoader
-                        sizeUnit={"px"}
-                        size={25}
-                        color={'#70b2bc'}
-                        loading={true}
-                    />
-                </div>}>
+                <Suspense fallback={<Spinner loading={true}/>}>
                     <Invoice data={invoice} close={this.onClose} />
                 </Suspense>
             </React.Fragment>

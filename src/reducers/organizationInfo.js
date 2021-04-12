@@ -35,7 +35,7 @@ export const isOperator = (self) => {
 export const getOrganization = (self) => {
     let info = getObject(self)
     if (info) {
-        return info[fields.organizationCount]
+        return info[fields.organizationName]
     }
 }
 
