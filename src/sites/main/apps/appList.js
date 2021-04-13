@@ -81,7 +81,7 @@ class AppList extends React.Component {
 
     showYesNo = (data, isDetailView) => {
         if (isDetailView) {
-            return data[fields.scaleWithCluster] ? YES : NO
+            return data[fields.scaleWithCluster] ? constant.YES : constant.NO
         }
     }
 

@@ -89,7 +89,7 @@ class ClusterInstView extends React.Component {
    **/
     showYesNo = (data, isDetailView) => {
         if (isDetailView) {
-            return data[fields.reservable] ? YES : NO
+            return data[fields.reservable] ? constant.YES : constant.NO
         }
     }
 
