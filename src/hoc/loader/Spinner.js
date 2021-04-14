@@ -6,7 +6,7 @@ const Loader = (props) => {
     const loading = props.loading ? props.loading : useSelector(state => state.loadingSpinner.loading);
     return (
         loading ?
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }} >
+            <div style={{ position:'fixed', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', width:'100vw', zIndex:9999 }} >
                 <GridLoader
                     sizeUnit={"px"}
                     size={25}
