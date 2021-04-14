@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import Login from './login';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import { LOCAL_STRAGE_KEY, LS_REGIONS, LS_USER_META_DATA, PAGE_ORGANIZATIONS } from '../../constant';
+import { ADMIN, LOCAL_STRAGE_KEY, LS_REGIONS, LS_USER_META_DATA, PAGE_ORGANIZATIONS } from '../../constant';
 import  Spinner from '../../hoc/loader/Spinner';
 import MexAlert from '../../hoc/alert/AlertDialog';
 import './style.css'
+import { getUserRole } from '../../services/model/format';
 class EntranceGlobe extends Component {
 
     constructor(props) {
@@ -21,6 +22,11 @@ class EntranceGlobe extends Component {
             localStorage.removeItem(LOCAL_STRAGE_KEY);
             localStorage.removeItem(LS_USER_META_DATA);
             localStorage.removeItem(LS_REGIONS);
+            if(getUserRole().includes(ADMIN))
+            {
+                localStorage.removeItem('selectRole');
+                localStorage.removeItem('selectOrg');
+            }
         }
         else if (this.props.match.path === '/passwordreset') {
             this.props.handleChangeLoginMode('resetPass')
