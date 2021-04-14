@@ -20,6 +20,7 @@ const getRequestData = (data) => {
         CloudletPool: data[fields.poolName],
         CloudletPoolOrg: data[fields.operatorOrg],
         Org: data[fields.developerOrg],
+        Decision: data[fields.decision],
     }
 }
 
@@ -27,6 +28,7 @@ export const createInvitation = (data) => {
     return { method: CREATE_POOL_ACCESS_INVITATION, data: getRequestData(data), success: 'Invitation Created' }
 }
 export const createConfirmation = (data) => {
+    data[fields.decision] = 'accept'
     return { method: CREATE_POOL_ACCESS_CONFIRMATION, data: getRequestData(data), success: 'Access Granted' }
 }
 
