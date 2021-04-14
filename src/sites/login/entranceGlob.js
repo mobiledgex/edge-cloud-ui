@@ -21,6 +21,10 @@ class EntranceGlobe extends Component {
             localStorage.removeItem(LOCAL_STRAGE_KEY);
             localStorage.removeItem(LS_USER_META_DATA);
             localStorage.removeItem(LS_REGIONS);
+            if(getUserRole().includes(ADMIN))
+            {
+                localStorage.removeItem('selectRole');
+            }
         }
         else if (this.props.match.path === '/passwordreset') {
             this.props.handleChangeLoginMode('resetPass')
