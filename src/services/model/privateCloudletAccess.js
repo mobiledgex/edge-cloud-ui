@@ -9,6 +9,7 @@ export const keys = () => ([
     { field: fields.poolName, serverField: 'CloudletPool', label: 'Pool Name', sortable: true, visible: true, filter: true, key: true },
     { field: fields.operatorOrg, serverField: 'CloudletPoolOrg', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
     { field: fields.developerOrg, serverField: 'Org', label: 'Developer', sortable: true, visible: true, key: true },
+    { field: fields.decision, serverField: 'Decision', label: 'Decision', sortable: false, visible: false, key: false },
     { field: fields.invite, label: 'Invitation', visible: true },
     { field: fields.confirm, label: 'Confirmation', visible: true },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
@@ -28,7 +29,6 @@ export const createInvitation = (data) => {
     return { method: CREATE_POOL_ACCESS_INVITATION, data: getRequestData(data), success: 'Invitation Created' }
 }
 export const createConfirmation = (data) => {
-    data[fields.decision] = 'accept'
     return { method: CREATE_POOL_ACCESS_CONFIRMATION, data: getRequestData(data), success: 'Access Granted' }
 }
 
@@ -83,8 +83,9 @@ export const multiDataRequest = (keys, mcList) => {
             confirmationList.forEach(confirmation => {
                 let exist = false
                 dataList.forEach(data => {
-                    if (data[fields.poolName] === confirmation[fields.poolName]) {
+                    if (data[fields.poolName] === confirmation[fields.poolName] && data[fields.developerOrg] === confirmation[fields.developerOrg] &&  data[fields.operatorOrg] === confirmation[fields.operatorOrg]) {
                         data.confirm = true
+                        data.decision = confirmation[fields.decision]
                         exist = true
                     }
                 })
