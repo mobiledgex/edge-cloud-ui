@@ -118,6 +118,7 @@ export const fields = {
     developerOrg: 'developerOrg',
     invite: 'invite',
     confirm: 'confirm',
+    decision:'decision',
     grant: 'grant',
     clusterinst: 'clusterinst',
     container_ids: 'container_ids',
