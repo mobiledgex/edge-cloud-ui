@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields, isViewer } from '../../../services/model/format';
+import { fields, isAdmin, isViewer } from '../../../services/model/format';
 import { keys, showOrganizations, deleteOrganization, edgeboxOnlyAPI } from '../../../services/model/organization';
 import OrganizationReg from './organizationReg';
 import * as serverData from '../../../services/model/serverData'
@@ -130,11 +130,15 @@ class OrganizationList extends React.Component {
         }
     }
 
+    edgeboxOnlyVisibility = (data)=>{
+        return isAdmin()
+    }
+
     actionMenu = () => {
         return [
             { label: 'Audit', onClick: this.onAudit },
             { label: 'Add User', onClick: this.onAddUser, type: 'Edit' },
-            { id: ACTION_EDGE_BOX_ENABLE, label: this.onPreEdgebox, type: 'Edit', warning: this.onPreEdgebox, disable: this.onPreEdgebox, onClick: this.onEdgebox },
+            { id: ACTION_EDGE_BOX_ENABLE, label: this.onPreEdgebox, visible:this.edgeboxOnlyVisibility, type: 'Edit', warning: this.onPreEdgebox, disable: this.onPreEdgebox, onClick: this.onEdgebox },
             { id: ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
             { id: ACTION_DELETE, label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type: 'Edit' }
         ]
