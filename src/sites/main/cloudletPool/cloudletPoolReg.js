@@ -38,7 +38,7 @@ class CloudletPoolReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
-        this.action = props.action
+        this.action = props.action ? props.action : constant.ADD_ORGANIZATION
         this.isOrgDelete = this.action === constant.DELETE_ORGANIZATION || this.action === ACTION_POOL_ACCESS_ADMIN_REMOVE
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.operatorList = []
