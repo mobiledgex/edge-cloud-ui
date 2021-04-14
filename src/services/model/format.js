@@ -456,15 +456,20 @@ export const formatEventData = (response, body, keys) => {
                 let series = dataList[0].Series
                 let messages = dataList[0].messages
                 if (series && series.length > 0) {
-                    formattedData = series.map(data => {
+                    for(let data of series)
+                    {
                         let formatted = {}
                         let formattingData = {}
                         let key = data.name
+                        if(key === 'clusterinst-checkpoints')
+                        {
+                            continue
+                        }
                         formattingData.columns = formatColumns(data.columns, keys)
                         formattingData.values = groupByCompare(data.values, formattingData.columns, body.region)
                         formatted[key] = formattingData
-                        return formatted
-                    })
+                        formattedData.push(formatted)
+                    }
 
                 }
             }
