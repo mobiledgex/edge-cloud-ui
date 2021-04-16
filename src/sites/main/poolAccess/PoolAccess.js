@@ -23,7 +23,7 @@ class ClouldetPoolList extends React.Component {
     onPrePoolAccess = (type, action, data) => {
         let isRemove = data[fields.confirm]
         if (type === ACTION_LABEL) {
-            return isRemove ? 'Delete' : 'Confirm'
+            return isRemove ? 'Delete' : 'Accept'
         }
         else if (type === ACTION_WARNING) {
             return `${isRemove ? 'delete confirmation for' : 'accept invitation to'} cloudlet pool`

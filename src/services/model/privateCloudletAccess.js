@@ -10,7 +10,7 @@ export const keys = () => ([
     { field: fields.developerOrg, serverField: 'Org', label: 'Developer', sortable: true, visible: true, key: true },
     { field: fields.decision, serverField: 'Decision', label: 'Decision', sortable: false, visible: false, key: false },
     { field: fields.invite, label: 'Invitation', visible: true },
-    { field: fields.confirm, label: 'Confirmation', visible: true },
+    { field: fields.confirm, label: 'Accepted', visible: true },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
