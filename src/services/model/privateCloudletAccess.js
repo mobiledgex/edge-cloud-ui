@@ -1,4 +1,4 @@
-import { CREATE_POOL_ACCESS_CONFIRMATION, CREATE_POOL_ACCESS_INVITATION, DELETE_POOL_ACCESS_CONFIRMATION, DELETE_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_CONFIRMATION, SHOW_POOL_ACCESS_GRANTED, SHOW_POOL_ACCESS_INVITATION } from "./endPointTypes"
+import { CREATE_POOL_ACCESS_CONFIRMATION, CREATE_POOL_ACCESS_INVITATION, DELETE_POOL_ACCESS_CONFIRMATION, DELETE_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_CONFIRMATION, SHOW_POOL_ACCESS_GRANTED, SHOW_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_PENDING } from "./endPointTypes"
 import * as formatter from './format'
 
 const fields = formatter.fields
@@ -8,8 +8,6 @@ export const keys = () => ([
     { field: fields.poolName, serverField: 'CloudletPool', label: 'Pool Name', sortable: true, visible: true, filter: true, key: true },
     { field: fields.operatorOrg, serverField: 'CloudletPoolOrg', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
     { field: fields.developerOrg, serverField: 'Org', label: 'Developer', sortable: true, visible: true, key: true },
-    { field: fields.decision, serverField: 'Decision', label: 'Decision', sortable: false, visible: false, key: false },
-    { field: fields.invite, label: 'Invitation', visible: true },
     { field: fields.confirm, label: 'Accepted', visible: true },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
@@ -54,9 +52,14 @@ export const accessGranted = (data) => {
     return { method: SHOW_POOL_ACCESS_GRANTED, data }
 }
 
+export const accessPending = (data) => {
+    data = data ? data : {}
+    return { method: SHOW_POOL_ACCESS_PENDING, data }
+}
+
 export const multiDataRequest = (keys, mcList) => {
-    let invitationList = []
-    let confirmationList = []
+    let pendingList = []
+    let grantedList = []
     let dataList = []
     if (mcList && mcList.length > 0) {
         mcList.forEach(mc => {
@@ -64,34 +67,24 @@ export const multiDataRequest = (keys, mcList) => {
             let response = mc.response
             if (response && response.status === 200) {
                 let data = response.data
-                if (request.method === SHOW_POOL_ACCESS_CONFIRMATION) {
-                    confirmationList = data
+                if (request.method === SHOW_POOL_ACCESS_GRANTED) {
+                    grantedList = data
                 }
-                else if (request.method === SHOW_POOL_ACCESS_INVITATION) {
-                    invitationList = data
+                else if (request.method === SHOW_POOL_ACCESS_PENDING) {
+                    pendingList = data
                 }
             }
         })
 
-        if (invitationList.length > 0) {
-            invitationList.forEach(invitation => {
-                dataList.push({ ...invitation, invite: true })
+        if (pendingList.length > 0) {
+            pendingList.forEach(pending => {
+                dataList.push({ ...pending, confirm: false })
             })
         }
-        if (confirmationList.length > 0) {
-            confirmationList.forEach(confirmation => {
-                let exist = false
-                dataList.forEach(data => {
-                    if (data[fields.poolName] === confirmation[fields.poolName] && data[fields.developerOrg] === confirmation[fields.developerOrg] &&  data[fields.operatorOrg] === confirmation[fields.operatorOrg]) {
-                        data.confirm = true
-                        data.decision = confirmation[fields.decision]
-                        exist = true
-                    }
-                })
 
-                if (!exist) {
-                    dataList.push({ ...confirmation, confirm: true })
-                }
+        if (grantedList.length > 0) {
+            grantedList.forEach(granted => {
+                dataList.push({ ...granted, confirm: true })
             })
         }
     }

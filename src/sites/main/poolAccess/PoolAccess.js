@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 import * as serverData from '../../../services/model/serverData'
-import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/privateCloudletAccess';
+import { keys, accessGranted, accessPending, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/privateCloudletAccess';
 import { Icon } from 'semantic-ui-react';
 import { ACTION_LABEL, ACTION_POOL_ACCESS_DEVELOPER, ACTION_WARNING, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../../../container/Actions';
 
@@ -23,16 +23,16 @@ class ClouldetPoolList extends React.Component {
     onPrePoolAccess = (type, action, data) => {
         let isRemove = data[fields.confirm]
         if (type === ACTION_LABEL) {
-            return isRemove ? 'Delete' : 'Accept'
+            return isRemove ? 'Reject' : 'Accept'
         }
         else if (type === ACTION_WARNING) {
-            return `${isRemove ? 'delete confirmation for' : 'accept invitation to'} cloudlet pool`
+            return `${isRemove ? 'reject invitation for' : 'accept invitation to'} cloudlet pool`
         }
     }
 
     onPoolAccess = async (action, data, callback) => {
         let isRemove = data[fields.confirm]
-        data[fields.decision] = !isRemove && action.id === ACTION_POOL_ACCESS_DEVELOPER_REJECT ? 'reject' : 'accept'
+        data[fields.decision] = 'accept'
         let request = isRemove ? deleteConfirmation : createConfirmation
         let mc = await serverData.sendRequest(this, request(data))
         if (mc && mc.response && mc.response.status === 200) {
@@ -49,7 +49,6 @@ class ClouldetPoolList extends React.Component {
     actionMenu = () => {
         return [
             { id: ACTION_POOL_ACCESS_DEVELOPER, label: this.onPrePoolAccess, warning: this.onPrePoolAccess, onClick: this.onPoolAccess },
-            { id: ACTION_POOL_ACCESS_DEVELOPER_REJECT, label: 'Reject', visible: this.onRejectVisible, warning:'reject invitation to cloudlet pool', onClick: this.onPoolAccess },
         ]
     }
 
@@ -58,7 +57,7 @@ class ClouldetPoolList extends React.Component {
             id: constant.PAGE_POOL_ACCESS,
             headerLabel: 'Cloudlet Pools',
             nameField: fields.poolName,
-            requestType: [showConfirmation, showInvitation],
+            requestType: [accessGranted, accessPending],
             sortBy: [fields.poolName],
             selection: true,
             keys: this.keys
@@ -72,30 +71,24 @@ class ClouldetPoolList extends React.Component {
         )
     }
 
-    access = (data, isDetailView, decision) => {
+    access = (data, isDetailView) => {
         if (isDetailView) {
             return constant.showYesNo(data, isDetailView)
         }
         else {
-            return <Icon style={{color:`${data ? decision === 'accept' ? constant.COLOR_GREEN : constant.COLOR_RED : 'grey'}`}} name={`${data ? decision === 'accept' ? 'check' : 'close' : 'question'}`} />
+            return <Icon style={{color:`${data ? constant.COLOR_GREEN : constant.COLOR_RED}`}} name={`${data ? 'check' : 'close'}`} />
         }
     }
 
-    formatInvite = (data, isDetailView) => {
-        return this.access(data[fields.invite], isDetailView, 'accept')
-    }
-
+    
     formatConfirm = (data, isDetailView) => {
-        return this.access(data[fields.confirm], isDetailView, data[fields.decision])
+        return this.access(data[fields.confirm], isDetailView)
     }
 
     customizedData = () => {
         for (let i = 0; i < this.keys.length; i++) {
             let key = this.keys[i]
-            if (key.field === fields.invite) {
-                key.customizedData = this.formatInvite
-            }
-            else if (key.field === fields.confirm) {
+            if (key.field === fields.confirm) {
                 key.customizedData = this.formatConfirm
             }
         }
