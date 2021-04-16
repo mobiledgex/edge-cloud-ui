@@ -154,7 +154,7 @@ class AppReg extends React.Component {
     /**Deployment manifest block */
 
     portForm = () => ([
-        { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number', min:1 }, width: 7, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
+        { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 7, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
         { field: fields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
         { field: fields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: true, width: 3, update: { edit: true } },
@@ -176,9 +176,9 @@ class AppReg extends React.Component {
     }
 
     multiPortForm = () => ([
-        { field: fields.portRangeMin, label: 'Port Min', formType: INPUT, rules: { required: true, type: 'number', min:1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
+        { field: fields.portRangeMin, label: 'Port Min', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
-        { field: fields.portRangeMax, label: 'Port Max', formType: INPUT, rules: { required: true, type: 'number', min:1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
+        { field: fields.portRangeMax, label: 'Port Max', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
         { field: fields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
         { field: fields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: true, width: 3, update: { edit: true } },
@@ -201,7 +201,7 @@ class AppReg extends React.Component {
 
     outboundConnectionsForm = () => ([
         { field: fields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp', 'icmp'], update: { edit: true } },
-        { field: fields.ocPort, label: 'Port', formType: INPUT, rules: { required: true, type: 'number', min:1 }, width: 5, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
+        { field: fields.ocPort, label: 'Port', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 5, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
         { field: fields.ocRemoteIP, label: 'Remote IP', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: this.validateRemoteIP },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
     ])
@@ -556,6 +556,23 @@ class AppReg extends React.Component {
         }
     }
 
+    updRangeExceeds = (udpPorts) => {
+        let ports = new Set()
+        udpPorts.forEach(udp => {
+            if (Array.isArray(udp)) {
+                let min = parseInt(udp[0])
+                let max = parseInt(udp[1])
+                for (let i = min; i <= max; i++) {
+                    ports.add(i)
+                }
+            }
+            else {
+                ports.add(parseInt(udp))
+            }
+        })
+        return ports.size > 1000
+    }
+
     onCreate = async (data) => {
         if (data) {
             let forms = this.state.forms;
@@ -564,6 +581,7 @@ class AppReg extends React.Component {
             let annotations = ''
             let requiredOutboundConnections = []
             let configs = []
+            let udpPorts = []
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
                 if (form.uuid) {
@@ -581,6 +599,9 @@ class AppReg extends React.Component {
                                     skipHCPorts = skipHCPorts + newPort
                                 }
                             }
+                            else if (multiFormData[fields.protocol] === 'udp') {
+                                udpPorts.push([multiFormData[fields.portRangeMin], multiFormData[fields.portRangeMax]])
+                            }
                         }
                         else if (multiFormData[fields.portRangeMax]) {
                             ports = ports.length > 0 ? ports + ',' : ports
@@ -592,6 +613,9 @@ class AppReg extends React.Component {
                                     skipHCPorts = skipHCPorts.length > 0 ? skipHCPorts + ',' : skipHCPorts
                                     skipHCPorts = skipHCPorts + newPort
                                 }
+                            }
+                            else if (multiFormData[fields.protocol] === 'udp') {
+                                udpPorts.push(multiFormData[fields.portRangeMax])
                             }
                         }
                         else if (form.field === fields.deploymentManifest && multiFormData[fields.deploymentManifest]) {
@@ -617,11 +641,12 @@ class AppReg extends React.Component {
                     data[uuid] = undefined
                 }
             }
+
             if ((data[fields.imagePath] && data[fields.imagePath].length > 0) || (data[fields.deploymentManifest] && data[fields.deploymentManifest].length > 0)) {
                 if (ports.length > 0) {
                     data[fields.accessPorts] = ports
                     data[fields.skipHCPorts] = skipHCPorts.length > 0 ? skipHCPorts : undefined
-                    
+
                     if (annotations.length > 0) {
                         data[fields.annotations] = annotations
                     }
@@ -630,6 +655,17 @@ class AppReg extends React.Component {
                     }
                     if (requiredOutboundConnections.length > 0) {
                         data[fields.requiredOutboundConnections] = requiredOutboundConnections
+                    }
+                    if (udpPorts.length > 0 && this.updRangeExceeds(udpPorts)) {
+                        let ports = data[fields.accessPorts].split(',')
+                        ports = ports.map(port => {
+                            if (port.includes('UDP')) {
+                                port = `${port}:nginx`
+                            }
+                            return port
+                        })
+
+                        data[fields.accessPorts] = ports.join()
                     }
                     if (this.isUpdate) {
                         let autoProvPolicies = data[fields.autoProvPolicies]
@@ -973,7 +1009,7 @@ class AppReg extends React.Component {
             await this.loadDefaultData(forms, data)
         }
         else {
-            this.organizationList = await getOrganizationList(this)
+            this.organizationList = await getOrganizationList(this, {type:constant.DEVELOPER})
         }
 
         forms.push(

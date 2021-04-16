@@ -354,7 +354,10 @@ class MexListView extends React.Component {
                 if (key.filter) {
                     filterCount = + 1
                     let tempData = data[key.field] ? data[key.field] : ''
-                    return tempData.toLowerCase().includes(this.filterText)
+                    if(typeof tempData === 'string')
+                    {
+                        return tempData.toLowerCase().includes(this.filterText)
+                    }
                 }
             })
             return filterCount === 0 || valid.includes(true)

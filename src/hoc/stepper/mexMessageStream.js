@@ -6,6 +6,7 @@ import { green, red } from '@material-ui/core/colors';
 import * as serverData from '../../services/model/serverData';
 import { fields } from '../../services/model/format';
 import cloneDeep from 'lodash/cloneDeep';
+import isEqual from 'lodash/isEqual';
 
 export const CODE_FINISH = 100;
 export const CODE_SUCCESS = 200;
@@ -263,7 +264,7 @@ class VerticalStepper extends React.Component {
         if (this.body.current && this.props.uuid !== 0) {
             this.body.current.scrollTop = this.body.current.scrollHeight;
         }
-        if (prevProps.dataList !== this.props.dataList) {
+        if (!isEqual(prevProps.dataList,  this.props.dataList)) {
             this.streamProgress()
         }
     }
