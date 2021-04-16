@@ -552,6 +552,7 @@ export const legendRoles =
         Manager: {
             'Users & Roles': 'Manage',
             'Cloudlets': 'View',
+            'Cloudlet Pools': 'Manage',
             'Flavors': 'View',
             'Cluster Instances': 'Manage',
             'Apps': 'Manage',
@@ -563,6 +564,7 @@ export const legendRoles =
         Contributor: {
             'Users & Roles': 'View',
             'Cloudlets': 'View',
+            'Cloudlet Pools': 'disabled',
             'Flavors': 'View',
             'Cluster Instances': 'Manage',
             'Apps': 'Manage',
@@ -574,6 +576,7 @@ export const legendRoles =
         Viewer: {
             'Users & Roles': 'View',
             'Cloudlets': 'View',
+            'Cloudlet Pools': 'disabled',
             'Flavors': 'View',
             'Cluster Instances': 'View',
             'Apps': 'View',
@@ -587,6 +590,7 @@ export const legendRoles =
         Manager: {
             'Users & Roles': 'Manage',
             'Cloudlets': 'Manage',
+            'Cloudlet Pools': 'Manage',
             'Flavors': 'disabled',
             'Cluster Instances': 'disabled',
             'Apps': 'disabled',
@@ -598,6 +602,7 @@ export const legendRoles =
         Contributor: {
             'Users & Roles': 'View',
             'Cloudlets': 'Manage',
+            'Cloudlet Pools': 'Manage',
             'Flavors': 'disabled',
             'Cluster Instances': 'disabled',
             'Apps': 'disabled',
@@ -609,6 +614,7 @@ export const legendRoles =
         Viewer: {
             'Users & Roles': 'View',
             'Cloudlets': 'View',
+            'Cloudlet Pools': 'disabled',
             'Flavors': 'disabled',
             'Cluster Instances': 'disabled',
             'Apps': 'disabled',
