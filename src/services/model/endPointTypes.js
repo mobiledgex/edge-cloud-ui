@@ -79,6 +79,7 @@ export const SHOW_POOL_ACCESS_CONFIRMATION = 'cloudletpoolaccessresponse/show'
 export const CREATE_POOL_ACCESS_CONFIRMATION = 'cloudletpoolaccessresponse/create'
 export const DELETE_POOL_ACCESS_CONFIRMATION = 'cloudletpoolaccessresponse/delete'
 export const SHOW_POOL_ACCESS_GRANTED = 'cloudletpoolaccessgranted/show'
+export const SHOW_POOL_ACCESS_PENDING = 'cloudletpoolaccesspending/show'
 export const SHOW_ORG_CLOUDLET = "orgcloudlet/show";
 export const SHOW_ORG_CLOUDLET_INFO = "orgcloudletinfo/show";
 export const RUN_COMMAND = "RunCommand";
@@ -159,6 +160,7 @@ export function getPath(request) {
         case CREATE_POOL_ACCESS_CONFIRMATION:
         case DELETE_POOL_ACCESS_CONFIRMATION:
         case SHOW_POOL_ACCESS_GRANTED:
+        case SHOW_POOL_ACCESS_PENDING:
         case EDGEBOX_ONLY:
             return `/api/v1/auth/${request.method}`;
         case DELETE_ORG:
@@ -319,6 +321,7 @@ export function formatData(request, response) {
         case SHOW_POOL_ACCESS_CONFIRMATION:
         case SHOW_POOL_ACCESS_INVITATION:
         case SHOW_POOL_ACCESS_GRANTED:
+        case SHOW_POOL_ACCESS_PENDING:
             data = poolAccess.getData(response, request.data)
             break;
         case INVOICE_BILLING:
