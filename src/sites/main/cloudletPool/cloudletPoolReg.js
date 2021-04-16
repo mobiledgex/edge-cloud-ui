@@ -9,7 +9,6 @@ import * as serverData from '../../../services/model/serverData';
 import { fields, getOrganization, getUserRole, isAdmin, updateFieldData } from '../../../services/model/format';
 
 import { getOrganizationList } from '../../../services/model/organization';
-import { showOrganizations } from '../../../services/model/organization';
 import { getOrgCloudletList } from '../../../services/model/cloudlet';
 import { createCloudletPool, updateCloudletPool } from '../../../services/model/cloudletPool';
 import { createConfirmation, createInvitation, deleteConfirmation, deleteInvitation } from '../../../services/model/privateCloudletAccess';
@@ -212,8 +211,6 @@ class CloudletPoolReg extends React.Component {
             })
     }
 
-
-
     selectOrganization = async (data, isNew) => {
         let region = data[fields.region];
         let operator = data[fields.operatorName];
@@ -221,12 +218,9 @@ class CloudletPoolReg extends React.Component {
         let errorMsg = 'No org to remove'
         if (!this.props.action || this.action === constant.ADD_ORGANIZATION) {
             errorMsg = 'No org to invite'
-            let mcRequest = await serverData.sendRequest(this, showOrganizations())
-            if (mcRequest && mcRequest.response) {
-                this.organizationList = mcRequest.response.data
-                if (!isNew) {
-                    this.organizationList = constant.filterData(selectedDatas, this.organizationList, fields.organizationName);
-                }
+            this.organizationList = await getOrganizationList(this, { type: constant.DEVELOPER })
+            if (!isNew) {
+                this.organizationList = constant.filterData(selectedDatas, this.organizationList, fields.organizationName);
             }
         }
         else if (this.action === ACTION_POOL_ACCESS_ADMIN_CONFIRM) {
@@ -413,15 +407,10 @@ class CloudletPoolReg extends React.Component {
             await this.loadDefaultData(data)
         }
         else {
-            this.organizationList = await getOrganizationList(this)
-
-            this.operatorList = []
-            for (let i = 0; i < this.organizationList.length; i++) {
-                let organization = this.organizationList[i]
-                if (organization[fields.type] === 'operator' || getOrganization()) {
-                    this.operatorList.push(organization[fields.organizationName])
-                }
-            }
+            let orgList = await getOrganizationList(this, { type: constant.OPERATOR })
+            this.operatorList = orgList.map(org => {
+                return org[fields.organizationName]
+            })
         }
 
         if (this.props.org) {

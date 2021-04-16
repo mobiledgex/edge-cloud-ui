@@ -670,14 +670,10 @@ class CloudletReg extends React.Component {
             }
         }
         else {
-            let organizationList = await getOrganizationList(this)
-            this.operatorList = []
-            for (let i = 0; i < organizationList.length; i++) {
-                let organization = organizationList[i]
-                if (organization[fields.type] === 'operator' || getOrganization()) {
-                    this.operatorList.push(organization[fields.organizationName])
-                }
-            }
+            let organizationList = await getOrganizationList(this, {type:constant.OPERATOR})
+            this.operatorList = organizationList.map(org=>{
+                return org[fields.organizationName]
+            })
         }
         forms.push(
             { label: this.isUpdate ? 'Update' : 'Create', formType: 'Button', onClick: this.onCreate, validate: true },

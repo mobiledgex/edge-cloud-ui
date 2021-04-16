@@ -629,7 +629,7 @@ class ClusterInstReg extends React.Component {
             await this.loadDefaultData(forms, data)
         }
         else {
-            this.organizationList = await getOrganizationList(this)
+            this.organizationList = await getOrganizationList(this, { type: constant.DEVELOPER })
         }
 
         forms.push(
