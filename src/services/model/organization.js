@@ -75,12 +75,15 @@ export const edgeboxOnlyAPI = (data) => {
     return { method: EDGEBOX_ONLY, data: requestData }
 }
 
-const customData = (value) => {
-    value[fields.publicImages] = value[fields.publicImages] ? constant.YES : constant.NO
-    if (value[fields.type] === constant.OPERATOR.toLowerCase()) {
-        value[fields.edgeboxOnly] = value[fields.edgeboxOnly] ? value[fields.edgeboxOnly] : false
+const customData = (value, requestData) => {
+    let type = requestData ? requestData[fields.type] : undefined
+    if (type === undefined || value[fields.type] === type.toLowerCase()) {
+        value[fields.publicImages] = value[fields.publicImages] ? constant.YES : constant.NO
+        if (value[fields.type] === constant.OPERATOR.toLowerCase()) {
+            value[fields.edgeboxOnly] = value[fields.edgeboxOnly] ? value[fields.edgeboxOnly] : false
+        }
+        return value
     }
-    return value
 }
 
 export const getData = (response, body) => {

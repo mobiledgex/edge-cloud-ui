@@ -292,7 +292,7 @@ export const formatData = (response, body, keys, customData, isUnique) => {
                     map(value, data, keys)
                     if (body && value.region === undefined) { value.region = body.region }
                     value.uuid = (isUnique) ? generateUUID(keys, value) : uuid()
-                    let newValue = customData ? customData(value) : value
+                    let newValue = customData ? customData(value, body) : value
                     if (newValue) {
                         values.push(newValue)
                     }
