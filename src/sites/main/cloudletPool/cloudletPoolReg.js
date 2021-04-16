@@ -180,6 +180,7 @@ class CloudletPoolReg extends React.Component {
                         request = deleteConfirmation
                         break;
                     case ACTION_POOL_ACCESS_ADMIN_CONFIRM:
+                        newData.decision = 'accept'
                         request = createConfirmation
                         break;
                     case constant.ADD_ORGANIZATION:
