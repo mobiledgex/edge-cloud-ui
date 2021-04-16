@@ -1,5 +1,5 @@
 import * as formatter from './format'
-import { SHOW_CLOUDLET_POOL, CREATE_CLOUDLET_POOL, DELETE_CLOUDLET_POOL, UPDATE_CLOUDLET_POOL, SHOW_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_GRANTED } from './endPointTypes'
+import { SHOW_CLOUDLET_POOL, CREATE_CLOUDLET_POOL, DELETE_CLOUDLET_POOL, UPDATE_CLOUDLET_POOL, SHOW_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_GRANTED, SHOW_POOL_ACCESS_PENDING } from './endPointTypes'
 import * as constant from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
 import isEqual from 'lodash/isEqual';
@@ -60,7 +60,7 @@ const formatInvitation = (poolList, invitationList) => {
 
 export const multiDataRequest = (keys, mcList) => {
     let poolList = [];
-    let invitationList = [];
+    let pendingList = [];
     let grantList = []
     for (let i = 0; i < mcList.length; i++) {
         let mc = mcList[i];
@@ -68,27 +68,32 @@ export const multiDataRequest = (keys, mcList) => {
         if (request.method === SHOW_CLOUDLET_POOL) {
             poolList = mc.response.data
         }
-        else if (request.method === SHOW_POOL_ACCESS_INVITATION) {
-            invitationList = mc.response.data
+        else if (request.method === SHOW_POOL_ACCESS_PENDING) {
+            pendingList = mc.response.data
         }
         else if (request.method === SHOW_POOL_ACCESS_GRANTED) {
             grantList = mc.response.data
         }
     }
 
-    if (invitationList.length > 0) {
-        invitationList.forEach(invitation => {
-            invitation[fields.grant] = 'No'
-            for(let grant of grantList){
-                if (isEqual(omit(invitation, [fields.uuid, fields.grant]), omit(grant, [fields.uuid]))) {
-                    invitation[fields.grant] = 'Yes'
-                    break;
-                }
-            }
+    let dataList = []
+
+    if (pendingList.length > 0) {
+        dataList = pendingList.map(pending => {
+            pending[fields.grant] = 'No'
+            return pending
         })
     }
+
+    if (grantList.length > 0) {
+        dataList = grantList.map(grant => {
+            grant[fields.grant] = 'Yes'
+            return grant
+        })
+    }
+
     if (poolList && poolList.length > 0) {
-        formatInvitation(poolList, invitationList)
+        formatInvitation(poolList, dataList)
     }
     return poolList;
 }
