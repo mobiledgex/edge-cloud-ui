@@ -663,16 +663,6 @@ class AppReg extends React.Component {
                             valid = false
                             this.props.handleAlertInfo('error', 'Maximum 1000 UDP ports are allowed for deployment type kubernetes app')
                         }
-                        else {
-                            let ports = data[fields.accessPorts].split(',')
-                            ports = ports.map(port => {
-                                if (port.includes('UDP')) {
-                                    port = `${port}:nginx`
-                                }
-                                return port
-                            })
-                            data[fields.accessPorts] = ports.join()
-                        }
                     }
                     if (valid) {
                         if (this.isUpdate) {
