@@ -21,11 +21,15 @@ class ClouldetPoolList extends React.Component {
     }
 
     onAdd = () => {
-        this.setState({ currentView: <CloudletPoolReg onClose={() => this.setState({ currentView: null })} /> });
+        this.setState({ currentView: <CloudletPoolReg  onClose={() => this.setState({ currentView: null })} /> });
     }
 
     /**Action menu block */
     onActionClick = (action, data) => {
+        this.setState({ currentView: <CloudletPoolReg data={data} isUpdate={action ? true : false} action={action.id} onClose={() => this.setState({ currentView: null })} /> });
+    }
+
+    onOrgActionClick = (action, data) => {
         this.setState({ currentView: <CloudletPoolReg data={data} org={true} isUpdate={action ? true : false} action={action.id} onClose={() => this.setState({ currentView: null })} /> });
     }
 
@@ -45,11 +49,11 @@ class ClouldetPoolList extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: constant.ADD_CLOUDLET, label: 'Update', onClick: this.onActionClick, type:'Edit' },
-            { id: constant.ADD_ORGANIZATION, label: 'Invite Organization', onClick: this.onActionClick, type:'Edit' },
-            { id: constant.DELETE_ORGANIZATION, label: 'Remove Organization', onClick: this.onActionClick, type:'Edit' },
-            { id: ACTION_POOL_ACCESS_ADMIN_CONFIRM, label: 'Confirm Access', visible: this.onConfirmVisible, onClick: this.onActionClick, type:'Edit'  },
-            { id: ACTION_POOL_ACCESS_ADMIN_REMOVE, label: 'Remove Access', visible: this.onConfirmVisible, onClick: this.onActionClick, type:'Edit'  },
+            { id: constant.ADD_CLOUDLET, label: 'Update Cloudlets', onClick: this.onActionClick, type:'Edit' },
+            { id: constant.ADD_ORGANIZATION, label: 'Invite Organization', onClick: this.onOrgActionClick, type:'Edit' },
+            { id: constant.DELETE_ORGANIZATION, label: 'Remove Organization', onClick: this.onOrgActionClick, type:'Edit' },
+            { id: ACTION_POOL_ACCESS_ADMIN_CONFIRM, label: 'Confirm Access', visible: this.onConfirmVisible, onClick: this.onOrgActionClick, type:'Edit'  },
+            { id: ACTION_POOL_ACCESS_ADMIN_REMOVE, label: 'Remove Access', visible: this.onConfirmVisible, onClick: this.onOrgActionClick, type:'Edit'  },
             { id: constant.DELETE, label: 'Delete', onClickInterept:this.showDeleteCloudletPool, onClick: deleteCloudletPool, type:'Edit' }
         ]
     }
