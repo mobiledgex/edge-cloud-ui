@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import Spinner from '../../hoc/loader/Spinner'
 import RoleWorker from '../../services/worker/role.worker.js'
-import { sendAuthRequest } from '../../services/model/serverWorker';
 import MexAlert from '../../hoc/alert/AlertDialog';
 import { CURRENT_USER, SHOW_ROLE, SHOW_CONTROLLER } from '../../services/model/endpoints';
 import Menu from './Menu'
