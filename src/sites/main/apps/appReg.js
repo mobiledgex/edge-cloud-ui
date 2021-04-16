@@ -574,6 +574,7 @@ class AppReg extends React.Component {
     }
 
     onCreate = async (data) => {
+        let valid = true
         if (data) {
             let forms = this.state.forms;
             let ports = ''
@@ -656,75 +657,83 @@ class AppReg extends React.Component {
                     if (requiredOutboundConnections.length > 0) {
                         data[fields.requiredOutboundConnections] = requiredOutboundConnections
                     }
-                    if (udpPorts.length > 0 && this.updRangeExceeds(udpPorts)) {
-                        let ports = data[fields.accessPorts].split(',')
-                        ports = ports.map(port => {
-                            if (port.includes('UDP')) {
-                                port = `${port}:nginx`
-                            }
-                            return port
-                        })
 
-                        data[fields.accessPorts] = ports.join()
-                    }
-                    if (this.isUpdate) {
-                        let autoProvPolicies = data[fields.autoProvPolicies]
-                        if (autoProvPolicies && autoProvPolicies.length > 0) {
-                            data[fields.autoProvPolicies] = data[fields.autoProvPolicies][0].value
+                    if (udpPorts.length > 0 && this.updRangeExceeds(udpPorts)) {
+                        if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
+                            valid = false
+                            this.props.handleAlertInfo('error', 'Maximum 1000 UDP ports are allowed for deployment type kubernetes app')
                         }
-                        let updateData = updateFieldData(this, forms, data, this.originalData)
-                        if (updateData[fields.trusted] !== undefined) {
-                            let roc = this.originalData[fields.requiredOutboundConnection]
-                            if (!updateData[fields.trusted] && roc && roc.length > 0) {
-                                updateData[fields.fields].push("38", "38.1", "38.2", "38.4")
-                            }
-                        }
-                        if (updateData.fields.length > 0) {
-                            let mcRequest = await updateApp(this, updateData)
-                            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                                this.props.handleAlertInfo('success', `App ${data[fields.appName]} updated successfully`)
-                                if (data[fields.refreshAppInst]) {
-                                    serverData.sendWSRequest(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
+                        else {
+                            let ports = data[fields.accessPorts].split(',')
+                            ports = ports.map(port => {
+                                if (port.includes('UDP')) {
+                                    port = `${port}:nginx`
                                 }
-                                else {
-                                    this.props.onClose(true)
-                                }
-                            }
+                                return port
+                            })
+                            data[fields.accessPorts] = ports.join()
                         }
                     }
-                    else {
-                        let regions = data[fields.region]
-                        let requestDataList = []
-                        if (regions.includes('All')) {
-                            regions = cloneDeep(this.regions)
-                            regions.splice(0, 1)
-                        }
-                        regions.map(region => {
-                            let requestData = JSON.parse(JSON.stringify(data))
-                            requestData[fields.region] = region
-                            requestData[fields.flavorName] = undefined
-                            for (let i = 0; i < data[fields.flavorName].length; i++) {
-                                let flavor = data[fields.flavorName][i]
-                                if (flavor && flavor.parent === region) {
-                                    requestData[fields.flavorName] = flavor.value
-                                    break;
+                    if (valid) {
+                        if (this.isUpdate) {
+                            let autoProvPolicies = data[fields.autoProvPolicies]
+                            if (autoProvPolicies && autoProvPolicies.length > 0) {
+                                data[fields.autoProvPolicies] = data[fields.autoProvPolicies][0].value
+                            }
+                            let updateData = updateFieldData(this, forms, data, this.originalData)
+                            if (updateData[fields.trusted] !== undefined) {
+                                let roc = this.originalData[fields.requiredOutboundConnection]
+                                if (!updateData[fields.trusted] && roc && roc.length > 0) {
+                                    updateData[fields.fields].push("38", "38.1", "38.2", "38.4")
                                 }
                             }
-                            if (data[fields.autoProvPolicies]) {
-                                requestData[fields.autoProvPolicies] = undefined
-                                for (let i = 0; i < data[fields.autoProvPolicies].length; i++) {
-                                    let autoPolicy = data[fields.autoProvPolicies][i]
-                                    if (autoPolicy && autoPolicy.parent.includes(region)) {
-                                        requestData[fields.autoProvPolicies] = autoPolicy.value
-                                        break;
+                            if (updateData.fields.length > 0) {
+                                let mcRequest = await updateApp(this, updateData)
+                                if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+                                    this.props.handleAlertInfo('success', `App ${data[fields.appName]} updated successfully`)
+                                    if (data[fields.refreshAppInst]) {
+                                        serverData.sendWSRequest(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
+                                    }
+                                    else {
+                                        this.props.onClose(true)
                                     }
                                 }
                             }
-                            requestDataList.push(createApp(requestData))
-                        })
+                        }
+                        else {
+                            let regions = data[fields.region]
+                            let requestDataList = []
+                            if (regions.includes('All')) {
+                                regions = cloneDeep(this.regions)
+                                regions.splice(0, 1)
+                            }
+                            regions.map(region => {
+                                let requestData = JSON.parse(JSON.stringify(data))
+                                requestData[fields.region] = region
+                                requestData[fields.flavorName] = undefined
+                                for (let i = 0; i < data[fields.flavorName].length; i++) {
+                                    let flavor = data[fields.flavorName][i]
+                                    if (flavor && flavor.parent === region) {
+                                        requestData[fields.flavorName] = flavor.value
+                                        break;
+                                    }
+                                }
+                                if (data[fields.autoProvPolicies]) {
+                                    requestData[fields.autoProvPolicies] = undefined
+                                    for (let i = 0; i < data[fields.autoProvPolicies].length; i++) {
+                                        let autoPolicy = data[fields.autoProvPolicies][i]
+                                        if (autoPolicy && autoPolicy.parent.includes(region)) {
+                                            requestData[fields.autoProvPolicies] = autoPolicy.value
+                                            break;
+                                        }
+                                    }
+                                }
+                                requestDataList.push(createApp(requestData))
+                            })
 
-                        if (requestDataList && requestDataList.length > 0) {
-                            serverData.sendMultiRequest(this, requestDataList, this.onAddResponse)
+                            if (requestDataList && requestDataList.length > 0) {
+                                serverData.sendMultiRequest(this, requestDataList, this.onAddResponse)
+                            }
                         }
                     }
                 }
@@ -1009,7 +1018,7 @@ class AppReg extends React.Component {
             await this.loadDefaultData(forms, data)
         }
         else {
-            this.organizationList = await getOrganizationList(this, {type:constant.DEVELOPER})
+            this.organizationList = await getOrganizationList(this, { type: constant.DEVELOPER })
         }
 
         forms.push(
