@@ -230,16 +230,28 @@ class OrganizationList extends React.Component {
 
     getUserRoles = async (key) => {
         let isAdmin = false;
-        let mcRequest = await serverData.showUserRoles(this)
-        if (mcRequest && mcRequest.response) {
-            let userRoles = mcRequest.response.data
+        let mc = await serverData.showUserRoles(this)
+        if (mc && mc.response && mc.response.status === 200) {
+            let userRoles = mc.response.data
             this.props.handleRoleInfo(userRoles)
+            let clearStorage = true
             for (let i = 0; i < userRoles.length; i++) {
                 let userRole = userRoles[i]
                 if (userRole.role.indexOf('Admin') > -1) {
                     isAdmin = true
+                    clearStorage = false
                     break;
                 }
+                else if(userRole.org === localStorage.getItem('selectOrg'))
+                {
+                    clearStorage = false
+                }
+            }
+
+            if(clearStorage)
+            {
+                localStorage.removeItem('selectOrg')
+                localStorage.removeItem('selectRole')
             }
         }
         if (!isAdmin) {
