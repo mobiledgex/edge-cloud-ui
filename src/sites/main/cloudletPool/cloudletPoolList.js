@@ -9,7 +9,7 @@ import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showCloudletPools, deleteCloudletPool, multiDataRequest } from '../../../services/model/cloudletPool';
 import CloudletPoolReg from './cloudletPoolReg';
 import {HELP_CLOUDLET_POOL_LIST} from "../../../tutorial";
-import { accessGranted, showInvitation } from '../../../services/model/privateCloudletAccess';
+import { accessGranted, accessPending } from '../../../services/model/privateCloudletAccess';
 import { ACTION_POOL_ACCESS_ADMIN_CONFIRM, ACTION_POOL_ACCESS_ADMIN_REMOVE } from '../../../container/Actions';
 class ClouldetPoolList extends React.Component {
     constructor(props) {
@@ -71,7 +71,7 @@ class ClouldetPoolList extends React.Component {
             id: 'CloudletPools',
             headerLabel: 'Cloudlet Pools',
             nameField: fields.poolName,
-            requestType: [showCloudletPools, showInvitation, accessGranted],
+            requestType: [showCloudletPools, accessPending, accessGranted],
             isRegion: true,
             sortBy: [fields.poolName],
             selection:true,
