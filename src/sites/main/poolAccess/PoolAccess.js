@@ -21,17 +21,17 @@ class ClouldetPoolList extends React.Component {
     }
 
     onPrePoolAccess = (type, action, data) => {
-        let isRemove = data[fields.invite] && data[fields.confirm]
+        let isRemove = data[fields.confirm]
         if (type === ACTION_LABEL) {
-            return isRemove ? 'Delete' : 'Confirm'
+            return isRemove ? 'Delete' : 'Accept'
         }
         else if (type === ACTION_WARNING) {
-            return `${isRemove ? 'delete confirmation for' : 'confirm access to'} cloudlet pool`
+            return `${isRemove ? 'delete confirmation for' : 'accept invitation to'} cloudlet pool`
         }
     }
 
     onPoolAccess = async (action, data, callback) => {
-        let isRemove = data[fields.invite] && data[fields.confirm]
+        let isRemove = data[fields.confirm]
         data[fields.decision] = !isRemove && action.id === ACTION_POOL_ACCESS_DEVELOPER_REJECT ? 'reject' : 'accept'
         let request = isRemove ? deleteConfirmation : createConfirmation
         let mc = await serverData.sendRequest(this, request(data))
@@ -42,14 +42,14 @@ class ClouldetPoolList extends React.Component {
     }
 
     onRejectVisible = (data) => {
-        let isRemove = data[fields.invite] && data[fields.confirm]
+        let isRemove = data[fields.confirm]
         return !isRemove
     }
 
     actionMenu = () => {
         return [
             { id: ACTION_POOL_ACCESS_DEVELOPER, label: this.onPrePoolAccess, warning: this.onPrePoolAccess, onClick: this.onPoolAccess },
-            { id: ACTION_POOL_ACCESS_DEVELOPER_REJECT, label: 'Reject', visible: this.onRejectVisible, warning:'reject access to cloudlet pool', onClick: this.onPoolAccess },
+            { id: ACTION_POOL_ACCESS_DEVELOPER_REJECT, label: 'Reject', visible: this.onRejectVisible, warning:'reject invitation to cloudlet pool', onClick: this.onPoolAccess },
         ]
     }
 
