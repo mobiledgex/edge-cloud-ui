@@ -278,25 +278,6 @@ export const IPAccessLabel = (id) => {
     }
 }
 
-export const accessType = (id) => {
-    switch (id) {
-        case 0:
-            return ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT
-        case 1:
-            return ACCESS_TYPE_DIRECT
-        case 2:
-            return ACCESS_TYPE_LOAD_BALANCER
-        case ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT:
-            return 0
-        case ACCESS_TYPE_DIRECT:
-            return 1
-        case ACCESS_TYPE_LOAD_BALANCER:
-            return 2
-        default:
-            return id
-    }
-}
-
 export const infraApiAccess = (id) => {
     switch (id) {
         case 0:
@@ -334,41 +315,6 @@ export const healthCheck = (id) => {
             return id
     }
 }
-
-export const imageType = (id) => {
-    switch (id) {
-        case 1:
-            return IMAGE_TYPE_DOCKER
-        case IMAGE_TYPE_DOCKER:
-            return 1
-        case 2:
-            return IMAGE_TYPE_QCOW
-        case IMAGE_TYPE_QCOW:
-            return 2
-        case 3:
-            return IMAGE_TYPE_HELM
-        case IMAGE_TYPE_HELM:
-            return 3
-        default:
-            return id
-    }
-}
-
-export const configType = (id) => {
-    switch (id) {
-        case CONFIG_HELM_CUST:
-            return 'helmCustomizationYaml'
-        case CONFIG_ENV_VAR:
-            return 'envVarsYaml'
-        case 'helmCustomizationYaml':
-            return CONFIG_HELM_CUST
-        case 'envVarsYaml':
-            return CONFIG_ENV_VAR
-        default:
-            return id
-    }
-}
-
 
 export const IPSupport = (id) => {
     switch (id) {

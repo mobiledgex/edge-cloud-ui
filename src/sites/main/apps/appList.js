@@ -9,9 +9,9 @@ import { keys, showApps, deleteApp } from '../../../services/model/app';
 import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
 import { HELP_APP_LIST } from "../../../tutorial";
-import { Icon } from 'semantic-ui-react';
 import { customizedTrusted } from '../../../constantUI';
 import { ACTION_DELETE, ACTION_UPDATE } from '../../../container/Actions';
+import {labelConvertor} from '../../../helper/convertor';
 class AppList extends React.Component {
     constructor(props) {
         super(props);
@@ -79,22 +79,34 @@ class AppList extends React.Component {
      * Customized data block
     **/
 
-    showYesNo = (data, isDetailView) => {
-        if (isDetailView) {
+    showYesNo = (data, isDetail) => {
+        if (isDetail) {
             return data[fields.scaleWithCluster] ? constant.YES : constant.NO
         }
     }
 
-    customizedData = () => {
-        for (let i = 0; i < this.keys.length; i++) {
-            let key = this.keys[i]
-            if (key.field === fields.scaleWithCluster) {
-                key.customizedData = this.showYesNo
+    customizedData = (keys) => {
+        keys.forEach(key => {
+            if (key.keys) {
+                this.customizedData(key.keys)
+            } else {
+                if (key.field === fields.scaleWithCluster) {
+                    key.customizedData = this.showYesNo
+                }
+                else if (key.field === fields.trusted) {
+                    key.customizedData = customizedTrusted
+                }
+                else if (key.field === fields.kind) {
+                    key.customizedData = labelConvertor.kind
+                }
+                else if (key.field === fields.imageType) {
+                    key.customizedData = labelConvertor.imageType
+                }
+                else if (key.field === fields.accessType) {
+                    key.customizedData = labelConvertor.accessType
+                }
             }
-            else if (key.field === fields.trusted) {
-                key.customizedData = customizedTrusted
-            }
-        }
+        })
     }
 
     /**
@@ -102,7 +114,7 @@ class AppList extends React.Component {
     * ** */
 
     componentDidMount() {
-        this.customizedData()
+        this.customizedData(this.keys)
     }
 };
 
