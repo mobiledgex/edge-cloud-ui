@@ -11,7 +11,7 @@ import * as actions from '../actions';
 import * as constant from '../constant'
 
 import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH } from './MexToolbar';
-import MexDetailViewer from '../hoc/dataViewer/DetailViewer';
+import MexDetailViewer from '../hoc/dataViewer/DetailViewerNew';
 import MexListViewer from '../hoc/listView/ListViewer';
 import MexMessageStream from '../hoc/stepper/mexMessageStream';
 import MexMessageMultiNorm from '../hoc/stepper/mexMessageMultiNormal';
