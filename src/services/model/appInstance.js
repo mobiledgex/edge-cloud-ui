@@ -10,8 +10,8 @@ const userRole = formatter.getUserRole()
 export const keys = () => ([
   { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true, format:true },
   { field: fields.organizationName, serverField: 'key#OS#app_key#OS#organization', sortable: true, label: 'Organization', visible: true, filter: true, group: true, key: true },
-  { field: fields.appName, serverField: 'key#OS#app_key#OS#name', sortable: true, label: 'App', visible: true, filter: true, group: true, key: true },
-  { field: fields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: true, key: true },
+  { field: fields.appName, serverField: 'key#OS#app_key#OS#name', sortable: true, label: 'App [Version]', visible: true, filter: true, group: true, key: true, format:true },
+  { field: fields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: false, key: true },
   { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: true, filter: true, group: true, key: true },
   { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true, filter: true, group: true, key: true },
   { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
