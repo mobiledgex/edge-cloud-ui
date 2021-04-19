@@ -58,7 +58,7 @@ class CloudletPoolReg extends React.Component {
                 return cloudlet[fields.operatorName] === operator
             })
             this.updateUI(form)
-            this.updateState({ forms: forms })
+            this.updateState({ forms })
         }
     }
 
@@ -437,7 +437,7 @@ class CloudletPoolReg extends React.Component {
             }
 
             this.updateState({
-                forms: forms
+                forms
             })
         }
     }

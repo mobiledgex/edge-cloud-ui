@@ -80,14 +80,14 @@ const ListBody = (props) => {
                         return (
                             <StyledTableCell key={j} onClick={(event) => cellClick(header, row)}>
                                 {field.indexOf('Name') !== -1 ?
-                                    <Tooltip title={header.customizedData ? header.customizedData(row) : row[field] ? row[field] : ''} arrow>
+                                    <Tooltip title={header.format ? props.requestInfo.formatData(header, row) : row[field] ? row[field] : ''} arrow>
                                         <div className={classes.tip}>
-                                            {header.customizedData ? header.customizedData(row) : row[field]}
+                                            {header.format ? props.requestInfo.formatData(header, row) : row[field]}
                                         </div>
                                     </Tooltip>
                                     :
                                     field === fields.actions ? actionView(row) :
-                                        header.customizedData ? header.customizedData(row) : row[field]
+                                        header.format ? props.requestInfo.formatData(header, row) : row[field]
                                 }
                             </StyledTableCell>
                         )

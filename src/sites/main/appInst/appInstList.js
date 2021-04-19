@@ -12,12 +12,11 @@ import AppInstReg from './appInstReg';
 import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
-import { Dialog, Tooltip } from '@material-ui/core';
-import { Icon, Popup } from 'semantic-ui-react';
+import { Dialog } from '@material-ui/core';
 import { HELP_APP_INST_LIST } from "../../../tutorial";
-import { customizedTrusted } from '../../../constantUI';
 import { ACTION_DELETE, ACTION_UPDATE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_TERMINAL, ACTION_UPGRADE, ACTION_REFRESH, ACTION_REBOOT } from '../../../container/Actions';
 import * as serverData from '../../../services/model/serverData'
+import { idFormatter, labelFormatter, uiFormatter } from '../../../helper/formatter';
 class AppInstList extends React.Component {
     constructor(props) {
         super(props);
@@ -98,17 +97,17 @@ class AppInstList extends React.Component {
     }
 
     onPowerState = (action, data, callback) => {
-        let powerState = constant.PowerState(constant.POWER_STATE_POWER_STATE_UNKNOWN)
+        let powerState = idFormatter.powerState(constant.UNKNOWN)
 
         switch (action.id) {
             case ACTION_POWER_ON:
-                powerState = constant.PowerState(constant.POWER_STATE_POWER_ON)
+                powerState = idFormatter.powerState(constant.POWER_STATE_POWER_ON)
                 break;
             case ACTION_POWER_OFF:
-                powerState = constant.PowerState(constant.POWER_STATE_POWER_OFF)
+                powerState = idFormatter.powerState(constant.POWER_STATE_POWER_OFF)
                 break;
             case ACTION_REBOOT:
-                powerState = constant.PowerState(constant.POWER_STATE_REBOOT)
+                powerState = idFormatter.powerState(constant.POWER_STATE_REBOOT)
                 break;
         }
         data[fields.powerState] = powerState
@@ -138,6 +137,33 @@ class AppInstList extends React.Component {
         ]
     }
 
+    showPowerState = (data, isDetail) => {
+        if (isDetail) {
+            return labelFormatter.powerState(data[fields.powerState])
+        }
+    }
+
+    dataFormatter = (key, data, isDetail) => {
+        if (key.field === fields.state) {
+            return shared.showProgress(data, isDetail)
+        }
+        else if (key.field === fields.region) {
+            return uiFormatter.appInstRegion(key, data, isDetail)
+        }
+        else if (key.field === fields.powerState) {
+            return this.showPowerState(data, isDetail)
+        }
+        else if (key.field === fields.healthCheck) {
+            return uiFormatter.healthCheck(key, data, isDetail)
+        }
+        else if (key.field === fields.trusted) {
+            return uiFormatter.trusted(key, data, isDetail)
+        }
+        else if (key.field === fields.appName) {
+            return `${data[key.field]} [${data[fields.version]}]`
+        }
+    }
+
     requestInfo = () => {
         return ({
             id: 'AppInsts',
@@ -152,84 +178,9 @@ class AppInstList extends React.Component {
             keys: this.keys,
             onAdd: this.onAdd,
             viewMode: HELP_APP_INST_LIST,
-            grouping: true
+            grouping: true,
+            formatData: this.dataFormatter
         })
-    }
-
-    /**
-     * Customized data block
-     **/
-
-    getUpdate = (data, isDetailView) => {
-        let value = data[fields.region]
-        return (
-            isDetailView ? value :
-                data[fields.updateAvailable] ?
-                    <Tooltip title={<div><strong style={{ fontSize: 13 }}>{`Current Version: ${data[fields.revision]}`}</strong><br /><br /><strong style={{ fontSize: 13 }}>{`Available Version: ${data[fields.appRevision]}`}</strong></div>}>
-                        <label><Icon color={'orange'} name={'arrow alternate circle up outline'} />&nbsp;{value}</label>
-                    </Tooltip> :
-                    <label>{value}</label>
-        )
-    }
-
-    showPowerState = (data, isDetailView) => {
-        if (isDetailView) {
-            return constant.PowerState(data[fields.powerState])
-        }
-    }
-
-    showHealthCheck = (data, isDetailView) => {
-        let healthCheck = data[fields.healthCheck]
-        if (isDetailView) {
-            return constant.healthCheck(healthCheck)
-        }
-        else {
-            let icon = null;
-            switch (healthCheck) {
-                case 3:
-                    icon = <Popup content={constant.healthCheck(healthCheck)} trigger={<Icon className="progressIndicator" name='check' color='green' />} />
-                    break;
-                default:
-                    icon = <Popup content={constant.healthCheck(healthCheck)} trigger={<Icon className="progressIndicator" name='close' color='red' />} />
-            }
-            return (
-                icon
-            )
-        }
-    }
-
-    customizedData = () => {
-        for (let i = 0; i < this.keys.length; i++) {
-            let key = this.keys[i]
-            if (key.field === fields.state) {
-                key.customizedData = shared.showProgress
-            }
-            else if (key.field === fields.region) {
-                key.customizedData = this.getUpdate
-            }
-            else if (key.field === fields.powerState) {
-                key.customizedData = this.showPowerState
-            }
-            else if (key.field === fields.healthCheck) {
-                key.customizedData = this.showHealthCheck
-            }
-            else if (key.field === fields.trusted) {
-                key.customizedData = customizedTrusted
-            }
-        }
-    }
-
-    /**
-     * Customized data block
-     * ** */
-
-    componentDidMount() {
-        this._isMounted = true
-        this.customizedData()
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false
     }
 
     render() {
@@ -244,6 +195,14 @@ class AppInstList extends React.Component {
                     </Dialog>
                 </div>
         )
+    }
+
+    componentDidMount() {
+        this._isMounted = true
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 };
 

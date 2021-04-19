@@ -3,7 +3,6 @@ import MexListView from '../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 import { keys, showUsers, deleteUser } from '../../../services/model/users';
 import { HELP_USER_ROLES } from '../../../tutorial';
@@ -38,8 +37,7 @@ class UserList extends React.Component {
             { label: 'Delete', onClick: deleteUser, icon: 'delete', warning: 'remove selected user\'s from assigned organization', type: 'Edit' },
         ]
     }
-    /*Action menu block*/
-
+    
     requestInfo = () => {
         return ({
             id: 'userRole',
@@ -54,55 +52,6 @@ class UserList extends React.Component {
         })
     }
 
-    /**
-  * Customized data block
-  **/
-
-    roleMark = (data, isDetailView) => {
-        let role = data[fields.role]
-        if (isDetailView) {
-            return role
-        }
-        else {
-            let symbol = (role.indexOf('Admin') !== -1 && role.indexOf('Manager') !== -1) ? <div className="mark markA markS">S</div> :
-                (role.indexOf('Developer') !== -1 && role.indexOf('Manager') !== -1) ?
-                    <div className="mark markD markM">M</div> :
-                    (role.indexOf('Developer') !== -1 && role.indexOf('Contributor') !== -1) ?
-                        <div className="mark markD markC">C</div> :
-                        (role.indexOf('Developer') !== -1 && role.indexOf('Viewer') !== -1) ?
-                            <div className="mark markD markV">V</div> :
-                            (role.indexOf('Operator') !== -1 && role.indexOf('Manager') !== -1) ?
-                                <div className="mark markO markM">M</div> :
-                                (role.indexOf('Operator') !== -1 && role.indexOf('Contributor') !== -1) ?
-                                    <div className="mark markO markC">C</div> :
-                                    (role.indexOf('Operator') !== -1 && role.indexOf('Viewer') !== -1) ?
-                                        <div className="mark markO markV">V</div> : <div></div>
-
-            return (
-                <div>
-                    <div className="markBox">{symbol}</div>
-                    <label>{data[fields.role]}</label>
-                </div>)
-        }
-
-    }
-
-    customizedData = () => {
-        for (let i = 0; i < this.keys.length; i++) {
-            let key = this.keys[i]
-            if (key.field === fields.role) {
-                key.customizedData = this.roleMark
-            }
-        }
-    }
-
-    /**
-    * Customized data block
-    * ** */
-
-    componentDidMount() {
-        this.customizedData()
-    }
 
     render() {
         return (

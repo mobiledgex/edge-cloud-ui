@@ -10,6 +10,7 @@ import { Button, Icon } from 'semantic-ui-react';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import * as serverData from '../../../services/model/serverData'
 import { ACTION_DELETE } from '../../../container/Actions';
+import { uiFormatter } from '../../../helper/formatter';
 
 class AccountList extends React.Component {
     constructor(props) {
@@ -46,19 +47,6 @@ class AccountList extends React.Component {
     }
     /*Action menu block*/
 
-    requestInfo = () => {
-        return ({
-            id: 'accounts',
-            headerLabel: 'Accounts',
-            nameField: fields.username,
-            selection: true,
-            requestType: [showAccounts],
-            sortBy: [fields.username],
-            keys: this.keys,
-            viewMode: null
-        })
-    }
-
     /**
      * Customized data block
      * ** */
@@ -73,18 +61,6 @@ class AccountList extends React.Component {
         if (await serverData.settingLock(this, requestData)) {
             data[fields.locked] = locked
             this.setState({ refreshViewToggle: !this.state.refreshViewToggle })
-        }
-    }
-
-    getLock = (data, isDetailView) => {
-        let lock = data[fields.locked]
-        if (isDetailView) {
-            return lock ? 'Yes' : 'No'
-        }
-        else {
-            return (
-                <Icon name={lock === true ? 'lock' : 'lock open'} style={{ color: lock === true ? '#6a6a6a' : 'rgba(136,221,0,.9)' }} onClick={() => this.onLocking(data)} />
-            )
         }
     }
 
@@ -120,38 +96,27 @@ class AccountList extends React.Component {
         });
     }
 
-    getEmailVerfied = (data, isDetailView) => {
-        let emailVerified = data[fields.emailVerified]
-        if (isDetailView) {
-            return emailVerified ? 'Yes' : 'No'
+    dataFormatter = (key, data, isDetail) => {
+        if (key.field === fields.emailVerified) {
+            return uiFormatter.emailVerfied(key, data, isDetail, () => this.sendEmailWarning(data[fields.username], data[fields.email]))
         }
-        else {
-            return (
-                emailVerified ? <Icon name='check' style={{ color: 'rgba(136,221,0,.9)' }} />
-                    :
-                    <Button onClick={() => this.sendEmailWarning(data[fields.username], data[fields.email])}>Verify</Button>
-            )
+        else if (key.field === fields.locked) {
+            return uiFormatter.lock(key, data, isDetail)
         }
     }
 
-    customizedData = () => {
-        for (let i = 0; i < this.keys.length; i++) {
-            let key = this.keys[i]
-            if (key.field === fields.emailVerified) {
-                key.customizedData = this.getEmailVerfied
-            }
-            else if (key.field === fields.locked) {
-                key.customizedData = this.getLock
-            }
-        }
-    }
-
-    /**
-    * Customized data block
-    * ** */
-
-    componentDidMount() {
-        this.customizedData()
+    requestInfo = () => {
+        return ({
+            id: 'accounts',
+            headerLabel: 'Accounts',
+            nameField: fields.username,
+            selection: true,
+            requestType: [showAccounts],
+            sortBy: [fields.username],
+            keys: this.keys,
+            viewMode: null,
+            formatData: this.dataFormatter
+        })
     }
 
     render() {

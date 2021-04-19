@@ -46,22 +46,6 @@ class AlertList extends React.Component {
         ]
     }
 
-    requestInfo = () => {
-        return ({
-            id: 'Alerts',
-            headerLabel: 'Alert Receivers',
-            nameField: fields.alertname,
-            requestType: [showAlertReceiver],
-            sortBy: [fields.alertname],
-            selection: true,
-            viewMode: HELP_ALERTS,
-            keys: this.keys,
-            onAdd: this.onAdd,
-            viewerEdit:true,
-            grouping: false
-        })
-    }
-
     renderSeverity = (data, isDetailView) => {
         let id = data[fields.severity]
         let color = '#ff4444'
@@ -116,21 +100,30 @@ class AlertList extends React.Component {
         )
     }
 
-    customizedData = () => {
-        for (let i = 0; i < this.keys.length; i++) {
-            let key = this.keys[i]
-            if (key.field === fields.severity) {
-                key.customizedData = this.renderSeverity
-            }
-            else if (key.field === fields.receiverAddress) {
-                key.customizedData = this.renderType
-            }
+    dataFormatter = (key, data, isDetail) => {
+        if (key.field === fields.severity) {
+            return this.renderSeverity(data, isDetail)
+        }
+        else if (key.field === fields.receiverAddress) {
+            return this.renderType(data, isDetail)
         }
     }
 
-
-    componentDidMount() {
-        this.customizedData()
+    requestInfo = () => {
+        return ({
+            id: 'Alerts',
+            headerLabel: 'Alert Receivers',
+            nameField: fields.alertname,
+            requestType: [showAlertReceiver],
+            sortBy: [fields.alertname],
+            selection: true,
+            viewMode: HELP_ALERTS,
+            keys: this.keys,
+            onAdd: this.onAdd,
+            viewerEdit:true,
+            grouping: false,
+            formatData:this.dataFormatter
+        })
     }
 
     render() {

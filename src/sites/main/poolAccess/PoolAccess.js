@@ -9,7 +9,8 @@ import { fields } from '../../../services/model/format';
 import * as serverData from '../../../services/model/serverData'
 import { keys, accessGranted, accessPending, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/privateCloudletAccess';
 import { Icon } from 'semantic-ui-react';
-import { ACTION_LABEL, ACTION_POOL_ACCESS_DEVELOPER, ACTION_WARNING, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../../../container/Actions';
+import { ACTION_LABEL, ACTION_POOL_ACCESS_DEVELOPER, ACTION_WARNING } from '../../../container/Actions';
+import { uiFormatter } from '../../../helper/formatter';
 
 class ClouldetPoolList extends React.Component {
     constructor(props) {
@@ -52,6 +53,12 @@ class ClouldetPoolList extends React.Component {
         ]
     }
 
+    dataFormatter = (key, data, isDetail) => {
+        if (key.field === fields.confirm) {
+            return uiFormatter.access(key, data, isDetail)
+        }
+    }
+
     requestInfo = () => {
         return ({
             id: constant.PAGE_POOL_ACCESS,
@@ -60,7 +67,8 @@ class ClouldetPoolList extends React.Component {
             requestType: [accessGranted, accessPending],
             sortBy: [fields.poolName],
             selection: true,
-            keys: this.keys
+            keys: this.keys,
+            formatData: this.dataFormatter
         })
     }
 
@@ -69,33 +77,6 @@ class ClouldetPoolList extends React.Component {
             this.state.currentView ? this.state.currentView :
                 <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
         )
-    }
-
-    access = (data, isDetailView) => {
-        if (isDetailView) {
-            return constant.showYesNo(data, isDetailView)
-        }
-        else {
-            return <Icon style={{color:`${data ? constant.COLOR_GREEN : constant.COLOR_RED}`}} name={`${data ? 'check' : 'close'}`} />
-        }
-    }
-
-    
-    formatConfirm = (data, isDetailView) => {
-        return this.access(data[fields.confirm], isDetailView)
-    }
-
-    customizedData = () => {
-        for (let i = 0; i < this.keys.length; i++) {
-            let key = this.keys[i]
-            if (key.field === fields.confirm) {
-                key.customizedData = this.formatConfirm
-            }
-        }
-    }
-
-    componentDidMount() {
-        this.customizedData()
     }
 };
 

@@ -87,7 +87,8 @@ const getArrayRow = (id, item, dataList) => {
 const MexDetailViewer = (props) => {
     let detailData = props.detailData;
 
-    const getData = (data, item) => {
+    const getData = (info, item) => {
+        let data = info[item.field]
         if (data !== undefined) {
             return (
                 item.dataType === constant.TYPE_ARRAY ?
@@ -100,11 +101,10 @@ const MexDetailViewer = (props) => {
                                 getHighLighter('json', JSON.stringify(data, null, 1)) :
                                 item.dataType === constant.TYPE_YAML ?
                                     getHighLighter('yaml', data.toString()) :
-                                    <div style={{ wordBreak: 'break-all' }}>{item.customizedData ? item.customizedData(detailData, true) : data}</div>
+                                    <div style={{ wordBreak: 'break-all' }}>{item.format ? props.formatData(item, info, true) : data}</div>
             )
         }
     }
-    
     
     const subView = (keys, dataList) => {
         return (
@@ -123,7 +123,7 @@ const MexDetailViewer = (props) => {
                                 keys.map((item, j) => {
                                     return (
                                         <TableCell key={j} style={{borderBottom: "none"}}>
-                                            {getData(data[item.field], item)}
+                                            {getData(data, item)}
                                         </TableCell>)
                                 }))
                             }
@@ -134,12 +134,12 @@ const MexDetailViewer = (props) => {
         )
     }
     
-    const getRow = (id, item, data) => {
+    const getRow = (id, item, info, subView) => {
         return (
             <TableRow key={id}>
                 <TableCell style={{borderBottom: "none", verticalAlign: 'text-top', width: '20%'}}>{item.label}</TableCell>
                 <TableCell style={{borderBottom: "none"}}>
-                    {getData(data, item)}
+                    {subView ? info : getData(info, item)}
                 </TableCell>
             </TableRow>
         )
@@ -155,10 +155,10 @@ const MexDetailViewer = (props) => {
                             (data !== undefined && (item.detailView === undefined || item.detailView)) ?
                                 item.keys ?
                                     data.length > 0 ?
-                                        getRow(i, item, subView(item.keys, data)) : null
+                                        getRow(i, item, subView(item.keys, data), true) : null
                                     :
                                     isArrayString(item, data) ? getArrayRow(i, item, data) :
-                                        getRow(i, item, data) :
+                                        getRow(i, item, detailData) :
                                 null
                             : null
                     )

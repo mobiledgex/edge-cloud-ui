@@ -32,13 +32,13 @@ const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 class ClusterInstReg extends React.Component {
     constructor(props) {
         super(props);
-        this._isMounted = false
         this.state = {
             forms: [],
             stepsArray: [],
             showGraph: false,
             flowDataList: []
         }
+        this._isMounted = false
         this.isUpdate = this.props.isUpdate
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.requestedRegionList = []
@@ -52,9 +52,9 @@ class ClusterInstReg extends React.Component {
         //To avoid refecthing data from server
     }
 
-    updateForm = (forms) => {
+    updateState = (data) => {
         if (this._isMounted) {
-            this.setState({ forms })
+            this.setState({ ...data })
         }
     }
 
@@ -81,7 +81,7 @@ class ClusterInstReg extends React.Component {
                 this.cloudletList = cloudletWithInfo(mcList)
                 this.props.handleLoadingSpinner(false)
                 this.updateUI(form)
-                this.setState({ forms: forms })
+                this.updateState({ forms })
             });
         }
     }
@@ -91,7 +91,7 @@ class ClusterInstReg extends React.Component {
             this.clusterInstList = [...this.clusterInstList, ...await getClusterInstList(this, { region: region })]
         }
         this.updateUI(form)
-        this.updateForm(forms)
+        this.updateState({forms})
     }
 
     getAppInfo = async (region, form, forms) => {
@@ -100,7 +100,7 @@ class ClusterInstReg extends React.Component {
         }
         this.updateUI(form)
         this.appNameValueChange(form, forms, true)
-        this.updateForm(forms)
+        this.updateState({forms})
     }
 
     getFlavorInfo = async (region, form, forms) => {
@@ -108,7 +108,7 @@ class ClusterInstReg extends React.Component {
             this.flavorList = [...this.flavorList, ...await getFlavorList(this, { region: region })]
         }
         this.updateUI(form)
-        this.updateForm(forms)
+        this.updateState({forms})
     }
 
     operatorValueChange = (currentForm, forms, isInit) => {
@@ -117,7 +117,7 @@ class ClusterInstReg extends React.Component {
             if (form.field === fields.cloudletName) {
                 this.updateUI(form)
                 if (isInit === undefined || isInit === false) {
-                    this.updateForm(forms)
+                    this.updateState({forms})
                 }
                 break;
             }
@@ -133,7 +133,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.updateForm(forms)
+            this.updateState({forms})
         }
     }
 
@@ -147,7 +147,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.updateForm(forms)
+            this.updateState({forms})
         }
     }
 
@@ -231,7 +231,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.updateForm(nForms)
+            this.updateState({nForms})
         }
     }
 
@@ -282,7 +282,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.updateForm(forms)
+            this.updateState({forms})
         }
     }
 
@@ -294,7 +294,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.updateForm(forms)
+            this.updateState({forms})
         }
     }
 
@@ -304,7 +304,7 @@ class ClusterInstReg extends React.Component {
         if (form.parent) {
             let updateForms = Object.assign([], this.state.forms)
             updateForms.splice(form.parent.id, 1);
-            this.updateForm(updateForms)
+            this.updateState({updateForms})
         }
 
     }
@@ -369,9 +369,7 @@ class ClusterInstReg extends React.Component {
                 this.updateFlowDataList = [...this.updateFlowDataList, ...flowDataList]
             }
             else {
-                if (this._isMounted) {
-                    this.setState({ showGraph: true, flowDataList: flowDataList })
-                }
+                this.updateState({ showGraph: true, flowDataList: flowDataList })
             }
         }
     }
@@ -392,9 +390,7 @@ class ClusterInstReg extends React.Component {
                 responseData = mc.response.data;
             }
             let labels = [{ label: 'Cloudlet', field: fields.cloudletName }]
-            if (this._isMounted) {
-                this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
-            }
+            this.updateState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
     }
 
@@ -457,19 +453,15 @@ class ClusterInstReg extends React.Component {
 
     /*Required*/
     reloadForms = () => {
-        if (this._isMounted) {
-            this.setState({
-                forms: this.state.forms
-            })
-        }
+        this.updateState({
+            forms: this.state.forms
+        })
     }
 
     stepperClose = () => {
-        if (this._isMounted) {
-            this.setState({
-                stepsArray: []
-            })
-        }
+        this.updateState({
+            stepsArray: []
+        })
         this.props.onClose(true)
     }
 
@@ -647,24 +639,20 @@ class ClusterInstReg extends React.Component {
             }
         }
 
-        this.updateForm(forms)
+        this.updateState({ forms })
 
         if (this.isUpdate || this.props.isLaunch) {
-            if (this._isMounted) {
-                this.setState({
-                    showGraph: true,
-                    flowDataList: this.updateFlowDataList
-                })
-            }
+            this.updateState({
+                showGraph: true,
+                flowDataList: this.updateFlowDataList
+            })
         }
     }
 
     stepperClose = () => {
-        if (this._isMounted) {
-            this.setState({
-                stepsArray: []
-            })
-        }
+        this.updateState({
+            stepsArray: []
+        })
         this.props.onClose(true)
     }
 

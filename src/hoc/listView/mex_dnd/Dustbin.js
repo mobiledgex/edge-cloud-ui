@@ -45,7 +45,6 @@ export const Dustbin = ({ dropList, onRemove }) => {
                     dropList.length <= 0 ?
                         <h4 style={{ display: 'inline-block', fontSize: 12, paddingTop: 3 }}>Drag header here to group by</h4> :
                         <div>
-                            <h4 style={{ display: 'inline-block', marginRight: 10 }}><strong style={{ fontSize: 12 }}>Grouped by:</strong></h4>
                             <div style={{ display: 'inline-block', marginRight: 10 }}>{dropList.map((item, i) => {
                                 return <Chip size={'small'} label={item.label} key={i} onDelete={() => { onRemove(item.label) }} />
                             })}</div>

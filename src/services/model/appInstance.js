@@ -3,15 +3,16 @@ import * as constant from '../../constant'
 import * as serverData from './serverData'
 import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP, REFRESH_APP_INST, SHOW_CLOUDLET_INFO, SHOW_ORG_CLOUDLET_INFO, SHOW_AUTO_PROV_POLICY } from './endPointTypes'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
+import { labelFormatter } from '../../helper/formatter'
 
 let fields = formatter.fields;
 const userRole = formatter.getUserRole()
 
 export const keys = () => ([
-  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
+  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true, format:true },
   { field: fields.organizationName, serverField: 'key#OS#app_key#OS#organization', sortable: true, label: 'Organization', visible: true, filter: true, group: true, key: true },
-  { field: fields.appName, serverField: 'key#OS#app_key#OS#name', sortable: true, label: 'App', visible: true, filter: true, group: true, key: true },
-  { field: fields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: true, key: true },
+  { field: fields.appName, serverField: 'key#OS#app_key#OS#name', sortable: true, label: 'App [Version]', visible: true, filter: true, group: true, key: true, format:true },
+  { field: fields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: false, key: true, detailView:false },
   { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: true, filter: true, group: true, key: true },
   { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true, filter: true, group: true, key: true },
   { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
@@ -21,22 +22,22 @@ export const keys = () => ([
   { field: fields.deployment, label: 'Deployment', sortable: true, visible: true, filter: true, group: true },
   { field: fields.accessType, label: 'Access Type' },
   { field: fields.uri, serverField: 'uri', label: 'URI' },
-  { field: fields.liveness, serverField: 'liveness', label: 'Liveness' },
+  { field: fields.liveness, serverField: 'liveness', label: 'Liveness'},
   { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: constant.TYPE_JSON },
   { field: fields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor' },
-  { field: fields.ipAccess, serverField: 'auto_cluster_ip_access', label: 'IP Access' },
+  { field: fields.ipAccess, serverField: 'auto_cluster_ip_access', label: 'IP Access'},
   { field: fields.sharedVolumeSize, serverField: 'shared_volume_size', label: 'Shared Volume Size' },
   { field: fields.revision, serverField: 'revision', label: 'Revision', visible: false },
-  { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
-  { field: fields.powerState, serverField: 'power_state', label: 'Power State', visible: false },
+  { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true, format:true },
+  { field: fields.powerState, serverField: 'power_state', label: 'Power State', visible: false, format:true },
   { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: constant.TYPE_JSON },
   { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
   { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
   { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
   { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
-  { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true },
+  { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true, format:true },
   { field: fields.autoPolicyName, label: 'Auto Prov Policy', visible: false },
-  { field: fields.trusted, label: 'Trusted', visible: true, sortable: true },
+  { field: fields.trusted, label: 'Trusted', visible: true, sortable: true, format:true },
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
@@ -253,10 +254,10 @@ export const streamAppInst = (data) => {
 }
 
 export const customData = (value) => {
-  value[fields.liveness] = constant.liveness(value[fields.liveness])
+  value[fields.liveness] = labelFormatter.liveness(value[fields.liveness])
   value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
   value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
-  value[fields.ipAccess] = value[fields.ipAccess] ? constant.IPAccessLabel(value[fields.ipAccess]) : undefined
+  value[fields.ipAccess] = value[fields.ipAccess] ? labelFormatter.ipAccess(value[fields.ipAccess]) : undefined
   value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
   value[fields.healthCheck] = value[fields.healthCheck] ? value[fields.healthCheck] : 0
   value[fields.sharedVolumeSize] = value[fields.autoClusterInstance] ? value[fields.sharedVolumeSize] ? value[fields.sharedVolumeSize] : 0 : undefined
