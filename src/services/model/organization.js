@@ -10,13 +10,13 @@ export const keys = () => ([
     { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true, filter: true, group: true },
     { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: true },
     { field: fields.address, serverField: 'Address', label: 'Address', sortable: true, visible: true },
-    { field: fields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', visible: true, roles: [constant.ADMIN_MANAGER] },
+    { field: fields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', visible: true, roles: [constant.ADMIN_MANAGER], format:true },
     { field: fields.publicImages, serverField: 'PublicImages', label: 'Public Image', sortable: true, visible: true },
     {
         field: fields.userList, label: 'User List', sortable: true, visible: false,
         keys: [{ field: fields.username, label: 'Username' }, { field: fields.userRole, label: 'Role' }]
     },
-    { field: 'manage', label: 'Manage', visible: false, clickable: true },
+    { field: fields.manage, label: 'Manage', visible: false, clickable: true, format:true },
     { field: fields.actions, label: 'Actions', visible: true, clickable: true }
 ])
 

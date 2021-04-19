@@ -4,6 +4,7 @@ import * as constant from '../../constant'
 import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO, GET_CLOUDLET_MANIFEST, SHOW_ORG_CLOUDLET_INFO, GET_CLOUDLET_RESOURCE_QUOTA_PROPS } from './endPointTypes'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 import { REVOKE_ACCESS_KEY } from './endpoints'
+import { idFormatter, labelFormatter } from '../../helper/formatter'
 
 const fields = formatter.fields;
 
@@ -25,13 +26,13 @@ export const getKey = (data, isCreate) => {
             cloudlet.physical_name = data[fields.physicalName]
         }
         if (data[fields.ipSupport]) {
-            cloudlet.ip_support = constant.IPSupport(data[fields.ipSupport])
+            cloudlet.ip_support = idFormatter.ipSupport(data[fields.ipSupport])
         }
         if (data[fields.platformType]) {
-            cloudlet.platform_type = constant.PlatformType(data[fields.platformType])
+            cloudlet.platform_type = idFormatter.platformType(data[fields.platformType])
         }
         if (data[fields.infraApiAccess]) {
-            cloudlet.infra_api_access = constant.infraApiAccess(data[fields.infraApiAccess])
+            cloudlet.infra_api_access = idFormatter.infraApiAccess(data[fields.infraApiAccess])
         }
         let accessvars = {}
         if (data[fields.openRCData]) {
@@ -60,7 +61,7 @@ export const getKey = (data, isCreate) => {
         }
 
         if (data[fields.maintenanceState]) {
-            cloudlet.maintenance_state = constant.MaintenanceState(data[fields.maintenanceState])
+            cloudlet.maintenance_state = idFormatter.maintainance(data[fields.maintenanceState])
         }
 
         if (data[fields.fields]) {
@@ -256,9 +257,8 @@ export const streamCloudlet = (data) => {
 }
 
 export const cloudletResourceQuota = (data) => {
-    let cloudletresourcequotaprops = {platform_type: constant.PlatformType(data[fields.platformType])}
-    if(formatter.getOrganization())
-    {
+    let cloudletresourcequotaprops = { platform_type: idFormatter.platformType(data[fields.platformType]) }
+    if (formatter.getOrganization()) {
         cloudletresourcequotaprops['organization'] = formatter.getOrganization()
     }
     let requestData = {
@@ -278,19 +278,19 @@ export const keys = () => ([
     { field: fields.ipSupport, serverField: 'ip_support', label: 'IP Support' },
     { field: fields.numDynamicIPs, serverField: 'num_dynamic_ips', label: 'Number of Dynamic IPs' },
     { field: fields.physicalName, serverField: 'physical_name', label: '	Physical Name' },
-    { field: fields.platformType, serverField: 'platform_type', label: 'Platform Type' },
+    { field: fields.platformType, serverField: 'platform_type', label: 'Platform Type'},
     { field: fields.openRCData, serverField: 'access_vars#OS#OPENRC_DATA', label: 'Open RC Data' },
     { field: fields.caCertdata, serverField: 'access_vars#OS#CACERT_DATA', label: 'CA Cert Data' },
-    { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true },
-    { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true },
+    { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true, format: true },
+    { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true, format: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON, detailView: false },
     { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
     { field: fields.vmImageVersion, serverField: 'vm_image_version', label: 'VM Image Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
     { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: constant.TYPE_JSON },
     { field: fields.envVars, serverField: 'env_var', label: 'Environment Variables', dataType: constant.TYPE_JSON },
-    { field: fields.resourceQuotas, serverField: 'resource_quotas', label: 'Resource Quotas', dataType: constant.TYPE_JSON},
+    { field: fields.resourceQuotas, serverField: 'resource_quotas', label: 'Resource Quotas', dataType: constant.TYPE_JSON },
     { field: fields.defaultResourceAlertThreshold, serverField: 'default_resource_alert_threshold', label: 'Default Resource Alert Threshold' },
-    { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access' },
+    { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access'},
     { field: fields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name' },
     { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name' },
     { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView: false },
@@ -298,15 +298,15 @@ export const keys = () => ([
     { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: constant.TYPE_YAML },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.trusted, label: 'Trusted', visible: true },
+    { field: fields.trusted, label: 'Trusted', visible: true, format: true },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }
 ])
 
 const customData = (value) => {
     value[fields.cloudletStatus] = value[fields.maintenanceState] && value[fields.maintenanceState] !== 0 ? 999 : 4
-    value[fields.ipSupport] = constant.IPSupport(value[fields.ipSupport])
-    value[fields.platformType] = constant.PlatformType(value[fields.platformType])
-    value[fields.infraApiAccess] = constant.infraApiAccess(value[fields.infraApiAccess])
+    value[fields.ipSupport] = labelFormatter.ipSupport(value[fields.ipSupport])
+    value[fields.platformType] = labelFormatter.platformType(value[fields.platformType])
+    value[fields.infraApiAccess] = labelFormatter.infraApiAccess(value[fields.infraApiAccess] ? value[fields.infraApiAccess] : 0)
     value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
     value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
     value[fields.trusted] = value[fields.trustPolicyName] !== undefined

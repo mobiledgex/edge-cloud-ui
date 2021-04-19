@@ -41,6 +41,7 @@ class ClusterInstReg extends React.Component {
             flowInstance: undefined,
             region: '',
         }
+        this._isMounted = false
         this.isUpdate = this.props.isUpdate
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         //To avoid refecthing data from server
@@ -53,6 +54,11 @@ class ClusterInstReg extends React.Component {
         this.updateFlowDataList = []
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
 
     getCloudletInfo = (form, forms) => {
         let region = undefined;
@@ -77,7 +83,7 @@ class ClusterInstReg extends React.Component {
                 this.cloudletList = cloudletWithInfo(mcList)
                 this.props.handleLoadingSpinner(false)
                 this.updateUI(form)
-                this.setState({ forms: forms })
+                this.updateState({ forms })
             });
         }
     }
@@ -87,7 +93,7 @@ class ClusterInstReg extends React.Component {
             this.flavorList = [...this.flavorList, ...await getFlavorList(this, { region: region })]
         }
         this.updateUI(form)
-        this.setState({ forms: forms })
+        this.updateState({ forms })
     }
 
     getAutoScalePolicy = async (region, form, forms) => {
@@ -95,12 +101,12 @@ class ClusterInstReg extends React.Component {
             this.autoScalePolicyList = [...this.autoScalePolicyList, ...await getAutoScalePolicyList(this, { region: region })]
         }
         this.updateUI(form)
-        this.setState({ forms: forms })
+        this.updateState({ forms })
     }
 
     regionValueChange = (currentForm, forms, isInit) => {
         let region = currentForm.value;
-        this.setState({ region: region })
+        this.updateState({ region })
         if (region) {
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i]
@@ -136,7 +142,7 @@ class ClusterInstReg extends React.Component {
             }
             else if (form.field === fields.autoScalePolicyName) {
                 this.updateUI(form)
-                this.setState({ forms: forms })
+                this.updateState({ forms })
             }
         }
     }
@@ -147,7 +153,7 @@ class ClusterInstReg extends React.Component {
             if (form.field === fields.cloudletName) {
                 this.updateUI(form)
                 if (isInit === undefined || isInit === false) {
-                    this.setState({ forms: forms, mapData: [] })
+                    this.updateState({ forms, mapData: [] })
                 }
                 break;
             }
@@ -170,7 +176,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.updateState({ forms })
         }
     }
 
@@ -183,8 +189,8 @@ class ClusterInstReg extends React.Component {
                 mapData.push(cloudlet)
             }
         }
-        this.setState({
-            mapData: mapData
+        this.updateState({
+            mapData
         })
     }
 
@@ -197,7 +203,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.updateState({ forms })
         }
     }
 
@@ -233,7 +239,7 @@ class ClusterInstReg extends React.Component {
                 this.updateFlowDataList = [...this.updateFlowDataList, ...flowDataList]
             }
             else {
-                this.setState({ flowDataList: flowDataList, activeIndex: 1 })
+                this.updateState({ flowDataList: flowDataList, activeIndex: 1 })
             }
         }
     }
@@ -254,7 +260,7 @@ class ClusterInstReg extends React.Component {
                 responseData = mcRequest.response.data;
             }
             let labels = [{ label: 'Cloudlet', field: fields.cloudletName }]
-            this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
+            this.updateState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
     }
 
@@ -290,12 +296,12 @@ class ClusterInstReg extends React.Component {
     getMap = () =>
     (
         <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-            <ListMexMap dataList={this.state.mapData} id={'ClusterInst'} region={this.state.region} register={true}/>
+            <ListMexMap dataList={this.state.mapData} id={constant.PAGE_CLUSTER_INSTANCES} region={this.state.region} register={true}/>
         </div>
     )
 
     saveFlowInstance = (data) => {
-        this.setState({ flowInstance: data })
+        this.updateState({ flowInstance: data })
     }
 
     getGraph = () =>
@@ -308,8 +314,8 @@ class ClusterInstReg extends React.Component {
     )
 
     getPanes = () => ([
-        { label: 'Cloudlet Locations', tab: this.getMap(), onClick: () => { this.setState({ activeIndex: 0 }) } },
-        { label: 'Graph', tab: this.getGraph(), onClick: () => { this.setState({ activeIndex: 1 }) } }
+        { label: 'Cloudlet Locations', tab: this.getMap(), onClick: () => { this.updateState({ activeIndex: 0 }) } },
+        { label: 'Graph', tab: this.getGraph(), onClick: () => { this.updateState({ activeIndex: 1 }) } }
     ])
     /**
      * Tab block
@@ -317,13 +323,13 @@ class ClusterInstReg extends React.Component {
 
     /*Required*/
     reloadForms = () => {
-        this.setState({
+        this.updateState({
             forms: this.state.forms
         })
     }
 
     stepperClose = () => {
-        this.setState({
+        this.updateState({
             stepsArray: []
         })
         this.props.onClose(true)
@@ -413,7 +419,7 @@ class ClusterInstReg extends React.Component {
             cloudlet[fields.cloudletLocation] = data[fields.cloudletLocation]
             this.cloudletList = [cloudlet]
 
-            this.setState({ mapData: [cloudlet] })
+            this.updateState({ mapData: [cloudlet] })
 
             let flavor = {}
             flavor[fields.region] = data[fields.region]
@@ -480,12 +486,12 @@ class ClusterInstReg extends React.Component {
             }
         }
 
-        this.setState({
-            forms: forms
+        this.updateState({
+            forms
         })
 
         if (this.isUpdate) {
-            this.setState({
+            this.updateState({
                 showGraph: true,
                 flowDataList: this.updateFlowDataList
             })
@@ -494,8 +500,13 @@ class ClusterInstReg extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.getFormData(this.props.data)
         this.props.handleViewMode(HELP_CLUSTER_INST_REG)
+    }
+
+    componentWillUnmount(){
+        this._isMounted = false
     }
 };
 

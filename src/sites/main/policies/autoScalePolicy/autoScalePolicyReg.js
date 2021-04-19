@@ -18,9 +18,16 @@ class AutoScalePolicyReg extends React.Component {
         this.state = {
             forms: []
         }
+        this._isMounted = false
         this.isUpdate = this.props.action === 'Update'
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.organizationList = []
+    }
+
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
     }
 
     validateNodes = (currentForm) => {
@@ -121,7 +128,7 @@ class AutoScalePolicyReg extends React.Component {
 
     /*Required*/
     reloadForms = () => {
-        this.setState({
+        this.updateState({
             forms: this.state.forms
         })
     }
@@ -203,15 +210,18 @@ class AutoScalePolicyReg extends React.Component {
             this.loadData(forms)
         }
 
-        this.setState({
-            forms: forms
-        })
+        this.updateState({ forms })
 
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.getFormData(this.props.data)
         this.props.handleViewMode(HELP_SCALE_POLICY_REG)
+    }
+
+    componentWillUnmount(){
+        this._isMounted = false
     }
 };
 

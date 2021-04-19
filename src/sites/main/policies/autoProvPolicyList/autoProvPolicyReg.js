@@ -19,10 +19,17 @@ class AutoProvPolicyReg extends React.Component {
         this.state = {
             forms: []
         }
+        this._isMounted = false
         this.isUpdate = this.props.isUpdate
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.organizationList = []
         this.cloudletList = []
+    }
+
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
     }
 
     getCloudletData = (dataList) => {
@@ -52,7 +59,7 @@ class AutoProvPolicyReg extends React.Component {
         if (region && organization && !this.isUpdate) {
             this.cloudletList = await getOrgCloudletList(this, { region: region, org: organization })
             this.updateUI(form)
-            this.setState({ forms: forms })
+            this.updateState({ forms })
         }
     }
 
@@ -85,7 +92,7 @@ class AutoProvPolicyReg extends React.Component {
                     break;
                 }
             }
-            this.setState({ forms: forms })
+            this.updateState({ forms })
         }
     }
 
@@ -99,7 +106,7 @@ class AutoProvPolicyReg extends React.Component {
                     break;
                 }
             }
-            this.setState({ forms: forms })
+            this.updateState({ forms })
         }
     }
 
@@ -172,9 +179,7 @@ class AutoProvPolicyReg extends React.Component {
                 let form = forms[i]
                 this.updateUI(form)
             }
-            this.setState({
-                forms: forms
-            })
+            this.updateState({ forms })
             this.props.handleViewMode(HELP_AUTO_PROV_REG_2);
         }
         else {
@@ -259,7 +264,7 @@ class AutoProvPolicyReg extends React.Component {
 
     /*Required*/
     reloadForms = () => {
-        this.setState({
+        this.updateState({
             forms: this.state.forms
         })
     }
@@ -438,15 +443,18 @@ class AutoProvPolicyReg extends React.Component {
 
             this.updateFormData(forms, data)
 
-            this.setState({
-                forms: forms
-            })
+            this.updateState({ forms })
         }
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.getFormData(this.props.data);
         this.props.handleViewMode(HELP_AUTO_PROV_REG_1)
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 };
 

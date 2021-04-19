@@ -1,8 +1,8 @@
 
 import * as formatter from './format'
 import { APP_INST_METRICS_ENDPOINT } from './endPointTypes'
-import { healthCheck } from '../../constant'
 import { UNIT_BYTES, UNIT_PERCENTAGE, UNIT_FLOOR } from '../../sites/main/monitoring/helper/unitConvertor';
+import { labelFormatter } from '../../helper/formatter';
 
 let fields = formatter.fields;
 
@@ -24,7 +24,7 @@ export const appMetricsKeys = [
 export const customData = (id, data) => {
     switch (id) {
         case fields.healthCheck:
-            return healthCheck(data[fields.healthCheck])
+            return labelFormatter.healthCheck(data[fields.healthCheck])
         case fields.cloudletName:
             return `${data[fields.cloudletName]} [${data[fields.operatorName]}]`
         case fields.clusterName:

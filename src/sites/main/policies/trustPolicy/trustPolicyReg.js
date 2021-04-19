@@ -28,6 +28,12 @@ class TrustPolicyReg extends React.Component {
         this.isUpdate = this.props.action === 'Update'
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
     validateRemoteCIDR = (form) => {
         if (form.value && form.value.length > 0) {
             if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([0-9]|1[0-9]|2[0-9]|3[0-2]?)$/.test(form.value)) {
@@ -70,11 +76,7 @@ class TrustPolicyReg extends React.Component {
                 break;
             }
         }
-        if (this._isMounted) {
-            this.setState({
-                forms: forms
-            })
-        }
+            this.updateState({ forms })
     }
 
     onValueChange = (currentForm) => {
@@ -86,11 +88,7 @@ class TrustPolicyReg extends React.Component {
                     form.visible = !currentForm.value;
                 }
             }
-            if (this._isMounted) {
-                this.setState({
-                    forms: forms
-                })
-            }
+            this.updateState({ forms })
         }
 
         if (currentForm.field === fields.protocol) {
@@ -114,11 +112,7 @@ class TrustPolicyReg extends React.Component {
             if (form.parent) {
                 let updateForms = Object.assign([], this.state.forms)
                 updateForms.splice(form.parent.id, 1);
-                if (this._isMounted) {
-                    this.setState({
-                        forms: updateForms
-                    })
-                }
+                this.updateState({ forms: updateForms })
             }
         }
         else {
@@ -188,9 +182,7 @@ class TrustPolicyReg extends React.Component {
                 responseData = mcRequest.response.data;
             }
             let labels = [{ label: 'Trust Policy', field: fields.trustPolicyName }]
-            if (this._isMounted) {
-                this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
-            }
+            this.updateState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
     }
 
@@ -239,19 +231,15 @@ class TrustPolicyReg extends React.Component {
 
     /*Required*/
     reloadForms = () => {
-        if (this._isMounted) {
-            this.setState({
-                forms: this.state.forms
-            })
-        }
+        this.updateState({
+            forms: this.state.forms
+        })
     }
 
     stepperClose = () => {
-        if (this._isMounted) {
-            this.setState({
-                stepsArray: []
-            })
-        }
+        this.updateState({
+            stepsArray: []
+        })
         this.props.onClose(true)
     }
 
@@ -364,11 +352,7 @@ class TrustPolicyReg extends React.Component {
             forms.push(this.getOutboundSecurityForm(this.getOutBoundRules('tcp', 443, 443, '0.0.0.0/0')))
             forms.push(this.getOutboundSecurityForm(this.getOutBoundRules('udp', 123, 123, '0.0.0.0/0')))
         }
-
-        this.setState({
-            forms: forms
-        })
-
+        this.updateState({ forms })
     }
 
     componentDidMount() {

@@ -18,8 +18,15 @@ class FlavorReg extends React.Component {
             step: 0,
             forms: [],
         }
+        this._isMounted = false
         this.isUpdate = this.props.isUpdate
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+    }
+
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
     }
 
     formKeys = () => {
@@ -63,16 +70,9 @@ class FlavorReg extends React.Component {
 
     /*Required*/
     reloadForms = () => {
-        this.setState({
+        this.updateState({
             forms: this.state.forms
         })
-    }
-
-    stepperClose = () => {
-        this.setState({
-            stepsArray: []
-        })
-        this.props.onClose(true)
     }
 
     onAddCancel = () => {
@@ -116,15 +116,11 @@ class FlavorReg extends React.Component {
         if (data) {
             await this.loadDefaultData(data)
         }
-        else {
-
-        }
 
         let forms = this.formKeys()
         forms.push(
             { label: this.isUpdate ? 'Update' : 'Create', formType: BUTTON, onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: BUTTON, onClick: this.onAddCancel })
-
 
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
@@ -134,11 +130,7 @@ class FlavorReg extends React.Component {
                 this.checkForms(form, forms, true)
             }
         }
-
-        this.setState({
-            forms: forms
-        })
-
+        this.updateState({ forms })
     }
 
     render() {
@@ -154,8 +146,13 @@ class FlavorReg extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.getFormData(this.props.data);
         this.props.handleViewMode(HELP_FLAVOR_REG)
+    }
+
+    componentWillUnmount(){
+        this._isMounted = false
     }
 };
 

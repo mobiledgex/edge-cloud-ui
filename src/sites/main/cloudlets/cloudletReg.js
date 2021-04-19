@@ -42,10 +42,11 @@ class CloudletReg extends React.Component {
             flowInstance: undefined,
             region: undefined
         }
+        this._isMounted = false
         this.isUpdate = this.props.isUpdate
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.infraApiAccessList = [constant.INFRA_API_ACCESS_DIRECT, constant.INFRA_API_ACCESS_RESTRICTED]
-        //To avoid refecthing data from server
+        //To avoid refeching data from server
         this.requestedRegionList = [];
         this.operatorList = [];
         this.cloudletData = undefined;
@@ -57,6 +58,12 @@ class CloudletReg extends React.Component {
         this.resourceQuotaList = [];
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
     platformTypeValueChange = async (currentForm, forms, isInit) => {
         await this.getCloudletResourceQuota(this.state.region, currentForm.value)
         for (let form of forms) {
@@ -65,7 +72,7 @@ class CloudletReg extends React.Component {
                     if (childForm.field === fields.resourceName) {
                         if (!this.isUpdate) {
                             this.updateUI(childForm)
-                            this.setState({ forms: forms })
+                            this.updateState({ forms })
                         }
                     }
                 }
@@ -75,7 +82,7 @@ class CloudletReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.updateState({ forms })
         }
     }
 
@@ -87,7 +94,7 @@ class CloudletReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.updateState({ forms })
         }
     }
 
@@ -109,10 +116,10 @@ class CloudletReg extends React.Component {
             if (latitude && longitude) {
                 let cloudlet = {}
                 cloudlet.cloudletLocation = { latitude: latitude, longitude: longitude }
-                this.setState({ mapData: [cloudlet] })
+                this.updateState({ mapData: [cloudlet] })
             }
             else {
-                this.setState({ mapData: [] })
+                this.updateState({ mapData: [] })
             }
         }
     }
@@ -122,7 +129,7 @@ class CloudletReg extends React.Component {
             this.trustPolicyList = [...this.trustPolicyList, ...await getTrustPolicyList(this, { region: region })]
         }
         this.updateUI(form)
-        this.setState({ forms: forms })
+        this.updateState({ forms })
     }
 
     getCloudletResourceQuota = async (region, platformType) => {
@@ -141,7 +148,7 @@ class CloudletReg extends React.Component {
 
     regionValueChange = async (currentForm, forms, isInit) => {
         let region = currentForm.value;
-        this.setState({ region: region })
+        this.updateState({ region })
         if (region) {
             for (let form of forms) {
                 if (form.field === fields.trustPolicyName) {
@@ -162,7 +169,7 @@ class CloudletReg extends React.Component {
             let form = forms[i]
             if (form.field === fields.trustPolicyName) {
                 this.updateUI(form)
-                this.setState({ forms: forms })
+                this.updateState({ forms })
             }
         }
     }
@@ -192,7 +199,7 @@ class CloudletReg extends React.Component {
                 this.updateFlowDataList = [...this.updateFlowDataList, ...flowDataList]
             }
             else {
-                this.setState({ flowDataList: flowDataList, activeIndex: 1 })
+                this.updateState({ flowDataList: flowDataList, activeIndex: 1 })
             }
         }
     }
@@ -239,24 +246,24 @@ class CloudletReg extends React.Component {
                     this.restricted = true
                     if (responseData && responseData.data && responseData.data.message === 'Cloudlet configured successfully. Please run `GetCloudletManifest` to bringup Platform VM(s) for cloudlet services') {
                         responseData.data.message = 'Cloudlet configured successfully, please wait requesting cloudlet manifest to bring up Platform VM(s) for cloudlet service'
-                        this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
+                        this.updateState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
                         let cloudletManifest = await getCloudletManifest(this, orgData, false)
                         this.cloudletData = orgData
                         if (cloudletManifest && cloudletManifest.response && cloudletManifest.response.data) {
-                            this.setState({ cloudletManifest: cloudletManifest.response.data, showCloudletManifest: true, stepsArray: [] })
+                            this.updateState({ cloudletManifest: cloudletManifest.response.data, showCloudletManifest: true, stepsArray: [] })
                         }
                     }
                     else {
                         let isRequestFailed = responseData ? responseData.code !== 200 : false
                         if (responseData || isRequestFailed) {
                             this.canCloseStepper = isRequestFailed
-                            this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
+                            this.updateState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
                         }
                     }
                 }
                 else {
                     if (responseData) { this.canCloseStepper = responseData.code === 200 }
-                    this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
+                    this.updateState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
                 }
             }
         }
@@ -318,7 +325,7 @@ class CloudletReg extends React.Component {
             if (form.field === fields.cloudletLocation && !form.rules.disabled) {
                 let cloudlet = {}
                 cloudlet.cloudletLocation = { latitude: location.lat, longitude: location.long }
-                this.setState({ mapData: [cloudlet] })
+                this.updateState({ mapData: [cloudlet] })
                 let childForms = form.forms;
                 for (let j = 0; j < childForms.length; j++) {
                     let childForm = childForms[j]
@@ -339,8 +346,8 @@ class CloudletReg extends React.Component {
      * Tab block
      */
 
-    saveFlowInstance = (data) => {
-        this.setState({ flowInstance: data })
+    saveFlowInstance = (flowInstance) => {
+        this.updateState({ flowInstance })
     }
 
     getGraph = () =>
@@ -360,8 +367,8 @@ class CloudletReg extends React.Component {
     )
 
     getPanes = () => ([
-        { label: 'Cloudlet Location', tab: this.getMap(), onClick: () => { this.setState({ activeIndex: 0 }) } },
-        { label: 'Graph', tab: this.getGraph(), onClick: () => { this.setState({ activeIndex: 1 }) } }
+        { label: 'Cloudlet Location', tab: this.getMap(), onClick: () => { this.updateState({ activeIndex: 0 }) } },
+        { label: 'Graph', tab: this.getGraph(), onClick: () => { this.updateState({ activeIndex: 1 }) } }
     ])
     /**
      * Tab block
@@ -369,7 +376,7 @@ class CloudletReg extends React.Component {
 
     /*Required*/
     reloadForms = () => {
-        this.setState({
+        this.updateState({
             forms: this.state.forms
         })
     }
@@ -377,13 +384,13 @@ class CloudletReg extends React.Component {
     stepperClose = () => {
         if (this.restricted) {
             if (this.canCloseStepper) {
-                this.setState({
+                this.updateState({
                     stepsArray: []
                 })
             }
         }
         else {
-            this.setState({
+            this.updateState({
                 stepsArray: []
             })
             if (this.canCloseStepper) {
@@ -483,7 +490,7 @@ class CloudletReg extends React.Component {
             let operator = {}
             operator[fields.operatorName] = data[fields.operatorName];
             this.operatorList = [operator]
-            this.setState({ mapData: [data] })
+            this.updateState({ mapData: [data] })
 
             requestTypeList.push(showTrustPolicies({ region: data[fields.region] }))
             requestTypeList.push(cloudletResourceQuota({ region: data[fields.region], platformType: data[fields.platformType] }))
@@ -595,7 +602,7 @@ class CloudletReg extends React.Component {
         if (form.parent) {
             let updateForms = Object.assign([], this.state.forms)
             updateForms.splice(form.parent.id, 1);
-            this.setState({
+            this.updateState({
                 forms: updateForms
             })
         }
@@ -605,7 +612,7 @@ class CloudletReg extends React.Component {
         let parent = form.parent;
         let forms = this.state.forms;
         forms.splice(parent.id + 1, 0, form.multiForm());
-        this.setState({ forms: forms })
+        this.updateState({ forms })
     }
 
     formKeys = () => {
@@ -661,9 +668,9 @@ class CloudletReg extends React.Component {
         let forms = this.formKeys()
         if (data) {
             if (this.props.manifestData) {
-                this.setState({ showCloudletManifest: true })
+                this.updateState({ showCloudletManifest: true })
                 this.cloudletData = data
-                this.setState({ cloudletManifest: this.props.manifestData })
+                this.updateState({ cloudletManifest: this.props.manifestData })
             }
             else {
                 await this.loadDefaultData(forms, data)
@@ -682,12 +689,12 @@ class CloudletReg extends React.Component {
 
         this.updateFormData(forms, data)
 
-        this.setState({
-            forms: forms
+        this.updateState({
+            forms
         })
 
         if (this.isUpdate) {
-            this.setState({
+            this.updateState({
                 showGraph: true,
                 flowDataList: this.updateFlowDataList
             })
@@ -696,8 +703,13 @@ class CloudletReg extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.getFormData(this.props.data)
         this.props.handleViewMode(HELP_CLOUDLET_REG)
+    }
+
+    componentWillUnmount(){
+        this._isMounted = false 
     }
 };
 

@@ -12,13 +12,12 @@ import { showCloudletInfos } from '../../../services/model/cloudletInfo';
 import ClouldletReg from './cloudletReg';
 import { validateRole, operatorRoles, INFRA_API_ACCESS_RESTRICTED, PAGE_CLOUDLETS, OPERATOR } from '../../../constant'
 import * as shared from '../../../services/model/shared';
-import { Button } from 'semantic-ui-react';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 import { getCloudletManifest, revokeAccessKey } from '../../../services/model/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
-import { customizedTrusted } from '../../../constantUI';
 import { ACTION_DISABLE, ACTION_DELETE, ACTION_UPDATE, ACTION_MANIFEST } from '../../../container/Actions';
+import { labelFormatter, uiFormatter } from '../../../helper/formatter';
 class CloudletList extends React.Component {
     constructor(props) {
         super(props);
@@ -103,6 +102,18 @@ class CloudletList extends React.Component {
         }
     }
 
+    dataFormatter = (key, data, isDetail) => {
+        if (key.field === fields.cloudletStatus) {
+            return uiFormatter.cloudletInfoState(key, data, isDetail)
+        }
+        else if (key.field === fields.state) {
+            return this.showProgress(data, isDetail)
+        }
+        else if (key.field === fields.trusted) {
+            return uiFormatter.trusted(key, data, isDetail)
+        }
+    }
+
     requestInfo = () => {
         return ({
             id: PAGE_CLOUDLETS,
@@ -118,56 +129,12 @@ class CloudletList extends React.Component {
             keys: this.keys,
             onAdd: this.canAdd(),
             viewMode: HELP_CLOUDLET_LIST,
-            grouping: true
+            grouping: true,
+            formatData:this.dataFormatter
         })
     }
 
-    /**
-    * Customized data block
-    **/
-    getCloudletInfoState = (data, isDetailView) => {
-        let id = data[fields.cloudletStatus]
-        let state = 'Not Present';
-        let color = 'red'
-        switch (id) {
-            case 0:
-                state = 'Unknown'
-                break;
-            case 1:
-                state = 'Error'
-                break;
-            case 2:
-                state = 'Online'
-                color = 'green'
-                break;
-            case 3:
-                state = 'Offline'
-                break;
-            case 4:
-                state = 'Not Present'
-                break;
-            case 5:
-                state = 'Init'
-                break;
-            case 6:
-                state = 'Upgrade'
-                break;
-            case 999:
-                state = 'Under Maintenance'
-                color = 'yellow'
-                break;
-            default:
-                state = 'Not Present'
-                break;
-        }
-
-        return (
-            isDetailView ? state :
-                <Button basic size='mini' color={color} compact style={{ width: 100 }}>
-                    <label>{state}</label>
-                </Button>
-        )
-    }
+    
 
     showProgress = (data, isDetailView) => {
         let progressRender = null
@@ -180,27 +147,12 @@ class CloudletList extends React.Component {
         return progressRender
     }
 
-    customizedData = () => {
-        for (let key of this.keys) {
-            if (key.field === fields.cloudletStatus) {
-                key.customizedData = this.getCloudletInfoState
-            }
-            else if (key.field === fields.state) {
-                key.customizedData = this.showProgress
-            }
-            else if (key.field === fields.trusted) {
-                key.customizedData = customizedTrusted
-            }
-        }
-    }
-
     /**
     * Customized data block
     * ** */
 
     componentDidMount() {
         this._isMounted = true
-        this.customizedData()
     }
 
     onDialogClose = async (valid, data) => {

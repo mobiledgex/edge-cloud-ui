@@ -13,6 +13,7 @@ export const LS_REGIONS = 'regions'
 export const CLOUDLET_COMPAT_VERSION_2_4 = 0
 export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1
 
+export const UNKNOWN = 'Unknown'
 export const ADD = 'Add'
 export const UPDATE = 'Update'
 export const TYPE_JSON = 'JSON'
@@ -42,8 +43,8 @@ export const SELECT = 'Select'
 export const CLOUDLET = 'Cloudlet'
 export const CLUSTER_INST = 'ClusterInst'
 export const APP_INST = 'AppInst'
+export const IP_SUPPORT_STATIC = 'Static'
 export const IP_SUPPORT_DYNAMIC = 'Dynamic'
-export const LIVENESS_STATIC = 'Static'
 export const APP = 'App'
 export const YES = 'Yes'
 export const NO = 'No'
@@ -83,6 +84,11 @@ export const MAINTENANCE_STATE_UNDER_MAINTENANCE = 'Under Maintenance'
 export const INFRA_API_ACCESS_DIRECT = 'Direct'
 export const INFRA_API_ACCESS_RESTRICTED = 'Restricted'
 
+
+export const LIVENESS_STATIC = 'Static'
+export const LIVENESS_DYNAMIC = 'Dynamic'
+export const LIVENESS_AUTOPROV = 'Auto Prov'
+
 export const ALL = 'ALL'
 export const ADMIN = 'Admin'
 export const OPERATOR = 'Operator'
@@ -107,7 +113,6 @@ export const CRM_OVERRIDE_IGNORE_CRM = 2
 export const CRM_OVERRIDE_IGNORE_TRANSIENT_STATE = 3
 export const CRM_OVERRIDE_IGNORE_CRM_AND_TRANSIENT_STATE = 4
 
-export const POWER_STATE_POWER_STATE_UNKNOWN = 'Unknown'
 export const POWER_STATE_POWER_ON_REQUESTED = 'Power On Requested'
 export const POWER_STATE_POWERING_ON = 'Powering On'
 export const POWER_STATE_POWER_ON = 'Power On'
@@ -120,7 +125,6 @@ export const POWER_STATE_REBOOT = 'Reboot'
 export const POWER_STATE_ERROR = 'Error'
 
 export const HEALTH_CHECK = 'HEALTH_CHECK'
-export const HEALTH_CHECK_UNKNOWN = 'Unknown'
 export const HEALTH_CHECK_FAIL_ROOTLB_OFFLINE = 'Rootlb Offline'
 export const HEALTH_CHECK_FAIL_SERVER_FAIL = 'Server Fail'
 export const HEALTH_CHECK_OK = 'OK'
@@ -150,6 +154,8 @@ export const PAGE_INVOICES = 'Invoices'
 
 export const BILLING_TYPE_SELF = 'Self'
 export const BILLING_TYPE_PARENT = 'Parent'
+export const CLOUDLET_STATUS_READY = 2
+export const CLOUDLET_STATUS_UNKNOWN = 0
 
 const dataFormatter = (type, value) => {
     switch (type) {
@@ -168,91 +174,6 @@ export const formatData = (key, value) => {
     return value
 }
 
-export const MaintenanceState = (id) => {
-    switch (id) {
-        case 0:
-            return MAINTENANCE_STATE_NORMAL_OPERATION
-        case 1:
-            return MAINTENANCE_STATE_MAINTENANCE_START
-        case 2:
-            return MAINTENANCE_STATE_FAILOVER_REQUESTED
-        case 3:
-            return MAINTENANCE_STATE_FAILOVER_DONE
-        case 4:
-            return MAINTENANCE_STATE_FAILOVER_ERROR
-        case 5:
-            return MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER
-        case 6:
-            return MAINTENANCE_STATE_CRM_REQUESTED
-        case 7:
-            return MAINTENANCE_STATE_CRM_UNDER_MAINTENANCE
-        case 8:
-            return MAINTENANCE_STATE_CRM_ERROR
-        case 31:
-            return MAINTENANCE_STATE_UNDER_MAINTENANCE
-        case MAINTENANCE_STATE_NORMAL_OPERATION:
-            return 0
-        case MAINTENANCE_STATE_MAINTENANCE_START:
-            return 1
-        case MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER:
-            return 5
-        default:
-            return MAINTENANCE_STATE_NORMAL_OPERATION
-    }
-}
-
-export const PowerState = (id) => {
-    switch (id) {
-        case 0:
-            return POWER_STATE_POWER_STATE_UNKNOWN
-        case 1:
-            return POWER_STATE_POWER_ON_REQUESTED
-        case 2:
-            return POWER_STATE_POWERING_ON
-        case 3:
-            return POWER_STATE_POWER_ON
-        case 4:
-            return POWER_STATE_POWER_OFF_REQUESTED
-        case 5:
-            return POWER_STATE_POWERING_OFF
-        case 6:
-            return POWER_STATE_POWER_OFF
-        case 7:
-            return POWER_STATE_REBOOT_REQUESTED
-        case 8:
-            return POWER_STATE_REBOOTING
-        case 9:
-            return POWER_STATE_REBOOT
-        case 10:
-            return POWER_STATE_ERROR
-        case POWER_STATE_POWER_STATE_UNKNOWN:
-            return 0
-        case POWER_STATE_POWER_ON_REQUESTED:
-            return 1
-        case POWER_STATE_POWERING_ON:
-            return 2
-        case POWER_STATE_POWER_ON:
-            return 3
-        case POWER_STATE_POWER_OFF_REQUESTED:
-            return 4
-        case POWER_STATE_POWERING_OFF:
-            return 5
-        case POWER_STATE_POWER_OFF:
-            return 6
-        case POWER_STATE_REBOOT_REQUESTED:
-            return 7
-        case POWER_STATE_REBOOTING:
-            return 8
-        case POWER_STATE_REBOOT:
-            return 9
-        case POWER_STATE_ERROR:
-            return 10
-    }
-}
-
-export const CLOUDLET_STATUS_READY = 2
-export const CLOUDLET_STATUS_UNKNOWN = 0
-
 export const getHeight = (height) => {
     return window.innerHeight - (height ? height : 85)
 }
@@ -262,200 +183,6 @@ export const showYesNo = (data, isDetailView) => {
         return data ? YES : NO
     }
 }
-
-export const IPAccessLabel = (id) => {
-    switch (id) {
-        case 1:
-            return 'Dedicated'
-        case 3:
-            return 'Shared'
-        case 'Dedicated':
-            return 1
-        case 'Shared':
-            return 3
-        default:
-            return id
-    }
-}
-
-export const accessType = (id) => {
-    switch (id) {
-        case 0:
-            return ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT
-        case 1:
-            return ACCESS_TYPE_DIRECT
-        case 2:
-            return ACCESS_TYPE_LOAD_BALANCER
-        case ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT:
-            return 0
-        case ACCESS_TYPE_DIRECT:
-            return 1
-        case ACCESS_TYPE_LOAD_BALANCER:
-            return 2
-        default:
-            return id
-    }
-}
-
-export const infraApiAccess = (id) => {
-    switch (id) {
-        case 0:
-            return INFRA_API_ACCESS_DIRECT
-        case 1:
-            return INFRA_API_ACCESS_RESTRICTED
-        case INFRA_API_ACCESS_DIRECT:
-            return 0
-        case INFRA_API_ACCESS_RESTRICTED:
-            return 1
-        default:
-            return id
-    }
-}
-
-export const healthCheck = (id) => {
-    switch (parseInt(id)) {
-        case 0:
-            return HEALTH_CHECK_UNKNOWN
-        case HEALTH_CHECK_UNKNOWN:
-            return 0
-        case 1:
-            return HEALTH_CHECK_FAIL_ROOTLB_OFFLINE
-        case HEALTH_CHECK_FAIL_ROOTLB_OFFLINE:
-            return 1
-        case 2:
-            return HEALTH_CHECK_FAIL_SERVER_FAIL
-        case HEALTH_CHECK_FAIL_SERVER_FAIL:
-            return 2
-        case 3:
-            return HEALTH_CHECK_OK
-        case HEALTH_CHECK_OK:
-            return 3
-        default:
-            return id
-    }
-}
-
-export const imageType = (id) => {
-    switch (id) {
-        case 1:
-            return IMAGE_TYPE_DOCKER
-        case IMAGE_TYPE_DOCKER:
-            return 1
-        case 2:
-            return IMAGE_TYPE_QCOW
-        case IMAGE_TYPE_QCOW:
-            return 2
-        case 3:
-            return IMAGE_TYPE_HELM
-        case IMAGE_TYPE_HELM:
-            return 3
-        default:
-            return id
-    }
-}
-
-export const configType = (id) => {
-    switch (id) {
-        case CONFIG_HELM_CUST:
-            return 'helmCustomizationYaml'
-        case CONFIG_ENV_VAR:
-            return 'envVarsYaml'
-        case 'helmCustomizationYaml':
-            return CONFIG_HELM_CUST
-        case 'envVarsYaml':
-            return CONFIG_ENV_VAR
-        default:
-            return id
-    }
-}
-
-
-export const IPSupport = (id) => {
-    switch (id) {
-        case 2:
-            return IP_SUPPORT_DYNAMIC
-        case IP_SUPPORT_DYNAMIC:
-            return 2
-        default:
-            return id
-    }
-}
-
-
-export const PlatformType = (id) => {
-    switch (id) {
-        case 0:
-            return PLATFORM_TYPE_FAKE
-        case 1:
-            return PLATFORM_TYPE_DIND
-        case 2:
-            return PLATFORM_TYPE_OPEN_STACK
-        case 3:
-            return PLATFORM_TYPE_AZURE
-        case 4:
-            return PLATFORM_TYPE_OPEN_GCP
-        case 5:
-            return PLATFORM_TYPE_EDGEBOX
-        case 6:
-            return PLATFORM_TYPE_FAKEINFRA
-        case 7:
-            return PLATFORM_TYPE_VSPHERE
-        case 8:
-            return PLATFORM_TYPE_AWS_EKS
-        case 9:
-            return PLATFORM_TYPE_VMPOOL
-        case 10:
-            return PLATFORM_TYPE_AWS_EC2
-        case 11:
-            return PLATFORM_TYPE_VCD
-        case 12:
-            return PLATFORM_TYPE_K8S_BARE_METAL
-        case 13:
-            return PLATFORM_TYPE_KIND
-        case PLATFORM_TYPE_FAKE:
-            return 0
-        case PLATFORM_TYPE_DIND:
-            return 1
-        case PLATFORM_TYPE_OPEN_STACK:
-            return 2
-        case PLATFORM_TYPE_AZURE:
-            return 3
-        case PLATFORM_TYPE_OPEN_GCP:
-            return 4
-        case PLATFORM_TYPE_EDGEBOX:
-            return 5
-        case PLATFORM_TYPE_FAKEINFRA:
-            return 6
-        case PLATFORM_TYPE_VSPHERE:
-            return 7
-        case PLATFORM_TYPE_AWS_EKS:
-            return 8
-        case PLATFORM_TYPE_VMPOOL:
-            return 9
-        case PLATFORM_TYPE_AWS_EC2:
-            return 10
-        case PLATFORM_TYPE_VCD:
-            return 11
-        case PLATFORM_TYPE_K8S_BARE_METAL:
-            return 12
-        case PLATFORM_TYPE_KIND:
-            return 13
-        default:
-            return id
-    }
-}
-
-export const liveness = (id) => {
-    switch (id) {
-        case 1:
-            return LIVENESS_STATIC
-        case LIVENESS_STATIC:
-            return 1
-        default:
-            return id
-    }
-}
-
 
 export const getTip = (field) => {
     switch (field) {

@@ -1,0 +1,6 @@
+.ui.button:disabled {
+    opacity: 1 !important;
+}
+.row-button{
+    width: 80px;
+}
