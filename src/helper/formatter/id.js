@@ -1,8 +1,7 @@
 import * as constant from "../../constant"
 
-export const powerState = (label)=>{
-    switch(label)
-    {
+export const powerState = (label) => {
+    switch (label) {
         case constant.UNKNOWN:
             return 0
         case constant.POWER_STATE_POWER_ON_REQUESTED:
@@ -36,5 +35,62 @@ export const maintainance = (label) => {
             return 1
         case constant.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER:
             return 5
+    }
+}
+
+export const platformType = (label) => {
+    switch (label) {
+        case constant.PLATFORM_TYPE_FAKE:
+            return 0
+        case constant.PLATFORM_TYPE_DIND:
+            return 1
+        case constant.PLATFORM_TYPE_OPEN_STACK:
+            return 2
+        case constant.PLATFORM_TYPE_AZURE:
+            return 3
+        case constant.PLATFORM_TYPE_OPEN_GCP:
+            return 4
+        case constant.PLATFORM_TYPE_EDGEBOX:
+            return 5
+        case constant.PLATFORM_TYPE_FAKEINFRA:
+            return 6
+        case constant.PLATFORM_TYPE_VSPHERE:
+            return 7
+        case constant.PLATFORM_TYPE_AWS_EKS:
+            return 8
+        case constant.PLATFORM_TYPE_VMPOOL:
+            return 9
+        case constant.PLATFORM_TYPE_AWS_EC2:
+            return 10
+        case constant.PLATFORM_TYPE_VCD:
+            return 11
+        case constant.PLATFORM_TYPE_K8S_BARE_METAL:
+            return 12
+        case constant.PLATFORM_TYPE_KIND:
+            return 13
+        default:
+            return label
+    }
+}
+
+export const infraApiAccess = (label) => {
+    switch (label) {
+        case constant.INFRA_API_ACCESS_DIRECT:
+            return 0
+        case constant.INFRA_API_ACCESS_RESTRICTED:
+            return 1
+        default:
+            return label
+    }
+}
+
+export const ipSupport = (label) => {
+    switch (label) {
+        case constant.IP_SUPPORT_STATIC:
+            return 1
+        case constant.IP_SUPPORT_DYNAMIC:
+            return 2
+        default:
+            return label
     }
 }

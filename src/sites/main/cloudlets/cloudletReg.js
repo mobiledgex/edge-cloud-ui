@@ -46,7 +46,7 @@ class CloudletReg extends React.Component {
         this.isUpdate = this.props.isUpdate
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.infraApiAccessList = [constant.INFRA_API_ACCESS_DIRECT, constant.INFRA_API_ACCESS_RESTRICTED]
-        //To avoid refecthing data from server
+        //To avoid refeching data from server
         this.requestedRegionList = [];
         this.operatorList = [];
         this.cloudletData = undefined;

@@ -112,15 +112,6 @@ class CloudletList extends React.Component {
         else if (key.field === fields.trusted) {
             return uiFormatter.trusted(key, data, isDetail)
         }
-        else if (key.field === fields.infraApiAccess) {
-            return labelFormatter.infraApiAccess(data[key.field])
-        }
-        else if (key.field === fields.platformType) {
-            return labelFormatter.platformType(data[key.field])
-        }
-        else if (key.field === fields.ipSupport) {
-            return labelFormatter.ipSupport(data[key.field])
-        }
     }
 
     requestInfo = () => {
