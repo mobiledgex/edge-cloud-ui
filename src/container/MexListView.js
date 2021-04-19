@@ -25,7 +25,6 @@ import { ACTION_DELETE, ACTION_EDGE_BOX_ENABLE, ACTION_POWER_OFF, ACTION_POWER_O
 class MexListView extends React.Component {
     constructor(props) {
         super(props);
-        this._isMounted = false
         this.state = {
             newDataList: [],
             dataList: [],
@@ -42,6 +41,7 @@ class MexListView extends React.Component {
             resetStream: false,
             deleteMultiple: []
         };
+        this._isMounted = false
         this.filterText = prefixSearchPref()
         this.requestCount = 0;
         this.requestInfo = this.props.requestInfo
@@ -52,8 +52,14 @@ class MexListView extends React.Component {
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
     setSelected = (dataList) => {
-        this.setState({ selected: dataList })
+        this.updateState({ selected: dataList })
     }
 
     detailView = (data) => {
@@ -80,7 +86,7 @@ class MexListView extends React.Component {
             }
         }
         else {
-            this.setState(
+            this.updateState(
                 {
                     isDetail: true,
                     currentView: this.detailView(data)
@@ -115,9 +121,7 @@ class MexListView extends React.Component {
                     this.props.handleAlertInfo('success', `${mc.request.success}`)
                     filterList.splice(filterList.indexOf(data), 1)
                     dataList.splice(dataList.indexOf(data), 1)
-                    if (this._isMounted) {
-                        this.setState({ dataList: dataList, filterList: filterList })
-                    }
+                    this.updateState({ dataList: dataList, filterList: filterList })
                     valid = true;
                 }
                 if (action.onFinish) {
@@ -142,9 +146,7 @@ class MexListView extends React.Component {
                 responseData = mc.response.data;
             }
             let labels = action.multiStepperHeader
-            if (this._isMounted) {
-                this.setState({ multiStepsArray: updateStepper(this.state.multiStepsArray, labels, data, responseData, mc.wsObj) })
-            }
+            this.updateState({ multiStepsArray: updateStepper(this.state.multiStepsArray, labels, data, responseData, mc.wsObj) })
         }
     }
 
@@ -182,11 +184,13 @@ class MexListView extends React.Component {
                 code = mc.error.response.status
                 message = mc.error.response.data.message
             }
-            this.setState(prevState => {
-                let deleteMultiple = prevState.deleteMultiple
-                deleteMultiple.push({ data, message, code })
-                return { deleteMultiple }
-            })
+            if (this._isMounted) {
+                this.setState(prevState => {
+                    let deleteMultiple = prevState.deleteMultiple
+                    deleteMultiple.push({ data, message, code })
+                    return { deleteMultiple }
+                })
+            }
         }
     }
 
@@ -202,10 +206,10 @@ class MexListView extends React.Component {
         let action = this.state.dialogMessageInfo.action;
         let isMultiple = this.state.dialogMessageInfo.isMultiple;
         let data = this.state.dialogMessageInfo.data;
-        this.setState({ dialogMessageInfo: {} })
+        this.updateState({ dialogMessageInfo: {} })
         if (valid) {
             if (isMultiple) {
-                this.setState({ selected: [] })
+                this.updateState({ selected: [] })
                 this.state.filterList.map(item => {
                     if (data.includes(item.uuid)) {
                         switch (action.label) {
@@ -252,7 +256,7 @@ class MexListView extends React.Component {
 
     onWarning = async (action, actionLabel, isMultiple, data) => {
         let message = action.dialogMessage ? action.dialogMessage(action, data) : undefined
-        this.setState({ dialogMessageInfo: { message: message ? message : `Are you sure you want to ${actionLabel} ${isMultiple ? '' : data[this.requestInfo.nameField]}?`, action: action, isMultiple: isMultiple, data: data } });
+        this.updateState({ dialogMessageInfo: { message: message ? message : `Are you sure you want to ${actionLabel} ${isMultiple ? '' : data[this.requestInfo.nameField]}?`, action: action, isMultiple: isMultiple, data: data } });
     }
 
     /***Action Block */
@@ -284,7 +288,7 @@ class MexListView extends React.Component {
         if (mapDataList) {
             filterList = mapDataList
         }
-        this.setState({ filterList })
+        this.updateState({ filterList })
     }
 
     groupActionClose = (action, dataList) => {
@@ -319,7 +323,7 @@ class MexListView extends React.Component {
 
 
     onCloseStepper = () => {
-        this.setState({
+        this.updateState({
             uuid: 0
         })
     }
@@ -328,7 +332,7 @@ class MexListView extends React.Component {
         this.state.multiStepsArray.map(item => {
             item.wsObj.close()
         })
-        this.setState({
+        this.updateState({
             multiStepsArray: []
         })
         this.dataFromServer(this.selectedRegion)
@@ -336,7 +340,7 @@ class MexListView extends React.Component {
 
     onProgress(data) {
         if (this._isMounted) {
-            this.setState({
+            this.updateState({
                 uuid: data.uuid
             })
         }
@@ -363,7 +367,7 @@ class MexListView extends React.Component {
             return filterCount === 0 || valid.includes(true)
         }) : dataList
         if (value !== undefined) {
-            this.setState({ filterList: filterList })
+            this.updateState({ filterList })
         }
         return filterList
     }
@@ -376,37 +380,39 @@ class MexListView extends React.Component {
     }
 
     onRemoveDropItem = (item) => {
-        this.setState({ dropList: [] })
+        this.updateState({ dropList: [] })
     }
 
     isDropped = (item) => {
-        this.setState({ dropList: [item] })
+        this.updateState({ dropList: [item] })
     }
 
     specificResponse = (mcList) => {
         if (mcList && mcList.length > 0) {
             let uuid = mcList[0].request.data.uuid
-            this.setState(prevState => {
-                let dataList = prevState.dataList
-                let newDataList = []
-                for (let i = 0; i < dataList.length; i++) {
-                    let data = dataList[i]
-                    if (data.uuid === uuid) {
-                        let newData = this.props.multiDataRequest(this.requestInfo.keys, { new: mcList, old: data }, true)
-                        if (newData) {
-                            dataList[i] = newData
-                            newDataList.push(newData)
+            if (this._isMounted) {
+                this.setState(prevState => {
+                    let dataList = prevState.dataList
+                    let newDataList = []
+                    for (let i = 0; i < dataList.length; i++) {
+                        let data = dataList[i]
+                        if (data.uuid === uuid) {
+                            let newData = this.props.multiDataRequest(this.requestInfo.keys, { new: mcList, old: data }, true)
+                            if (newData) {
+                                dataList[i] = newData
+                                newDataList.push(newData)
+                            }
+                            else {
+                                dataList.splice(i, 1)
+                            }
+                            break;
                         }
-                        else {
-                            dataList.splice(i, 1)
-                        }
-                        break;
                     }
-                }
-                return { dataList, newDataList }
-            }, () => {
-                this.onFilterValue(this.filterText)
-            })
+                    return { dataList, newDataList }
+                }, () => {
+                    this.onFilterValue(this.filterText)
+                })
+            }
         }
     }
 
@@ -456,10 +462,10 @@ class MexListView extends React.Component {
                 this.requestInfo.onAdd()
                 break;
             case ACTION_MAP:
-                this.setState({ showMap: value })
+                this.updateState({ showMap: value })
                 break;
             case ACTION_CLOSE:
-                this.setState({ isDetail: false, currentView: null })
+                this.updateState({ isDetail: false, currentView: null })
                 this.props.handleViewMode(this.requestInfo.viewMode)
                 break;
             case ACTION_SEARCH:
@@ -528,11 +534,11 @@ class MexListView extends React.Component {
         }
 
         if (this._isMounted) {
-            this.setState({
+            this.updateState({
                 dataList,
                 newDataList
             })
-            this.setState({ filterList: this.onFilterValue(undefined) })
+            this.updateState({ filterList: this.onFilterValue(undefined) })
         }
     }
 
