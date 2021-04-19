@@ -154,7 +154,7 @@ export const deleteApp = (data) => {
 
 const customData = (value) => {
     value[fields.trusted] = value[fields.trusted] ? value[fields.trusted] : false
-    value[fields.accessType] = labelFormatter.accessType(value[fields.imageType])
+    value[fields.accessType] = labelFormatter.accessType(value[fields.accessType])
     value[fields.imageType] = labelFormatter.imageType(value[fields.imageType])
     value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
     value[fields.deploymentManifest] = value[fields.deploymentManifest] ? value[fields.deploymentManifest].trim() : value[fields.deploymentManifest]

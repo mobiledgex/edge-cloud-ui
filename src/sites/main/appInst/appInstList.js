@@ -159,15 +159,6 @@ class AppInstList extends React.Component {
         else if (key.field === fields.trusted) {
             return uiFormatter.trusted(key, data, isDetail)
         }
-        else if (key.field === fields.liveness) {
-            return labelFormatter.liveness(data[key.field])
-        }
-        else if (key.field === fields.ipAccess) {
-            return labelFormatter.ipAccess(data[key.field])
-        }
-        else if (key.field === fields.accessType) {
-            return labelFormatter.accessType(data[key.field])
-        }
         else if (key.field === fields.appName) {
             return `${data[key.field]} [${data[fields.version]}]`
         }

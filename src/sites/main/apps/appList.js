@@ -10,7 +10,7 @@ import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
 import { HELP_APP_LIST } from "../../../tutorial";
 import { ACTION_DELETE, ACTION_UPDATE } from '../../../container/Actions';
-import { labelFormatter, uiFormatter } from '../../../helper/formatter';
+import { uiFormatter } from '../../../helper/formatter';
 class AppList extends React.Component {
     constructor(props) {
         super(props);
