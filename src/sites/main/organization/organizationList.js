@@ -21,31 +21,37 @@ import {uiFormatter} from '../../../helper/formatter'
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
-        this._isMounted = false
         this.state = {
             currentView: null,
             tableHeight: isViewer() ? undefined : 280,
             loading:undefined
         }
+        this._isMounted = false
         this.action = '';
         this.data = {}
         this.keys = keys()
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
     onRegClose = (isEdited) => {
-        this.setState({ currentView: null })
+        this.updateState({ currentView: null })
     }
 
     onAddUser = (action, data) => {
-        this.setState({ currentView: <OrganizationReg data={data} action={action ? 'AddUser' : null} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <OrganizationReg data={data} action={action ? 'AddUser' : null} onClose={this.onRegClose} /> });
     }
 
     onAdd = (type) => {
-        this.setState({ currentView: <OrganizationReg onClose={this.onRegClose} type={type} /> });
+        this.updateState({ currentView: <OrganizationReg onClose={this.onRegClose} type={type} /> });
     }
 
     onUpdate = (action, data) => {
-        this.setState({ currentView: <OrganizationReg data={data} isUpdate={true} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <OrganizationReg data={data} isUpdate={true} onClose={this.onRegClose} /> });
     }
 
     customToolbar = () =>
@@ -155,7 +161,7 @@ class OrganizationList extends React.Component {
     }
 
     onManage = async (key, data) => {
-        this.setState({loading:data[fields.organizationName]})
+        this.updateState({loading:data[fields.organizationName]})
         if (this.props.roleInfo) {
             let roleInfoList = this.props.roleInfo;
             for (let roleInfo of roleInfoList) {
@@ -171,7 +177,7 @@ class OrganizationList extends React.Component {
                 }
             }
         }
-        this.setState({ tableHeight: isViewer() ? undefined : 280,loading:undefined })
+        this.updateState({ tableHeight: isViewer() ? undefined : 280,loading:undefined })
     }
 
     onListViewClick = (key, data) => {
