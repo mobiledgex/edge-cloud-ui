@@ -16,7 +16,6 @@ import MexListView from '../../../container/MexListView';
 import ClusterInstReg from './clusterInstReg';
 import { HELP_CLUSTER_INST_LIST } from "../../../tutorial";
 import { ACTION_DELETE, ACTION_UPDATE } from '../../../container/Actions';
-import { labelFormatter } from '../../../helper/formatter';
 
 class ClusterInstView extends React.Component {
     constructor(props) {
@@ -73,9 +72,6 @@ class ClusterInstView extends React.Component {
         }
         else if (key.field === fields.reservable) {
             return constant.showYesNo(data[key.field], isDetail)
-        }
-        else if (key.field === fields.ipAccess) {
-            return labelFormatter.ipAccess(data[key.field])
         }
     }
 

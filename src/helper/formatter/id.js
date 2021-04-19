@@ -94,3 +94,16 @@ export const ipSupport = (label) => {
             return label
     }
 }
+
+export const ipAccess = (label) => {
+    switch (label) {
+        case constant.UNKNOWN:
+            return 0
+        case constant.IP_ACCESS_DEDICATED:
+            return 1
+        case constant.IP_ACCESS_SHARED:
+            return 3
+        default:
+            return label
+    }
+}
