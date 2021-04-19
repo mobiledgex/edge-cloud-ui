@@ -52,6 +52,12 @@ class AppReg extends React.Component {
         this.appInstExist = false
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
     validateRemoteIP = (form) => {
         if (form.value && form.value.length > 0) {
             if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(form.value)) {
@@ -214,7 +220,7 @@ class AppReg extends React.Component {
         if (form.parent) {
             let updateForms = Object.assign([], this.state.forms)
             updateForms.splice(form.parent.id, 1);
-            this.setState({
+            this.updateState({
                 forms: updateForms
             })
         }
@@ -224,7 +230,7 @@ class AppReg extends React.Component {
         let parent = form.parent;
         let forms = this.state.forms;
         forms.splice(parent.id + 1, 0, form.multiForm());
-        this.setState({ forms: forms })
+        this.updateState({ forms })
     }
 
     updateImagePath = (forms, form) => {
@@ -295,7 +301,7 @@ class AppReg extends React.Component {
             }
         })
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.updateState({ forms })
         }
     }
 
@@ -305,7 +311,7 @@ class AppReg extends React.Component {
             this.flavorList = [...this.flavorList, ...newList]
         }
         this.updateUI(form)
-        this.setState({ forms: forms })
+        this.updateState({ forms })
     }
 
     getAutoProvPolicy = async (region, form, forms) => {
@@ -314,7 +320,7 @@ class AppReg extends React.Component {
             this.autoProvPolicyList = [...this.autoProvPolicyList, ...newList]
         }
         this.updateUI(form)
-        this.setState({ forms: forms })
+        this.updateState({ forms })
     }
 
     protcolValueChange = (currentForm, forms, isInit) => {
@@ -331,7 +337,7 @@ class AppReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.updateState({ forms })
         }
     }
 
@@ -377,7 +383,7 @@ class AppReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms })
+            this.updateState({ forms })
         }
     }
 
@@ -389,7 +395,7 @@ class AppReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms })
+            this.updateState({ forms })
         }
     }
 
@@ -412,7 +418,7 @@ class AppReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.updateState({ forms })
         }
     }
 
@@ -432,7 +438,7 @@ class AppReg extends React.Component {
             }
         })
         if (isInit === undefined || isInit === false) {
-            this.setState({ forms: forms })
+            this.updateState({ forms })
         }
     }
 
@@ -450,10 +456,8 @@ class AppReg extends React.Component {
                 break;
             }
         }
-        if (this._isMounted && (isInit === undefined || isInit === false)) {
-            this.setState({
-                forms: forms
-            })
+        if (isInit === undefined || isInit === false) {
+            this.updateState({forms})
         }
     }
 
@@ -505,7 +509,7 @@ class AppReg extends React.Component {
                 this.updateFlowDataList = [...this.updateFlowDataList, ...flowDataList]
             }
             else {
-                this.setState({ showGraph: true, flowDataList: flowDataList })
+                this.updateState({ showGraph: true, flowDataList: flowDataList })
             }
         }
     }
@@ -540,7 +544,7 @@ class AppReg extends React.Component {
                 responseData = mcRequest.response.data;
             }
             let labels = [{ label: 'App', field: fields.appName }]
-            this.setState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
+            this.updateState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
     }
 
@@ -740,7 +744,7 @@ class AppReg extends React.Component {
 
     /*Required*/
     reloadForms = () => {
-        this.setState({
+        this.updateState({
             forms: this.state.forms
         })
     }
@@ -1016,12 +1020,12 @@ class AppReg extends React.Component {
             { label: 'Cancel', formType: BUTTON, onClick: this.onAddCancel })
 
         this.updateFormData(forms, data)
-        this.setState({
-            forms: forms
+        this.updateState({
+            forms
         })
 
         if (this.isUpdate) {
-            this.setState({
+            this.updateState({
                 showGraph: true,
                 flowDataList: this.updateFlowDataList
             })
@@ -1030,7 +1034,7 @@ class AppReg extends React.Component {
     }
 
     stepperClose = () => {
-        this.setState({
+        this.updateState({
             stepsArray: []
         })
         this.props.onClose(true)
