@@ -2,7 +2,7 @@ import React from 'react'
 import * as constant from '../../constant'
 import { Icon, Popup } from 'semantic-ui-react';
 import { fields } from '../../services/model/format';
-import { Button as MButton, Tooltip } from '@material-ui/core';
+import { Tooltip } from '@material-ui/core';
 import { Button } from 'semantic-ui-react';
 import { labelFormatter } from '.';
 
@@ -18,15 +18,14 @@ export const trusted = (key, data, isDetail) => {
     }
 }
 
-export const manage = (key, data, isDetail) => {
+export const Manage = (props) => {
+    const { loading, data } = props
+    const orgName = data[fields.organizationName]
+    let active = localStorage.selectOrg === data[fields.organizationName]
     return (
-        <MButton size={'small'}
-            style={{ width: 100, backgroundColor: localStorage.selectOrg === data[fields.organizationName] ? '#559901' : 'grey', color: 'white' }}>
-            <label>Manage</label>
-        </MButton>
+        <Button loading={loading === orgName} basic size='mini' compact color={localStorage.selectOrg === orgName ? 'green' : 'grey'} className='row-button'>{active ? 'ACTIVE' : 'MANAGE'}</Button>
     )
 }
-
 
 export const edgeboxOnly = (key, data, isDetail) => {
     let edgeboxOnly = data[key.field]
@@ -120,9 +119,7 @@ export const emailVerfied = (key, data, isDetail, callback) => {
     }
     else {
         return (
-            id ? <Icon name='check' style={{ color: 'rgba(136,221,0,.9)' }} />
-                :
-                <Button onClick={callback}>Verify</Button>
+            <Button basic size='mini' compact disabled={id} color={id ? 'green' : 'yellow'} className='row-button' onClick={callback}>{id ? 'VERIFIED' : 'VERIFY'}</Button>
         )
     }
 }
@@ -140,7 +137,7 @@ export const lock = (key, data, isDetail) => {
 }
 
 export const access = (key, data, isDetail) => {
-    let id  = data[key.field]
+    let id = data[key.field]
     if (isDetail) {
         return constant.showYesNo(id, isDetail)
     }

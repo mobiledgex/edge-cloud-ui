@@ -24,7 +24,8 @@ class OrganizationList extends React.Component {
         this._isMounted = false
         this.state = {
             currentView: null,
-            tableHeight: isViewer() ? undefined : 280
+            tableHeight: isViewer() ? undefined : 280,
+            loading:undefined
         }
         this.action = '';
         this.data = {}
@@ -154,10 +155,10 @@ class OrganizationList extends React.Component {
     }
 
     onManage = async (key, data) => {
+        this.setState({loading:data[fields.organizationName]})
         if (this.props.roleInfo) {
             let roleInfoList = this.props.roleInfo;
-            for (let i = 0; i < roleInfoList.length; i++) {
-                let roleInfo = roleInfoList[i];
+            for (let roleInfo of roleInfoList) {
                 if (roleInfo.org === data[fields.organizationName]) {
                     this.props.handlePrivateAccess(undefined)
                     let privateAccess = await constant.validatePrivateAccess(this, roleInfo.role)
@@ -166,14 +167,11 @@ class OrganizationList extends React.Component {
                     localStorage.setItem('selectRole', roleInfo.role)
                     this.props.handleUserRole(roleInfo.role)
                     this.cacheOrgInfo(data, roleInfo)
-                    if (this._isMounted) {
-                        this.forceUpdate()
-                    }
                     break;
                 }
             }
         }
-        this.setState({ tableHeight: isViewer() ? undefined : 280 })
+        this.setState({ tableHeight: isViewer() ? undefined : 280,loading:undefined })
     }
 
     onListViewClick = (key, data) => {
@@ -185,7 +183,7 @@ class OrganizationList extends React.Component {
 
     dataFormatter = (key, data, isDetail) => {
         if (key.field === fields.manage) {
-            return uiFormatter.manage(key, data, isDetail)
+            return <uiFormatter.Manage loading={this.state.loading} data={data} key={key} detail={isDetail}/>
         }
         else if (key.field === fields.edgeboxOnly) {
             return uiFormatter.edgeboxOnly(key, data, isDetail)
