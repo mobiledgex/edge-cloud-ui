@@ -11,7 +11,7 @@ import * as actions from '../actions';
 import * as constant from '../constant'
 
 import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH } from './MexToolbar';
-import MexDetailViewer from '../hoc/dataViewer/DetailViewerNew';
+import MexDetailViewer from './detail/DetailViewer';
 import MexListViewer from '../hoc/listView/ListViewer';
 import MexMessageStream from '../hoc/stepper/mexMessageStream';
 import MexMessageMultiNorm from '../hoc/stepper/mexMessageMultiNormal';
@@ -61,7 +61,7 @@ class MexListView extends React.Component {
         this.props.handleViewMode(null)
         return (
             <Card style={{ height: 'calc(100vh - 116px)', backgroundColor: '#292c33', borderRadius: 5, overflowY: 'auto' }}>
-                <MexDetailViewer detailData={data} keys={this.keys} />
+                <MexDetailViewer detailData={data} keys={this.keys} formatData={this.requestInfo.formatData} />
                 {additionalDetail ? additionalDetail(data) : null}
             </Card>
         )

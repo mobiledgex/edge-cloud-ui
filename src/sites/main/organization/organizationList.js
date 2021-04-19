@@ -11,14 +11,13 @@ import OrganizationReg from './organizationReg';
 import * as serverData from '../../../services/model/serverData'
 import * as shared from '../../../services/model/shared';
 
-import { Button, Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core';
+import { Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core';
 import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import { Icon } from 'semantic-ui-react';
 import { ACTION_DELETE, ACTION_DISABLE, ACTION_EDGE_BOX_ENABLE, ACTION_LABEL, ACTION_UPDATE, ACTION_WARNING } from '../../../container/Actions';
 import { sendRequest } from '../monitoring/services/service'
-import { LS_ORGANIZATION_INFO, ls_setOrganizationInfo } from '../../../helper/ls';
-
+import { LS_ORGANIZATION_INFO } from '../../../helper/ls';
+import {uiFormatter} from '../../../helper/formatter'
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
@@ -33,7 +32,6 @@ class OrganizationList extends React.Component {
     }
 
     onRegClose = (isEdited) => {
-        this.customizedData()
         this.setState({ currentView: null })
     }
 
@@ -144,21 +142,6 @@ class OrganizationList extends React.Component {
         ]
     }
 
-    /*Action menu block*/
-
-    /*
-        Manage Block
-    **/
-
-    getManage = (data) => {
-        return (
-            <Button size={'small'}
-                className='buttonManage'
-                style={{ width: 100, backgroundColor: localStorage.selectOrg === data[fields.organizationName] ? '#559901' : 'grey', color: 'white' }}>
-                <label>Manage</label>
-            </Button>)
-    }
-
     cacheOrgInfo = (data, roleInfo) => {
         let organizationInfo = {}
         organizationInfo[fields.organizationName] = data[fields.organizationName]
@@ -192,10 +175,6 @@ class OrganizationList extends React.Component {
         }
         this.setState({ tableHeight: isViewer() ? undefined : 280 })
     }
-    /*
-        Manage Block
-    **/
-
 
     onListViewClick = (key, data) => {
         switch (key.field) {
@@ -204,9 +183,18 @@ class OrganizationList extends React.Component {
         }
     }
 
+    dataFormatter = (key, data, isDetail) => {
+        if (key.field === fields.manage) {
+            return uiFormatter.manage(key, data, isDetail)
+        }
+        else if (key.field === fields.edgeboxOnly) {
+            return uiFormatter.edgeboxOnly(key, data, isDetail)
+        }
+    }
+
     requestInfo = () => {
         return ({
-            id: 'Organizations',
+            id: constant.PAGE_ORGANIZATIONS,
             headerLabel: 'Organizations',
             nameField: fields.organizationName,
             requestType: [showOrganizations],
@@ -214,7 +202,8 @@ class OrganizationList extends React.Component {
             keys: this.keys,
             additionalDetail: shared.additionalDetail,
             viewMode: HELP_ORG_LIST,
-            grouping: true
+            grouping: true,
+            formatData:this.dataFormatter
         })
     }
 
@@ -228,7 +217,7 @@ class OrganizationList extends React.Component {
         )
     }
 
-    getUserRoles = async (key) => {
+    getUserRoles = async () => {
         let isAdmin = false;
         let mc = await serverData.showUserRoles(this)
         if (mc && mc.response && mc.response.status === 200) {
@@ -254,38 +243,17 @@ class OrganizationList extends React.Component {
                 localStorage.removeItem('selectRole')
             }
         }
-        if (!isAdmin) {
-            key.visible = true;
-            key.customizedData = this.getManage;
-        }
-        else {
-            key.visible = false;
-        }
+        
+        this.keys = this.keys.map(key=>{
+            if(key.field === fields.manage)
+            {
+                key.visible = !isAdmin 
+            }
+            return key
+        })
+
         if (this._isMounted) {
             this.forceUpdate()
-        }
-    }
-
-    edgeboxOnly = (data, isDetail) => {
-        let edgeboxOnly = data[fields.edgeboxOnly]
-        let isOperator = data[fields.type].includes(constant.OPERATOR.toLowerCase())
-        if (isDetail) {
-            return edgeboxOnly ? constant.YES : constant.NO
-        }
-        else {
-            return <Icon name={edgeboxOnly ? 'check' : 'close'} style={{ color: isOperator ? edgeboxOnly ? constant.COLOR_GREEN : constant.COLOR_RED : '#9E9E9E' }} />
-        }
-    }
-
-    customizedData = () => {
-        for (let i = 0; i < this.keys.length; i++) {
-            let key = this.keys[i]
-            if (key.field === fields.manage) {
-                this.getUserRoles(key)
-            }
-            else if (key.field === fields.edgeboxOnly) {
-                key.customizedData = this.edgeboxOnly
-            }
         }
     }
 
@@ -295,7 +263,7 @@ class OrganizationList extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
-        this.customizedData()
+        this.getUserRoles()
     }
 
     componentWillUnmount() {

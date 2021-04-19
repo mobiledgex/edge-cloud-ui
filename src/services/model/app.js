@@ -6,10 +6,10 @@ import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
 
 let fields = formatter.fields
 
-export const configs = [
-    { field: fields.kind, serverField: 'kind', label: 'Kind' },
+export const configs = () => ([
+    { field: fields.kind, serverField: 'kind', label: 'Kind', format: true },
     { field: fields.config, serverField: 'config', label: 'Config', dataType: constant.TYPE_YAML }
-]
+])
 
 export const keys = () => ([
     { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
@@ -20,20 +20,20 @@ export const keys = () => ([
     { field: fields.command, serverField: 'command', label: 'Command' },
     { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: constant.TYPE_YAML },
     { field: fields.deploymentGenerator, serverField: 'deployment_generator', label: 'Deployment Generator' },
-    { field: fields.imageType, serverField: 'image_type', label: 'Image Type' },
+    { field: fields.imageType, serverField: 'image_type', label: 'Image Type', format: true },
     { field: fields.imagePath, serverField: 'image_path', label: 'Image Path' },
     { field: fields.flavorName, serverField: 'default_flavor#OS#name', sortable: true, label: 'Default Flavor' },
     { field: fields.accessPorts, serverField: 'access_ports', label: 'Ports' },
     { field: fields.skipHCPorts, serverField: 'skip_hc_ports', label: 'Skip Health Check' },
-    { field: fields.accessType, serverField: 'access_type', label: 'Access Type' },
+    { field: fields.accessType, serverField: 'access_type', label: 'Access Type', format: true },
     { field: fields.authPublicKey, serverField: 'auth_public_key', label: 'Auth Public Key' },
-    { field: fields.scaleWithCluster, serverField: 'scale_with_cluster', label: 'Scale With Cluster' },
+    { field: fields.scaleWithCluster, serverField: 'scale_with_cluster', label: 'Scale With Cluster', format: true },
     { field: fields.officialFQDN, serverField: 'official_fqdn', label: 'Official FQDN' },
     { field: fields.androidPackageName, serverField: 'android_package_name', label: 'Android Package Name' },
     { field: fields.autoProvPolicies, serverField: 'auto_prov_policies', label: 'Auto Provisioning Policies', dataType: constant.TYPE_ARRAY },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
-    { field: fields.trusted, serverField: 'trusted', label: 'Trusted', visible: true, sortable: true },
-    { field: fields.configs, serverField: 'configs', label: 'Configs', keys: configs },
+    { field: fields.trusted, serverField: 'trusted', label: 'Trusted', visible: true, sortable: true, format: true },
+    { field: fields.configs, serverField: 'configs', label: 'Configs', keys: configs() },
     { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: false },
     { field: fields.requiredOutboundConnections, serverField: 'required_outbound_connections', label: 'Required Outbound Connections', visible: false, dataType: constant.TYPE_JSON },
     { field: fields.templateDelimiter, serverField: 'template_delimiter', label: 'Template Delimiter' },

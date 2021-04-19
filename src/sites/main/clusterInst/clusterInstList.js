@@ -16,6 +16,7 @@ import MexListView from '../../../container/MexListView';
 import ClusterInstReg from './clusterInstReg';
 import { HELP_CLUSTER_INST_LIST } from "../../../tutorial";
 import { ACTION_DELETE, ACTION_UPDATE } from '../../../container/Actions';
+import { labelFormatter } from '../../../helper/formatter';
 
 class ClusterInstView extends React.Component {
     constructor(props) {
@@ -66,9 +67,21 @@ class ClusterInstView extends React.Component {
         ]
     }
 
+    dataFormatter = (key, data, isDetail) => {
+        if (key.field === fields.state) {
+            return shared.showProgress(data, isDetail)
+        }
+        else if (key.field === fields.reservable) {
+            return constant.showYesNo(data[key.field], isDetail)
+        }
+        else if (key.field === fields.ipAccess) {
+            return labelFormatter.ipAccess(data[key.field])
+        }
+    }
+
     requestInfo = () => {
         return ({
-            id: 'ClusterInst',
+            id: constant.PAGE_CLUSTER_INSTANCES,
             headerLabel: 'Cluster Instances',
             nameField: fields.clusterName,
             requestType: [showClusterInsts, showCloudlets, showCloudletInfos],
@@ -80,46 +93,20 @@ class ClusterInstView extends React.Component {
             keys: this.keys,
             onAdd: this.onAdd,
             viewMode: HELP_CLUSTER_INST_LIST,
-            grouping: true
+            grouping: true,
+            formatData:this.dataFormatter
         })
     }
-
-    /**
-   * Customized data block
-   **/
-    showYesNo = (data, isDetailView) => {
-        if (isDetailView) {
-            return data[fields.reservable] ? constant.YES : constant.NO
-        }
-    }
-
-    customizedData = () => {
-        for (let i = 0; i < this.keys.length; i++) {
-            let key = this.keys[i]
-            if (key.field === fields.state) {
-                key.customizedData = shared.showProgress
-            }
-            if (key.field === fields.reservable) {
-                key.customizedData = this.showYesNo
-            }
-        }
-    }
-
-    /**
-    * Customized data block
-    * ** */
-
-    componentDidMount() {
-        this._isMounted = true
-        this.customizedData()
-    }
-
 
     render() {
         return (
             this.state.currentView ? this.state.currentView :
                 <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
         )
+    }
+
+    componentDidMount() {
+        this._isMounted = true
     }
 
     componentWillUnmount() {

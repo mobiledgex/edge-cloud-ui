@@ -9,9 +9,8 @@ import { keys, showApps, deleteApp } from '../../../services/model/app';
 import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
 import { HELP_APP_LIST } from "../../../tutorial";
-import { customizedTrusted } from '../../../constantUI';
 import { ACTION_DELETE, ACTION_UPDATE } from '../../../container/Actions';
-import {labelConvertor} from '../../../helper/convertor';
+import { labelFormatter, uiFormatter } from '../../../helper/formatter';
 class AppList extends React.Component {
     constructor(props) {
         super(props);
@@ -52,6 +51,25 @@ class AppList extends React.Component {
         ]
     }
     /***Action Block */
+
+    dataFormatter = (key, data, isDetail) => {
+        if (key.field === fields.scaleWithCluster) {
+            return constant.showYesNo(data[key.field], isDetail)
+        }
+        else if (key.field === fields.trusted) {
+            return uiFormatter.trusted(key, data, isDetail)
+        }
+        else if (key.field === fields.kind) {
+            return labelFormatter.kind(data[key.field])
+        }
+        else if (key.field === fields.imageType) {
+            return labelFormatter.imageType(data[key.field])
+        }
+        else if (key.field === fields.accessType) {
+            return labelFormatter.accessType(data[key.field])
+        }
+    }
+
     requestInfo = () => {
         return ({
             id: constant.APP,
@@ -64,7 +82,8 @@ class AppList extends React.Component {
             onAdd: this.onAdd,
             viewMode: HELP_APP_LIST,
             selection: true,
-            grouping: true
+            grouping: true,
+            formatData: this.dataFormatter
         })
     }
 
@@ -73,48 +92,6 @@ class AppList extends React.Component {
             this.state.currentView ? this.state.currentView :
                 <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu} />
         )
-    }
-
-    /**
-     * Customized data block
-    **/
-
-    showYesNo = (data, isDetail) => {
-        if (isDetail) {
-            return data[fields.scaleWithCluster] ? constant.YES : constant.NO
-        }
-    }
-
-    customizedData = (keys) => {
-        keys.forEach(key => {
-            if (key.keys) {
-                this.customizedData(key.keys)
-            } else {
-                if (key.field === fields.scaleWithCluster) {
-                    key.customizedData = this.showYesNo
-                }
-                else if (key.field === fields.trusted) {
-                    key.customizedData = customizedTrusted
-                }
-                else if (key.field === fields.kind) {
-                    key.customizedData = labelConvertor.kind
-                }
-                else if (key.field === fields.imageType) {
-                    key.customizedData = labelConvertor.imageType
-                }
-                else if (key.field === fields.accessType) {
-                    key.customizedData = labelConvertor.accessType
-                }
-            }
-        })
-    }
-
-    /**
-    * Customized data block
-    * ** */
-
-    componentDidMount() {
-        this.customizedData(this.keys)
     }
 };
 

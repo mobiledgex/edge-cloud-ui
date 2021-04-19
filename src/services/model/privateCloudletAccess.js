@@ -8,7 +8,7 @@ export const keys = () => ([
     { field: fields.poolName, serverField: 'CloudletPool', label: 'Pool Name', sortable: true, visible: true, filter: true, key: true },
     { field: fields.operatorOrg, serverField: 'CloudletPoolOrg', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
     { field: fields.developerOrg, serverField: 'Org', label: 'Developer', sortable: true, visible: true, key: true },
-    { field: fields.confirm, label: 'Accepted', visible: true },
+    { field: fields.confirm, label: 'Accepted', visible: true, format: true },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
