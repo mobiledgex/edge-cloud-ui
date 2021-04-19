@@ -59,15 +59,6 @@ class AppList extends React.Component {
         else if (key.field === fields.trusted) {
             return uiFormatter.trusted(key, data, isDetail)
         }
-        else if (key.field === fields.kind) {
-            return labelFormatter.kind(data[key.field])
-        }
-        else if (key.field === fields.imageType) {
-            return labelFormatter.imageType(data[key.field])
-        }
-        else if (key.field === fields.accessType) {
-            return labelFormatter.accessType(data[key.field])
-        }
         else if (key.field === fields.appName) {
             return `${data[key.field]} [${data[fields.version]}]`
         }

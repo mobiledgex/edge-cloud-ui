@@ -107,3 +107,40 @@ export const ipAccess = (label) => {
             return label
     }
 }
+
+export const imageType = (label) => {
+    switch (label) {
+        case constant.IMAGE_TYPE_DOCKER:
+            return 1
+        case constant.IMAGE_TYPE_QCOW:
+            return 2
+        case constant.IMAGE_TYPE_HELM:
+            return 3
+        default:
+            return label
+    }
+}
+
+export const accessType = (label) => {
+    switch (label) {
+        case constant.ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT:
+            return 0
+        case constant.ACCESS_TYPE_DIRECT:
+            return 1
+        case constant.ACCESS_TYPE_LOAD_BALANCER:
+            return 2
+        default:
+            return label
+    }
+}
+
+export const kind = (label) => {
+    switch (label) {
+        case constant.CONFIG_HELM_CUST:
+            return 'helmCustomizationYaml'
+        case constant.CONFIG_ENV_VAR:
+            return 'envVarsYaml'
+        default:
+            return label
+    }
+}

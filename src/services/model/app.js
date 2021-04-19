@@ -3,11 +3,12 @@ import * as serverData from './serverData'
 import * as constant from '../../constant'
 import { SHOW_APP, CREATE_APP, UPDATE_APP, DELETE_APP } from './endPointTypes'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
+import { labelFormatter, idFormatter } from '../../helper/formatter';
 
 let fields = formatter.fields
 
 export const configs = () => ([
-    { field: fields.kind, serverField: 'kind', label: 'Kind', format: true },
+    { field: fields.kind, serverField: 'kind', label: 'Kind' },
     { field: fields.config, serverField: 'config', label: 'Config', dataType: constant.TYPE_YAML }
 ])
 
@@ -20,12 +21,12 @@ export const keys = () => ([
     { field: fields.command, serverField: 'command', label: 'Command' },
     { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: constant.TYPE_YAML },
     { field: fields.deploymentGenerator, serverField: 'deployment_generator', label: 'Deployment Generator' },
-    { field: fields.imageType, serverField: 'image_type', label: 'Image Type', format: true },
+    { field: fields.imageType, serverField: 'image_type', label: 'Image Type' },
     { field: fields.imagePath, serverField: 'image_path', label: 'Image Path' },
     { field: fields.flavorName, serverField: 'default_flavor#OS#name', sortable: true, label: 'Default Flavor' },
     { field: fields.accessPorts, serverField: 'access_ports', label: 'Ports' },
     { field: fields.skipHCPorts, serverField: 'skip_hc_ports', label: 'Skip Health Check' },
-    { field: fields.accessType, serverField: 'access_type', label: 'Access Type', format: true },
+    { field: fields.accessType, serverField: 'access_type', label: 'Access Type' },
     { field: fields.authPublicKey, serverField: 'auth_public_key', label: 'Auth Public Key' },
     { field: fields.scaleWithCluster, serverField: 'scale_with_cluster', label: 'Scale With Cluster', format: true },
     { field: fields.officialFQDN, serverField: 'official_fqdn', label: 'Official FQDN' },
@@ -57,7 +58,7 @@ export const getKey = (data, isCreate) => {
         app.scale_with_cluster = data[fields.scaleWithCluster]
         app.trusted = data[fields.trusted]
         app.deployment = data[fields.deployment]
-        app.image_type = data[fields.imageType]
+        app.image_type = idFormatter.imageType(data[fields.imageType])
         if (data[fields.imagePath]) {
             app.image_path = data[fields.imagePath]
         }
@@ -95,11 +96,11 @@ export const getKey = (data, isCreate) => {
             app.auto_prov_policy = data[fields.autoPolicyName]
         }
         if (data[fields.accessType]) {
-            app.access_type = data[fields.accessType]
+            app.access_type = idFormatter.accessType(data[fields.accessType])
         }
         if (data[fields.configs] && data[fields.configs].length > 0) {
             app.configs = data[fields.configs].map(config => {
-                config[fields.kind] = config[fields.kind]
+                config[fields.kind] = idFormatter.kind(config[fields.kind])
                 return config
             })
         }
@@ -153,6 +154,8 @@ export const deleteApp = (data) => {
 
 const customData = (value) => {
     value[fields.trusted] = value[fields.trusted] ? value[fields.trusted] : false
+    value[fields.accessType] = labelFormatter.accessType(value[fields.imageType])
+    value[fields.imageType] = labelFormatter.imageType(value[fields.imageType])
     value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
     value[fields.deploymentManifest] = value[fields.deploymentManifest] ? value[fields.deploymentManifest].trim() : value[fields.deploymentManifest]
     if (value[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
@@ -166,7 +169,7 @@ const customData = (value) => {
         let configs = value[fields.configs]
         for (let i = 0; i < configs.length; i++) {
             let config = configs[i]
-            config.kind = config.kind
+            config.kind = labelFormatter.kind(config.kind)
         }
     }
     return value
