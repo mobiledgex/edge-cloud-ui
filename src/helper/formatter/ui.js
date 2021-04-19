@@ -76,7 +76,7 @@ export const cloudletInfoState = (key, data, isDetail) => {
 
     return (
         isDetail ? state :
-            <Button basic size='mini' color={color} compact style={{ width: 100 }}>
+            <Button disabled={true} basic size='mini' color={color} compact style={{ width: 90}}>
                 <label>{state}</label>
             </Button>
     )
