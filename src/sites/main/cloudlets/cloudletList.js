@@ -9,7 +9,7 @@ import { edgeboxOnly, getOrganization, isOperator } from '../../../reducers/orga
 import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfos } from '../../../services/model/cloudletInfo';
-import ClouldletReg from './cloudletReg';
+import CloudletReg from './cloudletReg';
 import { validateRole, operatorRoles, INFRA_API_ACCESS_RESTRICTED, PAGE_CLOUDLETS, OPERATOR } from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Icon, Popup } from 'semantic-ui-react';
@@ -40,7 +40,7 @@ class CloudletList extends React.Component {
 
     onAdd = (action, data) => {
         if (this._isMounted) {
-            this.setState({ currentView: <ClouldletReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
+            this.setState({ currentView: <CloudletReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
         }
     }
 
@@ -49,7 +49,7 @@ class CloudletList extends React.Component {
         if (cloudletManifest) {
             if (cloudletManifest.response && cloudletManifest.response.data) {
                 if (this._isMounted) {
-                    this.setState({ currentView: <ClouldletReg data={data} manifestData={cloudletManifest.response.data} onClose={this.onRegClose} /> });
+                    this.setState({ currentView: <CloudletReg data={data} manifestData={cloudletManifest.response.data} onClose={this.onRegClose} /> });
                 }
             }
             else if (cloudletManifest.error && cloudletManifest.error.response) {

@@ -11,7 +11,7 @@ import { keys, accessGranted, accessPending, multiDataRequest, deleteConfirmatio
 import { ACTION_LABEL, ACTION_POOL_ACCESS_DEVELOPER, ACTION_WARNING } from '../../../container/Actions';
 import { uiFormatter } from '../../../helper/formatter';
 
-class ClouldetPoolList extends React.Component {
+class CloudletPoolList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -86,4 +86,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(ClouldetPoolList));
+export default withRouter(connect(null, mapDispatchProps)(CloudletPoolList));

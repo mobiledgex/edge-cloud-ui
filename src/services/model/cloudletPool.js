@@ -11,7 +11,7 @@ export const keys = () => ([
     { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
     { field: fields.poolName, serverField: 'key#OS#name', label: 'Pool Name', sortable: true, visible: true, filter: true, key: true },
     { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, key: true },
-    { field: fields.cloudletCount, label: 'Number of  Clouldlets', sortable: true, visible: true },
+    { field: fields.cloudletCount, label: 'Number of  Cloudlets', sortable: true, visible: true },
     { field: fields.organizationCount, label: 'Number of Organizations', sortable: true, visible: true },
     {
         field: fields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets', dataType: constant.TYPE_STRING

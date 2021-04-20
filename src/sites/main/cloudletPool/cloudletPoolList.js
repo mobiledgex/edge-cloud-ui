@@ -11,7 +11,7 @@ import CloudletPoolReg from './cloudletPoolReg';
 import {HELP_CLOUDLET_POOL_LIST} from "../../../tutorial";
 import { accessGranted, accessPending } from '../../../services/model/privateCloudletAccess';
 import { ACTION_POOL_ACCESS_ADMIN_CONFIRM, ACTION_POOL_ACCESS_ADMIN_REMOVE } from '../../../container/Actions';
-class ClouldetPoolList extends React.Component {
+class CloudletPoolList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -95,4 +95,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(ClouldetPoolList));
+export default withRouter(connect(null, mapDispatchProps)(CloudletPoolList));
