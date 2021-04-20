@@ -1,3 +1,4 @@
+import { DEVELOPER, OPERATOR } from "../../constant"
 import { CREATE_POOL_ACCESS_CONFIRMATION, CREATE_POOL_ACCESS_INVITATION, DELETE_POOL_ACCESS_CONFIRMATION, DELETE_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_CONFIRMATION, SHOW_POOL_ACCESS_GRANTED, SHOW_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_PENDING } from "./endPointTypes"
 import * as formatter from './format'
 
@@ -49,11 +50,27 @@ export const deleteInvitation = (data) => {
 
 export const accessGranted = (data) => {
     data = data ? data : {}
+    if (formatter.getOrganization()) {
+        if (formatter.getUserRole().includes(DEVELOPER)) {
+            data['org'] = formatter.getOrganization()
+        }
+        else if (formatter.getUserRole().includes(OPERATOR)) {
+            data['cloudletpoolorg'] = formatter.getOrganization()
+        }
+    }
     return { method: SHOW_POOL_ACCESS_GRANTED, data }
 }
 
 export const accessPending = (data) => {
     data = data ? data : {}
+    if (formatter.getOrganization()) {
+        if (formatter.getUserRole().includes(DEVELOPER)) {
+            data['org'] = formatter.getOrganization()
+        }
+        else if (formatter.getUserRole().includes(OPERATOR)) {
+            data['cloudletpoolorg'] = formatter.getOrganization()
+        }
+    }
     return { method: SHOW_POOL_ACCESS_PENDING, data }
 }
 

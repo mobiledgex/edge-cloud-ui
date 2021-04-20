@@ -60,16 +60,16 @@ export const showAlertReceiverKeys = () => (
 )
 
 const cloudletSelector = (data) => {
-    let clouldet_key = {}
+    let cloudlet_key = {}
     if (data[fields.operatorName] || data[fields.cloudletName]) {
         if (data[fields.cloudletName]) {
-            clouldet_key.name = data[fields.cloudletName]
+            cloudlet_key.name = data[fields.cloudletName]
         }
         if (data[fields.operatorName]) {
-            clouldet_key.organization = data[fields.operatorName]
+            cloudlet_key.organization = data[fields.operatorName]
         }
     }
-    return clouldet_key
+    return cloudlet_key
 }
 
 const clusterInstSelector = (data) => {
