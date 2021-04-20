@@ -2,6 +2,7 @@
 
 import randomColor from 'randomcolor'
 import { fields, formatData } from '../../../../services/model/format'
+import sortBy from 'lodash/sortBy'
 
 const defaultFields = (data) => {
     data['color'] = randomColor({
@@ -34,11 +35,8 @@ const fetchAppInstData = (showList, keys) => {
 }
 
 const processData = (worker) => {
-    const { parentId, region, mcList, metricListKeys } = worker
-    let { avgData } = worker
-    avgData = avgData ? avgData : {}
-    avgData[region] = avgData[region] ? avgData[region] : {}
-
+    const { parentId, mcList, metricListKeys } = worker
+   
     let formattedList = []
     if (mcList && mcList.length > 0) {
         if (parentId === 'appinst' || parentId === 'cloudlet') {
@@ -75,8 +73,11 @@ const processData = (worker) => {
             }
         }
     }
-    avgData[region] = formattedList
-    self.postMessage({ status: 200, data: avgData })
+    let sortedList = {}
+    sortBy(Object.keys(formattedList)).forEach(sorted=>{
+        sortedList[sorted] = formattedList[sorted]
+    })
+    self.postMessage({ status: 200, data: sortedList })
 }
 
 const format = (worker) => {

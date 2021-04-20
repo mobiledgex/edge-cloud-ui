@@ -178,12 +178,6 @@ export const getHeight = (height) => {
     return window.innerHeight - (height ? height : 85)
 }
 
-export const showYesNo = (data, isDetailView) => {
-    if (isDetailView) {
-        return data ? YES : NO
-    }
-}
-
 export const getTip = (field) => {
     switch (field) {
         case fields.region:

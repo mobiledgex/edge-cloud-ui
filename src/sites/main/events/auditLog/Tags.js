@@ -1,7 +1,6 @@
 import React from 'react'
-import { InputAdornment, TextField, MenuItem, Select, InputLabel, FormControl, makeStyles, IconButton } from '@material-ui/core';
+import { TextField, MenuItem, Select, InputLabel, FormControl, makeStyles, IconButton } from '@material-ui/core';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
-import DataUsageIcon from '@material-ui/icons/DataUsage';
 import sortBy from 'lodash/sortBy';
 
 const tagList = sortBy([
