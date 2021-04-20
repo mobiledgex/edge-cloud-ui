@@ -8,7 +8,6 @@ import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 import * as serverData from '../../../services/model/serverData'
 import { keys, accessGranted, accessPending, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/privateCloudletAccess';
-import { Icon } from 'semantic-ui-react';
 import { ACTION_LABEL, ACTION_POOL_ACCESS_DEVELOPER, ACTION_WARNING } from '../../../container/Actions';
 import { uiFormatter } from '../../../helper/formatter';
 
@@ -66,6 +65,7 @@ class ClouldetPoolList extends React.Component {
             nameField: fields.poolName,
             requestType: [accessGranted, accessPending],
             sortBy: [fields.poolName],
+            isRegion: true,
             selection: true,
             keys: this.keys,
             formatData: this.dataFormatter
