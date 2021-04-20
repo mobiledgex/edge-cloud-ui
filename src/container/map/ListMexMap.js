@@ -113,9 +113,11 @@ class ListMexMap extends React.Component {
         }
     }
 
-    popupClose = ()=>{
+    popupClose = () => {
         this.setState({ mapData: {}, mapCenter: MAP_CENTER, zoom: DEFAULT_ZOOM }, () => {
-            this.props.onClick()
+            if (this.props.onClick) {
+                this.props.onClick()
+            }
         })
     }
 
@@ -137,7 +139,9 @@ class ListMexMap extends React.Component {
     }
 
     onMarkerClick = (dataList) => {
-        this.props.onClick(dataList)
+        if (this.props.onClick) {
+            this.props.onClick(dataList)
+        }
     }
 
     renderMarker = () => {
