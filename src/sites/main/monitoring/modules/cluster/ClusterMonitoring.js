@@ -1,7 +1,7 @@
 import { GridList, GridListTile } from '@material-ui/core'
 import React from 'react'
 import { fields } from '../../../../../services/model/format'
-import MexMap from './ClusterMexMap'
+import ClusterMexMap from './ClusterMexMap'
 import MexMetric from '../../common/MexMetric'
 import { mapGridHeight } from '../../helper/Constant'
 
@@ -57,7 +57,7 @@ class ClusterMonitoring extends React.Component {
                     <GridList cols={4} cellHeight={300}>
                         {filter.metricType.includes('map') ?
                             <GridListTile cols={4}>
-                                <MexMap data={mapData} region={filter.region} />
+                                <ClusterMexMap data={mapData} region={filter.region} />
                             </GridListTile> : null}
                             <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} isPrivate={isPrivate}/>
                     </GridList> 

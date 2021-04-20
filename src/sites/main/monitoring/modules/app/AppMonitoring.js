@@ -1,5 +1,5 @@
 import React from 'react'
-import MexMap from './AppMexMap'
+import AppMexMap from './AppMexMap'
 import { Card, GridList, GridListTile } from '@material-ui/core'
 import { fields } from '../../../../../services/model/format'
 import { OFFLINE, ONLINE } from '../../../../../constant';
@@ -84,7 +84,7 @@ class AppMonitoring extends React.Component {
                             </GridListTile> : null}
                         {filter.metricType.includes('map') ?
                             <GridListTile cols={2}>
-                                <MexMap data={mapData} region={filter.region} listAction={listAction} avgData={avgData} onListToolbarClear={onListToolbarClear}/>
+                                <AppMexMap data={mapData} region={filter.region} listAction={listAction} avgData={avgData} onListToolbarClear={onListToolbarClear}/>
                             </GridListTile> : null}
                         {filter.metricType.includes('event') ?
                             <GridListTile cols={1}>
