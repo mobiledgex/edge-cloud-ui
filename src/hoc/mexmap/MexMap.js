@@ -5,30 +5,44 @@ import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import { Icon } from "semantic-ui-react";
 import { Tooltip } from "@material-ui/core";
 import { regionLocation } from "../../constant";
+import isEqual from 'lodash/isEqual'
 
-export const DEFAULT_ZOOM = 2
 export const MAP_CENTER = [3.2, 23.53]
-
 class MexMap extends React.Component {
 
     constructor(props) {
         super(props)
+        this.state = {
+            zoom: props.zoom,
+            mapCenter: MAP_CENTER
+        }
         this.map = React.createRef();
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
 
+    updateView = (mapCenter, zoom) => {
+        zoom = zoom ? zoom : this.map.current.leafletElement.getZoom()
+        this.setState({ mapCenter, zoom })
+        this.map.current.leafletElement.setView(mapCenter, zoom)
+    }
+
+    updateZoom = (zoom) => {
+        this.setState({ zoom })
+        this.map.current.leafletElement.setZoom(zoom)
+    }
+
     zoomReset = () => {
-        this.map.current.leafletElement.setView(MAP_CENTER, DEFAULT_ZOOM)
+        this.updateView(MAP_CENTER, this.props.zoom)
     }
 
     zoomIn = () => {
         let zoom = this.map.current.leafletElement.getZoom()
-        this.map.current.leafletElement.setZoom(zoom + 1)
+        this.updateZoom(zoom + 1)
     }
 
     zoomOut = () => {
         let zoom = this.map.current.leafletElement.getZoom()
-        this.map.current.leafletElement.setZoom(zoom - 1)
+        this.updateZoom(zoom - 1)
     }
 
     renderMapControl = (backswitch) => {
@@ -58,14 +72,15 @@ class MexMap extends React.Component {
         if (this.props.onMapClick) {
             let lat = Math.round(e.latlng['lat'])
             let long = Math.round(e.latlng['lng'])
-            this.map.current.leafletElement.setView([lat, long], 3)
+            this.updateView([lat, long])
             let location = { lat, long }
             this.props.onMapClick(location)
         }
     }
 
     render() {
-        const { renderMarker, mapCenter, zoom, backswitch, fullscreen } = this.props
+        const { renderMarker, backswitch, fullscreen } = this.props
+        const { mapCenter, zoom } = this.state
         return (
             <div className={fullscreen ? 'mex-map-full' : 'mex-map'} mex-test="component-map">
                 <Map
@@ -97,17 +112,13 @@ class MexMap extends React.Component {
     }
 
     componentDidUpdate(preProps, preState) {
-        if(this.props.register && this.props.mapCenter !== preProps.mapCenter)
-        {
-            this.map.current.leafletElement.setView(this.props.mapCenter, 3)
-        }
-        if (preProps.region !== this.props.region) {
+        if (!isEqual(preProps.region, this.props.region)) {
             if (this.props.region.length > 1) {
-                this.map.current.leafletElement.setView(MAP_CENTER, DEFAULT_ZOOM)
+                this.updateView(MAP_CENTER, this.props.zoom)
             }
             else {
                 const { center, zoom } = regionLocation(this.props.region[0])
-                this.map.current.leafletElement.setView(center, zoom)
+                this.updateView(center, zoom)
             }
         }
     }

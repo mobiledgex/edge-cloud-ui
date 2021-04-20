@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, GridList, GridListTile } from '@material-ui/core'
 import { fields } from '../../../../../services/model/format'
-import MexMap from './CloudletMexMap'
+import CloudletMexMap from './CloudletMexMap'
 import CloudletEvent from './CloudletEvent'
 import MexMetric from '../../common/MexMetric'
 import CloudletFlavorUsage from './CloudletFlavorUsage'
@@ -62,7 +62,7 @@ class CloudletMonitoring extends React.Component {
                 <div className='grid-charts' style={{height : mapGridHeight(minimize, selected)}}>
                     <GridList cols={4} cellHeight={300}>
                         {filter.metricType.includes('map') ? <GridListTile cols={3}>
-                            <MexMap data={mapData} region={filter.region} />
+                            <CloudletMexMap data={mapData} region={filter.region} />
                         </GridListTile> : null}
                         {filter.metricType.includes('event') ? <GridListTile cols={1}>
                             <Card style={{ height: 300 }}>

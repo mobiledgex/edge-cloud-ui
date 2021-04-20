@@ -1,11 +1,13 @@
 import React from 'react'
-import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../hoc/mexmap/MexMap'
+import MexMap from '../../hoc/mexmap/MexMap'
 import { Icon } from 'semantic-ui-react'
 import { Marker, Popup } from "react-leaflet";
 import { fields } from '../../services/model/format';
 import { CLUSTER_INST, PAGE_CLOUDLETS } from '../../constant';
 import Legend from './MapLegend'
 import { mapLegendColor, renderSVG } from '../../hoc/mexmap/constant';
+
+const DEFAULT_ZOOM = 3
 
 const processMapData = (dataList) => {
     let mapData = {}
@@ -28,9 +30,7 @@ class ListMexMap extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            mapData: {},
-            mapCenter: MAP_CENTER,
-            zoom: DEFAULT_ZOOM
+            mapData: {}
         }
         this.popup = React.createRef();
     }
@@ -114,7 +114,7 @@ class ListMexMap extends React.Component {
     }
 
     popupClose = () => {
-        this.setState({ mapData: {}, mapCenter: MAP_CENTER, zoom: DEFAULT_ZOOM }, () => {
+        this.setState({ mapData: {} }, () => {
             if (this.props.onClick) {
                 this.props.onClick()
             }
@@ -123,7 +123,7 @@ class ListMexMap extends React.Component {
 
     renderMarkerPopup = (id, dataList) => {
         return (
-            <Popup className="map-control-div-marker-popup" ref={this.popup} onClose={this.popupClose}>
+            <Popup className="map-control-div-marker-popup" ref={this.popup} onClose={this.popupClose} onOpen={this.popupOpen}>
                 {
                     dataList.map((data, i) => (
                         <div key={i} className="map-control-div-marker-popup-label" >
@@ -171,22 +171,15 @@ class ListMexMap extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         let mapData = processMapData(props.dataList)
-        if (props.register && props.dataList.length === 1) {
-            let location = props.dataList[0].cloudletLocation
-            return { mapData, mapCenter: [parseInt(location.latitude), parseInt(location.longitude)] }
-        }
         return { mapData }
     }
 
     render() {
-        const { mapCenter, zoom } = this.state
-        const { region, onMapClick, register } = this.props
+        const { region, onMapClick } = this.props
         return (
-            <MexMap renderMarker={this.renderMarker} mapCenter={mapCenter} zoom={zoom} region={[region]} onMapClick={onMapClick} register={register} />
+            <MexMap renderMarker={this.renderMarker} region={[region]} onMapClick={onMapClick} zoom={DEFAULT_ZOOM} />
         )
     }
 }
 
 export default ListMexMap
-
-
