@@ -80,7 +80,6 @@ class Monitoring extends React.Component {
             isPrivate: false
         }
         this._isMounted = false
-        this.worker = ShowWorker()
         this.selectedRow = undefined
     }
 
@@ -293,21 +292,21 @@ class Monitoring extends React.Component {
                 let mcList = await sendMultiRequest(this, requestList)
                 if (mcList && mcList.length > 0) {
                     count = count - 1
-                    let response = await processWorker(this.worker, {
+                    let worker = ShowWorker()
+                    let response = await processWorker(worker, {
                         requestList,
                         parentId,
                         region,
                         mcList,
-                        avgData: this.state.avgData,
                         metricListKeys: parent.metricListKeys
                     })
+                    worker.terminate()
                     if (response.status === 200) {
-                        let avgData = response.data
                         if (this._isMounted) {
                             this.setState(prevState => {
-                                let preAvgData = prevState.avgData
-                                preAvgData[region] = avgData[region]
-                                return { avgData: preAvgData }
+                                let avgData = prevState.avgData
+                                avgData[region] = response.data
+                                return { avgData }
                             }, () => {
                                 if (count === 0) {
                                     this.updateState({ loading: false, showLoaded: true })
@@ -373,7 +372,6 @@ class Monitoring extends React.Component {
     }
 
     componentWillUnmount() {
-        this.worker.terminate()
         this._isMounted = false
     }
 }
