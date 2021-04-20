@@ -2,11 +2,13 @@ import React from 'react'
 import { Icon } from 'semantic-ui-react'
 import { Marker, Popup } from "react-leaflet";
 import { fields } from '../../../../../services/model/format';
-import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../../../../hoc/mexmap/MexMap'
+import MexMap from '../../../../../hoc/mexmap/MexMap'
 import { cloudGreenIcon } from "../../../../../hoc/mexmap/MapProperties";
 import MexCircleMarker from '../../../../../hoc/mexmap/utils/MexCircleMarker'
 import MexCurve from '../../../../../hoc/mexmap/utils/MexCurve'
-class ClusterMexMap extends React.Component {
+
+const DEFAULT_ZOOM = 3
+class CloudletMexMap extends React.Component {
 
     constructor(props) {
         super(props)
@@ -14,9 +16,7 @@ class ClusterMexMap extends React.Component {
             mapData: {},
             polyline: [],
             showDevices: false,
-            mapCenter: MAP_CENTER,
-            zoom: DEFAULT_ZOOM,
-            curveColor : 'red'
+            curveColor: 'red'
         }
         this.popup = React.createRef();
         this.ws = undefined
@@ -27,7 +27,7 @@ class ClusterMexMap extends React.Component {
             this.ws.close()
             this.ws = undefined
         }
-        this.setState({ showDevices: false, mapData: {}, mapCenter: MAP_CENTER, zoom: DEFAULT_ZOOM })
+        this.setState({ showDevices: false, mapData: {} })
     }
 
     renderMarkerPopup = (data) => {
@@ -84,21 +84,20 @@ class ClusterMexMap extends React.Component {
                         </React.Fragment>
                     )
                 })}
-                {showDevices && polyline.length > 0 ? 
-                    <MexCurve data={polyline} color={curveColor}/> : null
+                {showDevices && polyline.length > 0 ?
+                    <MexCurve data={polyline} color={curveColor} /> : null
                 }
             </div> : null
     }
 
     render() {
-        const { mapCenter, zoom } = this.state
         const { region } = this.props
         return (
-            <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} region={region} />
+            <MexMap renderMarker={this.renderMarker} back={this.resetMap} zoom={DEFAULT_ZOOM} region={region} />
         )
     }
 }
 
-export default ClusterMexMap
+export default CloudletMexMap
 
 

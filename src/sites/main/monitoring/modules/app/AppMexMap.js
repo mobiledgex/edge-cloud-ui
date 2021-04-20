@@ -9,11 +9,11 @@ import { showAppInstClient } from '../../../../../services/model/appInstClient'
 import cloneDeep from 'lodash/cloneDeep'
 import MexCircleMarker from '../../../../../hoc/mexmap/utils/MexCircleMarker'
 import { cloudGreenIcon, mobileIcon } from "../../../../../hoc/mexmap/MapProperties";
-import MexMap, { MAP_CENTER, DEFAULT_ZOOM } from '../../../../../hoc/mexmap/MexMap'
+import MexMap from '../../../../../hoc/mexmap/MexMap'
 import MexCurve from '../../../../../hoc/mexmap/utils/MexCurve'
 import { Dialog } from '@material-ui/core';
 
-
+const DEFAULT_ZOOM = 2
 class AppMexMap extends React.Component {
 
     constructor(props) {
@@ -22,8 +22,6 @@ class AppMexMap extends React.Component {
             mapData: {},
             polyline: [],
             showDevices: false,
-            mapCenter: MAP_CENTER,
-            zoom: DEFAULT_ZOOM,
             curveColor: 'red',
             backswitch: false
         }
@@ -33,7 +31,6 @@ class AppMexMap extends React.Component {
 
     mapClick = (data) => {
         let location = data[fields.cloudletLocation]
-        this.setState({ mapCenter: [location.latitude, location.longitude], zoom: 7 })
         // this.popup.current.leafletElement.options.leaflet.map.closePopup();
         let keyData = data
         let main = { cloudletLocation: keyData[fields.cloudletLocation] }
@@ -47,7 +44,7 @@ class AppMexMap extends React.Component {
             this.ws.close()
             this.ws = undefined
         }
-        this.setState({ showDevices: false, mapData: {}, mapCenter: MAP_CENTER, zoom: DEFAULT_ZOOM, backswitch: false }, () => {
+        this.setState({ showDevices: false, mapData: {}, backswitch: false }, () => {
             this.props.onListToolbarClear()
         })
     }
@@ -192,15 +189,15 @@ class AppMexMap extends React.Component {
     }
 
     render() {
-        const { mapCenter, zoom, backswitch, showDevices } = this.state
+        const { backswitch, showDevices } = this.state
         const { region } = this.props
         return (
             <React.Fragment>
                 {showDevices ?
                     <Dialog fullScreen open={showDevices} onClose={this.resetMap} disableEscapeKeyDown={true}>
-                        <MexMap renderMarker={this.renderDeviceMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch} region={region} fullscreen={showDevices} />
+                        <MexMap renderMarker={this.renderDeviceMarker} back={this.resetMap} zoom={DEFAULT_ZOOM} backswitch={backswitch} region={region} fullscreen={showDevices} />
                     </Dialog> :
-                    <MexMap renderMarker={this.renderMarker} back={this.resetMap} mapCenter={mapCenter} zoom={zoom} backswitch={backswitch} region={region} />
+                    <MexMap renderMarker={this.renderMarker} back={this.resetMap} zoom={DEFAULT_ZOOM} backswitch={backswitch} region={region} />
                 }
             </React.Fragment>
         )
