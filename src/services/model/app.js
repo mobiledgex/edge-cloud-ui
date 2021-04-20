@@ -33,7 +33,7 @@ export const keys = () => ([
     { field: fields.androidPackageName, serverField: 'android_package_name', label: 'Android Package Name' },
     { field: fields.autoProvPolicies, serverField: 'auto_prov_policies', label: 'Auto Provisioning Policies', dataType: constant.TYPE_ARRAY },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
-    { field: fields.trusted, serverField: 'trusted', label: 'Trusted', visible: true, sortable: true, format: true },
+    { field: fields.trusted, serverField: 'trusted', label: 'Trusted', visible: false, sortable: true, format: true },
     { field: fields.configs, serverField: 'configs', label: 'Configs', keys: configs() },
     { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: false },
     { field: fields.requiredOutboundConnections, serverField: 'required_outbound_connections', label: 'Required Outbound Connections', visible: false, dataType: constant.TYPE_JSON },
