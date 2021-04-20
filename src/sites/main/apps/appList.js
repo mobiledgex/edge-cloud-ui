@@ -10,7 +10,7 @@ import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
 import { HELP_APP_LIST } from "../../../tutorial";
 import { ACTION_DELETE, ACTION_UPDATE } from '../../../container/Actions';
-import { uiFormatter } from '../../../helper/formatter';
+import { labelFormatter, uiFormatter } from '../../../helper/formatter';
 class AppList extends React.Component {
     constructor(props) {
         super(props);
@@ -54,10 +54,10 @@ class AppList extends React.Component {
 
     dataFormatter = (key, data, isDetail) => {
         if (key.field === fields.scaleWithCluster) {
-            return constant.showYesNo(data[key.field], isDetail)
+            return labelFormatter.showYesNo(data[key.field])
         }
         else if (key.field === fields.trusted) {
-            return uiFormatter.trusted(key, data, isDetail)
+            return labelFormatter.showYesNo(data[key.field])
         }
         else if (key.field === fields.appName) {
             return `${data[key.field]} [${data[fields.version]}]`

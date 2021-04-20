@@ -110,7 +110,7 @@ class CloudletList extends React.Component {
             return this.showProgress(data, isDetail)
         }
         else if (key.field === fields.trusted) {
-            return uiFormatter.trusted(key, data, isDetail)
+            return labelFormatter.showYesNo(data[key.field])
         }
     }
 

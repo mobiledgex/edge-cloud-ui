@@ -15,7 +15,7 @@ export const clusterMetricsKeys = [
 ]
 
 export const clusterMetricsListKeys = [
-    { field: fields.region, label: 'Region', sortable: true, visible: true, groupBy: true },
+    { field: fields.region, label: 'Region', sortable: true, visible: false, groupBy: true },
     { field: fields.clusterName, label: 'Cluster', sortable: true, visible: true, groupBy: true },
     { field: fields.cloudletName, label: 'Cloudlet', sortable: true, visible: true, groupBy: true },
     { field: fields.operatorName, label: 'Operator', sortable: true, visible: true, groupBy: true },
