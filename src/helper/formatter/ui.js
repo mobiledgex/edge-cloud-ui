@@ -7,15 +7,7 @@ import { Button } from 'semantic-ui-react';
 import { labelFormatter } from '.';
 
 export const trusted = (key, data, isDetail) => {
-    let trusted = data[key.field]
-    if (isDetail) {
-        return constant.showYesNo(trusted, isDetail)
-    }
-    else {
-        let color = trusted ? constant.COLOR_GREEN : constant.COLOR_RED
-        let icon = trusted ? 'check' : 'close'
-        return <Icon className={'progressIndicator'} style={{ color }} name={icon} />
-    }
+    return labelFormatter.showYesNo(data[key.field])
 }
 
 export const Manage = (props) => {
@@ -31,7 +23,7 @@ export const edgeboxOnly = (key, data, isDetail) => {
     let edgeboxOnly = data[key.field]
     let isOperator = data[fields.type].includes(constant.OPERATOR.toLowerCase())
     if (isDetail) {
-        return constant.showYesNo(edgeboxOnly, isDetail)
+        return labelFormatter.showYesNo(edgeboxOnly)
     }
     else {
         return <Icon name={edgeboxOnly ? 'check' : 'close'} style={{ color: isOperator ? edgeboxOnly ? constant.COLOR_GREEN : constant.COLOR_RED : '#9E9E9E' }} />
@@ -115,7 +107,7 @@ export const appInstRegion = (key, data, isDetail) => {
 export const emailVerfied = (key, data, isDetail, callback) => {
     let id = data[key.field]
     if (isDetail) {
-        return constant.showYesNo(id, isDetail)
+        return labelFormatter.showYesNo(id)
     }
     else {
         return (
@@ -127,7 +119,7 @@ export const emailVerfied = (key, data, isDetail, callback) => {
 export const lock = (key, data, isDetail) => {
     let id = data[key.field]
     if (isDetail) {
-        return constant.showYesNo(id, isDetail)
+        return labelFormatter.showYesNo(id)
     }
     else {
         return (
@@ -139,7 +131,7 @@ export const lock = (key, data, isDetail) => {
 export const access = (key, data, isDetail) => {
     let id = data[key.field]
     if (isDetail) {
-        return constant.showYesNo(id, isDetail)
+        return labelFormatter.showYesNo(id)
     }
     else {
         return <Icon style={{ color: `${id ? constant.COLOR_GREEN : constant.COLOR_RED}` }} name={`${id ? 'check' : 'close'}`} />

@@ -71,7 +71,7 @@ class ClusterInstView extends React.Component {
             return shared.showProgress(data, isDetail)
         }
         else if (key.field === fields.reservable) {
-            return constant.showYesNo(data[key.field], isDetail)
+            return labelFormatter.showYesNo(data[key.field])
         }
     }
 

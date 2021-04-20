@@ -157,7 +157,7 @@ class AppInstList extends React.Component {
             return uiFormatter.healthCheck(key, data, isDetail)
         }
         else if (key.field === fields.trusted) {
-            return uiFormatter.trusted(key, data, isDetail)
+            return labelFormatter.showYesNo(data[key.field])
         }
         else if (key.field === fields.appName) {
             return `${data[key.field]} [${data[fields.version]}]`
