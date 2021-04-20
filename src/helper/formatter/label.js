@@ -167,5 +167,5 @@ export const healthCheck = (id) => {
 }
 
 export const showYesNo = (data) => {
-    return data ? constant.YES : NO
+    return data ? constant.YES : constant.NO
 }
