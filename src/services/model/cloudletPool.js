@@ -99,6 +99,9 @@ export const multiDataRequest = (keys, mcList) => {
 }
 
 export const showCloudletPools = (data) => {
+    if (formatter.getOrganization() && formatter.getUserRole().includes(constant.OPERATOR)) {
+        data.cloudletpool = { key: { organization: formatter.getOrganization() } }
+    }
     return { method: SHOW_CLOUDLET_POOL, data: data, keys: keys() }
 }
 

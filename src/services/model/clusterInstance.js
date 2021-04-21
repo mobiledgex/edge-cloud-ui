@@ -130,7 +130,12 @@ export const showClusterInsts = (data, isSpecific) => {
 export const showOrgClusterInsts = (data, isPrivate) => {
     let organization = data.org
     let requestData = { region: data.region }
-    if (!isPrivate) {
+    if (isPrivate && formatter.getUserRole().includes(constant.OPERATOR)) {
+        requestData.clusterinst = {
+            key: { cloudlet_key: { organization } }
+        }
+    }
+    else {
         requestData.clusterinst = { key: { organization } }
     }
     return { method: SHOW_CLUSTER_INST, data: requestData, keys: keys() }

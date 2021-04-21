@@ -116,14 +116,14 @@ export const emailVerfied = (key, data, isDetail, callback) => {
     }
 }
 
-export const lock = (key, data, isDetail) => {
+export const lock = (key, data, isDetail, callback) => {
     let id = data[key.field]
     if (isDetail) {
         return labelFormatter.showYesNo(id)
     }
     else {
         return (
-            <Icon name={id === true ? 'lock' : 'lock open'} style={{ color: id === true ? '#6a6a6a' : 'rgba(136,221,0,.9)' }} onClick={() => this.onLocking(data)} />
+            <Icon name={id === true ? 'lock' : 'lock open'} style={{ color: id === true ? '#6a6a6a' : 'rgba(136,221,0,.9)' }} onClick={() => callback(data)} />
         )
     }
 }

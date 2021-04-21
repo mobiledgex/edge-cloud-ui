@@ -188,7 +188,13 @@ export const showAppInsts = (data, isSpecific) => {
 export const showOrgAppInsts = (data, isPrivate) => {
   let organization = data.org
   let requestData = { region: data.region }
-  if (!isPrivate) {
+  if (isPrivate && formatter.getUserRole().includes(constant.OPERATOR)) {
+    requestData.appinst = {
+      cluster_inst_key: {
+        cloudlet_key: { organization }
+      }
+    }
+  } else {
     requestData.appinst = { key: { app_key: { organization } } }
   }
   return { method: SHOW_APP_INST, data: requestData, keys: keys() }
