@@ -5,7 +5,7 @@ import MexForms, { SELECT, DUALLIST, INPUT, BUTTON, HEADER, MULTI_FORM, MAIN_HEA
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import * as serverData from '../../../../services/model/serverData';
-import { fields, getOrganization, updateFieldData } from '../../../../services/model/format';
+import { DEVELOPER, fields, getOrganization, OPERATOR, updateFieldData } from '../../../../services/model/format';
 
 import * as constant from '../../../../constant'
 import { getOrganizationList } from '../../../../services/model/organization';
@@ -57,7 +57,7 @@ class AutoProvPolicyReg extends React.Component {
             }
         }
         if (region && organization && !this.isUpdate) {
-            this.cloudletList = await fetchCloudletData(this, { region: region, org: organization })
+            this.cloudletList = await fetchCloudletData(this, { region: region, org: organization, type: OPERATOR.toLowerCase() })
             this.updateUI(form)
             this.updateState({ forms })
         }
@@ -419,7 +419,7 @@ class AutoProvPolicyReg extends React.Component {
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
-            this.cloudletList = await fetchCloudletData(this, { region: data[fields.region], org: data[fields.organizationName] })
+            this.cloudletList = await fetchCloudletData(this, { region: data[fields.region], org: data[fields.organizationName], type: DEVELOPER.toLowerCase() })
         }
     }
 
