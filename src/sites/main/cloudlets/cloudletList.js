@@ -8,7 +8,7 @@ import { edgeboxOnly, getOrganization, isOperator } from '../../../reducers/orga
 
 import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
-import { showCloudletInfos } from '../../../services/model/cloudletInfo';
+import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
 import CloudletReg from './cloudletReg';
 import { validateRole, operatorRoles, INFRA_API_ACCESS_RESTRICTED, PAGE_CLOUDLETS, OPERATOR } from '../../../constant'
 import * as shared from '../../../services/model/shared';
@@ -119,7 +119,7 @@ class CloudletList extends React.Component {
             id: PAGE_CLOUDLETS,
             headerLabel: 'Cloudlets',
             nameField: fields.cloudletName,
-            requestType: [showCloudlets, showCloudletInfos],
+            requestType: [showCloudlets, showCloudletInfoData],
             streamType: streamCloudlet,
             customStream: this.customStream,
             isRegion: true,

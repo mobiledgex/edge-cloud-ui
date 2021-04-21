@@ -6,10 +6,10 @@ import MexForms, { MAIN_HEADER, SELECT, INPUT, DUALLIST } from '../../../hoc/for
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serverData from '../../../services/model/serverData';
-import { fields, getOrganization, getUserRole, isAdmin, updateFieldData } from '../../../services/model/format';
+import { fields, getOrganization, getUserRole, isAdmin, OPERATOR, updateFieldData } from '../../../services/model/format';
 
 import { getOrganizationList } from '../../../services/model/organization';
-import { getOrgCloudletList } from '../../../services/model/cloudlet';
+import { fetchCloudletData } from '../../../services/model/cloudlet';
 import { createCloudletPool, updateCloudletPool } from '../../../services/model/cloudletPool';
 import { createConfirmation, createInvitation, deleteConfirmation, deleteInvitation } from '../../../services/model/privateCloudletAccess';
 
@@ -53,7 +53,7 @@ class CloudletPoolReg extends React.Component {
 
     getCloudletList = async (forms, form, region, operator) => {
         if (region && operator) {
-            this.cloudletList = await getOrgCloudletList(this, { region: region, org: operator })
+            this.cloudletList = await fetchCloudletData(this, { region: region, org: operator, type: OPERATOR.toLowerCase() })
             this.cloudletList = this.cloudletList.filter((cloudlet) => {
                 return cloudlet[fields.operatorName] === operator
             })
@@ -394,7 +394,7 @@ class CloudletPoolReg extends React.Component {
         this.operatorList = [operator]
 
         if (this.action === constant.ADD_CLOUDLET) {
-            this.cloudletList = await getOrgCloudletList(this, { region: data[fields.region], org: data[fields.operatorName] })
+            this.cloudletList = await fetchCloudletData(this, { region: data[fields.region], org: data[fields.operatorName], type: OPERATOR.toLowerCase() })
             if (this.cloudletList && this.cloudletList.length > 0) {
                 this.cloudletList = this.cloudletList.filter((cloudlet) => {
                     return cloudlet[fields.operatorName] === data[fields.operatorName]

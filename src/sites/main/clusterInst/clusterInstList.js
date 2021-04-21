@@ -9,7 +9,7 @@ import * as shared from '../../../services/model/shared';
 import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiDataRequest } from '../../../services/model/clusterInstance';
 import { showCloudlets } from '../../../services/model/cloudlet';
-import { showCloudletInfos } from '../../../services/model/cloudletInfo';
+import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
 //list
 import MexListView from '../../../container/MexListView';
 //reg
@@ -81,7 +81,7 @@ class ClusterInstView extends React.Component {
             id: constant.PAGE_CLUSTER_INSTANCES,
             headerLabel: 'Cluster Instances',
             nameField: fields.clusterName,
-            requestType: [showClusterInsts, showCloudlets, showCloudletInfos],
+            requestType: [showClusterInsts, showCloudlets, showCloudletInfoData],
             streamType: streamClusterInst,
             isRegion: true,
             isMap: true,

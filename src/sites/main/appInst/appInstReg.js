@@ -7,12 +7,12 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, SWITCH, ICON_BUTTON, TEXT_AREA,
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields, getOrganization, updateFieldData } from '../../../services/model/format';
+import { DEVELOPER, fields, getOrganization, updateFieldData } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
-import { showOrgCloudlets, cloudletWithInfo } from '../../../services/model/cloudlet';
+import { showCloudlets, cloudletWithInfo } from '../../../services/model/cloudlet';
 import { sendRequests } from '../../../services/model/serverWorker'
-import { showOrgCloudletInfos } from '../../../services/model/cloudletInfo';
+import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
 import { getClusterInstList, showClusterInsts } from '../../../services/model/clusterInstance';
 import { getFlavorList, showFlavors } from '../../../services/model/flavor';
 import { getAppList } from '../../../services/model/app';
@@ -72,9 +72,9 @@ class ClusterInstReg extends React.Component {
         }
         if (region && organizationName) {
             let requestList = []
-            let requestData = { region: region, org: organizationName }
-            requestList.push(showOrgCloudlets(requestData))
-            requestList.push(showOrgCloudletInfos(requestData))
+            let requestData = { region: region, org: organizationName, type: DEVELOPER.toLowerCase() }
+            requestList.push(showCloudlets(requestData))
+            requestList.push(showCloudletInfoData(requestData))
             this.props.handleLoadingSpinner(true)
             sendRequests(this, requestList).addEventListener('message', event => {
                 let mcList = event.data
@@ -91,7 +91,7 @@ class ClusterInstReg extends React.Component {
             this.clusterInstList = [...this.clusterInstList, ...await getClusterInstList(this, { region: region })]
         }
         this.updateUI(form)
-        this.updateState({forms})
+        this.updateState({ forms })
     }
 
     getAppInfo = async (region, form, forms) => {
@@ -100,7 +100,7 @@ class ClusterInstReg extends React.Component {
         }
         this.updateUI(form)
         this.appNameValueChange(form, forms, true)
-        this.updateState({forms})
+        this.updateState({ forms })
     }
 
     getFlavorInfo = async (region, form, forms) => {
@@ -108,7 +108,7 @@ class ClusterInstReg extends React.Component {
             this.flavorList = [...this.flavorList, ...await getFlavorList(this, { region: region })]
         }
         this.updateUI(form)
-        this.updateState({forms})
+        this.updateState({ forms })
     }
 
     operatorValueChange = (currentForm, forms, isInit) => {
@@ -117,7 +117,7 @@ class ClusterInstReg extends React.Component {
             if (form.field === fields.cloudletName) {
                 this.updateUI(form)
                 if (isInit === undefined || isInit === false) {
-                    this.updateState({forms})
+                    this.updateState({ forms })
                 }
                 break;
             }
@@ -133,7 +133,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.updateState({forms})
+            this.updateState({ forms })
         }
     }
 
@@ -147,7 +147,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.updateState({forms})
+            this.updateState({ forms })
         }
     }
 
@@ -179,7 +179,7 @@ class ClusterInstReg extends React.Component {
                         return form
                     }
                     else if (form.field === fields.configs) {
-                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM ||  app[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES
+                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM || app[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES
                         this.configOptions = app[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.CONFIG_ENV_VAR] : [constant.CONFIG_HELM_CUST]
                         return form
                     }
@@ -231,7 +231,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.updateState({nForms})
+            this.updateState({ nForms })
         }
     }
 
@@ -282,7 +282,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.updateState({forms})
+            this.updateState({ forms })
         }
     }
 
@@ -294,7 +294,7 @@ class ClusterInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.updateState({forms})
+            this.updateState({ forms })
         }
     }
 
@@ -304,7 +304,7 @@ class ClusterInstReg extends React.Component {
         if (form.parent) {
             let updateForms = Object.assign([], this.state.forms)
             updateForms.splice(form.parent.id, 1);
-            this.updateState({updateForms})
+            this.updateState({ updateForms })
         }
 
     }
@@ -394,13 +394,11 @@ class ClusterInstReg extends React.Component {
         }
     }
 
-    fetchCompabilityVersion = (data)=>{
+    fetchCompabilityVersion = (data) => {
         let version = constant.CLOUDLET_COMPAT_VERSION_2_4
-        for(let i=0;i<this.cloudletList.length;i++)
-        {
+        for (let i = 0; i < this.cloudletList.length; i++) {
             let cloudlet = this.cloudletList[i]
-            if(data[fields.cloudletName] === cloudlet[fields.cloudletName] && data[fields.operatorName] === cloudlet[fields.operatorName] && data[fields.region] === cloudlet[fields.region])
-            {
+            if (data[fields.cloudletName] === cloudlet[fields.cloudletName] && data[fields.operatorName] === cloudlet[fields.operatorName] && data[fields.region] === cloudlet[fields.region]) {
                 version = cloudlet[fields.compatibilityVersion]
                 break;
             }
@@ -530,10 +528,10 @@ class ClusterInstReg extends React.Component {
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
             if (this.props.isLaunch) {
-                let cloudletRequestData = { region: data[fields.region], org: data[fields.organizationName] }
-                requestTypeList.push(showOrgCloudlets(cloudletRequestData))
-                requestTypeList.push(showOrgCloudletInfos(cloudletRequestData))
-                requestTypeList.push(showClusterInsts({ region: data[fields.region] }))
+                let requestData = { region: data[fields.region], org: data[fields.organizationName], type: DEVELOPER.toLowerCase() }
+                requestTypeList.push(showCloudlets(requestData))
+                requestTypeList.push(showCloudletInfoData(requestData))
+                requestTypeList.push(showClusterInsts(requestData))
                 requestTypeList.push(showFlavors({ region: data[fields.region] }))
                 let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]
 
@@ -665,12 +663,12 @@ class ClusterInstReg extends React.Component {
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </div>
                     </Grid>
-                    {this.state.showGraph ? 
-                    <Grid item xs={6} >
-                        <Suspense fallback={<div></div>}>
-                            <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow} />
-                        </Suspense>
-                    </Grid> : null}
+                    {this.state.showGraph ?
+                        <Grid item xs={6} >
+                            <Suspense fallback={<div></div>}>
+                                <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow} />
+                            </Suspense>
+                        </Grid> : null}
                 </Grid>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
             </div >
