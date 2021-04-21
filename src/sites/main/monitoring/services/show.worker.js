@@ -28,20 +28,18 @@ const fetchAppInstData = (parentId, showList, keys) => {
             data[key.field] = show[key.field]
             if (key.groupBy) {
                 //replace cluster name with realclustername for appmetrics
-                if (parentId === PARENT_APP_INST && show[fields.realclustername]) {
-                    if (key.field === fields.clusterName) {
-                        dataKey = dataKey + show[fields.realclustername] + '_'
-                    }
-                    else if (key.field === fields.clusterdeveloper) {
-                        dataKey = dataKey + show[fields.appDeveloper] + '_'
-                    }
+                let isRealCluster = parentId === PARENT_APP_INST && show[fields.realclustername] 
+                if (isRealCluster && key.field === fields.clusterName) {
+                    dataKey = dataKey + show[fields.realclustername] + '_'
+                }
+                else if (isRealCluster && key.field === fields.clusterdeveloper) {
+                    dataKey = dataKey + show[fields.organizationName] + '_'
                 }
                 else {
                     dataKey = dataKey + show[key.field] + '_'
                 }
             }
         })
-
         dataKey = dataKey.replace('.', '')
         dataKey = dataKey.toLowerCase().slice(0, -1)
         defaultFields(data)
