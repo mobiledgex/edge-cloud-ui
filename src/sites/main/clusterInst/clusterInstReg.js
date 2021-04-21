@@ -7,7 +7,7 @@ import MexTab from '../../../hoc/forms/tab/MexTab';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields, getOrganization, updateFieldData } from '../../../services/model/format';
+import { DEVELOPER, fields, getOrganization, updateFieldData } from '../../../services/model/format';
 //model
 import * as serverData from '../../../services/model/serverData'
 import { createClusterInst, updateClusterInst } from '../../../services/model/clusterInstance';
@@ -74,7 +74,7 @@ class ClusterInstReg extends React.Component {
         }
         if (region && organizationName) {
             let requestList = []
-            let requestData = { region: region, org: organizationName }
+            let requestData = { region: region, org: organizationName, type: DEVELOPER.toLowerCase() }
             requestList.push(showCloudlets(requestData))
             requestList.push(showCloudletInfoData(requestData))
             this.props.handleLoadingSpinner(true)

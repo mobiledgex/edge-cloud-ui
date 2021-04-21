@@ -34,7 +34,7 @@ export const getKey = (data) => {
 
 export const showCloudletInfoData = (data, specific) => {
     let requestData = {}
-    let isDeveloper = formatter.isDeveloper()
+    let isDeveloper = formatter.isDeveloper() || data.type === formatter.DEVELOPER.toLowerCase()
     let method = isDeveloper ? SHOW_ORG_CLOUDLET_INFO : SHOW_CLOUDLET_INFO
     if (specific) {
         let cloudletinfo = { key: data.cloudletkey ? data.cloudletkey : data.cloudlet.key }
@@ -51,7 +51,7 @@ export const showCloudletInfoData = (data, specific) => {
             if (isDeveloper) {
                 requestData.org = organization
             }
-            else if (formatter.isOperator()) {
+            else if (formatter.isOperator() || data.type === formatter.OPERATOR.toLowerCase()) {
                 requestData.cloudletinfo = { key: { organization } }
             }
         }
