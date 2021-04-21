@@ -12,8 +12,8 @@ import { fields, getOrganization, updateFieldData } from '../../../services/mode
 import * as serverData from '../../../services/model/serverData'
 import { createClusterInst, updateClusterInst } from '../../../services/model/clusterInstance';
 import { getOrganizationList } from '../../../services/model/organization';
-import { showOrgCloudlets, cloudletWithInfo } from '../../../services/model/cloudlet';
-import { showOrgCloudletInfos } from '../../../services/model/cloudletInfo';
+import { showCloudlets, cloudletWithInfo } from '../../../services/model/cloudlet';
+import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
 import { getFlavorList } from '../../../services/model/flavor';
 import { getAutoScalePolicyList, showAutoScalePolicies } from '../../../services/model/autoScalePolicy';
 //Map
@@ -75,8 +75,8 @@ class ClusterInstReg extends React.Component {
         if (region && organizationName) {
             let requestList = []
             let requestData = { region: region, org: organizationName }
-            requestList.push(showOrgCloudlets(requestData))
-            requestList.push(showOrgCloudletInfos(requestData))
+            requestList.push(showCloudlets(requestData))
+            requestList.push(showCloudletInfoData(requestData))
             this.props.handleLoadingSpinner(true)
             sendRequests(this, requestList).addEventListener('message', event => {
                 let mcList = event.data

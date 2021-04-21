@@ -28,8 +28,13 @@ const fetchAppInstData = (parentId, showList, keys) => {
             data[key.field] = show[key.field]
             if (key.groupBy) {
                 //replace cluster name with realclustername for appmetrics
-                if (parentId === PARENT_APP_INST && show[fields.realclustername] && key.field === fields.clusterName) {
-                    dataKey = dataKey + show[fields.realclustername] + '_'
+                if (parentId === PARENT_APP_INST && show[fields.realclustername]) {
+                    if (key.field === fields.clusterName) {
+                        dataKey = dataKey + show[fields.realclustername] + '_'
+                    }
+                    else if (key.field === fields.clusterdeveloper) {
+                        dataKey = dataKey + show[fields.appDeveloper] + '_'
+                    }
                 }
                 else {
                     dataKey = dataKey + show[key.field] + '_'
@@ -64,7 +69,7 @@ const processData = (worker) => {
                     if (request.method === 'ShowClusterInst') {
                         clusterList = mc.response.data
                     }
-                    else if (request.method === 'orgcloudlet/show') {
+                    else if (request.method === 'orgcloudlet/show' || request.method === 'ShowCloudlet') {
                         cloudletList = mc.response.data
                     }
                 }

@@ -48,15 +48,11 @@ const getKey = (data, isCreate) => {
   }
 }
 
-
 export const showAutoScalePolicies = (data) => {
-  if (!formatter.isAdmin()) {
+  let organization = formatter.getOrganization()
+  if (organization && formatter.isDeveloper()) {
     {
-      data.autoscalepolicy = {
-        key: {
-          organization: formatter.getOrganization()
-        }
-      }
+      data.autoscalepolicy = { key: { organization } }
     }
   }
   return { method: SHOW_AUTO_SCALE_POLICY, data: data }

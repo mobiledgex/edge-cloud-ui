@@ -119,13 +119,10 @@ export const getKey = (data, isCreate) => {
 }
 
 export const showApps = (data) => {
-    if (!formatter.isAdmin()) {
+    let organization = formatter.getOrganization()
+    if (organization && formatter.isDeveloper()) {
         {
-            data.app = {
-                key: {
-                    organization: formatter.getOrganization(),
-                }
-            }
+            data.app = { key: { organization } }
         }
     }
     return { method: SHOW_APP, data: data }

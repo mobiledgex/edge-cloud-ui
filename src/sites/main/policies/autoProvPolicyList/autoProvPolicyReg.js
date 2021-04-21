@@ -9,7 +9,7 @@ import { fields, getOrganization, updateFieldData } from '../../../../services/m
 
 import * as constant from '../../../../constant'
 import { getOrganizationList } from '../../../../services/model/organization';
-import { getOrgCloudletList } from '../../../../services/model/cloudlet';
+import { fetchCloudletData } from '../../../../services/model/cloudlet';
 import { createAutoProvPolicy, updateAutoProvPolicy, addAutoProvCloudletKey, deleteAutoProvCloudletKey } from '../../../../services/model/autoProvisioningPolicy';
 import { HELP_AUTO_PROV_REG_2, HELP_AUTO_PROV_REG_1 } from "../../../../tutorial";
 import { Grid } from '@material-ui/core';
@@ -57,7 +57,7 @@ class AutoProvPolicyReg extends React.Component {
             }
         }
         if (region && organization && !this.isUpdate) {
-            this.cloudletList = await getOrgCloudletList(this, { region: region, org: organization })
+            this.cloudletList = await fetchCloudletData(this, { region: region, org: organization })
             this.updateUI(form)
             this.updateState({ forms })
         }
@@ -419,7 +419,7 @@ class AutoProvPolicyReg extends React.Component {
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
-            this.cloudletList = await getOrgCloudletList(this, { region: data[fields.region], org: data[fields.organizationName] })
+            this.cloudletList = await fetchCloudletData(this, { region: data[fields.region], org: data[fields.organizationName] })
         }
     }
 

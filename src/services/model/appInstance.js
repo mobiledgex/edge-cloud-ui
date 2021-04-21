@@ -158,9 +158,10 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
   }
 }
 
-export const showAppInsts = (data, isSpecific) => {
+
+export const showAppInsts = (data, specific) => {
   let requestData = {}
-  if (isSpecific) {
+  if (specific) {
     let appinst = { key: data.appinstkey ? data.appinstkey : data.appinst.key }
     requestData = {
       uuid: data.uuid,
@@ -169,35 +170,26 @@ export const showAppInsts = (data, isSpecific) => {
     }
   }
   else {
-    if (!formatter.isAdmin()) {
-      {
-        data.appinst = {
+    requestData.region = data.region
+    let organization = data.org ? data.org : formatter.getOrganization()
+    if (organization) {
+      if (formatter.isDeveloper() || data.type === formatter.DEVELOPER.toLowerCase()) {
+        requestData.appinst = { key: { app_key: { organization } } }
+      }
+      else if ((data.isPrivate && formatter.isOperator()) || data.type === formatter.OPERATOR.toLowerCase()) {
+        requestData.appinst = {
           key: {
-            app_key: {
-              organization: formatter.getOrganization(),
+            cluster_inst_key: {
+              cloudlet_key: {
+                organization
+              }
             }
           }
         }
       }
     }
-    requestData = data
   }
-  return { method: SHOW_APP_INST, data: requestData, keys: keys() }
-}
-
-export const showOrgAppInsts = (data, isPrivate) => {
-  let organization = data.org
-  let requestData = { region: data.region }
-  if (isPrivate && formatter.getUserRole().includes(constant.OPERATOR)) {
-    requestData.appinst = {
-      cluster_inst_key: {
-        cloudlet_key: { organization }
-      }
-    }
-  } else {
-    requestData.appinst = { key: { app_key: { organization } } }
-  }
-  return { method: SHOW_APP_INST, data: requestData, keys: keys() }
+  return { method:SHOW_APP_INST, data: requestData, keys: keys() }
 }
 
 export const getAppInstList = async (self, data) => {

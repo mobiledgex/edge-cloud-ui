@@ -10,9 +10,9 @@ import * as constant from '../../../constant';
 import { fields, getOrganization, updateFieldData } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
-import { showOrgCloudlets, cloudletWithInfo } from '../../../services/model/cloudlet';
+import { showCloudlets, cloudletWithInfo } from '../../../services/model/cloudlet';
 import { sendRequests } from '../../../services/model/serverWorker'
-import { showOrgCloudletInfos } from '../../../services/model/cloudletInfo';
+import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
 import { getClusterInstList, showClusterInsts } from '../../../services/model/clusterInstance';
 import { getFlavorList, showFlavors } from '../../../services/model/flavor';
 import { getAppList } from '../../../services/model/app';
@@ -73,8 +73,8 @@ class ClusterInstReg extends React.Component {
         if (region && organizationName) {
             let requestList = []
             let requestData = { region: region, org: organizationName }
-            requestList.push(showOrgCloudlets(requestData))
-            requestList.push(showOrgCloudletInfos(requestData))
+            requestList.push(showCloudlets(requestData))
+            requestList.push(showCloudletInfoData(requestData))
             this.props.handleLoadingSpinner(true)
             sendRequests(this, requestList).addEventListener('message', event => {
                 let mcList = event.data
@@ -531,8 +531,8 @@ class ClusterInstReg extends React.Component {
             this.organizationList = [organization]
             if (this.props.isLaunch) {
                 let cloudletRequestData = { region: data[fields.region], org: data[fields.organizationName] }
-                requestTypeList.push(showOrgCloudlets(cloudletRequestData))
-                requestTypeList.push(showOrgCloudletInfos(cloudletRequestData))
+                requestTypeList.push(showCloudlets(cloudletRequestData))
+                requestTypeList.push(showCloudletInfoData(cloudletRequestData))
                 requestTypeList.push(showClusterInsts({ region: data[fields.region] }))
                 requestTypeList.push(showFlavors({ region: data[fields.region] }))
                 let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]
