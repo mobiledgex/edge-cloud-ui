@@ -528,10 +528,10 @@ class ClusterInstReg extends React.Component {
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
             if (this.props.isLaunch) {
-                let cloudletRequestData = { region: data[fields.region], org: data[fields.organizationName], type: DEVELOPER.toLowerCase() }
-                requestTypeList.push(showCloudlets(cloudletRequestData))
-                requestTypeList.push(showCloudletInfoData(cloudletRequestData))
-                requestTypeList.push(showClusterInsts({ region: data[fields.region] }))
+                let requestData = { region: data[fields.region], org: data[fields.organizationName], type: DEVELOPER.toLowerCase() }
+                requestTypeList.push(showCloudlets(requestData))
+                requestTypeList.push(showCloudletInfoData(requestData))
+                requestTypeList.push(showClusterInsts(requestData))
                 requestTypeList.push(showFlavors({ region: data[fields.region] }))
                 let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]
 
