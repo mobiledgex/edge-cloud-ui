@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { fields, getUserRole, isAdmin } from '../../../services/model/format';
 import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst } from '../../../services/model/appInstance';
 import { showApps } from '../../../services/model/app';
-import { showCloudletInfos } from '../../../services/model/cloudletInfo';
+import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
 import AppInstReg from './appInstReg';
 import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
@@ -169,7 +169,7 @@ class AppInstList extends React.Component {
             id: 'AppInsts',
             headerLabel: 'App Instances',
             nameField: fields.appName,
-            requestType: [showAppInsts, showApps, showCloudletInfos],
+            requestType: [showAppInsts, showApps, showCloudletInfoData],
             streamType: streamAppInst,
             isRegion: true,
             isMap: true,

@@ -155,6 +155,7 @@ class Monitoring extends React.Component {
 
     onOrgChange = (value) => {
         let selectedOrg = value[fields.organizationName]
+        this.orgType = value[fields.type]
         if (this._isMounted) {
             this.setState({ loading: true, showLoaded: false, selectedOrg }, () => {
                 this.setState({ avgData: this.defaultStructure() }, () => {
@@ -287,7 +288,7 @@ class Monitoring extends React.Component {
                 let requestList = []
                 requestList = showRequests.map(showRequest => {
                     let org = isAdmin() ? this.state.selectedOrg : getOrganization()
-                    return showRequest({ region, org }, isPrivate)
+                    return showRequest({ region, org, type: this.orgType, isPrivate })
                 })
                 let mcList = await sendMultiRequest(this, requestList)
                 if (mcList && mcList.length > 0) {

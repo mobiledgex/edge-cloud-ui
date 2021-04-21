@@ -99,6 +99,10 @@ export const multiDataRequest = (keys, mcList) => {
 }
 
 export const showCloudletPools = (data) => {
+    let organization = formatter.getOrganization()
+    if (organization && formatter.isOperator()) {
+        data.cloudletpool = { key: { organization } }
+    }
     return { method: SHOW_CLOUDLET_POOL, data: data, keys: keys() }
 }
 

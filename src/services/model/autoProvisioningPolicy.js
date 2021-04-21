@@ -73,13 +73,10 @@ const getAutoProvKey = (data, isCreate) => {
 }
 
 export const showAutoProvPolicies = (data) => {
-  if (!formatter.isAdmin()) {
+  let organization = formatter.getOrganization()
+  if (organization && formatter.isDeveloper()) {
     {
-      data.AutoProvPolicy = {
-        key: {
-          organization: formatter.getOrganization()
-        }
-      }
+      data.AutoProvPolicy = { key: { organization } }
     }
   }
   return { method: SHOW_AUTO_PROV_POLICY, data: data }

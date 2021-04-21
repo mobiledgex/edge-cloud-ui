@@ -15,7 +15,7 @@ export const keys = () => ([
     { field: fields.operatorName, serverField: 'key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: true, filter: true, group: true, key: true },
     { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: true, filter: true, group: true, key: true },
     { field: fields.flavorName, serverField: 'flavor#OS#name', sortable: true, label: 'Flavor', visible: true, filter: true, group: true },
-    { field: fields.ipAccess, serverField: 'ip_access', label: 'IP Access', sortable: true, visible: true, filter: true},
+    { field: fields.ipAccess, serverField: 'ip_access', label: 'IP Access', sortable: true, visible: true, filter: true },
     { field: fields.autoScalePolicyName, serverField: 'auto_scale_policy', label: 'Auto Scale Policy' },
     { field: fields.cloudletLocation, label: 'Cloudlet Location', dataType: TYPE_JSON },
     { field: fields.nodeFlavor, serverField: 'node_flavor', label: 'Node Flavor' },
@@ -23,9 +23,9 @@ export const keys = () => ([
     { field: fields.numberOfNodes, serverField: 'num_nodes', label: 'Number of Workers' },
     { field: fields.sharedVolumeSize, serverField: 'shared_volume_size', label: 'Shared Volume Size' },
     { field: fields.deployment, serverField: 'deployment', sortable: true, label: 'Deployment', visible: true, filter: true },
-    { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true, format:true },
+    { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true, format: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
-    { field: fields.reservable, serverField: 'reservable', label: 'Reservable', roles: [constant.ADMIN_MANAGER], format:true },
+    { field: fields.reservable, serverField: 'reservable', label: 'Reservable', roles: [constant.ADMIN_MANAGER], format: true },
     { field: fields.reservedBy, serverField: 'reserved_by', label: 'Reserved By', roles: [constant.ADMIN_MANAGER] },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
@@ -102,9 +102,9 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
     }
 }
 
-export const showClusterInsts = (data, isSpecific) => {
+export const showClusterInsts = (data, specific) => {
     let requestData = {}
-    if (isSpecific) {
+    if (specific) {
         let clusterinst = { key: data.clusterinstkey ? data.clusterinstkey : data.clusterinst.key }
         requestData = {
             uuid: data.uuid,
@@ -113,25 +113,18 @@ export const showClusterInsts = (data, isSpecific) => {
         }
     }
     else {
-        if (!formatter.isAdmin()) {
-            {
-                data.clusterinst = {
-                    key: {
-                        organization: formatter.getOrganization()
-                    }
+        requestData.region = data.region
+        let organization = data.org ? data.org : formatter.getOrganization()
+        if (organization) {
+            if (formatter.isDeveloper() || data.type === formatter.DEVELOPER.toLowerCase()) {
+                requestData.clusterinst = { key: { organization } }
+            }
+            else if ((data.isPrivate && formatter.isOperator())  || data.type === formatter.OPERATOR.toLowerCase()) {
+                requestData.clusterinst = {
+                    key: { cloudlet_key: { organization } }
                 }
             }
         }
-        requestData = data
-    }
-    return { method: SHOW_CLUSTER_INST, data: requestData, keys: keys() }
-}
-
-export const showOrgClusterInsts = (data, isPrivate) => {
-    let organization = data.org
-    let requestData = { region: data.region }
-    if (!isPrivate) {
-        requestData.clusterinst = { key: { organization } }
     }
     return { method: SHOW_CLUSTER_INST, data: requestData, keys: keys() }
 }

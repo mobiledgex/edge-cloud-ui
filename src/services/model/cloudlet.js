@@ -8,6 +8,40 @@ import { idFormatter, labelFormatter } from '../../helper/formatter'
 
 const fields = formatter.fields;
 
+export const keys = () => ([
+    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
+    { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group: true, key: true },
+    { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
+    { field: fields.latitude, serverField: 'location#OS#latitude', label: 'Longitude', detailView: false },
+    { field: fields.longitude, serverField: 'location#OS#longitude', label: 'Latitude', detailView: false },
+    { field: fields.ipSupport, serverField: 'ip_support', label: 'IP Support' },
+    { field: fields.numDynamicIPs, serverField: 'num_dynamic_ips', label: 'Number of Dynamic IPs' },
+    { field: fields.physicalName, serverField: 'physical_name', label: '	Physical Name' },
+    { field: fields.platformType, serverField: 'platform_type', label: 'Platform Type'},
+    { field: fields.openRCData, serverField: 'access_vars#OS#OPENRC_DATA', label: 'Open RC Data' },
+    { field: fields.caCertdata, serverField: 'access_vars#OS#CACERT_DATA', label: 'CA Cert Data' },
+    { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true, format: true },
+    { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true, format: true },
+    { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON, detailView: false },
+    { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
+    { field: fields.vmImageVersion, serverField: 'vm_image_version', label: 'VM Image Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
+    { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: constant.TYPE_JSON },
+    { field: fields.envVars, serverField: 'env_var', label: 'Environment Variables', dataType: constant.TYPE_JSON },
+    { field: fields.resourceQuotas, serverField: 'resource_quotas', label: 'Resource Quotas', dataType: constant.TYPE_JSON },
+    { field: fields.defaultResourceAlertThreshold, serverField: 'default_resource_alert_threshold', label: 'Default Resource Alert Threshold' },
+    { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access'},
+    { field: fields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name' },
+    { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name' },
+    { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView: false },
+    { field: fields.trustPolicyName, serverField: 'trust_policy', label: 'Trust Policy' },
+    { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: constant.TYPE_YAML },
+    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+    { field: fields.trusted, label: 'Trusted', visible: true, format: true },
+    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }
+])
+
 export const getCloudletKey = (data) => {
     return { organization: data[fields.operatorName], name: data[fields.cloudletName] }
 }
@@ -180,13 +214,10 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
     }
 }
 
-
 export const showCloudlets = (data, specific) => {
     let requestData = {}
-    let method = SHOW_ORG_CLOUDLET
-    if (formatter.isAdmin()) {
-        method = SHOW_CLOUDLET;
-    }
+    let isDeveloper = formatter.isDeveloper() || data.type === formatter.DEVELOPER.toLowerCase()
+    let method = isDeveloper ? SHOW_ORG_CLOUDLET : SHOW_CLOUDLET
     if (specific) {
         let cloudlet = { key: data.cloudletkey ? data.cloudletkey : data.cloudlet.key }
         requestData = {
@@ -196,16 +227,22 @@ export const showCloudlets = (data, specific) => {
         }
     }
     else {
-        requestData = data
+        requestData.region = data.region
+        let organization = data.org ? data.org : formatter.getOrganization()
+        if (organization) {
+            if (isDeveloper) {
+                requestData.org = organization
+            }
+            else if (formatter.isOperator() || data.type === formatter.OPERATOR.toLowerCase()) {
+                requestData.cloudlet = { key: { organization } }
+            }
+        }
     }
-    if (!formatter.isAdmin()) {
-        requestData.org = formatter.getOrganization()
-    }
-    return { method: method, data: requestData, keys: keys() }
+    return { method, data: requestData, keys: keys() }
 }
 
-export const showOrgCloudlets = (data) => {
-    return { method: SHOW_ORG_CLOUDLET, data: data, keys: keys() }
+export const fetchCloudletData = async (self, data) => {
+    return await serverData.showDataFromServer(self, showCloudlets(data))
 }
 
 export const createCloudlet = (self, data, callback) => {
@@ -220,14 +257,6 @@ export const updateCloudlet = (self, data, callback) => {
     data.uuid = data.uuid ? data.uuid : formatter.generateUUID(keys(), data)
     let request = { uuid: data.uuid, method: UPDATE_CLOUDLET, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
-}
-
-export const getCloudletList = async (self, data) => {
-    return await serverData.showDataFromServer(self, showCloudlets(data))
-}
-
-export const getOrgCloudletList = async (self, data) => {
-    return await serverData.showDataFromServer(self, showOrgCloudlets(data))
 }
 
 export const deleteCloudlet = (data) => {
@@ -267,40 +296,6 @@ export const cloudletResourceQuota = (data) => {
     }
     return { method: GET_CLOUDLET_RESOURCE_QUOTA_PROPS, data: requestData }
 }
-
-export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
-    { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group: true, key: true },
-    { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
-    { field: fields.latitude, serverField: 'location#OS#latitude', label: 'Longitude', detailView: false },
-    { field: fields.longitude, serverField: 'location#OS#longitude', label: 'Latitude', detailView: false },
-    { field: fields.ipSupport, serverField: 'ip_support', label: 'IP Support' },
-    { field: fields.numDynamicIPs, serverField: 'num_dynamic_ips', label: 'Number of Dynamic IPs' },
-    { field: fields.physicalName, serverField: 'physical_name', label: '	Physical Name' },
-    { field: fields.platformType, serverField: 'platform_type', label: 'Platform Type'},
-    { field: fields.openRCData, serverField: 'access_vars#OS#OPENRC_DATA', label: 'Open RC Data' },
-    { field: fields.caCertdata, serverField: 'access_vars#OS#CACERT_DATA', label: 'CA Cert Data' },
-    { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true, format: true },
-    { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true, format: true },
-    { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON, detailView: false },
-    { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
-    { field: fields.vmImageVersion, serverField: 'vm_image_version', label: 'VM Image Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
-    { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: constant.TYPE_JSON },
-    { field: fields.envVars, serverField: 'env_var', label: 'Environment Variables', dataType: constant.TYPE_JSON },
-    { field: fields.resourceQuotas, serverField: 'resource_quotas', label: 'Resource Quotas', dataType: constant.TYPE_JSON },
-    { field: fields.defaultResourceAlertThreshold, serverField: 'default_resource_alert_threshold', label: 'Default Resource Alert Threshold' },
-    { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access'},
-    { field: fields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name' },
-    { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name' },
-    { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView: false },
-    { field: fields.trustPolicyName, serverField: 'trust_policy', label: 'Trust Policy' },
-    { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: constant.TYPE_YAML },
-    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.trusted, label: 'Trusted', visible: true, format: true },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }
-])
 
 const customData = (value) => {
     value[fields.cloudletStatus] = value[fields.maintenanceState] && value[fields.maintenanceState] !== 0 ? 999 : 4

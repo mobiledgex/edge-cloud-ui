@@ -101,7 +101,7 @@ class AccountList extends React.Component {
             return uiFormatter.emailVerfied(key, data, isDetail, () => this.sendEmailWarning(data[fields.username], data[fields.email]))
         }
         else if (key.field === fields.locked) {
-            return uiFormatter.lock(key, data, isDetail)
+            return uiFormatter.lock(key, data, isDetail, this.onLocking)
         }
     }
 

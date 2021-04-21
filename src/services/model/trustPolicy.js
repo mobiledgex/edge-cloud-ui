@@ -39,8 +39,10 @@ const getKey = (data) => {
   }
 }
 
-
 export const showTrustPolicies = (data) => {
+  if (formatter.isOperator()) {
+    data.trustpolicy = { key: { organization: formatter.getOrganization() } }
+  }
   return { method: SHOW_TRUST_POLICY, data: data }
 }
 
