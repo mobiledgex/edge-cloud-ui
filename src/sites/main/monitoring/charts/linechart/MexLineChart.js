@@ -78,8 +78,8 @@ const optionsGenerator = (header, unitId, fullscreen, range) => {
                 },
                 ticks: {
                     fontColor: "#CCC",
-                    suggestedMax: 1,
-                    suggestedMin: 10,
+                    suggestedMax: 10,
+                    suggestedMin: 1,
                     precision: 0,
                     callback: (label, index, labels) => {
                         return unitId ? convertUnit(unitId, label) : label

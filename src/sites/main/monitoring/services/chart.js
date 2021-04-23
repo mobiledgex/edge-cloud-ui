@@ -5,7 +5,7 @@ import moment from 'moment'
 import momentTimezone from "moment-timezone";
 
 /*Generates line chart dataset for given data*/
-export const generateDataset = (chartData, avgData, timezone, labelPosition, steppedLine) => {
+export const generateDataset = (chartData, avgData, timezone, labelPosition) => {
     let datasets = {}
     const values = chartData ? chartData.values : {}
     Object.keys(values).forEach(key => {
@@ -16,11 +16,16 @@ export const generateDataset = (chartData, avgData, timezone, labelPosition, ste
                 let formattedList = dataList.map(value => {
                     return { x: moment.tz(value[0], timezone).valueOf(), y: value[chartData.metric.position] }
                 })
+                let steppedLine = chartData.metric.steppedLine ? chartData.metric.steppedLine : false
+                if(steppedLine)
+                {
+                    formattedList.push({x: moment.tz(dataList[dataList.length-1][0], timezone).valueOf(), y:0})
+                }
                 datasets[key] = {
                     label: dataList[0][labelPosition ? labelPosition : 2],
                     fill: false,
                     lineTension: 0.5,
-                    steppedLine: steppedLine,
+                    steppedLine,
                     backgroundColor: color,
                     borderColor: color,
                     borderCapStyle: 'butt',
