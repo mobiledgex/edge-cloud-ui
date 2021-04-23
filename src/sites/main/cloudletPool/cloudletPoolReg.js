@@ -6,7 +6,7 @@ import MexForms, { MAIN_HEADER, SELECT, INPUT, DUALLIST } from '../../../hoc/for
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serverData from '../../../services/model/serverData';
-import { fields, getOrganization, getUserRole, isAdmin, OPERATOR, updateFieldData } from '../../../services/model/format';
+import { fields, getOrganization, getUserRole, isAdmin, isOperator, OPERATOR, updateFieldData } from '../../../services/model/format';
 
 import { getOrganizationList } from '../../../services/model/organization';
 import { fetchCloudletData } from '../../../services/model/cloudlet';
@@ -238,7 +238,7 @@ class CloudletPoolReg extends React.Component {
         else {
             this.organizationList = selectedDatas;
         }
-        if (this.organizationList.length > 0) {
+        if (this.organizationList.length > 0 || isOperator()) {
             let label = 'Invite'
             switch (this.action) {
                 case ACTION_POOL_ACCESS_ADMIN_CONFIRM:
