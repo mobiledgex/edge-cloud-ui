@@ -18,7 +18,7 @@ const utcTime = (format, date) => {
 
 const processLineChartData = (chartData, avgData, worker) => {
     const { timezone } = worker
-    chartData['datasets'] = generateDataset(chartData, avgData, timezone, 5, true)
+    chartData['datasets'] = generateDataset(chartData, avgData, timezone, 5)
 }
 
 const processData = (worker) => {

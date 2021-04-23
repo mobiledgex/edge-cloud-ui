@@ -7,7 +7,7 @@ import MexWorker from '../../services/flavor.worker.js'
 import { Card, GridListTile } from '@material-ui/core'
 import { timezonePref } from '../../../../../utils/sharedPreferences_util'
 
-const metric = { field: 'count', serverField: 'count', serverHead: 'cloudlet-flavor-usage', header: 'Flavor Usage', position: 4 }
+const metric = { field: 'count', serverField: 'count', serverHead: 'cloudlet-flavor-usage', header: 'Flavor Usage', position: 4, steppedLine:'after' }
 class CloudletFlavorUsage extends React.Component {
 
     constructor(props) {

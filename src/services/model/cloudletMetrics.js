@@ -38,18 +38,17 @@ export const cloudletMetricsListKeys = [
 ]
 
 export const utilizationMetricType = [
-    { field: 'cpu', serverField: 'utilization', subId: 'vCpuUsed', header: 'vCpu Infra Usage', position: 4 },
-    { field: 'memory', serverField: 'utilization', subId: 'memUsed', header: 'Memory Infra Usage', position: 6, unit: UNIT_MB },
-    { field: 'disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Infra Usage', position: 8, unit: UNIT_GB },
+    { field: 'cpu', serverField: 'utilization', subId: 'vCpuUsed', header: 'vCpu Infra Usage', position: 4, steppedLine:'after' },
+    { field: 'memory', serverField: 'utilization', subId: 'memUsed', header: 'Memory Infra Usage', position: 6, unit: UNIT_MB, steppedLine:'after' },
+    { field: 'disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Infra Usage', position: 8, unit: UNIT_GB, steppedLine:'after' },
 ]
 
 export const resourceUsageMetricType = [
-    { field: 'diskUsed', serverField: 'diskUsed', serverHead:'openstack-resource-usage', header: 'Disk Usage', position: 4, unit: UNIT_GB },
-    { field: 'floatingIpsUsed', serverField: 'floatingIpsUsed', serverHead:'openstack-resource-usage', header: 'Floating IP Used', position: 5, unit:UNIT_FLOOR },
-    { field: 'gpusUsed', serverField: 'gpusUsed', serverHead:'openstack-resource-usage', header: 'GPU Used', position: 6, unit:UNIT_FLOOR },
-    { field: 'instancesUsed', serverField: 'instancesUsed', serverHead:'openstack-resource-usage', header: 'Instances Used', position: 7, unit:UNIT_FLOOR },
-    { field: 'ramUsed', serverField: 'ramUsed', serverHead:'openstack-resource-usage', header: 'RAM Used', position: 8, unit:UNIT_MB },
-    { field: 'vcpusUsed', serverField: 'vcpusUsed', serverHead:'openstack-resource-usage', header: 'vCPUs Used', position: 9, unit:UNIT_FLOOR },
+    { field: 'floatingIpsUsed', serverField: 'floatingIpsUsed', serverHead:'openstack-resource-usage', header: 'Floating IP Used', position: 4, unit:UNIT_FLOOR, steppedLine:'after' },
+    { field: 'gpusUsed', serverField: 'gpusUsed', serverHead:'openstack-resource-usage', header: 'GPU Used', position: 5, unit:UNIT_FLOOR, steppedLine:'after' },
+    { field: 'instancesUsed', serverField: 'instancesUsed', serverHead:'openstack-resource-usage', header: 'Instances Used', position: 6, unit:UNIT_FLOOR, steppedLine:'after' },
+    { field: 'ramUsed', serverField: 'ramUsed', serverHead:'openstack-resource-usage', header: 'RAM Used', position: 7, unit:UNIT_MB, steppedLine:'after' },
+    { field: 'vcpusUsed', serverField: 'vcpusUsed', serverHead:'openstack-resource-usage', header: 'vCPUs Used', position: 8, unit:UNIT_FLOOR, steppedLine:'after' },
 ]
 
 export const cloudletMetricTypeKeys = ()=>([
