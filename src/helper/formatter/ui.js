@@ -83,9 +83,9 @@ export const healthCheck = (key, data, isDetail) => {
     else {
         switch (id) {
             case 3:
-                return <Popup content={label} trigger={<Icon className="progressIndicator" name='check' style={{ color: constant.COLOR_GREEN }} />} />
+                return <Popup content={label} trigger={<Icon className="progressIndicator" name='check' color='green' />} />
             default:
-                return <Popup content={label} trigger={<Icon className="progressIndicator" name='close' style={{ color: constant.COLOR_RED }} />} />
+                return <Popup content={label} trigger={<Icon className="progressIndicator" name='close' color='red' />} />
         }
     }
 }

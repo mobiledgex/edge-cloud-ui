@@ -7,7 +7,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import { Dustbin } from '../hoc/listView/mex_dnd/Dustbin';
+import SelectMenu from './selectMenu/SelectMenu'
 import { Icon } from 'semantic-ui-react';
 
 export const REGION_ALL = 1;
@@ -18,7 +18,8 @@ export const ACTION_CLOSE = 4
 export const ACTION_MAP = 5
 export const ACTION_SEARCH = 6;
 export const ACTION_CLEAR = 7;
-export const ACTION_BACK = 8
+export const ACTION_BACK = 8;
+export const ACTION_GROUP = 9;
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
@@ -55,7 +56,7 @@ const MexToolbar = (props) => {
     let requestInfo = props.requestInfo
 
     const [search, setSearch] = React.useState('')
-    const [region, setRegion] = React.useState({ key: 'ALL', value: REGION_ALL, text: 'ALL' })
+    const [region, setRegion] = React.useState('ALL')
     const [map, setMap] = React.useState(props.showMap)
     const [focused, setFocused] = React.useState(false)
     const [anchorRegionEL, setAnchorRegionEL] = React.useState(null)
@@ -118,32 +119,16 @@ const MexToolbar = (props) => {
     }
 
     const onRegionChange = (value) => {
-        setRegion(value)
-        setAnchorRegionEL(null)
+        value = value[0]
+        setRegion(value.text)
         props.onAction(ACTION_REGION, value.value)
+        setAnchorRegionEL(null)
     }
 
     const regionForm = () => (
         requestInfo.isRegion ?
             <Box order={2} p={1} style={{ marginTop: 4, marginRight: 12 }}>
-                <strong style={{ marginRight: 5 }}>Region:</strong>
-                <div style={{ display: 'inline', cursor: 'pointer' }} aria-label="regions" aria-haspopup="true" onClick={(e) => { setAnchorRegionEL(e.currentTarget) }}>
-                    <strong style={{ fontSize: 12, marginRight: 5 }}>{region.text}</strong><Icon name='chevron down' size='small' />
-                </div>
-                <Menu
-                    id="toolbar-region"
-                    anchorEl={anchorRegionEL}
-                    onClose={() => { setAnchorRegionEL(null) }}
-                    keepMounted
-                    style={{ maxHeight: 400 }}
-                    open={Boolean(anchorRegionEL)}
-                >
-                    {getRegions().map((item, i) => {
-                        return <ListItem key={i} role={undefined} dense button onClick={() => { onRegionChange(item) }}>
-                            <ListItemText id={1} primary={item.text} />
-                        </ListItem>
-                    })}
-                </Menu>
+                <SelectMenu header='Region' labelKey='text' dataList={getRegions()} onChange={onRegionChange} default={'ALL'}/>
             </Box> : null
     )
     /*Region Block*/
@@ -183,20 +168,30 @@ const MexToolbar = (props) => {
         </div>
     )
 
-    const dustBin = () => (
-        props.requestInfo.grouping ? <Box order={1} style={{ marginTop: 5 }}><Dustbin dropList={props.dropList} onRemove={props.onRemoveDropItem} /></Box> : null
-    )
-
     const renderBack = () => (
         props.requestInfo.back ?
             <Box>
-                <Tooltip title={<strong style={{fontSize:13}}>Back</strong>}>
-                    <IconButton aria-label="back" style={{ marginTop: -3, marginLeft:-20 }} onClick={(e) => { props.requestInfo.back() }}>
+                <Tooltip title={<strong style={{ fontSize: 13 }}>Back</strong>}>
+                    <IconButton aria-label="back" style={{ marginTop: -3, marginLeft: -20 }} onClick={(e) => { props.requestInfo.back() }}>
                         <ArrowBackIosIcon style={{ color: '#76ff03' }} />
                     </IconButton>
                 </Tooltip>
             </Box> : null
     )
+
+    const onGroupChange= (data)=>{
+        props.onAction(ACTION_GROUP, data)
+    }
+
+    const renderGroup = () => {
+        const { requestInfo } = props
+        let dataList = [{ label: 'None' }, ...requestInfo.keys.filter(key=>(key.group))]
+        return (
+            requestInfo.grouping ? <Box order={1} p={1} style={{ marginTop: 4, marginRight: 12 }}>
+                <SelectMenu header='Group By' labelKey='label' dataList={dataList} onChange={onGroupChange} default={'None'}/>
+            </Box> : null
+        )
+    }
 
     return (
         <Toolbar>
@@ -216,12 +211,12 @@ const MexToolbar = (props) => {
                                 {getDetailView(props)}
                             </div> :
                             <React.Fragment>
-                                {dustBin()}
                                 {searchForm()}
                                 {regionForm()}
                                 {mapForm()}
                                 {addForm()}
                                 {refreshForm()}
+                                {renderGroup()}
                             </React.Fragment>
                     }
                 </Box></div>

@@ -15,7 +15,8 @@ export const configs = () => ([
 export const keys = () => ([
     { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
     { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true, filter: true, group: true, key: true },
-    { field: fields.appName, serverField: 'key#OS#name', label: 'App [Version]', sortable: true, visible: true, filter: true, key: true, format:true },
+    { field: fields.appName, serverField: 'key#OS#name', label: 'App', visible: false, filter: true, key: true, format:true },
+    { field: fields.app_name_version, label: 'App [Version]', visible:true, sortable: true, group:true, format:true, detailView:false },
     { field: fields.version, serverField: 'key#OS#version', label: 'Version', visible: false, filter: true, key: true, detailView:false },
     { field: fields.deployment, serverField: 'deployment', label: 'Deployment', sortable: true, visible: true, filter: true, group: true },
     { field: fields.command, serverField: 'command', label: 'Command' },
