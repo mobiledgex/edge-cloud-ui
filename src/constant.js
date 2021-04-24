@@ -1,7 +1,6 @@
 import { fields, getUserRole } from "./services/model/format"
 import { accessGranted } from "./services/model/privateCloudletAccess"
 import { sendRequest } from "./sites/main/monitoring/services/service"
-import { time } from './utils/date_util'
 
 export const COLOR_GREEN = '#388E3C'
 export const COLOR_RED = '#ab2424'
@@ -156,23 +155,6 @@ export const BILLING_TYPE_SELF = 'Self'
 export const BILLING_TYPE_PARENT = 'Parent'
 export const CLOUDLET_STATUS_READY = 2
 export const CLOUDLET_STATUS_UNKNOWN = 0
-
-const dataFormatter = (type, value) => {
-    switch (type) {
-        case HEALTH_CHECK:
-            return healthCheck(value)
-    }
-}
-
-export const formatData = (key, value) => {
-    if (key.formatDate) {
-        return time(key.formatDate, parseInt(value + '000'))
-    }
-    else if (key.formatData) {
-        return dataFormatter(key.formatData, value)
-    }
-    return value
-}
 
 export const getHeight = (height) => {
     return window.innerHeight - (height ? height : 85)
