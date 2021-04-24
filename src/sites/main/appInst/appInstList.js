@@ -166,7 +166,7 @@ class AppInstList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: 'AppInsts',
+            id: constant.PAGE_APP_INSTANCES,
             headerLabel: 'App Instances',
             nameField: fields.appName,
             requestType: [showAppInsts, showApps, showCloudletInfoData],
