@@ -13,7 +13,7 @@ import ViewDetails from './ViewDetails';
 import ClearAllOutlinedIcon from '@material-ui/icons/ClearAllOutlined';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-const makeOper = (logName) => {
+const formatURL = (logName) => {
     let item = '';
     let nameArray = logName.substring(1).split("/").filter(name => name != 'ws');
 
@@ -34,22 +34,26 @@ const makeOper = (logName) => {
 
 }
 
-const formatDate = (data) => {
-    return dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, data)
+const dataFormatter = (key, value) => {
+    if (key.field === 'name') {
+        return formatURL(value)
+    }
+    else if (key.field === 'timestamp') {
+        return dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, value)
+    }
 }
 
-
 const auditKeys = [
-    { label: 'Start Time', field: 'timestamp', formatData: formatDate, detail: true },
+    { label: 'Start Time', field: 'timestamp', format: true, detail: true },
     { label: 'Trace ID', field: 'traceid', mtags: true, detail: true },
     { label: 'Client IP', field: 'remote-ip', mtags: true, detail: true },
     { label: 'Duration', field: 'duration', mtags: true, detail: true },
-    { label: 'Operation Name', field: 'name', formatData: makeOper, detail: true, filter: true },
+    { label: 'Operation Name', field: 'name', format: true, detail: true, filter: true },
     { label: 'Status', field: 'status', mtags: true, detail: true },
 ]
 
 const eventKeys = [
-    { label: 'Start Time', field: 'timestamp', formatData: formatDate, detail: true },
+    { label: 'Start Time', field: 'timestamp', format: true, detail: true },
     { label: 'Host Name', field: 'hostname', mtags: true, detail: true },
     { label: 'Line No', field: 'lineno', mtags: true, detail: true },
     { label: 'Node', field: 'node', mtags: true, detail: true },
@@ -130,7 +134,7 @@ class HeaderAuditLog extends React.Component {
                 <StepLabel StepIconComponent={(stepperProps) => {
                     return this.getStepLabel(mtags, stepperProps)
                 }}>
-                    <div className='audit_timeline_title'>{makeOper(data.name)}</div>
+                    <div className='audit_timeline_title'>{formatURL(data.name)}</div>
                     <div className='audit_timeline_traceID'>Trace ID : <span>{mtags.traceid}</span></div>
                 </StepLabel>
             </Step>
@@ -154,7 +158,7 @@ class HeaderAuditLog extends React.Component {
                     return (
                         key.detail && value ? <div key={i} className='audit_timeline_detail_row'>
                             <div className='audit_timeline_detail_left'>{key.label}</div>
-                            <div className='audit_timeline_detail_right'>{key.formatData ? key.formatData(value) : value}</div>
+                            <div className='audit_timeline_detail_right'>{key.format ? dataFormatter(key, value) : value}</div>
                         </div>
                             : null
                     )
