@@ -24,9 +24,9 @@ export const showAlertKeys = () => (
         { field: fields.instance, serverField: 'labels#OS#instance', label: 'Instance', sortable: true, visible: false, summary: true },
         { field: fields.job, serverField: 'labels#OS#job', label: 'Job', sortable: true, visible: false, summary: true },
         { field: fields.port, serverField: 'labels#OS#port', label: 'Port', sortable: true, visible: false, summary: true },
-        { field: fields.status, serverField: 'labels#OS#status', label: 'Status', sortable: true, visible: false, summary: true, formatData: HEALTH_CHECK },
+        { field: fields.status, serverField: 'labels#OS#status', label: 'Status', sortable: true, visible: false, summary: true, format: true },
         { field: fields.state, serverField: 'state', label: 'State', sortable: true, visible: false, summary: false },
-        { field: fields.activeAt, serverField: 'active_at#OS#seconds', label: 'Active At', sortable: true, visible: false, summary: true, formatDate: FORMAT_FULL_DATE_TIME },
+        { field: fields.activeAt, serverField: 'active_at#OS#seconds', label: 'Active At', sortable: true, visible: false, summary: true, format: true },
         { field: fields.notifyId, serverField: 'notify_id', label: 'Notify ID', sortable: true, visible: false, summary: false },
         { field: fields.controller, serverField: 'controller', label: 'Controller', sortable: true, visible: false, summary: false }
     ]

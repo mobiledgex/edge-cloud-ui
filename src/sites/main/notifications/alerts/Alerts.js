@@ -11,6 +11,8 @@ import { fields } from '../../../../services/model/format';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import NotificationImportantOutlinedIcon from '@material-ui/icons/NotificationImportantOutlined';
+import { labelFormatter } from '../../../../helper/formatter';
+import { FORMAT_FULL_DATE_TIME, time } from '../../../../utils/date_util';
 
 class AlertLocal extends React.Component {
     constructor(props) {
@@ -30,7 +32,7 @@ class AlertLocal extends React.Component {
         <div className="alert-toolbar">
             <div className="alert-toolbar-left">
                 <Typography>
-                    <NotificationImportantOutlinedIcon style={{ position: 'relative', top: '5px', marginRight:10 }} />
+                    <NotificationImportantOutlinedIcon style={{ position: 'relative', top: '5px', marginRight: 10 }} />
                     <strong>Alerts</strong>
                 </Typography>
             </div>
@@ -75,6 +77,15 @@ class AlertLocal extends React.Component {
         )
     }
 
+    dataFormatter = (key, value) => {
+        if (key.field === fields.activeAt) {
+            return time(FORMAT_FULL_DATE_TIME, parseInt(value + '000'))
+        }
+        else if (key.field === fields.status) {
+            return labelFormatter.healthCheck(value)
+        }
+    }
+
     renderList = () => {
         const { data } = this.props
         const { expand } = this.state
@@ -94,7 +105,7 @@ class AlertLocal extends React.Component {
                                         {showAlertKeys().map((key, j) => {
                                             let value = item[key.field]
                                             if (key.summary && value) {
-                                                return <ListItem key={j}><ListItemText primary={<p><b>{key.label}</b> {`: ${formatData(key, value)}`}</p>} /></ListItem>
+                                                return <ListItem key={j}><ListItemText primary={<p><b>{key.label}</b> {`: ${key.format ? this.dataFormatter(key, value) : value}`}</p>} /></ListItem>
                                             }
                                         })}
                                     </List>
