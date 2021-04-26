@@ -18,7 +18,7 @@ export const keys = () => ([
     },
     {
         field: fields.organizations, label: 'Organizations',
-        keys: [{ field: fields.organizationName, label: 'Organization Name' }, { field: fields.grant, label: 'Access Confirmed' }]
+        keys: [{ field: fields.organizationName, label: 'Organization' }, { field: fields.grant, label: 'Access Confirmed' }]
     },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },

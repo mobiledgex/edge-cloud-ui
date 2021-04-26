@@ -1,6 +1,4 @@
 import React from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend, } from 'react-dnd-html5-backend'
 import SideNav from './defaultLayout/SideNav'
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 
@@ -101,11 +99,9 @@ const Pages = (props) => {
 const Menu = (props) => {
     return (
         <SideNav data={pages}>
-            <DndProvider backend={HTML5Backend}>
-                <Switch>
-                    <Pages data={pages} />
-                </Switch>
-            </DndProvider>
+            <Switch>
+                <Pages data={pages} />
+            </Switch>
         </SideNav>
     )
 }

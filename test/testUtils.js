@@ -1,5 +1,5 @@
 import { ShallowWrapper } from "enzyme"
-import checkPropTypes from 'check-prop-types'
+import { checkPropTypes } from "prop-types";
 /**
  * Return node (s) with the given data-test attribute
  * @param {ShallowWrapper} wrapper - Enzyme shallow wrapper

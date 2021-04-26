@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as constant from '../constant'
 
-import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH } from './MexToolbar';
+import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH, ACTION_GROUP } from './MexToolbar';
 import MexDetailViewer from './detail/DetailViewer';
 import MexListViewer from '../hoc/listView/ListViewer';
 import MexMessageStream from '../hoc/stepper/mexMessageStream';
@@ -315,7 +315,6 @@ class MexListView extends React.Component {
                     groupActionMenu={this.props.groupActionMenu}
                     groupActionClose={this.groupActionClose}
                     dropList={this.state.dropList}
-                    isDropped={this.isDropped}
                     viewerEdit={this.requestInfo.viewerEdit}
                     tableHeight={this.props.tableHeight} />
             </div>)
@@ -381,10 +380,6 @@ class MexListView extends React.Component {
 
     onRemoveDropItem = (item) => {
         this.updateState({ dropList: [] })
-    }
-
-    isDropped = (item) => {
-        this.updateState({ dropList: [item] })
     }
 
     specificResponse = (mcList) => {
@@ -471,6 +466,8 @@ class MexListView extends React.Component {
             case ACTION_SEARCH:
                 this.onFilterValue(value)
                 break;
+            case ACTION_GROUP:
+                this.setState({dropList:value})
             default:
 
         }
