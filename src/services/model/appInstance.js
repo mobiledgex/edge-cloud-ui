@@ -13,7 +13,7 @@ export const keys = () => ([
   { field: fields.organizationName, serverField: 'key#OS#app_key#OS#organization', sortable: true, label: 'Organization', visible: true, filter: true, group: true, key: true },
   { field: fields.app_name_version, label: 'App [Version]', visible: true, sortable: true, detailView:false },
   { field: fields.appName, serverField: 'key#OS#app_key#OS#name', sortable: true, label: 'App', visible: false, filter: true, group: true, key: true},
-  { field: fields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: false, key: true, detailView:false },
+  { field: fields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: false, key: true },
   { field: fields.cloudlet_name_operator, label: 'Cloudlet [Operator]', sortable: true, visible: true, detailView:false },
   { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: false, filter: true, group: true, key: true },
   { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: false, filter: true, group: true, key: true },
