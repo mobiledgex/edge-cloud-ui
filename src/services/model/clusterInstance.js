@@ -10,20 +10,20 @@ let fields = formatter.fields;
 
 export const keys = () => ([
     { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
-    { field: fields.clusterName, serverField: 'key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster', visible: true, filter: true, key: true, key: true },
     { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true, filter: true, group: true, key: true },
+    { field: fields.clusterName, serverField: 'key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster', visible: true, filter: true, key: true, key: true },
     { field: fields.operatorName, serverField: 'key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: false, filter: true, group: true, key: true },
     { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: false, filter: true, group: true, key: true },
-    { field: fields.cloudlet_name_operator, sortable: true, label: 'Cloudlet [Operator]', visible: true, filter: false, detailView:false, format:true },
+    { field: fields.cloudlet_name_operator, sortable: true, label: 'Cloudlet [Operator]', visible: true, filter: false, detailView:false},
     { field: fields.flavorName, serverField: 'flavor#OS#name', sortable: true, label: 'Flavor', visible: true, filter: true, group: true },
-    { field: fields.ipAccess, serverField: 'ip_access', label: 'IP Access', sortable: true, visible: true, filter: true },
+    { field: fields.ipAccess, serverField: 'ip_access', label: 'IP Access', sortable: true, visible: false, filter: true },
     { field: fields.autoScalePolicyName, serverField: 'auto_scale_policy', label: 'Auto Scale Policy' },
     { field: fields.cloudletLocation, label: 'Cloudlet Location', dataType: TYPE_JSON },
     { field: fields.nodeFlavor, serverField: 'node_flavor', label: 'Node Flavor' },
     { field: fields.numberOfMasters, serverField: 'num_masters', label: 'Number of Masters' },
     { field: fields.numberOfNodes, serverField: 'num_nodes', label: 'Number of Workers' },
     { field: fields.sharedVolumeSize, serverField: 'shared_volume_size', label: 'Shared Volume Size' },
-    { field: fields.deployment, serverField: 'deployment', sortable: true, label: 'Deployment', visible: true, filter: true },
+    { field: fields.deployment, serverField: 'deployment', sortable: true, label: 'Deployment', visible: true, filter: true, group: true },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true, format: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
     { field: fields.reservable, serverField: 'reservable', label: 'Reservable', roles: [constant.ADMIN_MANAGER], format: true },
@@ -214,6 +214,7 @@ const customData = (value) => {
     value[fields.sharedVolumeSize] = value[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? value[fields.sharedVolumeSize] ? value[fields.sharedVolumeSize] : 0 : undefined
     value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
     value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
+    value[fields.cloudlet_name_operator] = `${value[fields.cloudletName]} [${value[fields.operatorName]}]`
     return value
 }
 

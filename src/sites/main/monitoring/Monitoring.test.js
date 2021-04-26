@@ -10,8 +10,10 @@ import Monitoring from './Monitoring'
  * @param {Object} props - Component props sepcific to this setup
  * @returns {ShallowWrapper} 
  */
-const setup = (props = {}) => {
-    return shallow(<Monitoring/>)
+const setup = (props = {}, state=null) => {
+    let wrapper =  shallow(<Monitoring {...props} />)
+    if(state) wrapper.setState(state);
+    return wrapper
 }
 
 test('renders without error', () => {

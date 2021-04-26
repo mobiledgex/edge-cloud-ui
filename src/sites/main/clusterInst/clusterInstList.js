@@ -74,9 +74,6 @@ class ClusterInstView extends React.Component {
         else if (key.field === fields.reservable) {
             return labelFormatter.showYesNo(data[key.field])
         }
-        else if (key.field === fields.cloudlet_name_operator) {
-            return `${data[fields.cloudletName]} [${data[fields.operatorName]}]`
-        }
     }
 
     requestInfo = () => {

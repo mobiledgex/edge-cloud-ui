@@ -108,20 +108,23 @@ class MexLineChart extends React.Component {
             datasets: [],
             fullscreen: false
         }
-        this.metric = props.data.metric
-
-        this.header = this.metric ? this.metric.header : ''
-        this.unit = this.metric ? this.metric.unit : undefined
-        this.position = this.metric ? this.metric.position : 0
-        this.range = props.range
-        this.options = optionsGenerator(this.header, this.unit, false, this.range)
+        if (props.data) {
+            this.metric = props.data.metric
+            this.header = this.metric ? this.metric.header : ''
+            this.unit = this.metric ? this.metric.unit : undefined
+            this.position = this.metric ? this.metric.position : 0
+            this.range = props.range
+            this.options = optionsGenerator(this.header, this.unit, false, this.range)
+        }
     }
 
     static getDerivedStateFromProps(props, state) {
-        let propsValues = props.data.values
-        if (propsValues) {
-            const { data, avgData, globalFilter, rowSelected, labelPosition, disableRowSelectedFilter } = props
-            return { datasets: formatData(data, avgData, globalFilter, rowSelected, disableRowSelectedFilter) }
+        if (props.data) {
+            let propsValues = props.data.values
+            if (propsValues) {
+                const { data, avgData, globalFilter, rowSelected, labelPosition, disableRowSelectedFilter } = props
+                return { datasets: formatData(data, avgData, globalFilter, rowSelected, disableRowSelectedFilter) }
+            }
         }
         return null
     }
@@ -160,15 +163,14 @@ class MexLineChart extends React.Component {
 
     render() {
         const { fullscreen, datasets } = this.state
-        const { rowSelected, globalFilter } = this.props
-        let id = this.props.id
-        id = id.toLowerCase()
+        const { rowSelected, globalFilter, data } = this.props
+        let id = this.props.id ? this.props.id.toLowerCase() : uuid()
         return (
-            <div style={{ padding: 5, marginTop: 5, marginRight: 10 }} mex-test="component-line-chart">
+            data ? <div style={{ padding: 5, marginTop: 5, marginRight: 10 }} mex-test="component-line-chart">
                 <div>
                     <Box display="flex">
                         <Box flexGrow={1}>
-                            <h3 className='chart-header'>{`${this.header} - ${this.props.data.region}`}</h3>
+                            <h3 className='chart-header'>{`${this.header} - ${data.region}`}</h3>
                         </Box>
                         {
                             datasets.length === 0 && (rowSelected === 0 && globalFilter.search.length === 0) ?
@@ -192,7 +194,7 @@ class MexLineChart extends React.Component {
                     }
                 </div>
                 {this.renderFullScreen(id, fullscreen, datasets)}
-            </div>
+            </div> : null
         )
     }
 }

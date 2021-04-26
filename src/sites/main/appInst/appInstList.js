@@ -159,9 +159,6 @@ class AppInstList extends React.Component {
         else if (key.field === fields.trusted) {
             return labelFormatter.showYesNo(data[key.field])
         }
-        else if (key.field === fields.appName) {
-            return `${data[key.field]} [${data[fields.version]}]`
-        }
     }
 
     requestInfo = () => {
