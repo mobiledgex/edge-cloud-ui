@@ -15,23 +15,28 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const formatURL = (logName) => {
     let item = '';
-    let nameArray = logName.substring(1).split("/").filter(name => name != 'ws');
+    try {
+        let nameArray = logName.substring(1).split("/").filter(name => name != 'ws');
 
-    if (nameArray[2] === 'login') {
-        item = nameArray[2]
-    } else if (nameArray[2] === 'auth') {
-        if (nameArray[3] === 'ctrl') {
-            item = nameArray[4]
-        } else if (nameArray[3] === 'restricted') {
-            item = nameArray[3] + nameArray[4].charAt(0).toUpperCase() + nameArray[4].slice(1) + nameArray[5].charAt(0).toUpperCase() + nameArray[5].slice(1)
+        if (nameArray[2] === 'login') {
+            item = nameArray[2]
+        } else if (nameArray[2] === 'auth') {
+            if (nameArray[3] === 'ctrl') {
+                item = nameArray[4]
+            } else if (nameArray[3] === 'restricted') {
+                item = nameArray[3] + nameArray[4].charAt(0).toUpperCase() + nameArray[4].slice(1) + nameArray[5].charAt(0).toUpperCase() + nameArray[5].slice(1)
+            } else {
+                item = nameArray[3] + nameArray[4].charAt(0).toUpperCase() + nameArray[4].slice(1)
+            }
         } else {
-            item = nameArray[3] + nameArray[4].charAt(0).toUpperCase() + nameArray[4].slice(1)
+            item = nameArray[2]
         }
-    } else {
-        item = nameArray[2]
+        item =  item.charAt(0).toUpperCase() + item.slice(1)
     }
-    return item.charAt(0).toUpperCase() + item.slice(1)
+    catch (e) {
 
+    }
+    return item
 }
 
 const dataFormatter = (key, value) => {

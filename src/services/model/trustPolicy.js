@@ -14,7 +14,7 @@ export const outboundSecurityRulesKeys = [
 
 export const keys = () => ([
   { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key:true },
-  { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Organization Name', sortable: true, visible: true, filter: true, key:true },
+  { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Organization', sortable: true, visible: true, filter: true, key:true },
   { field: fields.trustPolicyName, serverField: 'key#OS#name', label: 'Trust Policy Name', sortable: true, visible: true, filter: true, key:true },
   { field: fields.outboundSecurityRulesCount, label: 'Rules Count', sortable: true, visible: true },
   {

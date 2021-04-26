@@ -3,7 +3,7 @@ import MexMap from '../../hoc/mexmap/MexMap'
 import { Icon } from 'semantic-ui-react'
 import { Marker, Popup } from "react-leaflet";
 import { fields } from '../../services/model/format';
-import { CLUSTER_INST, PAGE_CLOUDLETS } from '../../constant';
+import { CLUSTER_INST, PAGE_APP_INSTANCES, PAGE_CLOUDLETS, PAGE_CLUSTER_INSTANCES } from '../../constant';
 import Legend from './MapLegend'
 import { mapLegendColor, renderSVG } from '../../hoc/mexmap/constant';
 
@@ -50,9 +50,9 @@ class ListMexMap extends React.Component {
         switch (id) {
             case PAGE_CLOUDLETS:
                 return data[fields.cloudletName]
-            case CLUSTER_INST:
+            case PAGE_CLUSTER_INSTANCES:
                 return data[fields.clusterName]
-            case 'AppInsts':
+            case PAGE_APP_INSTANCES:
                 return `${data[fields.appName]} [${data[fields.version]}]`
         }
     }

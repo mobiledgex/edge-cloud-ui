@@ -4,7 +4,7 @@ import MexForms, { MAIN_HEADER } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { fields, getOrganization, updateFieldData } from '../../../../services/model/format';
+import { DEVELOPER, fields, getOrganization, updateFieldData } from '../../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../../services/model/organization';
 import { updateAutoScalePolicy, createAutoScalePolicy } from '../../../../services/model/autoScalePolicy';
@@ -96,7 +96,7 @@ class AutoScalePolicyReg extends React.Component {
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Auto Scale Policy`, formType: MAIN_HEADER, visible: true },
         { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', tip: 'Select region where you want to create policy', update: { key: true } },
-        { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Name of the Organization that this policy belongs to', update: { key: true } },
+        { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Developer', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Name of the Organization that this policy belongs to', update: { key: true } },
         { field: fields.autoScalePolicyName, label: 'Auto Scale Policy Name', formType: 'Input', placeholder: 'Enter Auto Scale Policy Name', rules: { required: true }, visible: true, tip: 'Policy name', update: { key: true } },
         { field: fields.minimumNodes, label: 'Minimum Nodes', formType: 'Input', placeholder: 'Enter Minimum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['3'] }, dataValidateFunc: this.validateNodes, tip: 'Minimum number of cluster nodes' },
         { field: fields.maximumNodes, label: 'Maximum Nodes', formType: 'Input', placeholder: 'Enter Maximum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['4'] }, dataValidateFunc: this.validateNodes, tip: 'Maximum number of cluster nodes' },
@@ -206,7 +206,7 @@ class AutoScalePolicyReg extends React.Component {
             this.loadData(forms, data)
         }
         else {
-            this.organizationList = await getOrganizationList(this)
+            this.organizationList = await getOrganizationList(this, { type: DEVELOPER.toLowerCase() })
             this.loadData(forms)
         }
 

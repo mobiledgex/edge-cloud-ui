@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TableHead, TableRow, Checkbox, TableSortLabel, TableCell, makeStyles } from '@material-ui/core';
-import { Box } from './mex_dnd/Box'
-import { getUserRole } from '../../services/model/format';
 import { checkRole } from './ListConstant';
 
 const useStyles = makeStyles((theme) => ({
@@ -19,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-
 const ListHead = (props) => {
     const classes = useStyles()
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
@@ -30,7 +27,7 @@ const ListHead = (props) => {
     const headerLabel = (headCell)=>
     {
         return (
-            (props.requestInfo.grouping && headCell.group) ? <Box isDropped={props.isDropped} headCell={headCell}></Box> : headCell.label 
+            headCell.label 
         )
     }
 

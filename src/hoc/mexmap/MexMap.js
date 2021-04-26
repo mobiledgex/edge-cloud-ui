@@ -105,7 +105,7 @@ class MexMap extends React.Component {
                         style={{ zIndex: 1 }}
                     />
                     {this.renderMapControl(backswitch)}
-                    {renderMarker()}
+                    {renderMarker ? renderMarker() : null}
                 </Map>
             </div>
         )
