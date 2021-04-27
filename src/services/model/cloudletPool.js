@@ -1,9 +1,10 @@
 import * as formatter from './format'
-import { SHOW_CLOUDLET_POOL, CREATE_CLOUDLET_POOL, DELETE_CLOUDLET_POOL, UPDATE_CLOUDLET_POOL, SHOW_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_GRANTED, SHOW_POOL_ACCESS_PENDING } from './endPointTypes'
+import { SHOW_CLOUDLET_POOL, CREATE_CLOUDLET_POOL, DELETE_CLOUDLET_POOL, UPDATE_CLOUDLET_POOL, SHOW_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_GRANTED, SHOW_POOL_ACCESS_PENDING, SHOW_POOL_ACCESS_CONFIRMATION } from './endPointTypes'
 import * as constant from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
 import isEqual from 'lodash/isEqual';
 import omit from 'lodash/omit';
+import { labelFormatter } from '../../helper/formatter';
 
 const fields = formatter.fields;
 
@@ -18,7 +19,7 @@ export const keys = () => ([
     },
     {
         field: fields.organizations, label: 'Organizations',
-        keys: [{ field: fields.organizationName, label: 'Organization' }, { field: fields.grant, label: 'Access Confirmed' }]
+        keys: [{ field: fields.organizationName, label: 'Organization' }, { field: fields.status, label: 'Status' }]
     },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
@@ -50,7 +51,7 @@ const formatInvitation = (poolList, invitationList) => {
                 pool[fields.organizationCount] += 1
                 let organization = {}
                 organization[fields.organizationName] = invitation[fields.developerOrg]
-                organization[fields.grant] = invitation[fields.grant]
+                organization[fields.status] = labelFormatter.decision(invitation[fields.decision])
                 organizations.push(organization)
             }
         }
@@ -59,8 +60,8 @@ const formatInvitation = (poolList, invitationList) => {
 }
 
 export const multiDataRequest = (keys, mcList) => {
-    let poolList = [];
-    let pendingList = [];
+    let poolList = []
+    let invitationList = []
     let grantList = []
     for (let i = 0; i < mcList.length; i++) {
         let mc = mcList[i];
@@ -68,32 +69,27 @@ export const multiDataRequest = (keys, mcList) => {
         if (request.method === SHOW_CLOUDLET_POOL) {
             poolList = mc.response.data
         }
-        else if (request.method === SHOW_POOL_ACCESS_PENDING) {
-            pendingList = mc.response.data
+        else if (request.method === SHOW_POOL_ACCESS_INVITATION) {
+            invitationList = mc.response.data
         }
-        else if (request.method === SHOW_POOL_ACCESS_GRANTED) {
+        else if (request.method === SHOW_POOL_ACCESS_CONFIRMATION) {
             grantList = mc.response.data
         }
     }
 
-    let dataList = []
-
-    if (pendingList.length > 0) {
-        dataList = pendingList.map(pending => {
-            pending[fields.grant] = 'No'
-            return pending
-        })
-    }
-
-    if (grantList.length > 0) {
-        dataList = grantList.map(grant => {
-            grant[fields.grant] = 'Yes'
-            return grant
+    if (invitationList.length > 0) {
+        invitationList.forEach(invitation => {
+            for(let grant of grantList){
+                if (isEqual(omit(invitation, [fields.uuid, fields.decision]), omit(grant, [fields.uuid, fields.decision]))) {
+                    invitation[fields.decision] = grant[fields.decision] ? grant[fields.decision] : invitation[fields.decision]
+                    break;
+                }
+            }
         })
     }
 
     if (poolList && poolList.length > 0) {
-        formatInvitation(poolList, dataList)
+        formatInvitation(poolList, invitationList)
     }
     return poolList;
 }
