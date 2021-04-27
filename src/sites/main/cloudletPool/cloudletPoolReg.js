@@ -15,7 +15,7 @@ import { createConfirmation, createInvitation, deleteConfirmation, deleteInvitat
 
 import * as constant from '../../../constant';
 import { HELP_CLOUDLET_POOL_REG_3, HELP_CLOUDLET_POOL_REG_1 } from "../../../tutorial";
-import { ACTION_POOL_ACCESS_ADMIN_CONFIRM, ACTION_POOL_ACCESS_ADMIN_REMOVE } from '../../../container/Actions';
+import { ACTION_POOL_ACCESS_ADMIN_CONFIRM, ACTION_POOL_ACCESS_ADMIN_REMOVE, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../../../container/Actions';
 
 const stepData = [
     {
@@ -120,15 +120,17 @@ class CloudletPoolReg extends React.Component {
                 }
             })
             if (valid) {
-                let msg = this.action === ACTION_POOL_ACCESS_ADMIN_CONFIRM ? 'Confirmation' : 'Invitation'
+                let msg = 'created'
+                if (this.action === ACTION_POOL_ACCESS_ADMIN_CONFIRM || this.action === ACTION_POOL_ACCESS_DEVELOPER_REJECT) {
+                    msg = this.action === ACTION_POOL_ACCESS_ADMIN_CONFIRM ? 'accepted' : 'rejected'
+                }
+                this.props.handleAlertInfo('success', `${data['CloudletPoolOrg']} invitation ${msg}`)
                 if (mcList.length === 1) {
-                    this.props.handleAlertInfo('success', `${msg} created for organization ${data['Org']} successfully by cloudlet pool ${data['CloudletPoolOrg']}`)
                     if (isAdmin()) {
                         this.props.onClose(true)
                     }
                 }
                 else {
-                    this.props.handleAlertInfo('success', `${msg} created successfully by cloudlet pool ${data['CloudletPoolOrg']}`)
                     this.props.onClose(true)
                 }
             }
@@ -183,6 +185,10 @@ class CloudletPoolReg extends React.Component {
                         newData.decision = 'accept'
                         request = createConfirmation
                         break;
+                    case ACTION_POOL_ACCESS_DEVELOPER_REJECT:
+                        newData.decision = 'reject'
+                        request = createConfirmation
+                        break;
                     case constant.ADD_ORGANIZATION:
                         request = createInvitation
                         break;
@@ -224,36 +230,42 @@ class CloudletPoolReg extends React.Component {
                 this.organizationList = constant.filterData(selectedDatas, this.organizationList, fields.organizationName);
             }
         }
-        else if (this.action === ACTION_POOL_ACCESS_ADMIN_CONFIRM) {
-            errorMsg = 'No org to confirm'
+        else if (this.action === ACTION_POOL_ACCESS_ADMIN_CONFIRM || this.action === ACTION_POOL_ACCESS_DEVELOPER_REJECT) {
+            errorMsg = `No pending invitation`
+            
             this.organizationList = selectedDatas.filter(org => {
-                return org.grant === constant.NO
+                return org[fields.status] === 'Pending'
             })
         }
         else if (this.action === ACTION_POOL_ACCESS_ADMIN_REMOVE) {
             this.organizationList = selectedDatas.filter(org => {
-                return org.grant === constant.YES
+                return org[fields.status] !== 'Pending'
             })
         }
         else {
             this.organizationList = selectedDatas;
         }
         if (this.organizationList.length > 0 || isOperator()) {
-            let label = 'Invite'
+            let label = 'Create Invitation'
             switch (this.action) {
                 case ACTION_POOL_ACCESS_ADMIN_CONFIRM:
-                    label = 'Confirm'
+                    label = 'Accept Invitation'
+                    break;
+                case ACTION_POOL_ACCESS_DEVELOPER_REJECT:
+                    label = 'Reject Invitation'
                     break;
                 case constant.ADD_ORGANIZATION:
-                    label = 'Invite'
+                    label = 'Create Invitation'
                     break;
                 case ACTION_POOL_ACCESS_ADMIN_REMOVE:
+                    label = 'Withdraw Confirmation'
+                    break;
                 case constant.DELETE_ORGANIZATION:
-                    label = 'Remove'
+                    label = 'Withdraw Invitation'
                     break;
             }
             let step = [
-                { label: `${label} Organizations`, formType: MAIN_HEADER, visible: true },
+                { label: 'Organizations', formType: MAIN_HEADER, visible: true },
                 { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.poolName] },
                 { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: operator },
