@@ -45,23 +45,25 @@ class AutoProvPolicyReg extends React.Component {
     }
 
     getCloudletInfo = async (form, forms) => {
-        this.cloudletList = []
-        let region = undefined;
-        let organization = undefined;
-        for (let i = 0; i < form.dependentData.length; i++) {
-            let dependentForm = forms[form.dependentData[i].index]
-            if (dependentForm.field === fields.region) {
-                region = dependentForm.value
+        if (!this.isUpdate) {
+            this.cloudletList = []
+            let region = undefined;
+            let organization = undefined;
+            for (let i = 0; i < form.dependentData.length; i++) {
+                let dependentForm = forms[form.dependentData[i].index]
+                if (dependentForm.field === fields.region) {
+                    region = dependentForm.value
+                }
+                else if (dependentForm.field === fields.organizationName) {
+                    organization = dependentForm.value
+                }
             }
-            else if (dependentForm.field === fields.organizationName) {
-                organization = dependentForm.value
+            if (region && organization) {
+                this.cloudletList = await fetchCloudletData(this, { region: region, org: organization, type: DEVELOPER.toLowerCase() })
             }
+            this.updateUI(form)
+            this.updateState({ forms })
         }
-        if (region && organization && !this.isUpdate) {
-            this.cloudletList = await fetchCloudletData(this, { region: region, org: organization, type: DEVELOPER.toLowerCase() })
-        }
-        this.updateUI(form)
-        this.updateState({ forms })
     }
 
     regionValueChange = (currentForm, forms, isInit) => {
