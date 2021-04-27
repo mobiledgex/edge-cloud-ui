@@ -7,9 +7,9 @@ import { connect } from 'react-redux';
 import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 import * as serverData from '../../../services/model/serverData'
-import { keys, accessGranted, accessPending, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/privateCloudletAccess';
-import { ACTION_LABEL, ACTION_POOL_ACCESS_DEVELOPER, ACTION_WARNING } from '../../../container/Actions';
-import { uiFormatter } from '../../../helper/formatter';
+import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/privateCloudletAccess';
+import { ACTION_LABEL, ACTION_POOL_ACCESS_DEVELOPER, ACTION_POOL_ACCESS_DEVELOPER_REJECT, ACTION_WARNING } from '../../../container/Actions';
+import { labelFormatter, uiFormatter } from '../../../helper/formatter';
 
 class CloudletPoolList extends React.Component {
     constructor(props) {
@@ -23,17 +23,20 @@ class CloudletPoolList extends React.Component {
     onPrePoolAccess = (type, action, data) => {
         let isRemove = data[fields.confirm]
         if (type === ACTION_LABEL) {
-            return isRemove ? 'Reject' : 'Accept'
+            return isRemove ? 'Remove' : 'Accept'
         }
         else if (type === ACTION_WARNING) {
-            return `${isRemove ? 'reject invitation for' : 'accept invitation to'} cloudlet pool`
+            return `${isRemove ? 'remove invitation for' : 'accept invitation to'} cloudlet pool`
         }
     }
 
     onPoolAccess = async (action, data, callback) => {
         let isRemove = data[fields.confirm]
-        data[fields.decision] = 'accept'
-        let request = isRemove ? deleteConfirmation : createConfirmation
+        let request = deleteConfirmation
+        if (!isRemove) {
+            data[fields.decision] = action.id === ACTION_POOL_ACCESS_DEVELOPER_REJECT ? 'reject' : 'accept'
+            request = createConfirmation
+        }
         let mc = await serverData.sendRequest(this, request(data))
         if (mc && mc.response && mc.response.status === 200) {
             this.props.handleAlertInfo('success', `${isRemove ? 'Access Removed' : 'Access Granted'}`)
@@ -49,12 +52,13 @@ class CloudletPoolList extends React.Component {
     actionMenu = () => {
         return [
             { id: ACTION_POOL_ACCESS_DEVELOPER, label: this.onPrePoolAccess, warning: this.onPrePoolAccess, onClick: this.onPoolAccess },
+            { id: ACTION_POOL_ACCESS_DEVELOPER_REJECT, label: 'Reject', visible: this.onRejectVisible, warning:'reject invitation to cloudlet pool', onClick: this.onPoolAccess },
         ]
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.confirm) {
-            return uiFormatter.access(key, data, isDetail)
+        if (key.field === fields.decision) {
+            return labelFormatter.decision(data[key.field])
         }
     }
 
@@ -63,7 +67,7 @@ class CloudletPoolList extends React.Component {
             id: constant.PAGE_POOL_ACCESS,
             headerLabel: 'Cloudlet Pools',
             nameField: fields.poolName,
-            requestType: [accessGranted, accessPending],
+            requestType: [showConfirmation, showInvitation],
             sortBy: [fields.poolName],
             isRegion: true,
             selection: true,
