@@ -169,3 +169,15 @@ export const healthCheck = (id) => {
 export const showYesNo = (data) => {
     return data ? constant.YES : constant.NO
 }
+
+export const decision = (id) =>{
+    switch (id) {
+        case 'pending':
+            return 'Pending'
+        case 'accept':
+            return 'Accepted'
+        case 'reject':
+            return 'Rejected'
+
+    }
+}

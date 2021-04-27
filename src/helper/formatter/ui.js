@@ -127,13 +127,3 @@ export const lock = (key, data, isDetail, callback) => {
         )
     }
 }
-
-export const access = (key, data, isDetail) => {
-    let id = data[key.field]
-    if (isDetail) {
-        return labelFormatter.showYesNo(id)
-    }
-    else {
-        return <Icon style={{ color: `${id ? constant.COLOR_GREEN : constant.COLOR_RED}` }} name={`${id ? 'check' : 'close'}`} />
-    }
-}
