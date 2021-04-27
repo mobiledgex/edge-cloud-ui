@@ -9,7 +9,8 @@ export const keys = () => ([
     { field: fields.poolName, serverField: 'CloudletPool', label: 'Pool Name', sortable: true, visible: true, filter: true, key: true },
     { field: fields.operatorOrg, serverField: 'CloudletPoolOrg', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
     { field: fields.developerOrg, serverField: 'Org', label: 'Developer', sortable: true, visible: true, key: true },
-    { field: fields.confirm, label: 'Accepted', visible: true, format: true },
+    { field: fields.decision, serverField: 'Decision', label: 'Status', visible: true, format:true },
+    { field: fields.confirm, label: 'Accepted', detailView:false },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
@@ -32,11 +33,27 @@ export const createConfirmation = (data) => {
 
 export const showConfirmation = (data) => {
     data = data ? data : {}
+    if (formatter.getOrganization()) {
+        if (formatter.getUserRole().includes(DEVELOPER)) {
+            data['org'] = formatter.getOrganization()
+        }
+        else if (formatter.getUserRole().includes(OPERATOR)) {
+            data['cloudletpoolorg'] = formatter.getOrganization()
+        }
+    }
     return { method: SHOW_POOL_ACCESS_CONFIRMATION, data, keys: keys() }
 }
 
 export const showInvitation = (data) => {
     data = data ? data : {}
+    if (formatter.getOrganization()) {
+        if (formatter.getUserRole().includes(DEVELOPER)) {
+            data['org'] = formatter.getOrganization()
+        }
+        else if (formatter.getUserRole().includes(OPERATOR)) {
+            data['cloudletpoolorg'] = formatter.getOrganization()
+        }
+    }
     return { method: SHOW_POOL_ACCESS_INVITATION, data, keys: keys() }
 }
 
@@ -75,8 +92,8 @@ export const accessPending = (data) => {
 }
 
 export const multiDataRequest = (keys, mcList) => {
-    let pendingList = []
-    let grantedList = []
+    let invitationList = []
+    let confirmationList = []
     let dataList = []
     if (mcList && mcList.length > 0) {
         mcList.forEach(mc => {
@@ -84,30 +101,45 @@ export const multiDataRequest = (keys, mcList) => {
             let response = mc.response
             if (response && response.status === 200) {
                 let data = response.data
-                if (request.method === SHOW_POOL_ACCESS_GRANTED) {
-                    grantedList = data
+                if (request.method === SHOW_POOL_ACCESS_CONFIRMATION) {
+                    confirmationList = data
                 }
-                else if (request.method === SHOW_POOL_ACCESS_PENDING) {
-                    pendingList = data
+                else if (request.method === SHOW_POOL_ACCESS_INVITATION) {
+                    invitationList = data
                 }
             }
         })
 
-        if (pendingList.length > 0) {
-            pendingList.forEach(pending => {
-                dataList.push({ ...pending, confirm: false })
+        if (invitationList.length > 0) {
+            invitationList.forEach(invitation => {
+                dataList.push({ ...invitation, invite: true })
             })
         }
+        if (confirmationList.length > 0) {
+            confirmationList.forEach(confirmation => {
+                let exist = false
+                dataList.forEach(data => {
+                    if (data[fields.poolName] === confirmation[fields.poolName] && data[fields.developerOrg] === confirmation[fields.developerOrg] &&  data[fields.operatorOrg] === confirmation[fields.operatorOrg]) {
+                        data.confirm = true
+                        data.decision = confirmation[fields.decision]
+                        exist = true
+                    }
+                })
 
-        if (grantedList.length > 0) {
-            grantedList.forEach(granted => {
-                dataList.push({ ...granted, confirm: true })
+                if (!exist) {
+                    dataList.push({ ...confirmation, confirm: true })
+                }
             })
         }
     }
     return dataList
 }
 
+const customData =(value)=>{
+    value[fields.decision] = value[fields.decision] ? value[fields.decision] : 'pending'
+    return value
+}
+
 export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys())
+    return formatter.formatData(response, body, keys(), customData)
 }
