@@ -4,6 +4,7 @@ import { clientMetrics } from '../../../../../services/model/clientMetrics'
 import { sendRequest } from '../../services/service'
 import { withRouter } from 'react-router-dom'
 import { getOrganization, isAdmin } from '../../../../../services/model/format'
+import MexWorker from '../../services/client.worker.js'
 
 class MexAppClient extends React.Component {
 
@@ -14,6 +15,7 @@ class MexAppClient extends React.Component {
         }
         this._isMounted = false
         this.regions = props.regions
+        this.worker = new MexWorker();
     }
 
     validatData = (data) => {
@@ -48,40 +50,20 @@ class MexAppClient extends React.Component {
             endtime: range.endtime
         }, isAdmin() ? this.props.org : getOrganization(), this.props.isPrivate))
         if (mc && mc.response && mc.response.status === 200) {
-            let data = []
-            let findCloudletList = []
-            let registerClientList = []
-            let verifyLocationList = []
-            let labelList = []
-            let dataList = mc.response.data
-            if (dataList && dataList.length > 0) {
-                let region = mc.request.data.region
-                dataList.map(clientData => {
-                    let dataObject = clientData['dme-api'].values
-                    Object.keys(dataObject).map(key => {
-                        let findCloudlet = 0
-                        let registerClient = 0
-                        let verifyLocation = 0
-                        dataObject[key].map(data => {
-                            findCloudlet += data.includes('FindCloudlet') ? 1 : 0
-                            registerClient += data.includes('RegisterClient') ? 1 : 0
-                            verifyLocation += data.includes('VerifyLocation') ? 1 : 0
-                        })
-                        findCloudletList.push(findCloudlet)
-                        registerClientList.push(registerClient)
-                        verifyLocationList.push(verifyLocation)
-                        labelList.push(`${dataObject[key][0][7]} [${dataObject[key][0][18]}]`)
-                        data.push({ key: `${region} -  ${dataObject[key][0][7]} [${dataObject[key][0][18]}]`, findCloudlet, registerClient, verifyLocation })
+            this.worker.postMessage({
+                response: mc.response,
+                request: mc.request,
+                region: region
+            })
+            this.worker.addEventListener('message', event => {
+                if (this._isMounted) {
+                    this.setState(prevState => {
+                        let stackedData = prevState.stackedData
+                        stackedData[region] = event.data.data
+                        return { stackedData }
                     })
-                })
-            }
-            if (this._isMounted) {
-                this.setState(prevState => {
-                    let stackedData = prevState.stackedData
-                    stackedData[region] = data
-                    return { stackedData }
-                })
-            }
+                }
+            })
         }
     }
 
@@ -111,6 +93,7 @@ class MexAppClient extends React.Component {
     }
 
     componentWillUnmount() {
+        this.worker.terminate()
         this._isMounted = false
     }
 }
