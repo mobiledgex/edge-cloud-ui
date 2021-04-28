@@ -24,10 +24,11 @@ export const appInstanceKey = (data) => {
 }
 
 export const showAppInstClient = (data) => {
+    console.log('Rahul1234', data)
     let requestData = {
         region: data[fields.region],
         appinstclientkey: {
-            key: appInstanceKey(data)
+            app_inst_key: appInstanceKey(data)
         },
         selector: "*"
     }
