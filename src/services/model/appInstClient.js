@@ -27,7 +27,7 @@ export const showAppInstClient = (data) => {
     let requestData = {
         region: data[fields.region],
         appinstclientkey: {
-            key: appInstanceKey(data)
+            app_inst_key: appInstanceKey(data)
         },
         selector: "*"
     }
