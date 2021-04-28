@@ -157,7 +157,7 @@ class Monitoring extends React.Component {
         let selectedOrg = value[fields.organizationName]
         this.orgType = value[fields.type]
         if (this._isMounted) {
-            this.setState({ loading: true, showLoaded: false, selectedOrg }, () => {
+            this.setState({ loading: true, showLoaded: false, selectedOrg, rowSelected:0 }, () => {
                 this.setState({ avgData: this.defaultStructure() }, () => {
                     this.fetchShowData()
                 })
