@@ -15,7 +15,6 @@ class MexAppClient extends React.Component {
         }
         this._isMounted = false
         this.regions = props.regions
-        this.worker = new MexWorker();
     }
 
     validatData = (data) => {
@@ -50,12 +49,13 @@ class MexAppClient extends React.Component {
             endtime: range.endtime
         }, isAdmin() ? this.props.org : getOrganization(), this.props.isPrivate))
         if (mc && mc.response && mc.response.status === 200) {
-            this.worker.postMessage({
+            let worker = new MexWorker();
+            worker.postMessage({
                 response: mc.response,
                 request: mc.request,
                 region: region
             })
-            this.worker.addEventListener('message', event => {
+            worker.addEventListener('message', event => {
                 if (this._isMounted) {
                     this.setState(prevState => {
                         let stackedData = prevState.stackedData
@@ -63,6 +63,7 @@ class MexAppClient extends React.Component {
                         return { stackedData }
                     })
                 }
+                worker.terminate()
             })
         }
     }
@@ -93,7 +94,6 @@ class MexAppClient extends React.Component {
     }
 
     componentWillUnmount() {
-        this.worker.terminate()
         this._isMounted = false
     }
 }
