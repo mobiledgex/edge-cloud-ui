@@ -20,7 +20,7 @@ import { prefixSearchPref, showMapPref } from '../utils/sharedPreferences_util';
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import ListMexMap from './map/ListMexMap'
 import cloneDeep from 'lodash/cloneDeep';
-import { ACTION_DELETE, ACTION_EDGE_BOX_ENABLE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_REBOOT, ACTION_UPDATE, ACTION_UPGRADE, ACTION_WARNING, ACTION_POOL_ACCESS_DEVELOPER, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from './Actions';
+import { ACTION_DELETE, ACTION_EDGE_BOX_ENABLE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_REBOOT, ACTION_UPGRADE, ACTION_WARNING, ACTION_POOL_ACCESS_DEVELOPER, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../constant/actions';
 
 class MexListView extends React.Component {
     constructor(props) {

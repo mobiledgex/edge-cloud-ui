@@ -9,7 +9,7 @@ import { keys, showApps, deleteApp } from '../../../services/model/app';
 import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
 import { HELP_APP_LIST } from "../../../tutorial";
-import { ACTION_DELETE, ACTION_UPDATE } from '../../../container/Actions';
+import { ACTION_DELETE, ACTION_UPDATE } from '../../../constant/actions';
 import { labelFormatter } from '../../../helper/formatter';
 class AppList extends React.Component {
     constructor(props) {

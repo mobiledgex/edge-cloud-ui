@@ -15,7 +15,7 @@ const processData = (worker) => {
                 registerClient += data.includes('RegisterClient') ? 1 : 0
                 verifyLocation += data.includes('VerifyLocation') ? 1 : 0
             })
-            data.push({ key: `${region} -  ${dataObject[key][0][7]} [${dataObject[key][0][18]}]`, findCloudlet, registerClient, verifyLocation })
+            data.push({ key: `${region} -  ${dataObject[key][0][3]} [${dataObject[key][0][4]}]`, findCloudlet, registerClient, verifyLocation })
         })
     })
     self.postMessage({ data })

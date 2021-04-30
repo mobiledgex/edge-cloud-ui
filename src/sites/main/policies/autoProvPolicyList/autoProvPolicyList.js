@@ -13,7 +13,7 @@ import { showApps } from '../../../../services/model/app';
 //list
 import MexListView from '../../../../container/MexListView';
 import { HELP_POLICY_LIST } from "../../../../tutorial";
-import { ACTION_DELETE, ACTION_UPDATE } from '../../../../container/Actions';
+import { ACTION_DELETE, ACTION_UPDATE } from '../../../../constant/actions';
 class AutoProvPolicy extends React.Component {
     constructor(props) {
         super(props);

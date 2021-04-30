@@ -14,7 +14,7 @@ import * as shared from '../../../services/model/shared';
 import { Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core';
 import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import { ACTION_DELETE, ACTION_DISABLE, ACTION_EDGE_BOX_ENABLE, ACTION_LABEL, ACTION_UPDATE, ACTION_WARNING } from '../../../container/Actions';
+import { ACTION_DELETE, ACTION_DISABLE, ACTION_EDGE_BOX_ENABLE, ACTION_LABEL, ACTION_UPDATE, ACTION_WARNING } from '../../../constant/actions';
 import { sendRequest } from '../monitoring/services/service'
 import { LS_ORGANIZATION_INFO } from '../../../helper/ls';
 import {uiFormatter} from '../../../helper/formatter'

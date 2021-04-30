@@ -3,7 +3,7 @@ import MexMap from '../../hoc/mexmap/MexMap'
 import { Icon } from 'semantic-ui-react'
 import { Marker, Popup } from "react-leaflet";
 import { fields } from '../../services/model/format';
-import { CLUSTER_INST, PAGE_APP_INSTANCES, PAGE_CLOUDLETS, PAGE_CLUSTER_INSTANCES } from '../../constant';
+import { PAGE_APP_INSTANCES, PAGE_CLOUDLETS, PAGE_CLUSTER_INSTANCES } from '../../constant';
 import Legend from './MapLegend'
 import { mapLegendColor, renderSVG } from '../../hoc/mexmap/constant';
 

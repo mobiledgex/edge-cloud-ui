@@ -7,7 +7,7 @@ import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showFlavors, deleteFlavor } from '../../../services/model/flavor';
 import FlavorReg from './flavorReg';
 import { HELP_FLAVOR_LIST } from "../../../tutorial";
-import { ACTION_DELETE } from '../../../container/Actions';
+import { ACTION_DELETE } from '../../../constant/actions';
 
 class FlavorList extends React.Component {
     constructor(props) {

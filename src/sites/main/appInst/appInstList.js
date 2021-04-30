@@ -14,7 +14,7 @@ import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog } from '@material-ui/core';
 import { HELP_APP_INST_LIST } from "../../../tutorial";
-import { ACTION_DELETE, ACTION_UPDATE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_TERMINAL, ACTION_UPGRADE, ACTION_REFRESH, ACTION_REBOOT } from '../../../container/Actions';
+import { ACTION_DELETE, ACTION_UPDATE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_TERMINAL, ACTION_UPGRADE, ACTION_REFRESH, ACTION_REBOOT } from '../../../constant/actions';
 import * as serverData from '../../../services/model/serverData'
 import { idFormatter, labelFormatter, uiFormatter } from '../../../helper/formatter';
 class AppInstList extends React.Component {

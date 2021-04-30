@@ -9,7 +9,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { getUserRole } from '../../services/model/format'
 import { StyledTableRow, StyledTableCell, stableSort, getComparator } from './ListConstant'
-import { ACTION_DISABLE, ACTION_LABEL } from '../../container/Actions'
+import { ACTION_DISABLE, ACTION_LABEL } from '../../constant/actions'
 
 const canEdit = (viewerEdit, action) => {
     let valid = true

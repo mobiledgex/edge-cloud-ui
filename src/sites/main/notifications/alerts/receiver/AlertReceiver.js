@@ -13,7 +13,7 @@ import InfoOutlineIcon from '@material-ui/icons/InfoOutlined';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import { Icon } from 'semantic-ui-react';
 import { HELP_ALERTS } from '../../../../../tutorial';
-import { ACTION_DELETE } from '../../../../../container/Actions';
+import { ACTION_DELETE } from '../../../../../constant/actions';
 class AlertList extends React.Component {
     constructor(props) {
         super(props);
