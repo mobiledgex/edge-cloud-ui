@@ -56,8 +56,6 @@ class MexAppClient extends React.Component {
                 region: region
             })
             worker.addEventListener('message', event => {
-
-    
                 if (this._isMounted) {
                     this.setState(prevState => {
                         let stackedData = prevState.stackedData
