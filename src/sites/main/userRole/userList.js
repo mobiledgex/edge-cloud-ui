@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
 import { keys, showUsers, deleteUser } from '../../../services/model/users';
 import { HELP_USER_ROLES } from '../../../tutorial';
-import { ACTION_DELETE } from '../../../container/Actions';
+import { ACTION_DELETE } from '../../../constant/actions';
 
 class UserList extends React.Component {
     constructor(props) {

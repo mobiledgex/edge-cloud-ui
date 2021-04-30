@@ -2,7 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import SearchFilter from '../SearchFilter'
+import SearchFilter from '../../../../hoc/filter/SearchFilter'
 import { Paper, Tabs, Tab, IconButton, LinearProgress, Divider } from '@material-ui/core';
 
 import * as dateUtil from '../../../../utils/date_util'
@@ -11,7 +11,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import MexCalendar from '../../../../hoc/calendar/MexCalendar'
 import { fields, isAdmin } from '../../../../services/model/format';
-import MexSelect from '../../../../hoc/forms/MexSelect'
+import SelectMenu from '../../../../hoc/selectMenu/SelectMenu'
 import { FixedSizeList } from 'react-window';
 import Help from '../auditLog/Help'
 
@@ -220,7 +220,7 @@ class EventLog extends React.Component {
     customRender = () => {
         return (
             isAdmin() ? <div className='calendar-dropdown-select'>
-                <MexSelect form={{ field: fields.organizationName, label: 'Organization', placeholder: 'Select Organization', options: this.props.organizationList, value: this.props.selectedOrg, clear: false }} onChange={this.props.onOrgChange} />
+                <SelectMenu search={true} labelKey={fields.organizationName} dataList={this.props.organizationList} onChange={this.props.onOrgChange} placeholder='Select Organization'/>
             </div> : null)
     }
 

@@ -8,7 +8,7 @@ import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 import * as serverData from '../../../services/model/serverData'
 import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/privateCloudletAccess';
-import { ACTION_LABEL, ACTION_POOL_ACCESS_DEVELOPER, ACTION_POOL_ACCESS_DEVELOPER_REJECT, ACTION_WARNING } from '../../../container/Actions';
+import {ACTION_LABEL, ACTION_POOL_ACCESS_DEVELOPER, ACTION_POOL_ACCESS_DEVELOPER_REJECT, ACTION_WARNING} from '../../../constant/actions'
 import { labelFormatter, uiFormatter } from '../../../helper/formatter';
 
 class CloudletPoolList extends React.Component {

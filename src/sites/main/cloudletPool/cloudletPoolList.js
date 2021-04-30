@@ -10,7 +10,7 @@ import { keys, showCloudletPools, deleteCloudletPool, multiDataRequest } from '.
 import CloudletPoolReg from './cloudletPoolReg';
 import {HELP_CLOUDLET_POOL_LIST} from "../../../tutorial";
 import { showConfirmation, showInvitation } from '../../../services/model/privateCloudletAccess';
-import { ACTION_POOL_ACCESS_ADMIN_CONFIRM, ACTION_POOL_ACCESS_ADMIN_REMOVE, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../../../container/Actions';
+import { ACTION_POOL_ACCESS_ADMIN_CONFIRM, ACTION_POOL_ACCESS_ADMIN_REMOVE, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../../../constant/actions';
 class CloudletPoolList extends React.Component {
     constructor(props) {
         super(props);

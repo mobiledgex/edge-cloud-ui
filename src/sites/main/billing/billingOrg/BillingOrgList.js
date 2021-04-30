@@ -13,7 +13,7 @@ import Invoices from '../invoices/Invoices';
 import Reg from './BillingOrgReg';
 
 import {validateRole, operatorRoles, BILLING_TYPE_PARENT, PAGE_BILLING_ORG} from '../../../../constant'
-import { ACTION_BILLING_ADD_CHILD, ACTION_BILLING_REMOVE_CHILD, ACTION_DELETE } from '../../../../container/Actions';
+import { ACTION_BILLING_ADD_CHILD, ACTION_BILLING_REMOVE_CHILD, ACTION_DELETE } from '../../../../constant/actions';
 class BillingOrg extends React.Component {
     constructor(props) {
         super(props);

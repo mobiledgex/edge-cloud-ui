@@ -9,7 +9,7 @@ import { keys, showAccounts, deleteAccount } from '../../../services/model/accou
 import { Button, Icon } from 'semantic-ui-react';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import * as serverData from '../../../services/model/serverData'
-import { ACTION_DELETE } from '../../../container/Actions';
+import { ACTION_DELETE } from '../../../constant/actions';
 import { uiFormatter } from '../../../helper/formatter';
 
 class AccountList extends React.Component {

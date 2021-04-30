@@ -10,7 +10,7 @@ import { keys, fields, showTrustPolicies, deleteTrustPolicy, multiDataRequest } 
 import { showCloudlets } from '../../../../services/model/cloudlet';
 import { HELP_TRUST_POLICY } from "../../../../tutorial";
 import { validateRole, operatorRoles } from '../../../../constant';
-import { ACTION_DELETE, ACTION_UPDATE } from '../../../../container/Actions';
+import { ACTION_DELETE, ACTION_UPDATE } from '../../../../constant/actions';
 
 class TrustPolicy extends React.Component {
     constructor(props) {

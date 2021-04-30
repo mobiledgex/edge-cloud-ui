@@ -163,25 +163,30 @@ class GlobalUsageLog extends React.Component {
         if (this._isMounted) { this.setState({ loading: false }) }
     }
 
-    onOrganizationChange = (form, value) => {
-        if (this._isMounted) {
-            this.setState({ liveData: {} })
+    onOrganizationChange = (orgList) => {
+        if (orgList.length > 0) {
+            let org = orgList[0]
+            if (this._isMounted) {
+                this.setState({ liveData: {} })
+            }
+            clearInterval(this.intervalId)
+            this.endRange = dateUtil.currentUTCTime()
+            this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
+            this.selectedOrg = org[fields.organizationName]
+            this.eventLogData(this.startRange, this.endRange, true)
         }
-        clearInterval(this.intervalId)
-        this.endRange = dateUtil.currentUTCTime()
-        this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
-        this.selectedOrg = value
-        this.eventLogData(this.startRange, this.endRange, true)
     }
 
     eventLogData = async (starttime, endtime, isInit) => {
         let regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        let org = getOrganization() ? getOrganization() : this.selectedOrg
+        if(org)
+        {
         let userRole = getUserRole()
         if (userRole && regions && regions.length > 0) {
             let requestList = []
             regions.map(region => {
                 let data = {}
-                let org = getOrganization() ? getOrganization() : this.selectedOrg
                 data[fields.region] = region
                 data[fields.starttime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
                 data[fields.endtime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
@@ -208,7 +213,7 @@ class GlobalUsageLog extends React.Component {
                         this.eventLogData(this.startRange, this.endRange)
                     }
                 }, 60 * 1000);
-            }
+            }}
         }
     }
 
@@ -243,7 +248,6 @@ class GlobalUsageLog extends React.Component {
     orgResponse = (mc) => {
         if (mc && mc.response && mc.response.status === 200) {
             this.organizationList = sortBy(mc.response.data, [item => item[fields.organizationName]], ['asc']);
-            this.selectedOrg = this.organizationList[0][fields.organizationName]
             this.endRange = dateUtil.currentUTCTime()
             this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
             if (this._isMounted) {
