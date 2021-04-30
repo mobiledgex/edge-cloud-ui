@@ -16,7 +16,7 @@ import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 import { getCloudletManifest, revokeAccessKey } from '../../../services/model/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
-import { ACTION_DISABLE, ACTION_DELETE, ACTION_UPDATE, ACTION_MANIFEST } from '../../../container/Actions';
+import { ACTION_DISABLE, ACTION_DELETE, ACTION_UPDATE, ACTION_MANIFEST } from '../../../constant/actions';
 import { labelFormatter, uiFormatter } from '../../../helper/formatter';
 class CloudletList extends React.Component {
     constructor(props) {

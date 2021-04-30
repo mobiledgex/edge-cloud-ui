@@ -146,8 +146,6 @@ class MexCalendar extends React.Component {
 
     }
 
-    
-
     render() {
         const { dataList, groupList } = this.props
         const {calendarDates} = this.state

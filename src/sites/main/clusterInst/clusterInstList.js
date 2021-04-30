@@ -15,7 +15,7 @@ import MexListView from '../../../container/MexListView';
 //reg
 import ClusterInstReg from './clusterInstReg';
 import { HELP_CLUSTER_INST_LIST } from "../../../tutorial";
-import { ACTION_DELETE, ACTION_UPDATE } from '../../../container/Actions';
+import { ACTION_DELETE, ACTION_UPDATE } from '../../../constant/actions';
 import { labelFormatter } from '../../../helper/formatter';
 
 class ClusterInstView extends React.Component {

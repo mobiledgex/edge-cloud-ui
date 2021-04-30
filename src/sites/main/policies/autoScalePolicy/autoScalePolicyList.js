@@ -8,7 +8,7 @@ import * as actions from '../../../../actions';
 import AutoScalePolicyReg from './autoScalePolicyReg'
 import { keys, fields, showAutoScalePolicies, deleteAutoScalePolicy } from '../../../../services/model/autoScalePolicy';
 import {HELP_SCALE_POLICY} from "../../../../tutorial";
-import { ACTION_DELETE, ACTION_UPDATE } from '../../../../container/Actions';
+import { ACTION_DELETE, ACTION_UPDATE } from '../../../../constant/actions';
 class AutoScalePolicy extends React.Component {
     constructor(props) {
         super(props);

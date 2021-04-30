@@ -1,10 +1,10 @@
-import { Box, Checkbox, IconButton, ListItem, ListItemIcon, ListItemText, Menu, Tooltip } from '@material-ui/core'
+import { Box, Checkbox, IconButton, ListItem, ListItemIcon, ListItemText, Menu, Tooltip, Typography } from '@material-ui/core'
 import cloneDeep from 'lodash/cloneDeep'
 import React, { useEffect } from 'react'
 import { validateRole } from '../helper/Constant'
 import CheckIcon from '@material-ui/icons/Check';
 import { Icon } from 'semantic-ui-react';
-import SearchFilter from '../../events/SearchFilter'
+import SearchFilter from '../../../../hoc/filter/SearchFilter'
 
 const fetchArray = (props) => {
     return props.data.map(data => { return props.field ? data[props.field] : data })
@@ -71,19 +71,20 @@ const MonitoringMenu = (props) => {
             if (itemData.toLowerCase().includes(filterText)) {
                 let valid = item.role ? validateRole(item.role) : true
                 let selectedValue = props.value ? props.value : value
-                return valid ? <ListItem key={i} role={undefined} dense button onClick={() => { onChange(props.field ? item[props.field] : item) }}>
-                    {props.multiple ?
-                        <ListItemIcon>
-                            <Checkbox
-                                edge="start"
-                                checked={selectedValue.includes(props.field ? item[props.field] : item)}
-                                tabIndex={-1}
-                                disableRipple
-                                inputProps={{ 'aria-labelledby': 1 }}
-                            />
-                        </ListItemIcon> : null}
-                    <ListItemText id={1} primary={itemData} />{props.showTick && selectedValue === item ? <CheckIcon style={{ marginLeft: 10 }} /> : null}
-                </ListItem> : null
+                return valid ?
+                    <ListItem key={i} role={undefined} dense button onClick={() => { onChange(props.field ? item[props.field] : item) }}>
+                        {props.multiple ?
+                            <ListItemIcon>
+                                <Checkbox
+                                    edge="start"
+                                    checked={selectedValue.includes(props.field ? item[props.field] : item)}
+                                    tabIndex={-1}
+                                    disableRipple
+                                    inputProps={{ 'aria-labelledby': 1 }}
+                                />
+                            </ListItemIcon> : null}
+                        <ListItemText id={1} primary={<Typography style={{ maxWidth: 200, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{itemData}</Typography>} />{props.showTick && selectedValue === item ? <CheckIcon style={{ marginLeft: 10 }} /> : null}
+                    </ListItem> : null
             }
         })
     }

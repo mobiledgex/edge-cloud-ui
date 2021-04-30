@@ -12,6 +12,7 @@ import { cloudGreenIcon, mobileIcon } from "../../../../../hoc/mexmap/MapPropert
 import MexMap from '../../../../../hoc/mexmap/MexMap'
 import MexCurve from '../../../../../hoc/mexmap/utils/MexCurve'
 import { Dialog } from '@material-ui/core';
+import Legend from './MapLegend'
 
 const DEFAULT_ZOOM = 2
 class AppMexMap extends React.Component {
@@ -33,8 +34,7 @@ class AppMexMap extends React.Component {
         let location = data[fields.cloudletLocation]
         // this.popup.current.leafletElement.options.leaflet.map.closePopup();
         let keyData = data
-        let main = { cloudletLocation: keyData[fields.cloudletLocation] }
-        main[keyData[fields.cloudletName]] = [data]
+        let main = { cloudletLocation: keyData[fields.cloudletLocation], data }
         this.setState({ mapData: { main }, polyline: [[location.latitude, location.longitude]], curveColor: keyData.color, backswitch: true })
         this.sendWSRequest(showAppInstClient(keyData))
     }
@@ -152,7 +152,6 @@ class AppMexMap extends React.Component {
                             {
                                 key === 'main' ?
                                     <Marker icon={mobileIcon} position={[lat, lon]}>
-                                        {this.renderMarkerPopup(mapData[key])}
                                     </Marker> :
                                     <MexCircleMarker coords={{ lat: lat, lng: lon }} label={mapData[key]['label']} popupData={mapData[key].devices} />
                             }
@@ -163,6 +162,7 @@ class AppMexMap extends React.Component {
                 {showDevices && polyline.length > 0 ?
                     <MexCurve data={polyline} color={curveColor} /> : null
                 }
+                <Legend data={mapData}/>
             </div> : null
     }
 
@@ -195,7 +195,7 @@ class AppMexMap extends React.Component {
             <React.Fragment>
                 {showDevices ?
                     <Dialog fullScreen open={showDevices} onClose={this.resetMap} disableEscapeKeyDown={true}>
-                        <MexMap renderMarker={this.renderDeviceMarker} back={this.resetMap} zoom={DEFAULT_ZOOM} backswitch={backswitch} region={region} fullscreen={showDevices} />
+                        <MexMap renderMarker={this.renderDeviceMarker} back={this.resetMap} zoom={3} backswitch={backswitch} region={region} fullscreen={showDevices} />
                     </Dialog> :
                     <MexMap renderMarker={this.renderMarker} back={this.resetMap} zoom={DEFAULT_ZOOM} backswitch={backswitch} region={region} />
                 }

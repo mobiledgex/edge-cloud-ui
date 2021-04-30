@@ -6,7 +6,7 @@ import MexForms, { SELECT, INPUT, MAIN_HEADER, BUTTON, DUALLIST } from '../../..
 import { Grid } from '@material-ui/core'
 import { fields, getOrganization } from '../../../../services/model/format';
 import { DEVELOPER, validatePhone } from '../../../../constant';
-import { ACTION_BILLING_REMOVE_CHILD, ACTION_BILLING_ADD_CHILD } from '../../../../container/Actions';
+import { ACTION_BILLING_REMOVE_CHILD, ACTION_BILLING_ADD_CHILD } from '../../../../constant/actions';
 import { resetFormValue } from '../../../../hoc/forms/helper/constant';
 import { createBillingOrg, addBillingChild, removeBillingChild } from '../../../../services/model/billingOrg';
 import { getOrganizationList } from '../../../../services/model/organization';

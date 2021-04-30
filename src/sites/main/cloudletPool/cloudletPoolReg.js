@@ -15,7 +15,7 @@ import { createConfirmation, createInvitation, deleteConfirmation, deleteInvitat
 
 import * as constant from '../../../constant';
 import { HELP_CLOUDLET_POOL_REG_3, HELP_CLOUDLET_POOL_REG_1 } from "../../../tutorial";
-import { ACTION_POOL_ACCESS_ADMIN_CONFIRM, ACTION_POOL_ACCESS_ADMIN_REMOVE, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../../../container/Actions';
+import { ACTION_POOL_ACCESS_ADMIN_CONFIRM, ACTION_POOL_ACCESS_ADMIN_REMOVE, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../../../constant/actions';
 
 const stepData = [
     {

@@ -85,7 +85,6 @@ class MexAppClient extends React.Component {
         }
     }
 
-
     componentDidMount() {
         this._isMounted = true
         if (!isAdmin() || this.props.org) {

@@ -7,8 +7,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import SelectMenu from './selectMenu/SelectMenu'
-import { Icon } from 'semantic-ui-react';
+import SelectMenu from '../hoc/selectMenu/SelectMenu'
 
 export const REGION_ALL = 1;
 export const ACTION_REGION = 1
