@@ -4,13 +4,13 @@ import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
-import { edgeboxOnly, getOrganization, isOperator } from '../../../reducers/organizationInfo'
+import { redux_org } from '../../../helper/reduxData'
 
-import { fields, isAdmin } from '../../../services/model/format';
+import { fields } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
 import CloudletReg from './cloudletReg';
-import { validateRole, operatorRoles, INFRA_API_ACCESS_RESTRICTED, PAGE_CLOUDLETS, OPERATOR } from '../../../constant'
+import { operatorRoles, INFRA_API_ACCESS_RESTRICTED, PAGE_CLOUDLETS } from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
@@ -18,6 +18,8 @@ import { getCloudletManifest, revokeAccessKey } from '../../../services/model/cl
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import { ACTION_DISABLE, ACTION_DELETE, ACTION_UPDATE, ACTION_MANIFEST } from '../../../constant/actions';
 import { labelFormatter, uiFormatter } from '../../../helper/formatter';
+import { validateRole } from '../../../constant/role';
+import { equal } from '../../../constant/compare';
 class CloudletList extends React.Component {
     constructor(props) {
         super(props);
@@ -73,7 +75,7 @@ class CloudletList extends React.Component {
 
     onPreAction = (type, action, data) => {
         if (type === ACTION_DISABLE) {
-            let disable = isAdmin() || data[fields.operatorName] === getOrganization(this)
+            let disable = redux_org.isAdmin(this) || data[fields.operatorName] === redux_org.orgName(this)
             return !disable
         }
     }
@@ -97,7 +99,7 @@ class CloudletList extends React.Component {
     }
 
     canAdd = () => {
-        if (validateRole(operatorRoles) && !(isOperator(this) && edgeboxOnly(this))) {
+        if (validateRole(operatorRoles, this.props.organizationInfo) && !(redux_org.isOperator(this) && redux_org.edgeboxOnly(this))) {
             return this.onAdd
         }
     }
@@ -163,6 +165,13 @@ class CloudletList extends React.Component {
                 this.onCloudletManifest(undefined, data)
             }
         }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if(nextProps.organizationInfo && !equal(nextProps.organizationInfo, this.props.organizationInfo)){
+            return true
+        }
+        return false
     }
 
     render() {
