@@ -1,5 +1,5 @@
 import React from 'react';
-import MexListView from '../../../container/MexListView';
+import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
@@ -20,7 +20,6 @@ import { labelFormatter, uiFormatter } from '../../../helper/formatter';
 
 import { ACTION_DISABLE, ACTION_DELETE, ACTION_UPDATE, ACTION_MANIFEST } from '../../../constant/actions';
 import { validateRole } from '../../../constant/role';
-import { equal } from '../../../constant/compare';
 class CloudletList extends React.Component {
     constructor(props) {
         super(props);
@@ -168,23 +167,20 @@ class CloudletList extends React.Component {
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.organizationInfo && !equal(nextProps.organizationInfo, this.props.organizationInfo)) {
-            return true
+    resetView = ()=>{
+        if(this._isMounted)
+        {
+            this.setState({currentView:null})
         }
-        return false
     }
 
     render() {
-        const { organizationInfo } = this.props
+        const { currentView } = this.state
         return (
-            organizationInfo ?
-                this.state.currentView ? this.state.currentView :
-                    <React.Fragment>
-                        <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
-                        <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
-                    </React.Fragment> :
-                null
+            <React.Fragment>
+                <DataView currentView={currentView} resetView={this.resetView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+                <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
+            </React.Fragment>
         )
     }
 
