@@ -16,8 +16,9 @@ import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 import { getCloudletManifest, revokeAccessKey } from '../../../services/model/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
-import { ACTION_DISABLE, ACTION_DELETE, ACTION_UPDATE, ACTION_MANIFEST } from '../../../constant/actions';
 import { labelFormatter, uiFormatter } from '../../../helper/formatter';
+
+import { ACTION_DISABLE, ACTION_DELETE, ACTION_UPDATE, ACTION_MANIFEST } from '../../../constant/actions';
 import { validateRole } from '../../../constant/role';
 import { equal } from '../../../constant/compare';
 class CloudletList extends React.Component {
@@ -132,11 +133,11 @@ class CloudletList extends React.Component {
             onAdd: this.canAdd(),
             viewMode: HELP_CLOUDLET_LIST,
             grouping: true,
-            formatData:this.dataFormatter
+            formatData: this.dataFormatter
         })
     }
 
-    
+
 
     showProgress = (data, isDetailView) => {
         let progressRender = null
@@ -168,19 +169,22 @@ class CloudletList extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if(nextProps.organizationInfo && !equal(nextProps.organizationInfo, this.props.organizationInfo)){
+        if (nextProps.organizationInfo && !equal(nextProps.organizationInfo, this.props.organizationInfo)) {
             return true
         }
         return false
     }
 
     render() {
+        const { organizationInfo } = this.props
         return (
-            this.state.currentView ? this.state.currentView :
-                <React.Fragment>
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
-                    <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
-                </React.Fragment>
+            organizationInfo ?
+                this.state.currentView ? this.state.currentView :
+                    <React.Fragment>
+                        <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+                        <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
+                    </React.Fragment> :
+                null
         )
     }
 
