@@ -146,10 +146,16 @@ class AccountList extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(AccountList));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(AccountList));
