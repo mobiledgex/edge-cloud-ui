@@ -1,16 +1,16 @@
 import React from 'react';
-import MexListView from '../../../container/MexListView';
+import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 import { keys, showAccounts, deleteAccount } from '../../../services/model/accounts';
-import { Button, Icon } from 'semantic-ui-react';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import * as serverData from '../../../services/model/serverData'
 import { ACTION_DELETE } from '../../../constant/actions';
 import { uiFormatter } from '../../../helper/formatter';
+import { PAGE_ACCOUNTS } from '../../../constant';
 
 class AccountList extends React.Component {
     constructor(props) {
@@ -21,13 +21,21 @@ class AccountList extends React.Component {
             dialogMessageInfo: {},
             refreshViewToggle: false
         }
-
+        this._isMounted = false
         this.action = '';
         this.data = {}
         this.keys = keys();
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
 
+    resetView = () => {
+        this.updateState({ currentView: null })
+    }
 
     /**Action menu block */
     deleteVisible = (data) => {
@@ -60,7 +68,7 @@ class AccountList extends React.Component {
         let requestData = { email: data[fields.email], locked: locked }
         if (await serverData.settingLock(this, requestData)) {
             data[fields.locked] = locked
-            this.setState({ refreshViewToggle: !this.state.refreshViewToggle })
+            this.updateState({ refreshViewToggle: !this.state.refreshViewToggle })
         }
     }
 
@@ -73,7 +81,7 @@ class AccountList extends React.Component {
 
     onDialogClose = (valid) => {
         let action = this.state.dialogMessageInfo.action;
-        this.setState({ dialogMessageInfo: {} })
+        this.updateState({ dialogMessageInfo: {} })
         if (valid) {
             switch (action.field) {
                 case fields.emailVerified:
@@ -84,7 +92,7 @@ class AccountList extends React.Component {
     }
 
     sendEmailWarning = (username, email) => {
-        this.setState({
+        this.updateState({
             dialogMessageInfo: {
                 message: `Are you sure you want to send a verification email to ${email}?`,
                 action: {
@@ -107,7 +115,7 @@ class AccountList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: 'accounts',
+            id: PAGE_ACCOUNTS,
             headerLabel: 'Accounts',
             nameField: fields.username,
             selection: true,
@@ -120,13 +128,21 @@ class AccountList extends React.Component {
     }
 
     render() {
+        const {currentView } = this.state
         return (
-            this.state.currentView ? this.state.currentView :
-                <div style={{ width: '100%', height: '100%' }}>
-                    <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} refreshToggle={this.state.refreshViewToggle} groupActionMenu={this.groupActionMenu} />
-                </div>
+            <React.Fragment>
+                <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
+                <DataView id={PAGE_ACCOUNTS} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} refreshToggle={this.state.refreshViewToggle} groupActionMenu={this.groupActionMenu} />
+            </React.Fragment>
         )
+    }
+
+    componentDidMount(){
+        this._isMounted = true
+    }
+
+    componentWillUnmount(){
+        this._isMounted = false
     }
 };
 

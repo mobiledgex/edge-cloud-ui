@@ -1,10 +1,10 @@
 import React from 'react';
-import MexListView from '../../../container/MexListView';
+import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
-import { fields, getUserRole, isAdmin } from '../../../services/model/format';
+import { fields } from '../../../services/model/format';
 import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst } from '../../../services/model/appInstance';
 import { showApps } from '../../../services/model/app';
 import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
@@ -17,6 +17,7 @@ import { HELP_APP_INST_LIST } from "../../../tutorial";
 import { ACTION_DELETE, ACTION_UPDATE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_TERMINAL, ACTION_UPGRADE, ACTION_REFRESH, ACTION_REBOOT } from '../../../constant/actions';
 import * as serverData from '../../../services/model/serverData'
 import { idFormatter, labelFormatter, uiFormatter } from '../../../helper/formatter';
+import { redux_org } from '../../../helper/reduxData';
 class AppInstList extends React.Component {
     constructor(props) {
         super(props);
@@ -33,15 +34,23 @@ class AppInstList extends React.Component {
         this.multiStepperHeader = [{ label: 'App', field: fields.appName }, { label: 'Cloudlet', field: fields.cloudletName }, { label: 'Operator', field: fields.operatorName }, { label: 'Cluster', field: fields.clusterName }]
     }
 
-    onRegClose = (isEdited) => {
+    updateState = (data) => {
         if (this._isMounted) {
-            this.setState({ currentView: null })
+            this.setState({ ...data })
         }
+    }
+
+    resetView = () => {
+        this.updateState({ currentView: null })
+    }
+
+    onRegClose = (isEdited) => {
+        this.resetView()
     }
 
     onAdd = (action, data) => {
         if (this._isMounted) {
-            this.setState({ currentView: <AppInstReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose} /> })
+            this.updateState({ currentView: <AppInstReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose} /> })
         }
 
     }
@@ -50,7 +59,7 @@ class AppInstList extends React.Component {
         let visible = false;
         if (data) {
             if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM) {
-                visible = getUserRole() !== constant.DEVELOPER_VIEWER
+                visible = redux_org.role(this) !== constant.DEVELOPER_VIEWER
             }
             else {
                 let runtimeInfo = data[fields.runtimeInfo]
@@ -66,9 +75,7 @@ class AppInstList extends React.Component {
     }
 
     onTerminal = (action, data) => {
-        if (this._isMounted) {
-            this.setState({ terminalData: data, openTerminal: true })
-        }
+        this.updateState({ terminalData: data, openTerminal: true })
     }
 
     onPowerStateVisible = (data) => {
@@ -84,7 +91,7 @@ class AppInstList extends React.Component {
     }
 
     getDeleteActionMessage = (action, data) => {
-        if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && isAdmin()) {
+        if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && redux_org.isAdmin(this)) {
             return `Cloudlet status is not online, do you still want to proceed with ${data[fields.appName]} App Instance deletion?`
         }
     }
@@ -181,16 +188,16 @@ class AppInstList extends React.Component {
     }
 
     render() {
+        const { currentView } = this.state
         return (
-            this.state.currentView ? this.state.currentView :
-                <div style={{ width: '100%', height: '100%' }}>
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
-                    <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => { this.setState({ openTerminal: false }) }}>
-                        <TerminalViewer data={this.state.terminalData} onClose={() => {
-                            this.setState({ openTerminal: false })
-                        }} />
-                    </Dialog>
-                </div>
+            <React.Fragment>
+                <DataView id={constant.PAGE_APP_INSTANCES} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+                <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => { this.updateState({ openTerminal: false }) }}>
+                    <TerminalViewer data={this.state.terminalData} onClose={() => {
+                        this.updateState({ openTerminal: false })
+                    }} />
+                </Dialog>
+            </React.Fragment>
         )
     }
 
@@ -203,10 +210,16 @@ class AppInstList extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(AppInstList));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(AppInstList));

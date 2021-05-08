@@ -34,16 +34,22 @@ class CloudletList extends React.Component {
         this.multiStepperHeader = [{ label: 'Cloudlet', field: fields.cloudletName }, { label: 'Operator', field: fields.operatorName }]
     }
 
-    onRegClose = (isEdited) => {
+    updateState = (data) => {
         if (this._isMounted) {
-            this.setState({ currentView: null })
+            this.setState({ ...data })
         }
     }
 
+    resetView = () => {
+        this.updateState({ currentView: null })
+    }
+
+    onRegClose = (isEdited) => {
+        this.resetView()
+    }
+
     onAdd = (action, data) => {
-        if (this._isMounted) {
-            this.setState({ currentView: <CloudletReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
-        }
+        this.updateState({ currentView: <CloudletReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
     }
 
     onCloudletManifest = async (action, data) => {
@@ -51,7 +57,7 @@ class CloudletList extends React.Component {
         if (cloudletManifest) {
             if (cloudletManifest.response && cloudletManifest.response.data) {
                 if (this._isMounted) {
-                    this.setState({ currentView: <CloudletReg data={data} manifestData={cloudletManifest.response.data} onClose={this.onRegClose} /> });
+                    this.updateState({ currentView: <CloudletReg data={data} manifestData={cloudletManifest.response.data} onClose={this.onRegClose} /> });
                 }
             }
             else if (cloudletManifest.error && cloudletManifest.error.response) {
@@ -60,7 +66,7 @@ class CloudletList extends React.Component {
                     let message = response.data.message
                     if (message === 'Cloudlet has access key registered, please revoke the current access key first so a new one can be generated for the manifest') {
                         let message = 'Cloudlet has access key registered, click on yes if you would like to revoke the current access key, so a new one can be generated for the manifest'
-                        this.setState({ dialogMessageInfo: { message, data: data } })
+                        this.updateState({ dialogMessageInfo: { message, data: data } })
                     }
                 }
 
@@ -158,19 +164,12 @@ class CloudletList extends React.Component {
     }
 
     onDialogClose = async (valid, data) => {
-        this.setState({ dialogMessageInfo: {} })
+        this.updateState({ dialogMessageInfo: {} })
         if (valid) {
             let mc = await revokeAccessKey(this, data)
             if (mc && mc.response && mc.response.status === 200) {
                 this.onCloudletManifest(undefined, data)
             }
-        }
-    }
-
-    resetView = ()=>{
-        if(this._isMounted)
-        {
-            this.setState({currentView:null})
         }
     }
 

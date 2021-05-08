@@ -1,5 +1,5 @@
 import React from 'react';
-import MexListView from '../../../../container/MexListView';
+import DataView from '../../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -9,28 +9,42 @@ import TrustPolicyReg from './trustPolicyReg'
 import { keys, fields, showTrustPolicies, deleteTrustPolicy, multiDataRequest } from '../../../../services/model/trustPolicy';
 import { showCloudlets } from '../../../../services/model/cloudlet';
 import { HELP_TRUST_POLICY } from "../../../../tutorial";
-import { validateRole, operatorRoles } from '../../../../constant';
+import { operatorRoles, PAGE_TRUST_POLICY } from '../../../../constant';
+import {redux_org} from '../../../../helper/reduxData'
 import { ACTION_DELETE, ACTION_UPDATE } from '../../../../constant/actions';
+import { validateRole } from '../../../../constant/role';
 
 class TrustPolicy extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentView: null
-        }
+        } 
+        this._isMounted = false
         this.keys = keys();
     }
 
-    onRegClose = (isEdited) => {
-        this.setState({ currentView: null })
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
+    resetView = () => {
+        this.updateState({ currentView: null })
+    }
+
+    onRegClose = (isEdited)=>
+    {
+        this.resetView()
     }
 
     onAdd = () => {
-        this.setState({ currentView: <TrustPolicyReg onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <TrustPolicyReg onClose={this.onRegClose} /> });
     }
 
     onUpdate = (action, data) => {
-        this.setState({ currentView: <TrustPolicyReg data={data} action='Update' onClose={this.onRegClose} /> })
+        this.updateState({ currentView: <TrustPolicyReg data={data} action='Update' onClose={this.onRegClose} /> })
     }
 
     onDelete = (data, success, errorInfo) => {
@@ -62,6 +76,7 @@ class TrustPolicy extends React.Component {
 
     requestInfo = () => {
         return ({
+            id:PAGE_TRUST_POLICY,
             headerLabel: 'Trust Policy',
             requestType: [showTrustPolicies, showCloudlets],
             isRegion: true,
@@ -69,17 +84,31 @@ class TrustPolicy extends React.Component {
             sortBy: [fields.region, fields.trustPolicyName],
             keys: this.keys,
             selection: true,
-            onAdd: validateRole(operatorRoles) ? this.onAdd : undefined,
+            onAdd: validateRole(operatorRoles, redux_org.role(this)) ? this.onAdd : undefined,
             viewMode: HELP_TRUST_POLICY
         })
     }
 
 
     render() {
+        const {currentView} = this.state
         return (
-            this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+            <DataView id={PAGE_TRUST_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
         )
+    }
+
+    componentDidMount() {
+        this._isMounted = true
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
+    }
+};
+
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
     }
 };
 
@@ -90,4 +119,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(TrustPolicy));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(TrustPolicy));

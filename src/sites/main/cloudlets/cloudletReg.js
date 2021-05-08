@@ -8,7 +8,7 @@ import MexTab from '../../../hoc/forms/tab/MexTab';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields, getOrganization, updateFieldData } from '../../../services/model/format';
+import { fields, updateFieldData } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/model/organization';
 import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota } from '../../../services/model/cloudlet';
@@ -22,6 +22,7 @@ import { getTrustPolicyList, showTrustPolicies } from '../../../services/model/t
 import * as serverData from '../../../services/model/serverData'
 import { GET_CLOUDLET_RESOURCE_QUOTA_PROPS, SHOW_TRUST_POLICY } from '../../../services/model/endPointTypes';
 import { Grid } from '@material-ui/core';
+import { redux_org } from '../../../helper/reduxData'
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 const CloudletManifest = React.lazy(() => import('./cloudletManifestForm'));
@@ -134,7 +135,7 @@ class CloudletReg extends React.Component {
 
     getCloudletResourceQuota = async (region, platformType) => {
         if (region && platformType) {
-            let mc = await serverData.sendRequest(this, cloudletResourceQuota({ region, platformType }))
+            let mc = await serverData.sendRequest(this, cloudletResourceQuota(this, { region, platformType }))
             if (mc && mc.response && mc.response.status === 200) {
                 if (mc.response.data.properties) {
                     this.resourceQuotaList = mc.response.data.properties
@@ -492,8 +493,8 @@ class CloudletReg extends React.Component {
             this.operatorList = [operator]
             this.updateState({ mapData: [data] })
 
-            requestTypeList.push(showTrustPolicies({ region: data[fields.region] }))
-            requestTypeList.push(cloudletResourceQuota({ region: data[fields.region], platformType: data[fields.platformType] }))
+            requestTypeList.push(showTrustPolicies(this, { region: data[fields.region] }))
+            requestTypeList.push(cloudletResourceQuota(this, { region: data[fields.region], platformType: data[fields.platformType] }))
             let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
 
             if (mcRequestList && mcRequestList.length > 0) {
@@ -616,11 +617,12 @@ class CloudletReg extends React.Component {
     }
 
     formKeys = () => {
+        const orgName = !redux_org.isAdmin(this) && redux_org.orgName(this)
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Cloudlet`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to deploy.', update: { key: true } },
             { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, placeholder: 'Enter cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true } },
-            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization(), tip: 'Organization of the cloudlet site', update: { key: true } },
+            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: orgName ? true : false }, visible: true, value: orgName, tip: 'Organization of the cloudlet site', update: { key: true } },
             { uuid: uuid(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS Location', update: { id: ['5', '5.1', '5.2'] } },
             { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, tip: 'Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
             { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, update: { id: ['8'] }, tip: 'Number of dynamic IPs available for dynamic IP support.' },
@@ -713,6 +715,12 @@ class CloudletReg extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
@@ -721,4 +729,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(CloudletReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(CloudletReg));

@@ -1,5 +1,5 @@
 import React from 'react';
-import MexListView from '../../../container/MexListView';
+import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -17,24 +17,36 @@ class AppList extends React.Component {
         this.state = {
             currentView: null
         }
+        this._isMounted = false
         this.action = '';
         this.data = {}
         this.keys = keys()
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
+    resetView = () => {
+        this.updateState({ currentView: null })
+    }
+
+
     onRegClose = (isEdited) => {
-        this.setState({ currentView: null })
+        this.resetView()
     }
 
     onAdd = (action, data) => {
-        this.setState({ currentView: <AppReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <AppReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose} /> });
     }
 
     /***Action Block */
 
 
     onLaunch = (action, data) => {
-        this.setState({ currentView: <AppInstReg isLaunch={action ? true : false} data={data} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <AppInstReg isLaunch={action ? true : false} data={data} onClose={this.onRegClose} /> });
     }
 
     actionMenu = () => {
@@ -63,7 +75,7 @@ class AppList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: constant.APP,
+            id: constant.PAGE_APPS,
             headerLabel: 'Apps',
             nameField: fields.appName,
             requestType: [showApps],
@@ -79,10 +91,18 @@ class AppList extends React.Component {
     }
 
     render() {
+        const { currentView } = this.state
         return (
-            this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu} />
+            <DataView id={constant.PAGE_APPS} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
+    }
+
+    componentDidMount() {
+        this._isMounted = true
+    }
+
+    componentWillUnmount(){
+        this._isMounted = false
     }
 };
 

@@ -1,11 +1,12 @@
 import React from 'react';
-import MexListView from '../../../container/MexListView';
+import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 import * as constant from '../../../constant';
-import { fields, isAdmin } from '../../../services/model/format';
+import { fields } from '../../../services/model/format';
+import { redux_org } from '../../../helper/reduxData';
 import { keys, showCloudletPools, deleteCloudletPool, multiDataRequest } from '../../../services/model/cloudletPool';
 import CloudletPoolReg from './cloudletPoolReg';
 import {HELP_CLOUDLET_POOL_LIST} from "../../../tutorial";
@@ -18,19 +19,30 @@ class CloudletPoolList extends React.Component {
             currentView: null
         }
         this.keys = keys();
+        this._isMounted = false
+    }
+
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
+    resetView = () => {
+        this.updateState({ currentView: null })
     }
 
     onAdd = () => {
-        this.setState({ currentView: <CloudletPoolReg  onClose={() => this.setState({ currentView: null })} /> });
+        this.updateState({ currentView: <CloudletPoolReg onClose={() => this.resetView()} /> });
     }
 
     /**Action menu block */
     onActionClick = (action, data) => {
-        this.setState({ currentView: <CloudletPoolReg data={data} isUpdate={action ? true : false} action={action.id} onClose={() => this.setState({ currentView: null })} /> });
+        this.updateState({ currentView: <CloudletPoolReg data={data} isUpdate={action ? true : false} action={action.id} onClose={() => this.resetView()} /> });
     }
 
     onOrgActionClick = (action, data) => {
-        this.setState({ currentView: <CloudletPoolReg data={data} org={true} isUpdate={action ? true : false} action={action.id} onClose={() => this.setState({ currentView: null })} /> });
+        this.updateState({ currentView: <CloudletPoolReg data={data} org={true} isUpdate={action ? true : false} action={action.id} onClose={() => this.resetView()} /> });
     }
 
     showDeleteCloudletPool = (action, data) => {
@@ -44,7 +56,7 @@ class CloudletPoolList extends React.Component {
     }
 
     onConfirmVisible = (data) => {
-        return isAdmin()
+        return redux_org.isAdmin(this)
     }
 
     actionMenu = () => {
@@ -69,7 +81,7 @@ class CloudletPoolList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: 'CloudletPools',
+            id: constant.PAGE_CLOUDLET_POOLS,
             headerLabel: 'Cloudlet Pools',
             nameField: fields.poolName,
             requestType: [showCloudletPools, showConfirmation, showInvitation],
@@ -83,12 +95,27 @@ class CloudletPoolList extends React.Component {
     }
 
     render() {
+        const { currentView } = this.state
         return (
-            this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
+            <DataView id={constant.PAGE_CLOUDLET_POOLS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
         )
     }
+
+    componentDidMount(){
+        this._isMounted = true
+    }
+    
+    componentWillUnmount(){
+        this._isMounted = false
+    }
 };
+
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
 
 const mapDispatchProps = (dispatch) => {
     return {
@@ -96,4 +123,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(CloudletPoolList));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(CloudletPoolList));

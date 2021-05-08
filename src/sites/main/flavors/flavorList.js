@@ -1,13 +1,15 @@
 import React from 'react';
-import MexListView from '../../../container/MexListView';
+import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import { fields, isAdmin } from '../../../services/model/format';
+import { fields } from '../../../services/model/format';
+import { redux_org } from '../../../helper/reduxData';
 import { keys, showFlavors, deleteFlavor } from '../../../services/model/flavor';
 import FlavorReg from './flavorReg';
 import { HELP_FLAVOR_LIST } from "../../../tutorial";
 import { ACTION_DELETE } from '../../../constant/actions';
+import { PAGE_FLAVORS } from '../../../constant';
 
 class FlavorList extends React.Component {
     constructor(props) {
@@ -15,17 +17,28 @@ class FlavorList extends React.Component {
         this.state = {
             currentView: null
         }
+        this._isMounted = false
         this.action = '';
         this.data = {}
         this.keys = keys();
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
+    resetView = () => {
+        this.updateState({ currentView: null })
+    }
+
     onRegClose = (isEdited) => {
-        this.setState({ currentView: null })
+        this.resetView()
     }
 
     onAdd = () => {
-        this.setState({ currentView: <FlavorReg onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <FlavorReg onClose={this.onRegClose} /> });
     }
 
     /**Action menu block */
@@ -45,7 +58,7 @@ class FlavorList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: 'Flavors',
+            id: PAGE_FLAVORS,
             headerLabel: 'Flavors',
             nameField: fields.flavorName,
             isRegion: true,
@@ -53,16 +66,30 @@ class FlavorList extends React.Component {
             sortBy: [fields.region, fields.flavorName],
             selection: true,
             keys: this.keys,
-            onAdd: isAdmin() ? this.onAdd : undefined,
+            onAdd: redux_org.isAdmin(this) ? this.onAdd : undefined,
             viewMode: HELP_FLAVOR_LIST
         })
     }
 
     render() {
+        const {currentView} = this.state
         return (
-            this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu} />
+            <DataView id={PAGE_FLAVORS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
+    }
+
+    componentDidMount() {
+        this._isMounted = true
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
+    }
+};
+
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
     }
 };
 
@@ -71,4 +98,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(FlavorList));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(FlavorList));

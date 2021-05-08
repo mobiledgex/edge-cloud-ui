@@ -1,11 +1,12 @@
 import React from 'react';
-import MexListView from '../../../container/MexListView';
+import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields, isAdmin, isViewer } from '../../../services/model/format';
+import { fields } from '../../../services/model/format';
+import { redux_org } from '../../../helper/reduxData';
 import { keys, showOrganizations, deleteOrganization, edgeboxOnlyAPI } from '../../../services/model/organization';
 import OrganizationReg from './organizationReg';
 import * as serverData from '../../../services/model/serverData'
@@ -17,14 +18,14 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { ACTION_DELETE, ACTION_DISABLE, ACTION_EDGE_BOX_ENABLE, ACTION_LABEL, ACTION_UPDATE, ACTION_WARNING } from '../../../constant/actions';
 import { sendRequest } from '../monitoring/services/service'
 import { LS_ORGANIZATION_INFO } from '../../../helper/ls';
-import {uiFormatter} from '../../../helper/formatter'
+import { uiFormatter } from '../../../helper/formatter'
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentView: null,
-            tableHeight: isViewer() ? undefined : 280,
-            loading:undefined
+            tableHeight: redux_org.isViewer(this) ? undefined : 280,
+            loading: undefined
         }
         this._isMounted = false
         this.action = '';
@@ -38,8 +39,14 @@ class OrganizationList extends React.Component {
         }
     }
 
+    resetView = () => {
+        if (this._isMounted) {
+            this.updateState({ currentView: null })
+        }
+    }
+
     onRegClose = (isEdited) => {
-        this.updateState({ currentView: null })
+        this.resetView()
     }
 
     onAddUser = (action, data) => {
@@ -56,7 +63,7 @@ class OrganizationList extends React.Component {
 
     customToolbar = () =>
     (
-        isViewer() ? null : <Box display='flex'>
+        redux_org.isViewer(this) ? null : <Box display='flex'>
             <Card style={{ margin: 10, width: '50%', maxHeight: 200, overflow: 'auto' }}>
                 <CardHeader
                     avatar={
@@ -106,9 +113,8 @@ class OrganizationList extends React.Component {
     }
 
     onDelete = (data, success) => {
-        if (success && data[fields.organizationName] === localStorage.getItem('selectOrg')) {
-            localStorage.removeItem('selectRole')
-            localStorage.removeItem('selectOrg')
+        if (success && data[fields.organizationName] === redux_org.orgName(this)) {
+            localStorage.removeItem(LS_ORGANIZATION_INFO)
             this.props.handleUserRole(undefined)
             if (this._isMounted) {
                 this.forceUpdate()
@@ -135,15 +141,15 @@ class OrganizationList extends React.Component {
         }
     }
 
-    edgeboxOnlyVisibility = (data)=>{
-        return isAdmin()
+    edgeboxOnlyVisibility = (data) => {
+        return redux_org.isAdmin(this)
     }
 
     actionMenu = () => {
         return [
             { label: 'Audit', onClick: this.onAudit },
             { label: 'Add User', onClick: this.onAddUser, type: 'Edit' },
-            { id: ACTION_EDGE_BOX_ENABLE, label: this.onPreEdgebox, visible:this.edgeboxOnlyVisibility, type: 'Edit', warning: this.onPreEdgebox, disable: this.onPreEdgebox, onClick: this.onEdgebox },
+            { id: ACTION_EDGE_BOX_ENABLE, label: this.onPreEdgebox, visible: this.edgeboxOnlyVisibility, type: 'Edit', warning: this.onPreEdgebox, disable: this.onPreEdgebox, onClick: this.onEdgebox },
             { id: ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
             { id: ACTION_DELETE, label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type: 'Edit' }
         ]
@@ -161,7 +167,7 @@ class OrganizationList extends React.Component {
     }
 
     onManage = async (key, data) => {
-        this.updateState({loading:data[fields.organizationName]})
+        this.updateState({ loading: data[fields.organizationName] })
         if (this.props.roleInfo) {
             let roleInfoList = this.props.roleInfo;
             for (let roleInfo of roleInfoList) {
@@ -169,15 +175,13 @@ class OrganizationList extends React.Component {
                     this.props.handlePrivateAccess(undefined)
                     let privateAccess = await constant.validatePrivateAccess(this, roleInfo.role)
                     this.props.handlePrivateAccess(privateAccess)
-                    localStorage.setItem('selectOrg', data[fields.organizationName])
-                    localStorage.setItem('selectRole', roleInfo.role)
                     this.props.handleUserRole(roleInfo.role)
                     this.cacheOrgInfo(data, roleInfo)
                     break;
                 }
             }
         }
-        this.updateState({ tableHeight: isViewer() ? undefined : 280,loading:undefined })
+        this.updateState({ tableHeight: redux_org.isViewer(this) ? undefined : 280, loading: undefined })
     }
 
     onListViewClick = (key, data) => {
@@ -189,7 +193,7 @@ class OrganizationList extends React.Component {
 
     dataFormatter = (key, data, isDetail) => {
         if (key.field === fields.manage) {
-            return <uiFormatter.Manage loading={this.state.loading} data={data} key={key} detail={isDetail}/>
+            return <uiFormatter.Manage loading={this.state.loading} data={data} key={key} detail={isDetail} />
         }
         else if (key.field === fields.edgeboxOnly) {
             return uiFormatter.edgeboxOnly(key, data, isDetail)
@@ -207,16 +211,15 @@ class OrganizationList extends React.Component {
             additionalDetail: shared.additionalDetail,
             viewMode: HELP_ORG_LIST,
             grouping: true,
-            formatData:this.dataFormatter
+            formatData: this.dataFormatter
         })
     }
 
     render() {
-        const { tableHeight } = this.state
+        const { tableHeight, currentView } = this.state
         return (
-            this.state.currentView ? this.state.currentView :
                 <div style={{ width: '100%', height: '100%' }}>
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight} />
+                    <DataView id={constant.PAGE_ORGANIZATIONS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight} />
                 </div>
         )
     }
@@ -227,31 +230,18 @@ class OrganizationList extends React.Component {
         if (mc && mc.response && mc.response.status === 200) {
             let userRoles = mc.response.data
             this.props.handleRoleInfo(userRoles)
-            let clearStorage = true
             for (let i = 0; i < userRoles.length; i++) {
                 let userRole = userRoles[i]
                 if (userRole.role.indexOf('Admin') > -1) {
                     isAdmin = true
-                    clearStorage = false
                     break;
                 }
-                else if(userRole.org === localStorage.getItem('selectOrg'))
-                {
-                    clearStorage = false
-                }
-            }
-
-            if(clearStorage)
-            {
-                localStorage.removeItem('selectOrg')
-                localStorage.removeItem('selectRole')
             }
         }
-        
-        this.keys = this.keys.map(key=>{
-            if(key.field === fields.manage)
-            {
-                key.visible = !isAdmin 
+
+        this.keys = this.keys.map(key => {
+            if (key.field === fields.manage) {
+                key.visible = !isAdmin
             }
             return key
         })

@@ -1,5 +1,5 @@
 import React from 'react';
-import MexListView from '../../../container/MexListView';
+import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -7,6 +7,7 @@ import { fields } from '../../../services/model/format';
 import { keys, showUsers, deleteUser } from '../../../services/model/users';
 import { HELP_USER_ROLES } from '../../../tutorial';
 import { ACTION_DELETE } from '../../../constant/actions';
+import { PAGE_USER_ROLES } from '../../../constant';
 
 class UserList extends React.Component {
     constructor(props) {
@@ -15,11 +16,22 @@ class UserList extends React.Component {
             currentView: null,
             openAddUserView: false,
         }
-
+        this._isMounted = false
         this.action = '';
         this.data = {}
         this.keys = keys();
     }
+
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
+    resetView = () => {
+        this.updateState({ currentView: null })
+    }
+
 
     /**Action menu block */
     getDeleteActionMessage = (action, data) => {
@@ -37,10 +49,10 @@ class UserList extends React.Component {
             { label: 'Delete', onClick: deleteUser, icon: 'delete', warning: 'remove selected user\'s from assigned organization', type: 'Edit' },
         ]
     }
-    
+
     requestInfo = () => {
         return ({
-            id: 'userRole',
+            id: PAGE_USER_ROLES,
             headerLabel: 'Users & Roles',
             nameField: fields.username,
             requestType: [showUsers],
@@ -54,10 +66,18 @@ class UserList extends React.Component {
 
 
     render() {
+        const {currentView} = this.state
         return (
-            this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu} />
+            <DataView id={PAGE_USER_ROLES} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
+    }
+
+    componentDidMount() {
+        this._isMounted = true
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 };
 

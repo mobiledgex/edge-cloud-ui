@@ -1,5 +1,5 @@
 import React from 'react';
-import MexListView from '../../../../container/MexListView';
+import DataView from '../../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -9,26 +9,38 @@ import AutoScalePolicyReg from './autoScalePolicyReg'
 import { keys, fields, showAutoScalePolicies, deleteAutoScalePolicy } from '../../../../services/model/autoScalePolicy';
 import {HELP_SCALE_POLICY} from "../../../../tutorial";
 import { ACTION_DELETE, ACTION_UPDATE } from '../../../../constant/actions';
+import { PAGE_AUTO_SCALE_POLICY } from '../../../../constant';
 class AutoScalePolicy extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentView: null
         }
+        this._isMounted = false
         this.keys = keys();
+    }
+
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
+    resetView = () => {
+        this.updateState({ currentView: null })
     }
 
     onRegClose = (isEdited)=>
     {
-        this.setState({ currentView: null })
+        this.resetView()
     }
 
     onAdd = () => {
-        this.setState({ currentView: <AutoScalePolicyReg onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <AutoScalePolicyReg onClose={this.onRegClose} /> });
     }
 
     onUpdate = (action, data) => {
-        this.setState({ currentView: <AutoScalePolicyReg data={data} action='Update' onClose={this.onRegClose} /> })
+        this.updateState({ currentView: <AutoScalePolicyReg data={data} action='Update' onClose={this.onRegClose} /> })
     }
 
     actionMenu = () => {
@@ -46,6 +58,7 @@ class AutoScalePolicy extends React.Component {
 
     requestInfo = () => {
         return ({
+            id:PAGE_AUTO_SCALE_POLICY,
             headerLabel: 'Auto Scale Policy',
             requestType: [showAutoScalePolicies],
             isRegion: true,
@@ -58,12 +71,19 @@ class AutoScalePolicy extends React.Component {
         })
     }
 
-
     render() {
+        const {currentView } = this.state
         return (
-            this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu}/>
+            <DataView id={PAGE_AUTO_SCALE_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
+    }
+
+    componentDidMount() {
+        this._isMounted = true
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 };
 

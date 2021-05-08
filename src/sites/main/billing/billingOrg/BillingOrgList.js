@@ -4,7 +4,7 @@ import * as actions from '../../../../actions';
 //redux
 import { connect } from 'react-redux';
 
-import MexListView from '../../../../container/MexListView';
+import DataView from '../../../../container/DataView';
 import { fields } from '../../../../services/model/format';
 import { showBillingOrg, deleteBillingOrg, keys } from '../../../../services/model/billingOrg';
 
@@ -12,21 +12,33 @@ import { showBillingOrg, deleteBillingOrg, keys } from '../../../../services/mod
 import Invoices from '../invoices/Invoices';
 import Reg from './BillingOrgReg';
 
-import {validateRole, operatorRoles, BILLING_TYPE_PARENT, PAGE_BILLING_ORG} from '../../../../constant'
+import {operatorRoles, BILLING_TYPE_PARENT, PAGE_BILLING_ORG} from '../../../../constant'
 import { ACTION_BILLING_ADD_CHILD, ACTION_BILLING_REMOVE_CHILD, ACTION_DELETE } from '../../../../constant/actions';
+import { validateRole } from '../../../../constant/role';
 class BillingOrg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentView: null
-        }
+        } 
+        this._isMounted = false
         this.action = '';
         this.data = {};
         this.keys = keys();
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
+    resetView = () => {
+        this.updateState({ currentView: null })
+    }
+
     onRegClose = (isEdited) => {
-        this.setState({ currentView: null })
+        this.resetView()
     }
 
     onReg = (action, data) => {
@@ -36,7 +48,7 @@ class BillingOrg extends React.Component {
             valid = false
         }
         if (valid) {
-            this.setState({ currentView: <Reg data={data} action={actionId} onClose={this.onRegClose} /> });
+            this.updateState({ currentView: <Reg data={data} action={actionId} onClose={this.onRegClose} /> });
         }
         else {
             this.props.handleAlertInfo('error', 'Nothing to remove')
@@ -48,7 +60,7 @@ class BillingOrg extends React.Component {
     }
 
     invoices = async (action, data)=>{
-        this.setState({ currentView: <Invoices data={data} onClose={this.onRegClose} /> }); 
+        this.updateState({ currentView: <Invoices data={data} onClose={this.onRegClose} /> }); 
     }
 
     actionMenu = () => {
@@ -75,19 +87,30 @@ class BillingOrg extends React.Component {
             sortBy: [fields.name],
             // selection: true,
             keys: this.keys,
-            onAdd: validateRole(operatorRoles) ? this.onReg : undefined,
+            onAdd: validateRole(operatorRoles, this.props.organizationInfo) ? this.onReg : undefined,
             grouping: false
         })
     }
 
-    componentDidMount() {
+    render() {
+        const {currentView} = this.state
+        return (
+            <DataView id={PAGE_BILLING_ORG} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+        )
     }
 
-    render() {
-        return (
-            this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu} />
-        )
+    componentDidMount() {
+        this._isMounted = true
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
+    }
+};
+
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
     }
 };
 
@@ -98,4 +121,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(BillingOrg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(BillingOrg));

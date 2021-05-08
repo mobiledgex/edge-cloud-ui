@@ -6,17 +6,18 @@ import * as actions from '../../../actions';
 //model
 import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
-import { fields, isAdmin } from '../../../services/model/format';
+import { fields } from '../../../services/model/format';
 import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiDataRequest } from '../../../services/model/clusterInstance';
 import { showCloudlets } from '../../../services/model/cloudlet';
 import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
 //list
-import MexListView from '../../../container/MexListView';
+import DataView from '../../../container/DataView';
 //reg
 import ClusterInstReg from './clusterInstReg';
 import { HELP_CLUSTER_INST_LIST } from "../../../tutorial";
 import { ACTION_DELETE, ACTION_UPDATE } from '../../../constant/actions';
 import { labelFormatter } from '../../../helper/formatter';
+import { redux_org } from '../../../helper/reduxData';
 
 class ClusterInstView extends React.Component {
     constructor(props) {
@@ -32,20 +33,26 @@ class ClusterInstView extends React.Component {
 
     }
 
-    onRegClose = (isEdited) => {
+    updateState = (data) => {
         if (this._isMounted) {
-            this.setState({ currentView: null })
+            this.setState({ ...data })
         }
+    }
+
+    resetView = () => {
+        this.updateState({ currentView: null })
+    }
+
+    onRegClose = (isEdited) => {
+        this.resetView()
     }
 
     onAdd = (action, data) => {
-        if (this._isMounted) {
-            this.setState({ currentView: <ClusterInstReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> })
-        }
+        this.updateState({ currentView: <ClusterInstReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> })
     }
 
     getDeleteActionMessage = (action, data) => {
-        if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && isAdmin()) {
+        if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && redux_org.isAdmin(this)) {
             return `Cloudlet status is not online, do you still want to proceed with ${data[fields.clusterName]} Cluster Instance deletion?`
         }
     }
@@ -91,14 +98,14 @@ class ClusterInstView extends React.Component {
             onAdd: this.onAdd,
             viewMode: HELP_CLUSTER_INST_LIST,
             grouping: true,
-            formatData:this.dataFormatter
+            formatData: this.dataFormatter
         })
     }
 
     render() {
+        const { currentView } = this.state
         return (
-            this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+            <DataView id={constant.PAGE_CLUSTER_INSTANCES} currentView={currentView} resetView={this.resetView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
         )
     }
 
@@ -111,6 +118,12 @@ class ClusterInstView extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
@@ -118,4 +131,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(ClusterInstView));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(ClusterInstView));

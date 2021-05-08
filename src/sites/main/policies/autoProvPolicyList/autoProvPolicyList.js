@@ -11,7 +11,7 @@ import * as constant from '../../../../constant';
 import { keys, showAutoProvPolicies, deleteAutoProvPolicy, multiDataRequest } from '../../../../services/model/autoProvisioningPolicy';
 import { showApps } from '../../../../services/model/app';
 //list
-import MexListView from '../../../../container/MexListView';
+import DataView from '../../../../container/DataView';
 import { HELP_POLICY_LIST } from "../../../../tutorial";
 import { ACTION_DELETE, ACTION_UPDATE } from '../../../../constant/actions';
 class AutoProvPolicy extends React.Component {
@@ -20,23 +20,34 @@ class AutoProvPolicy extends React.Component {
         this.state = {
             currentView: null
         }
+        this._isMounted = false
         this.keys = keys()
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
+    resetView = () => {
+        this.updateState({ currentView: null })
+    }
+
     onRegClose = (isEdited) => {
-        this.setState({ currentView: null })
+        this.resetView()
     }
 
     onAdd = (action, data) => {
-        this.setState({ currentView: <AutoProvPolicyReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <AutoProvPolicyReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
     }
 
     onAddCloudlet = (action, data) => {
-        this.setState({ currentView: <AutoProvPolicyReg data={data} action={constant.ADD_CLOUDLET} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <AutoProvPolicyReg data={data} action={constant.ADD_CLOUDLET} onClose={this.onRegClose} /> });
     }
 
     onDeleteCloudlet = (action, data) => {
-        this.setState({ currentView: <AutoProvPolicyReg data={data} action={constant.DELETE_CLOUDLET} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <AutoProvPolicyReg data={data} action={constant.DELETE_CLOUDLET} onClose={this.onRegClose} /> });
     }
 
     onDeleteCloudletVisible = (data) => {
@@ -79,12 +90,13 @@ class AutoProvPolicy extends React.Component {
 
     requestInfo = () => {
         return ({
+            id: constant.PAGE_AUTO_PROVISIONING_POLICY,
             headerLabel: 'Auto Provisioning Policy',
             nameField: fields.autoPolicyName,
             requestType: [showAutoProvPolicies, showApps],
             isRegion: true,
             sortBy: [fields.region, fields.autoPolicyName],
-            selection:true,
+            selection: true,
             keys: this.keys,
             onAdd: this.onAdd,
             viewMode: HELP_POLICY_LIST
@@ -92,10 +104,24 @@ class AutoProvPolicy extends React.Component {
     }
 
     render() {
+        const {currentView } = this.state
         return (
-            this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
+            <DataView id={PAGE_AUTO_PROVISIONING_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
         )
+    }
+
+    componentDidMount() {
+        this._isMounted = true
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
+    }
+};
+
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
     }
 };
 
@@ -106,4 +132,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(AutoProvPolicy));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(AutoProvPolicy));
