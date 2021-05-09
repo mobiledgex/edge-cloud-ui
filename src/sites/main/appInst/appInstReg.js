@@ -30,7 +30,7 @@ import { Grid } from '@material-ui/core';
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
-class ClusterInstReg extends React.Component {
+class AppInstReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -701,4 +701,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(ClusterInstReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(AppInstReg));
