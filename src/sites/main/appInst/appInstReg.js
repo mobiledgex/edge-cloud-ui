@@ -2,12 +2,13 @@ import React, { Suspense } from 'react';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuid';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, SWITCH, ICON_BUTTON, TEXT_AREA, formattedData, MAIN_HEADER, HEADER } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, SWITCH, ICON_BUTTON, TEXT_AREA, MAIN_HEADER, HEADER } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { DEVELOPER, fields, getOrganization, updateFieldData } from '../../../services/model/format';
+import { fields, updateFieldData } from '../../../services/model/format';
+import { redux_org} from '../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../services/model/organization';
 import { showCloudlets, cloudletWithInfo } from '../../../services/model/cloudlet';
@@ -72,9 +73,9 @@ class ClusterInstReg extends React.Component {
         }
         if (region && organizationName) {
             let requestList = []
-            let requestData = { region: region, org: organizationName, type: DEVELOPER.toLowerCase() }
-            requestList.push(showCloudlets(requestData))
-            requestList.push(showCloudletInfoData(requestData))
+            let requestData = { region: region, org: organizationName, type: constant.DEVELOPER }
+            requestList.push(showCloudlets(this, requestData))
+            requestList.push(showCloudletInfoData(this, requestData))
             this.props.handleLoadingSpinner(true)
             sendRequests(this, requestList).addEventListener('message', event => {
                 let mcList = event.data
@@ -202,7 +203,7 @@ class ClusterInstReg extends React.Component {
                     }
                 })
                 flowDataList.push(appFlow.ipAccessFlowApp(app))
-                flowDataList.push(appFlow.deploymentTypeFlow(app, constant.APP))
+                flowDataList.push(appFlow.deploymentTypeFlow(app, constant.PAGE_APPS))
                 if (app[fields.accessPorts]) {
                     flowDataList.push(appFlow.portFlow(app[fields.accessPorts].includes('tls') ? 1 : 0))
                 }
@@ -329,7 +330,7 @@ class ClusterInstReg extends React.Component {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} App Instances`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of', update: { key: true } },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Organization or Company Name that a Developer is part of', update: { key: true } },
             { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], update: { key: true } },
             { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }], update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], update: { key: true } },
@@ -528,11 +529,11 @@ class ClusterInstReg extends React.Component {
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
             if (this.props.isLaunch) {
-                let requestData = { region: data[fields.region], org: data[fields.organizationName], type: DEVELOPER.toLowerCase() }
-                requestTypeList.push(showCloudlets(requestData))
-                requestTypeList.push(showCloudletInfoData(requestData))
-                requestTypeList.push(showClusterInsts(requestData))
-                requestTypeList.push(showFlavors({ region: data[fields.region] }))
+                let requestData = { region: data[fields.region], org: data[fields.organizationName], type: constant.DEVELOPER }
+                requestTypeList.push(showCloudlets(this, requestData))
+                requestTypeList.push(showCloudletInfoData(this, requestData))
+                requestTypeList.push(showClusterInsts(this, requestData))
+                requestTypeList.push(showFlavors(this, { region: data[fields.region] }))
                 let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]
 
                 for (let i = 0; i < forms.length; i++) {
@@ -686,6 +687,12 @@ class ClusterInstReg extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
@@ -694,4 +701,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(ClusterInstReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(ClusterInstReg));
