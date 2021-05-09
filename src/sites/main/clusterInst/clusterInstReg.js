@@ -7,7 +7,8 @@ import MexTab from '../../../hoc/forms/tab/MexTab';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { DEVELOPER, fields, getOrganization, updateFieldData } from '../../../services/model/format';
+import { fields, updateFieldData } from '../../../services/model/format';
+import { redux_org} from '../../../helper/reduxData'
 //model
 import * as serverData from '../../../services/model/serverData'
 import { createClusterInst, updateClusterInst } from '../../../services/model/clusterInstance';
@@ -74,9 +75,9 @@ class ClusterInstReg extends React.Component {
         }
         if (region && organizationName) {
             let requestList = []
-            let requestData = { region: region, org: organizationName, type: DEVELOPER.toLowerCase() }
-            requestList.push(showCloudlets(requestData))
-            requestList.push(showCloudletInfoData(requestData))
+            let requestData = { region: region, org: organizationName, type: constant.DEVELOPER }
+            requestList.push(showCloudlets(this, requestData))
+            requestList.push(showCloudletInfoData(this, requestData))
             this.props.handleLoadingSpinner(true)
             sendRequests(this, requestList).addEventListener('message', event => {
                 let mcList = event.data
@@ -428,7 +429,7 @@ class ClusterInstReg extends React.Component {
 
             let requestTypeList = []
             if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
-                requestTypeList.push(showAutoScalePolicies({ region: data[fields.region] }))
+                requestTypeList.push(showAutoScalePolicies(this, { region: data[fields.region] }))
             }
 
             let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
@@ -449,7 +450,7 @@ class ClusterInstReg extends React.Component {
             { label: `${this.isUpdate ? 'Update' : 'Create'} Cluster Instances`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
             { field: fields.clusterName, label: 'Cluster Name', formType: INPUT, placeholder: 'Enter Cluster Inst Name', rules: { required: true }, visible: true, update: { key: true } },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization(), update: { key: true } },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this)}, visible: true, value: redux_org.nonAdminOrg(this), update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], update: { key: true } },
             { field: fields.cloudletName, label: 'Cloudlet', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }], update: { key: true } },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: false, tip: 'Deployment type (kubernetes or docker)' },
@@ -510,6 +511,12 @@ class ClusterInstReg extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
@@ -518,4 +525,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(ClusterInstReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(ClusterInstReg));
