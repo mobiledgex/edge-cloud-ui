@@ -106,9 +106,10 @@ class AppList extends React.Component {
     }
 };
 
-const mapDispatchProps = (dispatch) => {
+const mapStateToProps = (state) => {
     return {
-    };
+        organizationInfo: state.organizationInfo.data
+    }
 };
 
-export default withRouter(connect(null, mapDispatchProps)(AppList));
+export default withRouter(connect(mapStateToProps, null)(AppList));

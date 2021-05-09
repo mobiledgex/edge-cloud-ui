@@ -8,7 +8,8 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, SWITCH, TEXT_AREA, ICON_
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields, getOrganization, updateFieldData } from '../../../services/model/format';
+import { fields, updateFieldData } from '../../../services/model/format';
+import { redux_org } from '../../../helper/reduxData';
 //model
 import * as serverData from '../../../services/model/serverData'
 import { getOrganizationList } from '../../../services/model/organization';
@@ -475,7 +476,7 @@ class AppReg extends React.Component {
         else if (form.field === fields.deployment) {
             this.deploymentValueChange(form, forms, isInit)
             let finalData = isInit ? data : formattedData(forms)
-            flowDataList.push(appFlow.deploymentTypeFlow(finalData, constant.APP))
+            flowDataList.push(appFlow.deploymentTypeFlow(finalData, constant.PAGE_APPS))
             flowDataList.push(appFlow.ipAccessFlowApp(finalData))
             flowDataList.push(appFlow.portFlow(this.tlsCount))
         }
@@ -494,7 +495,7 @@ class AppReg extends React.Component {
         }
         else if (form.field === fields.accessType) {
             let finalData = isInit ? data : formattedData(forms)
-            flowDataList.push(appFlow.deploymentTypeFlow(finalData, constant.APP))
+            flowDataList.push(appFlow.deploymentTypeFlow(finalData, constant.PAGE_APPS))
             flowDataList.push(appFlow.ipAccessFlowApp(finalData))
             flowDataList.push(appFlow.portFlow(this.tlsCount))
         }
@@ -798,9 +799,9 @@ class AppReg extends React.Component {
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
-            requestTypeList.push(showAppInsts({ region: data[fields.region], appinst: { key: { app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] } } } }, true))
-            requestTypeList.push(showFlavors({ region: data[fields.region] }))
-            requestTypeList.push(showAutoProvPolicies({ region: data[fields.region] }))
+            requestTypeList.push(showAppInsts(this, { region: data[fields.region], appinst: { key: { app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] } } } }, true))
+            requestTypeList.push(showFlavors(this, { region: data[fields.region] }))
+            requestTypeList.push(showAutoProvPolicies(this, { region: data[fields.region] }))
 
             let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
             if (mcRequestList && mcRequestList.length > 0) {
@@ -939,7 +940,7 @@ class AppReg extends React.Component {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Apps`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers', update: { key: true } },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Organization or Company Name that a Developer is part of', update: { key: true } },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Organization or Company Name that a Developer is part of', update: { key: true } },
             { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name', dataValidateFunc: this.validateAppName, update: { key: true } },
             { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version', update: { key: true } },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
@@ -1070,6 +1071,12 @@ class AppReg extends React.Component {
 
 };
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
@@ -1078,4 +1085,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(AppReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(AppReg));
