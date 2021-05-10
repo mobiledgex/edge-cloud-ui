@@ -78,7 +78,7 @@ export const deploymentTypeFlow = (data, type) => {
         dataList.push({ type: 'nodes', data: { id: 20003, shape: SHAPE_ROUND_RECTANGLE, label: '', width: 170, height: 100, bg: '#FFB97F', bw: 2, zi: 2, bc: '#ffd9ba' }, position: { x: 915, y: 195 } })
         dataList.push({ type: 'nodes', data: { id: 20004, shape: SHAPE_ELLIPSE, label: 'App', width: 100, height: 50, bg: '#FFF', bw: 1, zi: 4, tc: '#FFB97F' }, position: { x: 915, y: 195 } })
         dataList.push({ type: 'edges', data: { id: 20003101, source: 20003, target: 101, te: '45% 44%', as: 'none' } })
-        if (type === constant.APP) {
+        if (type === constant.PAGE_APPS) {
             dataList.push({ type: 'edges', data: { id: 99905, source: 102, target: 2, as: 'none', ls: 'dashed', zi: 3, lc: flowColor, te: '60% 0%' }, classes: 'taxi' })
             dataList.push({ type: 'edges', data: { id: 99906, source: 2, target: 103, as: 'none', ls: 'dashed', zi: 3, se: '60% 0%', lc: flowColor } })
             dataList.push({ type: 'edges', data: { id: 99907, source: 103, target: 104, ls: 'dashed', zi: 3, lc: flowColor, as: 'none' } })
@@ -89,7 +89,7 @@ export const deploymentTypeFlow = (data, type) => {
     else if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_DOCKER) {
         dataList.push({ type: 'nodes', data: { id: 2, shape: SHAPE_ROUND_RECTANGLE, label: 'Docker VM', width: 170, height: 110, bg: '#5AB1EF', zi: 1, tva: 'top', tmy: -10, bw: 2, bc: '#c3daf9' }, position: { x: 600, y: 185 } })
         dataList.push({ type: 'nodes', data: { id: 20004, shape: SHAPE_ELLIPSE, label: 'App', width: 100, height: 50, bg: '#FFF', bw: 1, zi: 4, tc: '#5AB1EF' }, position: { x: 600, y: 185 } })
-        if (type === constant.APP) {
+        if (type === constant.PAGE_APPS) {
             dataList.push({ type: 'edges', data: { id: 99905, source: 102, target: 2, ls: 'dashed', zi: 3, lc: flowColor, tdn: '50px', tac: flowColor }, classes: 'taxi' })
         }
 

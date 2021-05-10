@@ -1,8 +1,9 @@
 import React from 'react';
+import { useSelector } from "react-redux";
 import { ListItem, Dialog, DialogContent, IconButton, Table, TableBody, TableRow, TableCell, TableHead } from '@material-ui/core';
 import { ADMIN_MANAGER, DEVELOPER_CONTRIBUTOR, DEVELOPER_MANAGER, DEVELOPER_VIEWER, legendRoles, OPERATOR_CONTRIBUTOR, OPERATOR_MANAGER, OPERATOR_VIEWER } from '../../../constant';
 import CloseIcon from '@material-ui/icons/Close';
-import { getUserRole } from '../../../services/model/format';
+import { redux_org } from '../../../helper/reduxData';
 
 const legends = [
     { role: ADMIN_MANAGER, class: 'mark markA markS', mark: 'AM' },
@@ -17,43 +18,48 @@ const legends = [
 const menuItem = ['Users & Roles', 'Cloudlets', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances', 'Policies', 'Monitoring', 'Audit Logs'];
 
 
-const LegendMark = (props) => (
-    <React.Fragment>
-        <div className="markBox" style={{ display: 'inline' }}>
+const LegendMark = (props) => {
+    const orgInfo = useSelector(state => state.organizationInfo.data)
+    return (
+        <React.Fragment>
+            <div className="markBox" style={{ display: 'inline' }}>
+                {
+                    orgInfo ?
+                        legends.map(legend => (
+                            redux_org.role(orgInfo) === legend.role ?
+                                <div key={legend.role} className={legend.class}>{legend.mark}</div> : null
+                        )) : <div className="mark markA markS">?</div>
+                }
+            </div>
             {
-                getUserRole() ?
-                    legends.map(legend => (
-                        getUserRole() === legend.role ?
-                            <div key={legend.role} className={legend.class}>{legend.mark}</div> : null
-                    )) : <div className="mark markA markS">?</div>
+                props.open ?
+                    <div style={{ display: 'inline' }}>
+                        <strong style={{ color: '#BFC0C2', fontSize: 14, }}>
+                            {
+                                orgInfo ? redux_org.role(orgInfo) :
+                                    <div>
+                                        <p>No Organization selected</p>
+                                        <p>Click Manage to view and</p>
+                                        <p>manage your Organization</p>
+                                    </div>
+                            }
+                        </strong>
+                    </div> : null
             }
-        </div>
-        {
-            props.open ?
-                <div style={{ display: 'inline' }}>
-                    <strong style={{ color: '#BFC0C2', fontSize: 14, }}>
-                        {
-                            getUserRole() ? getUserRole() :
-                                <div>
-                                    <p>No Organization selected</p>
-                                    <p>Click Manage to view and</p>
-                                    <p>manage your Organization</p>
-                                </div>
-                        }
-                    </strong>
-                </div> : null
-        }
-    </React.Fragment>
-)
+        </React.Fragment>
+    )
+}
 
 const RoleLegend = (props) => {
     const [open, setOpen] = React.useState(false)
     const length = menuItem.length - 1
+    const orgInfo = useSelector(state => state.organizationInfo.data)
+
     const roleInfo = () => {
         return (
             <div style={{ marginTop: 10, marginBottom: -7 }} >
-                <ListItem button onClick={(e) => { setOpen(getUserRole() !== undefined) }}>
-                    <LegendMark open={props.drawerOpen} />
+                <ListItem button onClick={(e) => { setOpen(orgInfo) }}>
+                    <LegendMark open={props.drawerOpen} orgInfo={orgInfo} />
                 </ListItem>
             </div>
         )
@@ -64,13 +70,14 @@ const RoleLegend = (props) => {
     }
 
     const renderUserRole = (type) => {
-        return (localStorage.selectRole == 'AdminManager') ? (type !== 'Monitoring' && type !== 'Audit Logs' ? 'Manage' : 'View') :
-            (localStorage.selectRole == 'DeveloperManager') ? legendRoles.Developer['Manager'][type] :
-                (localStorage.selectRole == 'DeveloperContributor') ? legendRoles.Developer['Contributor'][type] :
-                    (localStorage.selectRole == 'DeveloperViewer') ? legendRoles.Developer['Viewer'][type] :
-                        (localStorage.selectRole == 'OperatorManager') ? legendRoles.Operator['Manager'][type] :
-                            (localStorage.selectRole == 'OperatorContributor') ? legendRoles.Operator['Contributor'][type] :
-                                (localStorage.selectRole == 'OperatorViewer') ? legendRoles.Operator['Viewer'][type] : ''
+        let role = redux_org.role(orgInfo)
+        return (role == ADMIN_MANAGER) ? (type !== 'Monitoring' && type !== 'Audit Logs' ? 'Manage' : 'View') :
+            (role == DEVELOPER_MANAGER) ? legendRoles.developer['Manager'][type] :
+                (role == DEVELOPER_CONTRIBUTOR) ? legendRoles.developer['Contributor'][type] :
+                    (role == DEVELOPER_VIEWER) ? legendRoles.developer['Viewer'][type] :
+                        (role == OPERATOR_MANAGER) ? legendRoles.operator['Manager'][type] :
+                            (role == OPERATOR_CONTRIBUTOR) ? legendRoles.operator['Contributor'][type] :
+                                (role === OPERATOR_VIEWER) ? legendRoles.operator['Viewer'][type] : ''
     }
 
     return (
@@ -92,7 +99,7 @@ const RoleLegend = (props) => {
                         <TableHead>
                             <TableRow>
                                 <TableCell colSpan={2} style={{ padding: 10 }}>
-                                    <LegendMark open={true}/>
+                                    <LegendMark open={true} />
                                 </TableCell>
                             </TableRow>
                         </TableHead>
