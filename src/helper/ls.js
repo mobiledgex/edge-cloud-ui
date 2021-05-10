@@ -1,4 +1,4 @@
-import { getOrganization, isAdmin } from "../services/model/format"
+import {redux_org} from '../helper/reduxData'
 
 export const LS_USER_META_DATA = 'usermetadata'
 export const LS_ORGANIZATION_INFO = 'organizationInfo'
@@ -14,14 +14,15 @@ export const getUserMetaData = () => {
     return data
 }
 
-export const orgUserMetaDataLS = () => {
+export const orgUserMetaDataLS = (self) => {
     let data = {}
-    if (isAdmin()) {
+    let org = redux_org.nonAdminOrg(self)
+    if (redux_org.isAdmin(self)) {
         data = getUserMetaData()
     }
-    else if (getOrganization()) {
+    else if (org) {
         data = getUserMetaData()
-        return data[getOrganization()] ? data[getOrganization()] : {}
+        return data[org] ? data[org] : {}
     }
     return data
 }

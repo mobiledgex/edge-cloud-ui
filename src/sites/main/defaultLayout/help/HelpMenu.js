@@ -7,13 +7,15 @@ import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import WhatsNew from './whatsnew'
 import { tutor } from '../../../../tutorial'
 import './style.css'
-import { isAdmin } from '../../../../services/model/format';
+import { redux_org } from '../../../../helper/reduxData';
 
 const HelpMenu = (props) => {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [openNew, setOpenNew] = React.useState(false);
     const viewMode = useSelector(state => state.ViewMode.mode);
+    const orgInfo = useSelector(state => state.organizationInfo.data);
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -24,9 +26,9 @@ const HelpMenu = (props) => {
 
     const docClick = () => {
         setAnchorEl(null);
-        let path = tutor(viewMode, true)
+        let path = tutor(orgInfo, viewMode, true)
         if (path) {
-            window.open(tutor(viewMode, true), '_blank');
+            window.open(tutor(orgInfo, viewMode, true), '_blank');
         }
     };
 
@@ -47,12 +49,12 @@ const HelpMenu = (props) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                {isAdmin() ? null :<MenuItem onClick={docClick} disabled={!(viewMode && tutor(viewMode, true))}>
-                    <DescriptionOutlinedIcon fontSize="small" color={viewMode && tutor(viewMode, true) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
+                {redux_org.isAdmin(orgInfo) ? null :<MenuItem onClick={docClick} disabled={!(viewMode && tutor(orgInfo, viewMode, true))}>
+                    <DescriptionOutlinedIcon fontSize="small" color={viewMode && tutor(orgInfo, viewMode, true) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
                     <ListItemText primary="Guide" />
                 </MenuItem>}
                 <MenuItem onClick={newClick}>
-                    <NewReleasesIcon fontSize="small" color={viewMode && tutor(viewMode, true) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
+                    <NewReleasesIcon fontSize="small" color={viewMode && tutor(orgInfo, viewMode, true) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
                     <ListItemText primary="What's new" />
                 </MenuItem>
             </Menu>

@@ -1,10 +1,11 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import EventList from '../../list/EventList'
 import { orgEvents } from '../../../../../services/model/events'
-import { getOrganization, isAdmin } from '../../../../../services/model/format'
+import {redux_org} from '../../../../../helper/reduxData'
 import { sendRequest } from '../../services/service'
 import randomColor from 'randomcolor'
-import { withRouter } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { IconButton, Tooltip } from '@material-ui/core'
@@ -100,7 +101,7 @@ class MexAppEvent extends React.Component {
             this.updateState({ loading: true })
             let mc = await sendRequest(this, orgEvents({
                 match: {
-                    orgs: [isAdmin() ? this.props.org : getOrganization()],
+                    orgs: [redux_org.isAdmin(this) ? this.props.org : redux_org.orgName(this)],
                     types: ["event"],
                     tags: { app: "*" }
                 },
@@ -140,7 +141,7 @@ class MexAppEvent extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
-        if (!isAdmin() || this.props.org) {
+        if (!redux_org.isAdmin(this) || this.props.org) {
             this.event(this.props.range)
         }
     }
@@ -149,4 +150,11 @@ class MexAppEvent extends React.Component {
         this._isMounted = false
     }
 }
-export default withRouter(MexAppEvent);
+
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
+export default withRouter(connect(mapStateToProps, null)(MexAppEvent));

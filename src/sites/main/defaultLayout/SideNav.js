@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useSelector } from "react-redux";
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -24,8 +25,7 @@ import { useHistory, useRouteMatch } from 'react-router-dom';
 
 //Header
 import Header from './Header'
-import { validateRole } from '../../../constant';
-import { getUserRole } from '../../../services/model/format';
+import { validateRole } from '../../../constant/role';
 
 const drawerWidth = 250;
 
@@ -115,7 +115,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 const Options = (props) => {
-    const { options, sub, drawerOpen } = props
+    const { options, sub, drawerOpen, orgInfo } = props
     const [pageId, setPageId] = React.useState(0)
     const childRef = React.createRef(null)
     let { url } = useRouteMatch();
@@ -168,7 +168,7 @@ const Options = (props) => {
                     {
                         item.divider ?
                             <Divider /> :
-                            validateRole(item.roles) ? <React.Fragment>
+                            validateRole(item.roles, orgInfo) ? <React.Fragment>
                                 <Tooltip title={renderPopover(item)} interactive placement="right" arrow>
                                     {renderItem(item)}
                                 </Tooltip>
@@ -189,6 +189,7 @@ const SideNav = (props) => {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(true);
+    const orgInfo = useSelector(state => state.organizationInfo.data)
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -220,7 +221,7 @@ const SideNav = (props) => {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Header />
+                    <Header  roles={props.roles}/>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -244,7 +245,7 @@ const SideNav = (props) => {
                 </div>
                 {open ? <Divider /> : null}
                 <RoleLegend drawerOpen={open}/>
-                {getUserRole() ? <Options options={props.data} drawerOpen={open} /> : null}
+                {orgInfo ? <Options options={props.data} drawerOpen={open} orgInfo={orgInfo}/> : null}
             </Drawer>
             <main className={classes.content}>
                 {props.children}

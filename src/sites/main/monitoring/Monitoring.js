@@ -7,7 +7,8 @@ import { Card, LinearProgress } from '@material-ui/core'
 
 import * as constant from './helper/Constant'
 import * as dateUtil from '../../../utils/date_util'
-import { fields, getUserRole, isAdmin, getOrganization } from '../../../services/model/format';
+import { fields } from '../../../services/model/format';
+import { redux_org } from '../../../helper/reduxData';
 
 import MonitoringToolbar from './toolbar/MonitoringToolbar'
 
@@ -33,18 +34,17 @@ import './style.css'
 import sortBy from 'lodash/sortBy'
 import { Skeleton } from '@material-ui/lab';
 import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../utils/sharedPreferences_util';
-import { OPERATOR } from '../../../constant';
 import isEqual from 'lodash/isEqual';
 
 const defaultParent = () => {
-    return constant.metricParentTypes()[getUserRole().includes(constant.OPERATOR) ? 2 : 0]
+    return constant.metricParentTypes()[redux_org.isOperator(this) ? 2 : 0]
 }
 
 const defaultMetricType = (parent) => {
     let id = parent.id
     let metricTypeKeys = constant.visibility(parent.id)
     let pref = id === constant.PARENT_CLOUDLET ? PREF_M_CLOUDLET_VISIBILITY : id === constant.PARENT_CLUSTER_INST ? PREF_M_CLUSTER_VISIBILITY : PREF_M_APP_VISIBILITY
-    let monitoringPrefs = monitoringPref(pref)
+    let monitoringPrefs = monitoringPref(this, pref)
     return monitoringPrefs ? metricTypeKeys.map(data => { if (monitoringPrefs.includes(data.header)) { return data.field } }) : metricTypeKeys.map(metricType => { return metricType.field })
 }
 
@@ -57,7 +57,7 @@ const timeRangeInMin = (range) => {
 }
 
 const defaultRegion = (regions) => {
-    return monitoringPref(PREF_M_REGION) ? monitoringPref(PREF_M_REGION) : regions
+    return monitoringPref(this, PREF_M_REGION) ? monitoringPref(this, PREF_M_REGION) : regions
 }
 
 class Monitoring extends React.Component {
@@ -138,7 +138,7 @@ class Monitoring extends React.Component {
     }
 
     onParentChange = async () => {
-        if (getUserRole().includes(OPERATOR) && this.state.filter.parent.id !== constant.PARENT_CLOUDLET) {
+        if (redux_org.isOperator(this) && this.state.filter.parent.id !== constant.PARENT_CLOUDLET) {
             this.regions = this.privateRegions
         }
         else {
@@ -280,14 +280,14 @@ class Monitoring extends React.Component {
         const { filter, isPrivate } = this.state
         let parent = filter.parent
         let parentId = parent.id
-        if (this.regions && this.regions.length > 0 && constant.validateRole(parent.role)) {
+        if (this.regions && this.regions.length > 0 && constant.validateRole(parent.role, redux_org.roleType(this))) {
             let count = this.regions.length
             this.updateState({ loading: true })
             this.regions.forEach(async (region) => {
                 let showRequests = parent.showRequest
                 let requestList = []
                 requestList = showRequests.map(showRequest => {
-                    let org = isAdmin() ? this.state.selectedOrg : getOrganization()
+                    let org = redux_org.isAdmin(this) ? this.state.selectedOrg : redux_org.orgName(this)
                     return showRequest({ region, org, type: this.orgType, isPrivate })
                 })
                 let mcList = await sendMultiRequest(this, requestList)
@@ -331,7 +331,7 @@ class Monitoring extends React.Component {
     defaultStructure = () => {
         let avgData = {}
         let parent = this.state.filter.parent
-        if (constant.validateRole(parent.role)) {
+        if (constant.validateRole(parent.role, redux_org.roleType(this))) {
             this.regions.map((region) => {
                 avgData[region] = {}
             })
@@ -362,7 +362,7 @@ class Monitoring extends React.Component {
         this.props.handleViewMode(HELP_MONITORING)
         if (this._isMounted) {
             this.setState({ avgData: this.defaultStructure() }, () => {
-                if (isAdmin()) {
+                if (redux_org.isAdmin(this)) {
                     this.fetchOrgList()
                 }
                 else {
@@ -379,7 +379,8 @@ class Monitoring extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        privateAccess: state.privateAccess.data
+        privateAccess: state.privateAccess.data,
+        organizationInfo: state.organizationInfo.data
     }
 };
 

@@ -9,16 +9,20 @@ import { CURRENT_USER, SHOW_ROLE, SHOW_CONTROLLER } from '../../services/model/e
 import Menu from './Menu'
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
-import { LS_REGIONS, OPERATOR, validatePrivateAccess } from '../../constant';
-import { getUserRole } from '../../services/model/format';
+import { LS_REGIONS, validatePrivateAccess } from '../../constant';
+import { fields } from '../../services/model/format';
 import * as ls from '../../helper/ls';
 import { sendMultiRequest } from './monitoring/services/service'
+import { getToken } from '../../services/model/serverData';
+import { showOrganizations } from '../../services/model/organization';
+import { redux_org } from '../../helper/reduxData';
 class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             mexAlertMessage: undefined,
-            tokenValid: false
+            tokenValid: false,
+            roles:[]
         };
         this.worker = new RoleWorker();
     }
@@ -33,33 +37,44 @@ class Main extends React.Component {
     }
 
     render() {
-        const { tokenValid } = this.state
+        const { tokenValid, roles } = this.state
         return (
             <div className='view_body'>
                 <Spinner />
-                {tokenValid ? <Menu /> : null}
+                {tokenValid ? <Menu roles={roles} /> : null}
                 {this.state.mexAlertMessage ? <MexAlert data={this.state.mexAlertMessage} onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
             </div>
         );
     }
 
+    cacheOrgInfo = (data) => {
+        this.props.handleOrganizationInfo(data)
+        localStorage.setItem(ls.LS_ORGANIZATION_INFO, JSON.stringify(data))
+    }
+
     validateAdmin = (dataList) => {
-        this.worker.postMessage({ data: dataList })
+        this.worker.postMessage({ data: dataList, request: showOrganizations(), token: getToken(this) })
         this.worker.addEventListener('message', async (event) => {
+            let roles = event.data.roles
+            this.setState({ roles })
             if (event.data.isAdmin) {
-                let role = event.data.role
-                localStorage.removeItem('selectOrg')
-                localStorage.removeItem(ls.LS_ORGANIZATION_INFO)
-                localStorage.setItem('selectRole', role)
-                this.props.handleUserRole(role)
+                    let roleInfo = roles[0]
+                    this.cacheOrgInfo(roles[0])
+                    this.props.handleUserRole(roleInfo.role)
             }
             else {
-                if (getUserRole().includes(OPERATOR)) {
-                    let privateAccess = await validatePrivateAccess(this, getUserRole())
+                let orgInfo = ls.organizationInfo()
+                if(orgInfo && orgInfo[fields.isAdmin])
+                {
+                    localStorage.removeItem(ls.LS_ORGANIZATION_INFO) 
+                }
+                if (redux_org.isOperator(this)) {
+                    let privateAccess = await validatePrivateAccess(this)
                     this.props.handlePrivateAccess(privateAccess)
                 }
                 this.props.handleOrganizationInfo(ls.organizationInfo())
-                this.props.handleUserRole(getUserRole())
+                this.props.handleUserRole(redux_org.role(this))
+                redux_org.orgName(this)
             }
         });
     }
@@ -114,7 +129,8 @@ const mapStateToProps = (state) => {
     return {
         userInfo: state.userInfo ? state.userInfo.data : null,
         alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg },
-        viewMode: state.ViewMode ? state.ViewMode.mode : null
+        viewMode: state.ViewMode ? state.ViewMode.mode : null,
+        organizationInfo: state.organizationInfo.data
     }
 };
 

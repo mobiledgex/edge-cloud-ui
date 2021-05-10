@@ -22,11 +22,21 @@ class DataView extends React.Component {
         if (page && page.roles) {
             let roles = page.roles
             if (roles.includes(redux_org.roleType(orgInfo))) {
-                this.props.resetView()
+                if (this.props.resetView) {
+                    this.props.resetView()
+                }
             }
             else {
                 this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
             }
+        }
+        else if (page && page.roles === undefined) {
+            if (this.props.resetView) {
+                this.props.resetView()
+            }
+        }
+        else {
+            this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
         }
     }
 

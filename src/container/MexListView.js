@@ -20,6 +20,7 @@ import { prefixSearchPref, showMapPref } from '../utils/sharedPreferences_util';
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import ListMexMap from './map/ListMexMap'
 import cloneDeep from 'lodash/cloneDeep';
+import isEqual from 'lodash/isEqual';
 import { ACTION_DELETE, ACTION_EDGE_BOX_ENABLE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_REBOOT, ACTION_UPGRADE, ACTION_WARNING, ACTION_POOL_ACCESS_DEVELOPER, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../constant/actions';
 
 class MexListView extends React.Component {
@@ -112,11 +113,11 @@ class MexListView extends React.Component {
         if (data) {
             if (action.ws) {
                 this.props.handleLoadingSpinner(true);
-                serverData.sendWSRequest(this, action.onClick(data), this.onDeleteWSResponse, data)
+                serverData.sendWSRequest(this, action.onClick(this, data), this.onDeleteWSResponse, data)
             }
             else {
                 let valid = false
-                let mc = await serverData.sendRequest(this, action.onClick(data))
+                let mc = await serverData.sendRequest(this, action.onClick(this, data))
                 if (mc && mc.response && mc.response.status === 200) {
                     this.props.handleAlertInfo('success', `${mc.request.success}`)
                     filterList.splice(filterList.indexOf(data), 1)
@@ -170,10 +171,10 @@ class MexListView extends React.Component {
     onDeleteMultiple = async (action, data) => {
         if (action.ws) {
             this.props.handleLoadingSpinner(true)
-            serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, { action: action, data: data })
+            serverData.sendWSRequest(this, action.onClick(this, data), this.onMultiResponse, { action: action, data: data })
         }
         else {
-            let mc = await serverData.sendRequest(this, action.onClick(data))
+            let mc = await serverData.sendRequest(this, action.onClick(this, data))
             let message = ''
             let code = 404
             if (mc && mc.response && mc.response.status === 200) {
@@ -419,11 +420,11 @@ class MexListView extends React.Component {
         let requestList = []
         if (this.requestInfo.id === constant.PAGE_CLOUDLETS) {
             requestType.map(request => {
-                requestList.push(request(data, true))
+                requestList.push(request(this, data, true))
             })
         }
         else {
-            requestList.push(requestType[0](data, true))
+            requestList.push(requestType[0](this, data, true))
         }
         serverData.sendMultiRequest(this, requestList, this.specificResponse)
     }
@@ -560,6 +561,13 @@ class MexListView extends React.Component {
 
     }
 
+    componentDidUpdate(preProps, preState) {
+        if(!isEqual(this.props.organizationInfo, preProps.organizationInfo))
+        {
+            this.dataFromServer(this.selectedRegion) 
+        }
+    }
+
     componentDidMount() {
         this._isMounted = true
         this.dataFromServer(REGION_ALL)
@@ -571,6 +579,12 @@ class MexListView extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
@@ -579,4 +593,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(MexListView));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(MexListView));

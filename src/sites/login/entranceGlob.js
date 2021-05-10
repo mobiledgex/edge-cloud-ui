@@ -5,8 +5,8 @@ import * as actions from '../../actions';
 import { ADMIN, LOCAL_STRAGE_KEY, LS_REGIONS, LS_USER_META_DATA, PAGE_ORGANIZATIONS } from '../../constant';
 import  Spinner from '../../hoc/loader/Spinner';
 import MexAlert from '../../hoc/alert/AlertDialog';
+import { redux_org } from '../../helper/reduxData';
 import './style.css'
-import { getUserRole } from '../../services/model/format';
 class EntranceGlobe extends Component {
 
     constructor(props) {
@@ -22,11 +22,6 @@ class EntranceGlobe extends Component {
             localStorage.removeItem(LOCAL_STRAGE_KEY);
             localStorage.removeItem(LS_USER_META_DATA);
             localStorage.removeItem(LS_REGIONS);
-            if(getUserRole().includes(ADMIN))
-            {
-                localStorage.removeItem('selectRole');
-                localStorage.removeItem('selectOrg');
-            }
         }
         else if (this.props.match.path === '/passwordreset') {
             this.props.handleChangeLoginMode('resetPass')
@@ -87,7 +82,8 @@ function mapStateToProps(state) {
     return {
         user: state.user,
         loginMode: state.loginMode ? state.loginMode.mode : null,
-        alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg }
+        alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg },
+        organizationInfo: state.organizationInfo.data
     }
 }
 const mapDispatchProps = (dispatch) => {

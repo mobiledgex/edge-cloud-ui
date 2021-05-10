@@ -10,7 +10,8 @@ import uuid from 'uuid'
 import CloseIcon from '@material-ui/icons/Close';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import MexCalendar from '../../../../hoc/calendar/MexCalendar'
-import { fields, isAdmin } from '../../../../services/model/format';
+import { fields } from '../../../../services/model/format';
+import { redux_org } from '../../../../helper/reduxData';
 import SelectMenu from '../../../../hoc/selectMenu/SelectMenu'
 import { FixedSizeList } from 'react-window';
 import Help from '../auditLog/Help'
@@ -219,7 +220,7 @@ class EventLog extends React.Component {
 
     customRender = () => {
         return (
-            isAdmin() ? <div className='calendar-dropdown-select'>
+            redux_org.isAdmin(this) ? <div className='calendar-dropdown-select'>
                 <SelectMenu search={true} labelKey={fields.organizationName} dataList={this.props.organizationList} onChange={this.props.onOrgChange} placeholder='Select Organization'/>
             </div> : null)
     }
@@ -282,6 +283,13 @@ class EventLog extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
@@ -289,4 +297,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(EventLog));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(EventLog));

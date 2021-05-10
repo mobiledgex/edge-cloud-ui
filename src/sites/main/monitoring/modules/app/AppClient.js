@@ -1,9 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import HorizontalBar from '../../charts/horizontalBar/MexHorizontalBar'
 import { clientMetrics } from '../../../../../services/model/clientMetrics'
 import { sendRequest } from '../../services/service'
-import { withRouter } from 'react-router-dom'
-import { getOrganization, isAdmin } from '../../../../../services/model/format'
+import {redux_org} from '../../../../../helper/reduxData'
 import MexWorker from '../../services/client.worker.js'
 
 class MexAppClient extends React.Component {
@@ -47,7 +48,7 @@ class MexAppClient extends React.Component {
             selector: "api",
             starttime: range.starttime,
             endtime: range.endtime
-        }, isAdmin() ? this.props.org : getOrganization(), this.props.isPrivate))
+        }, redux_org.isAdmin(this) ? this.props.org : redux_org.orgName(this), this.props.isPrivate))
         if (mc && mc.response && mc.response.status === 200) {
             let worker = new MexWorker();
             worker.postMessage({
@@ -87,7 +88,7 @@ class MexAppClient extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
-        if (!isAdmin() || this.props.org) {
+        if (!redux_org.isAdmin(this) || this.props.org) {
             this.client(this.props.range)
         }
     }
@@ -97,4 +98,10 @@ class MexAppClient extends React.Component {
     }
 }
 
-export default withRouter(MexAppClient);
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
+export default withRouter(connect(mapStateToProps, null)(MexAppClient));

@@ -1,9 +1,7 @@
-import React from 'react'
 import { TableRow, TableCell} from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
-import { getUserRole } from '../../services/model/format';
 
-export const checkRole = (form) => {
+export const checkRole = (selectedRole, form) => {
     let roles = form.roles
     let visible = true
     if (roles) {
@@ -11,7 +9,7 @@ export const checkRole = (form) => {
         form.detailView = false
         for (let i = 0; i < roles.length; i++) {
             let role = roles[i]
-            if (role === getUserRole()) {
+            if (role === selectedRole) {
                 visible = true
                 form.detailView = true
                 break;

@@ -1,17 +1,18 @@
 import React from 'react';
-import {Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
+import { useSelector } from "react-redux";
+import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import * as constant from '../../constant'
-import {getUserRole} from '../../services/model/format';
-import {syntaxHighLighter} from '../../hoc/highLighter/highLighter'
-import {time} from '../../utils/date_util'
+import { syntaxHighLighter } from '../../hoc/highLighter/highLighter'
+import { time } from '../../utils/date_util'
+import {redux_org} from '../../helper/reduxData'
 
-const checkRole = (form) => {
+const checkRole = (selectedRole, form) => {
     let roles = form.roles
     if (roles) {
         let visible = false
         for (let i = 0; i < roles.length; i++) {
             let role = roles[i]
-            if (role === getUserRole()) {
+            if (role === selectedRole) {
                 visible = true
                 break;
             }
@@ -23,7 +24,7 @@ const checkRole = (form) => {
 
 const getHighLighter = (language, data) => {
     return (
-        <div style={{backgroundColor: 'grey', padding: 1, overflow:'auto', maxHeight:'50vh', maxWidth:'50vw', border:'1px solid #808080'}}>
+        <div style={{ backgroundColor: 'grey', padding: 1, overflow: 'auto', maxHeight: '50vh', maxWidth: '50vw', border: '1px solid #808080' }}>
             {syntaxHighLighter(language, data.toString())}
         </div>
     )
@@ -54,8 +55,7 @@ const getArray = (dataList) => {
     return value
 }
 
-const isArrayString = (item, data)=>
-{
+const isArrayString = (item, data) => {
     return Array.isArray(data) && item.dataType === constant.TYPE_STRING
 }
 
@@ -85,6 +85,7 @@ const getArrayRow = (id, item, dataList) => {
 
 
 const MexDetailViewer = (props) => {
+    const orgInfo = useSelector(state => state.organizationInfo.data)
     let detailData = props.detailData;
 
     const getData = (info, item) => {
@@ -105,7 +106,7 @@ const MexDetailViewer = (props) => {
             )
         }
     }
-    
+
     const subView = (keys, dataList) => {
         return (
             <Table size='small'>
@@ -122,7 +123,7 @@ const MexDetailViewer = (props) => {
                             <TableRow key={i} style={{ backgroundColor: i % 2 === 0 ? '#1E2123' : 'transparent' }}>{(
                                 keys.map((item, j) => {
                                     return (
-                                        <TableCell key={j} style={{borderBottom: "none"}}>
+                                        <TableCell key={j} style={{ borderBottom: "none" }}>
                                             {getData(data, item)}
                                         </TableCell>)
                                 }))
@@ -133,12 +134,12 @@ const MexDetailViewer = (props) => {
             </Table>
         )
     }
-    
+
     const getRow = (id, item, info, subView) => {
         return (
             <TableRow key={id}>
-                <TableCell style={{borderBottom: "none", verticalAlign: 'text-top', width: '20%'}}>{item.label}</TableCell>
-                <TableCell style={{borderBottom: "none"}}>
+                <TableCell style={{ borderBottom: "none", verticalAlign: 'text-top', width: '20%' }}>{item.label}</TableCell>
+                <TableCell style={{ borderBottom: "none" }}>
                     {subView ? info : getData(info, item)}
                 </TableCell>
             </TableRow>
@@ -146,12 +147,12 @@ const MexDetailViewer = (props) => {
     }
 
     return (
-        <Table style={{width: '100%', backgroundColor: '#292c33', border: 'none'}}>
+        <Table style={{ width: '100%', backgroundColor: '#292c33', border: 'none' }}>
             <TableBody>
                 {props.keys.map((item, i) => {
                     let data = detailData[item.field]
                     return (
-                        checkRole(item) ?
+                        checkRole(redux_org.role(orgInfo), item) ?
                             (data !== undefined && (item.detailView === undefined || item.detailView)) ?
                                 item.keys ?
                                     data.length > 0 ?

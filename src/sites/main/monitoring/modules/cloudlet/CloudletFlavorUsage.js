@@ -1,11 +1,12 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { sendRequest } from '../../services/service'
 import { cloudletFlavorUsageMetrics } from '../../../../../services/model/cloudletMetrics'
-import { getOrganization, isAdmin } from '../../../../../services/model/format'
 import LineChart from '../../charts/linechart/MexLineChart'
 import MexWorker from '../../services/flavor.worker.js'
 import { Card, GridListTile } from '@material-ui/core'
 import { timezonePref } from '../../../../../utils/sharedPreferences_util'
+import {redux_org} from '../../../../../helper/reduxData'
 
 const metric = { field: 'count', serverField: 'count', serverHead: 'cloudlet-flavor-usage', header: 'Flavor Usage', position: 4, steppedLine:'after' }
 class CloudletFlavorUsage extends React.Component {
@@ -68,7 +69,7 @@ class CloudletFlavorUsage extends React.Component {
         let requestData = {
             region: region,
             cloudlet: {
-                organization: isAdmin() ? this.props.org : getOrganization(),
+                organization: redux_org.isAdmin(this) ? this.props.org : redux_org.orgName(this),
             },
             starttime: range.starttime,
             endtime: range.endtime,
@@ -120,4 +121,10 @@ class CloudletFlavorUsage extends React.Component {
     }
 }
 
-export default CloudletFlavorUsage
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
+export default connect(mapStateToProps, null)(CloudletFlavorUsage);

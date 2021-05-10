@@ -1,5 +1,6 @@
 import React from 'react'
 import {Icon, Popup} from 'semantic-ui-react';
+import { DEVELOPER } from '../../constant';
 import {fields} from './format';
 
 const TRACKED_STATE_UNKNOWN = 0
@@ -21,7 +22,7 @@ const DELETE_DONE = 15
 
 export const additionalDetail = (data) => {
     return (
-        data[fields.type] && data[fields.type].toLowerCase() === 'developer' ?
+        data[fields.type] && data[fields.type] === DEVELOPER ?
             <div style={{ margin: 20, color: 'white' }}>
                 <div className="newOrg3-2">
                     <div>

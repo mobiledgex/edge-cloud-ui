@@ -1,10 +1,12 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import LineChart from './linechart/MexLineChart'
 import { metricRequest } from '../helper/Constant'
 import { Card, GridListTile } from '@material-ui/core'
 import { timezonePref } from '../../../../utils/sharedPreferences_util'
 //services
-import { fields, getOrganization, isAdmin } from '../../../../services/model/format'
+import { fields } from '../../../../services/model/format'
+import { redux_org } from '../../../../helper/reduxData';
 import { processWorker } from '../../../../services/worker/interceptor'
 import MetricWorker from '../services/metric.worker.js'
 import { sendRequest } from '../services/service'
@@ -81,7 +83,7 @@ class MexChart extends React.Component {
             data[fields.starttime] = this.props.range.starttime
             data[fields.endtime] = this.props.range.endtime
             data[fields.selector] = metric.serverField
-            let org = isAdmin() ? this.props.org : getOrganization()
+            let org = redux_org.isAdmin(this) ? this.props.org : redux_org.orgName(this)
             let request = metricRequest(metric.serverRequest, data, org, isPrivate)
             let mc = await sendRequest(this, request)
             if (mc && mc.response && mc.response.status === 200) {
@@ -161,4 +163,10 @@ class MexChart extends React.Component {
     }
 }
 
-export default MexChart
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
+export default connect(mapStateToProps, null)(MexChart);

@@ -5,10 +5,10 @@ import Popover from '@material-ui/core/Popover';
 import { Badge, IconButton } from '@material-ui/core';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import { showAlerts } from '../../../services/model/alerts'
+import { redux_org} from '../../../helper/reduxData'
 import * as constant from '../../../constant'
 import Alerts from './alerts/Alerts'
 import './style.css'
-import { getOrganization } from '../../../services/model/format';
 
 import notificationWorker from './services/notifcation.worker.js'
 import { getToken } from '../monitoring/services/service';
@@ -96,7 +96,7 @@ class AlertGlobal extends React.Component {
     }
 
     sendRequest = (region) => {
-        this.worker.postMessage({ token: getToken(this), request: showAlerts({ region }) })
+        this.worker.postMessage({ token: getToken(this), request: showAlerts(this, { region }) })
     }
 
     fetchdata = () => {
@@ -115,7 +115,7 @@ class AlertGlobal extends React.Component {
         this.workerListener()
         this._isMounted = true
         let userRole = this.props.userRole
-        if (getOrganization() || (userRole && userRole.includes(constant.ADMIN))) {
+        if (redux_org.orgName(this) || (userRole && userRole.includes(constant.ADMIN))) {
             this.fetchdata()
         }
     }
@@ -143,11 +143,10 @@ class AlertGlobal extends React.Component {
     }
 }
 
-
-
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
     return {
         userRole: state.showUserRole ? state.showUserRole.role : null,
+        organizationInfo: state.organizationInfo.data
     }
 }
 

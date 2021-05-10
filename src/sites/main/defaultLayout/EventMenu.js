@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Menu, MenuItem, IconButton, ListItemText } from '@material-ui/core'
 import HeaderGlobalAudit from '../events/auditLog/headerGlobalAudit';
 import GlobalUsageLog from '../events/usageLog/GlobalUsageLog';
@@ -6,10 +7,10 @@ import EventNoteIcon from '@material-ui/icons/EventNote';
 import TimelineOutlinedIcon from '@material-ui/icons/TimelineOutlined';
 import EventOutlinedIcon from '@material-ui/icons/EventOutlined';
 import BallotOutlinedIcon from '@material-ui/icons/BallotOutlined';
-import { getUserRole } from '../../../services/model/format';
+import {redux_org} from '../../../helper/reduxData'
 
 const EventMenu = () => {
-
+    const orgInfo = useSelector(state => state.organizationInfo.data)
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [audit, setAudit] = React.useState(false);
     const [event, setEvent] = React.useState(false);
@@ -43,7 +44,7 @@ const EventMenu = () => {
 
 
     const visible = () => {
-        return getUserRole() !== undefined
+        return redux_org.role(orgInfo) !== undefined
     }
 
     const menuOptions = [

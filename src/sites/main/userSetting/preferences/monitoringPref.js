@@ -1,5 +1,6 @@
 
 import React from 'react'
+import { connect } from 'react-redux';
 import { Accordion as MuiAccordion, AccordionDetails, AccordionSummary, Typography } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { CHECKBOX_ARRAY } from '../../../../hoc/forms/MexForms'
@@ -7,8 +8,7 @@ import { withStyles } from '@material-ui/styles';
 import { PREF_MONITORING } from './preferences';
 import CheckBoxArray from '../../../../hoc/forms/CheckBoxArray'
 import { PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../../utils/sharedPreferences_util';
-import { getUserRole, isAdmin } from '../../../../services/model/format';
-import { DEVELOPER, OPERATOR } from '../../../../constant';
+import { redux_org } from '../../../../helper/reduxData';
 
 const cloudletVisibility = ["vCpu Infra Usage", "Disk Infra Usage", "Memory Infra Usage", "Disk Usage", "Floating IP Used", "GPU Used", "Instances Used", "RAM Used", "vCPUs Used", "Flavor Usage", "Map", "Event"]
 const clusterVisibility = ["CPU", "Memory", "Disk Usage", "Network Sent", "Network Received", "Map"]
@@ -55,9 +55,9 @@ class MonitoringPreferences extends React.Component {
 
     forms = () => ([
         { field: PREF_M_REGION, label: 'Region', formType: CHECKBOX_ARRAY, value: this.regions, expanded: true, options: this.regions, visible: true },
-        { label: 'Cloudlet', forms: this.cloudletForms(), visible: isAdmin() || getUserRole().includes(OPERATOR) },
-        { label: 'Cluster', forms: this.clusterForms(), visible: isAdmin() || getUserRole().includes(DEVELOPER) },
-        { label: 'App Instances', forms: this.appInstForms(), visible: isAdmin() || getUserRole().includes(DEVELOPER) }
+        { label: 'Cloudlet', forms: this.cloudletForms(), visible: redux_org.isAdmin(this) || redux_org.isOperator(this)},
+        { label: 'Cluster', forms: this.clusterForms(), visible: redux_org.isAdmin(this) || redux_org.isDeveloper(this)},
+        { label: 'App Instances', forms: this.appInstForms(), visible: redux_org.isAdmin(this) || redux_org.isDeveloper(this)}
     ])
 
     onValueChange = (index, form, option) => {
@@ -143,4 +143,10 @@ class MonitoringPreferences extends React.Component {
     }
 }
 
-export default MonitoringPreferences
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
+export default connect(mapStateToProps, null)(MonitoringPreferences);

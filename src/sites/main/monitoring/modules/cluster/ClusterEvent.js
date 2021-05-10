@@ -1,7 +1,8 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import EventList from '../../list/EventList'
 import { orgEvents } from '../../../../../services/model/events'
-import { getOrganization, isAdmin } from '../../../../../services/model/format'
+import {redux_org} from '../../../../../helper/reduxData'
 import { sendRequest } from '../../services/service'
 import randomColor from 'randomcolor'
 import { CircularProgress, IconButton, Tooltip } from '@material-ui/core'
@@ -70,7 +71,7 @@ class MexAppEvent extends React.Component {
         this.setState({ loading: true })
         let mc = await sendRequest(this, orgEvents({
             match: {
-                orgs: [isAdmin() ? this.props.org : getOrganization()],
+                orgs: [redux_org.isAdmin(this) ? this.props.org : redux_org.orgName(this)],
                 types: ["event"],
                 tags: { cluster: "*" },
                 names: ["*cluster*", "*Cluster*"]
@@ -106,10 +107,16 @@ class MexAppEvent extends React.Component {
     }
 
     componentDidMount() {
-        if (!isAdmin() || this.props.org) {
+        if (!redux_org.isAdmin(this) || this.props.org) {
             this.event(this.props.range)
         }
     }
 }
 
-export default MexAppEvent
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
+export default connect(mapStateToProps, null)(MexAppEvent);

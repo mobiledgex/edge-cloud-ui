@@ -10,7 +10,8 @@ import { cloudletEventLogs } from '../../../../services/model/cloudletEvent'
 import { sendAuthRequest, sendRequests } from '../../../../services/model/serverWorker'
 import { showOrganizations } from '../../../../services/model/organization'
 
-import { fields, getOrganization, getUserRole, isAdmin } from '../../../../services/model/format';
+import { fields } from '../../../../services/model/format';
+import {redux_org}  from '../../../../helper/reduxData'
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/styles';
 import * as dateUtil from '../../../../utils/date_util'
@@ -179,22 +180,20 @@ class GlobalUsageLog extends React.Component {
 
     eventLogData = async (starttime, endtime, isInit) => {
         let regions = localStorage.regions ? localStorage.regions.split(",") : [];
-        let org = getOrganization() ? getOrganization() : this.selectedOrg
-        if(org)
-        {
-        let userRole = getUserRole()
-        if (userRole && regions && regions.length > 0) {
-            let requestList = []
-            regions.map(region => {
-                let data = {}
-                data[fields.region] = region
-                data[fields.starttime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
-                data[fields.endtime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
-                if (userRole.includes(constant.ADMIN) || userRole.includes(constant.DEVELOPER)) {
+        let org = redux_org.orgName(this) ? redux_org.orgName(this) : this.selectedOrg
+        if (org) {
+            if (regions && regions.length > 0) {
+                let requestList = []
+                regions.map(region => {
+                    let data = {}
+                    data[fields.region] = region
+                    data[fields.starttime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
+                    data[fields.endtime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
+                    if (redux_org.isAdmin(this) || redux_org.isDeveloper(this)) {
                     requestList.push(clusterEventLogs(cloneDeep(data), org))
                     requestList.push(appInstEventLogs(cloneDeep(data), org))
                 }
-                if (userRole.includes(constant.ADMIN) || userRole.includes(constant.OPERATOR)) {
+                if (redux_org.isAdmin(this) || redux_org.isOperator(this)) {
                     requestList.push(cloudletEventLogs(cloneDeep(data), org))
                 }
             })
@@ -260,7 +259,7 @@ class GlobalUsageLog extends React.Component {
     componentDidMount() {
         this._isMounted = true;
         let userRole = this.props.userRole
-        if (getOrganization() || (userRole && userRole.includes(constant.ADMIN))) {
+        if (redux_org.orgName(this) || (userRole && userRole.includes(constant.ADMIN))) {
             this.eventLogData(this.startRange, this.endRange)
         }
     }
@@ -274,6 +273,7 @@ class GlobalUsageLog extends React.Component {
 const mapStateToProps = (state) => {
     return {
         userRole: state.showUserRole ? state.showUserRole.role : null,
+        organizationInfo: state.organizationInfo.data
     }
 };
 

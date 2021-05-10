@@ -1,21 +1,20 @@
 import React from 'react'
-import { Table, TableBody, TableRow, IconButton, TableCell, TableContainer, Paper, TablePagination, ClickAwayListener, MenuList, Grow, Popper, MenuItem, Avatar } from '@material-ui/core'
+import { connect } from 'react-redux'
+import { Table, TableBody, IconButton, TableContainer, Paper, TablePagination, ClickAwayListener, MenuList, Grow, Popper, MenuItem, Avatar } from '@material-ui/core'
 import ListToolbar from './ListToolbar'
 import ListHeader from './ListHeader'
 import ListBody from './ListBody'
-import * as constant from '../../constant'
 //icon
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { getUserRole } from '../../services/model/format'
 import { StyledTableRow, StyledTableCell, stableSort, getComparator } from './ListConstant'
 import { ACTION_DISABLE, ACTION_LABEL } from '../../constant/actions'
+import { redux_org } from '../../helper/reduxData'
 
-const canEdit = (viewerEdit, action) => {
+const canEdit = (self, viewerEdit, action) => {
     let valid = true
     if (action.type === 'Edit') {
-        let role = getUserRole()
-        if (role && role.includes(constant.VIEWER)) {
+        if (redux_org.isViewer(self)) {
             valid = false
         }
     }
@@ -43,7 +42,7 @@ class ListViewer extends React.Component {
             actionEl: null,
             selectedRow: {}
         }
-        this.actionMenu = props.actionMenu ? props.actionMenu.filter(action => { return canEdit(props.viewerEdit, action) }) : []
+        this.actionMenu = props.actionMenu ? props.actionMenu.filter(action => { return canEdit(this, props.viewerEdit, action) }) : []
         this.columnLength = 0
     }
 
@@ -91,20 +90,18 @@ class ListViewer extends React.Component {
         this.columnLength += 1
     }
 
-    actionLabel = (action, data)=>{
-        if(typeof action.label === 'function')
-        {
+    actionLabel = (action, data) => {
+        if (typeof action.label === 'function') {
             return action.label(ACTION_LABEL, action, data)
         }
-        else
-        {
+        else {
             return action.label
         }
     }
 
     actionMenuView = () => {
         const { actionEl, selectedRow } = this.state
-        const {viewerEdit} = this.props
+        const { viewerEdit } = this.props
         return (
             this.actionMenu.length > 0 ?
                 <Popper open={Boolean(actionEl)} anchorEl={actionEl} role={undefined} transition disablePortal>
@@ -117,7 +114,7 @@ class ListViewer extends React.Component {
                                 <ClickAwayListener onClickAway={() => this.setState({ actionEl: null })}>
                                     <MenuList autoFocusItem={Boolean(actionEl)} id="menu-list-grow" >
                                         {this.actionMenu.map((action, i) => {
-                                            let visible = canEdit(viewerEdit, action) ? action.visible ? action.visible(selectedRow) : true : false
+                                            let visible = canEdit(this, viewerEdit, action) ? action.visible ? action.visible(selectedRow) : true : false
                                             return visible ? <MenuItem key={i} onClick={(e) => { this.actionClose(action) }} disabled={action.disable ? action.disable(ACTION_DISABLE, action, selectedRow) : false}>{this.actionLabel(action, selectedRow)}</MenuItem> : null
                                         })}
                                     </MenuList>
@@ -170,7 +167,7 @@ class ListViewer extends React.Component {
         const grouping = this.requestInfo.grouping
         const dropList = this.props.dropList
         const { expandedGroups, page, rowsPerPage, order, orderBy } = this.state
-        const {style} = this.props
+        const { style } = this.props
         let groupedData = grouping ? this.getGroupedData(this.props.dataList) : [];
         let isGrouping = grouping && dropList.length > 0
         return (
@@ -264,4 +261,10 @@ class ListViewer extends React.Component {
     }
 }
 
-export default ListViewer
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+}
+
+export default connect(mapStateToProps, null)(ListViewer);

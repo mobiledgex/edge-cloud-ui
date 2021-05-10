@@ -5,7 +5,6 @@ import * as actions from '../../../../actions';
 import moment from 'moment'
 import AppsIcon from '@material-ui/icons/Apps';
 import CloseIcon from '@material-ui/icons/Close';
-import FilterListRoundedIcon from '@material-ui/icons/FilterListRounded';
 import { LS_USER_META_DATA } from '../../../../constant';
 import { updateUser } from '../../../../services/model/user'
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -16,7 +15,7 @@ import TimezonePref from './timezonePref'
 import MonitoringPref from './monitoringPref'
 
 import cloneDeep from 'lodash/cloneDeep'
-import { getOrganization, getUserRole, isAdmin } from '../../../../services/model/format';
+import { redux_org } from '../../../../helper/reduxData';
 import { getUserMetaData } from '../../../../helper/ls';
 import { timezonePref } from '../../../../utils/sharedPreferences_util';
 import Help from '../../events/auditLog/Help'
@@ -111,8 +110,9 @@ class Preferences extends React.Component {
     }
 
     getOrgData = (data) => {
-        if (getUserRole() && !isAdmin()) {
-            data = data[getOrganization()]
+        let org = redux_org.nonAdminOrg(this)
+        if (org) {
+            data = data[org]
         }
         return data
     }
@@ -120,7 +120,7 @@ class Preferences extends React.Component {
     updateOrgData = (update) => {
         this.setState(prevState => {
             let data = prevState.data
-            data[getOrganization()] = update
+            data[redux_org.nonAdminOrg(this)] = update
             return { data }
         })
     }
@@ -137,7 +137,7 @@ class Preferences extends React.Component {
             case PREF_TIMEZONE:
                 return <TimezonePref data={data} update={this.updateData} />
             case PREF_MONITORING:
-                return <MonitoringPref data={isAdmin() ? data : this.getOrgData(data)} update={isAdmin() ? this.updateData : this.updateOrgData} />
+                return <MonitoringPref data={redux_org.isAdmin(this) ? data : this.getOrgData(data)} update={redux_org.isAdmin(this) ? this.updateData : this.updateOrgData} />
         }
     }
 
@@ -169,7 +169,7 @@ class Preferences extends React.Component {
                                 <List dense={true}>
                                     {preferencesList.map((parent, i) => (
                                         parent.id === HEADER ?
-                                            getOrganization() ? <div key={i} align="left" style={{ marginTop: `${i > 0 ? '15px' : '0px'}` }}>
+                                            redux_org.nonAdminOrg(this) ? <div key={i} align="left" style={{ marginTop: `${i > 0 ? '15px' : '0px'}` }}>
                                                 <strong style={{ color: '#888888', marginBottom: 10 }}><b>{parent.label}</b></strong>
                                             </div> : null
                                             :
@@ -200,13 +200,20 @@ class Preferences extends React.Component {
         catch (e) {
             data = {}
         }
-        if (!isAdmin()) {
-            let org = getOrganization()
+        if (!redux_org.isAdmin(this)) {
+            let org = redux_org.nonAdminOrg(this)
             data[org] = data[org] ? data[org] : {}
         }
         this.setState({ data: data })
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
 
 const mapDispatchProps = (dispatch) => {
     return {
@@ -214,4 +221,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(Preferences));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(Preferences));

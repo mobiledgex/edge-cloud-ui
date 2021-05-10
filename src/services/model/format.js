@@ -2,10 +2,6 @@ import { toJson } from '../../utils/json_util'
 import isEqual from 'lodash/isEqual';
 import uuid from 'uuid'
 
-export const ADMIN = 'Admin'
-export const OPERATOR = 'Operator'
-export const DEVELOPER = 'Developer'
-
 export const fields = {
     uuid: 'uuid',
     region: 'region',
@@ -185,6 +181,7 @@ export const fields = {
     starttime: 'starttime',
     endtime: 'endtime',
     selector: 'selector',
+    isAdmin: 'isAdmin',
     metric: 'metric',
     location: 'location',
     values: 'values',
@@ -213,32 +210,6 @@ export const fields = {
     description: 'description',
     trusted: 'trusted',
     compatibilityVersion: 'compatibilityVersion'
-}
-
-export const getUserRole = () => {
-    return localStorage.selectRole ? localStorage.selectRole : ''
-}
-
-export const isAdmin = () => {
-    return getUserRole().includes(ADMIN)
-}
-
-export const isOperator = () => {
-    return getUserRole().includes(OPERATOR)
-}
-
-export const isDeveloper = () => {
-    return getUserRole().includes(DEVELOPER)
-}
-
-export const isViewer = () => {
-    return getUserRole().includes('Viewer')
-}
-
-export const getOrganization = () => {
-    if (localStorage.selectOrg) {
-        return localStorage.selectOrg
-    }
 }
 
 const mapObject = (currentObject, serverField) => {

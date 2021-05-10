@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux';
 import { Toolbar, Input, InputAdornment, makeStyles, Box, IconButton, Tooltip, Grid, Divider, Menu } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search';
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
@@ -9,7 +10,8 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
-import { fields, isAdmin } from '../../../../services/model/format';
+import { fields } from '../../../../services/model/format';
+import {redux_org} from '../../../../helper/reduxData'
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
@@ -144,7 +146,7 @@ const MexToolbar = (props) => {
     }
 
     const showOrg = () => {
-        return isAdmin() && props.organizations.length > 0
+        return redux_org.isAdmin(this) && props.organizations.length > 0
     }
 
     const parentType = () => {
@@ -184,4 +186,10 @@ const MexToolbar = (props) => {
 
 }
 
-export default MexToolbar
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
+export default connect(mapStateToProps, null)(MexToolbar);

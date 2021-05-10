@@ -1,6 +1,7 @@
-import { fields, getUserRole } from "./services/model/format"
+import { fields } from "./services/model/format"
 import { accessGranted } from "./services/model/privateCloudletAccess"
 import { sendRequest } from "./sites/main/monitoring/services/service"
+import { redux_org } from "./helper/reduxData"
 
 export const COLOR_GREEN = '#388E3C'
 export const COLOR_RED = '#ab2424'
@@ -44,7 +45,6 @@ export const CLUSTER_INST = 'ClusterInst'
 export const APP_INST = 'AppInst'
 export const IP_SUPPORT_STATIC = 'Static'
 export const IP_SUPPORT_DYNAMIC = 'Dynamic'
-export const APP = 'App'
 export const YES = 'Yes'
 export const NO = 'No'
 export const RUN_COMMAND = 'Run Command';
@@ -89,9 +89,9 @@ export const LIVENESS_DYNAMIC = 'Dynamic'
 export const LIVENESS_AUTOPROV = 'Auto Prov'
 
 export const ALL = 'ALL'
-export const ADMIN = 'Admin'
-export const OPERATOR = 'Operator'
-export const DEVELOPER = 'Developer'
+export const ADMIN = 'admin'
+export const OPERATOR = 'operator'
+export const DEVELOPER = 'developer'
 export const VIEWER = 'Viewer'
 export const ADMIN_MANAGER = 'AdminManager'
 export const ADMIN_CONTRIBUTOR = 'AdminContributor'
@@ -155,6 +155,30 @@ export const BILLING_TYPE_SELF = 'Self'
 export const BILLING_TYPE_PARENT = 'Parent'
 export const CLOUDLET_STATUS_READY = 2
 export const CLOUDLET_STATUS_UNKNOWN = 0
+
+export const pages = [
+    { label: 'Organizations', icon: 'supervisor_account', id: PAGE_ORGANIZATIONS, path: 'organizations' },
+    { label: 'Users & Roles', icon: 'assignment_ind', id: PAGE_USER_ROLES, path: 'user-roles' },
+    { label: 'Accounts', icon: 'dvr', id: PAGE_ACCOUNTS, path: 'accounts', roles: [ADMIN] },
+    { divider: true },
+    { label: 'Cloudlets', icon: 'cloud_queue', id: PAGE_CLOUDLETS, path: 'cloudlets' },
+    { label: 'Cloudlet Pools', icon: 'cloud_circle', id: PAGE_CLOUDLET_POOLS, path: 'cloudlet-pools', roles: [ADMIN, OPERATOR] },
+    { label: 'Cloudlet Pools', icon: 'cloud_circle', id: PAGE_POOL_ACCESS, path: 'pool-access', roles: [DEVELOPER_MANAGER] },
+    { label: 'Flavors', icon: 'free_breakfast', id: PAGE_FLAVORS, path: 'flavors', roles: [ADMIN, DEVELOPER] },
+    { label: 'Cluster Instances', icon: 'storage', id: PAGE_CLUSTER_INSTANCES, path: 'cluster-insts', roles: [ADMIN, DEVELOPER] },
+    { label: 'Apps', icon: 'apps', id: PAGE_APPS, path: 'apps', roles: [ADMIN, DEVELOPER] },
+    { label: 'App Instances', icon: 'games', id: PAGE_APP_INSTANCES, path: 'app-insts', roles: [ADMIN, DEVELOPER] },
+    {
+        label: 'Policies', icon: 'track_changes', id: PAGE_POLICIES, sub: true, options: [
+            { label: 'Auto Provisioning Policy', icon: 'group_work', id: PAGE_AUTO_PROVISIONING_POLICY, path: 'auto-prov-policy', roles: [ADMIN, DEVELOPER] },
+            { label: 'Trust Policy', icon: 'policy', id: PAGE_TRUST_POLICY, path: 'trust-policy' },
+            { label: 'Auto Scale Policy', icon: 'landscape', id: PAGE_AUTO_SCALE_POLICY, path: 'auto-scale-policy', roles: [ADMIN, DEVELOPER] },
+        ]
+    },
+    { label: 'Monitoring', icon: 'tv', id: PAGE_MONITORING, path: 'monitoring' },
+    { label: 'Alert Receivers', icon: 'notification_important', id: PAGE_ALERTS, path: 'alerts' },
+    { label: 'Billing', icon: 'payment', id: PAGE_BILLING_ORG, path: 'billing-org', roles: [ADMIN] },
+]
 
 export const getHeight = (height) => {
     return window.innerHeight - (height ? height : 85)
@@ -235,23 +259,10 @@ export const validatePhone = (form) => {
 
 export const operatorRoles = [ADMIN_MANAGER, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR]
 
-export const validateRole = (roles) => {
-    let valid = true
-    if (roles) {
-        valid = false
-        for (let role of roles) {
-            if (getUserRole().includes(role)) {
-                valid = true
-                break;
-            }
-        }
-    }
-    return valid
-}
 
 export const legendRoles =
 {
-    Developer: {
+    developer: {
         Manager: {
             'Users & Roles': 'Manage',
             'Cloudlets': 'View',
@@ -289,7 +300,7 @@ export const legendRoles =
             'Audit Logs': 'View'
         }
     },
-    Operator: {
+    operator: {
         Manager: {
             'Users & Roles': 'Manage',
             'Cloudlets': 'Manage',
@@ -329,10 +340,10 @@ export const legendRoles =
     }
 }
 
-export const validatePrivateAccess = async (self, role) => {
+export const validatePrivateAccess = async (self) => {
     let privateAccess = undefined
-    if (role.includes(OPERATOR)) {
-        let mc = await sendRequest(self, accessGranted())
+    if (redux_org.isOperator(self)) {
+        let mc = await sendRequest(self, accessGranted(self))
         if (mc.response && mc.response.status === 200) {
             let dataList = mc.response.data
             if (dataList.length > 0) {
@@ -354,6 +365,9 @@ export const validatePrivateAccess = async (self, role) => {
 }
 
 export const toFirstUpperCase = (data) => {
+    if(data)
+    {
     return data.charAt(0).toUpperCase() + data.slice(1)
+    }
 }
 

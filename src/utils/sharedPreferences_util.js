@@ -25,7 +25,7 @@ export const prefixSearchPref = () => {
     return data[PREF_PREFIX_SEARCH] ? data[PREF_PREFIX_SEARCH].toLowerCase() : ''
 }
 
-export const monitoringPref = (type) => {
-    let data = orgUserMetaDataLS()
+export const monitoringPref = (self, type) => {
+    let data = orgUserMetaDataLS(self)
     return data[PREF_MONITORING] ? data[PREF_MONITORING][type] : undefined
 }

@@ -1,10 +1,13 @@
+
+import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux';
 import { Box, Checkbox, IconButton, ListItem, ListItemIcon, ListItemText, Menu, Tooltip, Typography } from '@material-ui/core'
 import cloneDeep from 'lodash/cloneDeep'
-import React, { useEffect } from 'react'
 import { validateRole } from '../helper/Constant'
 import CheckIcon from '@material-ui/icons/Check';
 import { Icon } from 'semantic-ui-react';
 import SearchFilter from '../../../../hoc/filter/SearchFilter'
+import { redux_org } from '../../../../helper/reduxData';
 
 const fetchArray = (props) => {
     return props.data.map(data => { return props.field ? data[props.field] : data })
@@ -14,6 +17,7 @@ const MonitoringMenu = (props) => {
     const [anchorEl, setAnchorEl] = React.useState(null)
     const [filterText, setFilterText] = React.useState('')
     const [value, setValue] = React.useState([])
+    const orgInfo = useSelector(state => state.organizationInfo.data)
 
     useEffect(() => {
         setValue(props.disableDefault ? undefined : props.default ? props.default : (props.value ? props.value : (props.multiple ? fetchArray(props) : props.data[0])))
@@ -69,7 +73,7 @@ const MonitoringMenu = (props) => {
         return dataList.map((item, i) => {
             let itemData = props.labelKey ? item[props.labelKey] : item
             if (itemData.toLowerCase().includes(filterText)) {
-                let valid = item.role ? validateRole(item.role) : true
+                let valid = item.role ? validateRole(item.role, redux_org.roleType(orgInfo)) : true
                 let selectedValue = props.value ? props.value : value
                 return valid ?
                     <ListItem key={i} role={undefined} dense button onClick={() => { onChange(props.field ? item[props.field] : item) }}>

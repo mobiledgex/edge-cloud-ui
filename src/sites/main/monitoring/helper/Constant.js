@@ -4,7 +4,6 @@ import { showAppInsts } from '../../../../services/model/appInstance'
 import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys } from '../../../../services/model/clusterMetrics'
 import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys, customData as cloudletCustomData, cloudletUsageMetrics } from '../../../../services/model/cloudletMetrics'
 import { showCloudlets } from '../../../../services/model/cloudlet'
-import { getUserRole } from '../../../../services/model/format'
 import { showClusterInsts } from '../../../../services/model/clusterInstance'
 import { APP_INST_METRICS_ENDPOINT, CLOUDLET_METRICS_ENDPOINT, CLUSTER_METRICS_ENDPOINT } from '../../../../services/model/endPointTypes'
 import { CLOUDLET_METRICS_USAGE_ENDPOINT } from '../../../../services/model/endpoints'
@@ -85,10 +84,10 @@ export const metricParentTypes = () => ([
     { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showCloudlets], metricListKeys: cloudletMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.OPERATOR], customData: cloudletCustomData }
 ])
 
-export const validateRole = (roles) => {
+export const validateRole = (roles, selectedRole) => {
     let valid = false
     for (let i = 0; i < roles.length; i++) {
-        if (getUserRole().includes(roles[i])) {
+        if (selectedRole.includes(roles[i])) {
             valid = true
             break;
         }
