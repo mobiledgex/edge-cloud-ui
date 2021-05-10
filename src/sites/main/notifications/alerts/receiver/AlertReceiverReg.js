@@ -214,11 +214,11 @@ class FlavorReg extends React.Component {
                 case fields.operatorName:
                     form.rules.required = currentForm.value === 'Cloudlet'
                     form.visible = currentForm.value === 'Cloudlet' || currentForm.value === 'App Instance' || currentForm.value === 'Cluster'
-                    form.value = currentForm.value === 'Cloudlet' ? redux_org.orgName(this) : undefined
-                    form.rules.disabled = currentForm.value === 'Cloudlet' && redux_org.orgName(this) !== undefined
+                    form.value = currentForm.value === 'Cloudlet' ? redux_org.nonAdminOrg(this) : undefined
+                    form.rules.disabled = currentForm.value === 'Cloudlet' && redux_org.nonAdminOrg(this) !== undefined
                     break;
             }
-        }
+        }   
         if (isInit === undefined || isInit === false) {
             this.setState({ forms: forms })
         }
