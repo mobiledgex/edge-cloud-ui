@@ -1,8 +1,6 @@
 import React from 'react';
 import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
-//redux
-import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
 import { keys, showUsers, deleteUser } from '../../../services/model/users';
 import { HELP_USER_ROLES } from '../../../tutorial';
@@ -13,7 +11,6 @@ class UserList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentView: null,
             openAddUserView: false,
         }
         this._isMounted = false
@@ -27,11 +24,6 @@ class UserList extends React.Component {
             this.setState({ ...data })
         }
     }
-
-    resetView = () => {
-        this.updateState({ currentView: null })
-    }
-
 
     /**Action menu block */
     getDeleteActionMessage = (action, data) => {
@@ -66,9 +58,8 @@ class UserList extends React.Component {
 
 
     render() {
-        const {currentView} = this.state
         return (
-            <DataView id={PAGE_USER_ROLES} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+            <DataView id={PAGE_USER_ROLES} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
     }
 
