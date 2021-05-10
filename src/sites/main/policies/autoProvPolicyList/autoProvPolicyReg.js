@@ -5,8 +5,8 @@ import MexForms, { SELECT, DUALLIST, INPUT, BUTTON, HEADER, MULTI_FORM, MAIN_HEA
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import * as serverData from '../../../../services/model/serverData';
-import { DEVELOPER, fields, getOrganization, updateFieldData } from '../../../../services/model/format';
-
+import { fields, updateFieldData } from '../../../../services/model/format';
+import { redux_org } from '../../../../helper/reduxData'
 import * as constant from '../../../../constant'
 import { getOrganizationList } from '../../../../services/model/organization';
 import { fetchCloudletData } from '../../../../services/model/cloudlet';
@@ -59,7 +59,7 @@ class AutoProvPolicyReg extends React.Component {
                 }
             }
             if (region && organization) {
-                this.cloudletList = await fetchCloudletData(this, { region: region, org: organization, type: DEVELOPER.toLowerCase() })
+                this.cloudletList = await fetchCloudletData(this, { region: region, org: organization, type: constant.DEVELOPER })
             }
             this.updateUI(form)
             this.updateState({ forms })
@@ -375,7 +375,7 @@ class AutoProvPolicyReg extends React.Component {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Auto Provisioning Policy`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
-            { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Developer', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, tip: 'Name of the organization for the cluster that this policy will apply to', update: { key: true } },
+            { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Name of the organization for the cluster that this policy will apply to', update: { key: true } },
             { field: fields.autoPolicyName, label: 'Auto Policy Name', formType: 'Input', placeholder: 'Enter Auto Provisioning Policy Name', rules: { required: true }, visible: true, tip: 'Policy name', update: { key: true } },
             { field: fields.deployClientCount, label: 'Deploy Request Count', formType: 'Input', rules: { type: 'number', required: true, onBlur: true, requiredMsg: 'Either Deploy Request Count or Min Active Instances is mandatory' }, visible: true, update: { id: ['3'] }, dataValidateFunc: this.validatedeployClientCount, placeholder: 'Enter Minimum Number of Clients', tip: 'Minimum number of clients within the auto deploy interval to trigger deployment' },
             { field: fields.undeployClientCount, label: 'Undeploy Request Count', formType: 'Input', rules: { type: 'number', required: false }, visible: true, update: { id: ['8'] }, placeholder: 'Enter Number of Active Clients', tip: 'Number of active clients for the undeploy interval below which trigers undeployment, 0 (default) disables auto undeploy' },
@@ -422,7 +422,7 @@ class AutoProvPolicyReg extends React.Component {
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
-            this.cloudletList = await fetchCloudletData(this, { region: data[fields.region], org: data[fields.organizationName], type: DEVELOPER.toLowerCase() })
+            this.cloudletList = await fetchCloudletData(this, { region: data[fields.region], org: data[fields.organizationName], type: constant.DEVELOPER })
         }
     }
 
@@ -431,7 +431,7 @@ class AutoProvPolicyReg extends React.Component {
             await this.loadDefaultData(data)
         }
         else {
-            this.organizationList = await getOrganizationList(this, { type: DEVELOPER.toLowerCase() });
+            this.organizationList = await getOrganizationList(this, { type: constant.DEVELOPER });
         }
 
         if (this.props.action === constant.ADD_CLOUDLET || this.props.action === constant.DELETE_CLOUDLET) {
@@ -461,6 +461,12 @@ class AutoProvPolicyReg extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
@@ -469,4 +475,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(AutoProvPolicyReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(AutoProvPolicyReg));
