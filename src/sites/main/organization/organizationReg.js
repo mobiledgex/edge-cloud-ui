@@ -118,7 +118,7 @@ class OrganizationReg extends React.Component {
     onAddUser = async (data) => {
         let userList = this.organizationInfo.userList ? this.organizationInfo.userList : [];
         if (data) {
-            data[fields.role] = this.type + data[fields.role]
+            data[fields.role] = constant.toFirstUpperCase(this.type) + data[fields.role]
             let mcRequest = await addUser(this, data)
             if (mcRequest && mcRequest.response && mcRequest.response.data) {
                 let message = mcRequest.response.data.message
@@ -161,7 +161,7 @@ class OrganizationReg extends React.Component {
         if (data) {
             this.organizationInfo = data
             this.type = data[fields.type]
-            data[fields.type] = data[fields.type].toLowerCase()
+            data[fields.type] = data[fields.type]
             let mcRequest = this.isUpdate ? await updateOrganization(this, data) : await createOrganization(this, data)
             if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                 this.props.handleAlertInfo('success', `Organization ${data[fields.organizationName]} ${this.isUpdate ? 'updated' : 'created'} successfully`)
@@ -270,7 +270,7 @@ class OrganizationReg extends React.Component {
                 if (form.formType === SELECT) {
                     switch (form.field) {
                         case fields.type:
-                            form.options = ['Developer', 'Operator']
+                            form.options = ['developer', 'operator']
                             form.value = this.props.type
                             break;
                         case fields.role:
@@ -287,7 +287,7 @@ class OrganizationReg extends React.Component {
             { label: 'Add User', formType: MAIN_HEADER, visible: true },
             { field: fields.username, label: 'Username', formType: INPUT, placeholder: 'Select Username', rules: { required: true }, visible: true },
             { field: fields.organizationName, label: 'Organization', formType: INPUT, placeholder: 'Enter Organization Name', rules: { disabled: true }, visible: true, value: data[fields.organizationName] },
-            { field: fields.type, label: 'Type', formType: INPUT, placeholder: 'Enter Type', rules: { disabled: true }, visible: true, value: data[fields.type] },
+            { field: fields.type, label: 'Type', formType: SELECT, placeholder: 'Enter Type', rules: { disabled: true, allCaps:true }, visible: true, value: data[fields.type] },
             { field: fields.role, label: 'Role', formType: SELECT, placeholder: 'Select Role', rules: { required: true }, visible: true },
         ]
     }
@@ -295,7 +295,7 @@ class OrganizationReg extends React.Component {
     step1 = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Organization`, formType: MAIN_HEADER, visible: true },
-            { field: fields.type, label: 'Type', formType: 'Select', placeholder: 'Select Type', rules: { required: true, disabled: this.props.type !== undefined }, visible: true },
+            { field: fields.type, label: 'Type', formType: 'Select', placeholder: 'Select Type', rules: { required: true, disabled: this.props.type !== undefined, allCaps:true }, visible: true },
             { field: fields.organizationName, label: 'Organization', formType: INPUT, placeholder: 'Enter Organization Name', rules: { required: true }, visible: true, },
             { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, update: { edit: true } },
             { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, update: { edit: true }, dataValidateFunc: constant.validatePhone },
@@ -305,7 +305,7 @@ class OrganizationReg extends React.Component {
 
     loadDefaultData = async (data) => {
         data[fields.publicImages] = data[fields.publicImages] === constant.YES ? true : false
-        data[fields.type] = data[fields.type] === 'developer' ? 'Developer' : 'Operator'
+        data[fields.type] = data[fields.type] === constant.DEVELOPER ? 'developer' : 'operator'
     }
 
     getFormData = (data) => {
@@ -314,7 +314,7 @@ class OrganizationReg extends React.Component {
                 this.loadDefaultData(data)
             }
             else {
-                this.type = data[fields.type] === 'developer' ? 'Developer' : 'Operator'
+                this.type = data[fields.type] === constant.DEVELOPER ? 'developer' : 'operator'
                 this.organizationInfo = data
                 this.addUserForm(data)
                 this.setState({ step: 1 })
