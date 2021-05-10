@@ -1,5 +1,5 @@
 import React from 'react';
-import MexListView from '../../../../../container/MexListView';
+import DataView from '../../../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -14,23 +14,35 @@ import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import { Icon } from 'semantic-ui-react';
 import { HELP_ALERTS } from '../../../../../tutorial';
 import { ACTION_DELETE } from '../../../../../constant/actions';
+import { PAGE_ALERTS } from '../../../../../constant';
 class AlertList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentView: null
         }
+        this._isMounted = false
         this.action = '';
         this.data = {};
         this.keys = showAlertReceiverKeys();
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
+    resetView = () => {
+        this.updateState({ currentView: null })
+    }
+
     onRegClose = (isEdited) => {
-        this.setState({ currentView: null })
+        this.resetView()
     }
 
     onAdd = (action, data) => {
-        this.setState({ currentView: <Reg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <Reg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
     }
 
     actionMenu = () => {
@@ -111,7 +123,7 @@ class AlertList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: 'Alerts',
+            id: PAGE_ALERTS,
             headerLabel: 'Alert Receivers',
             nameField: fields.alertname,
             requestType: [showAlertReceiver],
@@ -120,17 +132,25 @@ class AlertList extends React.Component {
             viewMode: HELP_ALERTS,
             keys: this.keys,
             onAdd: this.onAdd,
-            viewerEdit:true,
+            viewerEdit: true,
             grouping: false,
-            formatData:this.dataFormatter
+            formatData: this.dataFormatter
         })
     }
 
     render() {
+        const {currentView} = this.state
         return (
-            this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} groupActionMenu={this.groupActionMenu} />
+            <DataView id={PAGE_ALERTS} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView}requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
+    }
+
+    componentDidMount() {
+        this._isMounted = true
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 };
 

@@ -5,7 +5,8 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, MAIN_HEADER } from '../.
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../../actions';
-import { fields, getOrganization, getUserRole, isAdmin } from '../../../../../services/model/format';
+import { fields } from '../../../../../services/model/format';
+import {redux_org} from '../../../../../helper/reduxData'
 //model
 import { createAlertReceiver } from '../../../../../services/model/alerts';
 import { sendRequests } from '../../../../../services/model/serverWorker'
@@ -24,13 +25,13 @@ const RECEIVER_TYPE = [constant.RECEIVER_TYPE_EMAIL, constant.RECEIVER_TYPE_SLAC
 const RECEIVER_SEVERITY = ["Info", "Warning", "Error"]
 
 
-const selector = () => {
+const selector = (self) => {
     let selector = []
-    if (getUserRole().includes(constant.ADMIN) || getUserRole().includes(constant.DEVELOPER)) {
+    if (redux_org.isAdmin(self) || redux_org.isDeveloper(self)) {
         selector.push({ selector: 'App Instance', key: 'appname' })
         selector.push({ selector: 'Cluster', key: 'cluster' })
     }
-    if (getUserRole().includes(constant.ADMIN) || getUserRole().includes(constant.OPERATOR)) {
+    else if (redux_org.isAdmin(self) || redux_org.isOperator(self)) {
         selector.push({ selector: 'Cloudlet', key: 'cloudlet' })
     }
     return selector
@@ -79,7 +80,7 @@ class FlavorReg extends React.Component {
             { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true }, visible: true, tip: 'Alert severity level - one of "info", "warning", "error"' },
             { field: fields.selector, label: 'Selector', formType: SELECT, placeholder: 'Select Selector', rules: { required: true, disabled: true }, visible: true, tip: 'Selector for which you want to receive alerts' },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: false }, visible: true },
-            { field: fields.organizationName, label: 'Developer', formType: SELECT, placeholder: 'Select Developer', rules: { required: false, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: false, tip: 'Cluster or App Developer' },
+            { field: fields.organizationName, label: 'Developer', formType: SELECT, placeholder: 'Select Developer', rules: { required: false, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: false, tip: 'Cluster or App Developer' },
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: false }, visible: false, dependentData: [{ index: 8, field: fields.region, strictDependency: false }] },
             { field: fields.cloudletName, label: 'Cloudlet', formType: SELECT, placeholder: 'Select Cloudlet', rules: { required: false }, visible: false, dependentData: [{ index: 10, field: fields.operatorName }], strictDependency: false },
             { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Cluster', rules: { required: false }, visible: false, dependentData: [{ index: 8, field: fields.region, strictDependency: false }, { index: 9, field: fields.organizationName }, { index: 10, field: fields.operatorName, strictDependency: false }, { index: 11, field: fields.cloudletName, strictDependency: false }] },
@@ -128,7 +129,7 @@ class FlavorReg extends React.Component {
                 this.updateUI(form)
             }
             else if (form.field === fields.operatorName) {
-                form.value = getOrganization() && getUserRole() && getUserRole().includes(constant.OPERATOR) ? getOrganization() : undefined
+                form.value = redux_org.isOperator(this) ? redux_org.orgName(this) : undefined
                 this.updateUI(form)
             }
         }
@@ -213,8 +214,8 @@ class FlavorReg extends React.Component {
                 case fields.operatorName:
                     form.rules.required = currentForm.value === 'Cloudlet'
                     form.visible = currentForm.value === 'Cloudlet' || currentForm.value === 'App Instance' || currentForm.value === 'Cluster'
-                    form.value = currentForm.value === 'Cloudlet' ? getOrganization() : undefined
-                    form.rules.disabled = currentForm.value === 'Cloudlet' && getOrganization() !== undefined
+                    form.value = currentForm.value === 'Cloudlet' ? redux_org.orgName(this) : undefined
+                    form.rules.disabled = currentForm.value === 'Cloudlet' && redux_org.orgName(this) !== undefined
                     break;
             }
         }
@@ -322,7 +323,7 @@ class FlavorReg extends React.Component {
                             form.options = RECEIVER_SEVERITY;
                             break;
                         case fields.selector:
-                            form.options = selector();
+                            form.options = selector(this);
                             break;
                         case fields.operatorName:
                             form.options = this.cloudletList
@@ -397,11 +398,12 @@ class FlavorReg extends React.Component {
     }
 
     checkOrgExist = () => {
-        if (getUserRole() && getUserRole().includes(constant.OPERATOR) && getOrganization()) {
+        let org  = redux_org.orgName(this)
+        if (redux_org.isOperator(this) && org) {
             let exist = false
             for (let i = 0; i < this.cloudletList.length; i++) {
                 let cloudlet = this.cloudletList[i]
-                if (cloudlet[fields.operatorName] === getOrganization()) {
+                if (cloudlet[fields.operatorName] === org) {
                     exist = true
                     break;
                 }
@@ -409,7 +411,7 @@ class FlavorReg extends React.Component {
             if (!exist) {
                 this.regions.map(region => {
                     let cloudlet = {}
-                    cloudlet[fields.operatorName] = getOrganization()
+                    cloudlet[fields.operatorName] = org
                     cloudlet[fields.region] = region
                     this.cloudletList.push(cloudlet)
                 })
@@ -468,10 +470,10 @@ class FlavorReg extends React.Component {
         let requestList = []
         requestList.push(showOrganizations())
         this.regions.map(region => {
-            requestList.push(showCloudlets({ region }))
-            if (isAdmin() || getUserRole().includes(constant.DEVELOPER)) {
-                requestList.push(showAppInsts({ region }))
-                requestList.push(showClusterInsts({ region }))
+            requestList.push(showCloudlets(this, { region }))
+            if (redux_org.isAdmin(this) || redux_org.isDeveloper(this)) {
+                requestList.push(showAppInsts(this, { region }))
+                requestList.push(showClusterInsts(this, { region }))
             }
         })
         sendRequests(this, requestList, this.serverResponse)
@@ -485,7 +487,8 @@ class FlavorReg extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        userInfo: state.userInfo.data
+        userInfo: state.userInfo.data,
+        organizationInfo: state.organizationInfo.data
     }
 };
 
