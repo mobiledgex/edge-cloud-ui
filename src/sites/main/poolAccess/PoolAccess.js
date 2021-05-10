@@ -1,5 +1,5 @@
 import React from 'react';
-import MexListView from '../../../container/MexListView';
+import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
@@ -8,16 +8,27 @@ import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 import * as serverData from '../../../services/model/serverData'
 import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/privateCloudletAccess';
-import {ACTION_LABEL, ACTION_POOL_ACCESS_DEVELOPER, ACTION_POOL_ACCESS_DEVELOPER_REJECT, ACTION_WARNING} from '../../../constant/actions'
-import { labelFormatter, uiFormatter } from '../../../helper/formatter';
+import { ACTION_LABEL, ACTION_POOL_ACCESS_DEVELOPER, ACTION_POOL_ACCESS_DEVELOPER_REJECT, ACTION_WARNING } from '../../../constant/actions'
+import { labelFormatter } from '../../../helper/formatter';
 
-class CloudletPoolList extends React.Component {
+class PoolAccessList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentView: null
         }
+        this._isMounted = false
         this.keys = keys();
+    }
+
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
+    resetView = () => {
+        this.updateState({ currentView: null })
     }
 
     onPrePoolAccess = (type, action, data) => {
@@ -52,7 +63,7 @@ class CloudletPoolList extends React.Component {
     actionMenu = () => {
         return [
             { id: ACTION_POOL_ACCESS_DEVELOPER, label: this.onPrePoolAccess, warning: this.onPrePoolAccess, onClick: this.onPoolAccess },
-            { id: ACTION_POOL_ACCESS_DEVELOPER_REJECT, label: 'Reject', visible: this.onRejectVisible, warning:'reject invitation to cloudlet pool', onClick: this.onPoolAccess },
+            { id: ACTION_POOL_ACCESS_DEVELOPER_REJECT, label: 'Reject', visible: this.onRejectVisible, warning: 'reject invitation to cloudlet pool', onClick: this.onPoolAccess },
         ]
     }
 
@@ -77,10 +88,18 @@ class CloudletPoolList extends React.Component {
     }
 
     render() {
+        const {currentView} = this.state
         return (
-            this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} />
+            <DataView id={constant.PAGE_POOL_ACCESS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} />
         )
+    }
+
+    componentDidMount() {
+        this._isMounted = true
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 };
 
@@ -90,4 +109,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(CloudletPoolList));
+export default withRouter(connect(null, mapDispatchProps)(PoolAccessList));
