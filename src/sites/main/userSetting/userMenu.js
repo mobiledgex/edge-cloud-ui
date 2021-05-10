@@ -8,7 +8,7 @@ import Preferences from './preferences/preferences';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import { IconButton, ListItemText, Menu, MenuItem } from '@material-ui/core';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
-import { getOrganization, isAdmin } from '../../../services/model/format';
+import { redux_org } from '../../../helper/reduxData';
 
 class UserMenu extends React.Component {
     constructor(props) {
@@ -53,7 +53,7 @@ class UserMenu extends React.Component {
                     onClose={this.handleClose}
                 >
                     <Profile data={userInfo} currentUser={this.currentUser} close={this.handleClose} />
-                    {isAdmin() || getOrganization() ? <Preferences close={this.handleClose} /> : null}
+                    {redux_org.isAdmin(this) || redux_org.nonAdminOrg(self) ? <Preferences close={this.handleClose} /> : null}
                     <UpdatePassword close={this.handleClose} dialog={true} />
                     <MenuItem onClick={() => this.logout()}>
                         <ExitToAppOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
@@ -75,7 +75,8 @@ class UserMenu extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        userInfo: state.userInfo.data
+        userInfo: state.userInfo.data,
+        organizationInfo: state.organizationInfo.data
     }
 };
 

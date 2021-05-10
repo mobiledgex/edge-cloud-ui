@@ -60,7 +60,7 @@ const getRequestData = (data, edit) => {
     return billingOrg
 }
 
-export const showBillingOrg = (data) => {
+export const showBillingOrg = (self, data) => {
     return { method: SHOW_BILLING_ORG, data }
 }
 
@@ -70,7 +70,7 @@ export const createBillingOrg = async (self, data) => {
     return await serverData.sendRequest(self, request)
 }
 
-export const deleteBillingOrg = (data) => {
+export const deleteBillingOrg = (self, data) => {
     let requestData = getRequestData(data)
     return { method: DELETE_BILLING_ORG, data: requestData, success: `Billing Org ${data[fields.name]} deleted successfully` }
 }

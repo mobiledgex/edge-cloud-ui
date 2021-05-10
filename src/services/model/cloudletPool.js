@@ -5,6 +5,7 @@ import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
 import isEqual from 'lodash/isEqual';
 import omit from 'lodash/omit';
 import { labelFormatter } from '../../helper/formatter';
+import { redux_org } from '../../helper/reduxData'
 
 const fields = formatter.fields;
 
@@ -94,9 +95,9 @@ export const multiDataRequest = (keys, mcList) => {
     return poolList;
 }
 
-export const showCloudletPools = (data) => {
-    let organization = formatter.getOrganization()
-    if (organization && formatter.isOperator()) {
+export const showCloudletPools = (self, data) => {
+    let organization = redux_org.nonAdminOrg(self)
+    if (organization && redux_org.isOperator(self)) {
         data.cloudletpool = { key: { organization } }
     }
     return { method: SHOW_CLOUDLET_POOL, data: data, keys: keys() }
@@ -112,7 +113,7 @@ export const updateCloudletPool = (data) => {
     return { method: UPDATE_CLOUDLET_POOL, data: requestData }
 }
 
-export const deleteCloudletPool = (data) => {
+export const deleteCloudletPool = (self, data) => {
     let requestData = getKey(data)
     return { method: DELETE_CLOUDLET_POOL, data: requestData, success: `Cloudlet Pool ${data[fields.poolName]} deleted successfully` }
 }

@@ -4,9 +4,9 @@ import * as serverData from './serverData'
 import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP, REFRESH_APP_INST, SHOW_CLOUDLET_INFO, SHOW_ORG_CLOUDLET_INFO, SHOW_AUTO_PROV_POLICY } from './endPointTypes'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 import { labelFormatter } from '../../helper/formatter'
+import { redux_org } from '../../helper/reduxData'
 
 let fields = formatter.fields;
-const userRole = formatter.getUserRole()
 
 export const keys = () => ([
   { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true, format:true },
@@ -161,7 +161,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
 }
 
 
-export const showAppInsts = (data, specific) => {
+export const showAppInsts = (self, data, specific) => {
   let requestData = {}
   if (specific) {
     let appinst = { key: data.appinstkey ? data.appinstkey : data.appinst.key }
@@ -173,12 +173,12 @@ export const showAppInsts = (data, specific) => {
   }
   else {
     requestData.region = data.region
-    let organization = data.org ? data.org : formatter.getOrganization()
+    let organization = data.org ? data.org : redux_org.orgName(self)
     if (organization) {
-      if (formatter.isDeveloper() || data.type === formatter.DEVELOPER.toLowerCase()) {
+      if (redux_org.isDeveloper(self) || data.type === constant.DEVELOPER) {
         requestData.appinst = { key: { app_key: { organization } } }
       }
-      else if ((data.isPrivate && formatter.isOperator()) || data.type === formatter.OPERATOR.toLowerCase()) {
+      else if ((data.isPrivate && redux_org.isOperator(self)) || data.type === constant.OPERATOR) {
         requestData.appinst = {
           key: {
             cluster_inst_key: {
@@ -218,9 +218,9 @@ export const changePowerState = (data) => {
   return { uuid: data.uuid, method: UPDATE_APP_INST, data: requestData }
 }
 
-export const deleteAppInst = (data) => {
+export const deleteAppInst = (self, data) => {
   let requestData = getKey(data)
-  if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && formatter.isAdmin()) {
+  if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && redux_org.isAdmin(self)) {
     requestData.appinst.crm_override = constant.CRM_OVERRIDE_IGNORE_CRM
   }
   return { uuid: data.uuid, method: DELETE_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]} deleted successfully` }
@@ -263,7 +263,7 @@ export const customData = (value) => {
   value[fields.sharedVolumeSize] = value[fields.autoClusterInstance] ? value[fields.sharedVolumeSize] ? value[fields.sharedVolumeSize] : 0 : undefined
   value[fields.cloudlet_name_operator] = `${value[fields.cloudletName]} [${value[fields.operatorName]}]`
   value[fields.app_name_version] = `${value[fields.appName]} [${value[fields.version]}]`
-  if (userRole && userRole.includes(constant.DEVELOPER) && value[fields.appName] === 'MEXPrometheusAppName') {
+  if (value[fields.appName] === 'MEXPrometheusAppName') {
     value = undefined
   }
   return value

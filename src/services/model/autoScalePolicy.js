@@ -1,6 +1,8 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
 import { SHOW_AUTO_SCALE_POLICY, UPDATE_AUTO_SCALE_POLICY, CREATE_AUTO_SCALE_POLICY, DELETE_AUTO_SCALE_POLICY } from './endPointTypes'
+import { redux_org } from '../../helper/reduxData'
+
 export const fields = formatter.fields;
 
 export const keys = () => ([
@@ -48,9 +50,9 @@ const getKey = (data, isCreate) => {
   }
 }
 
-export const showAutoScalePolicies = (data) => {
-  let organization = formatter.getOrganization()
-  if (organization && formatter.isDeveloper()) {
+export const showAutoScalePolicies = (self, data) => {
+  let organization = redux_org.nonAdminOrg(self)
+  if (organization && redux_org.isDeveloper(self)) {
     {
       data.autoscalepolicy = { key: { organization } }
     }
@@ -59,7 +61,7 @@ export const showAutoScalePolicies = (data) => {
 }
 
 export const getAutoScalePolicyList = async (self, data) => {
-  return await serverData.showDataFromServer(self, showAutoScalePolicies(data))
+  return await serverData.showDataFromServer(self, showAutoScalePolicies(self, data))
 }
 
 export const updateAutoScalePolicy = (data) => {
@@ -73,7 +75,7 @@ export const createAutoScalePolicy = (data) => {
   return { method: CREATE_AUTO_SCALE_POLICY, data: requestData }
 }
 
-export const deleteAutoScalePolicy = (data) => {
+export const deleteAutoScalePolicy = (self, data) => {
   let requestData = getKey(data)
   return { method: DELETE_AUTO_SCALE_POLICY, data: requestData, success: `Auto Scale Policy ${data[fields.autoScalePolicyName]} deleted successfully` }
 }

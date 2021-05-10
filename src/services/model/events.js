@@ -1,5 +1,5 @@
+import { redux_org } from '../../helper/reduxData'
 import { EVENTS_SHOW } from './endPointTypes'
-import { getOrganization } from './format'
 import * as serverData from './serverData'
 
 export const orgEvents = (data) => {
@@ -16,7 +16,7 @@ export const showAudits = async (self, data, showSpinner, isPrivate) => {
     match.types = [data.type]
     if(!isPrivate)
     {
-        match.orgs = getOrganization() ? [getOrganization()] : undefined
+        match.orgs = redux_org.nonAdminOrg(self) ? [redux_org.nonAdminOrg(self)] : undefined
     }
     data.match = match
     let mcRequest = await serverData.sendRequest(self, { method: EVENTS_SHOW, data: data, showSpinner: showSpinner })

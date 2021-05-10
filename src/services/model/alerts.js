@@ -3,8 +3,8 @@ import { SHOW_ALERT } from './endpoints'
 import { ALERT_SHOW_RECEIVER, ALERT_DELETE_RECEIVER, ALERT_CREATE_RECEIVER } from './endPointTypes'
 import * as serverData from './serverData'
 import * as formatter from './format'
-import { ADMIN_MANAGER, RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL, HEALTH_CHECK, DEVELOPER, OPERATOR, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR, RECEIVER_TYPE_PAGER_DUTY } from '../../constant'
-import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
+import { RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL, DEVELOPER, OPERATOR, RECEIVER_TYPE_PAGER_DUTY } from '../../constant'
+import {redux_org} from '../../helper/reduxData'
 
 let fields = formatter.fields
 export const showAlertKeys = () => (
@@ -172,24 +172,23 @@ export const createAlertReceiver = async (self, data) => {
     return await serverData.sendRequest(self, request)
 }
 
-export const deleteAlertReceiver = (data) => {
+export const deleteAlertReceiver = (self, data) => {
     let requestData = getKey(data, true)
     return { method: ALERT_DELETE_RECEIVER, data: requestData, success: `Alert Receiver ${data[fields.alertname]} deleted successfully` }
 }
 
-export const showAlerts = (data) => {
-    let userRole = formatter.getUserRole()
-    let org = formatter.getOrganization()
-    if (userRole && org) {
-        if (userRole.includes(DEVELOPER)) {
+export const showAlerts = (self, data) => {
+    let orgName = redux_org.nonAdminOrg(self)
+    if (orgName) {
+        if (redux_org.isDeveloper(self)) {
             let labels = {}
-            labels.apporg = org
-            labels.clusterorg = org
+            labels.apporg = orgName
+            labels.clusterorg = orgName
             data.alert = { labels }
         }
-        else if (userRole.includes(OPERATOR)) {
+        else if (redux_org.isOperator(self)) {
             let labels = {}
-            labels.cloudletorg = org
+            labels.cloudletorg = orgName
             data.alert = { labels }
         }
 
