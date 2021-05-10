@@ -14,9 +14,6 @@ import { labelFormatter } from '../../../helper/formatter';
 class PoolAccessList extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            currentView: null
-        }
         this._isMounted = false
         this.keys = keys();
     }
@@ -25,10 +22,6 @@ class PoolAccessList extends React.Component {
         if (this._isMounted) {
             this.setState({ ...data })
         }
-    }
-
-    resetView = () => {
-        this.updateState({ currentView: null })
     }
 
     onPrePoolAccess = (type, action, data) => {
@@ -88,9 +81,8 @@ class PoolAccessList extends React.Component {
     }
 
     render() {
-        const {currentView} = this.state
         return (
-            <DataView id={constant.PAGE_POOL_ACCESS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} />
+            <DataView id={constant.PAGE_POOL_ACCESS} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} />
         )
     }
 
