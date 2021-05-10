@@ -5,7 +5,8 @@ import MexForms, { MAIN_HEADER, HEADER, SWITCH, INPUT, SELECT } from '../../../.
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import uuid from 'uuid';
-import { fields, getOrganization, updateFieldData } from '../../../../services/model/format';
+import { fields, updateFieldData } from '../../../../services/model/format';
+import { redux_org} from '../../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../../services/model/organization';
 import { updateTrustPolicy, createTrustPolicy } from '../../../../services/model/trustPolicy';
@@ -135,7 +136,7 @@ class TrustPolicyReg extends React.Component {
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Trust Policy`, formType: MAIN_HEADER, visible: true },
         { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', update: { key: true } },
-        { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, value: getOrganization(), visible: true, update: { key: true } },
+        { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, update: { key: true } },
         { field: fields.trustPolicyName, label: 'Trust Policy Name', formType: INPUT, placeholder: 'Enter Trust Policy Name', rules: { required: true }, visible: true, update: { key: true } },
         { field: fields.fullIsolation, label: 'Full Isolation', formType: SWITCH, visible: true, value: false, update: { edit: true } },
         { field: fields.outboundSecurityRules, label: 'Outbound Security Rules', formType: HEADER, forms: [{ formType: 'IconButton', icon: 'add', style: { color: "white", display: 'inline' }, onClick: this.addRulesForm }], visible: true, update: { id: ['3', '3.1', '3.2', '3.3', '3.4'] } },
@@ -366,6 +367,12 @@ class TrustPolicyReg extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
@@ -374,4 +381,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(TrustPolicyReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(TrustPolicyReg));
