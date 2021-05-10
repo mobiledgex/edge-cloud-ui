@@ -16,7 +16,6 @@ class AccountList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentView: null,
             openAddUserView: false,
             dialogMessageInfo: {},
             refreshViewToggle: false
@@ -31,10 +30,6 @@ class AccountList extends React.Component {
         if (this._isMounted) {
             this.setState({ ...data })
         }
-    }
-
-    resetView = () => {
-        this.updateState({ currentView: null })
     }
 
     /**Action menu block */
@@ -128,11 +123,10 @@ class AccountList extends React.Component {
     }
 
     render() {
-        const {currentView } = this.state
         return (
             <React.Fragment>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
-                <DataView id={PAGE_ACCOUNTS} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} refreshToggle={this.state.refreshViewToggle} groupActionMenu={this.groupActionMenu} />
+                <DataView id={PAGE_ACCOUNTS} actionMenu={this.actionMenu} requestInfo={this.requestInfo} refreshToggle={this.state.refreshViewToggle} groupActionMenu={this.groupActionMenu} />
             </React.Fragment>
         )
     }
