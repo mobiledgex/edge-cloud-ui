@@ -4,8 +4,9 @@ import * as actions from '../../../../actions';
 import { connect } from 'react-redux';
 import MexForms, { SELECT, INPUT, MAIN_HEADER, BUTTON, DUALLIST } from '../../../../hoc/forms/MexForms';
 import { Grid } from '@material-ui/core'
-import { fields, getOrganization } from '../../../../services/model/format';
-import { DEVELOPER, validatePhone } from '../../../../constant';
+import { fields } from '../../../../services/model/format';
+import { redux_org } from '../../../../helper/reduxData'
+import { DEVELOPER } from '../../../../constant';
 import { ACTION_BILLING_REMOVE_CHILD, ACTION_BILLING_ADD_CHILD } from '../../../../constant/actions';
 import { resetFormValue } from '../../../../hoc/forms/helper/constant';
 import { createBillingOrg, addBillingChild, removeBillingChild } from '../../../../services/model/billingOrg';
@@ -32,7 +33,7 @@ class BillingOrgReg extends React.Component {
             { label: 'Create Billing Org', formType: MAIN_HEADER, visible: true },
             { field: fields.type, label: 'Type', formType: SELECT, placeholder: 'Select Type', rules: { required: true }, visible: true, tip: 'Billing type self or group' },
             { field: fields.name, label: 'Name', formType: INPUT, placeholder: 'Enter Billing Group Name', rules: { required: true }, visible: false, tip: 'Billing group name' },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: getOrganization() ? false : true, disabled: getOrganization() ? true : false }, visible: false, value: getOrganization() },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, visible: false, value: redux_org.nonAdminOrg(this) },
             { field: fields.firstName, label: 'First Name', formType: INPUT, placeholder: 'Enter First Name', rules: { required: true }, visible: true, tip: 'First name' },
             { field: fields.lastName, label: 'Last Name', formType: INPUT, placeholder: 'Enter Last Name', rules: { required: true }, visible: true, tip: 'Last name' },
             { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true }, visible: true, tip: 'Email address' },
@@ -184,7 +185,7 @@ class BillingOrgReg extends React.Component {
                         break;
                     }
                 }
-                if (!exist && data[fields.type] === DEVELOPER.toLowerCase()) {
+                if (!exist && data[fields.type] === DEVELOPER) {
                     optionList.push({ value: data[fields.organizationName], label: data[fields.organizationName] })
                 }
             }
@@ -237,6 +238,12 @@ class BillingOrgReg extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
@@ -245,4 +252,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(BillingOrgReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(BillingOrgReg));
