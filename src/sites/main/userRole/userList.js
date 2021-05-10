@@ -81,4 +81,4 @@ class UserList extends React.Component {
     }
 };
 
-export default withRouter(connect(null, null)(UserList));
+export default withRouter(UserList);
