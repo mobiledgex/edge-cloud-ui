@@ -18,13 +18,7 @@ class UserList extends React.Component {
         this.data = {}
         this.keys = keys();
     }
-
-    updateState = (data) => {
-        if (this._isMounted) {
-            this.setState({ ...data })
-        }
-    }
-
+    
     /**Action menu block */
     getDeleteActionMessage = (action, data) => {
         return `Are you sure you want to remove ${data[fields.username]} from Organization ${data[fields.organizationName]}?`
