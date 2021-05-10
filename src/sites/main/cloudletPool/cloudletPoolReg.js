@@ -6,7 +6,7 @@ import MexForms, { MAIN_HEADER, SELECT, INPUT, DUALLIST } from '../../../hoc/for
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serverData from '../../../services/model/serverData';
-import { fields, getOrganization, getUserRole, isAdmin, isOperator, OPERATOR, updateFieldData } from '../../../services/model/format';
+import { fields, updateFieldData } from '../../../services/model/format';
 
 import { getOrganizationList } from '../../../services/model/organization';
 import { fetchCloudletData } from '../../../services/model/cloudlet';
@@ -16,6 +16,7 @@ import { createConfirmation, createInvitation, deleteConfirmation, deleteInvitat
 import * as constant from '../../../constant';
 import { HELP_CLOUDLET_POOL_REG_3, HELP_CLOUDLET_POOL_REG_1 } from "../../../tutorial";
 import { ACTION_POOL_ACCESS_ADMIN_CONFIRM, ACTION_POOL_ACCESS_ADMIN_REMOVE, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../../../constant/actions';
+import { redux_org } from '../../../helper/reduxData'
 
 const stepData = [
     {
@@ -53,7 +54,7 @@ class CloudletPoolReg extends React.Component {
 
     getCloudletList = async (forms, form, region, operator) => {
         if (region && operator) {
-            this.cloudletList = await fetchCloudletData(this, { region: region, org: operator, type: OPERATOR.toLowerCase() })
+            this.cloudletList = await fetchCloudletData(this, { region: region, org: operator, type: constant.OPERATOR })
             this.cloudletList = this.cloudletList.filter((cloudlet) => {
                 return cloudlet[fields.operatorName] === operator
             })
@@ -126,7 +127,7 @@ class CloudletPoolReg extends React.Component {
                 }
                 this.props.handleAlertInfo('success', `${data['CloudletPoolOrg']} invitation ${msg}`)
                 if (mcList.length === 1) {
-                    if (isAdmin()) {
+                    if (redux_org.isAdmin(this)) {
                         this.props.onClose(true)
                     }
                 }
@@ -169,11 +170,11 @@ class CloudletPoolReg extends React.Component {
         let data = this.formattedData()
         let requestDataList = []
         let responseCallback = this.isOrgDelete ? this.organizationRemoveResponse : this.organizationAddResponse
-        let organizationList = (isAdmin() || this.isOrgDelete) ? data[fields.organizations] : [{ organizationName: data[fields.organizationName] }]
+        let organizationList = (redux_org.isAdmin(this) || this.isOrgDelete) ? data[fields.organizations] : [{ organizationName: data[fields.organizationName] }]
         if (organizationList && organizationList.length > 0) {
             organizationList.forEach(organization => {
                 let newData = data
-                organization = (isAdmin() || this.isOrgDelete) ? JSON.parse(organization) : organization
+                organization = (redux_org.isAdmin(this) || this.isOrgDelete) ? JSON.parse(organization) : organization
                 newData[fields.developerOrg] = organization[fields.organizationName]
                 newData[fields.operatorOrg] = data[fields.operatorName]
                 let request = undefined
@@ -245,7 +246,7 @@ class CloudletPoolReg extends React.Component {
         else {
             this.organizationList = selectedDatas;
         }
-        if (this.organizationList.length > 0 || isOperator()) {
+        if (this.organizationList.length > 0 || redux_org.isOperator(this)) {
             let label = 'Create Invitation'
             switch (this.action) {
                 case ACTION_POOL_ACCESS_ADMIN_CONFIRM:
@@ -269,8 +270,8 @@ class CloudletPoolReg extends React.Component {
                 { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.poolName] },
                 { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: operator },
-                { field: fields.organizationName, label: 'Organization', placeholder: 'Enter Organization', formType: INPUT, rules: { required: true }, update: { edit: true }, visible: getUserRole().includes(constant.OPERATOR) && !this.isOrgDelete },
-                { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: isAdmin() || this.isOrgDelete },
+                { field: fields.organizationName, label: 'Organization', placeholder: 'Enter Organization', formType: INPUT, rules: { required: true }, update: { edit: true }, visible: redux_org.roleType(this) === constant.OPERATOR && !this.isOrgDelete },
+                { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: redux_org.isAdmin(this) || this.isOrgDelete },
                 { label: `${label}`, formType: 'Button', onClick: this.onAddOrganizations },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]
@@ -406,7 +407,7 @@ class CloudletPoolReg extends React.Component {
         this.operatorList = [operator]
 
         if (this.action === constant.ADD_CLOUDLET) {
-            this.cloudletList = await fetchCloudletData(this, { region: data[fields.region], org: data[fields.operatorName], type: OPERATOR.toLowerCase() })
+            this.cloudletList = await fetchCloudletData(this, { region: data[fields.region], org: data[fields.operatorName], type: constant.OPERATOR })
             if (this.cloudletList && this.cloudletList.length > 0) {
                 this.cloudletList = this.cloudletList.filter((cloudlet) => {
                     return cloudlet[fields.operatorName] === data[fields.operatorName]
@@ -434,7 +435,7 @@ class CloudletPoolReg extends React.Component {
                 { label: `${this.isUpdate ? 'Update' : 'Create'} Cloudlet Pool`, formType: MAIN_HEADER, visible: true },
                 { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
                 { field: fields.poolName, label: 'Pool Name', formType: INPUT, placeholder: 'Enter Cloudlet Pool Name', rules: { required: true }, visible: true, update: { key: true } },
-                { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: getOrganization() ? true : false }, visible: true, value: getOrganization(), update: { key: true } },
+                { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) ? true : false }, visible: true, value: redux_org.nonAdminOrg(this), update: { key: true } },
                 { field: fields.cloudlets, label: 'Cloudlets', formType: DUALLIST, update: { id: ['3'] }, rules: { required: false }, visible: true },
                 { label: `${this.isUpdate ? 'Update' : 'Create'}`, formType: 'Button', onClick: this.onCreate, validate: true },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
@@ -465,6 +466,13 @@ class CloudletPoolReg extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
@@ -473,4 +481,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(CloudletPoolReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(CloudletPoolReg));
