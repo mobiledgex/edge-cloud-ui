@@ -270,7 +270,7 @@ class CloudletPoolReg extends React.Component {
                 { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: region },
                 { field: fields.poolName, label: 'Pool Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.poolName] },
                 { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: operator },
-                { field: fields.organizationName, label: 'Organization', placeholder: 'Enter Organization', formType: INPUT, rules: { required: true }, update: { edit: true }, visible: redux_org.roleType(this) === constant.OPERATOR && !this.isOrgDelete },
+                { field: fields.organizationName, label: 'Organization', placeholder: 'Enter Organization', formType: INPUT, rules: { required: true }, update: { edit: true }, visible: redux_org.isOperator(this) && !this.isOrgDelete },
                 { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: redux_org.isAdmin(this) || this.isOrgDelete },
                 { label: `${label}`, formType: 'Button', onClick: this.onAddOrganizations },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
