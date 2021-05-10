@@ -2,7 +2,7 @@ import React, { lazy, Suspense } from 'react'
 import Spinner from '../../../../hoc/loader/Spinner';
 import { PAGE_INVOICES } from '../../../../constant';
 
-import MexListView from '../../../../container/MexListView';
+import DataView from '../../../../container/DataView';
 import { fields } from '../../../../services/model/format';
 
 import { showInvoices, keys } from '../../../../services/model/invoices'
@@ -12,19 +12,24 @@ class Invoices extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            currentView: undefined,
             invoice: undefined
         }
         this._isMounted = false
         this.keys = keys()
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
     onClose = () => {
-        this.setState({ invoice: undefined })
+        this.updateState({ invoice: undefined })
     }
 
     viewInvoice = (action, data) => {
-        this.setState({ invoice: data })
+        this.updateState({ invoice: data })
     }
 
     actionMenu = () => {
@@ -58,8 +63,8 @@ class Invoices extends React.Component {
         const { currentView, invoice } = this.state
         return (
             <React.Fragment>
-                {currentView ? currentView : <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} />}
-                <Suspense fallback={<Spinner loading={true}/>}>
+                <DataView id={PAGE_INVOICES} actionMenu={this.actionMenu} requestInfo={this.requestInfo} />
+                <Suspense fallback={<Spinner loading={true} />}>
                     <Invoice data={invoice} close={this.onClose} />
                 </Suspense>
             </React.Fragment>
