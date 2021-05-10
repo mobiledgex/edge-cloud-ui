@@ -93,9 +93,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-const mapDispatchProps = (dispatch) => {
-    return {
-    };
-};
-
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(FlavorList));
+export default withRouter(connect(mapStateToProps, null)(FlavorList));
