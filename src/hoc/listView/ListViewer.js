@@ -9,7 +9,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { getUserRole } from '../../services/model/format'
 import { StyledTableRow, StyledTableCell, stableSort, getComparator } from './ListConstant'
-import { ACTION_DISABLE, ACTION_LABEL } from '../../constant/actions'
+import { ACTION_DISABLE, ACTION_LABEL, ACTION_VISIBLE } from '../../constant/actions'
 
 const canEdit = (viewerEdit, action) => {
     let valid = true
@@ -118,6 +118,7 @@ class ListViewer extends React.Component {
                                     <MenuList autoFocusItem={Boolean(actionEl)} id="menu-list-grow" >
                                         {this.actionMenu.map((action, i) => {
                                             let visible = canEdit(viewerEdit, action) ? action.visible ? action.visible(selectedRow) : true : false
+                                            visible = action.visibility ? action.visibility(ACTION_VISIBLE, action, selectedRow) : visible
                                             return visible ? <MenuItem key={i} onClick={(e) => { this.actionClose(action) }} disabled={action.disable ? action.disable(ACTION_DISABLE, action, selectedRow) : false}>{this.actionLabel(action, selectedRow)}</MenuItem> : null
                                         })}
                                     </MenuList>
