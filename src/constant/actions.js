@@ -1,6 +1,7 @@
 export const ACTION_LABEL = 'ActionLabel'
 export const ACTION_WARNING = 'ActionWarning'
 export const ACTION_DISABLE = 'ActionDisable'
+export const ACTION_VISIBLE = 'ActionVisible'
 
 export const ACTION_POOL_ACCESS_DEVELOPER = 'PoolAccess'
 export const ACTION_POOL_ACCESS_DEVELOPER_REJECT = 'Reject'

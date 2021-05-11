@@ -148,6 +148,8 @@ export const powerState = (id) => {
             return constant.POWER_STATE_REBOOT
         case 10:
             return constant.POWER_STATE_ERROR
+        default:
+            return id
     }
 }
 
