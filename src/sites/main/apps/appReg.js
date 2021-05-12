@@ -929,7 +929,7 @@ class AppReg extends React.Component {
                             outboundConnectionsForm.value = requiredOutboundConnection['port']
                         }
                     }
-                    forms.splice(17 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
+                    forms.splice(16 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
                     multiFormCount += 1
                 }
             }
