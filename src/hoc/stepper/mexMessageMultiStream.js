@@ -76,7 +76,7 @@ export const updateStepper = (stepsArray, labels, data, serverData, wsObj) => {
     let id = data[fields.uuid]
     header = labels[0].label
     if (stepsArray && stepsArray.length > 0) {
-        stepsArray.map((item, i) => {
+        stepsArray = stepsArray.map((item, i) => {
             if (id === item.id) {
                 if (serverData) {
                     currentSteps = item;
@@ -85,6 +85,7 @@ export const updateStepper = (stepsArray, labels, data, serverData, wsObj) => {
                     item.steps.push({ code: CODE_FINISH })
                 }
             }
+            return item
         })
     }
 
