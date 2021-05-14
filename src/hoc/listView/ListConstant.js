@@ -7,13 +7,10 @@ export const checkRole = (selectedRole, form) => {
     if (roles) {
         visible = false
         form.detailView = false
-        for (let i = 0; i < roles.length; i++) {
-            let role = roles[i]
-            if (role === selectedRole) {
-                visible = true
-                form.detailView = true
-                break;
-            }
+        if(roles.includes(selectedRole))
+        {
+            visible = true
+            form.detailView = true
         }
     }
     return visible

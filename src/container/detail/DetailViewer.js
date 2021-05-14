@@ -7,19 +7,7 @@ import { time } from '../../utils/date_util'
 import {redux_org} from '../../helper/reduxData'
 
 const checkRole = (selectedRole, form) => {
-    let roles = form.roles
-    if (roles) {
-        let visible = false
-        for (let i = 0; i < roles.length; i++) {
-            let role = roles[i]
-            if (role === selectedRole) {
-                visible = true
-                break;
-            }
-        }
-        return visible
-    }
-    return true
+    return form.roles ? form.roles.includes(selectedRole) : true   
 }
 
 const getHighLighter = (language, data) => {
