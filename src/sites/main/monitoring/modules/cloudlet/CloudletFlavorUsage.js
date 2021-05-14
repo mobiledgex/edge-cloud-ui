@@ -69,7 +69,7 @@ class CloudletFlavorUsage extends React.Component {
         let requestData = {
             region: region,
             cloudlet: {
-                organization: redux_org.isAdmin(this) ? this.props.org : redux_org.orgName(this),
+                organization: redux_org.isAdmin(this) ? this.props.org : redux_org.nonAdminOrg(this),
             },
             starttime: range.starttime,
             endtime: range.endtime,

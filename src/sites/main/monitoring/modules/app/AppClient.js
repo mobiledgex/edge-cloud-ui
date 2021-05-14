@@ -48,7 +48,7 @@ class MexAppClient extends React.Component {
             selector: "api",
             starttime: range.starttime,
             endtime: range.endtime
-        }, redux_org.isAdmin(this) ? this.props.org : redux_org.orgName(this), this.props.isPrivate))
+        }, redux_org.isAdmin(this) ? this.props.org : redux_org.nonAdminOrg(this), this.props.isPrivate))
         if (mc && mc.response && mc.response.status === 200) {
             let worker = new MexWorker();
             worker.postMessage({

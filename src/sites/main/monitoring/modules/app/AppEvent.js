@@ -101,7 +101,7 @@ class MexAppEvent extends React.Component {
             this.updateState({ loading: true })
             let mc = await sendRequest(this, orgEvents({
                 match: {
-                    orgs: [redux_org.isAdmin(this) ? this.props.org : redux_org.orgName(this)],
+                    orgs: [redux_org.isAdmin(this) ? this.props.org : redux_org.nonAdminOrg(this)],
                     types: ["event"],
                     tags: { app: "*" }
                 },
