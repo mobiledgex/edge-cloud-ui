@@ -181,7 +181,7 @@ class GlobalUsageLog extends React.Component {
 
     eventLogData = async (starttime, endtime, isInit) => {
         let regions = localStorage.regions ? localStorage.regions.split(",") : [];
-        let org = redux_org.orgName(this) ? redux_org.orgName(this) : this.selectedOrg
+        let org = redux_org.nonAdminOrg(this) ? redux_org.nonAdminOrg(this) : this.selectedOrg
         if (org) {
             if (regions && regions.length > 0) {
                 let requestList = []
