@@ -22,6 +22,7 @@ import ListMexMap from './map/ListMexMap'
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
 import { ACTION_DELETE, ACTION_EDGE_BOX_ENABLE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_REBOOT, ACTION_UPGRADE, ACTION_WARNING, ACTION_POOL_ACCESS_DEVELOPER, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../constant/actions';
+import { equal } from '../constant/compare';
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -108,8 +109,6 @@ class MexListView extends React.Component {
     }
 
     onDelete = async (action, data) => {
-        let filterList = this.state.filterList
-        let dataList = this.state.dataList
         if (data) {
             if (action.ws) {
                 this.props.handleLoadingSpinner(true);
@@ -120,9 +119,16 @@ class MexListView extends React.Component {
                 let mc = await serverData.sendRequest(this, action.onClick(this, data))
                 if (mc && mc.response && mc.response.status === 200) {
                     this.props.handleAlertInfo('success', `${mc.request.success}`)
-                    filterList.splice(filterList.indexOf(data), 1)
-                    dataList.splice(dataList.indexOf(data), 1)
-                    this.updateState({ dataList: dataList, filterList: filterList })
+                    if(this._isMounted)
+                    {
+                        this.setState(prevState=>{
+                            let filterList = prevState.filterList
+                            let dataList = prevState.dataList
+                            filterList = filterList.filter(item=>{return !equal(item, data)}) 
+                            dataList = dataList.filter(item=>{return !equal(item, data)})    
+                            return {dataList, filterList}                        
+                        })
+                    }
                     valid = true;
                 }
                 if (action.onFinish) {
