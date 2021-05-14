@@ -8,7 +8,8 @@ import { Drawer } from '@material-ui/core';
 import HeaderAuditLog from "./HeaderAuditLog"
 import * as dateUtil from '../../../../utils/date_util'
 import cloneDeep from 'lodash/cloneDeep'
-import { ADMIN } from '../../../../constant';
+import { equal } from '../../../../constant/compare';
+import { redux_org } from '../../../../helper/reduxData';
 let _self = null;
 
 const CON_LIMIT = 25
@@ -140,8 +141,8 @@ class headerGlobalAudit extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         this.isPrivate = this.props.privateAccess
-        if (this.props.userRole && prevProps.userRole !== this.props.userRole) {
-            if (this.props.userRole.includes(ADMIN)) {
+        if (this.props.organizationInfo && !equal(this.props.organizationInfo, prevProps.organizationInfo)) {
+            if (redux_org.isAdmin(this)) {
                 this.initAudit(this.starttime, this.endtime, false)
             }
             else {
@@ -203,8 +204,8 @@ class headerGlobalAudit extends React.Component {
 function mapStateToProps(state) {
     return {
         showAuditLogWithOrg: state.showAuditLog.audit,
-        userRole: state.showUserRole ? state.showUserRole.role : null,
-        privateAccess: state.privateAccess.data
+        privateAccess: state.privateAccess.data,
+        organizationInfo: state.organizationInfo.data
     }
 }
 const mapDispatchProps = (dispatch) => {

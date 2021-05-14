@@ -19,6 +19,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import * as constant from '../../../../constant'
 import sortBy from 'lodash/sortBy';
 import './style.css'
+import { equal } from '../../../../constant/compare';
 
 const UsageLog = lazy(() => import('./UsageLog'));
 const drawerWidth = 450
@@ -217,8 +218,8 @@ class GlobalUsageLog extends React.Component {
     }
 
     componentDidUpdate(prePros, preState) {
-        if (this.props.userRole && prePros.userRole !== this.props.userRole) {
-            if (this.props.userRole.includes(constant.ADMIN)) {
+        if (this.props.organizationInfo && !equal(this.props.organizationInfo, prePros.organizationInfo)) {
+            if (redux_org.isAdmin(this)) {
                 sendAuthRequest(this, showOrganizations(), this.orgResponse)
             }
             else {
@@ -258,8 +259,7 @@ class GlobalUsageLog extends React.Component {
 
     componentDidMount() {
         this._isMounted = true;
-        let userRole = this.props.userRole
-        if (redux_org.orgName(this) || (userRole && userRole.includes(constant.ADMIN))) {
+        if (redux_org.orgName(this) || redux_org.isAdmin(this)) {
             this.eventLogData(this.startRange, this.endRange)
         }
     }
@@ -272,7 +272,6 @@ class GlobalUsageLog extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        userRole: state.showUserRole ? state.showUserRole.role : null,
         organizationInfo: state.organizationInfo.data
     }
 };

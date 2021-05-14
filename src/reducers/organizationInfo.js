@@ -1,6 +1,4 @@
 import * as types from '../actions/ActionTypes';
-import { ADMIN, DEVELOPER, OPERATOR } from '../constant';
-import { fields } from '../services/model/format';
 
 const initialState = {
     data: undefined

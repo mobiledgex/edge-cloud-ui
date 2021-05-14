@@ -12,6 +12,7 @@ import './style.css'
 
 import notificationWorker from './services/notifcation.worker.js'
 import { getToken } from '../monitoring/services/service';
+import { equal } from '../../../constant/compare';
 
 class AlertGlobal extends React.Component {
 
@@ -114,15 +115,14 @@ class AlertGlobal extends React.Component {
     componentDidMount() {
         this.workerListener()
         this._isMounted = true
-        let userRole = this.props.userRole
-        if (redux_org.orgName(this) || (userRole && userRole.includes(constant.ADMIN))) {
+        if (redux_org.orgName(this) || redux_org.isAdmin(this)) {
             this.fetchdata()
         }
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.userRole && prevProps.userRole !== this.props.userRole) {
-            if (this.props.userRole.includes(constant.ADMIN)) {
+        if (this.props.organizationInfo && !equal(this.props.organizationInfo, prevProps.organizationInfo)) {
+            if (redux_org.isAdmin(this)) {
                 this.fetchdata()
             }
             else {
@@ -145,7 +145,6 @@ class AlertGlobal extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        userRole: state.showUserRole ? state.showUserRole.role : null,
         organizationInfo: state.organizationInfo.data
     }
 }
