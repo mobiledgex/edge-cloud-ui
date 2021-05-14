@@ -330,8 +330,10 @@ const MexForms = (props) => {
     }
 
     const checkRole = (form) => {
-        let currentRole = redux_org.role(orgInfo)
-        form.visible = form.roles ? form.roles.includes(currentRole) : form.visible
+        if (form.roles) {
+            let currentRole = redux_org.role(orgInfo)
+            form.visible = form.roles.includes(currentRole)
+        }
     }
 
     const loadForms = (index, form) => {
