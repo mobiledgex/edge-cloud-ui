@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import Login from './login';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import { ADMIN, LOCAL_STRAGE_KEY, LS_REGIONS, LS_USER_META_DATA, PAGE_ORGANIZATIONS } from '../../constant';
+import { LOCAL_STRAGE_KEY, LS_REGIONS, LS_USER_META_DATA, PAGE_ORGANIZATIONS } from '../../constant';
 import  Spinner from '../../hoc/loader/Spinner';
 import MexAlert from '../../hoc/alert/AlertDialog';
-import { redux_org } from '../../helper/reduxData';
 import './style.css'
 class EntranceGlobe extends Component {
 
@@ -82,8 +81,7 @@ function mapStateToProps(state) {
     return {
         user: state.user,
         loginMode: state.loginMode ? state.loginMode.mode : null,
-        alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg },
-        organizationInfo: state.organizationInfo.data
+        alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg }
     }
 }
 const mapDispatchProps = (dispatch) => {
