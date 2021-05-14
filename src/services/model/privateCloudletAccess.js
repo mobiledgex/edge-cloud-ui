@@ -72,7 +72,7 @@ export const accessGranted = (self, data) => {
     data = data ? data : {}
     let org = redux_org.nonAdminOrg(self)
     if (org) {
-        if (redux_org.isOperator(self)) {
+        if (redux_org.isDeveloper(self)) {
             data['org'] = org
         }
         else if (redux_org.isOperator(self)) {
