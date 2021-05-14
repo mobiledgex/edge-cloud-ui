@@ -83,7 +83,7 @@ class MexChart extends React.Component {
             data[fields.starttime] = this.props.range.starttime
             data[fields.endtime] = this.props.range.endtime
             data[fields.selector] = metric.serverField
-            let org = redux_org.isAdmin(this) ? this.props.org : redux_org.orgName(this)
+            let org = redux_org.isAdmin(this) ? this.props.org : redux_org.nonAdminOrg(this)
             let request = metricRequest(metric.serverRequest, data, org, isPrivate)
             let mc = await sendRequest(this, request)
             if (mc && mc.response && mc.response.status === 200) {
