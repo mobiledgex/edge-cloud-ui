@@ -86,10 +86,12 @@ export const metricParentTypes = () => ([
 
 export const validateRole = (roles, selectedRole) => {
     let valid = false
-    for (let i = 0; i < roles.length; i++) {
-        if (selectedRole.includes(roles[i])) {
-            valid = true
-            break;
+    if (selectedRole) {
+        for (let i = 0; i < roles.length; i++) {
+            if (selectedRole.includes(roles[i])) {
+                valid = true
+                break;
+            }
         }
     }
     return valid

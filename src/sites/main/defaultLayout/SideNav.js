@@ -88,8 +88,8 @@ const useStyles = makeStyles((theme) => ({
     content: {
         flexGrow: 1,
         padding: theme.spacing(0.5),
-        marginTop:51,
-        overflow:'auto'
+        marginTop: 51,
+        overflow: 'auto'
     },
     xLogo: {
         width: 40,
@@ -115,7 +115,8 @@ const useStyles = makeStyles((theme) => ({
 
 
 const Options = (props) => {
-    const { options, sub, drawerOpen, orgInfo } = props
+    const { options, sub, drawerOpen } = props
+    const orgInfo = useSelector(state => state.organizationInfo.data)
     const [pageId, setPageId] = React.useState(0)
     const childRef = React.createRef(null)
     let { url } = useRouteMatch();
@@ -221,7 +222,7 @@ const SideNav = (props) => {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Header  roles={props.roles}/>
+                    <Header roles={props.roles} />
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -244,8 +245,8 @@ const SideNav = (props) => {
                     </IconButton>
                 </div>
                 {open ? <Divider /> : null}
-                <RoleLegend drawerOpen={open}/>
-                {orgInfo ? <Options options={props.data} drawerOpen={open} orgInfo={orgInfo}/> : null}
+                <RoleLegend drawerOpen={open} />
+                {orgInfo ? <Options options={props.data} drawerOpen={open} /> : null}
             </Drawer>
             <main className={classes.content}>
                 {props.children}

@@ -447,7 +447,7 @@ const org = (org, type, isDoc) => {
 const cloudletPool = (org, type, isDoc) => {
     if (isDoc) {
         if (redux_org.isOperator(org)) {
-            return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#create-cloudlet-pool'
+            return 'https://operators.mobiledgex.com/product-overview/operator-guides/cloudlet-deployment-guides/cloudlet-pools'
         }
     }
     else {
@@ -832,9 +832,8 @@ const cloudlet = (org, type, isDoc) => {
         else if (redux_org.isOperator(org)) {
             switch (type) {
                 case HELP_CLOUDLET_LIST:
-                    return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#resource-management-and-workflow'
                 case HELP_CLOUDLET_REG:
-                    return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#to-create-and-deploy-cloudlets-using-direct-access'
+                    return 'https://operators.mobiledgex.com/product-overview/operator-guides/cloudlet-deployment-guides/deploying-cloudlets'
             }
         }
     }
@@ -920,52 +919,65 @@ const alerts = (org, type, isDoc) => {
     }
 }
 
-export const tutor = (org, type, isDoc) => {
+export const tutor = (orgInfo, type, isDoc) => {
     let callback = undefined
     switch (type) {
         case HELP_CLOUDLET_LIST:
         case HELP_CLOUDLET_REG:
             callback = cloudlet
+            break;
         case HELP_CLUSTER_INST_LIST:
         case HELP_CLUSTER_INST_REG:
             callback = clusterInst
+            break;
         case HELP_APP_LIST:
         case HELP_APP_REG:
             callback = app
+            break;
         case HELP_APP_INST_LIST:
         case HELP_APP_INST_REG:
             callback = appInst
+            break;
         case HELP_FLAVOR_LIST:
         case HELP_FLAVOR_REG:
             callback = flavor
+            break;
         case HELP_CLOUDLET_POOL_LIST:
         case HELP_CLOUDLET_POOL_REG_1:
         case HELP_CLOUDLET_POOL_REG_2:
         case HELP_CLOUDLET_POOL_REG_3:
             callback = cloudletPool
+            break;
         case HELP_ORG_LIST:
         case HELP_ORG_REG_1:
         case HELP_ORG_REG_2:
         case HELP_ORG_REG_3:
             callback = org
+            break;
         case HELP_SCALE_POLICY:
         case HELP_SCALE_POLICY_REG:
             callback = autoScalePolicy
+            break;
         case HELP_POLICY_LIST:
         case HELP_AUTO_PROV_REG_1:
         case HELP_AUTO_PROV_REG_2:
             callback = policy
+            break;
         case HELP_TRUST_POLICY:
         case HELP_TRUST_POLICY_REG:
             callback = trustPolicy
+            break;
         case HELP_MONITORING:
             callback = monitoring
+            break;
         case HELP_USER_ROLES:
             callback = userRoles
+            break;
         case HELP_ALERTS:
             callback = alerts
+            break;
     }
     if (callback) {
-        callback(org, type, isDoc)
+        return callback(orgInfo, type, isDoc)
     }
 }

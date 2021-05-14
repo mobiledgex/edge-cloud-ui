@@ -288,7 +288,7 @@ class Monitoring extends React.Component {
                 let requestList = []
                 requestList = showRequests.map(showRequest => {
                     let org = redux_org.isAdmin(this) ? this.state.selectedOrg : redux_org.orgName(this)
-                    return showRequest({ region, org, type: this.orgType, isPrivate })
+                    return showRequest(this, { region, org, type: this.orgType, isPrivate })
                 })
                 let mcList = await sendMultiRequest(this, requestList)
                 if (mcList && mcList.length > 0) {
