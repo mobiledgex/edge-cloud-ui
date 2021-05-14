@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Toolbar, Input, InputAdornment, makeStyles, Box, IconButton, Tooltip, Grid, Divider, Menu } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search';
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 const MexToolbar = (props) => {
     const classes = useStyles();
+    const orgInfo = useSelector(state=>state.organizationInfo.data)
     const [search, setSearch] = React.useState('')
     const [focused, setFocused] = React.useState(false)
     const [refreshRange, setRefreshRange] = React.useState(constant.refreshRates[0])
@@ -146,7 +147,7 @@ const MexToolbar = (props) => {
     }
 
     const showOrg = () => {
-        return redux_org.isAdmin(this) && props.organizations.length > 0
+        return redux_org.isAdmin(orgInfo) && props.organizations.length > 0
     }
 
     const parentType = () => {

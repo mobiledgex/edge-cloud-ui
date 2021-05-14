@@ -36,15 +36,15 @@ import { Skeleton } from '@material-ui/lab';
 import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../utils/sharedPreferences_util';
 import isEqual from 'lodash/isEqual';
 
-const defaultParent = () => {
-    return constant.metricParentTypes()[redux_org.isOperator(this) ? 2 : 0]
+const defaultParent = (self) => {
+    return constant.metricParentTypes()[redux_org.isOperator(self) ? 2 : 0]
 }
 
-const defaultMetricType = (parent) => {
+const defaultMetricType = (self, parent) => {
     let id = parent.id
     let metricTypeKeys = constant.visibility(parent.id)
     let pref = id === constant.PARENT_CLOUDLET ? PREF_M_CLOUDLET_VISIBILITY : id === constant.PARENT_CLUSTER_INST ? PREF_M_CLUSTER_VISIBILITY : PREF_M_APP_VISIBILITY
-    let monitoringPrefs = monitoringPref(this, pref)
+    let monitoringPrefs = monitoringPref(self, pref)
     return monitoringPrefs ? metricTypeKeys.map(data => { if (monitoringPrefs.includes(data.header)) { return data.field } }) : metricTypeKeys.map(metricType => { return metricType.field })
 }
 
@@ -56,22 +56,22 @@ const timeRangeInMin = (range) => {
     return { starttime, endtime }
 }
 
-const defaultRegion = (regions) => {
-    return monitoringPref(this, PREF_M_REGION) ? monitoringPref(this, PREF_M_REGION) : regions
+const defaultRegion = (self, regions) => {
+    return monitoringPref(self, PREF_M_REGION) ? monitoringPref(self, PREF_M_REGION) : regions
 }
 
 class Monitoring extends React.Component {
     constructor(props) {
         super(props)
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
-        let parent = defaultParent()
+        let parent = defaultParent(this)
         this.state = {
             loading: false,
             minimize: false,
             duration: constant.relativeTimeRanges[0],
             range: timeRangeInMin(constant.relativeTimeRanges[0].duration),
             organizations: [],
-            filter: { region: defaultRegion(this.regions), search: '', parent, metricType: defaultMetricType(parent), summary: constant.summaryList[0] },
+            filter: { region: defaultRegion(this, this.regions), search: '', parent, metricType: defaultMetricType(this, parent), summary: constant.summaryList[0] },
             avgData: {},
             rowSelected: 0,
             selectedOrg: undefined,
@@ -198,7 +198,7 @@ class Monitoring extends React.Component {
                             break;
                         case constant.ACTION_METRIC_PARENT_TYPE:
                             filter.parent = value
-                            filter.metricType = defaultMetricType(value)
+                            filter.metricType = defaultMetricType(this, value)
                             return { filter, showLoaded: false, avgData: this.defaultStructure() }
                         case constant.ACTION_METRIC_TYPE:
                             filter.metricType = value
@@ -343,6 +343,16 @@ class Monitoring extends React.Component {
         let privateAccess = this.props.privateAccess
         if (privateAccess && !isEqual(preProps.privateAccess, privateAccess)) {
             this.isAccessPrivate(privateAccess)
+        }
+        else if (this.props.organizationInfo && !isEqual(this.props.organizationInfo, preProps.organizationInfo)) {
+            this.setState({ avgData: this.defaultStructure() }, () => {
+                if (redux_org.isAdmin(this)) {
+                    this.fetchOrgList()
+                }
+                else {
+                    this.fetchShowData()
+                }
+            })
         }
     }
 
