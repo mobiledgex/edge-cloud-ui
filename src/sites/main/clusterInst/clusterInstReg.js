@@ -460,7 +460,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.numberOfMasters, label: 'Number of Masters', formType: INPUT, placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, tip: 'Number of k8s masters (In case of docker deployment, this field is not required)' },
             { field: fields.numberOfNodes, label: 'Number of Workers', formType: INPUT, placeholder: 'Enter Number of Workers', rules: { type: 'number' }, visible: false, update: { id: ['14'] }, tip: 'Number of k8s nodes (In case of docker deployment, this field is not required)' },
             { field: fields.sharedVolumeSize, label: 'Shared Volume Size', formType: INPUT, placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false, update: false, tip: 'Size of an optional shared volume to be mounted on the master' },
-            { field: fields.reservable, label: 'Reservable', formType: SWITCH, visible: true, roles: ['AdminManager'], value: false, update: false, tip: 'For reservable MobiledgeX ClusterInsts, the current developer tenant' },
+            { field: fields.reservable, label: 'Reservable', formType: SWITCH, visible: true, roles: [constant.ADMIN_MANAGER], value: false, update: false, tip: 'For reservable MobiledgeX ClusterInsts, the current developer tenant' },
         ]
     }
 
