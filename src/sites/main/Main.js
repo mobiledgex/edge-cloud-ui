@@ -9,13 +9,15 @@ import { CURRENT_USER, SHOW_ROLE, SHOW_CONTROLLER } from '../../services/model/e
 import Menu from './Menu'
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
-import { LS_REGIONS, validatePrivateAccess } from '../../constant';
+import { LS_REGIONS, pages, PAGE_ORGANIZATIONS, validatePrivateAccess } from '../../constant';
 import { fields } from '../../services/model/format';
 import * as ls from '../../helper/ls';
 import { sendMultiRequest } from './monitoring/services/service'
 import { getToken } from '../../services/model/serverData';
 import { showOrganizations } from '../../services/model/organization';
 import { redux_org } from '../../helper/reduxData';
+import { datePickerDefaultProps } from '@material-ui/pickers/constants/prop-types';
+import { validateRole } from '../../constant/role';
 class Main extends React.Component {
     constructor(props) {
         super(props);
@@ -115,7 +117,39 @@ class Main extends React.Component {
         this.props.handleLoadingSpinner(false)
     }
 
+    redirectInvalidPath = ()=>{
+        const orgInfo = this.props.organizationInfo
+        let pathValid = false
+        for (let page of pages) {
+            if(this.props.history.location.pathname.includes(page.path))
+            {
+                let roles = page.roles
+                if(roles)
+                {
+                    if (validateRole(roles, orgInfo)) {
+                        pathValid = true
+                    }
+                }
+                else
+                {
+                    pathValid = true
+                }
+            }
+            if (pathValid) {
+                break;
+            }
+        }
+        if (!pathValid) {
+            this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
+        }
+    }
+
+    componentDidUpdate(preProps, preState){
+        this.redirectInvalidPath()
+    }
+
     componentDidMount() {
+       
         this.props.handleUserRole(undefined)
         this.loadInitData()
     }

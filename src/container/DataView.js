@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import MexListView from './MexListView';
 import { equal } from '../constant/compare';
-import { pages, PAGE_ORGANIZATIONS } from '../constant';
-import { redux_org } from '../helper/reduxData';
+import { isPathOrg } from '../constant/common';
 
 class DataView extends React.Component {
     constructor(props) {
@@ -14,38 +13,20 @@ class DataView extends React.Component {
         }
     }
 
-    resetOrRedirect = (orgInfo) => {
-        const { id } = this.props
-        let page = pages.filter(page => {
-            return page.id === id
-        })[0]
-        if (page && page.roles) {
-            let roles = page.roles
-            if (roles.includes(redux_org.roleType(orgInfo))) {
-                if (this.props.resetView) {
-                    this.props.resetView()
-                }
-            }
-            else {
-                this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
-            }
+    resetOrRedirect = () => {
+        if (this.props.currentView) {
+            this.props.resetView()
         }
-        else if (page && page.roles === undefined) {
-            if (this.props.resetView) {
-                this.props.resetView()
-            }
-        }
-        else {
-            this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
+        if (!isPathOrg(this)) {
+            this.setState({ visible: false }, () => {
+                this.setState({ visible: true })
+            })
         }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.organizationInfo && !equal(nextProps.organizationInfo, this.props.organizationInfo)) {
-            this.resetOrRedirect(nextProps.organizationInfo)
-            this.setState({ visible: false }, () => {
-                this.setState({ visible: true})
-            })
+            this.resetOrRedirect()
             return true
         }
         else if (nextState.visible !== this.state.visible || this.props.currentView !== nextProps.currentView) {
@@ -59,11 +40,11 @@ class DataView extends React.Component {
         const { visible } = this.state
         return (
             organizationInfo && visible ?
-                currentView ? currentView : <MexListView actionMenu={actionMenu()} requestInfo={requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={groupActionMenu} onClick={onClick} customToolbar={customToolbar} tableHeight={tableHeight} refreshToggle={refreshToggle}/> : null
+                currentView ? currentView : <MexListView actionMenu={actionMenu()} requestInfo={requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={groupActionMenu} onClick={onClick} customToolbar={customToolbar} tableHeight={tableHeight} refreshToggle={refreshToggle} /> : null
         )
     }
 
-    componentDidMount(){
+    componentDidMount() {
     }
 }
 

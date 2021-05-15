@@ -174,6 +174,7 @@ class OrganizationList extends React.Component {
                 if (roleInfo.org === data[fields.organizationName]) {
                     this.props.handlePrivateAccess(undefined)
                     let privateAccess = await constant.validatePrivateAccess(this, roleInfo.role)
+                    this.updateState({ loading: undefined })
                     this.props.handlePrivateAccess(privateAccess)
                     this.props.handleUserRole(roleInfo.role)
                     this.cacheOrgInfo(data, roleInfo)
@@ -181,7 +182,7 @@ class OrganizationList extends React.Component {
                 }
             }
         }
-        this.updateState({ tableHeight: redux_org.isViewer(this) ? undefined : 280, loading: undefined })
+        this.updateState({ tableHeight: redux_org.isViewer(this) ? undefined : 280})
     }
 
     onListViewClick = (key, data) => {

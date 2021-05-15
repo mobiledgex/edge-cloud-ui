@@ -1,6 +1,7 @@
 import React from 'react';
+import { useSelector } from "react-redux";
 import SideNav from './defaultLayout/SideNav'
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 
 //Pages
 import Organization from './organization/organizationList'
@@ -21,6 +22,8 @@ import AlertReceiver from './notifications/alerts/receiver/AlertReceiver';
 import BillingOrg from './billing/billingOrg/BillingOrgList';
 
 import * as constant from '../../constant';
+import { validateRole } from '../../constant/role';
+import { isNullishCoalesce } from 'typescript';
 
 
 
@@ -63,19 +66,20 @@ const renderPage = (id) => {
 
 const Pages = (props) => {
     const path = useRouteMatch()
+    const orgInfo = useSelector(state => state.organizationInfo.data)
     let pages = props.data
     return (
         pages.map(page => (
             page.id ?
                 page.sub ?
                     <Pages key={page.id} data={page.options} /> :
-                    <Route key={page.id} exact path={`${path.path}/${page.path}`} component={renderPage(page.id)} /> : null
+                    validateRole(page.roles, orgInfo) ? <Route key={page.id} exact path={`${path.path}/${page.path}`} component={renderPage(page.id)} /> : null : null
         ))
     )
 }
 
-const Menu = (props) => {
-    const {roles} = props
+const Menu = (props) => { 
+    const { roles } = props
     return (
         <SideNav data={constant.pages} roles={roles}>
             <Switch>

@@ -1,5 +1,5 @@
 import React, { Component, Suspense, lazy } from 'react';
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import 'semantic-ui-css/semantic.min.css';
 import { connect } from 'react-redux';
 import * as actions from './actions';
@@ -31,6 +31,7 @@ class App extends Component {
                             <Route exact path='/logout' component={EntranceGlob} />
                             <Route exact path='/passwordreset' component={EntranceGlob} />
                             <Route exact path='/verify' component={VerifyContent} />
+                            <Redirect from='*' to='/' />
                         </Switch>
                     </Suspense>
                 </Router>

@@ -22,6 +22,7 @@ import ListMexMap from './map/ListMexMap'
 import cloneDeep from 'lodash/cloneDeep';
 import { ACTION_DELETE, ACTION_EDGE_BOX_ENABLE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_REBOOT, ACTION_UPGRADE, ACTION_WARNING, ACTION_POOL_ACCESS_DEVELOPER, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../constant/actions';
 import { equal } from '../constant/compare';
+import { isPathOrg } from '../constant/common';
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -569,7 +570,10 @@ class MexListView extends React.Component {
     componentDidUpdate(preProps, preState) {
         if(!equal(this.props.organizationInfo, preProps.organizationInfo))
         {
-            this.dataFromServer(this.selectedRegion) 
+            if(!isPathOrg(this))
+            {
+                this.dataFromServer(this.selectedRegion) 
+            }
         }
     }
 
