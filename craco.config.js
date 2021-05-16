@@ -48,8 +48,6 @@ function makeMultipleWebworkersWork(config){
     }
 }
 
-
-
 module.exports = {
     optimization: {
         minimize: true,

@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import MexListView from './MexListView';
 import { equal } from '../constant/compare';
 import { isPathOrg } from '../constant/common';
