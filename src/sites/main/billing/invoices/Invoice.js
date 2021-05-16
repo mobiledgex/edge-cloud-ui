@@ -1,6 +1,5 @@
 import { Box, Card, CardContent, Dialog, Divider, Grid, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@material-ui/core'
 import React from 'react';
-import { toFirstUpperCase } from '../../../../constant'
 import PictureAsPdfOutlinedIcon from '@material-ui/icons/PictureAsPdfOutlined';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import './style.css'
@@ -23,7 +22,7 @@ const customerInfo = [
 
 const sellerInfo = [
     { label: 'Name', field: 'name', header: true },
-    { label: 'Phone', field: 'phone' },
+    // { label: 'Phone', field: 'phone' },
 ]
 
 const amountSummary = [
@@ -96,9 +95,7 @@ class Invoice extends React.Component {
             <Box flexGrow={1} >
                 {sellerInfo.map((form, i) => (
                     form.header ?
-                        <Typography key={i} gutterBottom variant="h5" component="h2">
-                            {info['name']}
-                        </Typography> :
+                        <img id='company_logo' src='/assets/brand/logo_small.png' alt="MobiledgeX"/> :
                         <p key={i}>{info[form.field]}</p>
                 ))}
             </Box>
@@ -179,7 +176,8 @@ class Invoice extends React.Component {
                             <Box display="flex" >
                                 <Box flexGrow={1} p={1}>
                                     <Typography gutterBottom variant="h5" component="h4">
-                                        {`${toFirstUpperCase(data['collectionMethod'])} Collection`}
+                                        {/* {`${toFirstUpperCase(data['collectionMethod'])} Collection`} */}
+                                        Invoice
                                     </Typography>
                                 </Box>
                                 <Box>
