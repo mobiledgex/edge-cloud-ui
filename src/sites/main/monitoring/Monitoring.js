@@ -345,7 +345,13 @@ class Monitoring extends React.Component {
             this.isAccessPrivate(privateAccess)
         }
         else if (this.props.organizationInfo && !isEqual(this.props.organizationInfo, preProps.organizationInfo)) {
-            this.setState({ avgData: this.defaultStructure() }, () => {
+            let parent = defaultParent(this)
+            this.setState(prevState => {
+                let filter = prevState.filter
+                filter.metricType = defaultMetricType(this, parent)
+                filter.parent = parent
+                return { avgData: this.defaultStructure(), filter, showLoaded:false }
+            }, () => {
                 if (redux_org.isAdmin(this)) {
                     this.fetchOrgList()
                 }
