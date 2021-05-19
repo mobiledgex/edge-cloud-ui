@@ -63,7 +63,7 @@ class BillingOrg extends React.Component {
     }
 
     onBillingAction = (type, action, data) => {
-        return isAdmin()
+        return redux_org.isAdmin(this)
     }
 
     actionMenu = () => {
