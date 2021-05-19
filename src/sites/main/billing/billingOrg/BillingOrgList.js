@@ -5,14 +5,14 @@ import * as actions from '../../../../actions';
 import { connect } from 'react-redux';
 
 import MexListView from '../../../../container/MexListView';
-import { fields } from '../../../../services/model/format';
+import { fields, isAdmin } from '../../../../services/model/format';
 import { showBillingOrg, deleteBillingOrg, keys } from '../../../../services/model/billingOrg';
 
 
 import Invoices from '../invoices/Invoices';
 import Reg from './BillingOrgReg';
 
-import {validateRole, operatorRoles, BILLING_TYPE_PARENT, PAGE_BILLING_ORG} from '../../../../constant'
+import { BILLING_TYPE_PARENT, PAGE_BILLING_ORG } from '../../../../constant'
 import { ACTION_BILLING_ADD_CHILD, ACTION_BILLING_REMOVE_CHILD, ACTION_DELETE } from '../../../../constant/actions';
 class BillingOrg extends React.Component {
     constructor(props) {
@@ -47,8 +47,12 @@ class BillingOrg extends React.Component {
         return data[fields.type] === BILLING_TYPE_PARENT.toLowerCase()
     }
 
-    invoices = async (action, data)=>{
-        this.setState({ currentView: <Invoices data={data} onClose={this.onRegClose} /> }); 
+    invoices = async (action, data) => {
+        this.setState({ currentView: <Invoices data={data} onClose={this.onRegClose} /> });
+    }
+
+    onBillingAction = (type, action, data)=>{
+        return isAdmin()
     }
 
     actionMenu = () => {
@@ -56,7 +60,7 @@ class BillingOrg extends React.Component {
             { label: 'Invoices', onClick: this.invoices, type: 'Edit' },
             { id: ACTION_BILLING_ADD_CHILD, label: 'Add Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
             { id: ACTION_BILLING_REMOVE_CHILD, label: 'Remove Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteBillingOrg, type: 'Edit' }
+            { id: ACTION_DELETE, label: 'Delete', onClick: deleteBillingOrg, visibility:this.onBillingAction, type: 'Edit' }
         ]
     }
 
@@ -75,7 +79,7 @@ class BillingOrg extends React.Component {
             sortBy: [fields.name],
             // selection: true,
             keys: this.keys,
-            onAdd: validateRole(operatorRoles) ? this.onReg : undefined,
+            onAdd: isAdmin() ? this.onReg : undefined,
             grouping: false
         })
     }

@@ -43,7 +43,7 @@ const pages = [
     },
     { label: 'Monitoring', icon: 'tv', id: constant.PAGE_MONITORING, path: 'monitoring' },
     { label: 'Alert Receivers', icon: 'notification_important', id: constant.PAGE_ALERTS, path: 'alerts' },
-    { label: 'Billing', icon: 'payment', id: constant.PAGE_BILLING_ORG, path: 'billing-org', roles: [constant.ADMIN] },
+    { label: 'Billing', icon: 'payment', id: constant.PAGE_BILLING_ORG, path: 'billing-org', roles: [constant.ADMIN, constant.DEVELOPER_MANAGER] },
 ]
 
 const renderPage = (id) => {

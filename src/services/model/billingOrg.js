@@ -1,7 +1,7 @@
 import { SHOW_BILLING_ORG, CREATE_BILLING_ORG, DELETE_BILLING_ORG, BILLING_ORG_ADD_CHILD, BILLING_ORG_REMOVE_CHILD } from './endPointTypes'
 import * as serverData from './serverData'
 import * as formatter from './format'
-import { ADMIN_MANAGER, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR, TYPE_DATE } from '../../constant'
+import { ADMIN_MANAGER, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR, TYPE_DATE, DEVELOPER_MANAGER } from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 
 
@@ -23,7 +23,7 @@ export const keys = () => (
         { field: fields.children, serverField: 'Children', label: 'Children', sortable: true, visible: false },
         { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
         { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-        { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: [ADMIN_MANAGER, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR] }
+        { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: [ADMIN_MANAGER, DEVELOPER_MANAGER ] }
     ]
 )
 
