@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from "react-redux";
 import SideNav from './defaultLayout/SideNav'
-import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
+import { Switch, Route, useRouteMatch } from 'react-router-dom';
 
 //Pages
 import Organization from './organization/organizationList'
@@ -23,8 +23,6 @@ import BillingOrg from './billing/billingOrg/BillingOrgList';
 
 import * as constant from '../../constant';
 import { validateRole } from '../../constant/role';
-
-
 
 const renderPage = (id) => {
     switch (id) {
