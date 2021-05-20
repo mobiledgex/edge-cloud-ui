@@ -17,6 +17,7 @@ import ClusterInstReg from './clusterInstReg';
 import { HELP_CLUSTER_INST_LIST } from "../../../tutorial";
 import { ACTION_DELETE, ACTION_UPDATE } from '../../../constant/actions';
 import { labelFormatter } from '../../../helper/formatter';
+import { isOperator } from '../../../reducers/organizationInfo';
 
 class ClusterInstView extends React.Component {
     constructor(props) {
@@ -95,10 +96,20 @@ class ClusterInstView extends React.Component {
         })
     }
 
+    filterRegion = ()=>{
+        const { privateAccess } = this.props
+        if (privateAccess && isOperator(this)) {
+            let isPrivate = privateAccess.isPrivate
+            if (isPrivate) {
+                return privateAccess.regions
+            }
+        }
+    }
+
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} regions={this.filterRegion()}/>
         )
     }
 
@@ -111,6 +122,13 @@ class ClusterInstView extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        privateAccess : state.privateAccess.data,
+        organizationInfo : state.organizationInfo.data
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
@@ -118,4 +136,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(ClusterInstView));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(ClusterInstView));

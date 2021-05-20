@@ -167,11 +167,11 @@ class OrganizationList extends React.Component {
             for (let roleInfo of roleInfoList) {
                 if (roleInfo.org === data[fields.organizationName]) {
                     this.props.handlePrivateAccess(undefined)
-                    let privateAccess = await constant.validatePrivateAccess(this, roleInfo.role)
-                    this.props.handlePrivateAccess(privateAccess)
                     localStorage.setItem('selectOrg', data[fields.organizationName])
                     localStorage.setItem('selectRole', roleInfo.role)
                     this.props.handleUserRole(roleInfo.role)
+                    let privateAccess = await constant.validatePrivateAccess(this, roleInfo.role)
+                    this.props.handlePrivateAccess(privateAccess)
                     this.cacheOrgInfo(data, roleInfo)
                     break;
                 }
