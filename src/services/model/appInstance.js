@@ -178,22 +178,13 @@ export const showAppInsts = (data, specific) => {
       if (formatter.isDeveloper() || data.type === formatter.DEVELOPER.toLowerCase()) {
         requestData.appinst = { key: { app_key: { organization } } }
       }
-      else if ((data.isPrivate && formatter.isOperator()) || data.type === formatter.OPERATOR.toLowerCase()) {
+      else if (formatter.isOperator() || data.type === formatter.OPERATOR.toLowerCase()) {
         requestData.appinst = {
           key: {
             cluster_inst_key: {
               cloudlet_key: {
                 organization
               }
-            }
-          }
-        }
-      }
-      else if (formatter.isOperator()) {
-        requestData.appinst = {
-          key: {
-            cluster_inst_key: {
-              cloudlet_key: { organization },
             }
           }
         }

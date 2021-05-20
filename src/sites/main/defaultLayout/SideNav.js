@@ -141,7 +141,6 @@ const Options = (props) => {
     let { url } = useRouteMatch();
     const history = useHistory()
     const isPrivate = useSelector(state =>  state.privateAccess.data ? state.privateAccess.data.isPrivate : false)
-   
     useEffect(() => {
         setPageId(0)
     }, [drawerOpen])
