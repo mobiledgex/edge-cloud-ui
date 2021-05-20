@@ -2,7 +2,7 @@ import * as types from '../actions/ActionTypes';
 import { fields } from '../services/model/format';
 
 const initialState = {
-    data: []
+    data: undefined
 };
 
 export default function organizationInfo(state = initialState, action) {

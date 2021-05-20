@@ -24,8 +24,9 @@ import { useHistory, useRouteMatch } from 'react-router-dom';
 
 //Header
 import Header from './Header'
-import { validateRole } from '../../../constant';
+import { PAGE_APP_INSTANCES, PAGE_CLUSTER_INSTANCES } from '../../../constant';
 import { getUserRole } from '../../../services/model/format';
+import { useSelector } from 'react-redux';
 
 const drawerWidth = 250;
 
@@ -113,6 +114,25 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+export const validateRole = (item, isPrivate) => {
+    let roles = item.roles
+    let valid = true
+    if (roles) {
+        valid = false
+        for (let role of roles) {
+            if (getUserRole().includes(role)) {
+                valid = true
+                break;
+            }
+        }
+    }
+    if((item.id === PAGE_CLUSTER_INSTANCES || item.id === PAGE_APP_INSTANCES) && isPrivate)
+    {
+        valid = true
+    }
+    return valid
+}
+
 
 const Options = (props) => {
     const { options, sub, drawerOpen } = props
@@ -120,7 +140,7 @@ const Options = (props) => {
     const childRef = React.createRef(null)
     let { url } = useRouteMatch();
     const history = useHistory()
-
+    const isPrivate = useSelector(state =>  state.privateAccess.data ? state.privateAccess.data.isPrivate : false)
     useEffect(() => {
         setPageId(0)
     }, [drawerOpen])
@@ -168,7 +188,7 @@ const Options = (props) => {
                     {
                         item.divider ?
                             <Divider /> :
-                            validateRole(item.roles) ? <React.Fragment>
+                            validateRole(item, isPrivate) ? <React.Fragment>
                                 <Tooltip title={renderPopover(item)} interactive placement="right" arrow>
                                     {renderItem(item)}
                                 </Tooltip>

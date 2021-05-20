@@ -17,6 +17,7 @@ import { HELP_APP_INST_LIST } from "../../../tutorial";
 import { ACTION_DELETE, ACTION_UPDATE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_TERMINAL, ACTION_UPGRADE, ACTION_REFRESH, ACTION_REBOOT } from '../../../constant/actions';
 import * as serverData from '../../../services/model/serverData'
 import { idFormatter, labelFormatter, uiFormatter } from '../../../helper/formatter';
+import { isOperator } from '../../../reducers/organizationInfo';
 class AppInstList extends React.Component {
     constructor(props) {
         super(props);
@@ -178,7 +179,7 @@ class AppInstList extends React.Component {
             id: constant.PAGE_APP_INSTANCES,
             headerLabel: 'App Instances',
             nameField: fields.appName,
-            requestType: [showAppInsts, showApps, showCloudletInfoData],
+            requestType: isOperator(this) ? [showAppInsts, showCloudletInfoData] : [showAppInsts, showApps, showCloudletInfoData],
             streamType: streamAppInst,
             isRegion: true,
             isMap: true,
@@ -192,11 +193,21 @@ class AppInstList extends React.Component {
         })
     }
 
+    filterRegion = ()=>{
+        const { privateAccess } = this.props
+        if (privateAccess && isOperator(this)) {
+            let isPrivate = privateAccess.isPrivate
+            if (isPrivate) {
+                return privateAccess.regions
+            }
+        }
+    }
+
     render() {
         return (
             this.state.currentView ? this.state.currentView :
                 <div style={{ width: '100%', height: '100%' }}>
-                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+                    <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} regions={this.filterRegion()}/>
                     <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => { this.setState({ openTerminal: false }) }}>
                         <TerminalViewer data={this.state.terminalData} onClose={() => {
                             this.setState({ openTerminal: false })
@@ -215,10 +226,18 @@ class AppInstList extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        privateAccess : state.privateAccess.data,
+        organizationInfo : state.organizationInfo.data
+    }
+};
+
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(AppInstList));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(AppInstList));

@@ -17,8 +17,7 @@ class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            mexAlertMessage: undefined,
-            tokenValid: false
+            mexAlertMessage: undefined
         };
         this.worker = new RoleWorker();
     }
@@ -33,11 +32,11 @@ class Main extends React.Component {
     }
 
     render() {
-        const { tokenValid } = this.state
+        const { orgInfo } = this.props
         return (
             <div className='view_body'>
                 <Spinner />
-                {tokenValid ? <Menu /> : null}
+                { orgInfo ? <Menu /> : null}
                 {this.state.mexAlertMessage ? <MexAlert data={this.state.mexAlertMessage} onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
             </div>
         );
@@ -92,9 +91,6 @@ class Main extends React.Component {
                     }
                 }
             })
-            if (this.props.userInfo) {
-                this.setState({ tokenValid: true })
-            }
         }
 
         this.props.handleLoadingSpinner(false)
@@ -114,7 +110,8 @@ const mapStateToProps = (state) => {
     return {
         userInfo: state.userInfo ? state.userInfo.data : null,
         alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg },
-        viewMode: state.ViewMode ? state.ViewMode.mode : null
+        viewMode: state.ViewMode ? state.ViewMode.mode : null,
+        orgInfo: state.organizationInfo.data
     }
 };
 
