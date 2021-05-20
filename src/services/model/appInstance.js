@@ -21,7 +21,7 @@ export const keys = () => ([
   { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false, key: true },
   { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true, filter: true, group: true, key: true },
   { field: fields.realclustername, serverField: 'real_cluster_name', sortable: true, label: 'Real Cluster Name', visible: false, filter: false },
-  { field: fields.deployment, label: 'Deployment', sortable: true, visible: true, filter: true, group: true },
+  { field: fields.deployment, label: 'Deployment', sortable: true, visible: true, filter: true, group: true, roles:[constant.ADMIN, constant.DEVELOPER] },
   { field: fields.accessType, label: 'Access Type' },
   { field: fields.uri, serverField: 'uri', label: 'URI' },
   { field: fields.liveness, serverField: 'liveness', label: 'Liveness'},
@@ -185,6 +185,15 @@ export const showAppInsts = (data, specific) => {
               cloudlet_key: {
                 organization
               }
+            }
+          }
+        }
+      }
+      else if (formatter.isOperator()) {
+        requestData.appinst = {
+          key: {
+            cluster_inst_key: {
+              cloudlet_key: { organization },
             }
           }
         }

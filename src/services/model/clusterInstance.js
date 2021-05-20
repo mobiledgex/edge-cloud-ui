@@ -120,10 +120,13 @@ export const showClusterInsts = (data, specific) => {
             if (formatter.isDeveloper() || data.type === formatter.DEVELOPER.toLowerCase()) {
                 requestData.clusterinst = { key: { organization } }
             }
-            else if ((data.isPrivate && formatter.isOperator())  || data.type === formatter.OPERATOR.toLowerCase()) {
+            else if ((data.isPrivate && formatter.isOperator()) || data.type === formatter.OPERATOR.toLowerCase()) {
                 requestData.clusterinst = {
                     key: { cloudlet_key: { organization } }
                 }
+            }
+            else if (formatter.isOperator()) {
+                requestData.clusterinst = { cloudlet_key: { organization} }
             }
         }
     }
