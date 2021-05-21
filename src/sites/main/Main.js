@@ -10,14 +10,15 @@ import Menu from './Menu'
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
 import { LS_REGIONS, OPERATOR, validatePrivateAccess } from '../../constant';
-import { getUserRole } from '../../services/model/format';
+import { getUserRole, isAdmin } from '../../services/model/format';
 import * as ls from '../../helper/ls';
 import { sendMultiRequest } from './monitoring/services/service'
 class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            mexAlertMessage: undefined
+            mexAlertMessage: undefined,
+            tokenValid:false
         };
         this.worker = new RoleWorker();
     }
@@ -33,10 +34,11 @@ class Main extends React.Component {
 
     render() {
         const { orgInfo } = this.props
+        const {tokenValid } = this.state
         return (
             <div className='view_body'>
                 <Spinner />
-                { orgInfo ? <Menu /> : null}
+                { tokenValid && (orgInfo || isAdmin() || ls.organizationInfo() === null || ls.organizationInfo() === undefined) ? <Menu /> : null}
                 {this.state.mexAlertMessage ? <MexAlert data={this.state.mexAlertMessage} onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
             </div>
         );
@@ -50,6 +52,7 @@ class Main extends React.Component {
                 localStorage.removeItem('selectOrg')
                 localStorage.removeItem(ls.LS_ORGANIZATION_INFO)
                 localStorage.setItem('selectRole', role)
+                this.props.handleOrganizationInfo(undefined)
                 this.props.handleUserRole(role)
             }
             else {
@@ -92,7 +95,7 @@ class Main extends React.Component {
                 }
             })
         }
-
+        this.setState({tokenValid:true})
         this.props.handleLoadingSpinner(false)
     }
 
