@@ -165,7 +165,7 @@ class ListMexMap extends React.Component {
                         </React.Fragment>
                     )
                 })}
-                {register ? null : <Legend />}
+                {register ? null : this.props.id === PAGE_CLOUDLETS ? <Legend /> : null}
             </div> : null
     }
 
