@@ -95,17 +95,27 @@ class ClusterInstView extends React.Component {
             selection: true,
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
-            onAdd: this.onAdd,
+            onAdd: isOperator(this) ?  null : this.onAdd,
             viewMode: HELP_CLUSTER_INST_LIST,
             grouping: true,
             formatData: this.dataFormatter
         })
     }
 
+    filterRegion = ()=>{
+        const { privateAccess } = this.props
+        if (privateAccess && isOperator(this)) {
+            let isPrivate = privateAccess.isPrivate
+            if (isPrivate) {
+                return privateAccess.regions
+            }
+        }
+    }
+
     render() {
         const { currentView } = this.state
         return (
-            <DataView id={constant.PAGE_CLUSTER_INSTANCES} currentView={currentView} resetView={this.resetView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+            <DataView id={constant.PAGE_CLUSTER_INSTANCES} currentView={currentView} resetView={this.resetView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} regions={this.filterRegion()}/>
         )
     }
 
@@ -120,7 +130,8 @@ class ClusterInstView extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        privateAccess : state.privateAccess.data,
+        organizationInfo : state.organizationInfo.data
     }
 };
 

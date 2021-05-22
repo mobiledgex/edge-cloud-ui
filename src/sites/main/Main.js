@@ -16,7 +16,6 @@ import { sendMultiRequest } from './monitoring/services/service'
 import { getToken } from '../../services/model/serverData';
 import { showOrganizations } from '../../services/model/organization';
 import { redux_org } from '../../helper/reduxData';
-import { datePickerDefaultProps } from '@material-ui/pickers/constants/prop-types';
 import { validateRole } from '../../constant/role';
 class Main extends React.Component {
     constructor(props) {
@@ -62,7 +61,6 @@ class Main extends React.Component {
             if (event.data.isAdmin) {
                     let roleInfo = roles[0]
                     this.cacheOrgInfo(roles[0])
-                    this.props.handleUserRole(roleInfo.role)
             }
             else {
                 let orgInfo = ls.organizationInfo()
@@ -75,7 +73,6 @@ class Main extends React.Component {
                     this.props.handlePrivateAccess(privateAccess)
                 }
                 this.props.handleOrganizationInfo(ls.organizationInfo())
-                this.props.handleUserRole(redux_org.role(this))
                 redux_org.orgName(this)
             }
         });
@@ -109,11 +106,8 @@ class Main extends React.Component {
                     }
                 }
             })
-            if (this.props.userInfo) {
-                this.setState({ tokenValid: true })
-            }
         }
-
+        this.setState({tokenValid:true})
         this.props.handleLoadingSpinner(false)
     }
 
@@ -149,8 +143,6 @@ class Main extends React.Component {
     }
 
     componentDidMount() {
-       
-        this.props.handleUserRole(undefined)
         this.loadInitData()
     }
 
@@ -172,7 +164,6 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
         handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) },
         handleOrganizationInfo: (data) => { dispatch(actions.organizationInfo(data)) },
         handleUserInfo: (data) => { dispatch(actions.userInfo(data)) },

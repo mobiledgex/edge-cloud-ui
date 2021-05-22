@@ -185,25 +185,35 @@ class AppInstList extends React.Component {
             id: constant.PAGE_APP_INSTANCES,
             headerLabel: 'App Instances',
             nameField: fields.appName,
-            requestType: [showAppInsts, showApps, showCloudletInfoData],
+            requestType: isOperator(this) ? [showAppInsts, showCloudletInfoData] : [showAppInsts, showApps, showCloudletInfoData],
             streamType: streamAppInst,
             isRegion: true,
             isMap: true,
             selection: true,
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
-            onAdd: this.onAdd,
+            onAdd:  isOperator(this) ?  null : this.onAdd,
             viewMode: HELP_APP_INST_LIST,
             grouping: true,
             formatData: this.dataFormatter
         })
     }
 
+    filterRegion = ()=>{
+        const { privateAccess } = this.props
+        if (privateAccess && isOperator(this)) {
+            let isPrivate = privateAccess.isPrivate
+            if (isPrivate) {
+                return privateAccess.regions
+            }
+        }
+    }
+
     render() {
         const { currentView } = this.state
         return (
             <React.Fragment>
-                <DataView id={constant.PAGE_APP_INSTANCES} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+                <DataView id={constant.PAGE_APP_INSTANCES} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} regions={this.filterRegion()}/>
                 <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => { this.updateState({ openTerminal: false }) }}>
                     <TerminalViewer data={this.state.terminalData} onClose={() => {
                         this.updateState({ openTerminal: false })
@@ -224,9 +234,11 @@ class AppInstList extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        privateAccess : state.privateAccess.data,
+        organizationInfo : state.organizationInfo.data
     }
 };
+
 
 const mapDispatchProps = (dispatch) => {
     return {

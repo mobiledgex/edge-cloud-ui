@@ -113,7 +113,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 const Options = (props) => {
     const { options, sub, drawerOpen } = props
     const orgInfo = useSelector(state => state.organizationInfo.data)
@@ -121,7 +120,7 @@ const Options = (props) => {
     const childRef = React.createRef(null)
     let { url } = useRouteMatch();
     const history = useHistory()
-
+    const isPrivate = useSelector(state =>  state.privateAccess.data ? state.privateAccess.data.isPrivate : false)
     useEffect(() => {
         setPageId(0)
     }, [drawerOpen])

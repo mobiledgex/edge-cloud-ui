@@ -31,7 +31,7 @@ export const keys = () => ([
     { field: fields.reservedBy, serverField: 'reserved_by', label: 'Reserved By', roles: [constant.ADMIN_MANAGER] },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
+    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles:[formatter.ADMIN, constant.DEVELOPER] }
 ])
 
 export const multiDataRequest = (keys, mcRequestList, specific) => {
@@ -121,7 +121,7 @@ export const showClusterInsts = (self, data, specific) => {
             if (redux_org.isDeveloper(self) || data.type === constant.DEVELOPER) {
                 requestData.clusterinst = { key: { organization } }
             }
-            else if ((data.isPrivate && redux_org.isOperator(self))  || data.type === constant.OPERATOR) {
+            else if (redux_org.isOperator(self)  || data.type === constant.OPERATOR) {
                 requestData.clusterinst = {
                     key: { cloudlet_key: { organization } }
                 }

@@ -21,7 +21,7 @@ export const keys = () => ([
   { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false, key: true },
   { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true, filter: true, group: true, key: true },
   { field: fields.realclustername, serverField: 'real_cluster_name', sortable: true, label: 'Real Cluster Name', visible: false, filter: false },
-  { field: fields.deployment, label: 'Deployment', sortable: true, visible: true, filter: true, group: true },
+  { field: fields.deployment, label: 'Deployment', sortable: true, visible: true, filter: true, group: true, roles:[constant.ADMIN, constant.DEVELOPER] },
   { field: fields.accessType, label: 'Access Type' },
   { field: fields.uri, serverField: 'uri', label: 'URI' },
   { field: fields.liveness, serverField: 'liveness', label: 'Liveness'},
@@ -40,7 +40,7 @@ export const keys = () => ([
   { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true, format:true },
   { field: fields.autoPolicyName, label: 'Auto Prov Policy', visible: false },
   { field: fields.trusted, label: 'Trusted', visible: false, sortable: true, format:true },
-  { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
+  { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles:[formatter.ADMIN, constant.DEVELOPER] }
 ])
 
 const getClusterOrg = (data) => {
@@ -178,7 +178,7 @@ export const showAppInsts = (self, data, specific) => {
       if (redux_org.isDeveloper(self) || data.type === constant.DEVELOPER) {
         requestData.appinst = { key: { app_key: { organization } } }
       }
-      else if ((data.isPrivate && redux_org.isOperator(self)) || data.type === constant.OPERATOR) {
+      else if (redux_org.isOperator(self) || data.type === constant.OPERATOR) {
         requestData.appinst = {
           key: {
             cluster_inst_key: {

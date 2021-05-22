@@ -115,7 +115,6 @@ class OrganizationList extends React.Component {
     onDelete = (data, success) => {
         if (success && data[fields.organizationName] === redux_org.orgName(this)) {
             localStorage.removeItem(LS_ORGANIZATION_INFO)
-            this.props.handleUserRole(undefined)
             if (this._isMounted) {
                 this.forceUpdate()
             }
@@ -176,7 +175,6 @@ class OrganizationList extends React.Component {
                     let privateAccess = await constant.validatePrivateAccess(this, roleInfo.role)
                     this.updateState({ loading: undefined })
                     this.props.handlePrivateAccess(privateAccess)
-                    this.props.handleUserRole(roleInfo.role)
                     this.cacheOrgInfo(data, roleInfo)
                     break;
                 }
@@ -275,7 +273,6 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
         handleShowAuditLog: (data) => { dispatch(actions.showAuditLog(data)) },
         handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) },

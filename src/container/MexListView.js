@@ -51,7 +51,7 @@ class MexListView extends React.Component {
         this.selectedRow = {};
         this.sorting = false;
         this.selectedRegion = REGION_ALL
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        this.regions = props.regions ? props.regions : constant.regions()
     }
 
     updateState = (data) => {
