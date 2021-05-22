@@ -11,7 +11,7 @@ export const checkRole = (form) => {
         form.detailView = false
         for (let i = 0; i < roles.length; i++) {
             let role = roles[i]
-            if (role === getUserRole()) {
+            if (getUserRole().includes(role)) {
                 visible = true
                 form.detailView = true
                 break;
