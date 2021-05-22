@@ -89,7 +89,7 @@ class ClusterInstView extends React.Component {
             selection: true,
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
-            onAdd: this.onAdd,
+            onAdd: isOperator(this) ?  null : this.onAdd,
             viewMode: HELP_CLUSTER_INST_LIST,
             grouping: true,
             formatData:this.dataFormatter

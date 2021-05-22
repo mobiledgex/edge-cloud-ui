@@ -186,7 +186,7 @@ class AppInstList extends React.Component {
             selection: true,
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
-            onAdd: this.onAdd,
+            onAdd:  isOperator(this) ?  null : this.onAdd,
             viewMode: HELP_APP_INST_LIST,
             grouping: true,
             formatData: this.dataFormatter
