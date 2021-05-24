@@ -46,40 +46,6 @@ class AlertList extends React.Component {
         ]
     }
 
-    renderSeverity = (data, isDetailView) => {
-        let id = data[fields.severity]
-        let color = '#ff4444'
-        let label = 'Error'
-        let icon = <ErrorOutlineIcon />
-        switch (id) {
-            case 'info':
-                label = 'Info'
-                color = '#03A9F4'
-                icon = <ErrorOutlineIcon />
-                break;
-            case 'error':
-                label = 'Error'
-                color = '#EF5350'
-                icon = <InfoOutlineIcon />
-                break;
-            case 'warning':
-                label = 'Warning'
-                color = '#ffa034'
-                icon = <WarningOutlineIcon />
-                break;
-        }
-
-        return (
-            isDetailView ? label :
-                <Chip
-                    size="small"
-                    icon={icon}
-                    label={label}
-                    style={{ backgroundColor: color, width: 80 }}
-                />
-        )
-    }
-
     renderType = (data, isDetailView) => {
         let id = data[fields.receiverAddress]
         let ids = id.split('#OS#')
@@ -101,10 +67,7 @@ class AlertList extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.severity) {
-            return this.renderSeverity(data, isDetail)
-        }
-        else if (key.field === fields.receiverAddress) {
+        if (key.field === fields.receiverAddress) {
             return this.renderType(data, isDetail)
         }
     }
