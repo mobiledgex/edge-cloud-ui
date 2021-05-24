@@ -374,6 +374,7 @@ class Login extends Component {
                 <ReCAPTCHA
                     sitekey={process.env.REACT_APP_CAPTCHA_V2_KEY}
                     onChange={this.onCaptchaChange}
+                    onExpired={() => { this.setState({ captchaValidated: false }) }}
                 />
             </Grid.Row>
             <Grid.Row>
