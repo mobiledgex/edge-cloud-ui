@@ -37,6 +37,12 @@ class UserMenu extends React.Component {
         this.updateState({ anchorEl: null });
     }
 
+    updateUserInfo = () => {
+        let userInfo = this.props.userInfo
+        userInfo['EnableTOTP'] = !userInfo['EnableTOTP']
+        this.props.handleUserInfo(userInfo)
+    }
+
     render() {
         const { anchorEl } = this.state
         const { userInfo } = this.props
@@ -52,7 +58,7 @@ class UserMenu extends React.Component {
                     open={Boolean(anchorEl)}
                     onClose={this.handleClose}
                 >
-                    <Profile data={userInfo} currentUser={this.currentUser} close={this.handleClose} />
+                    <Profile data={userInfo} updateUserInfo={this.updateUserInfo} close={this.handleClose} />
                     {isAdmin() || getOrganization() ? <Preferences close={this.handleClose} /> : null}
                     <UpdatePassword close={this.handleClose} dialog={true} />
                     <MenuItem onClick={() => this.logout()}>
@@ -81,7 +87,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleUserInfo: (data) => { dispatch(actions.userInfo(data)) }
     };
 };
 
