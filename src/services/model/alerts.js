@@ -36,7 +36,6 @@ export const showAlertReceiverKeys = () => (
     [
         { field: fields.region, serverField: 'Region', label: 'Region', visible: false, filter: true },
         { field: fields.alertname, serverField: 'Name', label: 'Receiver Name', sortable: true, visible: true, filter: true },
-        { field: fields.severity, serverField: 'Severity', label: 'Severity', sortable: true, visible: true, filter: true, format: true },
         { field: fields.username, serverField: 'User', label: 'Username', sortable: true, visible: true, filter: true },
         { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: false, filter: true },
         { field: fields.email, serverField: 'Email', label: 'Email', sortable: true, visible: false, filter: true },
@@ -109,7 +108,7 @@ const getKey = (data, isDelete) => {
     alert = {
         name: data[fields.alertname],
         type: data[fields.type].split(" ").join("").toLowerCase(),
-        severity: data[fields.severity].toLowerCase()
+        severity: 'info'
     }
 
     if (data[fields.region]) {
