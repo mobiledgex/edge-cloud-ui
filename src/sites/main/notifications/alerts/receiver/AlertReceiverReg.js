@@ -22,7 +22,6 @@ import { Grid, LinearProgress } from '@material-ui/core'
 import { resetFormValue } from '../../../../../hoc/forms/helper/constant';
 
 const RECEIVER_TYPE = [constant.RECEIVER_TYPE_EMAIL, constant.RECEIVER_TYPE_SLACK, constant.RECEIVER_TYPE_PAGER_DUTY]
-const RECEIVER_SEVERITY = ["Info", "Warning", "Error"]
 
 
 const selector = (self) => {
@@ -77,7 +76,6 @@ class FlavorReg extends React.Component {
             { uuid: uuid(), field: fields.slack, label: 'Slack', formType: INPUT, rules: { required: true }, visible: false, forms: this.slackForm(), tip: 'Slack channel to be receiving the alert\nSlack webhook url' },
             { field: fields.pagerDutyIntegrationKey, label: 'PagerDuty Integration Key', formType: INPUT, placeholder: 'Enter PagerDuty integration key', rules: { required: true }, visible: false, dataValidateFunc: this.validatePageDutyVersion },
             { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true, type:'search' }, visible: false, tip: 'Email address receiving the alert (by default email associated with the account)' },
-            { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true }, visible: true, tip: 'Alert severity level - one of "info", "warning", "error"' },
             { field: fields.selector, label: 'Selector', formType: SELECT, placeholder: 'Select Selector', rules: { required: true, disabled: true }, visible: true, tip: 'Selector for which you want to receive alerts' },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: false }, visible: true },
             { field: fields.organizationName, label: 'Developer', formType: SELECT, placeholder: 'Select Developer', rules: { required: false, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: false, tip: 'Cluster or App Developer' },
@@ -318,9 +316,6 @@ class FlavorReg extends React.Component {
                             break;
                         case fields.type:
                             form.options = RECEIVER_TYPE;
-                            break;
-                        case fields.severity:
-                            form.options = RECEIVER_SEVERITY;
                             break;
                         case fields.selector:
                             form.options = selector(this);
