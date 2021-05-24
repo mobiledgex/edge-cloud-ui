@@ -13,7 +13,7 @@ import { getDarkTheme, getLightTheme, THEME_TYPE } from "./themeStyle";
 import Spinner from './hoc/loader/Spinner';
 
 const Main = lazy(() => import('./sites/main/Main'));
-const EntranceGlob = lazy(() => import('./sites/login/entranceGlob'));
+const Landing = lazy(() => import('./sites/login/Landing'));
 const VerifyContent = lazy(() => import('./sites/login/verifyContent'));
 class App extends Component {
     constructor() {
@@ -26,11 +26,13 @@ class App extends Component {
                 <Router>
                     <Suspense fallback={<Spinner loading={true} />}>
                         <Switch>
-                            <Route exact path='/' component={EntranceGlob} />
-                            <Route path='/main' component={Main} />
-                            <Route exact path='/logout' component={EntranceGlob} />
-                            <Route exact path='/passwordreset' component={EntranceGlob} />
+                            <Route exact path='/' component={Landing} />
+                            <Route exact path='/register' component={Landing} />
+                            <Route exact path='/forgotpassword' component={Landing} />
+                            <Route exact path='/passwordreset' component={Landing} />
+                            <Route exact path='/logout' component={Landing} />
                             <Route exact path='/verify' component={VerifyContent} />
+                            <Route path='/main' component={Main} />
                             <Redirect from='*' to='/' />
                         </Switch>
                     </Suspense>

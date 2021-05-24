@@ -42,13 +42,6 @@ export const toggleTheme = (themeType) => ({
     themeType
 })
 
-export function changeLoginMode(mode) {
-    return {
-        type: types.LOGIN_MODE,
-        mode
-    }
-}
-
 export function roleInfo(role) {
     return {
         type: types.ROLE_INFO,
@@ -61,13 +54,6 @@ export function alertInfo(mode, msg) {
         type: types.ALERT_INFO,
         mode,
         msg
-    }
-}
-
-export function createAccount(created) {
-    return {
-        type: types.CREATE_ACCOUNT,
-        created
     }
 }
 

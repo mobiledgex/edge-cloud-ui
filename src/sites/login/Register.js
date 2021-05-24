@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import MexForms, { INPUT, BUTTON, POPUP_INPUT, SWITCH } from "../../hoc/forms/MexForms";
@@ -6,9 +6,9 @@ import { fields } from "../../services/model/format";
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
-
+import * as serverData from '../../services/model/serverData';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { Icon } from "semantic-ui-react";
+import { Icon, Grid, Container, Button as SButton } from "semantic-ui-react";
 import { generate } from 'generate-password'
 import { Button, Checkbox, FormControlLabel } from "@material-ui/core";
 import { copyData } from '../../utils/file_util'
@@ -16,8 +16,12 @@ import cloneDeep from "lodash/cloneDeep";
 import { sendRequest } from '../../services/model/serverWorker'
 import { PUBLIC_CONFIG } from '../../services/model/endpoints'
 import { load } from "../../helper/zxcvbn";
+import ReCAPTCHA from "react-google-recaptcha";
+import MexOTPRegistration from './otp/MexOTPRegistration';
+import { useHistory } from "react-router";
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
+const HOST = window.location.host;
 
 const validateLetterCase = (value) => {
     return /[a-z]/.test(value) && /[A-Z]/.test(value)
@@ -46,18 +50,48 @@ const calculatePercentage = (passwordMinCrackTimeSec, score) => {
     return value
 }
 
+const Success = (props) => {
+    const { data, onVerificationEmail } = props
+    const history = useHistory()
+
+    return (
+        <Grid>
+            <Grid.Row>
+                <div className="login-text">
+                    {
+                        `Welcome to the Edge! Thank you for signing up.
+                        To login to your account, you must first validate your email address.
+                        A verification email has been sent to ${data.email}. Click on the verification link in the email to verify your account. 
+                        All the new accounts are locked by default. Please contact support@mobiledgex.com to unlock it`
+                    }
+                </div>
+            </Grid.Row>
+            <Grid.Row>
+                <div className="login-text">If you have not received the email after a few minutes, check your spam folder or click <span style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', display: 'inline-block' }} onClick={() => onVerificationEmail(data.email)}>here</span> to resend verification email.</div>
+            </Grid.Row>
+            <Grid.Row>
+                <div align='center' style={{ width: '70%' }}>
+                    <SButton onClick={() => history.push('/')}><span>Log In</span></SButton>
+                </div>
+            </Grid.Row>
+        </Grid>
+    )
+}
+
 class RegistryUserForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             forms: [],
-            visibility: false
+            visibility: false,
+            totp: undefined,
+            captchaValidated: false,
+            success: undefined
         }
     }
 
     calculateStrength = (value) => {
-        if(this.zxcvbn === undefined)
-        {
+        if (this.zxcvbn === undefined) {
             this.zxcvbn = load()
         }
         return this.zxcvbn(value).guesses / BRUTE_FORCE_GUESSES_PER_SECOND
@@ -133,9 +167,49 @@ class RegistryUserForm extends React.Component {
         }
     }
 
+    createUser = async (data) => {
+        const { clientSysInfo } = this.props
+        let mc = await serverData.createUser(this, {
+            name: data[fields.username],
+            passhash: data[fields.password],
+            email: data[fields.email],
+            verify: {
+                email: data[fields.email],
+                operatingsystem: clientSysInfo.os.name,
+                browser: clientSysInfo.browser.name,
+                callbackurl: `https://${HOST}/#/verify`,
+                clientip: clientSysInfo.clientIP,
+            },
+            EnableTOTP: data[fields.otp],
+        })
+        if (mc) {
+            if (mc.response) {
+                let response = mc.response;
+                let request = mc.request;
+                if (request.data.EnableTOTP) {
+                    this.setState({ totp: { requestData: request.data, responseData: response.data } })
+                }
+                else {
+                    if (typeof response.data === 'string' && response.data.indexOf("}{") > 0) {
+                        response.data.replace("}{", "},{")
+                        response.data = JSON.parse(response.data)
+                    }
+                    let message = (response.data.Message) ? response.data.Message : null;
+                    if (message && message.indexOf('created') > -1) {
+                        let msg = `User ${request.data.name} created successfully`
+                        this.props.handleAlertInfo('success', msg)
+                        this.setState({ success: request.data })
+                    } else {
+                        this.props.handleAlertInfo('error', message)
+                    }
+                }
+            }
+        }
+    }
+
     onCreate = (data) => {
-        if (this.props.captchaValidated) {
-            this.props.createUser(data)
+        if (this.state.captchaValidated) {
+            this.createUser(data)
         }
         else {
             this.props.handleAlertInfo('error', 'Please validate captcha')
@@ -207,10 +281,8 @@ class RegistryUserForm extends React.Component {
             let forms = prevState.forms
             let visibility = !prevState.visibility
             let type = visibility ? 'text' : 'password'
-            for(let form of forms)
-            {
-                if(form.field === fields.password || form.field === fields.confirmPassword)
-                {
+            for (let form of forms) {
+                if (form.field === fields.password || form.field === fields.confirmPassword) {
                     form.rules.type = type
                 }
             }
@@ -237,11 +309,42 @@ class RegistryUserForm extends React.Component {
         ]
     )
 
+    onOTPComplete = (data) => {
+        let requestData = this.state.totp.requestData
+        let msg = `User ${requestData.name} created successfully`
+        this.props.handleAlertInfo('success', msg)
+        this.setState({ success: requestData })
+    }
+
+    onCaptchaChange = (value) => {
+        if (value) {
+            this.setState({ captchaValidated: true })
+        }
+    }
+
     render() {
+        const { totp, success } = this.state
+        const { onVerificationEmail } = this.props
         return (
-            <Fragment>
-                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
-            </Fragment>
+            success ? <Success data={success} onVerificationEmail={onVerificationEmail} /> :
+                totp ? <MexOTPRegistration onComplete={this.onOTPComplete} data={totp} showDone={true} /> :
+                    <Grid>
+                        <Grid.Row>
+                            <span className='title'>Create New Account</span>
+                        </Grid.Row>
+                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
+                        <Grid.Row style={{ marginTop: 40, marginLeft: 25 }}>
+                            <ReCAPTCHA
+                                sitekey={process.env.REACT_APP_CAPTCHA_V2_KEY}
+                                onChange={this.onCaptchaChange}
+                            />
+                        </Grid.Row>
+                        <Grid.Row>
+                            <span>
+                                By clicking Sign Up, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Trust Policy</a>.
+                            </span>
+                        </Grid.Row>
+                    </Grid>
         );
     }
 

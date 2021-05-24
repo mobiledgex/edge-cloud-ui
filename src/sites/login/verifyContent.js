@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import * as actions from '../../actions';
 import * as serverData from "../../services/model/serverData";
 import { GridLoader } from "react-spinners";
 import MexAlert from '../../hoc/alert/AlertDialog';
 import { Dialog } from '@material-ui/core';
-
 
 class VerifyContent extends Component {
     constructor(props) {
@@ -64,10 +61,4 @@ class VerifyContent extends Component {
 
 }
 
-const mapDispatchProps = (dispatch) => {
-    return {
-        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data)) },
-    };
-};
-
-export default connect(null, mapDispatchProps)(VerifyContent);
+export default VerifyContent;

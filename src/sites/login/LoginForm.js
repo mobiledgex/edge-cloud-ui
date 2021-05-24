@@ -1,10 +1,11 @@
 import React from 'react'
-
+import { useHistory } from 'react-router';
 import { Grid as MGrid } from '@material-ui/core';
 import { Icon, Input, Button } from 'semantic-ui-react';
 
 
 const Login = (props) => {
+    const history = useHistory()
     const [loginDanger, setLoginDanger] = React.useState('')
     const [username, setUsername] = React.useState(undefined)
     const [password, setPassword] = React.useState(undefined)
@@ -55,7 +56,7 @@ const Login = (props) => {
                         {loginDanger}
                     </div>
                 </MGrid>
-                <div style={{ float: 'right', display: 'inline', right: 0, color: 'white', cursor: 'pointer', marginBottom: 15, marginTop: 0 }} onClick={() => props.handleClickLogin('forgot')}>Forgot Password</div>
+                <div style={{ float: 'right', display: 'inline', right: 0, color: 'white', cursor: 'pointer', marginBottom: 15, marginTop: 0 }} onClick={() => history.push('/forgotpassword')}>Forgot Password</div>
                 <Button onClick={() => onSubmit()}>Log In</Button>
             </div>
         </React.Fragment>

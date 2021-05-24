@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Dialog, DialogActions, DialogTitle, Divider, IconButton, List, ListItem, ListItemText, MenuItem, Switch, Tooltip } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogTitle, IconButton, List, ListItem, ListItemText, MenuItem, Switch, Tooltip } from '@material-ui/core';
 import { FORMAT_FULL_DATE_TIME, time } from '../../../utils/date_util'
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
@@ -11,6 +11,7 @@ import { withStyles } from '@material-ui/styles';
 import { updateUser } from '../../../services/model/serverWorker'
 import MexOTPRegistration from '../../login/otp/MexOTPRegistration'
 import LinearProgress from '@material-ui/core/LinearProgress';
+import { equal } from '../../../constant/compare';
 
 const formatDate = (value) => {
     return dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, value)
@@ -65,13 +66,13 @@ class Profile extends React.Component {
         return time(FORMAT_FULL_DATE_TIME, date)
     }
 
-    handleOpen = ()=>{
-        this.setState({open:true})
-        this.props.close()
+    handleOpen = () => {
+        this.setState({ open: true })
+        this.props.onClose()
     }
 
     handleClose = () => {
-        this.setState({open:false})
+        this.setState({ open: false })
     }
 
 
@@ -131,24 +132,22 @@ class Profile extends React.Component {
         if (mc && mc.response && mc.response.status === 200) {
             let responseData = mc.response.data
             let OTPData = this.state.isOTP ? { responseData } : undefined
-            this.props.currentUser()
+            this.props.updateUserInfo()
             this.setState({ OTPData })
         }
-        else {
-            this.setState({ loading: false })
-        }
+        this.setState({ loading: false })
     }
 
     updateProfile = () => {
         let isOTP = this.state.isOTP
-        if (isOTP !== this.props.data['EnableTOTP']) {
+        if (isOTP !== this.props.userInfo['EnableTOTP']) {
             this.setState({ loading: true })
             updateUser(this, { enabletotp: isOTP }, this.updateResponse)
         }
     }
 
     render() {
-        const { data } = this.props
+        const { userInfo } = this.props
         const { open, isOTP, OTPData, loading } = this.state
         return (
             <React.Fragment>
@@ -160,18 +159,18 @@ class Profile extends React.Component {
                     {loading ? <LinearProgress /> : null}
                     <DialogTitle id="profile">
                         <div style={{ float: "left", display: 'inline-block' }}>
-                            <h3 style={{fontWeight:700}}>Profile</h3>
+                            <h3 style={{ fontWeight: 700 }}>Profile</h3>
                         </div>
                         <div style={{ float: "right", display: 'inline-block', marginTop: -8 }}>
-                            {this.renderEmail(data)}
-                            {this.renderOTP(data)}
-                            {this.renderLock(data)}
+                            {this.renderEmail(userInfo)}
+                            {this.renderOTP(userInfo)}
+                            {this.renderLock(userInfo)}
                         </div>
                     </DialogTitle>
-                    <List style={{marginLeft:10}}>
+                    <List style={{ marginLeft: 10 }}>
                         {
                             keys.map((key, i) => {
-                                return key.visible ? this.renderRow(i, key, data) : null
+                                return key.visible ? this.renderRow(i, key, userInfo) : null
                             })
                         }
                         <ListItem>
@@ -188,10 +187,10 @@ class Profile extends React.Component {
                             </ListItem> : null}
                     </List>
                     <DialogActions>
-                        <Button onClick={this.updateProfile} style={{backgroundColor: 'rgba(118, 255, 3, 0.7)'}} size='small'>
+                        <Button onClick={this.updateProfile} style={{ backgroundColor: 'rgba(118, 255, 3, 0.7)' }} size='small'>
                             Update
                         </Button>
-                        <Button onClick={this.handleClose} style={{backgroundColor: 'rgba(118, 255, 3, 0.7)'}} size='small'>
+                        <Button onClick={this.handleClose} style={{ backgroundColor: 'rgba(118, 255, 3, 0.7)' }} size='small'>
                             Close
                         </Button>
                     </DialogActions>
@@ -201,12 +200,14 @@ class Profile extends React.Component {
     }
 
     componentDidUpdate(preProps, preState) {
-        if (preProps.data !== this.props.data) {
-            this.setState({ isOTP: this.props.data['EnableTOTP'], loading: false })
+        if (!equal(preProps.userInfo, this.props.userInfo)) {
+            this.setState({ isOTP: this.props.userInfo['EnableTOTP'], loading: false })
         }
+    }
+
+    componentDidMount() {
+        this.setState({ isOTP: this.props.userInfo['EnableTOTP'], loading: false })
     }
 }
 
-
 export default Profile;
-

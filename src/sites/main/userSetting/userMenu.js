@@ -2,8 +2,8 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import Profile from './profile';
-import UpdatePassword from './updatePassword';
+import Profile from './Profile';
+import UpdatePassword from './UpdatePassword';
 import Preferences from './preferences/preferences';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import { IconButton, ListItemText, Menu, MenuItem } from '@material-ui/core';
@@ -37,9 +37,15 @@ class UserMenu extends React.Component {
         this.updateState({ anchorEl: null });
     }
 
+    updateUserInfo = () => {
+        let userInfo = this.props.userInfo
+        userInfo['EnableTOTP'] = !userInfo['EnableTOTP']
+        this.props.handleUserInfo(userInfo)
+    }
+
     render() {
         const { anchorEl } = this.state
-        const { userInfo } = this.props
+        const {userInfo} = this.props
         return (
             <div style={{ marginTop: '0.4em' }}>
                 <IconButton aria-label="user-menu" aria-haspopup="true" onClick={this.handleClick}>
@@ -52,7 +58,7 @@ class UserMenu extends React.Component {
                     open={Boolean(anchorEl)}
                     onClose={this.handleClose}
                 >
-                    <Profile data={userInfo} currentUser={this.currentUser} close={this.handleClose} />
+                    <Profile onClose={this.handleClose} userInfo={userInfo} updateUserInfo={this.updateUserInfo}/>
                     {redux_org.isAdmin(this) || redux_org.nonAdminOrg(this) ? <Preferences close={this.handleClose} /> : null}
                     <UpdatePassword close={this.handleClose} dialog={true} />
                     <MenuItem onClick={() => this.logout()}>
@@ -75,14 +81,15 @@ class UserMenu extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        userInfo: state.userInfo.data,
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        userInfo: state.userInfo.data
     }
 };
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleUserInfo: (data) => { dispatch(actions.userInfo(data)) }
     };
 };
 

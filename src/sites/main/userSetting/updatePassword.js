@@ -13,6 +13,8 @@ import { resetPwd, sendRequest, updatePwd } from '../../../services/model/server
 import { PUBLIC_CONFIG } from '../../../services/model/endpoints'
 import { Button, Dialog, DialogContent, DialogTitle, ListItemText, MenuItem, LinearProgress } from '@material-ui/core';
 import { load } from "../../../helper/zxcvbn";
+import { withRouter } from "react-router";
+
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
 
 const validateLetterCase = (value) => {
@@ -324,4 +326,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchProps)(UpdatePassword);
+export default withRouter(connect(null, mapDispatchProps)(UpdatePassword))
