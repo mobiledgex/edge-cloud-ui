@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
-import { LOCAL_STRAGE_KEY } from '../../constant'
-import { PAGE_ORGANIZATIONS } from '../../constant'
-import * as serverData from '../../services/model/serverData';
+import * as actions from '../../../actions';
+import { LOCAL_STRAGE_KEY } from '../../../constant'
+import { PAGE_ORGANIZATIONS } from '../../../constant'
+import * as serverData from '../../../services/model/serverData';
 import MexOTPValidation from './MexOTPValidation';
 import LoginForm from './LoginForm'
 import { withRouter } from 'react-router';

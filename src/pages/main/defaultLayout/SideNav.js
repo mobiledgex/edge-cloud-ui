@@ -22,10 +22,11 @@ import RoleLegend from './RoleLegend'
 
 import { Collapse, Icon, Tooltip } from '@material-ui/core';
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import {validateRoleWithPrivate} from '../../../constant/role'
 
 //Header
 import Header from './Header'
-import { validateRole } from '../../../constant/role';
+import { PAGE_APP_INSTANCES, PAGE_CLUSTER_INSTANCES } from '../../../constant';
 
 const drawerWidth = 250;
 
@@ -161,6 +162,8 @@ const Options = (props) => {
         return drawerOpen ? '' : item.label
     }
 
+    
+
     return (
         <List component={sub ? 'div' : 'nav'} disablePadding={sub}>
             {options.map((item, i) => (
@@ -168,7 +171,7 @@ const Options = (props) => {
                     {
                         item.divider ?
                             <Divider /> :
-                            validateRole(item.roles, orgInfo) ? <React.Fragment>
+                            validateRoleWithPrivate(item, orgInfo, isPrivate) ? <React.Fragment>
                                 <Tooltip title={renderPopover(item)} interactive placement="right" arrow>
                                     {renderItem(item)}
                                 </Tooltip>

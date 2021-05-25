@@ -22,7 +22,7 @@ import AlertReceiver from './notifications/alerts/receiver/AlertReceiver';
 import BillingOrg from './billing/billingOrg/BillingOrgList';
 
 import * as constant from '../../constant';
-import { validateRole } from '../../constant/role';
+import { validateRoleWithPrivate } from '../../constant/role';
 
 const renderPage = (id) => {
     switch (id) {
@@ -64,18 +64,19 @@ const renderPage = (id) => {
 const Pages = (props) => {
     const path = useRouteMatch()
     const orgInfo = useSelector(state => state.organizationInfo.data)
+    const isPrivate = useSelector(state => state.privateAccess.data ? state.privateAccess.data.isPrivate : false)
     let pages = props.data
     return (
         pages.map(page => (
             page.id ?
                 page.sub ?
                     <Pages key={page.id} data={page.options} /> :
-                    validateRole(page.roles, orgInfo) ? <Route key={page.id} exact path={`${path.path}/${page.path}`} component={renderPage(page.id)} /> : null : null
+                    validateRoleWithPrivate(page, orgInfo, isPrivate) ? <Route key={page.id} exact path={`${path.path}/${page.path}`} component={renderPage(page.id)} /> : null : null
         ))
     )
 }
 
-const Menu = (props) => { 
+const Menu = (props) => {
     const { roles } = props
     return (
         <SideNav data={constant.pages} roles={roles}>

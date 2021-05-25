@@ -1,6 +1,6 @@
 import React from 'react'
 import { useHistory } from 'react-router';
-import { Grid as MGrid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { Icon, Input, Button } from 'semantic-ui-react';
 
 
@@ -10,8 +10,8 @@ const Login = (props) => {
     const [username, setUsername] = React.useState(undefined)
     const [password, setPassword] = React.useState(undefined)
     const [visiblity, setVisiblity] = React.useState(false)
-    
-    const onFocusHandle = (value)=>{
+
+    const onFocusHandle = (value) => {
         setFocused(value)
     }
 
@@ -42,20 +42,20 @@ const Login = (props) => {
             <br />
             <span className='title'>Sign into your account</span>
             <div style={{ padding: 30 }}>
-                <MGrid className="signUpBD" style={{ padding: '0 20px 0 20px' }}>
-                    <MGrid item>
+                <Grid className="signUpBD" style={{ padding: '0 20px 0 20px' }}>
+                    <Grid item>
                         <Icon name='user outline' style={{ color: '#FFF' }} /><sup style={{ color: '#FFF' }}>{' *'}</sup>
                         <Input style={{ width: '80%', color: 'white', marginLeft: 15 }} placeholder='Username or Email' name='username' onChange={onChangeUser} onKeyPress={event => { if (event.key === 'Enter') { onSubmit() } }}></Input>
-                    </MGrid>
+                    </Grid>
                     <br />
-                    <MGrid item>
+                    <Grid item>
                         <Icon name='keyboard outline' style={{ color: '#FFF' }} /><sup style={{ color: '#FFF' }}>{' *'}</sup>
-                        <Input icon={<Icon name={visiblity ? 'unhide' : 'hide'} link onClick={()=>{setVisiblity(!visiblity)}} />} autoComplete="off" style={{ width: '80%', color: 'white', marginLeft: 15 }} placeholder='Password' name='password' type={visiblity ? 'text' : 'password'} onChange={onChangePassword} onKeyPress={event => { if (event.key === 'Enter') { onSubmit() } }}></Input>
-                    </MGrid>
+                        <Input icon={<Icon name={visiblity ? 'unhide' : 'hide'} link onClick={() => { setVisiblity(!visiblity) }} />} autoComplete="off" style={{ width: '80%', color: 'white', marginLeft: 15 }} placeholder='Password' name='password' type={visiblity ? 'text' : 'password'} onChange={onChangePassword} onKeyPress={event => { if (event.key === 'Enter') { onSubmit() } }}></Input>
+                    </Grid>
                     <div className="loginValidation">
                         {loginDanger}
                     </div>
-                </MGrid>
+                </Grid>
                 <div style={{ float: 'right', display: 'inline', right: 0, color: 'white', cursor: 'pointer', marginBottom: 15, marginTop: 0 }} onClick={() => history.push('/forgotpassword')}>Forgot Password</div>
                 <Button onClick={() => onSubmit()}>Log In</Button>
             </div>

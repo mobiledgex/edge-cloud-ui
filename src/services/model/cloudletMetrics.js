@@ -1,7 +1,7 @@
 import * as formatter from './format'
 import { CLOUDLET_METRICS_ENDPOINT } from './endPointTypes'
 import { CLOUDLET_METRICS_USAGE_ENDPOINT } from './endpoints';
-import { UNIT_FLOOR, UNIT_GB, UNIT_KB, UNIT_MB } from '../../sites/main/monitoring/helper/unitConvertor';
+import { UNIT_FLOOR, UNIT_GB, UNIT_KB, UNIT_MB } from '../../pages/main/monitoring/helper/unitConvertor';
 
 let fields = formatter.fields;
 

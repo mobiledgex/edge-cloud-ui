@@ -1,3 +1,5 @@
+import { PAGE_CLUSTER_INSTANCES, PAGE_APP_INSTANCES } from "../constant"
+
 /**
  * 
  * @param {*} roles - show org api response
@@ -9,4 +11,11 @@ export const validateRole = (roles, selectedRole) => {
         return roles.includes(selectedRole.role) || roles.includes(selectedRole.type)
     }
     return true
+}
+
+export const validateRoleWithPrivate = (item, selectedRole, isPrivate) => {
+    if ((item.id === PAGE_CLUSTER_INSTANCES || item.id === PAGE_APP_INSTANCES) && isPrivate) {
+        return true
+    }
+    return validateRole(item.roles, selectedRole)
 }

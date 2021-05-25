@@ -9,7 +9,7 @@ import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import * as dateUtil from '../../../utils/date_util'
 import { withStyles } from '@material-ui/styles';
 import { updateUser } from '../../../services/model/serverWorker'
-import MexOTPRegistration from '../../login/otp/MexOTPRegistration'
+import MexOTPRegistration from '../../landing/otp/MexOTPRegistration'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { equal } from '../../../constant/compare';
 

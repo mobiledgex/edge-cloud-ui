@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import * as serverData from "../../services/model/serverData";
+import * as serverData from "../../../services/model/serverData";
 import { GridLoader } from "react-spinners";
-import MexAlert from '../../hoc/alert/AlertDialog';
+import MexAlert from '../../../hoc/alert/AlertDialog';
 import { Dialog } from '@material-ui/core';
 
 class VerifyContent extends Component {

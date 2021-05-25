@@ -68,14 +68,14 @@ export const deleteInvitation = (data) => {
     return { method: DELETE_POOL_ACCESS_INVITATION, data: getRequestData(data), success: 'Invitation Removed' }
 }
 
-export const accessGranted = (self, data) => {
-    data = data ? data : {}
-    let org = redux_org.nonAdminOrg(self)
+export const accessGranted = (self, orgInfo) => {
+    let data = {}
+    let org = orgInfo[fields.organizationName]
     if (org) {
-        if (redux_org.isDeveloper(self)) {
+        if (orgInfo[fields.type] === DEVELOPER) {
             data['org'] = org
         }
-        else if (redux_org.isOperator(self)) {
+        else if (orgInfo[fields.type] === OPERATOR) {
             data['cloudletpoolorg'] = org
         }
     }

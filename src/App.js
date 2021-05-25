@@ -12,9 +12,8 @@ import { ThemeProvider } from "@material-ui/styles";
 import { getDarkTheme, getLightTheme, THEME_TYPE } from "./themeStyle";
 import Spinner from './hoc/loader/Spinner';
 
-const Main = lazy(() => import('./sites/main/Main'));
-const Landing = lazy(() => import('./sites/login/Landing'));
-const VerifyContent = lazy(() => import('./sites/login/verifyContent'));
+const Main = lazy(() => import('./pages/main/Main'));
+const Landing = lazy(() => import('./pages/landing/Landing'));
 class App extends Component {
     constructor() {
         super();
@@ -31,7 +30,7 @@ class App extends Component {
                             <Route exact path='/forgotpassword' component={Landing} />
                             <Route exact path='/passwordreset' component={Landing} />
                             <Route exact path='/logout' component={Landing} />
-                            <Route exact path='/verify' component={VerifyContent} />
+                            <Route exact path='/verify' component={Landing} />
                             <Route path='/main' component={Main} />
                             <Redirect from='*' to='/' />
                         </Switch>

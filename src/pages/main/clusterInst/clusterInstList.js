@@ -95,7 +95,7 @@ class ClusterInstView extends React.Component {
             selection: true,
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
-            onAdd: isOperator(this) ?  null : this.onAdd,
+            onAdd: redux_org.isOperator(this) ?  null : this.onAdd,
             viewMode: HELP_CLUSTER_INST_LIST,
             grouping: true,
             formatData: this.dataFormatter
@@ -104,7 +104,7 @@ class ClusterInstView extends React.Component {
 
     filterRegion = ()=>{
         const { privateAccess } = this.props
-        if (privateAccess && isOperator(this)) {
+        if (privateAccess && redux_org.isOperator(this)) {
             let isPrivate = privateAccess.isPrivate
             if (isPrivate) {
                 return privateAccess.regions

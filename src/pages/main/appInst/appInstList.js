@@ -185,14 +185,14 @@ class AppInstList extends React.Component {
             id: constant.PAGE_APP_INSTANCES,
             headerLabel: 'App Instances',
             nameField: fields.appName,
-            requestType: isOperator(this) ? [showAppInsts, showCloudletInfoData] : [showAppInsts, showApps, showCloudletInfoData],
+            requestType: redux_org.isOperator(this) ? [showAppInsts, showCloudletInfoData] : [showAppInsts, showApps, showCloudletInfoData],
             streamType: streamAppInst,
             isRegion: true,
             isMap: true,
             selection: true,
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
-            onAdd:  isOperator(this) ?  null : this.onAdd,
+            onAdd:  redux_org.isOperator(this) ?  null : this.onAdd,
             viewMode: HELP_APP_INST_LIST,
             grouping: true,
             formatData: this.dataFormatter
@@ -201,7 +201,7 @@ class AppInstList extends React.Component {
 
     filterRegion = ()=>{
         const { privateAccess } = this.props
-        if (privateAccess && isOperator(this)) {
+        if (privateAccess && redux_org.isOperator(this)) {
             let isPrivate = privateAccess.isPrivate
             if (isPrivate) {
                 return privateAccess.regions

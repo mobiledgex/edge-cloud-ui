@@ -1,6 +1,6 @@
 import { fields } from "./services/model/format"
 import { accessGranted } from "./services/model/privateCloudletAccess"
-import { sendRequest } from "./sites/main/monitoring/services/service"
+import { sendRequest } from "./pages/main/monitoring/services/service"
 import { redux_org } from "./helper/reduxData"
 
 export const COLOR_GREEN = '#388E3C'
@@ -340,34 +340,31 @@ export const legendRoles =
     }
 }
 
-export const validatePrivateAccess = async (self) => {
+export const validatePrivateAccess = async (self, orgInfo) => {
     let privateAccess = undefined
-    if (redux_org.isOperator(self)) {
-        let mc = await sendRequest(self, accessGranted(self))
-        if (mc.response && mc.response.status === 200) {
-            let dataList = mc.response.data
-            if (dataList.length > 0) {
-                let regions = new Set()
-                dataList.forEach(data => {
-                    regions.add(data.Region)
-                })
-                privateAccess = { isPrivate: true, regions: Array.from(regions) }
-            }
-            else {
-                privateAccess = { isPrivate: false }
-            }
+    let mc = await sendRequest(self, accessGranted(self, orgInfo))
+    if (mc.response && mc.response.status === 200) {
+        let dataList = mc.response.data
+        if (dataList.length > 0) {
+            let regions = new Set()
+            dataList.forEach(data => {
+                regions.add(data.Region)
+            })
+            privateAccess = { isPrivate: true, regions: Array.from(regions) }
         }
         else {
             privateAccess = { isPrivate: false }
         }
     }
+    else {
+        privateAccess = { isPrivate: false }
+    }
     return privateAccess
 }
 
 export const toFirstUpperCase = (data) => {
-    if(data)
-    {
-    return data.charAt(0).toUpperCase() + data.slice(1)
+    if (data) {
+        return data.charAt(0).toUpperCase() + data.slice(1)
     }
 }
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useHistory } from "react-router";
-import { Button, Grid, Input, Container } from 'semantic-ui-react'
+import { Button, Grid, Input } from 'semantic-ui-react'
 
 const Message = () => {
     const history = useHistory()

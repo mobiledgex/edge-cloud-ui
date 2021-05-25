@@ -161,8 +161,7 @@ class OrganizationList extends React.Component {
         organizationInfo[fields.edgeboxOnly] = data[fields.edgeboxOnly]
         organizationInfo[fields.role] = roleInfo[fields.role]
         organizationInfo[fields.username] = roleInfo[fields.username]
-        this.props.handleOrganizationInfo(organizationInfo)
-        localStorage.setItem(LS_ORGANIZATION_INFO, JSON.stringify(organizationInfo))
+        return organizationInfo
     }
 
     onManage = async (key, data) => {
@@ -171,11 +170,15 @@ class OrganizationList extends React.Component {
             let roleInfoList = this.props.roleInfo;
             for (let roleInfo of roleInfoList) {
                 if (roleInfo.org === data[fields.organizationName]) {
+                    let organizationInfo = this.cacheOrgInfo(data, roleInfo)
                     this.props.handlePrivateAccess(undefined)
-                    let privateAccess = await constant.validatePrivateAccess(this, roleInfo.role)
+                    if (data[fields.type] === constant.OPERATOR) {
+                        let privateAccess = await constant.validatePrivateAccess(this, organizationInfo)
+                        this.props.handlePrivateAccess(privateAccess)
+                    }
                     this.updateState({ loading: undefined })
-                    this.props.handlePrivateAccess(privateAccess)
-                    this.cacheOrgInfo(data, roleInfo)
+                    this.props.handleOrganizationInfo(organizationInfo)
+                    localStorage.setItem(LS_ORGANIZATION_INFO, JSON.stringify(organizationInfo))
                     break;
                 }
             }
@@ -266,7 +269,8 @@ class OrganizationList extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        roleInfo: state.roleInfo ? state.roleInfo.role : null
+        roleInfo: state.roleInfo ? state.roleInfo.role : null,
+        organizationInfo: state.organizationInfo.data
     }
 };
 

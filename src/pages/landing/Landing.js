@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
-import Login from './login';
-import Register from './Register'
-import ForgotPassword from './ForgotPassword'
-import ResetPassword from './ResetPassword';
+import Login from './login/Login';
+import Register from './register/Register'
+import ForgotPassword from './password/ForgotPassword'
+import ResetPassword from './password/ResetPassword';
+import Verify from './verify/Verify'
 
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
@@ -15,7 +16,7 @@ import MexAlert from '../../hoc/alert/AlertDialog';
 import PublicIP from 'public-ip';
 import UAParser from 'ua-parser-js';
 import './style.css'
-import { Container, Grid } from 'semantic-ui-react';
+import { Container } from 'semantic-ui-react';
 
 const HOST = window.location.host;
 
@@ -25,7 +26,7 @@ class Landing extends Component {
         super(props);
         this.state = {
             mexAlertMessage: undefined,
-            clientSysInfo:{}
+            clientSysInfo: {}
         }
     }
 
@@ -67,7 +68,7 @@ class Landing extends Component {
 
     render() {
         const { history } = this.props
-        const {clientSysInfo} = this.state
+        const { clientSysInfo } = this.state
         const path = history.location.pathname
         return (
             <div className="login_main">
@@ -84,7 +85,8 @@ class Landing extends Component {
                                     path === '/forgotpassword' ? <ForgotPassword onPasswordReset={this.onPasswordReset} /> :
                                         path === '/register' ? <Register clientSysInfo={clientSysInfo} onVerificationEmail={this.onVerificationEmail} /> :
                                             path === '/passwordreset' ? <ResetPassword /> :
-                                                <Login clientSysInfo={clientSysInfo} />
+                                                path === '/verify' ? <Verify /> :
+                                                    <Login clientSysInfo={clientSysInfo} />
                                 }
                             </Container>
                         </div>
@@ -104,7 +106,7 @@ class Landing extends Component {
             let clientSysInfo = { os: resultPs.os, browser: resultPs.browser };
             let IPAddress = await PublicIP.v4()
             clientSysInfo['clientIP'] = IPAddress ? IPAddress : '127.0.0.1';
-            this.setState({clientSysInfo})
+            this.setState({ clientSysInfo })
         }
         catch (e) {
         }

@@ -1,23 +1,23 @@
 import React from "react";
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
-import MexForms, { INPUT, BUTTON, POPUP_INPUT, SWITCH } from "../../hoc/forms/MexForms";
-import { fields } from "../../services/model/format";
+import * as actions from '../../../actions';
+import MexForms, { INPUT, BUTTON, POPUP_INPUT, SWITCH } from "../../../hoc/forms/MexForms";
+import { fields } from "../../../services/model/format";
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
-import * as serverData from '../../services/model/serverData';
+import * as serverData from '../../../services/model/serverData';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { Icon, Grid, Container, Button as SButton } from "semantic-ui-react";
+import { Icon, Grid, Button as SButton } from "semantic-ui-react";
 import { generate } from 'generate-password'
 import { Button, Checkbox, FormControlLabel } from "@material-ui/core";
-import { copyData } from '../../utils/file_util'
+import { copyData } from '../../../utils/file_util'
 import cloneDeep from "lodash/cloneDeep";
-import { sendRequest } from '../../services/model/serverWorker'
-import { PUBLIC_CONFIG } from '../../services/model/endpoints'
-import { load } from "../../helper/zxcvbn";
+import { sendRequest } from '../../../services/model/serverWorker'
+import { PUBLIC_CONFIG } from '../../../services/model/endpoints'
+import { load } from "../../../helper/zxcvbn";
 import ReCAPTCHA from "react-google-recaptcha";
-import MexOTPRegistration from './otp/MexOTPRegistration';
+import MexOTPRegistration from '../otp/MexOTPRegistration';
 import { useHistory } from "react-router";
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
