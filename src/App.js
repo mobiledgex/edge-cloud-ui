@@ -11,11 +11,10 @@ import './css/components/timelineH.css';
 import { ThemeProvider } from "@material-ui/styles";
 import { getDarkTheme, getLightTheme, THEME_TYPE } from "./themeStyle";
 import LogoSpinner from './hoc/loader/LogoSpinner'
-import PreLoader from './pages/landing/loader/PreLoader'
 
 const Main = lazy(() => import('./pages/main/Main'));
 const Landing = lazy(() => import('./pages/landing/Landing'));
-// const PreLoader = lazy(() => import('./pages/landing/loader/PreLoader'));
+const PreLoader = lazy(() => import('./pages/landing/loader/PreLoader'));
 class App extends Component {
     constructor() {
         super();
