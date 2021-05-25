@@ -22,6 +22,7 @@ class LogoLoader extends React.Component {
     loadMainPage = () => {
         if (this.count === 3) {
             this.props.handleLoadMain(true)
+            this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
         }
     }
 
@@ -98,17 +99,7 @@ class LogoLoader extends React.Component {
         )
     }
 
-    componentDidUpdate(preProps, preState) {
-        if (this.props.loadMain) {
-            this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
-        }
-    }
-
     componentDidMount() {
-        if(this.props.loadOnly)
-        {
-            return
-        }
         this.loadDefault()
     }
 
