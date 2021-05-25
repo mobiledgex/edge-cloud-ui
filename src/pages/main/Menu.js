@@ -79,7 +79,7 @@ const Pages = (props) => {
 const Menu = (props) => {
     const { roles } = props
     return (
-        <SideNav data={constant.pages} roles={roles}>
+        <SideNav data={constant.pages}>
             <Switch>
                 <Pages data={constant.pages} />
             </Switch>

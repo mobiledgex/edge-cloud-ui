@@ -6,9 +6,11 @@ import BusinessIcon from '@material-ui/icons/Business';
 import { FixedSizeList } from 'react-window';
 import { organizationInfo } from '../../../actions';
 import { LS_ORGANIZATION_INFO } from '../../../helper/ls';
+import { OPERATOR } from '../../../constant';
 
 const Organization = (props) => {
     const orgInfo = useSelector(state => state.organizationInfo.data)
+    const roles = useSelector(state => state.roleInfo.role)
     const [anchorEl, setAnchorEl] = React.useState(null)
     const dispatch = useDispatch();
 
@@ -20,7 +22,6 @@ const Organization = (props) => {
     
     const renderRow = (virtualProps) => {
         const { index, style } = virtualProps;
-        const {roles} = props
         return (
             <ListItem button style={style} key={index} onClick={()=>{onSelect(roles[index])}}>
                 <ListItemText primary={roles[index][fields.organizationName]} secondary={roles[index][fields.role]} />
@@ -44,7 +45,7 @@ const Organization = (props) => {
                 open={Boolean(anchorEl)}
                 onClose={() => setAnchorEl(null)}
             >
-                <FixedSizeList height={200} width={300} itemSize={50} itemCount={props.roles.length}>
+                <FixedSizeList height={200} width={300} itemSize={50} itemCount={roles.length}>
                     {renderRow}
                 </FixedSizeList>
             </Popover>

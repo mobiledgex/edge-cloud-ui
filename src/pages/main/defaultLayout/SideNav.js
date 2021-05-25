@@ -224,7 +224,7 @@ const SideNav = (props) => {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Header roles={props.roles} />
+                    <Header />
                 </Toolbar>
             </AppBar>
             <Drawer

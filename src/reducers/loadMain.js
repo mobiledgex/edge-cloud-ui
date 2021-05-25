@@ -1,15 +1,14 @@
 import * as types from '../actions/ActionTypes';
 
 const initialState = {
-    data: undefined
+    data: false
 };
-export default function userInfo(state = initialState, action) {
+export default function loadMain(state = initialState, action) {
     switch (action.type) {
-        case types.USER_INFO:
+        case types.LOAD_MAIN_PAGE:
             return Object.assign({}, state, {
                 data: action.data
             })
-            break;
         default:
             return state
     }

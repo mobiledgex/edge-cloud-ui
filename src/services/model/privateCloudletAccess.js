@@ -37,10 +37,10 @@ export const showConfirmation = (self, data) => {
     let org = redux_org.nonAdminOrg(self)
     if (org) {
         if (redux_org.isDeveloper(self)) {
-            data['org'] = org
+            data['Org'] = org
         }
         else if (redux_org.isOperator(self)) {
-            data['cloudletpoolorg'] = org
+            data['CloudletPoolOrg'] = org
         }
     }
     return { method: SHOW_POOL_ACCESS_CONFIRMATION, data, keys: keys() }
@@ -51,10 +51,10 @@ export const showInvitation = (self, data) => {
     let org = redux_org.nonAdminOrg(self)
     if (org) {
         if (redux_org.isDeveloper(self)) {
-            data['org'] = org
+            data['Org'] = org
         }
         else if (redux_org.isOperator(self)) {
-            data['cloudletpoolorg'] = org
+            data['CloudletPoolOrg'] = org
         }
     }
     return { method: SHOW_POOL_ACCESS_INVITATION, data, keys: keys() }
@@ -73,10 +73,10 @@ export const accessGranted = (self, orgInfo) => {
     let org = orgInfo[fields.organizationName]
     if (org) {
         if (orgInfo[fields.type] === DEVELOPER) {
-            data['org'] = org
+            data['Org'] = org
         }
         else if (orgInfo[fields.type] === OPERATOR) {
-            data['cloudletpoolorg'] = org
+            data['CloudletPoolOrg'] = org
         }
     }
     return { method: SHOW_POOL_ACCESS_GRANTED, data }
@@ -87,10 +87,10 @@ export const accessPending = (self, data) => {
     let org = redux_org.nonAdminOrg(self)
     if (org) {
         if (redux_org.isDeveloper(self)) {
-            data['org'] = org
+            data['Org'] = org
         }
         else if (redux_org.isOperator(self)) {
-            data['cloudletpoolorg'] = org
+            data['CloudletPoolOrg'] = org
         }
     }
     return { method: SHOW_POOL_ACCESS_PENDING, data }

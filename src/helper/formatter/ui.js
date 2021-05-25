@@ -17,11 +17,11 @@ export const trusted = (key, data, isDetail) => {
 
 export const Manage = (props) => {
     const orgInfo = useSelector(state => state.organizationInfo.data)
-    const { loading, data } = props
+    const { data } = props
     const orgName = data[fields.organizationName]
     let active = redux_org.orgName(orgInfo) === data[fields.organizationName]
     return (
-        <Button loading={loading === orgName} basic size='mini' compact color={orgInfo && orgInfo[fields.organizationName] === orgName ? 'green' : 'grey'} className='row-button'>{active ? 'ACTIVE' : 'MANAGE'}</Button>
+        <Button basic size='mini' compact color={orgInfo && orgInfo[fields.organizationName] === orgName ? 'green' : 'grey'} className='row-button'>{active ? 'ACTIVE' : 'MANAGE'}</Button>
     )
 }
 
@@ -74,7 +74,7 @@ export const cloudletInfoState = (key, data, isDetail) => {
 
     return (
         isDetail ? state :
-            <Button disabled={true} basic size='mini' color={color} compact style={{ width: 90}}>
+            <Button disabled={true} basic size='mini' color={color} compact style={{ width: 90 }}>
                 <label>{state}</label>
             </Button>
     )

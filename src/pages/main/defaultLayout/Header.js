@@ -26,7 +26,7 @@ const Header = (props) => {
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
                 <MexTimezone />
-                <Organization roles={props.roles} />
+                <Organization />
                 <EventMenu />
                 <HelpMenu />
                 <Notifications />

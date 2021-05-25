@@ -3,29 +3,22 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import Spinner from '../../hoc/loader/Spinner'
-import RoleWorker from '../../services/worker/role.worker.js'
 import MexAlert from '../../hoc/alert/AlertDialog';
-import { CURRENT_USER, SHOW_ROLE, SHOW_CONTROLLER } from '../../services/model/endpoints';
 import Menu from './Menu'
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
-import { LS_REGIONS, OPERATOR, pages, PAGE_ORGANIZATIONS, validatePrivateAccess } from '../../constant';
-import { fields } from '../../services/model/format';
-import * as ls from '../../helper/ls';
-import { sendMultiRequest } from './monitoring/services/service'
-import { getToken } from '../../services/model/serverData';
-import { showOrganizations } from '../../services/model/organization';
-import { redux_org } from '../../helper/reduxData';
+import { pages, PAGE_ORGANIZATIONS, validatePrivateAccess } from '../../constant';
 import { validateRoleWithPrivate } from '../../constant/role';
+import { withRouter } from 'react-router';
+import { equal } from '../../constant/compare';
+import { redux_org } from '../../helper/reduxData';
+
 class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            mexAlertMessage: undefined,
-            tokenValid: false,
-            roles:[]
+            mexAlertMessage: undefined
         };
-        this.worker = new RoleWorker();
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -38,94 +31,35 @@ class Main extends React.Component {
     }
 
     render() {
-        const { tokenValid, roles } = this.state
+        const { loadMain } = this.props
         return (
-            <div className='view_body'>
+            loadMain ? <div className='view_body'>
                 <Spinner />
-                {tokenValid ? <Menu roles={roles} /> : null}
+                <Menu />
                 {this.state.mexAlertMessage ? <MexAlert data={this.state.mexAlertMessage} onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
-            </div>
+            </div> : null
         );
     }
 
-    cacheOrgInfo = (data) => {
-        this.props.handleOrganizationInfo(data)
-        localStorage.setItem(ls.LS_ORGANIZATION_INFO, JSON.stringify(data))
-    }
-
-    validateAdmin = (dataList) => {
-        this.worker.postMessage({ data: dataList, request: showOrganizations(), token: getToken(this) })
-        this.worker.addEventListener('message', async (event) => {
-            let roles = event.data.roles
-            this.setState({ roles })
-            if (event.data.isAdmin) {
-                    this.cacheOrgInfo(roles[0])
-            }
-            else {
-                let orgInfo = ls.organizationInfo()
-                if(orgInfo && orgInfo[fields.isAdmin])
-                {
-                    localStorage.removeItem(ls.LS_ORGANIZATION_INFO) 
-                }
-                if (orgInfo[fields.type] === OPERATOR) {
-                    let privateAccess = await validatePrivateAccess(this, orgInfo)
-                    this.props.handlePrivateAccess(privateAccess)
-                }
-                this.props.handleOrganizationInfo(ls.organizationInfo())
-                redux_org.orgName(this)
-            }
-        });
-    }
-
     loadInitData = async () => {
-        this.props.handleLoadingSpinner(true)
-        let requestList = []
-        requestList.push({ method: CURRENT_USER })
-        requestList.push({ method: SHOW_CONTROLLER })
-        requestList.push({ method: SHOW_ROLE })
-
-        let mcList = await sendMultiRequest(this, requestList)
-
-        if (mcList && mcList.length > 0) {
-            mcList.map(mc => {
-                if (mc.response && mc.response.status === 200) {
-                    let request = mc.request
-                    let data = mc.response.data
-                    if (request.method === CURRENT_USER) {
-                        localStorage.setItem(ls.LS_USER_META_DATA, data.Metadata)
-                        this.props.handleUserInfo(data)
-                    }
-                    else if (request.method === SHOW_ROLE) {
-                        this.validateAdmin(data)
-                    }
-                    else if (request.method === SHOW_CONTROLLER) {
-                        let regions = data.map(item => { return item.Region })
-                        localStorage.setItem(LS_REGIONS, regions)
-                        this.props.handleRegionInfo(regions)
-                    }
-                }
-            })
+        if (!this.props.loadMain) {
+            this.props.history.push('/preloader')
         }
-        this.setState({tokenValid:true})
-        this.props.handleLoadingSpinner(false)
     }
 
-    redirectInvalidPath = ()=>{
+    redirectInvalidPath = () => {
         const orgInfo = this.props.organizationInfo
         const isPrivate = this.props.privateAccess ? this.props.privateAccess.isPrivate : false
         let pathValid = false
         for (let page of pages) {
-            if(this.props.history.location.pathname.includes(page.path))
-            {
+            if (this.props.history.location.pathname.includes(page.path)) {
                 let roles = page.roles
-                if(roles)
-                {
+                if (roles) {
                     if (validateRoleWithPrivate(page, orgInfo, isPrivate)) {
                         pathValid = true
                     }
                 }
-                else
-                {
+                else {
                     pathValid = true
                 }
             }
@@ -138,16 +72,23 @@ class Main extends React.Component {
         }
     }
 
-    componentDidUpdate(preProps, preState){
+    onOrgChange = async (orgInfo) => {
+        if (redux_org.isOperator(this)) {
+            this.props.handlePrivateAccess(undefined)
+            let privateAccess = await validatePrivateAccess(this, orgInfo)
+            this.props.handlePrivateAccess(privateAccess)
+        }
+    }
+
+    componentDidUpdate(preProps, preState) {
+        if (!equal(preProps.organizationInfo, this.props.organizationInfo)) {
+            this.onOrgChange(this.props.organizationInfo)
+        }   
         this.redirectInvalidPath()
     }
 
     componentDidMount() {
         this.loadInitData()
-    }
-
-    componentWillUnmount() {
-        this.worker.terminate()
     }
 };
 
@@ -156,8 +97,10 @@ const mapStateToProps = (state) => {
         userInfo: state.userInfo ? state.userInfo.data : null,
         alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg },
         viewMode: state.ViewMode ? state.ViewMode.mode : null,
+        roles: state.roleInfo ? state.roleInfo.role : null,
         organizationInfo: state.organizationInfo.data,
-        privateAccess: state.privateAccess.data
+        privateAccess: state.privateAccess.data,
+        loadMain: state.loadMain.data
     }
 };
 
@@ -166,10 +109,7 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) },
-        handleOrganizationInfo: (data) => { dispatch(actions.organizationInfo(data)) },
-        handleUserInfo: (data) => { dispatch(actions.userInfo(data)) },
-        handleRegionInfo: (data) => { dispatch(actions.regionInfo(data)) },
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(Main);
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(Main))

@@ -2,6 +2,7 @@ import {redux_org} from '../helper/reduxData'
 
 export const LS_USER_META_DATA = 'usermetadata'
 export const LS_ORGANIZATION_INFO = 'organizationInfo'
+export const LS_REGIONS = 'regions'
 
 export const getUserMetaData = () => {
     let data = localStorage.getItem(LS_USER_META_DATA)

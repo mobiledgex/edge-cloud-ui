@@ -24,8 +24,7 @@ class OrganizationList extends React.Component {
         super(props);
         this.state = {
             currentView: null,
-            tableHeight: redux_org.isViewer(this) ? undefined : 280,
-            loading: undefined
+            tableHeight: redux_org.isViewer(this) ? undefined : 280
         }
         this._isMounted = false
         this.action = '';
@@ -165,18 +164,11 @@ class OrganizationList extends React.Component {
     }
 
     onManage = async (key, data) => {
-        this.updateState({ loading: data[fields.organizationName] })
         if (this.props.roleInfo) {
             let roleInfoList = this.props.roleInfo;
             for (let roleInfo of roleInfoList) {
-                if (roleInfo.org === data[fields.organizationName]) {
+                if (roleInfo[fields.organizationName] === data[fields.organizationName]) {
                     let organizationInfo = this.cacheOrgInfo(data, roleInfo)
-                    this.props.handlePrivateAccess(undefined)
-                    if (data[fields.type] === constant.OPERATOR) {
-                        let privateAccess = await constant.validatePrivateAccess(this, organizationInfo)
-                        this.props.handlePrivateAccess(privateAccess)
-                    }
-                    this.updateState({ loading: undefined })
                     this.props.handleOrganizationInfo(organizationInfo)
                     localStorage.setItem(LS_ORGANIZATION_INFO, JSON.stringify(organizationInfo))
                     break;
@@ -195,7 +187,7 @@ class OrganizationList extends React.Component {
 
     dataFormatter = (key, data, isDetail) => {
         if (key.field === fields.manage) {
-            return <uiFormatter.Manage loading={this.state.loading} data={data} key={key} detail={isDetail} />
+            return <uiFormatter.Manage  data={data} key={key} detail={isDetail} />
         }
         else if (key.field === fields.edgeboxOnly) {
             return uiFormatter.edgeboxOnly(key, data, isDetail)
@@ -231,7 +223,7 @@ class OrganizationList extends React.Component {
         let mc = await serverData.showUserRoles(this)
         if (mc && mc.response && mc.response.status === 200) {
             let userRoles = mc.response.data
-            this.props.handleRoleInfo(userRoles)
+            // this.props.handleRoleInfo(userRoles)
             for (let i = 0; i < userRoles.length; i++) {
                 let userRole = userRoles[i]
                 if (userRole.role.indexOf('Admin') > -1) {
@@ -279,7 +271,6 @@ const mapDispatchProps = (dispatch) => {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
         handleShowAuditLog: (data) => { dispatch(actions.showAuditLog(data)) },
-        handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) },
         handleOrganizationInfo: (data) => { dispatch(actions.organizationInfo(data)) }
     };
 };

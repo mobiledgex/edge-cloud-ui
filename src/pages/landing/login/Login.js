@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { LOCAL_STRAGE_KEY } from '../../../constant'
-import { PAGE_ORGANIZATIONS } from '../../../constant'
 import * as serverData from '../../../services/model/serverData';
 import MexOTPValidation from './MexOTPValidation';
 import LoginForm from './LoginForm'
@@ -25,7 +24,7 @@ class Login extends Component {
         if (data.token) {
             this.params['userToken'] = data.token
             localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(this.params))
-            this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
+            this.props.history.push('preloader')
         }
     }
 

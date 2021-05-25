@@ -12,3 +12,4 @@ export const TOGGLE_THEME = 'TOGGLE_THEME';
 export const USER_LOGGED_OUT = 'USER_LOGGED_OUT';
 export const PRIVATE_ACCESS_EXIST = 'PRIVATE_ACCESS_EXIST'
 export const ORGANIZATION_INFO = 'OrganizationInfo'
+export const LOAD_MAIN_PAGE = 'LoadMainPage'

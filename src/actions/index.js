@@ -95,3 +95,11 @@ export function organizationInfo(data) {
         data
     }
 }
+
+
+export function loadMain(data) {
+    return {
+        type: types.LOAD_MAIN_PAGE,
+        data
+    }
+}

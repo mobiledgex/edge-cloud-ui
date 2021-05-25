@@ -12,6 +12,7 @@ import ThemeReducer from "./ThemeReducer";
 import ViewMode from "./ViewMode";
 import privateAccess from './privateAccess'
 import organizationInfo from './organizationInfo'
+import loadMain from './loadMain'
 import { USER_LOGGED_OUT } from '../actions/ActionTypes';
 
 const appReducer = combineReducers({
@@ -27,6 +28,7 @@ const appReducer = combineReducers({
     ViewMode,
     privateAccess,
     organizationInfo,
+    loadMain,
     form: formReducer
 });
 
