@@ -31,9 +31,9 @@ const pages = [
     { label: 'Cloudlet Pools', icon: 'cloud_circle', id: constant.PAGE_CLOUDLET_POOLS, path: 'cloudlet-pools', roles: [constant.ADMIN, constant.OPERATOR] },
     { label: 'Cloudlet Pools', icon: 'cloud_circle', id: constant.PAGE_POOL_ACCESS, path: 'pool-access', roles: [constant.DEVELOPER_MANAGER] },
     { label: 'Flavors', icon: 'free_breakfast', id: constant.PAGE_FLAVORS, path: 'flavors', roles: [constant.ADMIN, constant.DEVELOPER] },
-    { label: 'Cluster Instances', icon: 'storage', id: constant.PAGE_CLUSTER_INSTANCES, path: 'cluster-insts', roles: [constant.ADMIN, constant.DEVELOPER] },
+    { label: 'Cluster Instances', icon: 'storage', id: constant.PAGE_CLUSTER_INSTANCES, path: 'cluster-insts' },
     { label: 'Apps', icon: 'apps', id: constant.PAGE_APPS, path: 'apps', roles: [constant.ADMIN, constant.DEVELOPER] },
-    { label: 'App Instances', icon: 'games', id: constant.PAGE_APP_INSTANCES, path: 'app-insts', roles: [constant.ADMIN, constant.DEVELOPER] },
+    { label: 'App Instances', icon: 'games', id: constant.PAGE_APP_INSTANCES, path: 'app-insts' },
     {
         label: 'Policies', icon: 'track_changes', id: constant.PAGE_POLICIES, sub: true, options: [
             { label: 'Auto Provisioning Policy', icon: 'group_work', id: constant.PAGE_AUTO_PROVISIONING_POLICY, path: 'auto-prov-policy', roles: [constant.ADMIN, constant.DEVELOPER] },
