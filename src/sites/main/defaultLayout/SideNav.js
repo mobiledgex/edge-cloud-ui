@@ -27,6 +27,7 @@ import Header from './Header'
 import { PAGE_APP_INSTANCES, PAGE_CLUSTER_INSTANCES } from '../../../constant';
 import { getUserRole } from '../../../services/model/format';
 import { useSelector } from 'react-redux';
+import { validateRole } from '../monitoring/helper/Constant';
 
 const drawerWidth = 250;
 
@@ -114,26 +115,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const validateRole = (item, isPrivate) => {
-    let roles = item.roles
-    let valid = true
-    if (roles) {
-        valid = false
-        for (let role of roles) {
-            if (getUserRole().includes(role)) {
-                valid = true
-                break;
-            }
-        }
-    }
-    if((item.id === PAGE_CLUSTER_INSTANCES || item.id === PAGE_APP_INSTANCES) && isPrivate)
-    {
-        valid = true
-    }
-    return valid
-}
-
-
 const Options = (props) => {
     const { options, sub, drawerOpen } = props
     const [pageId, setPageId] = React.useState(0)
@@ -180,7 +161,7 @@ const Options = (props) => {
         }
         return drawerOpen ? '' : item.label
     }
-
+    
     return (
         <List component={sub ? 'div' : 'nav'} disablePadding={sub}>
             {options.map((item, i) => (
@@ -188,7 +169,7 @@ const Options = (props) => {
                     {
                         item.divider ?
                             <Divider /> :
-                            validateRole(item, isPrivate) ? <React.Fragment>
+                            validateRole(item.roles) ? <React.Fragment>
                                 <Tooltip title={renderPopover(item)} interactive placement="right" arrow>
                                     {renderItem(item)}
                                 </Tooltip>
