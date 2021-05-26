@@ -2,7 +2,6 @@ import React from 'react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import Spinner from '../../hoc/loader/Spinner'
 import MexAlert from '../../hoc/alert/AlertDialog';
 import Menu from './Menu'
 import '../../css/introjs.css';
