@@ -22,11 +22,10 @@ import RoleLegend from './RoleLegend'
 
 import { Collapse, Icon, Tooltip } from '@material-ui/core';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import {validateRoleWithPrivate} from '../../../constant/role'
+import {validateRole} from '../../../constant/role'
 
 //Header
 import Header from './Header'
-import { PAGE_APP_INSTANCES, PAGE_CLUSTER_INSTANCES } from '../../../constant';
 
 const drawerWidth = 250;
 
@@ -121,7 +120,6 @@ const Options = (props) => {
     const childRef = React.createRef(null)
     let { url } = useRouteMatch();
     const history = useHistory()
-    const isPrivate = useSelector(state =>  state.privateAccess.data ? state.privateAccess.data.isPrivate : false)
     useEffect(() => {
         setPageId(0)
     }, [drawerOpen])
@@ -171,7 +169,7 @@ const Options = (props) => {
                     {
                         item.divider ?
                             <Divider /> :
-                            validateRoleWithPrivate(item, orgInfo, isPrivate) ? <React.Fragment>
+                            validateRole(item.roles, orgInfo) ? <React.Fragment>
                                 <Tooltip title={renderPopover(item)} interactive placement="right" arrow>
                                     {renderItem(item)}
                                 </Tooltip>

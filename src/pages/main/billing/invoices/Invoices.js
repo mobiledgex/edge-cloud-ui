@@ -60,7 +60,7 @@ class Invoices extends React.Component {
     }
 
     render() {
-        const { currentView, invoice } = this.state
+        const { invoice } = this.state
         return (
             <React.Fragment>
                 <DataView id={PAGE_INVOICES} actionMenu={this.actionMenu} requestInfo={this.requestInfo} />

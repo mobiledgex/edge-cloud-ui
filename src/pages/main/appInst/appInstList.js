@@ -199,21 +199,11 @@ class AppInstList extends React.Component {
         })
     }
 
-    filterRegion = ()=>{
-        const { privateAccess } = this.props
-        if (privateAccess && redux_org.isOperator(this)) {
-            let isPrivate = privateAccess.isPrivate
-            if (isPrivate) {
-                return privateAccess.regions
-            }
-        }
-    }
-
     render() {
         const { currentView } = this.state
         return (
             <React.Fragment>
-                <DataView id={constant.PAGE_APP_INSTANCES} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} regions={this.filterRegion()}/>
+                <DataView id={constant.PAGE_APP_INSTANCES} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
                 <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => { this.updateState({ openTerminal: false }) }}>
                     <TerminalViewer data={this.state.terminalData} onClose={() => {
                         this.updateState({ openTerminal: false })
@@ -234,7 +224,6 @@ class AppInstList extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        privateAccess : state.privateAccess.data,
         organizationInfo : state.organizationInfo.data
     }
 };

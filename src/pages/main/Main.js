@@ -8,10 +8,11 @@ import Menu from './Menu'
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
 import { pages, PAGE_ORGANIZATIONS, validatePrivateAccess } from '../../constant';
-import { validateRoleWithPrivate } from '../../constant/role';
+import { validateRole } from '../../constant/role';
 import { withRouter } from 'react-router';
 import { equal } from '../../constant/compare';
 import { redux_org } from '../../helper/reduxData';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 class Main extends React.Component {
     constructor(props) {
@@ -31,10 +32,10 @@ class Main extends React.Component {
     }
 
     render() {
-        const { loadMain } = this.props
+        const { loadMain, loading } = this.props
         return (
             loadMain ? <div className='view_body'>
-                <Spinner />
+                {loading ? <LinearProgress style={{ zIndex: 9999, position: 'absolute', width: '100vw' }} /> : null}
                 <Menu />
                 {this.state.mexAlertMessage ? <MexAlert data={this.state.mexAlertMessage} onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
             </div> : null
@@ -49,13 +50,12 @@ class Main extends React.Component {
 
     redirectInvalidPath = () => {
         const orgInfo = this.props.organizationInfo
-        const isPrivate = this.props.privateAccess ? this.props.privateAccess.isPrivate : false
         let pathValid = false
         for (let page of pages) {
             if (this.props.history.location.pathname.includes(page.path)) {
                 let roles = page.roles
                 if (roles) {
-                    if (validateRoleWithPrivate(page, orgInfo, isPrivate)) {
+                    if (validateRole(page.roles, orgInfo)) {
                         pathValid = true
                     }
                 }
@@ -100,7 +100,8 @@ const mapStateToProps = (state) => {
         roles: state.roleInfo ? state.roleInfo.role : null,
         organizationInfo: state.organizationInfo.data,
         privateAccess: state.privateAccess.data,
-        loadMain: state.loadMain.data
+        loadMain: state.loadMain.data,
+        loading:state.loadingSpinner.loading
     }
 };
 

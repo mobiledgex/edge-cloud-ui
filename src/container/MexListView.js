@@ -51,7 +51,6 @@ class MexListView extends React.Component {
         this.selectedRow = {};
         this.sorting = false;
         this.selectedRegion = REGION_ALL
-        this.regions = props.regions ? props.regions : constant.regions()
     }
 
     updateState = (data) => {
@@ -119,14 +118,13 @@ class MexListView extends React.Component {
                 let mc = await serverData.sendRequest(this, action.onClick(this, data))
                 if (mc && mc.response && mc.response.status === 200) {
                     this.props.handleAlertInfo('success', `${mc.request.success}`)
-                    if(this._isMounted)
-                    {
-                        this.setState(prevState=>{
+                    if (this._isMounted) {
+                        this.setState(prevState => {
                             let filterList = prevState.filterList
                             let dataList = prevState.dataList
-                            filterList = filterList.filter(item=>{return !equal(item, data)}) 
-                            dataList = dataList.filter(item=>{return !equal(item, data)})    
-                            return {dataList, filterList}                        
+                            filterList = filterList.filter(item => { return !equal(item, data) })
+                            dataList = dataList.filter(item => { return !equal(item, data) })
+                            return { dataList, filterList }
                         })
                     }
                     valid = true;
@@ -254,7 +252,7 @@ class MexListView extends React.Component {
                     case ACTION_POOL_ACCESS_DEVELOPER:
                     case ACTION_POOL_ACCESS_DEVELOPER_REJECT:
                     case ACTION_EDGE_BOX_ENABLE:
-                        action.onClick(action, data, ()=>{this.dataFromServer(this.selectedRegion)})
+                        action.onClick(action, data, () => { this.dataFromServer(this.selectedRegion) })
                         break;
                 }
             }
@@ -364,8 +362,7 @@ class MexListView extends React.Component {
                 if (key.filter) {
                     filterCount = + 1
                     let tempData = data[key.field] ? data[key.field] : ''
-                    if(typeof tempData === 'string')
-                    {
+                    if (typeof tempData === 'string') {
                         return tempData.toLowerCase().includes(this.filterText)
                     }
                 }
@@ -437,12 +434,13 @@ class MexListView extends React.Component {
 
     render() {
         const { resetStream, deleteMultiple, showMap } = this.state
+        const { regions } = this.props
         return (
             <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', color: 'white', paddingTop: 10 }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.specificDataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
-                <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} />
+                <MexToolbar requestInfo={this.requestInfo} regions={regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} />
                 {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
                 {this.state.currentView ? this.state.currentView : this.listView()}
                 <MexMessageMultiNorm data={deleteMultiple} close={this.onDeleteMulClose} />
@@ -474,18 +472,19 @@ class MexListView extends React.Component {
                 this.onFilterValue(value)
                 break;
             case ACTION_GROUP:
-                this.setState({dropList:value})
+                this.setState({ dropList: value })
             default:
 
         }
     }
 
     getFilterInfo = (requestInfo, region) => {
+        const { regions } = this.props
         let filterList = [];
         if (requestInfo.isRegion) {
             if (region === REGION_ALL) {
-                for (let i = 0; i < this.regions.length; i++) {
-                    region = this.regions[i];
+                for (let i = 0; i < regions.length; i++) {
+                    region = regions[i];
                     let filter = requestInfo.filter === undefined ? {} : requestInfo.filter;
                     filter[fields.region] = region;
                     filterList.push(Object.assign({}, filter))
@@ -538,11 +537,12 @@ class MexListView extends React.Component {
         }
 
         if (this._isMounted) {
-            this.updateState({
+            this.setState({
                 dataList,
                 newDataList
+            }, () => {
+                this.updateState({ filterList: this.onFilterValue(undefined) })
             })
-            this.updateState({ filterList: this.onFilterValue(undefined) })
         }
     }
 
@@ -568,11 +568,9 @@ class MexListView extends React.Component {
     }
 
     componentDidUpdate(preProps, preState) {
-        if(!equal(this.props.organizationInfo, preProps.organizationInfo))
-        {
-            if(!isPathOrg(this))
-            {
-                this.dataFromServer(this.selectedRegion) 
+        if (!equal(this.props.organizationInfo, preProps.organizationInfo)) {
+            if (!isPathOrg(this)) {
+                this.dataFromServer(this.selectedRegion)
             }
         }
     }
@@ -590,7 +588,7 @@ class MexListView extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        regions: state.regionInfo.region
     }
 };
 

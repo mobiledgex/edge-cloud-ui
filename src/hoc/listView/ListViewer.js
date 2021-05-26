@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Table, TableBody, IconButton, TableContainer, Paper, TablePagination, ClickAwayListener, MenuList, Grow, Popper, MenuItem, Avatar } from '@material-ui/core'
+import { Table, TableBody, IconButton, TableContainer, Paper, TablePagination, ClickAwayListener, MenuList, Grow, Popper, MenuItem, Avatar, TableRow, TableCell } from '@material-ui/core'
 import ListToolbar from './ListToolbar'
 import ListHeader from './ListHeader'
 import ListBody from './ListBody'
@@ -10,6 +10,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { StyledTableRow, StyledTableCell, stableSort, getComparator } from './ListConstant'
 import { redux_org } from '../../helper/reduxData'
 import { ACTION_DISABLE, ACTION_LABEL, ACTION_VISIBLE } from '../../constant/actions'
+import InboxIcon from '@material-ui/icons/Inbox';
 
 const canEdit = (self, viewerEdit, action) => {
     let valid = true
@@ -27,6 +28,15 @@ const getHeight = (props) => {
     let height = props.isMap ? 574 : 174
     height = selectedLength > 0 ? height + 40 : height
     return `calc(100vh - ${tableHeight ? tableHeight : height}px)`
+}
+
+const NoData = ()=>{
+    return (
+        <div align='center' style={{position:'relative', top:'50%', transform: 'translateY(-50%)'}}>
+            <InboxIcon style={{ color:'grey', fontSize:50}}/>
+            <h4 style={{ color:'grey'}}><b>No Data</b></h4>
+        </div>
+    )
 }
 
 class ListViewer extends React.Component {
@@ -166,36 +176,35 @@ class ListViewer extends React.Component {
 
     render() {
         const grouping = this.requestInfo.grouping
-        const dropList = this.props.dropList
+        const { style, dataList, dropList, selected, groupActionMenu, keys, setSelected } = this.props
         const { expandedGroups, page, rowsPerPage, order, orderBy } = this.state
-        const { style } = this.props
-        let groupedData = grouping ? this.getGroupedData(this.props.dataList) : [];
+        let groupedData = grouping ? this.getGroupedData(dataList) : [];
         let isGrouping = grouping && dropList.length > 0
         return (
             <div style={{ width: '100%' }}>
                 <Paper style={{ backgroundColor: '#292C33' }}>
                     <ListToolbar
-                        numSelected={this.props.selected.length}
-                        groupActionMenu={this.props.groupActionMenu}
+                        numSelected={selected.length}
+                        groupActionMenu={groupActionMenu}
                         groupActionClose={this.groupActionClose} />
-                    <TableContainer style={style ? style : { height: `${getHeight(this.props)}`, overflow: 'auto', marginTop: `${this.props.selected.length > 0 ? '0px' : '-40px'}` }}>
+                    <TableContainer style={style ? style : { height: `${getHeight(this.props)}`, overflow: 'auto', marginTop: `${selected.length > 0 ? '0px' : '-40px'}` }}>
                         <Table
                             stickyHeader
                             size={'small'}>
                             <ListHeader
-                                numSelected={this.props.selected.length}
+                                numSelected={selected.length}
                                 order={order}
                                 orderBy={orderBy}
                                 onSelectAllClick={this.handleSelectAllClick}
                                 onRequestSort={this.handleRequestSort}
-                                headCells={this.props.keys}
-                                rowCount={this.props.dataList.length}
+                                headCells={keys}
+                                rowCount={dataList.length}
                                 requestInfo={this.requestInfo}
                                 updateColLength={this.updateColLength}
                                 actionMenuLength={this.actionMenu.length}
                                 isDropped={this.isDropped}
                             />
-                            <TableBody>
+                            {dataList.length > 0 ? <TableBody>
                                 {
                                     isGrouping ?
                                         stableSort(groupedData, getComparator(order, orderBy), isGrouping)
@@ -218,38 +227,39 @@ class ListViewer extends React.Component {
                                                             <ListBody
                                                                 colSpan={this.columnLength}
                                                                 dataList={groupedData[key]}
-                                                                keys={this.props.keys}
+                                                                keys={keys}
                                                                 requestInfo={this.requestInfo}
-                                                                selected={this.props.selected}
-                                                                setSelected={this.props.setSelected}
+                                                                selected={selected}
+                                                                setSelected={setSelected}
                                                                 selectedRow={this.setSelectedRow}
                                                                 handleActionView={this.handleActionView} /> : null}
                                                     </React.Fragment>
                                                 )
-                                            }) : stableSort(this.props.dataList, getComparator(order, orderBy))
+                                            }) : stableSort(dataList, getComparator(order, orderBy))
                                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, j) => {
                                                     return (
                                                         <React.Fragment key={j}>
                                                             <ListBody
                                                                 row={row}
                                                                 index={j}
-                                                                keys={this.props.keys}
+                                                                keys={keys}
                                                                 requestInfo={this.requestInfo}
-                                                                selected={this.props.selected}
-                                                                setSelected={this.props.setSelected}
+                                                                selected={selected}
+                                                                setSelected={setSelected}
                                                                 selectedRow={this.setSelectedRow}
                                                                 handleActionView={this.handleActionView} />
                                                         </React.Fragment>
                                                     )
                                                 })
                                 }
-                            </TableBody>
+                            </TableBody> : null}
                         </Table>
+                        {dataList.length === 0 ? <NoData/> : null}
                     </TableContainer>
                     <TablePagination
                         rowsPerPageOptions={[25, 50, 75]}
                         component="div"
-                        count={isGrouping ? Object.keys(groupedData).length : this.props.dataList.length}
+                        count={isGrouping ? Object.keys(groupedData).length : dataList.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onChangePage={this.handleChangePage}
