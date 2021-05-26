@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react'
-import Spinner from '../../../../hoc/loader/Spinner';
+import LogoSpinner from '../../../../hoc/loader/LogoSpinner'
 import { PAGE_INVOICES } from '../../../../constant';
 
 import DataView from '../../../../container/DataView';
@@ -64,7 +64,7 @@ class Invoices extends React.Component {
         return (
             <React.Fragment>
                 <DataView id={PAGE_INVOICES} actionMenu={this.actionMenu} requestInfo={this.requestInfo} />
-                <Suspense fallback={<Spinner loading={true} />}>
+                <Suspense fallback={<LogoSpinner/>}>
                     <Invoice data={invoice} close={this.onClose} />
                 </Suspense>
             </React.Fragment>
