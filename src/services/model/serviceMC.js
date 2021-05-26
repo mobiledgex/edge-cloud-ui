@@ -50,7 +50,7 @@ const showSpinner = (self, value) => {
 
 const showError = (self, request, message) => {
     let showMessage = request.showMessage === undefined ? true : request.showMessage;
-    if (showMessage && self !== null && self.props.handleAlertInfo) {
+    if (showMessage && self !== null && self.props.handleAlertInfo && message !== 'Forbidden') {
         self.props.handleAlertInfo('error', message)
     }
 }

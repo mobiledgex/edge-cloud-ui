@@ -96,20 +96,10 @@ class ClusterInstView extends React.Component {
         })
     }
 
-    filterRegion = ()=>{
-        const { privateAccess } = this.props
-        if (privateAccess && isOperator(this)) {
-            let isPrivate = privateAccess.isPrivate
-            if (isPrivate) {
-                return privateAccess.regions
-            }
-        }
-    }
-
     render() {
         return (
             this.state.currentView ? this.state.currentView :
-                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} regions={this.filterRegion()}/>
+                <MexListView actionMenu={this.actionMenu()} requestInfo={this.requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
         )
     }
 
@@ -124,7 +114,6 @@ class ClusterInstView extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        privateAccess : state.privateAccess.data,
         organizationInfo : state.organizationInfo.data
     }
 };
