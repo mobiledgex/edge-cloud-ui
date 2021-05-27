@@ -36,7 +36,7 @@ export const userRoles = (org, type, isDoc) => {
             return 'https://developers.mobiledgex.com/deployments/accounts/org-users#view-users'
         }
         else if (redux_org.isOperator(org)) {
-            return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#users-and-roles'
+            return 'https://operators.mobiledgex.com/product-overview/operator-guides/account-management/organizations-and-users'
         }
     }
 }
@@ -47,7 +47,7 @@ export const monitoring = (org, type, isDoc) => {
             return 'https://developers.mobiledgex.com/deployments/monitoring-and-metrics'
         }
         else if (redux_org.isOperator(org)) {
-            return 'https://operators.mobiledgex.com/operator-monitoring-and-metrics'
+            return 'https://operators.mobiledgex.com/product-overview/operator-guides/debugging/operator-monitoring-and-metrics'
         }
     }
     else {
@@ -319,7 +319,7 @@ const org = (org, type, isDoc) => {
             return 'https://developers.mobiledgex.com/deployments/accounts/org-users'
         }
         else if (redux_org.isOperator(org)) {
-            return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#create-an-organization-and-manage-users'
+            return 'https://operators.mobiledgex.com/product-overview/operator-guides/account-management/organizations-and-users'
         }
     }
     else {
@@ -914,7 +914,7 @@ const alerts = (org, type, isDoc) => {
             return 'https://developers.mobiledgex.com/design/testing-and-debugging/alarms#alerts'
         }
         else if (redux_org.isOperator(org)) {
-            return 'https://operators.mobiledgex.com/health-checks-and-alarms#alerts'
+            return 'https://operators.mobiledgex.com/product-overview/operator-guides/debugging/health-check-and-alert'
         }
     }
 }

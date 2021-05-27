@@ -245,10 +245,6 @@ class OrganizationList extends React.Component {
         }
     }
 
-    /**
-     * Customized data block
-     * ** */
-
     componentDidMount() {
         this._isMounted = true
         this.getUserRoles()
@@ -257,6 +253,8 @@ class OrganizationList extends React.Component {
     componentWillUnmount() {
         this._isMounted = false
     }
+
+
 };
 
 const mapStateToProps = (state) => {

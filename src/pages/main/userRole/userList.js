@@ -6,6 +6,8 @@ import { keys, showUsers, deleteUser } from '../../../services/model/users';
 import { HELP_USER_ROLES } from '../../../tutorial';
 import { ACTION_DELETE } from '../../../constant/actions';
 import { PAGE_USER_ROLES } from '../../../constant';
+import { connect } from 'react-redux';
+import { redux_org } from '../../../helper/reduxData';
 
 class UserList extends React.Component {
     constructor(props) {
@@ -18,15 +20,27 @@ class UserList extends React.Component {
         this.data = {}
         this.keys = keys();
     }
-    
+
     /**Action menu block */
     getDeleteActionMessage = (action, data) => {
         return `Are you sure you want to remove ${data[fields.username]} from Organization ${data[fields.organizationName]}?`
     }
 
+    onDeleteAction = (type, action, data) => {
+        if (this.props.roleInfo && !redux_org.isAdmin(this)) {
+            let roleInfoList = this.props.roleInfo;
+            for (let roleInfo of roleInfoList) {
+                if (roleInfo[fields.organizationName] === data[fields.organizationName]) {
+                    return !roleInfo.role.includes('Manager')
+                }
+            }
+        }
+        return false
+    }
+
     actionMenu = () => {
         return [
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage, type: 'Edit' }
+            { id: ACTION_DELETE, label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage, disable: this.onDeleteAction, type: 'Edit' }
         ]
     }
 
@@ -66,4 +80,11 @@ class UserList extends React.Component {
     }
 };
 
-export default withRouter(UserList);
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data,
+        roleInfo: state.roleInfo ? state.roleInfo.role : null
+    }
+};
+
+export default withRouter(connect(mapStateToProps, null)(UserList));
