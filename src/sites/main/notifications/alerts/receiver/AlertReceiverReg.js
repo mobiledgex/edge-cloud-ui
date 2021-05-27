@@ -82,7 +82,7 @@ class FlavorReg extends React.Component {
             { field: fields.cloudletName, label: 'Cloudlet', formType: SELECT, placeholder: 'Select Cloudlet', rules: { required: false }, visible: false, dependentData: [{ index: 9, field: fields.operatorName }], strictDependency: false },
             { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Cluster', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.region, strictDependency: false }, { index: 8, field: fields.organizationName }, { index: 9, field: fields.operatorName, strictDependency: false }, { index: 10, field: fields.cloudletName, strictDependency: false }] },
             { field: fields.appName, label: 'App Instance', formType: SELECT, placeholder: 'Select App Instance', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.region, strictDependency: false }, { index: 8, field: fields.organizationName }, { index: 9, field: fields.operatorName }, { index: 10, field: fields.cloudletName }, { index: 11, field: fields.clusterName }], strictDependency: false },
-            { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: false }, visible: false, dependentData: [{ index: 13, field: fields.appName }], strictDependency: false }
+            { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: false }, visible: false, dependentData: [{ index: 12, field: fields.appName }], strictDependency: false }
         ]
     }
 
