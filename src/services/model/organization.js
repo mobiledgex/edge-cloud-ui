@@ -45,6 +45,10 @@ export const getOrganizationList = async (self, data) => {
         dataList = [organization]
     }
     else {
+        if(data.type)
+        {
+            data.type = data.type.toLowerCase()
+        }
         dataList = await serverData.showDataFromServer(self, showOrganizations(data))
     }
     return dataList;
