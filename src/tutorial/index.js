@@ -37,7 +37,7 @@ export const userRoles = (type, isDoc) => {
             return 'https://developers.mobiledgex.com/deployments/accounts/org-users#view-users'
         }
         else if (getUserRole().includes(constant.OPERATOR)) {
-            return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#users-and-roles'
+            return 'https://operators.mobiledgex.com/product-overview/operator-guides/account-management/organizations-and-users'
         }
     }
 }
@@ -48,7 +48,7 @@ export const monitoring = (type, isDoc) => {
             return 'https://developers.mobiledgex.com/deployments/monitoring-and-metrics'
         }
         else if (getUserRole().includes(constant.OPERATOR)) {
-            return 'https://operators.mobiledgex.com/operator-monitoring-and-metrics'
+            return 'https://operators.mobiledgex.com/product-overview/operator-guides/debugging/operator-monitoring-and-metrics'
         }
     }
     else {
@@ -320,7 +320,7 @@ const org = (type, isDoc) => {
             return 'https://developers.mobiledgex.com/deployments/accounts/org-users'
         }
         else if (getUserRole().includes(constant.OPERATOR)) {
-            return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#create-an-organization-and-manage-users'
+            return 'https://operators.mobiledgex.com/product-overview/operator-guides/account-management/organizations-and-users'
         }
     }
     else {
@@ -448,7 +448,7 @@ const org = (type, isDoc) => {
 const cloudletPool = (type, isDoc) => {
     if (isDoc) {
         if (getUserRole().includes(constant.OPERATOR)) {
-            return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#create-cloudlet-pool'
+            return 'https://operators.mobiledgex.com/product-overview/operator-guides/cloudlet-deployment-guides/cloudlet-pools'
         }
     }
     else {
@@ -833,9 +833,8 @@ const cloudlet = (type, isDoc) => {
         else if (getUserRole().includes(constant.OPERATOR)) {
             switch (type) {
                 case HELP_CLOUDLET_LIST:
-                    return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#resource-management-and-workflow'
                 case HELP_CLOUDLET_REG:
-                    return 'https://operators.mobiledgex.com/edge-cloud-console-guide-for-operators#to-create-and-deploy-cloudlets-using-direct-access'
+                    return 'https://operators.mobiledgex.com/product-overview/operator-guides/cloudlet-deployment-guides/deploying-cloudlets'
             }
         }
     }
@@ -917,7 +916,7 @@ const alerts = (type, isDoc) => {
         }
         else if(getUserRole().includes(constant.OPERATOR))
         {
-            return 'https://operators.mobiledgex.com/health-checks-and-alarms#alerts'
+            return 'https://operators.mobiledgex.com/product-overview/operator-guides/debugging/health-check-and-alert'
         }
     }
 }
