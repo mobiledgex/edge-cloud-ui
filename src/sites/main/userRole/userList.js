@@ -3,7 +3,7 @@ import MexListView from '../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import { fields } from '../../../services/model/format';
+import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showUsers, deleteUser } from '../../../services/model/users';
 import { HELP_USER_ROLES } from '../../../tutorial';
 import { ACTION_DELETE } from '../../../constant/actions';
@@ -27,7 +27,7 @@ class UserList extends React.Component {
     }
 
     onDeleteAction  = (type, action, data) => {
-        if (this.props.roleInfo) {
+        if (this.props.roleInfo && !isAdmin()) {
             let roleInfoList = this.props.roleInfo;
             for (let roleInfo of roleInfoList) {
                 if (roleInfo.org === data[fields.organizationName]) {
@@ -35,7 +35,7 @@ class UserList extends React.Component {
                 }
             }
         }
-        return true
+        return false
     }
 
     actionMenu = () => {
