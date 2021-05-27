@@ -85,6 +85,7 @@ class Main extends React.Component {
                         this.props.handleUserInfo(data)
                     }
                     else if (request.method === SHOW_ROLE) {
+                        this.props.handleRoleInfo(data)
                         this.validateAdmin(data)
                     }
                     else if (request.method === SHOW_CONTROLLER) {
@@ -127,6 +128,7 @@ const mapDispatchProps = (dispatch) => {
         handleOrganizationInfo: (data) => { dispatch(actions.organizationInfo(data)) },
         handleUserInfo: (data) => { dispatch(actions.userInfo(data)) },
         handleRegionInfo: (data) => { dispatch(actions.regionInfo(data)) },
+        handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) }
     };
 };
 

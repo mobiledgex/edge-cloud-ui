@@ -3,7 +3,7 @@ import MexListView from '../../../container/MexListView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import { fields } from '../../../services/model/format';
+import { fields, isAdmin } from '../../../services/model/format';
 import { keys, showUsers, deleteUser } from '../../../services/model/users';
 import { HELP_USER_ROLES } from '../../../tutorial';
 import { ACTION_DELETE } from '../../../constant/actions';
@@ -26,9 +26,21 @@ class UserList extends React.Component {
         return `Are you sure you want to remove ${data[fields.username]} from Organization ${data[fields.organizationName]}?`
     }
 
+    onDeleteAction  = (type, action, data) => {
+        if (this.props.roleInfo && !isAdmin()) {
+            let roleInfoList = this.props.roleInfo;
+            for (let roleInfo of roleInfoList) {
+                if (roleInfo.org === data[fields.organizationName]) {
+                    return !roleInfo.role.includes('Manager')
+                }
+            }
+        }
+        return false
+    }
+
     actionMenu = () => {
         return [
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage, type: 'Edit' }
+            { id: ACTION_DELETE, label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage, disable: this.onDeleteAction, type: 'Edit' }
         ]
     }
 
@@ -37,7 +49,7 @@ class UserList extends React.Component {
             { label: 'Delete', onClick: deleteUser, icon: 'delete', warning: 'remove selected user\'s from assigned organization', type: 'Edit' },
         ]
     }
-    
+
     requestInfo = () => {
         return ({
             id: 'userRole',
@@ -61,4 +73,10 @@ class UserList extends React.Component {
     }
 };
 
-export default withRouter(connect(null, null)(UserList));
+const mapStateToProps = (state) => {
+    return {
+        roleInfo: state.roleInfo ? state.roleInfo.role : null
+    }
+};
+
+export default withRouter(connect(mapStateToProps, null)(UserList));
