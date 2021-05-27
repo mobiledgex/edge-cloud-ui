@@ -17,14 +17,14 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { ACTION_DELETE, ACTION_DISABLE, ACTION_EDGE_BOX_ENABLE, ACTION_LABEL, ACTION_UPDATE, ACTION_WARNING } from '../../../constant/actions';
 import { sendRequest } from '../monitoring/services/service'
 import { LS_ORGANIZATION_INFO } from '../../../helper/ls';
-import {uiFormatter} from '../../../helper/formatter'
+import { uiFormatter } from '../../../helper/formatter'
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentView: null,
             tableHeight: isViewer() ? undefined : 280,
-            loading:undefined
+            loading: undefined
         }
         this._isMounted = false
         this.action = '';
@@ -135,7 +135,7 @@ class OrganizationList extends React.Component {
         }
     }
 
-    edgeboxOnlyVisibility = (data)=>{
+    edgeboxOnlyVisibility = (data) => {
         return isAdmin()
     }
 
@@ -143,7 +143,7 @@ class OrganizationList extends React.Component {
         return [
             { label: 'Audit', onClick: this.onAudit },
             { label: 'Add User', onClick: this.onAddUser, type: 'Edit' },
-            { id: ACTION_EDGE_BOX_ENABLE, label: this.onPreEdgebox, visible:this.edgeboxOnlyVisibility, type: 'Edit', warning: this.onPreEdgebox, disable: this.onPreEdgebox, onClick: this.onEdgebox },
+            { id: ACTION_EDGE_BOX_ENABLE, label: this.onPreEdgebox, visible: this.edgeboxOnlyVisibility, type: 'Edit', warning: this.onPreEdgebox, disable: this.onPreEdgebox, onClick: this.onEdgebox },
             { id: ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
             { id: ACTION_DELETE, label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type: 'Edit' }
         ]
@@ -161,7 +161,7 @@ class OrganizationList extends React.Component {
     }
 
     onManage = async (key, data) => {
-        this.updateState({loading:data[fields.organizationName]})
+        this.updateState({ loading: data[fields.organizationName] })
         if (this.props.roleInfo) {
             let roleInfoList = this.props.roleInfo;
             for (let roleInfo of roleInfoList) {
@@ -177,7 +177,7 @@ class OrganizationList extends React.Component {
                 }
             }
         }
-        this.updateState({ tableHeight: isViewer() ? undefined : 280,loading:undefined })
+        this.updateState({ tableHeight: isViewer() ? undefined : 280, loading: undefined })
     }
 
     onListViewClick = (key, data) => {
@@ -189,7 +189,7 @@ class OrganizationList extends React.Component {
 
     dataFormatter = (key, data, isDetail) => {
         if (key.field === fields.manage) {
-            return <uiFormatter.Manage loading={this.state.loading} data={data} key={key} detail={isDetail}/>
+            return <uiFormatter.Manage loading={this.state.loading} data={data} key={key} detail={isDetail} />
         }
         else if (key.field === fields.edgeboxOnly) {
             return uiFormatter.edgeboxOnly(key, data, isDetail)
@@ -207,7 +207,7 @@ class OrganizationList extends React.Component {
             additionalDetail: shared.additionalDetail,
             viewMode: HELP_ORG_LIST,
             grouping: true,
-            formatData:this.dataFormatter
+            formatData: this.dataFormatter
         })
     }
 
@@ -235,29 +235,39 @@ class OrganizationList extends React.Component {
                     clearStorage = false
                     break;
                 }
-                else if(userRole.org === localStorage.getItem('selectOrg'))
-                {
+                else if (userRole.org === localStorage.getItem('selectOrg')) {
                     clearStorage = false
                 }
             }
 
-            if(clearStorage)
-            {
+            if (clearStorage) {
                 localStorage.removeItem('selectOrg')
                 localStorage.removeItem('selectRole')
             }
         }
-        
-        this.keys = this.keys.map(key=>{
-            if(key.field === fields.manage)
-            {
-                key.visible = !isAdmin 
+
+        this.keys = this.keys.map(key => {
+            if (key.field === fields.manage) {
+                key.visible = !isAdmin
             }
             return key
         })
 
         if (this._isMounted) {
             this.forceUpdate()
+        }
+    }
+
+    fetchRole = async () => {
+        let mc = await serverData.showUserRoles(this)
+        if (mc && mc.response && mc.response.status === 200) {
+            this.props.handleRoleInfo(mc.response.data)
+        }
+    }
+
+    componentDidUpdate(preProp, preState) {
+        if (this.state.currentView !== preState.currentView && this.state.currentView === null) {
+            this.fetchRole()
         }
     }
 
@@ -273,6 +283,8 @@ class OrganizationList extends React.Component {
     componentWillUnmount() {
         this._isMounted = false
     }
+
+
 };
 
 const mapStateToProps = (state) => {
