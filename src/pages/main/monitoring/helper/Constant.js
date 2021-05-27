@@ -93,8 +93,9 @@ export const validateRole = (roles, selectedRole) => {
                 break;
             }
         }
+        return valid
     }
-    return valid
+    return true
 }
 
 

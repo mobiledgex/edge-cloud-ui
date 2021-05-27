@@ -160,8 +160,6 @@ const Options = (props) => {
         return drawerOpen ? '' : item.label
     }
 
-    
-
     return (
         <List component={sub ? 'div' : 'nav'} disablePadding={sub}>
             {options.map((item, i) => (
