@@ -267,13 +267,11 @@ class OrganizationList extends React.Component {
 
     componentDidUpdate(preProp, preState) {
         if (this.state.currentView !== preState.currentView && this.state.currentView === null) {
-            this.fetchRole()
+            if (!isAdmin()) {
+                this.fetchRole()
+            }
         }
     }
-
-    /**
-     * Customized data block
-     * ** */
 
     componentDidMount() {
         this._isMounted = true
