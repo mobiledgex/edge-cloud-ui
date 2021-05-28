@@ -11,12 +11,12 @@ import { keys, showOrganizations, deleteOrganization, edgeboxOnlyAPI } from '../
 import OrganizationReg from './organizationReg';
 import * as serverData from '../../../services/model/serverData'
 import * as shared from '../../../services/model/shared';
-
+import RoleWorker from '../../../services/worker/role.worker.js'
 import { Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core';
 import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { ACTION_DELETE, ACTION_DISABLE, ACTION_EDGE_BOX_ENABLE, ACTION_LABEL, ACTION_UPDATE, ACTION_WARNING } from '../../../constant/actions';
-import { sendRequest } from '../monitoring/services/service'
+import { getToken, sendRequest } from '../monitoring/services/service'
 import { LS_ORGANIZATION_INFO } from '../../../helper/ls';
 import { uiFormatter } from '../../../helper/formatter'
 class OrganizationList extends React.Component {
@@ -29,6 +29,7 @@ class OrganizationList extends React.Component {
         this._isMounted = false
         this.action = '';
         this.data = {}
+        this.worker = new RoleWorker();
         this.keys = keys()
     }
 
@@ -175,7 +176,7 @@ class OrganizationList extends React.Component {
                 }
             }
         }
-        this.updateState({ tableHeight: redux_org.isViewer(this) ? undefined : 280})
+        this.updateState({ tableHeight: redux_org.isViewer(this) ? undefined : 280 })
     }
 
     onListViewClick = (key, data) => {
@@ -187,7 +188,7 @@ class OrganizationList extends React.Component {
 
     dataFormatter = (key, data, isDetail) => {
         if (key.field === fields.manage) {
-            return <uiFormatter.Manage  data={data} key={key} detail={isDetail} />
+            return <uiFormatter.Manage data={data} key={key} detail={isDetail} />
         }
         else if (key.field === fields.edgeboxOnly) {
             return uiFormatter.edgeboxOnly(key, data, isDetail)
@@ -212,36 +213,38 @@ class OrganizationList extends React.Component {
     render() {
         const { tableHeight, currentView } = this.state
         return (
-                <div style={{ width: '100%', height: '100%' }}>
-                    <DataView id={constant.PAGE_ORGANIZATIONS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight} />
-                </div>
+            <div style={{ width: '100%', height: '100%' }}>
+                <DataView id={constant.PAGE_ORGANIZATIONS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight} />
+            </div>
         )
     }
 
-    getUserRoles = async () => {
-        let isAdmin = false;
-        let mc = await serverData.showUserRoles(this)
-        if (mc && mc.response && mc.response.status === 200) {
-            let userRoles = mc.response.data
-            // this.props.handleRoleInfo(userRoles)
-            for (let i = 0; i < userRoles.length; i++) {
-                let userRole = userRoles[i]
-                if (userRole.role.indexOf('Admin') > -1) {
-                    isAdmin = true
-                    break;
-                }
-            }
-        }
-
+    getUserRoles = () => {
         this.keys = this.keys.map(key => {
             if (key.field === fields.manage) {
-                key.visible = !isAdmin
+                key.visible = !redux_org.isAdmin(this)
             }
             return key
         })
 
         if (this._isMounted) {
             this.forceUpdate()
+        }
+    }
+
+    refreshRole = async () => {
+        let mc = await serverData.showUserRoles(this)
+        if (mc && mc.response && mc.response.status === 200) {
+            this.worker.postMessage({ data: mc.response.data, request: showOrganizations(), token: getToken(this) })
+            this.worker.addEventListener('message', async (event) => {
+                this.props.handleRoleInfo(event.data.roles)
+            })
+        }
+    }
+
+    componentDidUpdate(preProps, preState) {
+        if (!redux_org.isAdmin(this) && this.state.currentView !== preState.currentView && this.state.currentView === null) {
+            this.refreshRole()
         }
     }
 
