@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import * as serverData from "../../../services/model/serverData";
-import { GridLoader } from "react-spinners";
-import MexAlert from '../../../hoc/alert/AlertDialog';
-import { Dialog } from '@material-ui/core';
+import { Button } from '@material-ui/core';
+import { withRouter } from 'react-router';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class VerifyContent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: true,
-            mexAlertMessage: undefined,
-            open:true
+            message: undefined,
+            verified: false,
+            success: false
         };
 
     }
@@ -18,39 +18,41 @@ class VerifyContent extends Component {
     requestVerify = async () => {
         let token = this.props.location.search
         token = token.substring(token.indexOf('token=') + 6)
-        let mcRequest = await serverData.verifyEmail(this, { token: token });
-        if (mcRequest && (mcRequest.response || mcRequest.error)) {
-            let alertInfo = { msg: 'Oops, this link is expired', mode: 'error' }
-            if (mcRequest && mcRequest.response && mcRequest.response.data) {
-                alertInfo = { msg: mcRequest.response.data.message, mode: 'success' }
+        let mc = await serverData.verifyEmail(this, { token: token });
+        let success = false
+        if (mc && (mc.response || mc.error)) {
+            let message = 'Oops, this link is expired'
+            if (mc && mc.response && mc.response.data) {
+                success = true
+                message = 'Email Verfied, Thank You'
             }
-            this.setState({ mexAlertMessage: alertInfo })
+            this.setState({ verified: true, success, message })
         }
     }
 
-    onAlertClose = () => {
-        this.setState({ mexAlertMessage: undefined, open:false })
+    onClose = () => {
         this.props.history.push('/')
     }
 
     render() {
+        const { verified, success, message } = this.state
+        const color = success ? '#75B927' : '#D32F2F'
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                <Dialog open={this.state.open} PaperProps={{
-                    style: {
-                        backgroundColor: 'transparent',
-                        boxShadow: 'none',
-                    }
-                }}>
-                    <GridLoader
-                        sizeUnit={"px"}
-                        size={20}
-                        color={'#70b2bc'}
-                        loading={this.state.loading}
-                    />
-                    Verifying...
-                </Dialog>
-                {this.state.mexAlertMessage ? <MexAlert data={this.state.mexAlertMessage} onClose={this.onAlertClose} /> : null}
+            <div style={{ height: '22vh', padding: 10 }} >
+                <br />
+                <h2 style={{ color: '#C4D3DC', fontWeight:400 }}>Verifying Your Account</h2>
+                <br /><br />
+                {
+                    verified ?
+                        <React.Fragment>
+                            <img src={`assets/icons/${success ? 'tick' : 'cross'}.svg`} style={{ width: 100, border: `2px solid ${color}`, borderRadius: 50, strokeWidth: 10 }} tick />
+                            <h4 style={{ marginTop: 20, color: '#C4D3DC' }}>{message}</h4>
+                            <div align='right'>
+                                <Button variant='outlined' style={{ borderColor: '#C4D3DC', color: '#C4D3DC' }} onClick={this.onClose}>OK</Button>
+                            </div>
+                        </React.Fragment> :
+                        <CircularProgress size={100} thickness={1} />
+                }
             </div>
         );
     }
@@ -61,4 +63,4 @@ class VerifyContent extends Component {
 
 }
 
-export default VerifyContent;
+export default withRouter(VerifyContent);
