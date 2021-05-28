@@ -9,7 +9,6 @@ export default function roleInfo( state = initialState, action) {
             return Object.assign({}, state, {
                 role:action.role
             })
-            break;
         default:
             return state
     }

@@ -3,6 +3,8 @@ import * as serverData from './serverData'
 import { SHOW_TRUST_POLICY, UPDATE_TRUST_POLICY, CREATE_TRUST_POLICY, DELETE_TRUST_POLICY, SHOW_APP } from './endPointTypes'
 import { SHOW_CLOUDLET } from './endpoints';
 import { ADMIN_MANAGER, OPERATOR_CONTRIBUTOR, OPERATOR_MANAGER, ADMIN_CONTRIBUTOR } from '../../constant';
+import { redux_org } from '../../helper/reduxData'
+
 export const fields = formatter.fields;
 
 export const outboundSecurityRulesKeys = [
@@ -39,15 +41,15 @@ const getKey = (data) => {
   }
 }
 
-export const showTrustPolicies = (data) => {
-  if (formatter.isOperator()) {
-    data.trustpolicy = { key: { organization: formatter.getOrganization() } }
+export const showTrustPolicies = (self, data) => {
+  if (redux_org.isOperator(self)) {
+    data.trustpolicy = { key: { organization: redux_org.nonAdminOrg(self) } }
   }
   return { method: SHOW_TRUST_POLICY, data: data }
 }
 
 export const getTrustPolicyList = async (self, data) => {
-  return await serverData.showDataFromServer(self, showTrustPolicies(data))
+  return await serverData.showDataFromServer(self, showTrustPolicies(self, data))
 }
 
 export const updateTrustPolicy = (self, data, callback) => {
@@ -62,7 +64,7 @@ export const createTrustPolicy = (data) => {
   return { method: CREATE_TRUST_POLICY, data: requestData }
 }
 
-export const deleteTrustPolicy = (data) => {
+export const deleteTrustPolicy = (self, data) => {
   let requestData = getKey(data)
   return { method: DELETE_TRUST_POLICY, data: requestData, success: `Trust Policy ${data[fields.trustPolicyName]} deleted successfully` }
 }

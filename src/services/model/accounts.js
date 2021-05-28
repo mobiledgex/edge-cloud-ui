@@ -29,7 +29,7 @@ export const showAccounts = () => {
     return { method: SHOW_ACCOUNTS }
 }
 
-export const deleteAccount = (data) => {
+export const deleteAccount = (self, data) => {
     let requestData = getKey(data)
     return { method: DELETE_ACCOUNT, data: requestData, success: `Account ${data[fields.username]} deleted successfully` }
 }

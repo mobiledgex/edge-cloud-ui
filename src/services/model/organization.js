@@ -2,6 +2,7 @@ import * as formatter from './format'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
 import { SHOW_ORG, CREATE_ORG, UPDATE_ORG, DELETE_ORG, EDGEBOX_ONLY } from './endPointTypes'
+import { redux_org } from '../../helper/reduxData'
 
 let fields = formatter.fields;
 
@@ -33,23 +34,20 @@ export const getKey = (data, isCreate) => {
     return (requestData)
 }
 
-export const showOrganizations = (data) => {
+export const showOrganizations = (self, data) => {
     return { method: SHOW_ORG, data: data, keys: keys() }
 }
 
 export const getOrganizationList = async (self, data) => {
     let dataList = []
-    if (formatter.getOrganization()) {
+    let org  = redux_org.nonAdminOrg(self)
+    if (org) {
         let organization = {}
-        organization[fields.organizationName] = formatter.getOrganization();
+        organization[fields.organizationName] = org;
         dataList = [organization]
     }
     else {
-        if(data.type)
-        {
-            data.type = data.type.toLowerCase()
-        }
-        dataList = await serverData.showDataFromServer(self, showOrganizations(data))
+        dataList = await serverData.showDataFromServer(self, showOrganizations(self, data))
     }
     return dataList;
 }
@@ -66,7 +64,7 @@ export const updateOrganization = async (self, data) => {
     return await serverData.sendRequest(self, request)
 }
 
-export const deleteOrganization = (data) => {
+export const deleteOrganization = (self, data) => {
     let requestData = getKey(data);
     return { method: DELETE_ORG, data: requestData, success: `Organization ${data[fields.organizationName]} deleted successfully` }
 }

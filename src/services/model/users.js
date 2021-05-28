@@ -19,7 +19,7 @@ export const getKey = (data) => {
     })
 }
 
-export const showUsers = (data) => {
+export const showUsers = (self, data) => {
     return { method: SHOW_USERS, data: data }
 }
 
@@ -29,7 +29,7 @@ export const addUser = async (self, data) => {
     return await serverData.sendRequest(self, request)
 }
 
-export const deleteUser = (data) => {
+export const deleteUser = (self, data) => {
     let requestData = getKey(data);
     return { method: DELETE_USER, data: requestData, success: `User ${data[fields.username]} removed successfully` }
 }

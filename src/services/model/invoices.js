@@ -26,7 +26,7 @@ export const keys = () => ([
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
-export const showInvoices = (data) => {
+export const showInvoices = (self, data) => {
     let requestData = { name: data[fields.name] }
     return { method: INVOICE_BILLING, data: requestData, keys: keys() }
 }

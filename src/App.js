@@ -1,5 +1,5 @@
 import React, { Component, Suspense, lazy } from 'react';
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import 'semantic-ui-css/semantic.min.css';
 import { connect } from 'react-redux';
 import * as actions from './actions';
@@ -10,11 +10,11 @@ import './css/pages/cloudletPool.css';
 import './css/components/timelineH.css';
 import { ThemeProvider } from "@material-ui/styles";
 import { getDarkTheme, getLightTheme, THEME_TYPE } from "./themeStyle";
-import Spinner from './hoc/loader/Spinner';
+import LogoSpinner from './hoc/loader/LogoSpinner'
 
-const Main = lazy(() => import('./sites/main/Main'));
-const EntranceGlob = lazy(() => import('./sites/login/entranceGlob'));
-const VerifyContent = lazy(() => import('./sites/login/verifyContent'));
+const Main = lazy(() => import('./pages/main/Main'));
+const Landing = lazy(() => import('./pages/landing/Landing'));
+const PreLoader = lazy(() => import('./pages/landing/loader/PreLoader'));
 class App extends Component {
     constructor() {
         super();
@@ -24,13 +24,17 @@ class App extends Component {
         return (
             <ThemeProvider theme={this.props.themeType === THEME_TYPE.DARK ? getDarkTheme() : getLightTheme()}>
                 <Router>
-                    <Suspense fallback={<Spinner loading={true} />}>
+                    <Suspense fallback={<LogoSpinner/>}>
                         <Switch>
-                            <Route exact path='/' component={EntranceGlob} />
+                            <Route exact path='/' component={Landing} />
+                            <Route exact path='/register' component={Landing} />
+                            <Route exact path='/forgotpassword' component={Landing} />
+                            <Route exact path='/passwordreset' component={Landing} />
+                            <Route exact path='/logout' component={Landing} />
+                            <Route exact path='/verify' component={Landing} />
+                            <Route exact path='/preloader' component={PreLoader} />
                             <Route path='/main' component={Main} />
-                            <Route exact path='/logout' component={EntranceGlob} />
-                            <Route exact path='/passwordreset' component={EntranceGlob} />
-                            <Route exact path='/verify' component={VerifyContent} />
+                            <Redirect from='*' to='/' />
                         </Switch>
                     </Suspense>
                 </Router>

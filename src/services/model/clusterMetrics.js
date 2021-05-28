@@ -1,7 +1,7 @@
 
 import * as formatter from './format'
 import { CLUSTER_METRICS_ENDPOINT } from './endPointTypes'
-import { UNIT_BYTES, UNIT_PERCENTAGE } from '../../sites/main/monitoring/helper/unitConvertor';
+import { UNIT_BYTES, UNIT_PERCENTAGE } from '../../pages/main/monitoring/helper/unitConvertor';
 
 let fields = formatter.fields;
 

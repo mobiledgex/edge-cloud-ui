@@ -64,7 +64,7 @@ export const showMultiDataFromServer = (self, requestType, filter, callback) => 
     if (token) {
         let requestDataList = [];
         for (let i = 0; i < requestType.length; i++) {
-            let request = requestType[i](Object.assign({}, filter))
+            let request = requestType[i](self, Object.assign({}, filter))
             if (request) {
                 request.token = token;
                 requestDataList.push(request);
@@ -79,7 +79,7 @@ export const showSyncMultiData = async (self, requestType, filter) => {
     if (token) {
         let requestDataList = [];
         for (let i = 0; i < requestType.length; i++) {
-            let request = filter ? requestType[i](Object.assign({}, filter)) : requestType[i]
+            let request = filter ? requestType[i](self, Object.assign({}, filter)) : requestType[i]
             if (request) {
                 request.token = token;
                 requestDataList.push(request);

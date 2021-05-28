@@ -3,6 +3,7 @@ import * as formatter from './format'
 import * as serverData from './serverData'
 import { getCloudletKey } from './cloudlet'
 import { SHOW_AUTO_PROV_POLICY, CREATE_AUTO_PROV_POLICY, UPDATE_AUTO_PROV_POLICY, DELETE_AUTO_PROV_POLICY, ADD_AUTO_PROV_POLICY_CLOUDLET, REMOVE_AUTO_PROV_POLICY_CLOUDLET, SHOW_APP } from './endPointTypes'
+import { redux_org } from '../../helper/reduxData'
 
 let fields = formatter.fields
 
@@ -72,9 +73,9 @@ const getAutoProvKey = (data, isCreate) => {
   })
 }
 
-export const showAutoProvPolicies = (data) => {
-  let organization = formatter.getOrganization()
-  if (organization && formatter.isDeveloper()) {
+export const showAutoProvPolicies = (self, data) => {
+  let organization = redux_org.nonAdminOrg(self)
+  if (organization && redux_org.isDeveloper(self)) {
     {
       data.AutoProvPolicy = { key: { organization } }
     }
@@ -83,10 +84,10 @@ export const showAutoProvPolicies = (data) => {
 }
 
 export const getAutoProvPolicyList = async (self, data) => {
-  return await serverData.showDataFromServer(self, showAutoProvPolicies(data))
+  return await serverData.showDataFromServer(self, showAutoProvPolicies(self, data))
 }
 
-export const deleteAutoProvPolicy = (data) => {
+export const deleteAutoProvPolicy = (self, data) => {
   let requestData = getAutoProvKey(data)
   return { method: DELETE_AUTO_PROV_POLICY, data: requestData, success: `Auto Provisioning Policy ${data[fields.autoPolicyName]} deleted successfully` }
 }

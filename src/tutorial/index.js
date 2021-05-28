@@ -1,5 +1,4 @@
-import { getUserRole } from "../services/model/format"
-
+import {redux_org} from '../helper/reduxData'
 import * as constant from '../constant'
 
 export const HELP_ORG_LIST = 'OrgList'
@@ -31,28 +30,28 @@ export const HELP_MONITORING = 'monitoringAdmin'
 export const HELP_USER_ROLES = 'userRoles'
 export const HELP_ALERTS = 'alerts'
 
-export const userRoles = (type, isDoc) => {
+export const userRoles = (org, type, isDoc) => {
     if (isDoc) {
-        if (getUserRole().includes(constant.DEVELOPER)) {
+        if (redux_org.isDeveloper(org)) {
             return 'https://developers.mobiledgex.com/deployments/accounts/org-users#view-users'
         }
-        else if (getUserRole().includes(constant.OPERATOR)) {
+        else if (redux_org.isOperator(org)) {
             return 'https://operators.mobiledgex.com/product-overview/operator-guides/account-management/organizations-and-users'
         }
     }
 }
 
-export const monitoring = (type, isDoc) => {
+export const monitoring = (org, type, isDoc) => {
     if (isDoc) {
-        if (getUserRole().includes(constant.DEVELOPER)) {
+        if (redux_org.isDeveloper(org)) {
             return 'https://developers.mobiledgex.com/deployments/monitoring-and-metrics'
         }
-        else if (getUserRole().includes(constant.OPERATOR)) {
+        else if (redux_org.isOperator(org)) {
             return 'https://operators.mobiledgex.com/product-overview/operator-guides/debugging/operator-monitoring-and-metrics'
         }
     }
     else {
-        if (getUserRole().includes(constant.ADMIN)) {
+        if (redux_org.isAdmin(org)) {
             return [
                 {
                     element: '.none',
@@ -64,7 +63,7 @@ export const monitoring = (type, isDoc) => {
                 }
             ]
         }
-        else if (getUserRole().includes(constant.DEVELOPER)) {
+        else if (redux_org.isDeveloper(org)) {
             return [
                 {
                     element: '.createAppInst0',
@@ -84,7 +83,7 @@ export const monitoring = (type, isDoc) => {
                 }
             ]
         }
-        else if (getUserRole().includes(constant.OPERATOR)) {
+        else if (redux_org.isOperator(org)) {
             return [
                 {
                     element: '.cloudletReg0',
@@ -101,9 +100,9 @@ export const monitoring = (type, isDoc) => {
     }
 }
 
-const autoScalePolicy = (type, isDoc) => {
+const autoScalePolicy = (org, type, isDoc) => {
     if (isDoc) {
-        if (getUserRole().includes(constant.DEVELOPER)) {
+        if (redux_org.isDeveloper(org)) {
             switch (type) {
                 case HELP_SCALE_POLICY:
                     return 'https://developers.mobiledgex.com/deployments/application-runtime/autoscale'
@@ -168,9 +167,9 @@ const autoScalePolicy = (type, isDoc) => {
     }
 }
 
-const trustPolicy = (type, isDoc) => {
+const trustPolicy = (org, type, isDoc) => {
     if (isDoc) {
-        if (getUserRole().includes(constant.DEVELOPER)) {
+        if (redux_org.isDeveloper(org)) {
             switch (type) {
                 case HELP_TRUST_POLICY:
                     return 'https://developers.mobiledgex.com/deployments/security'
@@ -223,9 +222,9 @@ const trustPolicy = (type, isDoc) => {
     }
 }
 
-const policy = (type, isDoc) => {
+const policy = (org, type, isDoc) => {
     if (isDoc) {
-        if (getUserRole().includes(constant.DEVELOPER)) {
+        if (redux_org.isDeveloper(org)) {
             switch (type) {
                 case HELP_POLICY_LIST:
                     return 'https://developers.mobiledgex.com/deployments/application-runtime/auto-prov'
@@ -314,19 +313,19 @@ const policy = (type, isDoc) => {
     }
 }
 
-const org = (type, isDoc) => {
+const org = (org, type, isDoc) => {
     if (isDoc) {
-        if (getUserRole() === undefined || getUserRole().includes(constant.DEVELOPER)) {
+        if (redux_org.role() === undefined || redux_org.isDeveloper(org)) {
             return 'https://developers.mobiledgex.com/deployments/accounts/org-users'
         }
-        else if (getUserRole().includes(constant.OPERATOR)) {
+        else if (redux_org.isOperator(org)) {
             return 'https://operators.mobiledgex.com/product-overview/operator-guides/account-management/organizations-and-users'
         }
     }
     else {
         switch (type) {
             case HELP_ORG_LIST:
-                if (getUserRole() === constant.ADMIN_MANAGER) {
+                if (redux_org.role(org) === constant.ADMIN_MANAGER) {
                     return [
                         {
                             element: '.none',
@@ -445,9 +444,9 @@ const org = (type, isDoc) => {
         }
     }
 }
-const cloudletPool = (type, isDoc) => {
+const cloudletPool = (org, type, isDoc) => {
     if (isDoc) {
-        if (getUserRole().includes(constant.OPERATOR)) {
+        if (redux_org.isOperator(org)) {
             return 'https://operators.mobiledgex.com/product-overview/operator-guides/cloudlet-deployment-guides/cloudlet-pools'
         }
     }
@@ -510,16 +509,16 @@ const cloudletPool = (type, isDoc) => {
     }
 }
 
-const flavor = (type, isDoc) => {
+const flavor = (org, type, isDoc) => {
     if (isDoc) {
-        if (getUserRole().includes(constant.DEVELOPER)) {
+        if (redux_org.isDeveloper(org)) {
             return 'https://developers.mobiledgex.com/deployments/deployment-workflow/flavors'
         }
     }
     else {
         switch (type) {
             case HELP_FLAVOR_LIST:
-                if (getUserRole() === constant.ADMIN_MANAGER) {
+                if (redux_org.role(org) === constant.ADMIN_MANAGER) {
                     return [
                         {
                             element: '.none',
@@ -576,9 +575,9 @@ const flavor = (type, isDoc) => {
     }
 }
 
-const appInst = (type, isDoc) => {
+const appInst = (org, type, isDoc) => {
     if (isDoc) {
-        if (getUserRole().includes(constant.DEVELOPER)) {
+        if (redux_org.isDeveloper(org)) {
             switch (type) {
                 case HELP_APP_INST_LIST:
                     return 'https://developers.mobiledgex.com/deployments/deployment-workflow/app-instances'
@@ -643,9 +642,9 @@ const appInst = (type, isDoc) => {
     }
 }
 
-const app = (type, isDoc) => {
+const app = (org, type, isDoc) => {
     if (isDoc) {
-        if (getUserRole().includes(constant.DEVELOPER)) {
+        if (redux_org.isDeveloper(org)) {
             switch (type) {
                 case HELP_APP_LIST:
                     return 'https://developers.mobiledgex.com/deployments/deployment-workflow/app-definition'
@@ -740,9 +739,9 @@ const app = (type, isDoc) => {
     }
 }
 
-const clusterInst = (type, isDoc) => {
+const clusterInst = (org, type, isDoc) => {
     if (isDoc) {
-        if (getUserRole().includes(constant.DEVELOPER)) {
+        if (redux_org.isDeveloper(org)) {
             switch (type) {
                 case HELP_CLUSTER_INST_LIST:
                     return 'https://devstage.mobiledgex.com/deployments/deployment-workflow/clusters'
@@ -825,12 +824,12 @@ const clusterInst = (type, isDoc) => {
     }
 }
 
-const cloudlet = (type, isDoc) => {
+const cloudlet = (org, type, isDoc) => {
     if (isDoc) {
-        if (getUserRole().includes(constant.DEVELOPER)) {
+        if (redux_org.isDeveloper(org)) {
             return 'https://developers.mobiledgex.com/deployments/deployment-workflow/cloudlets'
         }
-        else if (getUserRole().includes(constant.OPERATOR)) {
+        else if (redux_org.isOperator(org)) {
             switch (type) {
                 case HELP_CLOUDLET_LIST:
                 case HELP_CLOUDLET_REG:
@@ -841,7 +840,7 @@ const cloudlet = (type, isDoc) => {
     else {
         switch (type) {
             case HELP_CLOUDLET_LIST:
-                if (getUserRole() !== constant.DEVELOPER) {
+                if (redux_org.roleType(org) !== constant.DEVELOPER) {
                     return [
                         {
                             element: '.createAppInst0',
@@ -909,60 +908,76 @@ const cloudlet = (type, isDoc) => {
     }
 }
 
-const alerts = (type, isDoc) => {
+const alerts = (org, type, isDoc) => {
     if (isDoc) {
-        if (getUserRole().includes(constant.DEVELOPER)) {
+        if (redux_org.isDeveloper(org)) {
             return 'https://developers.mobiledgex.com/design/testing-and-debugging/alarms#alerts'
         }
-        else if(getUserRole().includes(constant.OPERATOR))
-        {
+        else if (redux_org.isOperator(org)) {
             return 'https://operators.mobiledgex.com/product-overview/operator-guides/debugging/health-check-and-alert'
         }
     }
 }
 
-export const tutor = (type, isDoc) => {
+export const tutor = (orgInfo, type, isDoc) => {
+    let callback = undefined
     switch (type) {
         case HELP_CLOUDLET_LIST:
         case HELP_CLOUDLET_REG:
-            return cloudlet(type, isDoc)
+            callback = cloudlet
+            break;
         case HELP_CLUSTER_INST_LIST:
         case HELP_CLUSTER_INST_REG:
-            return clusterInst(type, isDoc)
+            callback = clusterInst
+            break;
         case HELP_APP_LIST:
         case HELP_APP_REG:
-            return app(type, isDoc)
+            callback = app
+            break;
         case HELP_APP_INST_LIST:
         case HELP_APP_INST_REG:
-            return appInst(type, isDoc)
+            callback = appInst
+            break;
         case HELP_FLAVOR_LIST:
         case HELP_FLAVOR_REG:
-            return flavor(type, isDoc)
+            callback = flavor
+            break;
         case HELP_CLOUDLET_POOL_LIST:
         case HELP_CLOUDLET_POOL_REG_1:
         case HELP_CLOUDLET_POOL_REG_2:
         case HELP_CLOUDLET_POOL_REG_3:
-            return cloudletPool(type, isDoc)
+            callback = cloudletPool
+            break;
         case HELP_ORG_LIST:
         case HELP_ORG_REG_1:
         case HELP_ORG_REG_2:
         case HELP_ORG_REG_3:
-            return org(type, isDoc)
+            callback = org
+            break;
         case HELP_SCALE_POLICY:
         case HELP_SCALE_POLICY_REG:
-            return autoScalePolicy(type, isDoc)
+            callback = autoScalePolicy
+            break;
         case HELP_POLICY_LIST:
         case HELP_AUTO_PROV_REG_1:
         case HELP_AUTO_PROV_REG_2:
-            return policy(type, isDoc)
+            callback = policy
+            break;
         case HELP_TRUST_POLICY:
         case HELP_TRUST_POLICY_REG:
-            return trustPolicy(type, isDoc)
+            callback = trustPolicy
+            break;
         case HELP_MONITORING:
-            return monitoring(type, isDoc)
+            callback = monitoring
+            break;
         case HELP_USER_ROLES:
-            return userRoles(type, isDoc)
+            callback = userRoles
+            break;
         case HELP_ALERTS:
-            return alerts(type, isDoc)
+            callback = alerts
+            break;
+    }
+    if (callback) {
+        return callback(orgInfo, type, isDoc)
     }
 }

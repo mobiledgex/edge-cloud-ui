@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { TableHead, TableRow, Checkbox, TableSortLabel, TableCell, makeStyles } from '@material-ui/core';
 import { checkRole } from './ListConstant';
+import { useSelector } from 'react-redux';
+import { redux_org } from '../../helper/reduxData';
 
 const useStyles = makeStyles((theme) => ({
     visuallyHidden: {
@@ -19,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ListHead = (props) => {
     const classes = useStyles()
+    const orgInfo = useSelector(state => state.organizationInfo.data)
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
@@ -43,7 +46,7 @@ const ListHead = (props) => {
                     />
                 </TableCell> : null}
                 {props.headCells.map((headCell) => {
-                    let roleVisible = checkRole(headCell)
+                    let roleVisible = checkRole(redux_org.role(orgInfo), headCell)
                     if (headCell.label === 'Actions' && headCell.visible && roleVisible) {
                         headCell.visible = props.actionMenuLength > 0
                     }

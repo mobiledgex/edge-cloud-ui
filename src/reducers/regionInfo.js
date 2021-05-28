@@ -1,7 +1,7 @@
 import * as types from '../actions/ActionTypes';
 
 const initialState = {
-    region: []
+    region: undefined
 };
 export default function regionInfo( state = initialState, action) {
     switch( action.type ) {
