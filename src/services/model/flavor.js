@@ -33,12 +33,12 @@ export const getKey = (data, isCreate) => {
     })
 }
 
-export const showFlavors = (data) => {
+export const showFlavors = (self, data) => {
     return { method: SHOW_FLAVOR, data: data }
 }
 
 export const getFlavorList = async (self, data) => {
-    return await serverData.showDataFromServer(self, showFlavors(data))
+    return await serverData.showDataFromServer(self, showFlavors(self, data))
 }
 
 export const createFlavor = async (self, data) => {
@@ -47,7 +47,7 @@ export const createFlavor = async (self, data) => {
     return await serverData.sendRequest(self, request)
 }
 
-export const deleteFlavor = (data) => {
+export const deleteFlavor = (self, data) => {
     let requestData = getKey(data);
     return { method: DELETE_FLAVOR, data: requestData, success: `Flavor ${data[fields.flavorName]} deleted successfully` }
 }

@@ -21,6 +21,8 @@ import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import ListMexMap from './map/ListMexMap'
 import cloneDeep from 'lodash/cloneDeep';
 import { ACTION_DELETE, ACTION_EDGE_BOX_ENABLE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_REBOOT, ACTION_UPGRADE, ACTION_WARNING, ACTION_POOL_ACCESS_DEVELOPER, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../constant/actions';
+import { equal } from '../constant/compare';
+import { isPathOrg } from '../constant/common';
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -49,7 +51,6 @@ class MexListView extends React.Component {
         this.selectedRow = {};
         this.sorting = false;
         this.selectedRegion = REGION_ALL
-        this.regions = constant.regions()
     }
 
     updateState = (data) => {
@@ -107,21 +108,25 @@ class MexListView extends React.Component {
     }
 
     onDelete = async (action, data) => {
-        let filterList = this.state.filterList
-        let dataList = this.state.dataList
         if (data) {
             if (action.ws) {
                 this.props.handleLoadingSpinner(true);
-                serverData.sendWSRequest(this, action.onClick(data), this.onDeleteWSResponse, data)
+                serverData.sendWSRequest(this, action.onClick(this, data), this.onDeleteWSResponse, data)
             }
             else {
                 let valid = false
-                let mc = await serverData.sendRequest(this, action.onClick(data))
+                let mc = await serverData.sendRequest(this, action.onClick(this, data))
                 if (mc && mc.response && mc.response.status === 200) {
                     this.props.handleAlertInfo('success', `${mc.request.success}`)
-                    filterList.splice(filterList.indexOf(data), 1)
-                    dataList.splice(dataList.indexOf(data), 1)
-                    this.updateState({ dataList: dataList, filterList: filterList })
+                    if (this._isMounted) {
+                        this.setState(prevState => {
+                            let filterList = prevState.filterList
+                            let dataList = prevState.dataList
+                            filterList = filterList.filter(item => { return !equal(item, data) })
+                            dataList = dataList.filter(item => { return !equal(item, data) })
+                            return { dataList, filterList }
+                        })
+                    }
                     valid = true;
                 }
                 if (action.onFinish) {
@@ -170,10 +175,10 @@ class MexListView extends React.Component {
     onDeleteMultiple = async (action, data) => {
         if (action.ws) {
             this.props.handleLoadingSpinner(true)
-            serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, { action: action, data: data })
+            serverData.sendWSRequest(this, action.onClick(this, data), this.onMultiResponse, { action: action, data: data })
         }
         else {
-            let mc = await serverData.sendRequest(this, action.onClick(data))
+            let mc = await serverData.sendRequest(this, action.onClick(this, data))
             let message = ''
             let code = 404
             if (mc && mc.response && mc.response.status === 200) {
@@ -247,7 +252,7 @@ class MexListView extends React.Component {
                     case ACTION_POOL_ACCESS_DEVELOPER:
                     case ACTION_POOL_ACCESS_DEVELOPER_REJECT:
                     case ACTION_EDGE_BOX_ENABLE:
-                        action.onClick(action, data, ()=>{this.dataFromServer(this.selectedRegion)})
+                        action.onClick(action, data, () => { this.dataFromServer(this.selectedRegion) })
                         break;
                 }
             }
@@ -357,8 +362,7 @@ class MexListView extends React.Component {
                 if (key.filter) {
                     filterCount = + 1
                     let tempData = data[key.field] ? data[key.field] : ''
-                    if(typeof tempData === 'string')
-                    {
+                    if (typeof tempData === 'string') {
                         return tempData.toLowerCase().includes(this.filterText)
                     }
                 }
@@ -419,23 +423,24 @@ class MexListView extends React.Component {
         let requestList = []
         if (this.requestInfo.id === constant.PAGE_CLOUDLETS) {
             requestType.map(request => {
-                requestList.push(request(data, true))
+                requestList.push(request(this, data, true))
             })
         }
         else {
-            requestList.push(requestType[0](data, true))
+            requestList.push(requestType[0](this, data, true))
         }
         serverData.sendMultiRequest(this, requestList, this.specificResponse)
     }
 
     render() {
         const { resetStream, deleteMultiple, showMap } = this.state
+        const { regions } = this.props
         return (
             <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', color: 'white', paddingTop: 10 }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.specificDataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
-                <MexToolbar requestInfo={this.requestInfo} regions={this.regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} />
+                <MexToolbar requestInfo={this.requestInfo} regions={regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} />
                 {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
                 {this.state.currentView ? this.state.currentView : this.listView()}
                 <MexMessageMultiNorm data={deleteMultiple} close={this.onDeleteMulClose} />
@@ -467,18 +472,19 @@ class MexListView extends React.Component {
                 this.onFilterValue(value)
                 break;
             case ACTION_GROUP:
-                this.setState({dropList:value})
+                this.setState({ dropList: value })
             default:
 
         }
     }
 
     getFilterInfo = (requestInfo, region) => {
+        const { regions } = this.props
         let filterList = [];
         if (requestInfo.isRegion) {
             if (region === REGION_ALL) {
-                for (let i = 0; i < this.regions.length; i++) {
-                    region = this.regions[i];
+                for (let i = 0; i < regions.length; i++) {
+                    region = regions[i];
                     let filter = requestInfo.filter === undefined ? {} : requestInfo.filter;
                     filter[fields.region] = region;
                     filterList.push(Object.assign({}, filter))
@@ -531,11 +537,12 @@ class MexListView extends React.Component {
         }
 
         if (this._isMounted) {
-            this.updateState({
+            this.setState({
                 dataList,
                 newDataList
+            }, () => {
+                this.updateState({ filterList: this.onFilterValue(undefined) })
             })
-            this.updateState({ filterList: this.onFilterValue(undefined) })
         }
     }
 
@@ -560,6 +567,14 @@ class MexListView extends React.Component {
 
     }
 
+    componentDidUpdate(preProps, preState) {
+        if (!equal(this.props.organizationInfo, preProps.organizationInfo)) {
+            if (!isPathOrg(this)) {
+                this.dataFromServer(this.selectedRegion)
+            }
+        }
+    }
+
     componentDidMount() {
         this._isMounted = true
         this.dataFromServer(REGION_ALL)
@@ -571,6 +586,12 @@ class MexListView extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        regions: state.regionInfo.region
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
@@ -579,4 +600,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(MexListView));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(MexListView));

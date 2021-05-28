@@ -21,6 +21,8 @@ import ContactSupportOutlinedIcon from '@material-ui/icons/ContactSupportOutline
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddToPhotosOutlinedIcon from '@material-ui/icons/AddToPhotosOutlined';
+import { useSelector } from 'react-redux';
+import { redux_org } from '../../helper/reduxData';
 
 export const MAIN_HEADER = 'MainHeader'
 export const HEADER = 'Header'
@@ -67,6 +69,8 @@ export const formattedData = (forms) => {
 const MexForms = (props) => {
     let forms = props.forms
     const [error, setError] = React.useState(undefined)
+    const orgInfo = useSelector(state => state.organizationInfo.data)
+
     const getIcon = (id) => {
         switch (id) {
             case 'delete':
@@ -326,16 +330,9 @@ const MexForms = (props) => {
     }
 
     const checkRole = (form) => {
-        let currentRole = localStorage.selectRole
-        let roles = form.roles
-        if (roles) {
-            form.visible = false;
-            for (let i = 0; i < roles.length; i++) {
-                let role = roles[i]
-                if (role === currentRole) {
-                    form.visible = true
-                }
-            }
+        if (form.roles) {
+            let currentRole = redux_org.role(orgInfo)
+            form.visible = form.roles.includes(currentRole)
         }
     }
 

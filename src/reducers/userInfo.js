@@ -1,7 +1,7 @@
 import * as types from '../actions/ActionTypes';
 
 const initialState = {
-    data: null
+    data: undefined
 };
 export default function userInfo(state = initialState, action) {
     switch (action.type) {

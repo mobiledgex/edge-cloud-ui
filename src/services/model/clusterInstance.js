@@ -5,6 +5,7 @@ import { SHOW_CLUSTER_INST, STREAM_CLUSTER_INST, CREATE_CLUSTER_INST, UPDATE_CLU
 import { TYPE_JSON } from '../../constant';
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 import { labelFormatter, idFormatter } from '../../helper/formatter';
+import { redux_org } from '../../helper/reduxData'
 
 let fields = formatter.fields;
 
@@ -30,7 +31,7 @@ export const keys = () => ([
     { field: fields.reservedBy, serverField: 'reserved_by', label: 'Reserved By', roles: [constant.ADMIN_MANAGER] },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles:[formatter.ADMIN, constant.DEVELOPER] }
+    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles:[constant.ADMIN, constant.DEVELOPER] }
 ])
 
 export const multiDataRequest = (keys, mcRequestList, specific) => {
@@ -103,7 +104,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
     }
 }
 
-export const showClusterInsts = (data, specific) => {
+export const showClusterInsts = (self, data, specific) => {
     let requestData = {}
     if (specific) {
         let clusterinst = { key: data.clusterinstkey ? data.clusterinstkey : data.clusterinst.key }
@@ -115,12 +116,12 @@ export const showClusterInsts = (data, specific) => {
     }
     else {
         requestData.region = data.region
-        let organization = data.org ? data.org : formatter.getOrganization()
+        let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
         if (organization) {
-            if (formatter.isDeveloper() || data.type === formatter.DEVELOPER.toLowerCase()) {
+            if (redux_org.isDeveloper(self) || data.type === constant.DEVELOPER) {
                 requestData.clusterinst = { key: { organization } }
             }
-            else if (formatter.isOperator() || data.type === formatter.OPERATOR.toLowerCase()) {
+            else if (redux_org.isOperator(self)  || data.type === constant.OPERATOR) {
                 requestData.clusterinst = {
                     key: { cloudlet_key: { organization } }
                 }
@@ -177,7 +178,7 @@ export const clusterKey = (data, isCreate) => {
 }
 
 export const getClusterInstList = async (self, data) => {
-    return await serverData.showDataFromServer(self, showClusterInsts(data))
+    return await serverData.showDataFromServer(self, showClusterInsts(self, data))
 }
 
 export const createClusterInst = (self, data, callback) => {
@@ -193,9 +194,9 @@ export const updateClusterInst = (self, data, callback) => {
     return serverData.sendWSRequest(self, request, callback, data)
 }
 
-export const deleteClusterInst = (data) => {
+export const deleteClusterInst = (self, data) => {
     let requestData = clusterKey(data)
-    if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && formatter.isAdmin()) {
+    if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && redux_org.isAdmin(self)) {
         requestData.clusterinst.crm_override = constant.CRM_OVERRIDE_IGNORE_CRM
     }
     return { uuid: data.uuid, method: DELETE_CLUSTER_INST, data: requestData, success: `Cluster Instance ${data[fields.appName]} deleted successfully` }

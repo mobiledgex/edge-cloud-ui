@@ -3,6 +3,8 @@ import { TableCell, Checkbox, Tooltip, IconButton, makeStyles, TablePagination }
 import { fields } from '../../services/model/format';
 import ListIcon from '@material-ui/icons/List';
 import { StyledTableCell, StyledTableRow, stableSort, getComparator, checkRole } from './ListConstant';
+import { redux_org } from '../../helper/reduxData'
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     tip: {
@@ -15,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ListBody = (props) => {
     const classes = useStyles()
-
+    const orgInfo = useSelector(state => state.organizationInfo.data)
     const [page, setPage] = React.useState(0)
     const [rowsPerPage, settRowsPerPage] = React.useState(10)
     const [order, setOrder] = React.useState('asc')
@@ -74,7 +76,7 @@ const ListBody = (props) => {
                     </TableCell> : null}
 
                 {props.keys.map((header, j) => {
-                    let roleVisible = checkRole(header)
+                    let roleVisible = checkRole(redux_org.role(orgInfo), header)
                     if (header.visible && roleVisible) {
                         let field = header.field;
                         return (

@@ -5,6 +5,7 @@ import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET, STR
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 import { REVOKE_ACCESS_KEY } from './endpoints'
 import { idFormatter, labelFormatter } from '../../helper/formatter'
+import { redux_org } from '../../helper/reduxData'
 
 const fields = formatter.fields;
 
@@ -24,8 +25,8 @@ export const keys = () => ([
     { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true, format: true },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true, format: true },
     { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON, detailView: false },
-    { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
-    { field: fields.vmImageVersion, serverField: 'vm_image_version', label: 'VM Image Version', roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] },
+    { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: constant.operatorRoles },
+    { field: fields.vmImageVersion, serverField: 'vm_image_version', label: 'VM Image Version', roles: constant.operatorRoles },
     { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: constant.TYPE_JSON },
     { field: fields.envVars, serverField: 'env_var', label: 'Environment Variables', dataType: constant.TYPE_JSON },
     { field: fields.resourceQuotas, serverField: 'resource_quotas', label: 'Resource Quotas', dataType: constant.TYPE_JSON },
@@ -39,7 +40,7 @@ export const keys = () => ([
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.trusted, label: 'Trusted', visible: true, format: true },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: ['AdminManager', 'OperatorManager', 'OperatorContributor'] }
+    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: constant.operatorRoles }
 ])
 
 export const getCloudletKey = (data) => {
@@ -214,10 +215,10 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
     }
 }
 
-export const showCloudlets = (data, specific) => {
+export const showCloudlets = (self, data, specific) => {
     let requestData = {}
-    let isDeveloper = formatter.isDeveloper() || data.type === formatter.DEVELOPER.toLowerCase()
-    let method = isDeveloper ? SHOW_ORG_CLOUDLET : SHOW_CLOUDLET
+    let developer = redux_org.isDeveloper(self) || data.type === constant.DEVELOPER
+    let method = developer ? SHOW_ORG_CLOUDLET : SHOW_CLOUDLET
     if (specific) {
         let cloudlet = { key: data.cloudletkey ? data.cloudletkey : data.cloudlet.key }
         requestData = {
@@ -228,12 +229,12 @@ export const showCloudlets = (data, specific) => {
     }
     else {
         requestData.region = data.region
-        let organization = data.org ? data.org : formatter.getOrganization()
+        let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
         if (organization) {
-            if (isDeveloper) {
+            if (developer) {
                 requestData.org = organization
             }
-            else if (formatter.isOperator() || data.type === formatter.OPERATOR.toLowerCase()) {
+            else if (redux_org.isOperator(self) || data.type === constant.OPERATOR) {
                 requestData.cloudlet = { key: { organization } }
             }
         }
@@ -242,7 +243,7 @@ export const showCloudlets = (data, specific) => {
 }
 
 export const fetchCloudletData = async (self, data) => {
-    return await serverData.showDataFromServer(self, showCloudlets(data))
+    return await serverData.showDataFromServer(self, showCloudlets(self, data))
 }
 
 export const createCloudlet = (self, data, callback) => {
@@ -259,7 +260,7 @@ export const updateCloudlet = (self, data, callback) => {
     return serverData.sendWSRequest(self, request, callback, data)
 }
 
-export const deleteCloudlet = (data) => {
+export const deleteCloudlet = (self, data) => {
     let requestData = getKey(data)
     return { uuid: data.uuid, method: DELETE_CLOUDLET, data: requestData, success: `Cloudlet ${data[fields.cloudletName]} deleted successfully` }
 }
@@ -285,10 +286,10 @@ export const streamCloudlet = (data) => {
     return { uuid: data.uuid, method: STREAM_CLOUDLET, data: requestData }
 }
 
-export const cloudletResourceQuota = (data) => {
+export const cloudletResourceQuota = (self, data) => {
     let cloudletresourcequotaprops = { platform_type: idFormatter.platformType(data[fields.platformType]) }
-    if (formatter.getOrganization()) {
-        cloudletresourcequotaprops['organization'] = formatter.getOrganization()
+    if (redux_org.nonAdminOrg(self)) {
+        cloudletresourcequotaprops['organization'] = redux_org.nonAdminOrg(self)
     }
     let requestData = {
         cloudletresourcequotaprops,

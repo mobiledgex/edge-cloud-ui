@@ -1,21 +1,27 @@
 import React from 'react'
+import { useSelector } from "react-redux";
 import * as constant from '../../constant'
 import { Icon, Popup } from 'semantic-ui-react';
 import { fields } from '../../services/model/format';
-import { Tooltip } from '@material-ui/core';
+import { IconButton, Tooltip } from '@material-ui/core';
 import { Button } from 'semantic-ui-react';
 import { labelFormatter } from '.';
+import { redux_org } from '../reduxData';
+
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 
 export const trusted = (key, data, isDetail) => {
     return labelFormatter.showYesNo(data[key.field])
 }
 
 export const Manage = (props) => {
-    const { loading, data } = props
+    const orgInfo = useSelector(state => state.organizationInfo.data)
+    const { data } = props
     const orgName = data[fields.organizationName]
-    let active = localStorage.selectOrg === data[fields.organizationName]
+    let active = redux_org.orgName(orgInfo) === data[fields.organizationName]
     return (
-        <Button loading={loading === orgName} basic size='mini' compact color={localStorage.selectOrg === orgName ? 'green' : 'grey'} className='row-button'>{active ? 'ACTIVE' : 'MANAGE'}</Button>
+        <Button basic size='mini' compact color={orgInfo && orgInfo[fields.organizationName] === orgName ? 'green' : 'grey'} className='row-button'>{active ? 'ACTIVE' : 'MANAGE'}</Button>
     )
 }
 
@@ -68,7 +74,7 @@ export const cloudletInfoState = (key, data, isDetail) => {
 
     return (
         isDetail ? state :
-            <Button disabled={true} basic size='mini' color={color} compact style={{ width: 90}}>
+            <Button disabled={true} basic size='mini' color={color} compact style={{ width: 90 }}>
                 <label>{state}</label>
             </Button>
     )
@@ -123,7 +129,7 @@ export const lock = (key, data, isDetail, callback) => {
     }
     else {
         return (
-            <Icon name={id === true ? 'lock' : 'lock open'} style={{ color: id === true ? '#6a6a6a' : 'rgba(136,221,0,.9)' }} onClick={() => callback(data)} />
+            <IconButton onClick={() => callback(data)} >{id === true ? <LockOutlinedIcon style={{ color: 'rgba(136,221,0,.9)' }} /> : <LockOpenOutlinedIcon style={{ color: '#6a6a6a' }} />}</IconButton>
         )
     }
 }

@@ -1,21 +1,16 @@
-import React from 'react'
 import { TableRow, TableCell} from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
-import { getUserRole } from '../../services/model/format';
 
-export const checkRole = (form) => {
+export const checkRole = (selectedRole, form) => {
     let roles = form.roles
     let visible = true
     if (roles) {
         visible = false
         form.detailView = false
-        for (let i = 0; i < roles.length; i++) {
-            let role = roles[i]
-            if (getUserRole().includes(role)) {
-                visible = true
-                form.detailView = true
-                break;
-            }
+        if(roles.includes(selectedRole))
+        {
+            visible = true
+            form.detailView = true
         }
     }
     return visible

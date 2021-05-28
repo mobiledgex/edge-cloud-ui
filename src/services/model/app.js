@@ -4,6 +4,7 @@ import * as constant from '../../constant'
 import { SHOW_APP, CREATE_APP, UPDATE_APP, DELETE_APP } from './endPointTypes'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
 import { labelFormatter, idFormatter } from '../../helper/formatter';
+import { redux_org } from '../../helper/reduxData'
 
 let fields = formatter.fields
 
@@ -119,9 +120,9 @@ export const getKey = (data, isCreate) => {
     })
 }
 
-export const showApps = (data) => {
-    let organization = formatter.getOrganization()
-    if (organization && formatter.isDeveloper()) {
+export const showApps = (self, data) => {
+    let organization = redux_org.orgName(self)
+    if (organization && redux_org.isDeveloper(self)) {
         {
             data.app = { key: { organization } }
         }
@@ -130,7 +131,7 @@ export const showApps = (data) => {
 }
 
 export const getAppList = async (self, data) => {
-    return await serverData.showDataFromServer(self, showApps(data))
+    return await serverData.showDataFromServer(self, showApps(self, data))
 }
 
 export const createApp = (data) => {
@@ -144,7 +145,7 @@ export const updateApp = async (self, data) => {
     return await serverData.sendRequest(self, request)
 }
 
-export const deleteApp = (data) => {
+export const deleteApp = (self, data) => {
     let requestData = getKey(data)
     return { uuid: data.uuid, method: DELETE_APP, data: requestData, success: `App ${data[fields.appName]} deleted successfully` }
 }

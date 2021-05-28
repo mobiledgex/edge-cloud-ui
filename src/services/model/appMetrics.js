@@ -1,7 +1,7 @@
 
 import * as formatter from './format'
 import { APP_INST_METRICS_ENDPOINT } from './endPointTypes'
-import { UNIT_BYTES, UNIT_PERCENTAGE, UNIT_FLOOR } from '../../sites/main/monitoring/helper/unitConvertor';
+import { UNIT_BYTES, UNIT_PERCENTAGE, UNIT_FLOOR } from '../../pages/main/monitoring/helper/unitConvertor';
 import { labelFormatter } from '../../helper/formatter';
 
 let fields = formatter.fields;

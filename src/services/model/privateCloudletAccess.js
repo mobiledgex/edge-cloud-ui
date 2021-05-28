@@ -1,4 +1,5 @@
 import { DEVELOPER, OPERATOR } from "../../constant"
+import { redux_org } from '../../helper/reduxData'
 import { CREATE_POOL_ACCESS_CONFIRMATION, CREATE_POOL_ACCESS_INVITATION, DELETE_POOL_ACCESS_CONFIRMATION, DELETE_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_CONFIRMATION, SHOW_POOL_ACCESS_GRANTED, SHOW_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_PENDING } from "./endPointTypes"
 import * as formatter from './format'
 
@@ -9,8 +10,8 @@ export const keys = () => ([
     { field: fields.poolName, serverField: 'CloudletPool', label: 'Pool Name', sortable: true, visible: true, filter: true, key: true },
     { field: fields.operatorOrg, serverField: 'CloudletPoolOrg', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
     { field: fields.developerOrg, serverField: 'Org', label: 'Developer', sortable: true, visible: true, key: true },
-    { field: fields.decision, serverField: 'Decision', label: 'Status', visible: true, format:true },
-    { field: fields.confirm, label: 'Accepted', detailView:false },
+    { field: fields.decision, serverField: 'Decision', label: 'Status', visible: true, format: true },
+    { field: fields.confirm, label: 'Accepted', detailView: false },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
@@ -31,27 +32,29 @@ export const createConfirmation = (data) => {
     return { method: CREATE_POOL_ACCESS_CONFIRMATION, data: getRequestData(data), success: 'Access Granted' }
 }
 
-export const showConfirmation = (data) => {
+export const showConfirmation = (self, data) => {
     data = data ? data : {}
-    if (formatter.getOrganization()) {
-        if (formatter.getUserRole().includes(DEVELOPER)) {
-            data['org'] = formatter.getOrganization()
+    let org = redux_org.nonAdminOrg(self)
+    if (org) {
+        if (redux_org.isDeveloper(self)) {
+            data['Org'] = org
         }
-        else if (formatter.getUserRole().includes(OPERATOR)) {
-            data['cloudletpoolorg'] = formatter.getOrganization()
+        else if (redux_org.isOperator(self)) {
+            data['CloudletPoolOrg'] = org
         }
     }
     return { method: SHOW_POOL_ACCESS_CONFIRMATION, data, keys: keys() }
 }
 
-export const showInvitation = (data) => {
+export const showInvitation = (self, data) => {
     data = data ? data : {}
-    if (formatter.getOrganization()) {
-        if (formatter.getUserRole().includes(DEVELOPER)) {
-            data['org'] = formatter.getOrganization()
+    let org = redux_org.nonAdminOrg(self)
+    if (org) {
+        if (redux_org.isDeveloper(self)) {
+            data['Org'] = org
         }
-        else if (formatter.getUserRole().includes(OPERATOR)) {
-            data['cloudletpoolorg'] = formatter.getOrganization()
+        else if (redux_org.isOperator(self)) {
+            data['CloudletPoolOrg'] = org
         }
     }
     return { method: SHOW_POOL_ACCESS_INVITATION, data, keys: keys() }
@@ -65,27 +68,29 @@ export const deleteInvitation = (data) => {
     return { method: DELETE_POOL_ACCESS_INVITATION, data: getRequestData(data), success: 'Invitation Removed' }
 }
 
-export const accessGranted = (data) => {
-    data = data ? data : {}
-    if (formatter.getOrganization()) {
-        if (formatter.getUserRole().includes(DEVELOPER)) {
-            data['org'] = formatter.getOrganization()
+export const accessGranted = (self, orgInfo) => {
+    let data = {}
+    let org = orgInfo[fields.organizationName]
+    if (org) {
+        if (orgInfo[fields.type] === DEVELOPER) {
+            data['Org'] = org
         }
-        else if (formatter.getUserRole().includes(OPERATOR)) {
-            data['cloudletpoolorg'] = formatter.getOrganization()
+        else if (orgInfo[fields.type] === OPERATOR) {
+            data['CloudletPoolOrg'] = org
         }
     }
     return { method: SHOW_POOL_ACCESS_GRANTED, data }
 }
 
-export const accessPending = (data) => {
+export const accessPending = (self, data) => {
     data = data ? data : {}
-    if (formatter.getOrganization()) {
-        if (formatter.getUserRole().includes(DEVELOPER)) {
-            data['org'] = formatter.getOrganization()
+    let org = redux_org.nonAdminOrg(self)
+    if (org) {
+        if (redux_org.isDeveloper(self)) {
+            data['Org'] = org
         }
-        else if (formatter.getUserRole().includes(OPERATOR)) {
-            data['cloudletpoolorg'] = formatter.getOrganization()
+        else if (redux_org.isOperator(self)) {
+            data['CloudletPoolOrg'] = org
         }
     }
     return { method: SHOW_POOL_ACCESS_PENDING, data }
@@ -119,7 +124,7 @@ export const multiDataRequest = (keys, mcList) => {
             confirmationList.forEach(confirmation => {
                 let exist = false
                 dataList.forEach(data => {
-                    if (data[fields.poolName] === confirmation[fields.poolName] && data[fields.developerOrg] === confirmation[fields.developerOrg] &&  data[fields.operatorOrg] === confirmation[fields.operatorOrg]) {
+                    if (data[fields.poolName] === confirmation[fields.poolName] && data[fields.developerOrg] === confirmation[fields.developerOrg] && data[fields.operatorOrg] === confirmation[fields.operatorOrg]) {
                         data.confirm = true
                         data.decision = confirmation[fields.decision]
                         exist = true
@@ -135,7 +140,7 @@ export const multiDataRequest = (keys, mcList) => {
     return dataList
 }
 
-const customData =(value)=>{
+const customData = (value) => {
     value[fields.decision] = value[fields.decision] ? value[fields.decision] : 'pending'
     return value
 }

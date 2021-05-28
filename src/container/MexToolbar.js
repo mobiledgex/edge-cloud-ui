@@ -1,5 +1,5 @@
 import React from 'react'
-import { isViewer } from '../services/model/format';
+import { connect } from 'react-redux';
 import { Toolbar, Input, InputAdornment, IconButton, Switch, makeStyles, Box, Menu, ListItem, ListItemText, Tooltip } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles';
 import SearchIcon from '@material-ui/icons/Search';
@@ -8,6 +8,7 @@ import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import SelectMenu from '../hoc/selectMenu/SelectMenu'
+import {redux_org} from '../helper/reduxData'
 
 export const REGION_ALL = 1;
 export const ACTION_REGION = 1
@@ -95,7 +96,7 @@ const MexToolbar = (props) => {
 
     /*Add Block*/
     const addForm = () => (
-        requestInfo.onAdd && (!isViewer() || requestInfo.viewerEdit) ?
+        requestInfo.onAdd && (!redux_org.isViewer(this) || requestInfo.viewerEdit) ?
             <Box order={5} >
                 <IconButton aria-label="new" style={{ marginTop: -3 }} className='buttonCreate' onClick={(e) => { props.onAction(ACTION_NEW) }}>
                     <AddIcon style={{ color: '#76ff03' }} />
@@ -223,4 +224,10 @@ const MexToolbar = (props) => {
     )
 }
 
-export default MexToolbar
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
+export default connect(mapStateToProps, null)(MexToolbar);
