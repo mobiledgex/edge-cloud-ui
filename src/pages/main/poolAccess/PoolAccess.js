@@ -74,7 +74,6 @@ class PoolAccessList extends React.Component {
             requestType: [showConfirmation, showInvitation],
             sortBy: [fields.poolName],
             isRegion: true,
-            selection: true,
             keys: this.keys,
             formatData: this.dataFormatter
         })
