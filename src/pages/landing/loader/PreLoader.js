@@ -22,7 +22,8 @@ class LogoLoader extends React.Component {
     loadMainPage = () => {
         if (this.count === 3) {
             this.props.handleLoadMain(true)
-            this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
+            let currentPage = this.props.location.state ? this.props.location.state.currentPage : undefined
+            this.props.history.push(currentPage ? currentPage : `/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
         }
     }
 

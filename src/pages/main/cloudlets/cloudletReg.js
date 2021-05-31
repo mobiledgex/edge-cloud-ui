@@ -79,7 +79,11 @@ class CloudletReg extends React.Component {
                 }
             }
             else if (form.field === fields.openRCData || form.field === fields.caCertdata) {
-                form.visible = currentForm.value === constant.PLATFORM_TYPE_OPEN_STACK ? true : false
+                form.visible = currentForm.value === constant.PLATFORM_TYPE_OPEN_STACK
+            }
+            else if (form.field === fields.vmPool) {
+                form.visible = currentForm.value === constant.PLATFORM_TYPE_VMPOOL
+                form.rules.required = currentForm.value === constant.PLATFORM_TYPE_VMPOOL
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -461,7 +465,7 @@ class CloudletReg extends React.Component {
                             form.options = [constant.IP_SUPPORT_DYNAMIC];
                             break;
                         case fields.platformType:
-                            form.options = [constant.PLATFORM_TYPE_OPEN_STACK, constant.PLATFORM_TYPE_VSPHERE, constant.PLATFORM_TYPE_VCD];
+                            form.options = [constant.PLATFORM_TYPE_OPEN_STACK, constant.PLATFORM_TYPE_VMPOOL, constant.PLATFORM_TYPE_VSPHERE, constant.PLATFORM_TYPE_VCD];
                             break;
                         case fields.maintenanceState:
                             form.options = [constant.MAINTENANCE_STATE_NORMAL_OPERATION, constant.MAINTENANCE_STATE_MAINTENANCE_START, constant.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER];
@@ -627,6 +631,7 @@ class CloudletReg extends React.Component {
             { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, update: { id: ['8'] }, tip: 'Number of dynamic IPs available for dynamic IP support.' },
             { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, tip: 'Physical infrastructure cloudlet name.' },
             { field: fields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', rules: { required: true }, visible: true, tip: 'Supported list of cloudlet types.' },
+            { field: fields.vmPool, label: 'VM Pool', formType: INPUT, placeholder: 'Enter Pool Name', rules: { required: false }, visible: false, tip: 'VM Pool' },
             { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...' },
             { field: fields.caCertdata, label: 'CACert Data', formType: TEXT_AREA, placeholder: 'Enter CACert Data', rules: { required: false }, visible: false, tip: 'CAcert data for HTTPS based verfication of auth URL' },
             { field: fields.infraApiAccess, label: 'Infra API Access', formType: SELECT, placeholder: 'Select Infra API Access', rules: { required: true }, visible: true, tip: 'Infra Access Type is the type of access available to Infra API Endpoint\n* Direct: Infra API endpoint is accessible from public network\n* Restricted: Infra API endpoint is not accessible from public network' },
