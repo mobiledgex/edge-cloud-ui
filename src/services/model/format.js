@@ -31,6 +31,7 @@ export const fields = {
     numDynamicIPs: 'numDynamicIPs',
     physicalName: 'physicalName',
     platformType: 'platformType',
+    vmPool:'vmPool',
     type: 'type',
     firstName: 'firstName',
     lastName: 'lastName',
