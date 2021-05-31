@@ -43,7 +43,10 @@ class Main extends React.Component {
 
     loadInitData = async () => {
         if (!this.props.loadMain) {
-            this.props.history.push('/preloader')
+            this.props.history.push({
+                pathname: '/preloader',
+                state: { currentPage: this.props.location.pathname }
+            });
         }
     }
 
