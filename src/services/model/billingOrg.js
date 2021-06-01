@@ -1,4 +1,4 @@
-import { SHOW_BILLING_ORG, CREATE_BILLING_ORG, DELETE_BILLING_ORG, BILLING_ORG_ADD_CHILD, BILLING_ORG_REMOVE_CHILD } from './endPointTypes'
+import { SHOW_BILLING_ORG, CREATE_BILLING_ORG, DELETE_BILLING_ORG, BILLING_ORG_ADD_CHILD, BILLING_ORG_REMOVE_CHILD, UPDATE_BILLING_ORG } from './endPointTypes'
 import * as serverData from './serverData'
 import * as formatter from './format'
 import { ADMIN_MANAGER, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR, TYPE_DATE, DEVELOPER_MANAGER } from '../../constant'
@@ -27,11 +27,13 @@ export const keys = () => (
     ]
 )
 
-const getRequestData = (data, edit) => {
+const getRequestData = (data, edit, isAdd) => {
     let billingOrg = {}
     billingOrg.name = data[fields.organizationName] ? data[fields.organizationName] : data[fields.name]
     if (edit) {
-        billingOrg.type = data[fields.type].toLowerCase()
+        if (isAdd) {
+            billingOrg.type = data[fields.type]
+        }
         billingOrg.firstname = data[fields.firstName]
         billingOrg.lastname = data[fields.lastName]
 
@@ -65,8 +67,14 @@ export const showBillingOrg = (self, data) => {
 }
 
 export const createBillingOrg = async (self, data) => {
-    let requestData = getRequestData(data, true)
+    let requestData = getRequestData(data, true, true)
     let request = { method: CREATE_BILLING_ORG, data: requestData }
+    return await serverData.sendRequest(self, request)
+}
+
+export const updateBillingOrg = async (self, data) => {
+    let requestData = getRequestData(data, true)
+    let request = { method: UPDATE_BILLING_ORG, data: requestData }
     return await serverData.sendRequest(self, request)
 }
 

@@ -7,9 +7,9 @@ import { Grid } from '@material-ui/core'
 import { fields } from '../../../../services/model/format';
 import { redux_org } from '../../../../helper/reduxData'
 import { DEVELOPER } from '../../../../constant';
-import { ACTION_BILLING_REMOVE_CHILD, ACTION_BILLING_ADD_CHILD } from '../../../../constant/actions';
+import { ACTION_BILLING_REMOVE_CHILD, ACTION_BILLING_ADD_CHILD, ACTION_UPDATE } from '../../../../constant/actions';
 import { resetFormValue } from '../../../../hoc/forms/helper/constant';
-import { createBillingOrg, addBillingChild, removeBillingChild } from '../../../../services/model/billingOrg';
+import { createBillingOrg, updateBillingOrg, addBillingChild, removeBillingChild } from '../../../../services/model/billingOrg';
 import { getOrganizationList } from '../../../../services/model/organization';
 import { BILLING_TYPE_PARENT, BILLING_TYPE_SELF } from '../../../../constant';
 import * as serverData from '../../../../services/model/serverData';
@@ -21,28 +21,28 @@ class BillingOrgReg extends React.Component {
             forms: []
         }
         this._isMounted = false;
-        this.isUpdate = false
         this.organizationList = []
         this.billingOrgList = []
         this.actionId = props.action
+        this.isUpdate = this.actionId === ACTION_UPDATE
         this.orgData = this.props.data
     }
 
     formKeys = () => {
         return [
             { label: 'Create Billing Org', formType: MAIN_HEADER, visible: true },
-            { field: fields.type, label: 'Type', formType: SELECT, placeholder: 'Select Type', rules: { required: true }, visible: true, tip: 'Billing type self or group' },
+            { field: fields.type, label: 'Type', formType: SELECT, placeholder: 'Select Type', rules: { required: true, firstCaps: true }, visible: true, tip: 'Billing type self or group' },
             { field: fields.name, label: 'Name', formType: INPUT, placeholder: 'Enter Billing Group Name', rules: { required: true }, visible: false, tip: 'Billing group name' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, visible: false, value: redux_org.nonAdminOrg(this) },
-            { field: fields.firstName, label: 'First Name', formType: INPUT, placeholder: 'Enter First Name', rules: { required: true }, visible: true, tip: 'First name' },
-            { field: fields.lastName, label: 'Last Name', formType: INPUT, placeholder: 'Enter Last Name', rules: { required: true }, visible: true, tip: 'Last name' },
-            { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true }, visible: true, tip: 'Email address' },
-            { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: false }, visible: true, tip: 'Address' },
-            { field: fields.country, label: 'Country', formType: INPUT, placeholder: 'Enter Country', rules: { required: false }, visible: true, tip: 'Country' },
-            { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter State', rules: { required: false }, visible: true, tip: 'State' },
-            { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City', rules: { required: false }, visible: true, tip: 'City' },
-            { field: fields.postalCode, label: 'Postal Code', formType: INPUT, placeholder: 'Enter Postal Code', rules: { required: false }, visible: true, tip: 'Postal code' },
-            { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: false }, visible: true, tip: 'Phone number' },
+            { field: fields.firstName, label: 'First Name', formType: INPUT, placeholder: 'Enter First Name', rules: { required: true }, update: { edit: true }, visible: true, tip: 'First name' },
+            { field: fields.lastName, label: 'Last Name', formType: INPUT, placeholder: 'Enter Last Name', rules: { required: true }, update: { edit: true }, visible: true, tip: 'Last name' },
+            { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true }, visible: true, update: { edit: true }, tip: 'Email address' },
+            { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: false }, update: { edit: true }, visible: true, tip: 'Address' },
+            { field: fields.country, label: 'Country', formType: INPUT, placeholder: 'Enter Country', rules: { required: false }, update: { edit: true }, visible: true, tip: 'Country' },
+            { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter State', rules: { required: false }, update: { edit: true }, visible: true, tip: 'State' },
+            { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City', rules: { required: false }, update: { edit: true }, visible: true, tip: 'City' },
+            { field: fields.postalCode, label: 'Postal Code', formType: INPUT, placeholder: 'Enter Postal Code', rules: { required: false }, visible: true, update: { edit: true }, tip: 'Postal code' },
+            { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: false }, visible: true, update: { edit: true }, tip: 'Phone number' },
         ]
     }
 
@@ -122,13 +122,12 @@ class BillingOrgReg extends React.Component {
             if (requestList.length > 0) {
                 serverData.sendMultiRequest(this, requestList, this.childResponse)
             }
-            // let mc = await addBillingChild(this, data)
         }
         else {
-            let mc = await createBillingOrg(this, data)
+            let mc = this.isUpdate ? await updateBillingOrg(this, data) : await createBillingOrg(this, data)
             if (mc && mc.response && mc.response.status === 200) {
                 let isParent = data[fields.type] === BILLING_TYPE_PARENT
-                this.props.handleAlertInfo('success', `Billing  ${isParent ? 'group' : 'org'} ${isParent ? data[fields.name] : data[fields.organizationName]} created successfully`)
+                this.props.handleAlertInfo('success', `Billing  ${isParent ? 'group' : 'org'} ${isParent ? data[fields.name] : data[fields.organizationName]} ${this.isUpdate ? 'update' : 'created'} successfully`)
                 this.props.onClose(true)
             }
         }
@@ -136,7 +135,7 @@ class BillingOrgReg extends React.Component {
 
 
     render() {
-        const { loading, forms } = this.state
+        const { forms } = this.state
         return (
             <div>
                 <div className="round_panel">
@@ -206,22 +205,60 @@ class BillingOrgReg extends React.Component {
         return optionList
     }
 
+    loadDefaultData = async (forms, data) => {
+        let organization = {}
+        organization[fields.organizationName] = data[fields.name];
+        this.organizationList = [organization]
+    }
+
+    actionLabel = () => {
+        let label = 'Create'
+        switch (this.actionId) {
+            case ACTION_BILLING_ADD_CHILD:
+                label = 'Add'
+                break;
+            case ACTION_BILLING_REMOVE_CHILD:
+                label = 'Remove'
+                break;
+            case ACTION_UPDATE:
+                label = 'Update'
+                break;
+            default:
+                label = 'Create'
+        }
+        return label
+    }
+
     getFormData = async (data) => {
         let forms = []
-        this.organizationList = await getOrganizationList(this)
 
-        forms = data ? this.formChildKeys() : this.formKeys()
-        
-        let createLabel = this.actionId ? this.actionId === ACTION_BILLING_ADD_CHILD ? 'Add' : 'Remove' : this.isUpdate ? 'Update' : 'Create'
+        if (data) {
+            if (this.isUpdate) {
+                forms = this.formKeys()
+                await this.loadDefaultData(forms, data)
+            }
+            else {
+                this.organizationList = await getOrganizationList(this)
+                forms = this.formChildKeys()
+            }
+        }
+        else {
+            this.organizationList = await getOrganizationList(this)
+            forms = this.formKeys()
+        }
+
         forms.push(
-            { label: createLabel, formType: BUTTON, onClick: this.onCreate, validate: true },
+            { label: this.actionLabel(), formType: BUTTON, onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: BUTTON, onClick: this.onAddCancel })
 
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             this.updateUI(form)
             if (data) {
-                form.value = data[form.field]
+                if (form.field === fields.organizationName) {
+                    form.value = data[fields.name]
+                }
+                form.value = data[form.field] ? data[form.field] : form.value
                 this.checkForms(form, forms, true)
             }
         }

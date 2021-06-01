@@ -151,8 +151,8 @@ export const PAGE_ALERTS = 'AlertReceivers'
 export const PAGE_BILLING_ORG = 'BillingOrg'
 export const PAGE_INVOICES = 'Invoices'
 
-export const BILLING_TYPE_SELF = 'Self'
-export const BILLING_TYPE_PARENT = 'Parent'
+export const BILLING_TYPE_SELF = 'self'
+export const BILLING_TYPE_PARENT = 'parent'
 export const CLOUDLET_STATUS_READY = 2
 export const CLOUDLET_STATUS_UNKNOWN = 0
 
