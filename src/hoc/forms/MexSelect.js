@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { Popup, Icon, Dropdown } from 'semantic-ui-react';
+import { toFirstUpperCase } from '../../constant';
 
 
 const MexSelect = (props) => {
@@ -70,12 +71,13 @@ const MexSelect = (props) => {
     const getData = (form) => {
         let rules = form.rules
         let allCaps = rules ? rules.allCaps ? rules.allCaps : false : false
+        let firstCaps = rules ? rules.firstCaps ? rules.firstCaps : false : false
         let optionList = []
         let dataList = getFilteredData(form)
         if (dataList && dataList.length > 0) {
             optionList = dataList.map(data => {
                 let info = data[form.field] ? data[form.field] : data
-                return { key: info, value: info, text: allCaps ? info.toUpperCase() : info }
+                return { key: info, value: info, text: allCaps ? info.toUpperCase() : firstCaps ? toFirstUpperCase(info) : info }
             })
         }
         return optionList
