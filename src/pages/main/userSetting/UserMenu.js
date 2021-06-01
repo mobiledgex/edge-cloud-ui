@@ -62,7 +62,7 @@ class UserMenu extends React.Component {
                     <Profile onClose={this.handleClose} userInfo={userInfo} updateUserInfo={this.updateUserInfo} />
                     {redux_org.isAdmin(this) || redux_org.nonAdminOrg(this) ? <Preferences close={this.handleClose} /> : null}
                     <UpdatePassword close={this.handleClose} dialog={true} />
-                    <Billing onClose={this.handleClose}/>
+                    {redux_org.isDeveloperManager(this) ? <Billing onClose={this.handleClose}/> : null}
                     <MenuItem onClick={() => this.logout()}>
                         <ExitToAppOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                         <ListItemText primary="Logout" />

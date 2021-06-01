@@ -177,7 +177,7 @@ export const pages = [
     },
     { label: 'Monitoring', icon: 'tv', id: PAGE_MONITORING, path: 'monitoring', visible: true },
     { label: 'Alert Receivers', icon: 'notification_important', id: PAGE_ALERTS, path: 'alerts', visible: true },
-    { label: 'Billing', icon: 'payment', id: PAGE_BILLING_ORG, path: 'billing-org', roles: [ADMIN, DEVELOPER_MANAGER], visible: true },
+    { label: 'Billing', icon: 'payment', id: PAGE_BILLING_ORG, path: 'billing-org', roles: [ADMIN], visible: true },
     { label: 'Invoices', icon: 'payment', id: PAGE_INVOICES, path: 'invoices', roles: [DEVELOPER_MANAGER] },
 ]
 

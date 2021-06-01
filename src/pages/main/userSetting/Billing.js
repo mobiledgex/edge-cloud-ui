@@ -1,14 +1,18 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import * as actions from '../../../actions';
 import { Button, Dialog, DialogActions, DialogTitle, IconButton, List, ListItem, ListItemText, MenuItem, Switch, Tooltip } from '@material-ui/core';
 import { FORMAT_FULL_DATE_TIME, time } from '../../../utils/date_util'
 import { sendRequest } from '../../../services/model/serverData';
 import { showBillingOrg, keys } from '../../../services/model/billingOrg';
-import * as dateUtil from '../../../utils/date_util'
 import LinearProgress from '@material-ui/core/LinearProgress';
-import ReceiptOutlinedIcon from '@material-ui/icons/ReceiptOutlined';
+import PaymentOutlinedIcon from '@material-ui/icons/PaymentOutlined';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import { fields } from '../../../services/model/format';
-import { withRouter } from 'react-router';
+import { equal } from '../../../constant/compare';
+import { redux_org } from '../../../helper/reduxData';
+import cloneDeep from 'lodash/cloneDeep';
 
 const orgKeys = [
     { field: fields.name, label: 'Billing Org' },
@@ -18,7 +22,7 @@ const orgKeys = [
     { field: fields.createdAt, label: 'Created Date' },
 ]
 
-class Profile extends React.Component {
+class Billing extends React.Component {
     constructor(props) {
         super(props);
 
@@ -33,7 +37,14 @@ class Profile extends React.Component {
     }
 
     handleOpen = () => {
-        this.setState({ open: true })
+        if(this.state.billingOrg)
+        {
+            this.setState({ open: true })
+        }
+        else
+        {
+            this.props.handleAlertInfo('error', 'Billing info not found') 
+        }
         this.props.onClose()
     }
 
@@ -75,7 +86,7 @@ class Profile extends React.Component {
         return (
             <React.Fragment>
                 <MenuItem onClick={this.handleOpen}>
-                    <ReceiptOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
+                    <PaymentOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                     <ListItemText primary="Billing" />
                 </MenuItem>
                 {billingOrg ? <Dialog open={open} onClose={this.handleClose} aria-labelledby="billing" disableEscapeKeyDown={true} disableBackdropClick={true}>
@@ -105,12 +116,31 @@ class Profile extends React.Component {
         )
     }
 
+    setManagedOrg = () => {
+        this.setState({ billingOrg: undefined }, () => {
+            if (redux_org.nonAdminOrg(this) && this.billingOrgList) {
+                this.billingOrgList.map(billingOrg => {
+                    if (redux_org.nonAdminOrg(this) === billingOrg[fields.name]) {
+                        let data = cloneDeep(billingOrg)
+                        data[fields.createdAt] = time(FORMAT_FULL_DATE_TIME, data[fields.createdAt])
+                        this.setState({ billingOrg: data })
+                    }
+                })
+            }
+        })
+    }
+
+    componentDidUpdate(preProps, preState) {
+        if (!equal(preProps.organizationInfo, this.props.organizationInfo)) {
+            this.setManagedOrg()
+        }
+    }
+
     fetchBillingOrg = async () => {
         let mc = await sendRequest(this, showBillingOrg(this))
         if (mc && mc.response && mc.response.status === 200) {
-            let data = mc.response.data[0]
-            data[fields.createdAt] = time(FORMAT_FULL_DATE_TIME, data[fields.createdAt])
-            this.setState({ billingOrg: data })
+            this.billingOrgList = mc.response.data
+            this.setManagedOrg()
         }
     }
 
@@ -119,4 +149,15 @@ class Profile extends React.Component {
     }
 }
 
-export default withRouter(Profile);
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+    };
+};
+
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(Billing));

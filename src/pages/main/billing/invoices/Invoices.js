@@ -8,6 +8,7 @@ import { fields } from '../../../../services/model/format';
 import { showInvoices, keys } from '../../../../services/model/invoices'
 import { withRouter } from 'react-router';
 import { redux_org } from '../../../../helper/reduxData';
+import { connect } from 'react-redux';
 
 const Invoice = lazy(() => import('./Invoice'));
 class Invoices extends React.Component {
@@ -85,4 +86,10 @@ class Invoices extends React.Component {
     }
 }
 
-export default withRouter(Invoices)
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
+export default withRouter(connect(mapStateToProps, null)(Invoices));
