@@ -21,8 +21,8 @@ export const keys = () => (
         { field: fields.postalCode, serverField: 'PostalCode', label: 'Postal Code', sortable: true, visible: false },
         { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: false },
         { field: fields.children, serverField: 'Children', label: 'Children', sortable: true, visible: false },
-        { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-        { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+        { field: fields.createdAt, serverField: 'CreatedAt', label: 'Created', dataType: TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+        { field: fields.updatedAt, serverField: 'UpdatedAt', label: 'Updated', dataType: TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
         { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: [ADMIN_MANAGER, DEVELOPER_MANAGER ] }
     ]
 )

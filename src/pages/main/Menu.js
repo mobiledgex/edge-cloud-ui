@@ -20,6 +20,7 @@ import AutoScalePolicy from './policies/autoScalePolicy/autoScalePolicyList';
 import Monitoring from './monitoring/Monitoring';
 import AlertReceiver from './notifications/alerts/receiver/AlertReceiver';
 import BillingOrg from './billing/billingOrg/BillingOrgList';
+import Invoices from './billing/invoices/Invoices';
 
 import * as constant from '../../constant';
 import { validateRole } from '../../constant/role';
@@ -58,6 +59,8 @@ const renderPage = (id) => {
             return BillingOrg
         case constant.PAGE_POOL_ACCESS:
             return PoolAccess
+        case constant.PAGE_INVOICES:
+            return Invoices
     }
 }
 

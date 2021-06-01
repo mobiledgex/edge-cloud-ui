@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import Profile from './Profile';
+import Billing from './Billing';
 import UpdatePassword from './UpdatePassword';
 import Preferences from './preferences/preferences';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
@@ -58,9 +59,10 @@ class UserMenu extends React.Component {
                     open={Boolean(anchorEl)}
                     onClose={this.handleClose}
                 >
-                    <Profile onClose={this.handleClose} userInfo={userInfo} updateUserInfo={this.updateUserInfo}/>
+                    <Profile onClose={this.handleClose} userInfo={userInfo} updateUserInfo={this.updateUserInfo} />
                     {redux_org.isAdmin(this) || redux_org.nonAdminOrg(this) ? <Preferences close={this.handleClose} /> : null}
                     <UpdatePassword close={this.handleClose} dialog={true} />
+                    {redux_org.isDeveloperManager(this) ? <Billing onClose={this.handleClose}/> : null}
                     <MenuItem onClick={() => this.logout()}>
                         <ExitToAppOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                         <ListItemText primary="Logout" />

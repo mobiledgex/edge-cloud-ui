@@ -1,4 +1,4 @@
-import { ADMIN, DEVELOPER, OPERATOR } from "../../constant"
+import { ADMIN, DEVELOPER, DEVELOPER_MANAGER, OPERATOR } from "../../constant"
 import { fields } from "../../services/model/format"
 
 const getObject = (self) => {
@@ -15,6 +15,14 @@ export const isAdmin = (self) => {
     let info = getObject(self)
     if (info) {
         return info.type === ADMIN
+    }
+    return false
+}
+
+export const isDeveloperManager = (self) => {
+    let info = getObject(self)
+    if (info) {
+        return info.role === DEVELOPER_MANAGER
     }
     return false
 }

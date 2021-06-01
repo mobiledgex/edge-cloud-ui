@@ -46,7 +46,7 @@ class Invoice extends React.Component {
             <div >
                 {sellerInfo.map((form, i) => (
                     form.header ?
-                        <img id='company_logo' src='/assets/brand/logo_small.png' alt="MobiledgeX" /> :
+                        <img key={i} id='company_logo' src='/assets/brand/logo_small.png' alt="MobiledgeX" /> :
                         <p key={i}>{info[form.field]}</p>
                 ))}
             </div>

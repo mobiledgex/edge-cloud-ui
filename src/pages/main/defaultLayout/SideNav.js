@@ -163,7 +163,7 @@ const Options = (props) => {
     return (
         <List component={sub ? 'div' : 'nav'} disablePadding={sub}>
             {options.map((item, i) => (
-                <React.Fragment key={i}>
+                item.visible ? <React.Fragment key={i}>
                     {
                         item.divider ?
                             <Divider /> :
@@ -177,7 +177,7 @@ const Options = (props) => {
                                     </Collapse> : null}
                             </React.Fragment> : null
                     }
-                </React.Fragment>
+                </React.Fragment> : null
             ))
             }
         </List >
