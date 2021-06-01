@@ -1,18 +1,22 @@
 import React, { lazy, Suspense } from 'react'
 import LogoSpinner from '../../../../hoc/loader/LogoSpinner'
-import { PAGE_INVOICES } from '../../../../constant';
+import { PAGE_INVOICES, PAGE_ORGANIZATIONS } from '../../../../constant';
 
 import DataView from '../../../../container/DataView';
 import { fields } from '../../../../services/model/format';
 
 import { showInvoices, keys } from '../../../../services/model/invoices'
+import { withRouter } from 'react-router';
+import { redux_org } from '../../../../helper/reduxData';
+import { connect } from 'react-redux';
 
 const Invoice = lazy(() => import('./Invoice'));
 class Invoices extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            invoice: undefined
+            invoice: undefined,
+            billingOrg: undefined
         }
         this._isMounted = false
         this.keys = keys()
@@ -43,10 +47,10 @@ class Invoices extends React.Component {
     }
 
     requestInfo = () => {
-        const { data } = this.props
+        const { billingOrg } = this.state
         return ({
             id: PAGE_INVOICES,
-            headerLabel: `Invoices - ${data[fields.name]}`,
+            headerLabel: redux_org.isAdmin(this) ? `Invoices - ${billingOrg[fields.name]}` : 'Invoices',
             nameField: fields.name,
             requestType: [showInvoices],
             sortBy: [fields.name],
@@ -54,24 +58,26 @@ class Invoices extends React.Component {
             keys: this.keys,
             onAdd: undefined,
             grouping: false,
-            filter: { name: data[fields.name] },
-            back: this.onBackClick
+            filter: { name: billingOrg[fields.name] },
+            back: redux_org.isAdmin(this) ? this.onBackClick : null
         })
     }
 
     render() {
-        const { invoice } = this.state
+        const { invoice, billingOrg } = this.state
         return (
-            <React.Fragment>
+            billingOrg ? <React.Fragment>
                 <DataView id={PAGE_INVOICES} actionMenu={this.actionMenu} requestInfo={this.requestInfo} />
-                <Suspense fallback={<LogoSpinner/>}>
+                <Suspense fallback={<LogoSpinner />}>
                     <Invoice data={invoice} close={this.onClose} />
                 </Suspense>
-            </React.Fragment>
+            </React.Fragment> : null
         )
     }
 
     componentDidMount() {
+        let billingOrg = this.props.data ? this.props.data : this.props.location.state ? this.props.location.state.data : undefined
+        billingOrg ? this.setState({ billingOrg }) : this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
         this._isMounted = true
     }
 
@@ -80,4 +86,10 @@ class Invoices extends React.Component {
     }
 }
 
-export default Invoices
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
+export default withRouter(connect(mapStateToProps, null)(Invoices));

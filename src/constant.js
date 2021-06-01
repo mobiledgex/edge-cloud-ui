@@ -157,27 +157,28 @@ export const CLOUDLET_STATUS_READY = 2
 export const CLOUDLET_STATUS_UNKNOWN = 0
 
 export const pages = [
-    { label: 'Organizations', icon: 'supervisor_account', id: PAGE_ORGANIZATIONS, path: 'organizations' },
-    { label: 'Users & Roles', icon: 'assignment_ind', id: PAGE_USER_ROLES, path: 'user-roles' },
-    { label: 'Accounts', icon: 'dvr', id: PAGE_ACCOUNTS, path: 'accounts', roles: [ADMIN] },
+    { label: 'Organizations', icon: 'supervisor_account', id: PAGE_ORGANIZATIONS, path: 'organizations', visible: true },
+    { label: 'Users & Roles', icon: 'assignment_ind', id: PAGE_USER_ROLES, path: 'user-roles', visible: true },
+    { label: 'Accounts', icon: 'dvr', id: PAGE_ACCOUNTS, path: 'accounts', roles: [ADMIN], visible: true },
     { divider: true },
-    { label: 'Cloudlets', icon: 'cloud_queue', id: PAGE_CLOUDLETS, path: 'cloudlets' },
-    { label: 'Cloudlet Pools', icon: 'cloud_circle', id: PAGE_CLOUDLET_POOLS, path: 'cloudlet-pools', roles: [ADMIN, OPERATOR] },
-    { label: 'Cloudlet Pools', icon: 'cloud_circle', id: PAGE_POOL_ACCESS, path: 'pool-access', roles: [DEVELOPER_MANAGER] },
-    { label: 'Flavors', icon: 'free_breakfast', id: PAGE_FLAVORS, path: 'flavors', roles: [ADMIN, DEVELOPER] },
-    { label: 'Cluster Instances', icon: 'storage', id: PAGE_CLUSTER_INSTANCES, path: 'cluster-insts', roles: [ADMIN, DEVELOPER, OPERATOR] },
-    { label: 'Apps', icon: 'apps', id: PAGE_APPS, path: 'apps', roles: [ADMIN, DEVELOPER] },
-    { label: 'App Instances', icon: 'games', id: PAGE_APP_INSTANCES, path: 'app-insts', roles: [ADMIN, DEVELOPER, OPERATOR] },
+    { label: 'Cloudlets', icon: 'cloud_queue', id: PAGE_CLOUDLETS, path: 'cloudlets', visible: true },
+    { label: 'Cloudlet Pools', icon: 'cloud_circle', id: PAGE_CLOUDLET_POOLS, path: 'cloudlet-pools', roles: [ADMIN, OPERATOR], visible: true },
+    { label: 'Cloudlet Pools', icon: 'cloud_circle', id: PAGE_POOL_ACCESS, path: 'pool-access', roles: [DEVELOPER_MANAGER], visible: true },
+    { label: 'Flavors', icon: 'free_breakfast', id: PAGE_FLAVORS, path: 'flavors', roles: [ADMIN, DEVELOPER], visible: true },
+    { label: 'Cluster Instances', icon: 'storage', id: PAGE_CLUSTER_INSTANCES, path: 'cluster-insts', roles: [ADMIN, DEVELOPER, OPERATOR], visible: true },
+    { label: 'Apps', icon: 'apps', id: PAGE_APPS, path: 'apps', roles: [ADMIN, DEVELOPER], visible: true },
+    { label: 'App Instances', icon: 'games', id: PAGE_APP_INSTANCES, path: 'app-insts', roles: [ADMIN, DEVELOPER, OPERATOR], visible: true },
     {
-        label: 'Policies', icon: 'track_changes', id: PAGE_POLICIES, sub: true, options: [
-            { label: 'Auto Provisioning Policy', icon: 'group_work', id: PAGE_AUTO_PROVISIONING_POLICY, path: 'auto-prov-policy', roles: [ADMIN, DEVELOPER] },
-            { label: 'Trust Policy', icon: 'policy', id: PAGE_TRUST_POLICY, path: 'trust-policy' },
-            { label: 'Auto Scale Policy', icon: 'landscape', id: PAGE_AUTO_SCALE_POLICY, path: 'auto-scale-policy', roles: [ADMIN, DEVELOPER] },
+        label: 'Policies', icon: 'track_changes', id: PAGE_POLICIES, sub: true, visible: true, options: [
+            { label: 'Auto Provisioning Policy', icon: 'group_work', id: PAGE_AUTO_PROVISIONING_POLICY, path: 'auto-prov-policy', roles: [ADMIN, DEVELOPER], visible: true },
+            { label: 'Trust Policy', icon: 'policy', id: PAGE_TRUST_POLICY, path: 'trust-policy', visible: true },
+            { label: 'Auto Scale Policy', icon: 'landscape', id: PAGE_AUTO_SCALE_POLICY, path: 'auto-scale-policy', roles: [ADMIN, DEVELOPER], visible: true },
         ]
     },
-    { label: 'Monitoring', icon: 'tv', id: PAGE_MONITORING, path: 'monitoring' },
-    { label: 'Alert Receivers', icon: 'notification_important', id: PAGE_ALERTS, path: 'alerts' },
-    { label: 'Billing', icon: 'payment', id: PAGE_BILLING_ORG, path: 'billing-org', roles: [ADMIN, DEVELOPER_MANAGER] },
+    { label: 'Monitoring', icon: 'tv', id: PAGE_MONITORING, path: 'monitoring', visible: true },
+    { label: 'Alert Receivers', icon: 'notification_important', id: PAGE_ALERTS, path: 'alerts', visible: true },
+    { label: 'Billing', icon: 'payment', id: PAGE_BILLING_ORG, path: 'billing-org', roles: [ADMIN], visible: true },
+    { label: 'Invoices', icon: 'payment', id: PAGE_INVOICES, path: 'invoices', roles: [DEVELOPER_MANAGER] },
 ]
 
 export const getHeight = (height) => {
