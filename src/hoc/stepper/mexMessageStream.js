@@ -78,47 +78,38 @@ class VerticalStepper extends React.Component {
         this.body = React.createRef()
     }
 
-    requestLastResponse = (data) => {
-        if (this.props.uuid === 0) {
-            let type = 'error'
-            if (data.code === 200) {
-                type = 'success'
-            }
-        }
-    }
-
-    requestResponse = (mcRequest) => {
-        let request = mcRequest.request;
+    requestResponse = (mc) => {
+        let request = mc.request;
         let responseData = null;
         let stepsList = cloneDeep(this.state.stepsArray);
         if (stepsList && stepsList.length > 0) {
             stepsList = stepsList.filter((item) => {
                 if (request.uuid === item.uuid) {
-                    if (mcRequest.response) {
+                    if (mc.response) {
                         responseData = item;
-                        return item
+                        return true
                     }
                     else {
-                        if (item.steps && item.steps.length > 1) {
-                            this.requestLastResponse(item.steps[item.steps.length - 1]);
+                        let steps = item.steps
+                        let lastStep = steps[steps.length - 1]
+                        if (steps.length >= 1 && steps[0].code === 200) {
+                            if (lastStep.code === 200) {
+                                item.steps.push({ code: CODE_FINISH })
+                                this.props.dataFromServer(request)
+                            }
                         }
-                        if (item.steps.length >= 1 && item.steps[0].code === 200) {
-                            item.steps.push({ code: CODE_FINISH })
-                            this.props.dataFromServer(request)
+                        if (lastStep.code === 200) {
+                            return this.props.uuid !== 0
                         }
-
-                        if (this.props.uuid !== 0) {
-                            return item
-                        }
+                        return true
                     }
                 }
-                return item
+                return true
             })
-
         }
 
-       if (mcRequest.response) {
-            let response = mcRequest.response.data
+       if (mc.response) {
+            let response = mc.response.data
             let step = { code: response.code, message: response.data.message }
             if (responseData === null) {
                 stepsList.push({ uuid: request.uuid, steps: [step] })
@@ -131,6 +122,7 @@ class VerticalStepper extends React.Component {
                 })
             }
         }
+
         if(this._isMounted)
         {
             this.setState({ stepsArray: stepsList })
