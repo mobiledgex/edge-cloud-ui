@@ -185,7 +185,7 @@ export const pages = [
     { label: 'Alert Receivers', icon: 'notification_important', id: PAGE_ALERTS, path: 'alerts', visible: true },
     { label: 'Billing', icon: 'payment', id: PAGE_BILLING_ORG, path: 'billing-org', roles: [ADMIN], visible: true },
     { label: 'Invoices', icon: 'payment', id: PAGE_INVOICES, path: 'invoices', roles: [DEVELOPER_MANAGER] },
-    { label: 'Reporter', icon: 'assessment', id: PAGE_REPORTER, path: 'reporter', roles: [ADMIN], visible: true },
+    // { label: 'Reporter', icon: 'assessment', id: PAGE_REPORTER, path: 'reporter', roles: [ADMIN], visible: true },
 ]
 
 export const getHeight = (height) => {
