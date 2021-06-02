@@ -40,12 +40,13 @@ export const convertToUnix = (date) => {
     return moment(date).unix()
 }
 
-export const convertToTimezone = (date) => {
-    return date ? moment.tz(date, timezonePref()) : moment.tz(timezonePref())
+export const convertToTimezone = (date, timezoneName) => {
+    const timezone = timezoneName ? timezoneName : timezonePref()
+    return date ? moment.tz(date, timezone) : moment.tz(timezone)
 }
 
-export const time = (format, date) => {
-    return convertToTimezone(date).format(format)
+export const time = (format, date, timezoneName) => {
+    return convertToTimezone(date, timezoneName).format(format)
 }
 
 export const unixTime = (format, date) => {
