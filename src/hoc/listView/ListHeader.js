@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { TableHead, TableRow, Checkbox, TableSortLabel, TableCell, makeStyles } from '@material-ui/core';
 import { checkRole } from './ListConstant';
 import { useSelector } from 'react-redux';
-import { redux_org } from '../../helper/reduxData';
 
 const useStyles = makeStyles((theme) => ({
     visuallyHidden: {
@@ -46,7 +45,7 @@ const ListHead = (props) => {
                     />
                 </TableCell> : null}
                 {props.headCells.map((headCell) => {
-                    let roleVisible = checkRole(redux_org.role(orgInfo), headCell)
+                    let roleVisible = checkRole(orgInfo, headCell)
                     if (headCell.label === 'Actions' && headCell.visible && roleVisible) {
                         headCell.visible = props.actionMenuLength > 0
                     }

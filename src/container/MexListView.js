@@ -588,7 +588,8 @@ class MexListView extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        regions: state.regionInfo.region
+        regions: state.regionInfo.region,
+        organizationInfo: state.organizationInfo.data
     }
 };
 

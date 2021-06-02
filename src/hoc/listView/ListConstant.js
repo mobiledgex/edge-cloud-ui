@@ -1,13 +1,14 @@
 import { TableRow, TableCell} from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
+import { redux_org } from '../../helper/reduxData';
 
-export const checkRole = (selectedRole, form) => {
+export const checkRole = (selectedOrg, form) => {
     let roles = form.roles
     let visible = true
     if (roles) {
         visible = false
         form.detailView = false
-        if(roles.includes(selectedRole))
+        if(roles.includes(redux_org.role(selectedOrg)) || roles.includes(redux_org.roleType(selectedOrg)))
         {
             visible = true
             form.detailView = true
