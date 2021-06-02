@@ -92,7 +92,7 @@ class ClusterInstView extends React.Component {
             streamType: streamClusterInst,
             isRegion: true,
             isMap: true,
-            selection: true,
+            selection: !redux_org.isOperator(this),
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
             onAdd: redux_org.isOperator(this) ? null : this.onAdd,

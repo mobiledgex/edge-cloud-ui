@@ -9,6 +9,7 @@ import MexTextArea from './MexTextArea';
 import MexDualList from './MexDualList';
 import MexSwitch from './MexSwitch';
 import MexButton from './MexButton';
+import MexDate from './MexDate';
 import MexSelectTree from './selectTree/MexSelectTree';
 import { Form, Grid, Divider } from 'semantic-ui-react';
 import { IconButton, Tooltip } from '@material-ui/core';
@@ -38,6 +39,7 @@ export const TEXT_AREA = 'TextArea'
 export const BUTTON = 'Button'
 export const MULTI_FORM = 'MultiForm'
 export const SELECT_RADIO_TREE = 'SelectRadioTree'
+export const DATE_PICKER = 'DatePicker'
 
 /***
 * Map values from form to field
@@ -368,7 +370,9 @@ const MexForms = (props) => {
                                             loadInputForms(form, required, disabled) :
                                             form.formType === SWITCH ?
                                                 <MexSwitch form={form} onChange={onValueSelect} /> :
-                                                null
+                                                form.formType === DATE_PICKER ?
+                                                    <MexDate form={form} onChange={onValueSelect} /> :
+                                                    null
                         }
                     </Grid.Column>
                     {

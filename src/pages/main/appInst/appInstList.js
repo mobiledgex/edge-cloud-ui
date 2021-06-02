@@ -189,7 +189,7 @@ class AppInstList extends React.Component {
             streamType: streamAppInst,
             isRegion: true,
             isMap: true,
-            selection: true,
+            selection: !redux_org.isOperator(this),
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
             onAdd:  redux_org.isOperator(this) ?  null : this.onAdd,

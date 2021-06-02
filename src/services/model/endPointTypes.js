@@ -22,6 +22,7 @@ import * as BillingOrg from './billingOrg';
 import * as Events from './events';
 import * as poolAccess from './privateCloudletAccess';
 import * as invoices from './invoices';
+import * as reporter from './reporter';
 
 export const SHOW_ORG = "org/show";
 export const CREATE_ORG = "createOrg";
@@ -125,6 +126,10 @@ export const BILLING_ORG_REMOVE_CHILD = 'billingorg/removechild'
 export const DELETE_BILLING_ORG = 'billingorg/delete'
 export const INVOICE_BILLING = 'billingorg/invoice'
 export const GET_CLOUDLET_RESOURCE_QUOTA_PROPS = 'GetCloudletResourceQuotaProps'
+export const SHOW_REPORTER = 'reporter/show'
+export const CREATE_REPORTER = 'reporter/create'
+export const UPDATE_REPORTER = 'reporter/update'
+export const DELETE_REPORTER = 'reporter/delete'
 
 export function getPath(request) {
     switch (request.method) {
@@ -162,6 +167,10 @@ export function getPath(request) {
         case SHOW_POOL_ACCESS_GRANTED:
         case SHOW_POOL_ACCESS_PENDING:
         case EDGEBOX_ONLY:
+        case SHOW_REPORTER:
+        case CREATE_REPORTER:
+        case UPDATE_REPORTER:
+        case DELETE_REPORTER:
             return `/api/v1/auth/${request.method}`;
         case DELETE_ORG:
             return '/api/v1/auth/org/delete';
@@ -326,6 +335,9 @@ export function formatData(request, response) {
             break;
         case INVOICE_BILLING:
             data = invoices.getData(response, request.data)
+            break;
+        case SHOW_REPORTER:
+            data = reporter.getData(response, request.data)
             break;
         default:
             data = undefined;
