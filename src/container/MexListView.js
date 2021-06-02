@@ -163,8 +163,8 @@ class MexListView extends React.Component {
                 let deleteMultiple = prevState.deleteMultiple
                 deleteMultiple.map(mul => {
                     if (mul.code === 200) {
-                        filterList.splice(filterList.indexOf(mul.data), 1)
-                        dataList.splice(dataList.indexOf(mul.data), 1)
+                        filterList = filterList.filter(item => { return !equal(item, mul.data) })
+                        dataList = dataList.filter(item => { return !equal(item, mul.data) })
                     }
                 })
                 return { dataList, filterList, deleteMultiple: [] }
