@@ -3,7 +3,6 @@ import { TableCell, Checkbox, Tooltip, IconButton, makeStyles, TablePagination }
 import { fields } from '../../services/model/format';
 import ListIcon from '@material-ui/icons/List';
 import { StyledTableCell, StyledTableRow, stableSort, getComparator, checkRole } from './ListConstant';
-import { redux_org } from '../../helper/reduxData'
 import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
@@ -76,7 +75,7 @@ const ListBody = (props) => {
                     </TableCell> : null}
 
                 {props.keys.map((header, j) => {
-                    let roleVisible = checkRole(redux_org.role(orgInfo), header)
+                    let roleVisible = checkRole(orgInfo, header)
                     if (header.visible && roleVisible) {
                         let field = header.field;
                         return (

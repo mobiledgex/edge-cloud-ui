@@ -21,6 +21,7 @@ import Monitoring from './monitoring/Monitoring';
 import AlertReceiver from './notifications/alerts/receiver/AlertReceiver';
 import BillingOrg from './billing/billingOrg/BillingOrgList';
 import Invoices from './billing/invoices/Invoices';
+import Reporter from './reporter/Reporter';
 
 import * as constant from '../../constant';
 import { validateRole } from '../../constant/role';
@@ -61,6 +62,8 @@ const renderPage = (id) => {
             return PoolAccess
         case constant.PAGE_INVOICES:
             return Invoices
+        case constant.PAGE_REPORTER:
+            return Reporter
     }
 }
 
