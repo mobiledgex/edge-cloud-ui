@@ -68,13 +68,13 @@ class Generated extends React.Component {
                 <Card style={{ width: 600 }}>
                     <CardContent>
                         <Box display="flex" >
-                            <Box flexGrow={1} p={2}>
-                                <Typography gutterBottom variant="h5" component="h4"  style={{color:lightGreen['A700']}}>
+                            <Box flexGrow={1}>
+                                <Typography gutterBottom variant="h5" component="h4"  style={{color:lightGreen['A700'], alignItems:'center'}}>
                                     History
                                 </Typography>
                             </Box>
                             <Box>
-                                <IconButton tooltip='Close' onClick={close} disabled={loading || pdfLoading !== undefined}><CloseOutlinedIcon style={{ color: lightGreen['A700'] }} /></IconButton>
+                                <IconButton style={{marginTop:-16}} tooltip='Close' onClick={close} disabled={loading || pdfLoading !== undefined}><CloseOutlinedIcon style={{ color: lightGreen['A700'] }} /></IconButton>
                             </Box>
                         </Box>
                     </CardContent>
