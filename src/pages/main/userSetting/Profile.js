@@ -12,6 +12,9 @@ import { updateUser } from '../../../services/model/serverWorker'
 import MexOTPRegistration from '../../landing/otp/MexOTPRegistration'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { equal } from '../../../constant/compare';
+import { lightGreen } from '@material-ui/core/colors';
+
+const iconGreen = lightGreen['A700']
 
 const formatDate = (value) => {
     return dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, value)
@@ -96,7 +99,7 @@ class Profile extends React.Component {
         let title = isVerified ? 'Email Verified' : 'Email Verification Pending'
         return (
             <Tooltip title={<strong style={{ fontSize: 13 }}>{title}</strong>}>
-                <IconButton><EmailOutlinedIcon style={{ color: isVerified ? '#4caf50' : '#f44336' }} /></IconButton>
+                <IconButton><EmailOutlinedIcon style={{ color: isVerified ? iconGreen : '#f44336' }} /></IconButton>
             </Tooltip>
         )
     }
@@ -106,7 +109,7 @@ class Profile extends React.Component {
         let title = isOTP ? '2FA Enable' : '2FA Disabled'
         return (
             <Tooltip title={<strong style={{ fontSize: 13 }}>{title}</strong>}>
-                <IconButton><VpnKeyOutlinedIcon style={{ color: isOTP ? '#4caf50' : '#f44336' }} /></IconButton>
+                <IconButton><VpnKeyOutlinedIcon style={{ color: isOTP ? iconGreen : '#f44336' }} /></IconButton>
             </Tooltip>
         )
     }
@@ -116,7 +119,7 @@ class Profile extends React.Component {
         let title = isLocked ? 'Locked' : 'Active'
         return (
             <Tooltip title={<strong style={{ fontSize: 13 }}>{title}</strong>}>
-                <IconButton>{isLocked ? <LockOutlinedIcon style={{ color: '#f44336' }} /> : <LockOpenOutlinedIcon style={{ color: '#4caf50' }} />}</IconButton>
+                <IconButton>{isLocked ? <LockOutlinedIcon style={{ color: '#f44336' }} /> : <LockOpenOutlinedIcon style={{ color: iconGreen }} />}</IconButton>
             </Tooltip>
         )
     }

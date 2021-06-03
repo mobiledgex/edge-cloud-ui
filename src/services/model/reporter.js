@@ -1,7 +1,8 @@
 import { ADMIN_MANAGER } from "../../constant";
 import { idFormatter, labelFormatter } from "../../helper/formatter";
+import { redux_org } from "../../helper/reduxData";
 import { time, FORMAT_FULL_DATE, dateToOffset, dateToZoneName } from "../../utils/date_util";
-import { CREATE_REPORTER, DELETE_REPORTER, SHOW_REPORTER, UPDATE_REPORTER } from "./endPointTypes";
+import { CREATE_REPORTER, DELETE_REPORTER, DOWNLOAD_REPORT, SHOW_REPORTER, SHOW_REPORTS, UPDATE_REPORTER } from "./endPointTypes";
 import * as formatter from './format'
 import { sendRequest } from "./serverData";
 
@@ -39,6 +40,20 @@ const generateRequestData = (data, isCreate) => {
         requestData[SERVER_FIELD_SCHEDULE] = idFormatter.reportInterval(data[fields.schedule])
     }
     return requestData
+}
+
+export const showGeneratedReports = async (self, data) => {
+    let requestData = {}
+    requestData.org = redux_org.nonAdminOrg(self) ? redux_org.nonAdminOrg(self) : data[fields.organizationName]
+    let request = { method: SHOW_REPORTS, data: requestData }
+    return await sendRequest(self, request)
+}
+
+export const downloadReport = async (self, data) => {
+    let requestData = data
+    requestData.org = redux_org.nonAdminOrg(self) ? redux_org.nonAdminOrg(self) : data[fields.organizationName]
+    let request = { method: DOWNLOAD_REPORT, data: requestData, responseType: 'arraybuffer', headers : {Accept: 'application/pdf'} }
+    return await sendRequest(self, request)
 }
 
 export const showReporter = (data) => {
