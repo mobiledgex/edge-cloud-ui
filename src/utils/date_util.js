@@ -24,6 +24,10 @@ export const timezoneOffset = () => {
     return moment().utcOffset()
 }
 
+export const dateToOffset = (date) =>{
+    return moment().utcOffset(date)._offset
+}
+
 export const timezones = () => {
     return moment.tz.names()
 }

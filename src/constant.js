@@ -157,10 +157,9 @@ export const BILLING_TYPE_PARENT = 'parent'
 export const CLOUDLET_STATUS_READY = 2
 export const CLOUDLET_STATUS_UNKNOWN = 0
 
-export const REPORTER_SCHEDULE_DAILY = 'Daily'
-export const REPORTER_SCHEDULE_15_DAYS = 'Once in 15 Days'
-export const REPORTER_SCHEDULE_30_DAYS = 'Once in 30 Days'
-export const REPORTER_SCHEDULE_MONTHLY = 'Monthly'
+export const REPORTER_SCHEDULE_WEEKLY= 'Every Week'
+export const REPORTER_SCHEDULE_15_DAYS = 'Every 15 Days'
+export const REPORTER_SCHEDULE_MONTHLY = 'Every Month'
 
 export const pages = [
     { label: 'Organizations', icon: 'supervisor_account', id: PAGE_ORGANIZATIONS, path: 'organizations', visible: true },
@@ -185,7 +184,7 @@ export const pages = [
     { label: 'Alert Receivers', icon: 'notification_important', id: PAGE_ALERTS, path: 'alerts', visible: true },
     { label: 'Billing', icon: 'payment', id: PAGE_BILLING_ORG, path: 'billing-org', roles: [ADMIN], visible: true },
     { label: 'Invoices', icon: 'payment', id: PAGE_INVOICES, path: 'invoices', roles: [DEVELOPER_MANAGER] },
-    // { label: 'Reporter', icon: 'assessment', id: PAGE_REPORTER, path: 'reporter', roles: [ADMIN], visible: true },
+    { label: 'Reporter', icon: 'assessment', id: PAGE_REPORTER, path: 'reporter', roles: [ADMIN], visible: true },
 ]
 
 export const getHeight = (height) => {

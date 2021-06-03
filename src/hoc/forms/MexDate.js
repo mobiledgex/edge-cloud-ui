@@ -32,8 +32,6 @@ const MexDate = (props) => {
                     disableUnderline: true
                 }}
                 variant="inline"
-                InputAdornmentProps={{ position: "start" }}
-
                 onChange={(date) => { setDate(date) }}
                 format='yyyy/MM/dd'
             />

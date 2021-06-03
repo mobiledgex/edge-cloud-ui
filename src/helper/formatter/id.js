@@ -144,3 +144,16 @@ export const kind = (label) => {
             return label
     }
 }
+
+export const reportInterval = (label) => {
+    switch (label) {
+        case constant.REPORTER_SCHEDULE_WEEKLY:
+            return 0
+        case constant.REPORTER_SCHEDULE_15_DAYS:
+            return 1
+        case constant.REPORTER_SCHEDULE_MONTHLY:
+            return 2
+        default:
+            return 0
+    }
+}
