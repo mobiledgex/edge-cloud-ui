@@ -133,3 +133,14 @@ export const lock = (key, data, isDetail, callback) => {
         )
     }
 }
+
+export const reporterStatus = (key, data, isDetail) => {
+    let success = data[key.field] === 'success' 
+    if (isDetail) {
+        return constant.toFirstUpperCase(data[key.field])
+    }
+    else
+    {
+        return <Icon name={success ? 'check' : 'close'} style={{ color: success ? constant.COLOR_GREEN : constant.COLOR_RED }} /> 
+    }
+}

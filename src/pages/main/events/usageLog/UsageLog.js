@@ -15,6 +15,7 @@ import { redux_org } from '../../../../helper/reduxData';
 import SelectMenu from '../../../../hoc/selectMenu/SelectMenu'
 import { FixedSizeList } from 'react-window';
 import Help from '../auditLog/Help'
+import { lightGreen } from '@material-ui/core/colors';
 
 const colorType = (value) => {
     switch (value) {
@@ -235,7 +236,7 @@ class EventLog extends React.Component {
                         <Tabs
                             TabIndicatorProps={{
                                 style: {
-                                    backgroundColor: '#76ff03'
+                                    backgroundColor: lightGreen['A700']
                                 }
                             }}
                             value={tabValue}
@@ -246,9 +247,9 @@ class EventLog extends React.Component {
                             })}
                         </Tabs>
                         <div style={{ position: 'absolute', right: 0, top: 2 }}>
-                            <Help data={usageHelp} style={{ color: '#76ff03' }}/>
+                            <Help data={usageHelp} style={{ color: lightGreen['A700'] }}/>
                             <IconButton  onClick={this.props.close}>
-                                <CloseIcon style={{ color: '#76ff03' }} />
+                                <CloseIcon style={{ color: lightGreen['A700'] }} />
                             </IconButton>
                         </div>
                     </Paper>

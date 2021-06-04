@@ -185,17 +185,15 @@ export const decision = (id) =>{
 }
 
 
-export const reporterInterval = (label) => {
-    switch (label) {
-        case constant.REPORTER_SCHEDULE_DAILY:
-            return 0
-        case constant.REPORTER_SCHEDULE_15_DAYS:
-            return 1
-        case constant.REPORTER_SCHEDULE_30_DAYS:
-            return 2
-        case constant.REPORTER_SCHEDULE_MONTHLY:
-            return 3
+export const reporterInterval = (id) => {
+    switch (id) {
+        case 0:
+            return constant.REPORTER_SCHEDULE_WEEKLY
+        case 1:
+            return constant.REPORTER_SCHEDULE_15_DAYS
+        case 3:
+            return constant.REPORTER_SCHEDULE_MONTHLY
         default:
-            return 0
+            return constant.REPORTER_SCHEDULE_WEEKLY
     }
 }

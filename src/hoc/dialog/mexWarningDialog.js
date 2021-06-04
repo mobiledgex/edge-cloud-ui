@@ -5,6 +5,7 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography';
 import { Button } from '@material-ui/core';
+import { lightGreen } from '@material-ui/core/colors';
 
 const DialogContent = withStyles(theme => ({
     root: {
@@ -39,7 +40,7 @@ const MexMessageDialog = (props) => {
                     <Button onClick={() => { props.onClick(false) }} style={{color:'#D3D3D3'}}>
                         NO
                     </Button>
-                    <Button onClick={() => { props.onClick(true, data) }} style={{color:'#76ff03'}}>
+                    <Button onClick={() => { props.onClick(true, data) }} style={{color:lightGreen['A700']}}>
                         YES
                     </Button>
                 </DialogActions>
