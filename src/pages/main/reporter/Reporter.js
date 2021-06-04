@@ -5,7 +5,7 @@ import DataView from '../../../container/DataView';
 import { fields } from '../../../services/model/format';
 import { keys, showReporter, deleteReporter } from '../../../services/model/reporter';
 import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
-import { Box, Card } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import Reg from './ReporterReg'
 import Generated from './Generated';
 import Generator from './Generator';
