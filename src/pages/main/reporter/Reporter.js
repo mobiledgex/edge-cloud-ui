@@ -5,11 +5,13 @@ import DataView from '../../../container/DataView';
 import { fields } from '../../../services/model/format';
 import { keys, showReporter, deleteReporter } from '../../../services/model/reporter';
 import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
-import { Box } from '@material-ui/core';
+import { Box, Card } from '@material-ui/core';
 import Reg from './ReporterReg'
 import Generated from './Generated';
+import Generator from './Generator';
 import { lightGreen } from '@material-ui/core/colors';
 import { IconButton } from '../../../hoc/mexui'
+import { uiFormatter } from '../../../helper/formatter';
 
 class Reporter extends React.Component {
 
@@ -17,7 +19,7 @@ class Reporter extends React.Component {
         super(props)
         this.state = {
             currentView: undefined,
-            open: false
+            open: false,
         }
         this._isMounted = false
         this.keys = keys()
@@ -47,11 +49,24 @@ class Reporter extends React.Component {
         { id: ACTION_DELETE, label: 'Delete', onClick: deleteReporter, type: 'Edit' }
     ])
 
+    customToolbar = () => {
+        return (
+            <Generator />
+        )
+    }
+
     toolbarAction = () => {
         return (
             <Box>
                 <IconButton tooltip='History' style={{ marginTop: -11 }} onClick={() => { this.updateState({ open: true }) }}><ListAltOutlinedIcon style={{ color: lightGreen['A700'] }} /></IconButton>
-            </Box>)
+            </Box>
+        )
+    }
+
+    dataFormatter = (key, data, isDetail) => {
+        if (key.field === fields.status) {
+            return uiFormatter.reporterStatus(key, data, isDetail)
+        }
     }
 
     requestInfo = () => {
@@ -62,7 +77,8 @@ class Reporter extends React.Component {
             requestType: [showReporter],
             sortBy: [fields.name],
             onAdd: this.onReg,
-            keys: this.keys
+            keys: this.keys,
+            formatData: this.dataFormatter
         })
     }
 
@@ -70,7 +86,7 @@ class Reporter extends React.Component {
         const { currentView, open } = this.state
         return (
             <React.Fragment>
-                <DataView id={constant.PAGE_REPORTER} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} toolbarAction={this.toolbarAction} />
+                <DataView id={constant.PAGE_REPORTER} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} toolbarAction={this.toolbarAction} customToolbar={this.customToolbar} tableHeight={300} />
                 <Generated open={open} close={() => { this.updateState({ open: false }) }} />
             </React.Fragment>
         )

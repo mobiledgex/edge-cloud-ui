@@ -16,6 +16,7 @@ import { timezones, time, FORMAT_FULL_T_Z, diff } from '../../../utils/date_util
 import { timezonePref } from '../../../utils/sharedPreferences_util';
 import moment from 'moment';
 import { ACTION_UPDATE } from '../../../constant/actions';
+import { redux_org } from '../../../helper/reduxData';
 
 class ReporterReg extends React.Component {
     constructor(props) {
@@ -40,7 +41,7 @@ class ReporterReg extends React.Component {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Report Scheduler`, formType: MAIN_HEADER, visible: true },
             { field: fields.name, label: 'Name', formType: INPUT, placeholder: 'Enter Report Name', rules: { required: true }, visible: true, tip: 'Reporter name. Can only contain letters, digits, period, hyphen. It cannot have leading or trailing spaces or period. It cannot start with hyphen' },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: true }, visible: true, tip: ' Organization name' },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, tip: ' Organization name' },
             { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true, type: 'search' }, visible: true, update: { edit: true }, tip: 'Email to send generated reports' },
             { field: fields.schedule, label: 'Report Interval', formType: SELECT, placeholder: 'Select Interval', rules: { required: true }, visible: true, update: { edit: true }, tip: ' Indicates how often a report should be generated, one of EveryWeek, Every15Days, Every30Days, EveryMonth' },
             { field: fields.startdate, label: 'Start Schedule Date', formType: DATE_PICKER, placeholder: 'Enter Start Date', rules: { required: true }, visible: true, tip: 'Start date (in RFC3339 format with intended timezone) when the report is scheduled to be generated (Default: today)' },
@@ -174,7 +175,8 @@ class ReporterReg extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        userInfo: state.userInfo.data
+        userInfo: state.userInfo.data,
+        organizationInfo: state.organizationInfo.data
     }
 };
 

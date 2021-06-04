@@ -1,8 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { lightGreen } from '@material-ui/core/colors';
-import { IconButton as IB, Tooltip } from '@material-ui/core';
+import { green, lightGreen, lime } from '@material-ui/core/colors';
+import { Button as MButton, Tooltip, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -13,31 +13,38 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1),
         position: 'relative',
     },
+    button: {
+        backgroundColor: '#639712',
+        color: 'white',
+        '&:hover': {
+            backgroundColor: lightGreen['900'],
+        }
+    },
     buttonProgress: {
-        color: lightGreen['A700'],
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        marginTop: -16,
-        marginLeft: -16,
+        color: 'white',
+        marginTop: -2,
+        marginLeft: 10
     },
 }));
 
-export default function IconButton(props) {
+export default function Button(props) {
     const classes = useStyles();
     return (
         <div className={classes.root}>
             <div className={classes.wrapper}>
                 <Tooltip title={props.tooltip ? props.tooltip : ''}>
-                    <IB
+                    <MButton
                         onClick={props.onClick}
+                        variant='contained'
+                        className={classes.button}
                         disabled={props.disabled ? props.disabled : props.loading}
                         style={props.style ? props.style : {}}
                     >
-                        {props.children}
-                    </IB>
+                        <Typography variant='button'>{props.children}</Typography>
+                        {props.loading && <CircularProgress size={15} thickness={3} className={classes.buttonProgress} />}
+                    </MButton>
                 </Tooltip>
-                {props.loading && <CircularProgress size={32} className={classes.buttonProgress} />}
+                { }
             </div>
         </div>
     );

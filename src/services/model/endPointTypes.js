@@ -132,6 +132,7 @@ export const UPDATE_REPORTER = 'reporter/update'
 export const DELETE_REPORTER = 'reporter/delete'
 export const SHOW_REPORTS = 'report/show'
 export const DOWNLOAD_REPORT = 'report/download'
+export const GENERATE_REPORT = 'report/generate'
 
 export function getPath(request) {
     switch (request.method) {
@@ -175,6 +176,7 @@ export function getPath(request) {
         case DELETE_REPORTER:
         case SHOW_REPORTS:
         case DOWNLOAD_REPORT:
+        case GENERATE_REPORT:
             return `/api/v1/auth/${request.method}`;
         case DELETE_ORG:
             return '/api/v1/auth/org/delete';

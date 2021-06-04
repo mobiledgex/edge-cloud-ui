@@ -80,8 +80,15 @@ function responseError(self, request, error, callback) {
         let response = error.response
         let message = 'UnKnown';
         let code = response.status;
-        if (response.data && response.data.message) {
-            message = response.data.message
+        if (response.data && response.data) {
+            if (request.responseType === 'arraybuffer') {
+                var decodedString = String.fromCharCode.apply(null, new Uint8Array(response.data));
+                var obj = JSON.parse(decodedString);
+                message = obj['message'];
+            }
+            else {
+                message = response.data.message ? response.data.message : message
+            }
             if (checkExpiry(self, message)) {
                 showSpinner(self, false)
                 showError(self, request, message);
