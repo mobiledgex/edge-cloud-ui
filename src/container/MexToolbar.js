@@ -8,7 +8,8 @@ import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import SelectMenu from '../hoc/selectMenu/SelectMenu'
-import {redux_org} from '../helper/reduxData'
+import { redux_org } from '../helper/reduxData'
+import { lightGreen } from '@material-ui/core/colors';
 
 export const REGION_ALL = 1;
 export const ACTION_REGION = 1
@@ -20,6 +21,8 @@ export const ACTION_SEARCH = 6;
 export const ACTION_CLEAR = 7;
 export const ACTION_BACK = 8;
 export const ACTION_GROUP = 9;
+
+const iconColor = lightGreen['A700']
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
@@ -85,7 +88,7 @@ const MexToolbar = (props) => {
                 onChange={handleSearch}
                 startAdornment={
                     <InputAdornment style={{ fontSize: 17, pointerEvents: "none", cursor: 'pointer' }} position="start" >
-                        <SearchIcon style={{ color: '#76FF03' }} />
+                        <SearchIcon style={{ color: iconColor }} />
                     </InputAdornment>
                 }
                 value={search}
@@ -99,7 +102,7 @@ const MexToolbar = (props) => {
         requestInfo.onAdd && (!redux_org.isViewer(this) || requestInfo.viewerEdit) ?
             <Box order={5} >
                 <IconButton aria-label="new" style={{ marginTop: -3 }} className='buttonCreate' onClick={(e) => { props.onAction(ACTION_NEW) }}>
-                    <AddIcon style={{ color: '#76ff03' }} />
+                    <AddIcon style={{ color: iconColor }} />
                 </IconButton>
             </Box> : null
     )
@@ -128,7 +131,7 @@ const MexToolbar = (props) => {
     const regionForm = () => (
         requestInfo.isRegion ?
             <Box order={2} p={1} style={{ marginTop: 4, marginRight: 12 }}>
-                <SelectMenu header='Region' labelKey='text' dataList={getRegions()} onChange={onRegionChange} default={'ALL'}/>
+                <SelectMenu header='Region' labelKey='text' dataList={getRegions()} onChange={onRegionChange} default={'ALL'} />
             </Box> : null
     )
     /*Region Block*/
@@ -154,7 +157,7 @@ const MexToolbar = (props) => {
     const refreshForm = () => (
         <Box order={6} >
             <IconButton aria-label="refresh" style={{ marginTop: -3 }} onClick={(e) => { props.onAction(ACTION_REFRESH) }}>
-                <RefreshIcon style={{ color: '#76ff03' }} />
+                <RefreshIcon style={{ color: iconColor }} />
             </IconButton>
         </Box>
     )
@@ -163,7 +166,7 @@ const MexToolbar = (props) => {
     const getDetailView = (props) => (
         <div style={{ right: 0, position: 'absolute' }}>
             <IconButton aria-label="refresh" onClick={(e) => { props.onAction(ACTION_CLOSE) }}>
-                <CloseIcon style={{ color: '#76ff03' }} />
+                <CloseIcon style={{ color: iconColor }} />
             </IconButton>
         </div>
     )
@@ -173,24 +176,28 @@ const MexToolbar = (props) => {
             <Box>
                 <Tooltip title={<strong style={{ fontSize: 13 }}>Back</strong>}>
                     <IconButton aria-label="back" style={{ marginTop: -3, marginLeft: -20 }} onClick={(e) => { props.requestInfo.back() }}>
-                        <ArrowBackIosIcon style={{ color: '#76ff03' }} />
+                        <ArrowBackIosIcon style={{ color: iconColor }} />
                     </IconButton>
                 </Tooltip>
             </Box> : null
     )
 
-    const onGroupChange= (data)=>{
+    const onGroupChange = (data) => {
         props.onAction(ACTION_GROUP, data)
     }
 
     const renderGroup = () => {
         const { requestInfo } = props
-        let dataList = [{ label: 'None' }, ...requestInfo.keys.filter(key=>(key.group))]
+        let dataList = [{ label: 'None' }, ...requestInfo.keys.filter(key => (key.group))]
         return (
             requestInfo.grouping ? <Box order={1} p={1} style={{ marginTop: 4, marginRight: 12 }}>
-                <SelectMenu header='Group By' labelKey='label' dataList={dataList} onChange={onGroupChange} default={'None'}/>
+                <SelectMenu header='Group By' labelKey='label' dataList={dataList} onChange={onGroupChange} default={'None'} />
             </Box> : null
         )
+    }
+
+    const customAction = () => {
+        return props.toolbarAction ? props.toolbarAction() : null
     }
 
     return (
@@ -211,6 +218,7 @@ const MexToolbar = (props) => {
                                 {getDetailView(props)}
                             </div> :
                             <React.Fragment>
+                                {customAction()}
                                 {searchForm()}
                                 {regionForm()}
                                 {mapForm()}

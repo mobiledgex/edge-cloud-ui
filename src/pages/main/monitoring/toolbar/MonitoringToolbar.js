@@ -12,6 +12,7 @@ import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateC
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 import { fields } from '../../../../services/model/format';
 import {redux_org} from '../../../../helper/reduxData'
+import { lightGreen } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
@@ -127,7 +128,7 @@ const MexToolbar = (props) => {
                     <IconButton onClick={onRefresh}><RefreshIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} /></IconButton>
                 </Tooltip>
                 <Divider orientation="vertical" style={{ marginTop: 13, marginBottom: 13 }} flexItem />
-                <MonitoringMenu showTick={true} data={constant.refreshRates} labelKey='label' onChange={onRefreshRateChange} icon={<ExpandMoreIcon style={{ color: '#76FF03' }} />} value={refreshRange} tip={'Refresh Rate'} />
+                <MonitoringMenu showTick={true} data={constant.refreshRates} labelKey='label' onChange={onRefreshRateChange} icon={<ExpandMoreIcon style={{ color: lightGreen['A700'] }} />} value={refreshRange} tip={'Refresh Rate'} />
             </Grid>
         </Box>
     )

@@ -12,6 +12,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import './style.css'
+import { lightGreen } from '@material-ui/core/colors';
 
 const keys = {
     groupIdKey: "id",
@@ -154,17 +155,17 @@ class MexCalendar extends React.Component {
                 <div>
                     <Tooltip title={<strong style={{ fontSize: 13 }}>Previous</strong>}>
                         <IconButton onClick={this.onPrevClick}>
-                            <ArrowBackIosIcon fontSize='small' style={{ color: '#76ff03' }} />
+                            <ArrowBackIosIcon fontSize='small' style={{ color: lightGreen['A700'] }} />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title={<strong style={{ fontSize: 13 }}>Next</strong>}>
                         <IconButton aria-label="refresh" onClick={this.onNextClick}>
-                            <ArrowForwardIosIcon fontSize='small' style={{ color: '#76ff03' }} />
+                            <ArrowForwardIosIcon fontSize='small' style={{ color: lightGreen['A700'] }} />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title={<strong style={{ fontSize: 13 }}>Reset</strong>}>
                         <IconButton aria-label="refresh" onClick={this.onReset}>
-                            <RefreshIcon fontSize='small' style={{ color: '#76ff03' }} />
+                            <RefreshIcon fontSize='small' style={{ color: lightGreen['A700'] }} />
                         </IconButton>
                     </Tooltip>
                     {this.props.customRender()}

@@ -4,6 +4,7 @@ import { fields } from '../../services/model/format';
 import ListIcon from '@material-ui/icons/List';
 import { StyledTableCell, StyledTableRow, stableSort, getComparator, checkRole } from './ListConstant';
 import { useSelector } from 'react-redux';
+import { lightGreen } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
     tip: {
@@ -48,7 +49,7 @@ const ListBody = (props) => {
     const actionView = (item) => {
         return (
             <IconButton aria-label="Action" onClick={props.handleActionView}>
-                <ListIcon style={{ color: '#76ff03' }} />
+                <ListIcon style={{ color: lightGreen['A700'] }} />
             </IconButton>
         )
     }

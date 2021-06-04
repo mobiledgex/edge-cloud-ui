@@ -24,6 +24,10 @@ export const timezoneOffset = () => {
     return moment().utcOffset()
 }
 
+export const dateToOffset = (date) =>{
+    return moment().utcOffset(date).format('Z')
+}
+
 export const timezones = () => {
     return moment.tz.names()
 }
@@ -78,8 +82,8 @@ export const isAfter = (start, end) => {
     return moment(start).isAfter(end)
 }
 
-export const diff = (start, end) => {
-    return moment(end).diff(start)
+export const diff = (start, end, type) => {
+    return moment(end).diff(start, type)
 }
 
 export const subtractMins = (value, date, isUtc) => {

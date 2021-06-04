@@ -19,6 +19,7 @@ import { ACTION_DELETE, ACTION_DISABLE, ACTION_EDGE_BOX_ENABLE, ACTION_LABEL, AC
 import { getToken, sendRequest } from '../monitoring/services/service'
 import { LS_ORGANIZATION_INFO } from '../../../helper/ls';
 import { uiFormatter } from '../../../helper/formatter'
+import { lightGreen } from '@material-ui/core/colors';
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
@@ -79,7 +80,7 @@ class OrganizationList extends React.Component {
                     // subheader="Dynamically scale and deploy applications on Telco Edge geographically close to your end-users. Deploying to MobiledgeX's cloudlets provides applications the advantage of low latency, which can be extremely useful for real-time applications such as Augmented Reality, Mobile Gaming, Self-Driving Cars, Drones, etc."
                     action={
                         <IconButton aria-label="developer" onClick={() => { this.onAdd(constant.DEVELOPER) }}>
-                            <ArrowForwardIosIcon style={{ fontSize: 20, color: '#76ff03' }} />
+                            <ArrowForwardIosIcon style={{ fontSize: 20, color: lightGreen['A700'] }} />
                         </IconButton>
                     }
                 />
@@ -99,7 +100,7 @@ class OrganizationList extends React.Component {
                     // subheader='Register your cloudlet by providing MobiledgeX with a pool of compute resources and access to the OpenStack API endpoint by specifying a few required parameters, such as dynamic IP addresses, cloudlet names, location of cloudlets, certs, and more, using the Edge-Cloud Console. MobiledgeX relies on this information to remotely access the cloudlets to determine resource requirements as well as dynamically track usage.'
                     action={
                         <IconButton aria-label="operator" onClick={() => { this.onAdd(constant.OPERATOR) }}>
-                            <ArrowForwardIosIcon style={{ fontSize: 20, color: '#76ff03' }} />
+                            <ArrowForwardIosIcon style={{ fontSize: 20, color: lightGreen['A700'] }} />
                         </IconButton>
                     }
                 />

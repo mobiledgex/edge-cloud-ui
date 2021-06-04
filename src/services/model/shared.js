@@ -1,3 +1,4 @@
+import { lightGreen } from '@material-ui/core/colors';
 import React from 'react'
 import {Icon, Popup} from 'semantic-ui-react';
 import { DEVELOPER } from '../../constant';
@@ -49,7 +50,7 @@ export const additionalDetail = (data) => {
                 </div>
                     <br />
                     <div>
-                        {'$ curl -u<username> -T <path_to_file>'} <code style={{ color: '#76ff03' }}>{`"https://artifactory.mobiledgex.net/artifactory/repo-${data[fields.organizationName]}/<target_file_path>"`}</code> {'--progress-bar -o <upload status filename>'}
+                        {'$ curl -u<username> -T <path_to_file>'} <code style={{ color: lightGreen['A700'] }}>{`"https://artifactory.mobiledgex.net/artifactory/repo-${data[fields.organizationName]}/<target_file_path>"`}</code> {'--progress-bar -o <upload status filename>'}
                     </div>
                 </div>
             </div> : null)

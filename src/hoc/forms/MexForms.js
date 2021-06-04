@@ -430,7 +430,6 @@ const MexForms = (props) => {
                             {forms.map((form, i) => {
                                 return (form.formType === BUTTON ?
                                     <MexButton
-                                        className={'formButton-' + i}
                                         form={form}
                                         key={i}
                                         onClick={onSubmit} />

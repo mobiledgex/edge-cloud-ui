@@ -31,15 +31,21 @@ const getHttpURL = (request) => {
     return mcURL(false) + EP.getPath(request)
 }
 
-function getHeader(request) {
+const getHeader = (request) => {
     let headers = {};
     if (request.token) {
         headers = {
             'Authorization': `Bearer ${request.token}`
         }
     }
-
+    if (request.headers) {
+        headers = { ...headers, ...request.headers }
+    }
     return headers;
+}
+
+const getResponseType = (request) => {
+    return request.responseType ? request.responseType : 'json'
 }
 
 const showSpinner = (self, value) => {
@@ -74,8 +80,15 @@ function responseError(self, request, error, callback) {
         let response = error.response
         let message = 'UnKnown';
         let code = response.status;
-        if (response.data && response.data.message) {
-            message = response.data.message
+        if (response.data && response.data) {
+            if (request.responseType === 'arraybuffer') {
+                var decodedString = String.fromCharCode.apply(null, new Uint8Array(response.data));
+                var obj = JSON.parse(decodedString);
+                message = obj['message'];
+            }
+            else {
+                message = response.data.message ? response.data.message : message
+            }
             if (checkExpiry(self, message)) {
                 showSpinner(self, false)
                 showError(self, request, message);
@@ -125,7 +138,7 @@ export function sendWSRequest(request, callback) {
         sockets.map((item, i) => {
             if (item.uuid === request.uuid) {
                 if (item.isClosed === false && evt.code === 1000) {
-                    callback({ request: request, wsObj: ws, close:true })
+                    callback({ request: request, wsObj: ws, close: true })
                 }
                 sockets.splice(i, 1)
             }
@@ -195,7 +208,8 @@ export const sendSyncRequest = async (self, request) => {
         request.showSpinner === undefined && showSpinner(self, true)
         let response = await axios.post(getHttpURL(request), request.data,
             {
-                headers: getHeader(request)
+                headers: getHeader(request),
+                responseType: getResponseType(request)
             });
         request.showSpinner === undefined && showSpinner(self, false)
         return EP.formatData(request, response);
