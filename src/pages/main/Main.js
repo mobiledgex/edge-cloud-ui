@@ -52,21 +52,27 @@ class Main extends React.Component {
 
     redirectInvalidPath = () => {
         const orgInfo = this.props.organizationInfo
+        const pathname = this.props.history.location.pathname
         let pathValid = false
-        for (let page of pages) {
-            if (this.props.history.location.pathname.includes(page.path)) {
-                let roles = page.roles
-                if (roles) {
-                    if (validateRole(page.roles, orgInfo)) {
+        if (pathname.includes('/logout')) {
+            pathValid = true
+        }
+        else {
+            for (let page of pages) {
+                if (pathname.includes(page.path)) {
+                    let roles = page.roles
+                    if (roles) {
+                        if (validateRole(page.roles, orgInfo)) {
+                            pathValid = true
+                        }
+                    }
+                    else {
                         pathValid = true
                     }
                 }
-                else {
-                    pathValid = true
+                if (pathValid) {
+                    break;
                 }
-            }
-            if (pathValid) {
-                break;
             }
         }
         if (!pathValid) {
