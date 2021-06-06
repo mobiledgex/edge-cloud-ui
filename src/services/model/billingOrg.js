@@ -52,8 +52,8 @@ const getRequestData = (data, edit, isAdd) => {
         if (data[fields.city]) {
             billingOrg.city = data[fields.city]
         }
-        if (data[fields.postalcode]) {
-            billingOrg.postalcode = data[fields.postalcode]
+        if (data[fields.postalCode]) {
+            billingOrg.postalcode = data[fields.postalCode]
         }
         if (data[fields.phone]) {
             billingOrg.phone = data[fields.phone]
