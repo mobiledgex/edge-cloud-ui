@@ -6,7 +6,7 @@ export const clusterEventKeys = [
     { label: 'Starttime', serverField: 'time', visible: true, detailedView: false, format: dateUtil.FORMAT_FULL_DATE_TIME },
     { label: 'Region', serverField: 'region', visible: true, detailedView: false, groupBy: true, filter: true },
     { label: 'Cluster', serverField: 'cluster', visible: true, detailedView: false, groupBy: true, filter: true },
-    { label: 'Cluster Developer', serverField: 'clusterorg', visible: false, detailedView: false, groupBy: false },
+    { label: 'Cluster Developer', serverField: 'clusterorg', visible: true, detailedView: false, groupBy: false },
     { label: 'Cloudlet', serverField: 'cloudlet', visible: true, detailedView: false, groupBy: true },
     { label: 'Operator', serverField: 'cloudletorg', visible: true, detailedView: false, groupBy: true },
     { label: 'Reserved By', serverField: 'reservedBy', visible: false, detailedView: false, groupBy: false },
