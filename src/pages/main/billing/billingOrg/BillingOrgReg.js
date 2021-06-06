@@ -36,12 +36,12 @@ class BillingOrgReg extends React.Component {
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, visible: false, value: redux_org.nonAdminOrg(this) },
             { field: fields.firstName, label: 'First Name', formType: INPUT, placeholder: 'Enter First Name', rules: { required: true }, update: { edit: true }, visible: true, tip: 'First name' },
             { field: fields.lastName, label: 'Last Name', formType: INPUT, placeholder: 'Enter Last Name', rules: { required: true }, update: { edit: true }, visible: true, tip: 'Last name' },
-            { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true }, visible: true, update: { edit: true }, tip: 'Email address' },
-            { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: false }, update: { edit: true }, visible: true, tip: 'Address' },
-            { field: fields.country, label: 'Country', formType: INPUT, placeholder: 'Enter Country', rules: { required: false }, update: { edit: true }, visible: true, tip: 'Country' },
-            { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter State', rules: { required: false }, update: { edit: true }, visible: true, tip: 'State' },
-            { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City', rules: { required: false }, update: { edit: true }, visible: true, tip: 'City' },
-            { field: fields.postalCode, label: 'Postal Code', formType: INPUT, placeholder: 'Enter Postal Code', rules: { required: false }, visible: true, update: { edit: true }, tip: 'Postal code' },
+            { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true, type: 'search' }, visible: true, update: { edit: true }, tip: 'Email address' },
+            { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: false, type: 'search' }, update: { edit: true }, visible: true, tip: 'Address' },
+            { field: fields.country, label: 'Country', formType: INPUT, placeholder: 'Enter Country', rules: { required: false, type: 'search' }, update: { edit: true }, visible: true, tip: 'Country' },
+            { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter State', rules: { required: false, type: 'search' }, update: { edit: true }, visible: true, tip: 'State' },
+            { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City', rules: { required: false, type: 'search' }, update: { edit: true }, visible: true, tip: 'City' },
+            { field: fields.postalCode, label: 'Postal Code', formType: INPUT, placeholder: 'Enter Postal Code', rules: { required: false, type: 'search' }, visible: true, update: { edit: true }, tip: 'Postal code' },
             { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: false }, visible: true, update: { edit: true }, tip: 'Phone number' },
         ]
     }
