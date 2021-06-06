@@ -16,7 +16,6 @@ import clsx from 'clsx';
 import { withStyles } from '@material-ui/styles';
 import * as dateUtil from '../../../../utils/date_util'
 import cloneDeep from 'lodash/cloneDeep'
-import * as constant from '../../../../constant'
 import sortBy from 'lodash/sortBy';
 import './style.css'
 import { equal } from '../../../../constant/compare';
@@ -219,17 +218,12 @@ class GlobalUsageLog extends React.Component {
 
     componentDidUpdate(prePros, preState) {
         if (this.props.organizationInfo && !equal(this.props.organizationInfo, prePros.organizationInfo)) {
-            if (redux_org.isAdmin(this)) {
-                sendAuthRequest(this, showOrganizations(), this.orgResponse)
+            this.endRange = dateUtil.currentUTCTime()
+            this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
+            if (this._isMounted) {
+                this.setState({ liveData: {} })
             }
-            else {
-                this.endRange = dateUtil.currentUTCTime()
-                this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
-                if (this._isMounted) {
-                    this.setState({ liveData: {} })
-                }
-                this.eventLogData(this.startRange, this.endRange)
-            }
+            this.eventLogData(this.startRange, this.endRange)
         }
 
         //enable interval only when usage log is visible
@@ -259,7 +253,10 @@ class GlobalUsageLog extends React.Component {
 
     componentDidMount() {
         this._isMounted = true;
-        if (redux_org.orgName(this) || redux_org.isAdmin(this)) {
+        if (redux_org.isAdmin(this)) {
+            sendAuthRequest(this, showOrganizations(), this.orgResponse)
+        }
+        else if (redux_org.nonAdminOrg(this)) {
             this.eventLogData(this.startRange, this.endRange)
         }
     }
