@@ -211,7 +211,7 @@ class EventLog extends React.Component {
         let columns = eventData.columns
         let eventList = eventData.values
         let keys = Object.keys(eventList)
-        let itemSize = eventType === 'clusterinst' ? 215 : eventType === 'appinst' ? 302 : 186
+        let itemSize = eventType === 'clusterinst' ? 243 : eventType === 'appinst' ? 330 : 186
         return (
             <FixedSizeList key={i} className={'no-scrollbars'} height={this.state.infiniteHeight} itemSize={itemSize} itemCount={keys.length} itemData={{ columns: columns, keys: keys, dataList: eventList }}>
                 {this.renderRow}
@@ -222,7 +222,7 @@ class EventLog extends React.Component {
     customRender = () => {
         return (
             redux_org.isAdmin(this) ? <div className='calendar-dropdown-select'>
-                <SelectMenu search={true} labelKey={fields.organizationName} dataList={this.props.organizationList} onChange={this.props.onOrgChange} placeholder='Select Organization'/>
+                <SelectMenu search={true} labelKey={fields.organizationName} dataList={this.props.organizationList} onChange={this.props.onOrgChange} placeholder='Select Organization' default={this.props.selectedOrg}/>
             </div> : null)
     }
 
