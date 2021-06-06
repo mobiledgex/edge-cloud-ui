@@ -45,7 +45,7 @@ const getHeader = (request) => {
 }
 
 const getResponseType = (request) => {
-    return request.responseType ? request.responseType : 'json'
+    return request.responseType ? request.responseType : undefined
 }
 
 const showSpinner = (self, value) => {
