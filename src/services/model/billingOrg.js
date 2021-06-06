@@ -1,7 +1,7 @@
 import { SHOW_BILLING_ORG, CREATE_BILLING_ORG, DELETE_BILLING_ORG, BILLING_ORG_ADD_CHILD, BILLING_ORG_REMOVE_CHILD, UPDATE_BILLING_ORG } from './endPointTypes'
 import * as serverData from './serverData'
 import * as formatter from './format'
-import { ADMIN_MANAGER, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR, TYPE_DATE, DEVELOPER_MANAGER } from '../../constant'
+import { ADMIN_MANAGER, TYPE_DATE, DEVELOPER_MANAGER } from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 
 
