@@ -33,7 +33,7 @@ const getHeight = (props) => {
 const NoData = ()=>{
     return (
         <div align='center' style={{position:'relative', top:'50%', transform: 'translateY(-50%)'}}>
-            <InboxIcon style={{ color:'grey', fontSize:50}}/>
+            <img src={`assets/icons/inbox_empty.svg`}/>
             <h4 style={{ color:'grey'}}><b>No Data</b></h4>
         </div>
     )
