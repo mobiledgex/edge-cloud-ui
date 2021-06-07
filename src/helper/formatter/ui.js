@@ -146,7 +146,7 @@ export const reporterStatus = (key, data, isDetail) => {
     }
 }
 
-export const noData = ()=>{
+export const NoData = ()=>{
     return (
         <div align='center' style={{position:'relative', top:'50%', transform: 'translateY(-50%)'}}>
             <img src={`assets/icons/inbox_empty.svg`}/>

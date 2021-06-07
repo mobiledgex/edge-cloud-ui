@@ -10,7 +10,7 @@ import IconButton from '../../../hoc/mexui/IconButton'
 import { lightGreen } from '@material-ui/core/colors';
 import { redux_org } from '../../../helper/reduxData';
 import { Select } from '../../../hoc/mexui'
-import { uiFormatter } from '../../../helper/formatter'
+import { NoData } from '../../../helper/formatter/ui'
 
 const OPEN = 0
 const DOWNLOAD = 1
@@ -97,7 +97,7 @@ class Generated extends React.Component {
                             {
                                 redux_org.isAdmin(this) ? <Box>
                                     <div style={{ marginTop: 5 }}>
-                                        <Select list={orgList} onChange={this.onOrgChange} search={true} placeholder={'Select Organization'} underline={true}/>
+                                        <Select list={orgList} onChange={this.onOrgChange} search={true} placeholder={'Select Organization'} underline={true} />
                                     </div>
                                 </Box> : null
                             }
@@ -113,29 +113,31 @@ class Generated extends React.Component {
                             <Typography style={{ marginTop: 20, color: '#C4D3DC' }}>Please wait fetching data</Typography>
                         </div> :
                         <CardContent style={{ height: '30vh', overflowY: 'auto', overflowX: 'hidden' }}>
-                            {reports.length > 0 ?
-                                <List style={{}}>
-                                    {
-                                        reports.map((filename, i) => (
-                                            <Grid key={i} container style={{ alignItems: 'center', display: 'flex' }}>
-                                                <Grid item xs={10}>
-                                                    <h5>{filename}</h5>
+                            {
+                                reports.length > 0 ?
+                                    <List style={{}}>
+                                        {
+                                            reports.map((filename, i) => (
+                                                <Grid key={i} container style={{ alignItems: 'center', display: 'flex' }}>
+                                                    <Grid item xs={10}>
+                                                        <h5>{filename}</h5>
+                                                    </Grid>
+                                                    <Grid item xs={1}>
+                                                        {
+                                                            <IconButton disabled={pdfLoading !== undefined} loading={pdfLoading === `${i}_${OPEN}`} tooltip='Open' onClick={() => { this.fetchReport(i, filename, OPEN) }}><PictureAsPdfOutlinedIcon style={{ color: lightGreen['A700'] }} /></IconButton>
+                                                        }
+                                                    </Grid>
+                                                    <Grid item xs={1}>
+                                                        {
+                                                            <IconButton disabled={pdfLoading !== undefined} loading={pdfLoading === `${i}_${DOWNLOAD}`} tooltip='Download' onClick={() => { this.fetchReport(i, filename, DOWNLOAD) }}><CloudDownloadOutlinedIcon style={{ color: lightGreen['A700'] }} /></IconButton>
+                                                        }
+                                                    </Grid>
                                                 </Grid>
-                                                <Grid item xs={1}>
-                                                    {
-                                                        <IconButton disabled={pdfLoading !== undefined} loading={pdfLoading === `${i}_${OPEN}`} tooltip='Open' onClick={() => { this.fetchReport(i, filename, OPEN) }}><PictureAsPdfOutlinedIcon style={{ color: lightGreen['A700'] }} /></IconButton>
-                                                    }
-                                                </Grid>
-                                                <Grid item xs={1}>
-                                                    {
-                                                        <IconButton disabled={pdfLoading !== undefined} loading={pdfLoading === `${i}_${DOWNLOAD}`} tooltip='Download' onClick={() => { this.fetchReport(i, filename, DOWNLOAD) }}><CloudDownloadOutlinedIcon style={{ color: lightGreen['A700'] }} /></IconButton>
-                                                    }
-                                                </Grid>
-                                            </Grid>
-                                        ))
-                                    }
-                                </List>
-                                : uiFormatter.noData()}
+                                            ))
+                                        }
+                                    </List>
+                                    : <NoData />
+                            }
                         </CardContent>
                     }
                 </Card>
