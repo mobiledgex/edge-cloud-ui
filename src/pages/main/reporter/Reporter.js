@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux';
 import * as constant from '../../../constant';
 import { ACTION_DELETE, ACTION_UPDATE } from '../../../constant/actions';
 import DataView from '../../../container/DataView';
@@ -12,6 +13,10 @@ import Generator from './Generator';
 import { lightGreen } from '@material-ui/core/colors';
 import { IconButton } from '../../../hoc/mexui'
 import { uiFormatter } from '../../../helper/formatter';
+import { redux_org } from '../../../helper/reduxData';
+import { showOrganizations } from '../../../services/model/organization';
+import { responseValid, sendRequest } from '../../../services/model/serverData';
+import LogoSpinner from '../../../hoc/loader/LogoSpinner'
 
 class Reporter extends React.Component {
 
@@ -20,6 +25,7 @@ class Reporter extends React.Component {
         this.state = {
             currentView: undefined,
             open: false,
+            orgList: []
         }
         this._isMounted = false
         this.keys = keys()
@@ -50,8 +56,9 @@ class Reporter extends React.Component {
     ])
 
     customToolbar = () => {
+        const { orgList } = this.state
         return (
-            <Generator />
+            <Generator orgList={orgList}/>
         )
     }
 
@@ -82,22 +89,38 @@ class Reporter extends React.Component {
         })
     }
 
+    skel = ()=>{
+        <React.Fragment>
+        <Skeleton animation="wave" variant="rect" />
+        </React.Fragment>
+    }
+
     render() {
-        const { currentView, open } = this.state
+        const { currentView, open, orgList } = this.state
         return (
-            <React.Fragment>
-                <DataView id={constant.PAGE_REPORTER} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} toolbarAction={this.toolbarAction} customToolbar={this.customToolbar} tableHeight={300} />
-                <Generated open={open} close={() => { this.updateState({ open: false }) }} />
-            </React.Fragment>
+            (
+                redux_org.isOperator(this) || orgList.length > 0) ?
+                <React.Fragment>
+                    <DataView id={constant.PAGE_REPORTER} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} toolbarAction={this.toolbarAction} customToolbar={this.customToolbar} tableHeight={300} />
+                    <Generated open={open} orgList={orgList} close={() => { this.updateState({ open: false }) }} />
+                </React.Fragment> : <LogoSpinner/>
         )
     }
 
-    componentDidUpdate(preProps, preState) {
-
+    fetchOrgs = async () => {
+        let mc = await sendRequest(this, showOrganizations())
+        if (responseValid(mc)) {
+            const dataList = mc.response.data
+            const orgList = dataList.map(data => (data[fields.organizationName]))
+            this.updateState({ orgList })
+        }
     }
 
     componentDidMount() {
         this._isMounted = true
+        if (redux_org.isAdmin(this)) {
+            this.fetchOrgs()
+        }
     }
 
     componentWillUnmount() {
@@ -105,5 +128,10 @@ class Reporter extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
 
-export default Reporter
+export default connect(mapStateToProps, null)(Reporter);

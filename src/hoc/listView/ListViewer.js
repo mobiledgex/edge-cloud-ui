@@ -10,7 +10,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { StyledTableRow, StyledTableCell, stableSort, getComparator } from './ListConstant'
 import { redux_org } from '../../helper/reduxData'
 import { ACTION_DISABLE, ACTION_LABEL, ACTION_VISIBLE } from '../../constant/actions'
-import InboxIcon from '@material-ui/icons/Inbox';
+import { NoData } from '../../helper/formatter/ui'
 
 const canEdit = (self, viewerEdit, action) => {
     let valid = true
@@ -29,16 +29,6 @@ const getHeight = (props) => {
     height = selectedLength > 0 ? height + 40 : height
     return `calc(100vh - ${tableHeight ? tableHeight : height}px)`
 }
-
-const NoData = ()=>{
-    return (
-        <div align='center' style={{position:'relative', top:'50%', transform: 'translateY(-50%)'}}>
-            <img src={`assets/icons/inbox_empty.svg`}/>
-            <h4 style={{ color:'grey'}}><b>No Data</b></h4>
-        </div>
-    )
-}
-
 class ListViewer extends React.Component {
     constructor(props) {
         super(props)
@@ -254,7 +244,7 @@ class ListViewer extends React.Component {
                                 }
                             </TableBody> : null}
                         </Table>
-                        {dataList.length === 0 ? <NoData/> : null}
+                        {dataList.length === 0 ? <NoData /> : null}
                     </TableContainer>
                     <TablePagination
                         rowsPerPageOptions={[25, 50, 75]}
