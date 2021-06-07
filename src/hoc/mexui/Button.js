@@ -29,20 +29,23 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Button(props) {
     const classes = useStyles();
+    const { tooltip, disabled, loading, style, children, onClick } = props
     return (
         <div className={classes.root}>
             <div className={classes.wrapper}>
-                <Tooltip title={props.tooltip ? props.tooltip : ''}>
-                    <MButton
-                        onClick={props.onClick}
-                        variant='contained'
-                        className={classes.button}
-                        disabled={props.disabled ? props.disabled : props.loading}
-                        style={props.style ? props.style : {}}
-                    >
-                        <Typography variant='button'>{props.children}</Typography>
-                        {props.loading && <CircularProgress size={15} thickness={3} className={classes.buttonProgress} />}
-                    </MButton>
+                <Tooltip title={tooltip ? tooltip : ''}>
+                    <span>
+                        <MButton
+                            onClick={onClick}
+                            variant='contained'
+                            className={classes.button}
+                            disabled={disabled ? disabled : loading}
+                            style={style ? style : {}}
+                        >
+                            <Typography variant='button'>{children}</Typography>
+                            {loading && <CircularProgress size={15} thickness={3} className={classes.buttonProgress} />}
+                        </MButton>
+                    </span>
                 </Tooltip>
                 { }
             </div>

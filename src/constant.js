@@ -1,7 +1,6 @@
 import { fields } from "./services/model/format"
 import { accessGranted } from "./services/model/privateCloudletAccess"
 import { sendRequest } from "./pages/main/monitoring/services/service"
-import { redux_org } from "./helper/reduxData"
 
 export const COLOR_GREEN = '#388E3C'
 export const COLOR_RED = '#ab2424'
@@ -184,7 +183,7 @@ export const pages = [
     { label: 'Alert Receivers', icon: 'notification_important', id: PAGE_ALERTS, path: 'alerts', visible: true },
     { label: 'Billing', icon: 'payment', id: PAGE_BILLING_ORG, path: 'billing-org', roles: [ADMIN], visible: true },
     { label: 'Invoices', icon: 'payment', id: PAGE_INVOICES, path: 'invoices', roles: [DEVELOPER_MANAGER] },
-    { label: 'Reports', icon: 'assessment', id: PAGE_REPORTER, path: 'reporter', roles: [OPERATOR_MANAGER], visible: true },
+    { label: 'Reports', icon: 'assessment', id: PAGE_REPORTER, path: 'reporter', roles: [ADMIN, OPERATOR_MANAGER], visible: true },
 ]
 
 export const getHeight = (height) => {
