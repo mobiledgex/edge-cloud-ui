@@ -134,6 +134,7 @@ export const lock = (key, data, isDetail, callback) => {
     }
 }
 
+
 export const reporterStatus = (key, data, isDetail) => {
     let success = data[key.field] === 'success' 
     if (isDetail) {
@@ -143,4 +144,13 @@ export const reporterStatus = (key, data, isDetail) => {
     {
         return <Icon name={success ? 'check' : 'close'} style={{ color: success ? constant.COLOR_GREEN : constant.COLOR_RED }} /> 
     }
+}
+
+export const NoData = ()=>{
+    return (
+        <div align='center' style={{position:'relative', top:'50%', transform: 'translateY(-50%)'}}>
+            <img src={`assets/icons/inbox_empty.svg`}/>
+            <h4 style={{ color:'grey'}}><b>No Data</b></h4>
+        </div>
+    )
 }

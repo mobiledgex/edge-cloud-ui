@@ -5,16 +5,33 @@ import SearchFilter from '../../filter/SearchFilter'
 import KeyboardArrowDownOutlinedIcon from '@material-ui/icons/KeyboardArrowDownOutlined';
 import { FixedSizeList } from 'react-window';
 
+/**
+ * optional params
+ * width: width of the select
+ * placeholder: tip
+ * value: default value
+ * search: enable/disable search option
+ * underline: show bottom line
+**/
+
+/**
+ * mandatory params
+ * list: width of the select
+ * onChange: triggers on select
+**/
+
 const useStyles = makeStyles((theme) => ({
-    formControl: {
-        width: 212,
-    },
+    formControl: props => ({
+        maxWidth: 250,
+        minWidth: props.width ? props.width : 100
+    }),
     selectEmpty: {
         marginTop: theme.spacing(1),
     },
     icon: {
         float: 'right',
-        marginRight: 2
+        marginRight: 2,
+        marginLeft: 5
     },
     wrapIcon: {
         verticalAlign: 'middle',
@@ -23,13 +40,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Select(props) {
-    const classes = useStyles();
+    const classes = useStyles(props);
     const [anchorEl, setAnchorEl] = React.useState(null)
     const [value, setValue] = React.useState(props.value ? props.value : '');
     const [list, setList] = React.useState(props.list)
 
     useEffect(() => {
-        props.onChange(value)
+        if (value) {
+            props.onChange(value)
+        }
     }, [value]);
 
     const handleChange = (value) => {
@@ -49,18 +68,23 @@ export default function Select(props) {
         );
     }
 
+    const selectLabel = () => {
+        const { placeholder } = props
+        return value ? value : placeholder ? placeholder : ''
+    }
+
     return (
         <div>
             <FormControl className={classes.formControl}>
                 {props.label ? <InputLabel shrink id="mex-ui-select">
                     {props.label}
                 </InputLabel> : null}
-                <div style={{ display: 'inline', cursor: 'pointer', marginTop: 21 }} aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorEl(e.currentTarget) }}>
+                <div style={{ display: 'inline', cursor: 'pointer', marginTop: props.label ? 21 : 0 }} aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorEl(e.currentTarget) }}>
                     <Typography aria-controls="chart" aria-haspopup="true" className={classes.wrapIcon}>
-                        {value}
+                        {selectLabel()}
                     </Typography>
                     <KeyboardArrowDownOutlinedIcon className={classes.icon} />
-                    <div style={{ borderBottom: '0.1em solid #BFC0C2', marginTop: 3 }}></div>
+                    <div style={{ borderBottom: props.underline ? '0.1em solid #BFC0C2' : '', marginTop: 3 }}></div>
                 </div>
                 <Menu
                     id="mex-ui-select"
@@ -69,7 +93,7 @@ export default function Select(props) {
                     open={Boolean(anchorEl)}
                 >
                     {props.search ? <SearchFilter onFilter={onFilter} style={{ marginBottom: 10 }} /> : null}
-                    <FixedSizeList height={300} itemSize={40} itemCount={list.length}>
+                    <FixedSizeList height={300} style={{ minWidth: 213 }} itemSize={40} itemCount={list.length}>
                         {renderRow}
                     </FixedSizeList>
                 </Menu>

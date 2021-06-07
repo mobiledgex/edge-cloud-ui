@@ -25,19 +25,22 @@ const useStyles = makeStyles((theme) => ({
 
 export default function IconButton(props) {
     const classes = useStyles();
+    const { tooltip, disabled, style, loading, onClick, children } = props
     return (
         <div className={classes.root}>
             <div className={classes.wrapper}>
-                <Tooltip title={props.tooltip ? props.tooltip : ''}>
-                    <IB
-                        onClick={props.onClick}
-                        disabled={props.disabled ? props.disabled : props.loading}
-                        style={props.style ? props.style : {}}
-                    >
-                        {props.children}
-                    </IB>
+                <Tooltip title={tooltip ? tooltip : ''}>
+                    <span>
+                        <IB
+                            onClick={onClick}
+                            disabled={disabled ? disabled : loading}
+                            style={style ? style : {}}
+                        >
+                            {children}
+                        </IB>
+                    </span>
                 </Tooltip>
-                {props.loading && <CircularProgress size={32} className={classes.buttonProgress} />}
+                {loading && <CircularProgress size={32} className={classes.buttonProgress} />}
             </div>
         </div>
     );

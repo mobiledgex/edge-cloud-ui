@@ -150,3 +150,7 @@ export const resetPasswordRequest = async (self, data) => {
     return valid
 }
 
+export const responseValid = (mc)=>{
+    return mc && mc.response && mc.response.status === 200
+}
+
