@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as serverData from "../../../services/model/serverData";
 import { Button } from '@material-ui/core';
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 class VerifyContent extends Component {

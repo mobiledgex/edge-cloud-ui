@@ -5,7 +5,7 @@ import { LOCAL_STRAGE_KEY } from '../../../constant'
 import * as serverData from '../../../services/model/serverData';
 import MexOTPValidation from './MexOTPValidation';
 import LoginForm from './LoginForm'
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 class Login extends Component {
     constructor(props) {
         super(props);

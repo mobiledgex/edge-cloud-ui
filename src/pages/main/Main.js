@@ -8,7 +8,7 @@ import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
 import { pages, PAGE_ORGANIZATIONS, validatePrivateAccess } from '../../constant';
 import { validateRole } from '../../constant/role';
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import { equal } from '../../constant/compare';
 import { redux_org } from '../../helper/reduxData';
 import LinearProgress from '@material-ui/core/LinearProgress';

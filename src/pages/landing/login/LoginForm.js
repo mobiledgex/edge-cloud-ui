@@ -1,5 +1,5 @@
 import React from 'react'
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import { Icon, Input, Button } from 'semantic-ui-react';
 
