@@ -39,7 +39,8 @@ class Generated extends React.Component {
         this.state = {
             reports: [],
             pdfLoading: undefined,
-            loading: false
+            loading: false,
+            selectedOrg:undefined
         }
         this._isMounted = false
     }
@@ -51,8 +52,9 @@ class Generated extends React.Component {
     }
 
     fetchReport = async (index, filename, action) => {
+        let org = this.state.selectedOrg
         this.updateState({ pdfLoading: `${index}_${action}` })
-        let mc = await downloadReport(this, { filename })
+        let mc = await downloadReport(this, { filename, org })
         if (mc && mc.response && mc.response.status === 200) {
             const blob = new Blob([mc.response.data], { type: 'application/pdf' })
             const objectUrl = window.URL.createObjectURL(blob)
@@ -73,7 +75,7 @@ class Generated extends React.Component {
 
     fetchReports = async (org) => {
         this.updateState({ loading: true })
-        let mc = await showGeneratedReports(this, { organizationName: org })
+        let mc = await showGeneratedReports(this, { org })
         if (mc && mc.response && mc.response.status === 200) {
             let reports = mc.response.data
             this.updateState({ reports })
@@ -83,12 +85,12 @@ class Generated extends React.Component {
 
     onOrgChange = (value) => {
         if (this._isMounted && value) {
-            this.setState({ reports: [] }, () => {
+            this.setState({ reports: [], selectedOrg:value }, () => {
                 this.fetchReports(value)
             })
         }
         else {
-            this.updateState({ reports: [] })
+            this.updateState({ reports: [], selectedOrg:undefined })
         }
     }
 

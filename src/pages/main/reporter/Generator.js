@@ -40,6 +40,7 @@ class Generator extends React.Component {
         const starttime = time(FORMAT_FULL_T_Z, this.data.from, this.data.zone)
         const endtime = time(FORMAT_FULL_T_Z, this.data.to, this.data.zone)
         const org = this.data.org
+        const timezone = this.data.zone
         if (redux_org.isAdmin(this) && this.data.org === undefined) {
             this.props.handleAlertInfo('error', 'Please select organization')
         }
@@ -51,7 +52,7 @@ class Generator extends React.Component {
         }
         else {
             this.setState({ loading: true })
-            let mc = await generateReport(this, { starttime, endtime, organizationName: org })
+            let mc = await generateReport(this, { starttime, endtime, org, timezone })
             if (mc && mc.response && mc.response.status === 200) {
                 const blob = new Blob([mc.response.data], { type: 'application/pdf' })
                 const objectUrl = window.URL.createObjectURL(blob)
