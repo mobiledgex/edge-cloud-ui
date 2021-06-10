@@ -29,6 +29,7 @@ export const keys = () => ([
     { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
     { field: fields.reservable, serverField: 'reservable', label: 'Reservable', roles: [constant.ADMIN_MANAGER], format: true },
     { field: fields.reservedBy, serverField: 'reserved_by', label: 'Reserved By', roles: [constant.ADMIN_MANAGER] },
+    { field: fields.resources, serverField: 'resources', label: 'Resources', dataType: TYPE_JSON },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles:[constant.ADMIN, constant.DEVELOPER] }
