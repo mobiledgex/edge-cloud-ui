@@ -6,7 +6,6 @@ import { currentDate, diff, FORMAT_FULL_DATE, FORMAT_FULL_T_Z, subtractDays, tim
 import { timezonePref } from '../../../utils/sharedPreferences_util'
 import { generateReport } from '../../../services/model/reporter'
 import * as actions from '../../../actions'
-import { lightGreen } from '@material-ui/core/colors'
 import { redux_org } from '../../../helper/reduxData'
 
 const MIN_7_DAYS = 7

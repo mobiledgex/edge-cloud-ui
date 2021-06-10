@@ -45,7 +45,7 @@ class ReporterReg extends React.Component {
             { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true, type: 'search' }, visible: true, update: { edit: true }, tip: 'Email to send generated reports' },
             { field: fields.schedule, label: 'Report Interval', formType: SELECT, placeholder: 'Select Interval', rules: { required: true }, visible: true, update: { edit: true }, tip: ' Indicates how often a report should be generated, one of EveryWeek, Every15Days, Every30Days, EveryMonth' },
             { field: fields.startdate, label: 'Start Schedule Date', formType: DATE_PICKER, placeholder: 'Enter Start Date', rules: { required: true }, visible: true, tip: 'Start date (in RFC3339 format with intended timezone) when the report is scheduled to be generated (Default: today)' },
-            { field: fields.timezone, label: 'Timezone', formType: SELECT, placeholder: 'Select Timezone', rules: { required: true }, visible: true, tip: 'Timezone in which report has to be generated' },
+            { field: fields.timezone, label: 'Timezone', formType: SELECT, placeholder: 'Select Timezone', rules: { required: true }, visible: true, update: { edit: true }, tip: 'Timezone in which report has to be generated' },
         ]
     }
 
