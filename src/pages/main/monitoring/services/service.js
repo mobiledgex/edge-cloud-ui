@@ -39,8 +39,8 @@ export const getToken = (self) => {
 }
 
 export const checkExpiry = (self, message) => {
-    message = message.toLowerCase()
     if (message) {
+        message = message.toLowerCase()
         let isExpired = message.indexOf('expired jwt') > -1 || message.indexOf('expired token') > -1 || message.indexOf('token is expired') > -1
         if (isExpired && self) {
             setTimeout(() => {
