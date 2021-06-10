@@ -6,7 +6,7 @@ import DataView from '../../../../container/DataView';
 import { fields } from '../../../../services/model/format';
 
 import { showInvoices, keys } from '../../../../services/model/invoices'
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import { redux_org } from '../../../../helper/reduxData';
 import { connect } from 'react-redux';
 

@@ -18,7 +18,7 @@ import { PUBLIC_CONFIG } from '../../../services/model/endpoints'
 import { load } from "../../../helper/zxcvbn";
 import ReCAPTCHA from "react-google-recaptcha";
 import MexOTPRegistration from '../otp/MexOTPRegistration';
-import { useHistory } from "react-router";
+import { useHistory } from 'react-router-dom';
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
 const HOST = window.location.host;

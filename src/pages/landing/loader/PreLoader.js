@@ -8,7 +8,7 @@ import { showOrganizations } from '../../../services/model/organization';
 import { PAGE_ORGANIZATIONS, validatePrivateAccess } from '../../../constant';
 import { LS_ORGANIZATION_INFO, LS_USER_META_DATA, LS_REGIONS, organizationInfo } from '../../../helper/ls';
 import './style.css'
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import { redux_org } from '../../../helper/reduxData';
 
 class LogoLoader extends React.Component {

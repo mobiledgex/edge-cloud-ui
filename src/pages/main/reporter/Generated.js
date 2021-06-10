@@ -11,6 +11,7 @@ import { lightGreen } from '@material-ui/core/colors';
 import { redux_org } from '../../../helper/reduxData';
 import { Select } from '../../../hoc/mexui'
 import { NoData } from '../../../helper/formatter/ui'
+import { FORMAT_FULL_DATE, time } from '../../../utils/date_util';
 
 const OPEN = 0
 const DOWNLOAD = 1
@@ -24,6 +25,13 @@ const styles = theme => ({
         marginLeft: -12,
     },
 })
+
+const keys = [
+    { label: 'Operator' },
+    { label: 'Reporter' },
+    { label: 'Startime' },
+    { label: 'Endtime' },
+]
 
 class Generated extends React.Component {
     constructor(props) {
@@ -79,8 +87,29 @@ class Generated extends React.Component {
                 this.fetchReports(value)
             })
         }
+        else {
+            this.updateState({ reports: [] })
+        }
     }
 
+    renderFileDetails = (filename) => {
+        const details = filename.split('/')
+        if (details.length === 3) {
+            const timerange = details[2].replace('.pdf', '')
+            const intervals = timerange.split('_')
+            if (intervals.length === 2) {
+                details[2] = time(FORMAT_FULL_DATE, intervals[0])
+                details[3] = time(FORMAT_FULL_DATE, intervals[1])
+            }
+        }
+        return (
+            <Grid container>
+                {details.map((detail, i) => (
+                    <Grid item xs={2} key={i}>{detail}</Grid>
+                ))}
+            </Grid>
+        )
+    }
     render() {
         const { open, close, orgList } = this.props
         const { reports, loading, pdfLoading } = this.state
@@ -115,12 +144,22 @@ class Generated extends React.Component {
                         <CardContent style={{ height: '30vh', overflowY: 'auto', overflowX: 'hidden' }}>
                             {
                                 reports.length > 0 ?
-                                    <List style={{}}>
+                                    <List >
+                                        <Grid container style={{ marginBottom: 5, paddingLeft: 5, paddingRight: 5 }}>
+                                            <Grid item xs={10}>
+                                                <Grid container>
+                                                    {keys.map((key, i) => (
+                                                        <Grid item xs={2} key={i}><b>{key.label}</b></Grid>
+                                                    ))}
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                        <Divider />
                                         {
                                             reports.map((filename, i) => (
-                                                <Grid key={i} container style={{ alignItems: 'center', display: 'flex' }}>
+                                                <Grid key={i} container style={{ alignItems: 'center', display: 'flex', marginBottom: -5, paddingLeft: 5, paddingRight: 5, backgroundColor: `${i % 2 === 0 ? '#1E2123' : '#292C33'}` }}>
                                                     <Grid item xs={10}>
-                                                        <h5>{filename}</h5>
+                                                        {this.renderFileDetails(filename)}
                                                     </Grid>
                                                     <Grid item xs={1}>
                                                         {
@@ -152,8 +191,6 @@ class Generated extends React.Component {
             }
         }
     }
-
-
 
     componentDidMount() {
         this._isMounted = true
