@@ -46,21 +46,21 @@ const generateRequestData = (data, isCreate) => {
 
 export const showGeneratedReports = async (self, data) => {
     let requestData = {}
-    requestData.org = redux_org.nonAdminOrg(self) ? redux_org.nonAdminOrg(self) : data[fields.organizationName]
+    requestData.org = redux_org.nonAdminOrg(self) ? redux_org.nonAdminOrg(self) : data[fields.org]
     let request = { method: SHOW_REPORTS, data: requestData }
     return await sendRequest(self, request)
 }
 
 export const downloadReport = async (self, data) => {
     let requestData = data
-    requestData.org = redux_org.nonAdminOrg(self) ? redux_org.nonAdminOrg(self) : data[fields.organizationName]
+    requestData.org = redux_org.nonAdminOrg(self) ? redux_org.nonAdminOrg(self) : data[fields.org]
     let request = { method: DOWNLOAD_REPORT, data: requestData, responseType: 'arraybuffer', headers : {Accept: 'application/pdf'} }
     return await sendRequest(self, request)
 }
 
 export const generateReport = async(self, data)=>{
     let requestData = data
-    requestData.org = redux_org.nonAdminOrg(self) ? redux_org.nonAdminOrg(self) : data[fields.organizationName]
+    requestData.org = redux_org.nonAdminOrg(self) ? redux_org.nonAdminOrg(self) : data[fields.org]
     let request = { method: GENERATE_REPORT, data: requestData, responseType: 'arraybuffer', headers : {Accept: 'application/pdf'} }
     return await sendRequest(self, request)
 }

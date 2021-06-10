@@ -9,6 +9,7 @@ export const fields = {
     cloudlet_name_operator: 'cloudlet_name_operator',
     realclustername: 'realclustername',
     organizationName: 'organizationName',
+    org: 'org',
     billingOrgName: 'billingOrgName',
     operatorName: 'operatorName',
     cloudletName: 'cloudletName',
