@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { UNKNOWN } from '../../../../constant';
 import * as EP from '../../../../services/model/endPointTypes'
 
 export function getEP() {
@@ -56,7 +57,7 @@ export const checkExpiry = (self, message) => {
 const responseError = (self, request, error, callback) => {
     if (error && error.response) {
         let response = error.response
-        let message = 'UnKnown';
+        let message = UNKNOWN;
         let code = response.status;
         if (response.data && response.data.message) {
             message = response.data.message

@@ -20,6 +20,7 @@ export const keys = () => ([
     { field: fields.app_name_version, label: 'App [Version]', visible: true, sortable: true, detailView: false },
     { field: fields.version, serverField: 'key#OS#version', label: 'Version', visible: false, filter: true, key: true },
     { field: fields.deployment, serverField: 'deployment', label: 'Deployment', sortable: true, visible: true, filter: true, group: true },
+    { field: fields.vmappostype, serverField: 'vm_app_os_type', label: 'VM App OS Type' },
     { field: fields.command, serverField: 'command', label: 'Command' },
     { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: constant.TYPE_YAML },
     { field: fields.deploymentGenerator, serverField: 'deployment_generator', label: 'Deployment Generator' },
@@ -110,6 +111,10 @@ export const getKey = (data, isCreate) => {
             app.template_delimiter = data[fields.templateDelimiter]
         }
 
+        if (data[fields.vmappostype]) {
+            app.vm_app_os_type = idFormatter.vmAppOS(data[fields.vmappostype])
+        }
+
         if (data[fields.fields]) {
             app.fields = data[fields.fields]
         }
@@ -155,6 +160,7 @@ const customData = (value) => {
     value[fields.trusted] = value[fields.trusted] ? value[fields.trusted] : false
     value[fields.accessType] = labelFormatter.accessType(value[fields.accessType])
     value[fields.imageType] = labelFormatter.imageType(value[fields.imageType])
+    value[fields.vmappostype] = labelFormatter.vmAppOS(value[fields.vmappostype])
     value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
     value[fields.deploymentManifest] = value[fields.deploymentManifest] ? value[fields.deploymentManifest].trim() : value[fields.deploymentManifest]
     if (value[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
