@@ -179,6 +179,24 @@ class CloudletReg extends React.Component {
         }
     }
 
+    kafkaChange = (currentForm, forms, isInit) => {
+        let inputValid = false
+        for (let form of forms) {
+            if (inputValid) {
+                continue;
+            }
+            else if (form.field === fields.kafkaCluster || form.field === fields.kafkaUser || form.field === fields.kafkaPassword) {
+                inputValid = Boolean(form.value)
+            }
+        }
+        for (let form of forms) {
+            if (form.field === fields.kafkaCluster || form.field === fields.kafkaUser || form.field === fields.kafkaPassword) {
+                form.rules.required = inputValid
+            }
+        }
+        this.updateState({ forms })
+    }
+
     checkForms = (form, forms, isInit, data) => {
         let flowDataList = []
         if (form.field === fields.region) {
@@ -197,6 +215,9 @@ class CloudletReg extends React.Component {
             this.infraAPIAccessChange(form, forms, isInit)
             let finalData = isInit ? data : formattedData(forms)
             flowDataList.push(cloudletFLow.privateFlow(finalData))
+        }
+        else if (form.field === fields.kafkaCluster || form.field === fields.kafkaUser || form.field === fields.kafkaPassword) {
+            this.kafkaChange(form, forms, isInit)
         }
 
         if (flowDataList.length > 0) {
@@ -643,7 +664,11 @@ class CloudletReg extends React.Component {
             { field: fields.trustPolicyName, label: 'Trust Policy', formType: SELECT, placeholder: 'Select Trust Policy', visible: true, update: { id: ['37'] }, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.operatorName }], advance: false },
             { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version', advance: false },
             { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },
-            { field: fields.maintenanceState, label: 'Maintenance State', formType: SELECT, placeholder: 'Select Maintenance State', rules: { required: false }, visible: this.isUpdate, update: { id: ['30'] }, tip: 'Maintenance allows for planned downtimes of Cloudlets. These states involve message exchanges between the Controller, the AutoProv service, and the CRM. Certain states are only set by certain actors', advance: false }
+            { field: fields.maintenanceState, label: 'Maintenance State', formType: SELECT, placeholder: 'Select Maintenance State', rules: { required: false }, visible: this.isUpdate, update: { id: ['30'] }, tip: 'Maintenance allows for planned downtimes of Cloudlets. These states involve message exchanges between the Controller, the AutoProv service, and the CRM. Certain states are only set by certain actors', advance: false },
+            { field: fields.kafkaCluster, label: 'Kafka Cluster', formType: INPUT, placeholder: 'Enter Kafka Cluster Endpoint', rules: { required: false, onBlur: true }, visible: true, update: { id: ['42'] }, tip: 'Operator provided kafka cluster endpoint to push events to', advance: false },
+            { field: fields.kafkaUser, label: 'Kafka User', formType: INPUT, placeholder: 'Enter Kafka Username', rules: { required: false, onBlur: true }, visible: true, update: { id: ['43'] }, tip: 'Username for kafka SASL/PLAIN authentification, stored securely in secret storage and never visible externally', advance: false },
+            { field: fields.kafkaPassword, label: 'Kafka Password', formType: INPUT, placeholder: 'Enter Kafka Password', rules: { required: false, onBlur: true }, visible: true, update: { id: ['44'] }, tip: 'Password for kafka SASL/PLAIN authentification, stored securely in secret storage and never visible externally', advance: false },
+
         ]
     }
 
@@ -683,8 +708,8 @@ class CloudletReg extends React.Component {
             }
         }
         else {
-            let organizationList = await getOrganizationList(this, {type:constant.OPERATOR})
-            this.operatorList = organizationList.map(org=>{
+            let organizationList = await getOrganizationList(this, { type: constant.OPERATOR })
+            this.operatorList = organizationList.map(org => {
                 return org[fields.organizationName]
             })
         }
@@ -714,8 +739,8 @@ class CloudletReg extends React.Component {
         this.props.handleViewMode(HELP_CLOUDLET_REG)
     }
 
-    componentWillUnmount(){
-        this._isMounted = false 
+    componentWillUnmount() {
+        this._isMounted = false
     }
 };
 

@@ -216,7 +216,10 @@ export const fields = {
     title: 'title',
     description: 'description',
     trusted: 'trusted',
-    compatibilityVersion: 'compatibilityVersion'
+    compatibilityVersion: 'compatibilityVersion',
+    kafkaCluster: 'kafkaCluster',
+    kafkaUser: 'kafkaUser',
+    kafkaPassword: 'kafkaPassword'
 }
 
 const mapObject = (currentObject, serverField) => {

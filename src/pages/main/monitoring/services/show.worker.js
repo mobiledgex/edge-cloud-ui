@@ -32,9 +32,6 @@ const fetchAppInstData = (parentId, showList, keys) => {
                 if (isRealCluster && key.field === fields.clusterName) {
                     dataKey = dataKey + show[fields.realclustername] + '_'
                 }
-                else if (isRealCluster && key.field === fields.clusterdeveloper) {
-                    dataKey = dataKey + show[fields.organizationName] + '_'
-                }
                 else {
                     dataKey = dataKey + show[key.field] + '_'
                 }
