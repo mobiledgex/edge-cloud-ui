@@ -14,11 +14,11 @@ import { Button, Checkbox, FormControlLabel } from "@material-ui/core";
 import { copyData } from '../../../utils/file_util'
 import cloneDeep from "lodash/cloneDeep";
 import { sendRequest } from '../../../services/model/serverWorker'
-import { PUBLIC_CONFIG } from '../../../services/model/endpoints'
 import { load } from "../../../helper/zxcvbn";
 import ReCAPTCHA from "react-google-recaptcha";
 import MexOTPRegistration from '../otp/MexOTPRegistration';
 import { useHistory } from 'react-router-dom';
+import { endpoint } from "../../../helper/constant";
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
 const HOST = window.location.host;
@@ -367,7 +367,7 @@ class RegistryUserForm extends React.Component {
 
     componentDidMount() {
         this.props.handleLoadingSpinner(true)
-        sendRequest(this, { method: PUBLIC_CONFIG }, this.publicConfigResponse)
+        sendRequest(this, { method: endpoint.PUBLIC_CONFIG }, this.publicConfigResponse)
     }
 };
 

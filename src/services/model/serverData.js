@@ -1,6 +1,4 @@
 import * as serviceMC from './serviceMC';
-
-import { RESEND_VERIFY, VERIFY_EMAIL, RESET_PASSWORD, CREATE_USER, LOGIN, RESET_PASSWORD_REQUEST } from './endPointTypes'
 import { SHOW_AUDIT_ORG } from '../../helper/constant/endpoint';
 import { endpoint } from '../../helper/constant';
 
@@ -99,7 +97,7 @@ export const showUserRoles = async (self) => {
 
 export const sendVerify = async (self, data) => {
     let valid = false;
-    let mcRequest = await serviceMC.sendSyncRequest(self, { method: RESEND_VERIFY, data: data })
+    let mcRequest = await serviceMC.sendSyncRequest(self, { method: endpoint.RESEND_VERIFY, data: data })
     if (mcRequest && mcRequest.response) {
         let response = mcRequest.response;
         valid = response.status === 200 ? true : false
@@ -108,7 +106,7 @@ export const sendVerify = async (self, data) => {
 }
 
 export const verifyEmail = async (self, data) => {
-    let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: VERIFY_EMAIL, data: data })
+    let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: endpoint.VERIFY_EMAIL, data: data })
     return mcRequest
 }
 
@@ -128,23 +126,23 @@ export const settingLock = async (self, data) => {
 }
 
 export const resetPassword = async (self, data) => {
-    let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: RESET_PASSWORD, data: data })
+    let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: endpoint.RESET_PASSWORD, data: data })
     return mcRequest
 }
 
 export const createUser = async (self, data) => {
-    let mcRequest = await serviceMC.sendSyncRequest(self, { method: CREATE_USER, data: data })
+    let mcRequest = await serviceMC.sendSyncRequest(self, { method: endpoint.CREATE_USER, data: data })
     return mcRequest
 }
 
 export const login = async (self, data) => {
-    let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: LOGIN, data: data })
+    let mcRequest = await serviceMC.sendSyncRequestWithError(self, { method: endpoint.LOGIN, data: data })
     return mcRequest
 }
 
 export const resetPasswordRequest = async (self, data) => {
     let valid = false
-    let mcRequest = await serviceMC.sendSyncRequest(self, { method: RESET_PASSWORD_REQUEST, data: data })
+    let mcRequest = await serviceMC.sendSyncRequest(self, { method: endpoint.RESET_PASSWORD_REQUEST, data: data })
     if (mcRequest && mcRequest.response) {
         let response = mcRequest.response;
         valid = response.status === 200 ? true : false

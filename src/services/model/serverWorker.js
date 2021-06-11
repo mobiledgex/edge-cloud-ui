@@ -1,6 +1,5 @@
 import ServerWorker from '../worker/server.worker.js'
 import { checkExpiry } from './serviceMC'
-import { RESET_PASSWORD } from './endpoints.js'
 import * as endpoint from '../../helper/constant/endpoint'
 
 const getToken = (self) => {
@@ -37,7 +36,7 @@ export const updatePwd = (self, data, callback) => {
 }
 
 export const resetPwd = (self, data, callback) => {
-    let request = { method: RESET_PASSWORD, data: data }
+    let request = { method: endpoint.RESET_PASSWORD, data: data }
     sendRequest(self, request).addEventListener('message', event => {
         callback(event.data)
     });

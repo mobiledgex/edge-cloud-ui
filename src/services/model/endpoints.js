@@ -1,43 +1,8 @@
 import * as endpoint from '../../helper/constant/endpoint';
 import * as formatter from './format'
 
-export const LOGIN = "login";
-export const RESET_PASSWORD = "passwordreset";
-export const PUBLIC_CONFIG = 'publicconfig'
-
 export const getPath = (request) => {
-    switch (request.method) {
-        case endpoint.REVOKE_ACCESS_KEY:
-        case endpoint.SHOW_ALERT:
-        case endpoint.SHOW_CLOUDLET:
-        case endpoint.SHOW_ORG_CLOUDLET:
-        case endpoint.SHOW_ORG:
-        case endpoint.SHOW_ORG_CLOUDLET_INFO:
-        case endpoint.SHOW_CLOUDLET_INFO:
-        case endpoint.SHOW_CLUSTER_INST:
-        case endpoint.SHOW_APP_INST:
-        case endpoint.EVENTS_SHOW:
-        case endpoint.CLOUDLET_METRICS_ENDPOINT:
-        case endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT:
-        case endpoint.APP_INST_METRICS_ENDPOINT:
-        case endpoint.CLUSTER_METRICS_ENDPOINT:
-        case endpoint.CLIENT_METRICS_ENDPOINT:
-        case endpoint.CLOUDLET_EVENT_LOG_ENDPOINT:
-        case endpoint.CLUSTER_EVENT_LOG_ENDPOINT:
-        case endpoint.APP_INST_EVENT_LOG_ENDPOINT:
-        case endpoint.APP_INST_USAGE_ENDPOINT:
-        case endpoint.CLUSTER_INST_USAGE_ENDPOINT:
-        case endpoint.SHOW_ROLE:
-        case endpoint.SHOW_CONTROLLER:
-        case endpoint.UPDATE_USER:
-        case endpoint.NEW_PASSWORD:
-            return `/api/v1/auth/${request.method}`
-        case PUBLIC_CONFIG:
-        case RESET_PASSWORD:
-            return `/api/v1/${request.method}`
-        default:
-            return null;
-    }
+    return `/api/v1/${request.method}`
 }
 
 export const getHeader = (request) => {
