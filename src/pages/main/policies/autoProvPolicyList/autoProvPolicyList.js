@@ -13,7 +13,7 @@ import { showApps } from '../../../../services/model/app';
 //list
 import DataView from '../../../../container/DataView';
 import { HELP_POLICY_LIST } from "../../../../tutorial";
-import { ACTION_DELETE, ACTION_UPDATE } from '../../../../constant/actions';
+import { perpetual } from '../../../../helper/constant';
 class AutoProvPolicy extends React.Component {
     constructor(props) {
         super(props);
@@ -76,10 +76,10 @@ class AutoProvPolicy extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_UPDATE, label: 'Update', onClick: this.onAdd, type: 'Edit' },
+            { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onAdd, type: 'Edit' },
             { label: 'Add Cloudlet', onClick: this.onAddCloudlet, type: 'Edit' },
             { label: 'Delete Cloudlet', visible: this.onDeleteCloudletVisible, onClick: this.onDeleteCloudlet, type: 'Edit' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteAutoProvPolicy, onFinish: this.onDelete, type: 'Edit' }]
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteAutoProvPolicy, onFinish: this.onDelete, type: 'Edit' }]
     }
 
     groupActionMenu = () => {

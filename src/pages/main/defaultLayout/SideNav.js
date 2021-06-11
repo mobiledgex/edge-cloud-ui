@@ -22,7 +22,7 @@ import RoleLegend from './RoleLegend'
 
 import { Collapse, Icon, LinearProgress, Tooltip } from '@material-ui/core';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import { validateRole } from '../../../constant/role'
+import { role } from '../../../helper/constant';
 
 //Header
 import Header from './Header'
@@ -167,7 +167,7 @@ const Options = (props) => {
                     {
                         item.divider ?
                             <Divider /> :
-                            validateRole(item.roles, orgInfo) ? <React.Fragment>
+                            role.validateRole(item.roles, orgInfo) ? <React.Fragment>
                                 <Tooltip title={renderPopover(item)} interactive placement="right" arrow>
                                     {renderItem(item)}
                                 </Tooltip>

@@ -10,9 +10,9 @@ import * as constant from '../../../constant'
 import Alerts from './alerts/Alerts'
 import './style.css'
 
-import notificationWorker from './services/notifcation.worker.js'
+import notificationWorker from './services/notifcation.worker.js';
 import { getToken } from '../monitoring/services/service';
-import { equal } from '../../../constant/compare';
+import { operators } from '../../../helper/constant';
 
 class AlertGlobal extends React.Component {
 
@@ -121,7 +121,7 @@ class AlertGlobal extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.organizationInfo && !equal(this.props.organizationInfo, prevProps.organizationInfo)) {
+        if (this.props.organizationInfo && !operators.equal(this.props.organizationInfo, prevProps.organizationInfo)) {
             if (redux_org.isAdmin(this)) {
                 this.fetchdata()
             }

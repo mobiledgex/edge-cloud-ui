@@ -7,9 +7,9 @@ import Menu from './Menu'
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
 import { pages, PAGE_ORGANIZATIONS, validatePrivateAccess } from '../../constant';
-import { validateRole } from '../../constant/role';
+import { role } from '../../helper/constant';
 import { withRouter } from 'react-router-dom';
-import { equal } from '../../constant/compare';
+import { operators } from '../../helper/constant';
 import { redux_org } from '../../helper/reduxData';
 
 class Main extends React.Component {
@@ -60,7 +60,7 @@ class Main extends React.Component {
                 if (pathname.includes(page.path)) {
                     let roles = page.roles
                     if (roles) {
-                        if (validateRole(page.roles, orgInfo)) {
+                        if (role.validateRole(page.roles, orgInfo)) {
                             pathValid = true
                         }
                     }
@@ -87,7 +87,7 @@ class Main extends React.Component {
     }
 
     componentDidUpdate(preProps, preState) {
-        if (!equal(preProps.organizationInfo, this.props.organizationInfo)) {
+        if (!operators.equal(preProps.organizationInfo, this.props.organizationInfo)) {
             this.onOrgChange(this.props.organizationInfo)
         }
         this.redirectInvalidPath()

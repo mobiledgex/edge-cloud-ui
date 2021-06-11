@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import * as constant from '../../../constant';
-import { ACTION_DELETE, ACTION_UPDATE } from '../../../constant/actions';
+import { perpetual } from '../../../helper/constant';
 import DataView from '../../../container/DataView';
 import { fields } from '../../../services/model/format';
 import { keys, showReporter, deleteReporter } from '../../../services/model/reporter';
@@ -51,8 +51,8 @@ class Reporter extends React.Component {
     }
 
     actionMenu = () => ([
-        { id: ACTION_UPDATE, label: 'Update', onClick: this.onReg, type: 'Edit' },
-        { id: ACTION_DELETE, label: 'Delete', onClick: deleteReporter, type: 'Edit' }
+        { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onReg, type: 'Edit' },
+        { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteReporter, type: 'Edit' }
     ])
 
     customToolbar = () => {

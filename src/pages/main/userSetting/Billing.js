@@ -10,7 +10,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import PaymentOutlinedIcon from '@material-ui/icons/PaymentOutlined';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import { fields } from '../../../services/model/format';
-import { equal } from '../../../constant/compare';
+import { operators } from '../../../helper/constant';
 import { redux_org } from '../../../helper/reduxData';
 import cloneDeep from 'lodash/cloneDeep';
 import { lightGreen } from '@material-ui/core/colors';
@@ -132,7 +132,7 @@ class Billing extends React.Component {
     }
 
     componentDidUpdate(preProps, preState) {
-        if (!equal(preProps.organizationInfo, this.props.organizationInfo)) {
+        if (!operators.equal(preProps.organizationInfo, this.props.organizationInfo)) {
             this.setManagedOrg()
         }
     }

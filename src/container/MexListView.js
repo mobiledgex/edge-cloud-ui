@@ -20,9 +20,7 @@ import { prefixSearchPref, showMapPref } from '../utils/sharedPreferences_util';
 import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import ListMexMap from './map/ListMexMap'
 import cloneDeep from 'lodash/cloneDeep';
-import { ACTION_DELETE, ACTION_EDGE_BOX_ENABLE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_REBOOT, ACTION_UPGRADE, ACTION_WARNING, ACTION_POOL_ACCESS_DEVELOPER, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../constant/actions';
-import { equal } from '../constant/compare';
-import { isPathOrg } from '../constant/common';
+import { operators, shared, perpetual } from '../helper/constant';
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -122,8 +120,8 @@ class MexListView extends React.Component {
                         this.setState(prevState => {
                             let filterList = prevState.filterList
                             let dataList = prevState.dataList
-                            filterList = filterList.filter(item => { return !equal(item, data) })
-                            dataList = dataList.filter(item => { return !equal(item, data) })
+                            filterList = filterList.filter(item => { return !operators.equal(item, data) })
+                            dataList = dataList.filter(item => { return !operators.equal(item, data) })
                             return { dataList, filterList }
                         })
                     }
@@ -163,8 +161,8 @@ class MexListView extends React.Component {
                 let deleteMultiple = prevState.deleteMultiple
                 deleteMultiple.map(mul => {
                     if (mul.code === 200) {
-                        filterList = filterList.filter(item => { return !equal(item, mul.data) })
-                        dataList = dataList.filter(item => { return !equal(item, mul.data) })
+                        filterList = filterList.filter(item => { return !operators.equal(item, mul.data) })
+                        dataList = dataList.filter(item => { return !operators.equal(item, mul.data) })
                     }
                 })
                 return { dataList, filterList, deleteMultiple: [] }
@@ -235,23 +233,23 @@ class MexListView extends React.Component {
             else {
                 let id = action.id ? action.id : action.label
                 switch (id) {
-                    case ACTION_DELETE:
+                    case perpetual.ACTION_DELETE:
                         this.onDelete(action, data)
                         break;
-                    case ACTION_UPGRADE:
+                    case perpetual.ACTION_UPGRADE:
                         this.onUpdate(action, data)
                         break;
-                    case ACTION_REFRESH:
+                    case perpetual.ACTION_REFRESH:
                         this.onUpdate(action, data, true)
                         break;
-                    case ACTION_POWER_ON:
-                    case ACTION_POWER_OFF:
-                    case ACTION_REBOOT:
+                    case perpetual.ACTION_POWER_ON:
+                    case perpetual.ACTION_POWER_OFF:
+                    case perpetual.ACTION_REBOOT:
                         action.onClick(action, data, this.onDeleteWSResponse)
                         break;
-                    case ACTION_POOL_ACCESS_DEVELOPER:
-                    case ACTION_POOL_ACCESS_DEVELOPER_REJECT:
-                    case ACTION_EDGE_BOX_ENABLE:
+                    case perpetual.ACTION_POOL_ACCESS_DEVELOPER:
+                    case perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT:
+                    case perpetual.ACTION_EDGE_BOX_ENABLE:
                         action.onClick(action, data, () => { this.dataFromServer(this.selectedRegion) })
                         break;
                 }
@@ -272,13 +270,13 @@ class MexListView extends React.Component {
         let valid = action.onClickInterept ? action.onClickInterept(action, data) : true
         if (valid) {
             if (action.warning) {
-                let warning = typeof action.warning === 'function' ? action.warning(ACTION_WARNING, action, data) : action.warning
+                let warning = typeof action.warning === 'function' ? action.warning(perpetual.ACTION_WARNING, action, data) : action.warning
                 this.onWarning(action, warning, false, data)
             }
             else {
                 let id = action.id ? action.id : action.label
                 switch (id) {
-                    case ACTION_DELETE:
+                    case perpetual.ACTION_DELETE:
                         this.onWarning(action, 'delete', false, data)
                         break
                     default:
@@ -568,8 +566,8 @@ class MexListView extends React.Component {
     }
 
     componentDidUpdate(preProps, preState) {
-        if (!equal(this.props.organizationInfo, preProps.organizationInfo)) {
-            if (!isPathOrg(this)) {
+        if (!operators.equal(this.props.organizationInfo, preProps.organizationInfo)) {
+            if (!shared.isPathOrg(this)) {
                 this.dataFromServer(this.selectedRegion)
             }
         }

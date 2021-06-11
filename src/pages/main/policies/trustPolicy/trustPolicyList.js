@@ -10,8 +10,7 @@ import { keys, fields, showTrustPolicies, deleteTrustPolicy, multiDataRequest } 
 import { showCloudlets } from '../../../../services/model/cloudlet';
 import { HELP_TRUST_POLICY } from "../../../../tutorial";
 import { operatorRoles, PAGE_TRUST_POLICY } from '../../../../constant';
-import { ACTION_DELETE, ACTION_UPDATE } from '../../../../constant/actions';
-import { validateRole } from '../../../../constant/role';
+import { role, perpetual } from '../../../../helper/constant';
 
 class TrustPolicy extends React.Component {
     constructor(props) {
@@ -62,8 +61,8 @@ class TrustPolicy extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteTrustPolicy, onFinish: this.onDelete, type: 'Edit' }
+            { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteTrustPolicy, onFinish: this.onDelete, type: 'Edit' }
         ]
     }
 
@@ -83,7 +82,7 @@ class TrustPolicy extends React.Component {
             sortBy: [fields.region, fields.trustPolicyName],
             keys: this.keys,
             selection: true,
-            onAdd: validateRole(operatorRoles, this.props.organizationInfo) ? this.onAdd : undefined,
+            onAdd: role.validateRole(operatorRoles, this.props.organizationInfo) ? this.onAdd : undefined,
             viewMode: HELP_TRUST_POLICY
         })
     }

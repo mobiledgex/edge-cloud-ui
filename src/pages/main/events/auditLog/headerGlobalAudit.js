@@ -8,7 +8,7 @@ import { Drawer } from '@material-ui/core';
 import HeaderAuditLog from "./HeaderAuditLog"
 import * as dateUtil from '../../../../utils/date_util'
 import cloneDeep from 'lodash/cloneDeep'
-import { equal } from '../../../../constant/compare';
+import { operators } from '../../../../helper/constant';
 import { redux_org } from '../../../../helper/reduxData';
 let _self = null;
 
@@ -141,7 +141,7 @@ class headerGlobalAudit extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         this.isPrivate = this.props.privateAccess
-        if (this.props.organizationInfo && !equal(this.props.organizationInfo, prevProps.organizationInfo)) {
+        if (this.props.organizationInfo && !operators.equal(this.props.organizationInfo, prevProps.organizationInfo)) {
             if (redux_org.isAdmin(this)) {
                 this.initAudit(this.starttime, this.endtime, false)
             }

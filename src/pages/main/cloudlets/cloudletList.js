@@ -17,9 +17,7 @@ import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 import { getCloudletManifest, revokeAccessKey } from '../../../services/model/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import { labelFormatter, uiFormatter } from '../../../helper/formatter';
-
-import { ACTION_DISABLE, ACTION_DELETE, ACTION_UPDATE, ACTION_MANIFEST } from '../../../constant/actions';
-import { validateRole } from '../../../constant/role';
+import { perpetual, role } from '../../../helper/constant';
 class CloudletList extends React.Component {
     constructor(props) {
         super(props);
@@ -80,7 +78,7 @@ class CloudletList extends React.Component {
     }
 
     onPreAction = (type, action, data) => {
-        if (type === ACTION_DISABLE) {
+        if (type === perpetual.ACTION_DISABLE) {
             let disable = redux_org.isAdmin(this) || data[fields.operatorName] === redux_org.orgName(this)
             return !disable
         }
@@ -88,9 +86,9 @@ class CloudletList extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_UPDATE, label: 'Update', disable: this.onPreAction, onClick: this.onAdd, type: 'Edit' },
-            { id: ACTION_DELETE, label: 'Delete', disable: this.onPreAction, onClick: deleteCloudlet, ws: true, type: 'Edit' },
-            { id: ACTION_MANIFEST, label: 'Show Manifest', disable: this.onPreAction, visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest }
+            { id: perpetual.ACTION_UPDATE, label: 'Update', disable: this.onPreAction, onClick: this.onAdd, type: 'Edit' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', disable: this.onPreAction, onClick: deleteCloudlet, ws: true, type: 'Edit' },
+            { id: perpetual.ACTION_MANIFEST, label: 'Show Manifest', disable: this.onPreAction, visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest }
         ]
     }
 
@@ -105,7 +103,7 @@ class CloudletList extends React.Component {
     }
 
     canAdd = () => {
-        if (validateRole(operatorRoles, this.props.organizationInfo) && !(redux_org.isOperator(this) && redux_org.edgeboxOnly(this))) {
+        if (role.validateRole(operatorRoles, this.props.organizationInfo) && !(redux_org.isOperator(this) && redux_org.edgeboxOnly(this))) {
             return this.onAdd
         }
     }

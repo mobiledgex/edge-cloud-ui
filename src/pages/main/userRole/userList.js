@@ -4,10 +4,10 @@ import { withRouter } from 'react-router-dom';
 import { fields } from '../../../services/model/format';
 import { keys, showUsers, deleteUser } from '../../../services/model/users';
 import { HELP_USER_ROLES } from '../../../tutorial';
-import { ACTION_DELETE } from '../../../constant/actions';
 import { PAGE_USER_ROLES } from '../../../constant';
 import { connect } from 'react-redux';
 import { redux_org } from '../../../helper/reduxData';
+import { perpetual } from '../../../helper/constant';
 
 class UserList extends React.Component {
     constructor(props) {
@@ -40,7 +40,7 @@ class UserList extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage, disable: this.onDeleteAction, type: 'Edit' }
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage, disable: this.onDeleteAction, type: 'Edit' }
         ]
     }
 

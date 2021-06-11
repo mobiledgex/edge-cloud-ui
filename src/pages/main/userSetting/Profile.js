@@ -11,7 +11,7 @@ import { withStyles } from '@material-ui/styles';
 import { updateUser } from '../../../services/model/serverWorker'
 import MexOTPRegistration from '../../landing/otp/MexOTPRegistration'
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { equal } from '../../../constant/compare';
+import { operators } from '../../../helper/constant';
 import { lightGreen } from '@material-ui/core/colors';
 
 const iconGreen = lightGreen['A700']
@@ -203,7 +203,7 @@ class Profile extends React.Component {
     }
 
     componentDidUpdate(preProps, preState) {
-        if (!equal(preProps.userInfo, this.props.userInfo)) {
+        if (!operators.equal(preProps.userInfo, this.props.userInfo)) {
             this.setState({ isOTP: this.props.userInfo['EnableTOTP'], loading: false })
         }
     }

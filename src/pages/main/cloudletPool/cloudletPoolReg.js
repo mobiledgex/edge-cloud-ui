@@ -15,7 +15,7 @@ import { createConfirmation, createInvitation, deleteConfirmation, deleteInvitat
 
 import * as constant from '../../../constant';
 import { HELP_CLOUDLET_POOL_REG_3, HELP_CLOUDLET_POOL_REG_1 } from "../../../tutorial";
-import { ACTION_POOL_ACCESS_ADMIN_CONFIRM, ACTION_POOL_ACCESS_ADMIN_REMOVE, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../../../constant/actions';
+import { perpetual } from '../../../helper/constant';
 import { redux_org } from '../../../helper/reduxData'
 
 const stepData = [
@@ -39,7 +39,7 @@ class CloudletPoolReg extends React.Component {
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
         this.action = props.action ? props.action : constant.ADD_ORGANIZATION
-        this.isOrgDelete = this.action === constant.DELETE_ORGANIZATION || this.action === ACTION_POOL_ACCESS_ADMIN_REMOVE
+        this.isOrgDelete = this.action === constant.DELETE_ORGANIZATION || this.action === perpetual.ACTION_POOL_ACCESS_ADMIN_REMOVE
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.operatorList = []
         this.organizationList = []
@@ -122,8 +122,8 @@ class CloudletPoolReg extends React.Component {
             })
             if (valid) {
                 let msg = 'created'
-                if (this.action === ACTION_POOL_ACCESS_ADMIN_CONFIRM || this.action === ACTION_POOL_ACCESS_DEVELOPER_REJECT) {
-                    msg = this.action === ACTION_POOL_ACCESS_ADMIN_CONFIRM ? 'accepted' : 'rejected'
+                if (this.action === perpetual.ACTION_POOL_ACCESS_ADMIN_CONFIRM || this.action === perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT) {
+                    msg = this.action === perpetual.ACTION_POOL_ACCESS_ADMIN_CONFIRM ? 'accepted' : 'rejected'
                 }
                 this.props.handleAlertInfo('success', `${data['CloudletPoolOrg']} invitation ${msg}`)
                 if (mcList.length === 1) {
@@ -151,7 +151,7 @@ class CloudletPoolReg extends React.Component {
         }
 
         let msg = 'Invitation'
-        if (this.action === ACTION_POOL_ACCESS_ADMIN_REMOVE) {
+        if (this.action === perpetual.ACTION_POOL_ACCESS_ADMIN_REMOVE) {
             msg = 'Confirmation'
         }
 
@@ -179,14 +179,14 @@ class CloudletPoolReg extends React.Component {
                 newData[fields.operatorOrg] = data[fields.operatorName]
                 let request = undefined
                 switch (this.action) {
-                    case ACTION_POOL_ACCESS_ADMIN_REMOVE:
+                    case perpetual.ACTION_POOL_ACCESS_ADMIN_REMOVE:
                         request = deleteConfirmation
                         break;
-                    case ACTION_POOL_ACCESS_ADMIN_CONFIRM:
+                    case perpetual.ACTION_POOL_ACCESS_ADMIN_CONFIRM:
                         newData.decision = 'accept'
                         request = createConfirmation
                         break;
-                    case ACTION_POOL_ACCESS_DEVELOPER_REJECT:
+                    case perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT:
                         newData.decision = 'reject'
                         request = createConfirmation
                         break;
@@ -231,14 +231,14 @@ class CloudletPoolReg extends React.Component {
                 this.organizationList = constant.filterData(selectedDatas, this.organizationList, fields.organizationName);
             }
         }
-        else if (this.action === ACTION_POOL_ACCESS_ADMIN_CONFIRM || this.action === ACTION_POOL_ACCESS_DEVELOPER_REJECT) {
+        else if (this.action === perpetual.ACTION_POOL_ACCESS_ADMIN_CONFIRM || this.action === perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT) {
             errorMsg = `No pending invitation`
             
             this.organizationList = selectedDatas.filter(org => {
                 return org[fields.status] === 'Pending'
             })
         }
-        else if (this.action === ACTION_POOL_ACCESS_ADMIN_REMOVE) {
+        else if (this.action === perpetual.ACTION_POOL_ACCESS_ADMIN_REMOVE) {
             this.organizationList = selectedDatas.filter(org => {
                 return org[fields.status] !== 'Pending'
             })
@@ -249,16 +249,16 @@ class CloudletPoolReg extends React.Component {
         if (this.organizationList.length > 0 || redux_org.isOperator(this)) {
             let label = 'Create Invitation'
             switch (this.action) {
-                case ACTION_POOL_ACCESS_ADMIN_CONFIRM:
+                case perpetual.ACTION_POOL_ACCESS_ADMIN_CONFIRM:
                     label = 'Accept Invitation'
                     break;
-                case ACTION_POOL_ACCESS_DEVELOPER_REJECT:
+                case perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT:
                     label = 'Reject Invitation'
                     break;
                 case constant.ADD_ORGANIZATION:
                     label = 'Create Invitation'
                     break;
-                case ACTION_POOL_ACCESS_ADMIN_REMOVE:
+                case perpetual.ACTION_POOL_ACCESS_ADMIN_REMOVE:
                     label = 'Withdraw Confirmation'
                     break;
                 case constant.DELETE_ORGANIZATION:

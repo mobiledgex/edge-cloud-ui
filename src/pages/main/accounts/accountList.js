@@ -7,8 +7,8 @@ import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 import { keys, showAccounts, deleteAccount } from '../../../services/model/accounts';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
-import * as serverData from '../../../services/model/serverData'
-import { ACTION_DELETE } from '../../../constant/actions';
+import * as serverData from '../../../services/model/serverData';
+import { perpetual } from '../../../helper/constant';
 import { uiFormatter } from '../../../helper/formatter';
 import { PAGE_ACCOUNTS } from '../../../constant';
 
@@ -39,7 +39,7 @@ class AccountList extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_DELETE, label: 'Delete', visible: this.deleteVisible, onClick: deleteAccount, type: 'Edit' }
+            { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.deleteVisible, onClick: deleteAccount, type: 'Edit' }
         ]
     }
 

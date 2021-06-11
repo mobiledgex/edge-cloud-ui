@@ -12,7 +12,7 @@ import Invoices from '../invoices/Invoices';
 import Reg from './BillingOrgReg';
 
 import { BILLING_TYPE_PARENT, PAGE_BILLING_ORG } from '../../../../constant'
-import { ACTION_BILLING_ADD_CHILD, ACTION_BILLING_REMOVE_CHILD, ACTION_DELETE, ACTION_UPDATE } from '../../../../constant/actions';
+import { perpetual } from '../../../../helper/constant';
 import { redux_org } from '../../../../helper/reduxData';
 class BillingOrg extends React.Component {
     constructor(props) {
@@ -43,7 +43,7 @@ class BillingOrg extends React.Component {
     onReg = (action, data) => {
         let valid = true
         let actionId = action ? action.id : undefined
-        if (actionId === ACTION_BILLING_REMOVE_CHILD && data[fields.children] === undefined) {
+        if (actionId === perpetual.ACTION_BILLING_REMOVE_CHILD && data[fields.children] === undefined) {
             valid = false
         }
         if (valid) {
@@ -68,11 +68,11 @@ class BillingOrg extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_UPDATE, label: 'Update', onClick: this.onReg, type: 'Edit' },
+            { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onReg, type: 'Edit' },
             { label: 'Invoices', onClick: this.invoices, type: 'Edit' },
-            { id: ACTION_BILLING_ADD_CHILD, label: 'Add Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
-            { id: ACTION_BILLING_REMOVE_CHILD, label: 'Remove Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteBillingOrg, visibility: this.onBillingAction, type: 'Edit' }
+            { id: perpetual.ACTION_BILLING_ADD_CHILD, label: 'Add Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
+            { id: perpetual.ACTION_BILLING_REMOVE_CHILD, label: 'Remove Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteBillingOrg, visibility: this.onBillingAction, type: 'Edit' }
         ]
     }
 

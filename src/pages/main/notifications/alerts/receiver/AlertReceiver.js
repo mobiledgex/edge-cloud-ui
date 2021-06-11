@@ -9,8 +9,8 @@ import { showAlertReceiver, deleteAlertReceiver, showAlertReceiverKeys } from '.
 import Reg from './AlertReceiverReg';
 import { Icon } from 'semantic-ui-react';
 import { HELP_ALERTS } from '../../../../../tutorial';
-import { ACTION_DELETE } from '../../../../../constant/actions';
 import { PAGE_ALERTS } from '../../../../../constant';
+import { perpetual } from '../../../../../helper/constant';
 class AlertList extends React.Component {
     constructor(props) {
         super(props);
@@ -44,7 +44,7 @@ class AlertList extends React.Component {
     actionMenu = () => {
         return [
             // { label: 'Update', onClick: this.onAdd, type: 'Edit' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteAlertReceiver, type: 'Edit' }
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteAlertReceiver, type: 'Edit' }
         ]
     }
 

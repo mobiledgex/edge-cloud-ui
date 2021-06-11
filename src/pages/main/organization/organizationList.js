@@ -15,7 +15,7 @@ import RoleWorker from '../../../services/worker/role.worker.js'
 import { Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core';
 import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import { ACTION_DELETE, ACTION_DISABLE, ACTION_EDGE_BOX_ENABLE, ACTION_LABEL, ACTION_UPDATE, ACTION_WARNING } from '../../../constant/actions';
+import { perpetual } from '../../../helper/constant';
 import { getToken, sendRequest } from '../monitoring/services/service'
 import { LS_ORGANIZATION_INFO } from '../../../helper/ls';
 import { uiFormatter } from '../../../helper/formatter'
@@ -132,11 +132,11 @@ class OrganizationList extends React.Component {
 
     onPreEdgebox = (type, action, data) => {
         switch (type) {
-            case ACTION_LABEL:
+            case perpetual.ACTION_LABEL:
                 return data[fields.edgeboxOnly] ? 'Disable Edgebox' : 'Enable Edgebox'
-            case ACTION_WARNING:
+            case perpetual.ACTION_WARNING:
                 return `${data[fields.edgeboxOnly] ? 'disable' : 'enable'} edgebox feature for`
-            case ACTION_DISABLE:
+            case perpetual.ACTION_DISABLE:
                 return data[fields.type].includes(constant.DEVELOPER.toLowerCase())
         }
     }
@@ -149,9 +149,9 @@ class OrganizationList extends React.Component {
         return [
             { label: 'Audit', onClick: this.onAudit },
             { label: 'Add User', onClick: this.onAddUser, type: 'Edit' },
-            { id: ACTION_EDGE_BOX_ENABLE, label: this.onPreEdgebox, visible: this.edgeboxOnlyVisibility, type: 'Edit', warning: this.onPreEdgebox, disable: this.onPreEdgebox, onClick: this.onEdgebox },
-            { id: ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type: 'Edit' }
+            { id: perpetual.ACTION_EDGE_BOX_ENABLE, label: this.onPreEdgebox, visible: this.edgeboxOnlyVisibility, type: 'Edit', warning: this.onPreEdgebox, disable: this.onPreEdgebox, onClick: this.onEdgebox },
+            { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type: 'Edit' }
         ]
     }
 

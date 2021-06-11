@@ -9,7 +9,7 @@ import { keys, showApps, deleteApp } from '../../../services/model/app';
 import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
 import { HELP_APP_LIST } from "../../../tutorial";
-import { ACTION_DELETE, ACTION_UPDATE } from '../../../constant/actions';
+import { perpetual } from '../../../helper/constant';
 import { labelFormatter } from '../../../helper/formatter';
 class AppList extends React.Component {
     constructor(props) {
@@ -51,8 +51,8 @@ class AppList extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_UPDATE, label: 'Update', onClick: this.onAdd, type: 'Edit' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteApp, type: 'Edit' },
+            { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onAdd, type: 'Edit' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteApp, type: 'Edit' },
             { label: 'Create Instance', onClick: this.onLaunch, type: 'Edit' }
         ]
     }

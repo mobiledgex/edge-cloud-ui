@@ -15,8 +15,8 @@ import { OPERATOR, REPORTER_SCHEDULE_15_DAYS, REPORTER_SCHEDULE_WEEKLY, REPORTER
 import { timezones, time, FORMAT_FULL_T_Z, diff } from '../../../utils/date_util';
 import { timezonePref } from '../../../utils/sharedPreferences_util';
 import moment from 'moment';
-import { ACTION_UPDATE } from '../../../constant/actions';
 import { redux_org } from '../../../helper/reduxData';
+import { perpetual } from '../../../helper/constant';
 
 class ReporterReg extends React.Component {
     constructor(props) {
@@ -26,7 +26,7 @@ class ReporterReg extends React.Component {
             forms: [],
         }
         this._isMounted = false
-        this.isUpdate = props.id ? props.id === ACTION_UPDATE : false
+        this.isUpdate = props.id ? props.id === perpetual.ACTION_UPDATE : false
         this.scheduleList = [REPORTER_SCHEDULE_WEEKLY, REPORTER_SCHEDULE_15_DAYS, REPORTER_SCHEDULE_MONTHLY]
         this.timezoneList = timezones()
     }

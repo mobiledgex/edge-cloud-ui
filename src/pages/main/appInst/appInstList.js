@@ -14,7 +14,7 @@ import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog } from '@material-ui/core';
 import { HELP_APP_INST_LIST } from "../../../tutorial";
-import { ACTION_DELETE, ACTION_UPDATE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_TERMINAL, ACTION_UPGRADE, ACTION_REFRESH, ACTION_REBOOT } from '../../../constant/actions';
+import { perpetual } from '../../../helper/constant';
 import * as serverData from '../../../services/model/serverData'
 import { idFormatter, labelFormatter, uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
@@ -82,13 +82,13 @@ class AppInstList extends React.Component {
         let powerState = labelFormatter.powerState(data[fields.powerState])
         let visible = data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM
         if (visible) {
-            if (action.id === ACTION_POWER_ON) {
+            if (action.id === perpetual.ACTION_POWER_ON) {
                 visible = powerState === constant.POWER_STATE_POWER_OFF
             }
-            else if (action.id === ACTION_POWER_OFF) {
+            else if (action.id === perpetual.ACTION_POWER_OFF) {
                 visible = powerState === constant.POWER_STATE_POWER_ON
             }
-            else if (action.id === ACTION_REBOOT) {
+            else if (action.id === perpetual.ACTION_REBOOT) {
                 visible = powerState === constant.POWER_STATE_POWER_ON
             }
         }
@@ -119,13 +119,13 @@ class AppInstList extends React.Component {
     onPowerState = (action, data, callback) => {
         let powerState = idFormatter.powerState(constant.UNKNOWN)
         switch (action.id) {
-            case ACTION_POWER_ON:
+            case perpetual.ACTION_POWER_ON:
                 powerState = idFormatter.powerState(constant.POWER_STATE_POWER_ON)
                 break;
-            case ACTION_POWER_OFF:
+            case perpetual.ACTION_POWER_OFF:
                 powerState = idFormatter.powerState(constant.POWER_STATE_POWER_OFF)
                 break;
-            case ACTION_REBOOT:
+            case perpetual.ACTION_REBOOT:
                 powerState = idFormatter.powerState(constant.POWER_STATE_REBOOT)
                 break;
         }
@@ -137,14 +137,14 @@ class AppInstList extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_UPDATE, label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Edit' },
-            { id: ACTION_UPGRADE, label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, type: 'Edit', warning: 'upgrade' },
-            { id: ACTION_REFRESH, label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, warning: 'refresh' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader, type: 'Edit', dialogNote: this.getDialogNote },
-            { id: ACTION_TERMINAL, label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
-            { id: ACTION_POWER_ON, label: 'Power On', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power on' },
-            { id: ACTION_POWER_OFF, label: 'Power Off', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power off' },
-            { id: ACTION_REBOOT, label: 'Reboot', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'reboot' }
+            { id: perpetual.ACTION_UPDATE, label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Edit' },
+            { id: perpetual.ACTION_UPGRADE, label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, type: 'Edit', warning: 'upgrade' },
+            { id: perpetual.ACTION_REFRESH, label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, warning: 'refresh' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader, type: 'Edit', dialogNote: this.getDialogNote },
+            { id: perpetual.ACTION_TERMINAL, label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
+            { id: perpetual.ACTION_POWER_ON, label: 'Power On', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power on' },
+            { id: perpetual.ACTION_POWER_OFF, label: 'Power Off', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power off' },
+            { id: perpetual.ACTION_REBOOT, label: 'Reboot', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'reboot' }
         ]
     }
 

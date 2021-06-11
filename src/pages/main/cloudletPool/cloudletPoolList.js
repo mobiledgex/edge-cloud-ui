@@ -11,8 +11,7 @@ import { keys, showCloudletPools, deleteCloudletPool, multiDataRequest } from '.
 import CloudletPoolReg from './cloudletPoolReg';
 import {HELP_CLOUDLET_POOL_LIST} from "../../../tutorial";
 import { showConfirmation, showInvitation } from '../../../services/model/privateCloudletAccess';
-import { ACTION_POOL_ACCESS_ADMIN_CONFIRM, ACTION_POOL_ACCESS_ADMIN_REMOVE, ACTION_POOL_ACCESS_DEVELOPER_REJECT } from '../../../constant/actions';
-import { validateRole } from '../../../constant/role';
+import { perpetual, role } from '../../../helper/constant';
 class CloudletPoolList extends React.Component {
     constructor(props) {
         super(props);
@@ -64,9 +63,9 @@ class CloudletPoolList extends React.Component {
         return [
             { id: constant.ADD_ORGANIZATION, label: 'Invite Organization', onClick: this.onOrgActionClick, type:'Edit' },
             { id: constant.DELETE_ORGANIZATION, label: 'Withdraw Invitation', onClick: this.onOrgActionClick, type:'Edit' },
-            { id: ACTION_POOL_ACCESS_ADMIN_CONFIRM, label: 'Accept Invitation', visible: this.onConfirmVisible, onClick: this.onOrgActionClick, type:'Edit'  },
-            { id: ACTION_POOL_ACCESS_DEVELOPER_REJECT, label: 'Reject Invitation', visible: this.onConfirmVisible, onClick: this.onOrgActionClick, type:'Edit'  },
-            { id: ACTION_POOL_ACCESS_ADMIN_REMOVE, label: 'Withdraw Confirmation', visible: this.onConfirmVisible, onClick: this.onOrgActionClick, type:'Edit'  },
+            { id: perpetual.ACTION_POOL_ACCESS_ADMIN_CONFIRM, label: 'Accept Invitation', visible: this.onConfirmVisible, onClick: this.onOrgActionClick, type:'Edit'  },
+            { id: perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT, label: 'Reject Invitation', visible: this.onConfirmVisible, onClick: this.onOrgActionClick, type:'Edit'  },
+            { id: perpetual.ACTION_POOL_ACCESS_ADMIN_REMOVE, label: 'Withdraw Confirmation', visible: this.onConfirmVisible, onClick: this.onOrgActionClick, type:'Edit'  },
             { id: constant.ADD_CLOUDLET, label: 'Update Cloudlets', onClick: this.onActionClick, type:'Edit' },
             { id: constant.DELETE, label: 'Delete', onClickInterept:this.showDeleteCloudletPool, onClick: deleteCloudletPool, type:'Edit' }
         ]
@@ -90,7 +89,7 @@ class CloudletPoolList extends React.Component {
             sortBy: [fields.poolName],
             selection:true,
             keys: this.keys,
-            onAdd: validateRole(constant.operatorRoles, this.props.organizationInfo) ? this.onAdd : undefined,
+            onAdd: role.validateRole(constant.operatorRoles, this.props.organizationInfo) ? this.onAdd : undefined,
             viewMode : HELP_CLOUDLET_POOL_LIST
         })
     }

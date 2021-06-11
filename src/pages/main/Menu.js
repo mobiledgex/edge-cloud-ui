@@ -22,9 +22,8 @@ import AlertReceiver from './notifications/alerts/receiver/AlertReceiver';
 import BillingOrg from './billing/billingOrg/BillingOrgList';
 import Invoices from './billing/invoices/Invoices';
 import Reporter from './reporter/Reporter';
-
 import * as constant from '../../constant';
-import { validateRole } from '../../constant/role';
+import { role } from '../../helper/constant';
 
 const renderPage = (id) => {
     switch (id) {
@@ -76,7 +75,7 @@ const Pages = (props) => {
             page.id ?
                 page.sub ?
                     <Pages key={page.id} data={page.options} /> :
-                    validateRole(page.roles, orgInfo) ? <Route key={page.id} exact path={`${path.path}/${page.path}`} component={renderPage(page.id)} /> : null : null
+                    role.validateRole(page.roles, orgInfo) ? <Route key={page.id} exact path={`${path.path}/${page.path}`} component={renderPage(page.id)} /> : null : null
         ))
     )
 }

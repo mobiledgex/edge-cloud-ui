@@ -8,7 +8,7 @@ import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 import * as serverData from '../../../services/model/serverData'
 import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/privateCloudletAccess';
-import { ACTION_LABEL, ACTION_POOL_ACCESS_DEVELOPER, ACTION_POOL_ACCESS_DEVELOPER_REJECT, ACTION_WARNING } from '../../../constant/actions'
+import { perpetual } from '../../../helper/constant';
 import { labelFormatter } from '../../../helper/formatter';
 
 class PoolAccessList extends React.Component {
@@ -26,10 +26,10 @@ class PoolAccessList extends React.Component {
 
     onPrePoolAccess = (type, action, data) => {
         let isRemove = data[fields.confirm]
-        if (type === ACTION_LABEL) {
+        if (type === perpetual.ACTION_LABEL) {
             return isRemove ? 'Withdraw' : 'Accept'
         }
-        else if (type === ACTION_WARNING) {
+        else if (type === perpetual.ACTION_WARNING) {
             return `${isRemove ? 'withdraw invitation for' : 'accept invitation to'} cloudlet pool`
         }
     }
@@ -38,7 +38,7 @@ class PoolAccessList extends React.Component {
         let isRemove = data[fields.confirm]
         let request = deleteConfirmation
         if (!isRemove) {
-            data[fields.decision] = action.id === ACTION_POOL_ACCESS_DEVELOPER_REJECT ? 'reject' : 'accept'
+            data[fields.decision] = action.id === perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT ? 'reject' : 'accept'
             request = createConfirmation
         }
         let mc = await serverData.sendRequest(this, request(data))
@@ -55,8 +55,8 @@ class PoolAccessList extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_POOL_ACCESS_DEVELOPER, label: this.onPrePoolAccess, warning: this.onPrePoolAccess, onClick: this.onPoolAccess },
-            { id: ACTION_POOL_ACCESS_DEVELOPER_REJECT, label: 'Reject', visible: this.onRejectVisible, warning: 'reject invitation to cloudlet pool', onClick: this.onPoolAccess },
+            { id: perpetual.ACTION_POOL_ACCESS_DEVELOPER, label: this.onPrePoolAccess, warning: this.onPrePoolAccess, onClick: this.onPoolAccess },
+            { id: perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT, label: 'Reject', visible: this.onRejectVisible, warning: 'reject invitation to cloudlet pool', onClick: this.onPoolAccess },
         ]
     }
 

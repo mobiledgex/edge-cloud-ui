@@ -17,8 +17,8 @@ import { withStyles } from '@material-ui/styles';
 import * as dateUtil from '../../../../utils/date_util'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy';
+import { operators } from '../../../../helper/constant';
 import './style.css'
-import { equal } from '../../../../constant/compare';
 
 const UsageLog = lazy(() => import('./UsageLog'));
 const drawerWidth = 450
@@ -217,7 +217,7 @@ class GlobalUsageLog extends React.Component {
     }
 
     componentDidUpdate(prePros, preState) {
-        if (this.props.organizationInfo && !equal(this.props.organizationInfo, prePros.organizationInfo)) {
+        if (this.props.organizationInfo && !operators.equal(this.props.organizationInfo, prePros.organizationInfo)) {
             this.endRange = dateUtil.currentUTCTime()
             this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
             if (this._isMounted) {

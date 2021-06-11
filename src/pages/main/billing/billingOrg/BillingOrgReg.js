@@ -7,7 +7,7 @@ import { Grid } from '@material-ui/core'
 import { fields } from '../../../../services/model/format';
 import { redux_org } from '../../../../helper/reduxData'
 import { DEVELOPER } from '../../../../constant';
-import { ACTION_BILLING_REMOVE_CHILD, ACTION_BILLING_ADD_CHILD, ACTION_UPDATE } from '../../../../constant/actions';
+import { perpetual } from '../../../../helper/constant';
 import { resetFormValue } from '../../../../hoc/forms/helper/constant';
 import { createBillingOrg, updateBillingOrg, addBillingChild, removeBillingChild } from '../../../../services/model/billingOrg';
 import { getOrganizationList } from '../../../../services/model/organization';
@@ -24,7 +24,7 @@ class BillingOrgReg extends React.Component {
         this.organizationList = []
         this.billingOrgList = []
         this.actionId = props.action
-        this.isUpdate = this.actionId === ACTION_UPDATE
+        this.isUpdate = this.actionId === perpetual.ACTION_UPDATE
         this.orgData = this.props.data
     }
 
@@ -48,7 +48,7 @@ class BillingOrgReg extends React.Component {
 
     formChildKeys = () => {
         return [
-            { label: `${this.actionId === ACTION_BILLING_ADD_CHILD ? 'Add Child' : 'Remove Child'}`, formType: MAIN_HEADER, visible: true },
+            { label: `${this.actionId === perpetual.ACTION_BILLING_ADD_CHILD ? 'Add Child' : 'Remove Child'}`, formType: MAIN_HEADER, visible: true },
             { field: fields.name, label: 'Name', formType: INPUT, placeholder: 'Enter Billing Group Name', rules: { disabled: true }, visible: true, tip: 'Billing group' },
             { field: fields.organizations, label: 'Organization', formType: DUALLIST, placeholder: 'Select Organization', visible: true },
         ]
@@ -105,17 +105,17 @@ class BillingOrgReg extends React.Component {
         }
 
         if (valid) {
-            let msg = this.actionId === ACTION_BILLING_ADD_CHILD ? 'added' : 'removed'
+            let msg = this.actionId === perpetual.ACTION_BILLING_ADD_CHILD ? 'added' : 'removed'
             this.props.handleAlertInfo('success', `Billing org ${msg} successfully`)
             this.props.onClose(true)
         }
     }
 
     onCreate = async (data) => {
-        if (this.actionId === ACTION_BILLING_ADD_CHILD || this.actionId === ACTION_BILLING_REMOVE_CHILD) {
+        if (this.actionId === perpetual.ACTION_BILLING_ADD_CHILD || this.actionId === perpetual.ACTION_BILLING_REMOVE_CHILD) {
             let organizations = data[fields.organizations]
             let requestList = []
-            let requestType = this.actionId === ACTION_BILLING_REMOVE_CHILD ? removeBillingChild : addBillingChild
+            let requestType = this.actionId === perpetual.ACTION_BILLING_REMOVE_CHILD ? removeBillingChild : addBillingChild
             organizations.map(children => {
                 requestList.push(requestType({ name: data[fields.name], children }))
             })
@@ -162,7 +162,7 @@ class BillingOrgReg extends React.Component {
                             form.options = this.organizationList
                             break;
                         case fields.organizations:
-                            form.options = this.actionId === ACTION_BILLING_REMOVE_CHILD ? this.removeBillingOrgList(this.billingOrgList) : this.addBillingOrgList(this.organizationList)
+                            form.options = this.actionId === perpetual.ACTION_BILLING_REMOVE_CHILD ? this.removeBillingOrgList(this.billingOrgList) : this.addBillingOrgList(this.organizationList)
                             break;
                     }
                 }
@@ -214,13 +214,13 @@ class BillingOrgReg extends React.Component {
     actionLabel = () => {
         let label = 'Create'
         switch (this.actionId) {
-            case ACTION_BILLING_ADD_CHILD:
+            case perpetual.ACTION_BILLING_ADD_CHILD:
                 label = 'Add'
                 break;
-            case ACTION_BILLING_REMOVE_CHILD:
+            case perpetual.ACTION_BILLING_REMOVE_CHILD:
                 label = 'Remove'
                 break;
-            case ACTION_UPDATE:
+            case perpetual.ACTION_UPDATE:
                 label = 'Update'
                 break;
             default:

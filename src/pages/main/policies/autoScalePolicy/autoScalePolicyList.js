@@ -8,7 +8,7 @@ import * as actions from '../../../../actions';
 import AutoScalePolicyReg from './autoScalePolicyReg'
 import { keys, fields, showAutoScalePolicies, deleteAutoScalePolicy } from '../../../../services/model/autoScalePolicy';
 import {HELP_SCALE_POLICY} from "../../../../tutorial";
-import { ACTION_DELETE, ACTION_UPDATE } from '../../../../constant/actions';
+import { perpetual } from '../../../../helper/constant';
 import { PAGE_AUTO_SCALE_POLICY } from '../../../../constant';
 class AutoScalePolicy extends React.Component {
     constructor(props) {
@@ -45,8 +45,8 @@ class AutoScalePolicy extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteAutoScalePolicy, type: 'Edit' }
+            { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteAutoScalePolicy, type: 'Edit' }
         ]
     }
 
