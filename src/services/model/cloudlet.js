@@ -37,6 +37,7 @@ export const keys = () => ([
     { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name' },
     { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView: false },
     { field: fields.trustPolicyName, serverField: 'trust_policy', label: 'Trust Policy' },
+    { field: fields.kafkaCluster, serverField: 'kafka_cluster', label: 'Kafka Cluster' },
     { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: constant.TYPE_YAML },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
@@ -101,6 +102,18 @@ export const getKey = (data, isCreate) => {
 
         if (data[fields.maintenanceState]) {
             cloudlet.maintenance_state = idFormatter.maintainance(data[fields.maintenanceState])
+        }
+
+        if (data[fields.kafkaCluster]) {
+            cloudlet.kafka_cluster = data[fields.kafkaCluster]
+        }
+
+        if (data[fields.kafkaUser]) {
+            cloudlet.kafka_user = data[fields.kafkaUser]
+        }
+
+        if (data[fields.kafkaPassword]) {
+            cloudlet.kafka_password = data[fields.kafkaPassword]
         }
 
         if (data[fields.fields]) {
