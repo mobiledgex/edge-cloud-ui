@@ -1,7 +1,7 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
-import { SHOW_AUTO_SCALE_POLICY, UPDATE_AUTO_SCALE_POLICY, CREATE_AUTO_SCALE_POLICY, DELETE_AUTO_SCALE_POLICY } from './endPointTypes'
 import { redux_org } from '../../helper/reduxData'
+import { endpoint } from '../../helper/constant';
 
 export const fields = formatter.fields;
 
@@ -57,7 +57,7 @@ export const showAutoScalePolicies = (self, data) => {
       data.autoscalepolicy = { key: { organization } }
     }
   }
-  return { method: SHOW_AUTO_SCALE_POLICY, data: data }
+  return { method: endpoint.SHOW_AUTO_SCALE_POLICY, data: data }
 }
 
 export const getAutoScalePolicyList = async (self, data) => {
@@ -66,18 +66,18 @@ export const getAutoScalePolicyList = async (self, data) => {
 
 export const updateAutoScalePolicy = (data) => {
   let requestData = getKey(data, true)
-  return { method: UPDATE_AUTO_SCALE_POLICY, data: requestData }
+  return { method: endpoint.UPDATE_AUTO_SCALE_POLICY, data: requestData }
 }
 
 
 export const createAutoScalePolicy = (data) => {
   let requestData = getKey(data, true)
-  return { method: CREATE_AUTO_SCALE_POLICY, data: requestData }
+  return { method: endpoint.CREATE_AUTO_SCALE_POLICY, data: requestData }
 }
 
 export const deleteAutoScalePolicy = (self, data) => {
   let requestData = getKey(data)
-  return { method: DELETE_AUTO_SCALE_POLICY, data: requestData, success: `Auto Scale Policy ${data[fields.autoScalePolicyName]} deleted successfully` }
+  return { method: endpoint.DELETE_AUTO_SCALE_POLICY, data: requestData, success: `Auto Scale Policy ${data[fields.autoScalePolicyName]} deleted successfully` }
 }
 
 const customData = (value) => {

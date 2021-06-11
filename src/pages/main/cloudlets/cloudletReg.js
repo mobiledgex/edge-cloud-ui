@@ -20,9 +20,9 @@ import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
 import { getTrustPolicyList, showTrustPolicies } from '../../../services/model/trustPolicy';
 
 import * as serverData from '../../../services/model/serverData'
-import { GET_CLOUDLET_RESOURCE_QUOTA_PROPS, SHOW_TRUST_POLICY } from '../../../services/model/endPointTypes';
 import { Grid } from '@material-ui/core';
 import { redux_org } from '../../../helper/reduxData'
+import { endpoint } from '../../../helper/constant';
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 const CloudletManifest = React.lazy(() => import('./cloudletManifestForm'));
@@ -528,10 +528,10 @@ class CloudletReg extends React.Component {
                     if (mc && mc.response && mc.response.data) {
                         let responseData = mc.response.data
                         let request = mc.request;
-                        if (request.method === SHOW_TRUST_POLICY) {
+                        if (request.method === endpoint.SHOW_TRUST_POLICY) {
                             this.trustPolicyList = responseData
                         }
-                        else if (request.method === GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
+                        else if (request.method === endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
                             if (responseData.properties) {
                                 this.resourceQuotaList = responseData.properties
                                 this.resourceQuotaList = this.resourceQuotaList.map(quota => {

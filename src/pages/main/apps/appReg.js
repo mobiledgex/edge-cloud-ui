@@ -22,9 +22,8 @@ import { HELP_APP_REG } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
-import { SHOW_AUTO_PROV_POLICY, SHOW_FLAVOR } from '../../../services/model/endPointTypes';
 import { Grid } from '@material-ui/core';
-import { SHOW_APP_INST } from '../../../services/model/endpoints';
+import { endpoint } from '../../../helper/constant';
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
 class AppReg extends React.Component {
@@ -815,13 +814,13 @@ class AppReg extends React.Component {
                 for (let i = 0; i < mcRequestList.length; i++) {
                     let mcRequest = mcRequestList[i];
                     let request = mcRequest.request;
-                    if (request.method === SHOW_FLAVOR) {
+                    if (request.method === endpoint.SHOW_FLAVOR) {
                         this.flavorList = mcRequest.response.data
                     }
-                    else if (request.method === SHOW_AUTO_PROV_POLICY) {
+                    else if (request.method === endpoint.SHOW_AUTO_PROV_POLICY) {
                         this.autoProvPolicyList = mcRequest.response.data
                     }
-                    else if (request.method === SHOW_APP_INST) {
+                    else if (request.method === endpoint.SHOW_APP_INST) {
                         this.appInstExist = mcRequest.response.data.length > 0
                     }
                 }

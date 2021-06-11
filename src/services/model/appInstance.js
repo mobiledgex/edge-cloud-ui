@@ -1,10 +1,10 @@
 import * as formatter from './format'
 import * as constant from '../../constant'
 import * as serverData from './serverData'
-import { SHOW_APP_INST, CREATE_APP_INST, UPDATE_APP_INST, DELETE_APP_INST, STREAM_APP_INST, SHOW_APP, REFRESH_APP_INST, SHOW_CLOUDLET_INFO, SHOW_ORG_CLOUDLET_INFO, SHOW_AUTO_PROV_POLICY } from './endPointTypes'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 import { labelFormatter } from '../../helper/formatter'
 import { redux_org } from '../../helper/reduxData'
+import { endpoint } from '../../helper/constant'
 
 let fields = formatter.fields;
 
@@ -121,13 +121,13 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
     for (let i = 0; i < mcRequestList.length; i++) {
       let mcRequest = mcRequestList[i];
       let request = mcRequest.request;
-      if (request.method === SHOW_APP_INST) {
+      if (request.method === endpoint.SHOW_APP_INST) {
         appInstList = mcRequest.response.data
       }
-      else if (request.method === SHOW_APP) {
+      else if (request.method === endpoint.SHOW_APP) {
         appList = mcRequest.response.data
       }
-      else if (request.method === SHOW_CLOUDLET_INFO || request.method === SHOW_ORG_CLOUDLET_INFO) {
+      else if (request.method === endpoint.SHOW_CLOUDLET_INFO || request.method === endpoint.SHOW_ORG_CLOUDLET_INFO) {
         cloudletInfoList = mcRequest.response.data
       }
     }
@@ -191,7 +191,7 @@ export const showAppInsts = (self, data, specific) => {
       }
     }
   }
-  return { method:SHOW_APP_INST, data: requestData, keys: keys() }
+  return { method:endpoint.SHOW_APP_INST, data: requestData, keys: keys() }
 }
 
 export const getAppInstList = async (self, data) => {
@@ -201,13 +201,13 @@ export const getAppInstList = async (self, data) => {
 export const createAppInst = (self, data, callback) => {
   let requestData = getKey(data, true)
   data.uuid = data[fields.cloudletName]
-  let request = { uuid: data.uuid, method: CREATE_APP_INST, data: requestData }
+  let request = { uuid: data.uuid, method: endpoint.CREATE_APP_INST, data: requestData }
   return serverData.sendWSRequest(self, request, callback, data)
 }
 
 export const updateAppInst = (self, data, callback) => {
   let requestData = getKey(data, true)
-  let request = { uuid: data.uuid ? data.uuid : formatter.generateUUID(keys(), data), method: UPDATE_APP_INST, data: requestData }
+  let request = { uuid: data.uuid ? data.uuid : formatter.generateUUID(keys(), data), method: endpoint.UPDATE_APP_INST, data: requestData }
   return serverData.sendWSRequest(self, request, callback, data)
 }
 
@@ -215,7 +215,7 @@ export const changePowerState = (data) => {
   let requestData = getKey(data)
   requestData.appinst.power_state = data[fields.powerState]
   requestData.appinst.fields = ['31']
-  return { uuid: data.uuid, method: UPDATE_APP_INST, data: requestData }
+  return { uuid: data.uuid, method: endpoint.UPDATE_APP_INST, data: requestData }
 }
 
 export const deleteAppInst = (self, data) => {
@@ -223,12 +223,12 @@ export const deleteAppInst = (self, data) => {
   if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && redux_org.isAdmin(self)) {
     requestData.appinst.crm_override = constant.CRM_OVERRIDE_IGNORE_CRM
   }
-  return { uuid: data.uuid, method: DELETE_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]} deleted successfully` }
+  return { uuid: data.uuid, method: endpoint.DELETE_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]} deleted successfully` }
 }
 
 export const refreshAppInst = (data) => {
   let requestData = getKey(data)
-  return { uuid: data.uuid, method: REFRESH_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]}` }
+  return { uuid: data.uuid, method: endpoint.REFRESH_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]}` }
 }
 
 export const refreshAllAppInst = (data) => {
@@ -245,12 +245,12 @@ export const refreshAllAppInst = (data) => {
       update_multiple: true
     },
   }
-  return { uuid: data.uuid, method: REFRESH_APP_INST, data: requestData }
+  return { uuid: data.uuid, method: endpoint.REFRESH_APP_INST, data: requestData }
 }
 
 export const streamAppInst = (data) => {
   let requestData = { region: data[fields.region], appinstkey: getAppInstanceKey(data) }
-  return { uuid: data.uuid, method: STREAM_APP_INST, data: requestData }
+  return { uuid: data.uuid, method: endpoint.STREAM_APP_INST, data: requestData }
 }
 
 export const customData = (value) => {

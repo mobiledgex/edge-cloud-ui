@@ -1,9 +1,8 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
-import { SHOW_TRUST_POLICY, UPDATE_TRUST_POLICY, CREATE_TRUST_POLICY, DELETE_TRUST_POLICY, SHOW_APP } from './endPointTypes'
-import { SHOW_CLOUDLET } from './endpoints';
 import { ADMIN_MANAGER, OPERATOR_CONTRIBUTOR, OPERATOR_MANAGER, ADMIN_CONTRIBUTOR } from '../../constant';
 import { redux_org } from '../../helper/reduxData'
+import { endpoint } from '../../helper/constant';
 
 export const fields = formatter.fields;
 
@@ -45,7 +44,7 @@ export const showTrustPolicies = (self, data) => {
   if (redux_org.isOperator(self)) {
     data.trustpolicy = { key: { organization: redux_org.nonAdminOrg(self) } }
   }
-  return { method: SHOW_TRUST_POLICY, data: data }
+  return { method: endpoint.SHOW_TRUST_POLICY, data: data }
 }
 
 export const getTrustPolicyList = async (self, data) => {
@@ -54,19 +53,19 @@ export const getTrustPolicyList = async (self, data) => {
 
 export const updateTrustPolicy = (self, data, callback) => {
   let requestData = getKey(data)
-  let request = { uuid: data.uuid ? data.uuid : formatter.generateUUID(keys(), data), method: UPDATE_TRUST_POLICY, data: requestData }
+  let request = { uuid: data.uuid ? data.uuid : formatter.generateUUID(keys(), data), method: endpoint.UPDATE_TRUST_POLICY, data: requestData }
   return serverData.sendWSRequest(self, request, callback, data)
 }
 
 
 export const createTrustPolicy = (data) => {
   let requestData = getKey(data)
-  return { method: CREATE_TRUST_POLICY, data: requestData }
+  return { method: endpoint.CREATE_TRUST_POLICY, data: requestData }
 }
 
 export const deleteTrustPolicy = (self, data) => {
   let requestData = getKey(data)
-  return { method: DELETE_TRUST_POLICY, data: requestData, success: `Trust Policy ${data[fields.trustPolicyName]} deleted successfully` }
+  return { method: endpoint.DELETE_TRUST_POLICY, data: requestData, success: `Trust Policy ${data[fields.trustPolicyName]} deleted successfully` }
 }
 
 export const multiDataRequest = (keys, mcRequestList) => {
@@ -75,10 +74,10 @@ export const multiDataRequest = (keys, mcRequestList) => {
   for (let i = 0; i < mcRequestList.length; i++) {
     let mcRequest = mcRequestList[i];
     let request = mcRequest.request;
-    if (request.method === SHOW_TRUST_POLICY) {
+    if (request.method === endpoint.SHOW_TRUST_POLICY) {
       trustPolicyList = mcRequest.response.data
     }
-    else if (request.method === SHOW_CLOUDLET) {
+    else if (request.method === endpoint.SHOW_CLOUDLET) {
       cloudletList = mcRequest.response.data
     }
   }

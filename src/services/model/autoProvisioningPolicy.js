@@ -2,8 +2,8 @@ import { TYPE_JSON } from '../../constant'
 import * as formatter from './format'
 import * as serverData from './serverData'
 import { getCloudletKey } from './cloudlet'
-import { SHOW_AUTO_PROV_POLICY, CREATE_AUTO_PROV_POLICY, UPDATE_AUTO_PROV_POLICY, DELETE_AUTO_PROV_POLICY, ADD_AUTO_PROV_POLICY_CLOUDLET, REMOVE_AUTO_PROV_POLICY_CLOUDLET, SHOW_APP } from './endPointTypes'
 import { redux_org } from '../../helper/reduxData'
+import { endpoint } from '../../helper/constant'
 
 let fields = formatter.fields
 
@@ -80,7 +80,7 @@ export const showAutoProvPolicies = (self, data) => {
       data.AutoProvPolicy = { key: { organization } }
     }
   }
-  return { method: SHOW_AUTO_PROV_POLICY, data: data }
+  return { method: endpoint.SHOW_AUTO_PROV_POLICY, data: data }
 }
 
 export const getAutoProvPolicyList = async (self, data) => {
@@ -89,27 +89,27 @@ export const getAutoProvPolicyList = async (self, data) => {
 
 export const deleteAutoProvPolicy = (self, data) => {
   let requestData = getAutoProvKey(data)
-  return { method: DELETE_AUTO_PROV_POLICY, data: requestData, success: `Auto Provisioning Policy ${data[fields.autoPolicyName]} deleted successfully` }
+  return { method: endpoint.DELETE_AUTO_PROV_POLICY, data: requestData, success: `Auto Provisioning Policy ${data[fields.autoPolicyName]} deleted successfully` }
 }
 
 export const createAutoProvPolicy = (data) => {
   let requestData = getAutoProvKey(data, true)
-  return { method: CREATE_AUTO_PROV_POLICY, data: requestData }
+  return { method: endpoint.CREATE_AUTO_PROV_POLICY, data: requestData }
 }
 
 export const updateAutoProvPolicy = (data) => {
   let requestData = getAutoProvKey(data, true)
-  return { method: UPDATE_AUTO_PROV_POLICY, data: requestData }
+  return { method: endpoint.UPDATE_AUTO_PROV_POLICY, data: requestData }
 }
 
 export const addAutoProvCloudletKey = (data) => {
   let requestData = getAutoProvCloudletKey(data, true)
-  return { method: ADD_AUTO_PROV_POLICY_CLOUDLET, data: requestData }
+  return { method: endpoint.ADD_AUTO_PROV_POLICY_CLOUDLET, data: requestData }
 }
 
 export const deleteAutoProvCloudletKey = (data) => {
   let requestData = getAutoProvCloudletKey(data, true)
-  return { method: REMOVE_AUTO_PROV_POLICY_CLOUDLET, data: requestData }
+  return { method: endpoint.REMOVE_AUTO_PROV_POLICY_CLOUDLET, data: requestData }
 }
 
 export const multiDataRequest = (keys, mcRequestList) => {
@@ -118,10 +118,10 @@ export const multiDataRequest = (keys, mcRequestList) => {
   for (let i = 0; i < mcRequestList.length; i++) {
     let mcRequest = mcRequestList[i];
     let request = mcRequest.request;
-    if (request.method === SHOW_AUTO_PROV_POLICY) {
+    if (request.method === endpoint.SHOW_AUTO_PROV_POLICY) {
       autoProvList = mcRequest.response.data
     }
-    else if (request.method === SHOW_APP) {
+    else if (request.method === endpoint.SHOW_APP) {
       appList = mcRequest.response.data
     }
   }

@@ -5,8 +5,7 @@ import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys } from '.
 import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys, customData as cloudletCustomData, cloudletUsageMetrics } from '../../../../services/model/cloudletMetrics'
 import { showCloudlets } from '../../../../services/model/cloudlet'
 import { showClusterInsts } from '../../../../services/model/clusterInstance'
-import { APP_INST_METRICS_ENDPOINT, CLOUDLET_METRICS_ENDPOINT, CLUSTER_METRICS_ENDPOINT } from '../../../../services/model/endPointTypes'
-import { CLOUDLET_METRICS_USAGE_ENDPOINT } from '../../../../services/model/endpoints'
+import { endpoint } from '../../../../helper/constant'
 
 export const DEVELOPER = mainConstant.DEVELOPER
 export const OPERATOR = mainConstant.OPERATOR
@@ -47,13 +46,13 @@ export const monitoringActions = (id) => {
 
 export const metricRequest = (method, data, org, isPrivate) => {
     switch (method) {
-        case APP_INST_METRICS_ENDPOINT:
+        case endpoint.APP_INST_METRICS_ENDPOINT:
             return appInstMetrics(data, org, isPrivate)
-        case CLUSTER_METRICS_ENDPOINT:
+        case endpoint.CLUSTER_METRICS_ENDPOINT:
             return clusterMetrics(data, org, isPrivate)
-        case CLOUDLET_METRICS_ENDPOINT:
+        case endpoint.CLOUDLET_METRICS_ENDPOINT:
             return cloudletMetrics(data, org)
-        case CLOUDLET_METRICS_USAGE_ENDPOINT:
+        case endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT:
             return cloudletUsageMetrics(data, org)
     }
 }

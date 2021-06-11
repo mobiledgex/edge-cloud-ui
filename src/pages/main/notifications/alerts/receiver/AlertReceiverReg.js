@@ -11,7 +11,6 @@ import {redux_org} from '../../../../../helper/reduxData'
 import { createAlertReceiver } from '../../../../../services/model/alerts';
 import { sendRequests } from '../../../../../services/model/serverWorker'
 import * as constant from '../../../../../constant'
-import * as endpoints from '../../../../../services/model/endpoints'
 import { showOrganizations } from '../../../../../services/model/organization';
 import { showCloudlets } from '../../../../../services/model/cloudlet';
 import { showAppInsts } from '../../../../../services/model/appInstance';
@@ -20,6 +19,7 @@ import uuid from 'uuid'
 import cloneDeep from 'lodash/cloneDeep';
 import { Grid, LinearProgress } from '@material-ui/core'
 import { resetFormValue } from '../../../../../hoc/forms/helper/constant';
+import { endpoint } from '../../../../../helper/constant';
 
 const RECEIVER_TYPE = [constant.RECEIVER_TYPE_EMAIL, constant.RECEIVER_TYPE_SLACK, constant.RECEIVER_TYPE_PAGER_DUTY]
 
@@ -429,17 +429,17 @@ class FlavorReg extends React.Component {
                 if (mc && mc.response && mc.response.status === 200) {
                     let request = mc.request
                     let data = mc.response.data
-                    if (request.method === endpoints.SHOW_CLOUDLET || request.method === endpoints.SHOW_ORG_CLOUDLET) {
+                    if (request.method === endpoint.SHOW_CLOUDLET || request.method === endpoint.SHOW_ORG_CLOUDLET) {
                         this.cloudletList = [...this.cloudletList, ...data]
                         this.checkOrgExist()
                     }
-                    else if (request.method === endpoints.SHOW_APP_INST) {
+                    else if (request.method === endpoint.SHOW_APP_INST) {
                         this.appInstList = [...this.appInstList, ...data]
                     }
-                    else if (request.method === endpoints.SHOW_CLUSTER_INST) {
+                    else if (request.method === endpoint.SHOW_CLUSTER_INST) {
                         this.clusterInstList = [...this.clusterInstList, ...data]
                     }
-                    else if (request.method === endpoints.SHOW_ORG) {
+                    else if (request.method === endpoint.SHOW_ORG) {
                         this.organizationList = [...this.organizationList, ...data]
                     }
                 }

@@ -24,9 +24,8 @@ import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageM
 import { HELP_APP_INST_REG } from "../../../tutorial";
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
-
-import { SHOW_CLUSTER_INST, SHOW_FLAVOR } from '../../../services/model/endPointTypes';
 import { Grid } from '@material-ui/core';
+import { endpoint } from '../../../helper/constant';
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
@@ -602,10 +601,10 @@ class AppInstReg extends React.Component {
                 if (mcList && mcList.length > 0) {
                     for (let mc of mcList) {
                         let request = mc.request;
-                        if (request.method === SHOW_CLUSTER_INST) {
+                        if (request.method === endpoint.SHOW_CLUSTER_INST) {
                             this.clusterInstList = mc.response.data
                         }
-                        else if (request.method === SHOW_FLAVOR) {
+                        else if (request.method === endpoint.SHOW_FLAVOR) {
                             this.flavorList = mc.response.data
                         }
                     }

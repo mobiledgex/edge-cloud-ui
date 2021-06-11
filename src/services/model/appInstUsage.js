@@ -1,7 +1,7 @@
 
 import * as formatter from './format'
-import { APP_INST_USAGE_ENDPOINT } from './endpoints'
 import * as dateUtil from '../../utils/date_util'
+import { endpoint } from '../../helper/constant'
 
 export const appUsageKeys = [
     { label: 'Region', serverField: 'region', visible: true, filter: true },
@@ -26,7 +26,7 @@ export const appInstUsageLogs = (data, org) => {
             organization: org
         }
     }
-    return { method: APP_INST_USAGE_ENDPOINT, data: data, keys: appUsageKeys }
+    return { method: endpoint.APP_INST_USAGE_ENDPOINT, data: data, keys: appUsageKeys }
 }
 
 export const getData = (response, body) => {

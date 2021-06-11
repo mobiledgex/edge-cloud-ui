@@ -1,5 +1,5 @@
 import * as formatter from './format'
-import { SHOW_ACCOUNTS, DELETE_ACCOUNT } from './endPointTypes'
+import { endpoint } from '../../helper/constant'
 
 let fields = formatter.fields
 
@@ -26,12 +26,12 @@ export const getKey = (data) => {
 }
 
 export const showAccounts = () => {
-    return { method: SHOW_ACCOUNTS }
+    return { method: endpoint.SHOW_ACCOUNTS }
 }
 
 export const deleteAccount = (self, data) => {
     let requestData = getKey(data)
-    return { method: DELETE_ACCOUNT, data: requestData, success: `Account ${data[fields.username]} deleted successfully` }
+    return { method: endpoint.DELETE_ACCOUNT, data: requestData, success: `Account ${data[fields.username]} deleted successfully` }
 }
 
 const customData = (value) => {

@@ -1,5 +1,5 @@
 import { TYPE_JSON } from '../../constant'
-import { INVOICE_BILLING } from './endPointTypes'
+import { endpoint } from '../../helper/constant'
 import * as formatter from './format'
 
 let fields = formatter.fields
@@ -28,7 +28,7 @@ export const keys = () => ([
 
 export const showInvoices = (self, data) => {
     let requestData = { name: data[fields.name] }
-    return { method: INVOICE_BILLING, data: requestData, keys: keys() }
+    return { method: endpoint.INVOICE_BILLING, data: requestData, keys: keys() }
 }
 
 const formatInvoiceNo = (value)=>{

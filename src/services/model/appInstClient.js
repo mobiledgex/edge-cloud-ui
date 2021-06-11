@@ -1,4 +1,3 @@
-import { SHOW_APP_INST_CLIENT } from './endPointTypes'
 import * as formatter from './format'
 
 const fields = formatter.fields
@@ -31,7 +30,7 @@ export const showAppInstClient = (data) => {
         },
         selector: "*"
     }
-    return { method: SHOW_APP_INST_CLIENT, data: requestData }
+    return { method: endpoint.SHOW_APP_INST_CLIENT, data: requestData }
 }
 
 const customData = (value) => {

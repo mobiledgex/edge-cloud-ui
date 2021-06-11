@@ -1,6 +1,6 @@
 import { DEVELOPER, OPERATOR } from "../../constant"
+import { endpoint } from "../../helper/constant"
 import { redux_org } from '../../helper/reduxData'
-import { CREATE_POOL_ACCESS_CONFIRMATION, CREATE_POOL_ACCESS_INVITATION, DELETE_POOL_ACCESS_CONFIRMATION, DELETE_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_CONFIRMATION, SHOW_POOL_ACCESS_GRANTED, SHOW_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_PENDING } from "./endPointTypes"
 import * as formatter from './format'
 
 const fields = formatter.fields
@@ -26,10 +26,10 @@ const getRequestData = (data) => {
 }
 
 export const createInvitation = (data) => {
-    return { method: CREATE_POOL_ACCESS_INVITATION, data: getRequestData(data), success: 'Invitation Created' }
+    return { method: endpoint.CREATE_POOL_ACCESS_INVITATION, data: getRequestData(data), success: 'Invitation Created' }
 }
 export const createConfirmation = (data) => {
-    return { method: CREATE_POOL_ACCESS_CONFIRMATION, data: getRequestData(data), success: 'Access Granted' }
+    return { method: endpoint.CREATE_POOL_ACCESS_CONFIRMATION, data: getRequestData(data), success: 'Access Granted' }
 }
 
 export const showConfirmation = (self, data) => {
@@ -43,7 +43,7 @@ export const showConfirmation = (self, data) => {
             data['CloudletPoolOrg'] = org
         }
     }
-    return { method: SHOW_POOL_ACCESS_CONFIRMATION, data, keys: keys() }
+    return { method: endpoint.SHOW_POOL_ACCESS_CONFIRMATION, data, keys: keys() }
 }
 
 export const showInvitation = (self, data) => {
@@ -57,15 +57,15 @@ export const showInvitation = (self, data) => {
             data['CloudletPoolOrg'] = org
         }
     }
-    return { method: SHOW_POOL_ACCESS_INVITATION, data, keys: keys() }
+    return { method: endpoint.SHOW_POOL_ACCESS_INVITATION, data, keys: keys() }
 }
 
 export const deleteConfirmation = (data) => {
-    return { method: DELETE_POOL_ACCESS_CONFIRMATION, data: getRequestData(data), success: 'Access Removed' }
+    return { method: endpoint.DELETE_POOL_ACCESS_CONFIRMATION, data: getRequestData(data), success: 'Access Removed' }
 }
 
 export const deleteInvitation = (data) => {
-    return { method: DELETE_POOL_ACCESS_INVITATION, data: getRequestData(data), success: 'Invitation Removed' }
+    return { method: endpoint.DELETE_POOL_ACCESS_INVITATION, data: getRequestData(data), success: 'Invitation Removed' }
 }
 
 export const accessGranted = (self, orgInfo) => {
@@ -79,7 +79,7 @@ export const accessGranted = (self, orgInfo) => {
             data['CloudletPoolOrg'] = org
         }
     }
-    return { method: SHOW_POOL_ACCESS_GRANTED, data }
+    return { method: endpoint.SHOW_POOL_ACCESS_GRANTED, data }
 }
 
 export const accessPending = (self, data) => {
@@ -93,7 +93,7 @@ export const accessPending = (self, data) => {
             data['CloudletPoolOrg'] = org
         }
     }
-    return { method: SHOW_POOL_ACCESS_PENDING, data }
+    return { method: endpoint.SHOW_POOL_ACCESS_PENDING, data }
 }
 
 export const multiDataRequest = (keys, mcList) => {
@@ -106,10 +106,10 @@ export const multiDataRequest = (keys, mcList) => {
             let response = mc.response
             if (response && response.status === 200) {
                 let data = response.data
-                if (request.method === SHOW_POOL_ACCESS_CONFIRMATION) {
+                if (request.method === endpoint.SHOW_POOL_ACCESS_CONFIRMATION) {
                     confirmationList = data
                 }
-                else if (request.method === SHOW_POOL_ACCESS_INVITATION) {
+                else if (request.method === endpoint.SHOW_POOL_ACCESS_INVITATION) {
                     invitationList = data
                 }
             }

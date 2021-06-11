@@ -1,10 +1,9 @@
 
-import { SHOW_ALERT } from './endpoints'
-import { ALERT_SHOW_RECEIVER, ALERT_DELETE_RECEIVER, ALERT_CREATE_RECEIVER } from './endPointTypes'
 import * as serverData from './serverData'
 import * as formatter from './format'
 import { RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL, DEVELOPER, OPERATOR, RECEIVER_TYPE_PAGER_DUTY } from '../../constant'
 import {redux_org} from '../../helper/reduxData'
+import { endpoint } from '../../helper/constant'
 
 let fields = formatter.fields
 export const showAlertKeys = () => (
@@ -163,18 +162,18 @@ const getKey = (data, isDelete) => {
 
 
 export const showAlertReceiver = (self, data) => {
-    return { method: ALERT_SHOW_RECEIVER, data: data }
+    return { method: endpoint.ALERT_SHOW_RECEIVER, data: data }
 }
 
 export const createAlertReceiver = async (self, data) => {
     let requestData = getKey(data)
-    let request = { method: ALERT_CREATE_RECEIVER, data: requestData }
+    let request = { method: endpoint.ALERT_CREATE_RECEIVER, data: requestData }
     return await serverData.sendRequest(self, request)
 }
 
 export const deleteAlertReceiver = (self, data) => {
     let requestData = getKey(data, true)
-    return { method: ALERT_DELETE_RECEIVER, data: requestData, success: `Alert Receiver ${data[fields.alertname]} deleted successfully` }
+    return { method: endpoint.ALERT_DELETE_RECEIVER, data: requestData, success: `Alert Receiver ${data[fields.alertname]} deleted successfully` }
 }
 
 export const showAlerts = (self, data) => {
@@ -194,7 +193,7 @@ export const showAlerts = (self, data) => {
 
     }
 
-    return { method: SHOW_ALERT, data: data, keys: showAlertKeys() }
+    return { method: endpoint.SHOW_ALERT, data: data, keys: showAlertKeys() }
 }
 
 const customData = (value) => {

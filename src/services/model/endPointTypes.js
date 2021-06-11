@@ -23,234 +23,129 @@ import * as Events from './events';
 import * as poolAccess from './privateCloudletAccess';
 import * as invoices from './invoices';
 import * as reporter from './reporter';
+import * as endpoint from '../../helper/constant/endpoint';
 
-export const SHOW_ORG = "org/show";
-export const CREATE_ORG = "createOrg";
-export const DELETE_ORG = "deleteOrg";
-export const UPDATE_ORG = "updateOrg";
-export const EDGEBOX_ONLY = 'restricted/org/update';
-export const SHOW_AUDIT_ORG = "Auditshoworg";
-export const SHOW_USERS = "ShowUsers";
-export const DELETE_USER = "DeleteUser";
-export const SHOW_ACCOUNTS = "ShowAccounts";
-export const DELETE_ACCOUNT = "DeleteAccount";
-export const SHOW_ROLE = "role/assignment/show";
-export const SHOW_CONTROLLER = "controller/show"
-export const SHOW_CLOUDLET = "ShowCloudlet";
-export const SHOW_CLOUDLET_INFO = "ShowCloudletInfo";
-export const DELETE_CLOUDLET = "DeleteCloudlet";
-export const UPDATE_CLOUDLET = "UpdateCloudlet";
-export const CREATE_CLOUDLET = "CreateCloudlet";
-export const SHOW_CLUSTER_INST = "ShowClusterInst";
-export const CREATE_CLUSTER_INST = "CreateClusterInst";
-export const UPDATE_CLUSTER_INST = "UpdateClusterInst";
-export const DELETE_CLUSTER_INST = "DeleteClusterInst";
-export const SHOW_FLAVOR = "ShowFlavor";
-export const CREATE_FLAVOR = "CreateFlavor";
-export const DELETE_FLAVOR = "DeleteFlavor"
-export const SHOW_APP = "ShowApp";
-export const CREATE_APP = "CreateApp";
-export const UPDATE_APP = "UpdateApp";
-export const DELETE_APP = "DeleteApp";
-export const REFRESH_APP_INST = 'RefreshAppInst';
-export const SHOW_APP_INST = "ShowAppInst";
-export const CREATE_APP_INST = "CreateAppInst";
-export const UPDATE_APP_INST = "UpdateAppInst";
-export const DELETE_APP_INST = "DeleteAppInst";
+
+
+
+
 export const LOGIN = "login";
-export const SETTING_LOCK = "SettingLock";
-export const CURRENT_USER = "current";
 export const VERIFY_EMAIL = "verifyemail";
 export const RESEND_VERIFY = "resendverify";
 export const RESET_PASSWORD = "passwordreset";
 export const RESET_PASSWORD_REQUEST = "passwordresetrequest";
 export const CREATE_USER = "usercreate";
-export const ADD_USER_ROLE = "addUserRole";
-export const STREAM_CLUSTER_INST = "StreamClusterInst";
-export const STREAM_CLOUDLET = "StreamCloudlet";
-export const STREAM_APP_INST = "StreamAppInst";
-export const SHOW_CLOUDLET_POOL = "ShowCloudletPool";
-export const CREATE_CLOUDLET_POOL = "CreateCloudletPool";
-export const UPDATE_CLOUDLET_POOL = "UpdateCloudletPool";
-export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
-export const SHOW_POOL_ACCESS_INVITATION = 'cloudletpoolaccessinvitation/show'
-export const CREATE_POOL_ACCESS_INVITATION = 'cloudletpoolaccessinvitation/create'
-export const DELETE_POOL_ACCESS_INVITATION = 'cloudletpoolaccessinvitation/delete'
-export const SHOW_POOL_ACCESS_CONFIRMATION = 'cloudletpoolaccessresponse/show'
-export const CREATE_POOL_ACCESS_CONFIRMATION = 'cloudletpoolaccessresponse/create'
-export const DELETE_POOL_ACCESS_CONFIRMATION = 'cloudletpoolaccessresponse/delete'
-export const SHOW_POOL_ACCESS_GRANTED = 'cloudletpoolaccessgranted/show'
-export const SHOW_POOL_ACCESS_PENDING = 'cloudletpoolaccesspending/show'
-export const SHOW_ORG_CLOUDLET = "orgcloudlet/show";
-export const SHOW_ORG_CLOUDLET_INFO = "orgcloudletinfo/show";
-export const RUN_COMMAND = "RunCommand";
-export const SHOW_LOGS = "ShowLogs";
-export const SHOW_CONSOLE = "RunConsole";
-export const SHOW_AUTO_PROV_POLICY = "ShowAutoProvPolicy";
-export const CREATE_AUTO_PROV_POLICY = "CreateAutoProvPolicy";
-export const UPDATE_AUTO_PROV_POLICY = "UpdateAutoProvPolicy";
-export const DELETE_AUTO_PROV_POLICY = "DeleteAutoProvPolicy";
-export const ADD_AUTO_PROV_POLICY_CLOUDLET = "AddAutoProvPolicyCloudlet";
-export const REMOVE_AUTO_PROV_POLICY_CLOUDLET = "RemoveAutoProvPolicyCloudlet";
-export const SHOW_TRUST_POLICY = "ShowTrustPolicy";
-export const UPDATE_TRUST_POLICY = "UpdateTrustPolicy";
-export const CREATE_TRUST_POLICY = "CreateTrustPolicy";
-export const DELETE_TRUST_POLICY = "DeleteTrustPolicy";
-export const GET_CLOUDLET_MANIFEST = "GetCloudletManifest";
-export const SHOW_AUTO_SCALE_POLICY = "ShowAutoScalePolicy";
-export const CREATE_AUTO_SCALE_POLICY = "CreateAutoScalePolicy";
-export const UPDATE_AUTO_SCALE_POLICY = "UpdateAutoScalePolicy";
-export const DELETE_AUTO_SCALE_POLICY = "DeleteAutoScalePolicy";
-export const CLOUDLET_EVENT_LOG_ENDPOINT = 'events/cloudlet';
-export const CLUSTER_EVENT_LOG_ENDPOINT = 'events/cluster';
-export const APP_INST_EVENT_LOG_ENDPOINT = 'events/app';
-export const CLOUDLET_METRICS_ENDPOINT = 'metrics/cloudlet';
-export const CLOUDLET_METRICS_USAGE_ENDPOINT = 'metrics/cloudlet/usage'
-export const CLUSTER_METRICS_ENDPOINT = 'metrics/cluster';
-export const APP_INST_METRICS_ENDPOINT = 'metrics/app';
-export const SHOW_APP_INST_CLIENT = 'ShowAppInstClient'
-export const CLIENT_METRICS_ENDPOINT = 'metrics/clientapiusage'
-export const EVENTS_FIND = 'events/find'
-export const EVENTS_SHOW = 'events/show'
-export const SHOW_ALERT = 'ShowAlert'
-export const ALERT_SHOW_RECEIVER = 'alertreceiver/show'
-export const ALERT_CREATE_RECEIVER = 'alertreceiver/create'
-export const ALERT_DELETE_RECEIVER = 'alertreceiver/delete'
 export const PUBLIC_CONFIG = 'publicconfig'
-export const REVOKE_ACCESS_KEY = 'RevokeAccessKey'
-export const SHOW_BILLING_ORG = 'billingorg/show'
-export const CREATE_BILLING_ORG = 'billingorg/create'
-export const UPDATE_BILLING_ORG = 'billingorg/update'
-export const BILLING_ORG_ADD_CHILD = 'billingorg/addchild'
-export const BILLING_ORG_REMOVE_CHILD = 'billingorg/removechild'
-export const DELETE_BILLING_ORG = 'billingorg/delete'
-export const INVOICE_BILLING = 'billingorg/invoice'
-export const GET_CLOUDLET_RESOURCE_QUOTA_PROPS = 'GetCloudletResourceQuotaProps'
-export const SHOW_REPORTER = 'reporter/show'
-export const CREATE_REPORTER = 'reporter/create'
-export const UPDATE_REPORTER = 'reporter/update'
-export const DELETE_REPORTER = 'reporter/delete'
-export const SHOW_REPORTS = 'report/show'
-export const DOWNLOAD_REPORT = 'report/download'
-export const GENERATE_REPORT = 'report/generate'
 
 export function getPath(request) {
     switch (request.method) {
-        case CLOUDLET_METRICS_ENDPOINT:
-        case CLOUDLET_METRICS_USAGE_ENDPOINT:
-        case CLUSTER_METRICS_ENDPOINT:
-        case APP_INST_METRICS_ENDPOINT:
-        case CLOUDLET_EVENT_LOG_ENDPOINT:
-        case CLUSTER_EVENT_LOG_ENDPOINT:
-        case APP_INST_EVENT_LOG_ENDPOINT:
-        case CLIENT_METRICS_ENDPOINT:
-        case EVENTS_FIND:
-        case EVENTS_SHOW:
-        case ALERT_SHOW_RECEIVER:
-        case ALERT_CREATE_RECEIVER:
-        case ALERT_DELETE_RECEIVER:
-        case SHOW_ORG:
-        case SHOW_ORG_CLOUDLET:
-        case SHOW_ORG_CLOUDLET_INFO:
-        case SHOW_ROLE:
-        case SHOW_CONTROLLER:
-        case SHOW_BILLING_ORG:
-        case CREATE_BILLING_ORG:
-        case UPDATE_BILLING_ORG:
-        case DELETE_BILLING_ORG:
-        case INVOICE_BILLING:
-        case BILLING_ORG_ADD_CHILD:
-        case BILLING_ORG_REMOVE_CHILD:
-        case CREATE_POOL_ACCESS_INVITATION:
-        case DELETE_POOL_ACCESS_INVITATION:
-        case SHOW_POOL_ACCESS_INVITATION:
-        case SHOW_POOL_ACCESS_CONFIRMATION:
-        case CREATE_POOL_ACCESS_CONFIRMATION:
-        case DELETE_POOL_ACCESS_CONFIRMATION:
-        case SHOW_POOL_ACCESS_GRANTED:
-        case SHOW_POOL_ACCESS_PENDING:
-        case EDGEBOX_ONLY:
-        case SHOW_REPORTER:
-        case CREATE_REPORTER:
-        case UPDATE_REPORTER:
-        case DELETE_REPORTER:
-        case SHOW_REPORTS:
-        case DOWNLOAD_REPORT:
-        case GENERATE_REPORT:
+        case endpoint.SHOW_ORG:
+        case endpoint.CREATE_ORG:
+        case endpoint.UPDATE_ORG:
+        case endpoint.DELETE_ORG:
+        case endpoint.EDGEBOX_ONLY:
+        case endpoint.SHOW_ACCOUNTS:
+        case endpoint.DELETE_ACCOUNT:
+        case endpoint.SETTING_LOCK:
+        case endpoint.SHOW_USERS:
+        case endpoint.DELETE_USER:
+        case endpoint.CURRENT_USER:
+        case endpoint.UPDATE_USER:
+        case endpoint.ADD_USER_ROLE:
+        case endpoint.SHOW_CLOUDLET:
+        case endpoint.CREATE_CLOUDLET:
+        case endpoint.UPDATE_CLOUDLET:
+        case endpoint.DELETE_CLOUDLET:
+        case endpoint.SHOW_ORG_CLOUDLET:
+        case endpoint.SHOW_CLOUDLET_INFO:
+        case endpoint.SHOW_ORG_CLOUDLET_INFO:
+        case endpoint.SHOW_CLUSTER_INST:
+        case endpoint.STREAM_CLOUDLET:
+        case endpoint.GET_CLOUDLET_MANIFEST:
+        case endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS:
+        case endpoint.CREATE_CLUSTER_INST:
+        case endpoint.UPDATE_CLUSTER_INST:
+        case endpoint.DELETE_CLUSTER_INST:
+        case endpoint.STREAM_CLUSTER_INST:
+        case endpoint.SHOW_APP:
+        case endpoint.CREATE_APP:
+        case endpoint.UPDATE_APP:
+        case endpoint.DELETE_APP:
+        case endpoint.SHOW_APP_INST:
+        case endpoint.UPDATE_APP_INST:
+        case endpoint.CREATE_APP_INST:
+        case endpoint.DELETE_APP_INST:
+        case endpoint.REFRESH_APP_INST:
+        case endpoint.STREAM_APP_INST:
+        case endpoint.RUN_COMMAND:
+        case endpoint.SHOW_LOGS:
+        case endpoint.SHOW_CONSOLE:
+        case endpoint.SHOW_FLAVOR:
+        case endpoint.CREATE_FLAVOR:
+        case endpoint.DELETE_FLAVOR:
+        case endpoint.SHOW_CLOUDLET_POOL:
+        case endpoint.CREATE_CLOUDLET_POOL:
+        case endpoint.UPDATE_CLOUDLET_POOL:
+        case endpoint.DELETE_CLOUDLET_POOL:
+        case endpoint.SHOW_AUTO_PROV_POLICY:
+        case endpoint.CREATE_AUTO_PROV_POLICY:
+        case endpoint.UPDATE_AUTO_PROV_POLICY:
+        case endpoint.DELETE_AUTO_PROV_POLICY:
+        case endpoint.ADD_AUTO_PROV_POLICY_CLOUDLET:
+        case endpoint.REMOVE_AUTO_PROV_POLICY_CLOUDLET:   
+        case endpoint.SHOW_AUTO_SCALE_POLICY:
+        case endpoint.CREATE_AUTO_SCALE_POLICY:
+        case endpoint.UPDATE_AUTO_SCALE_POLICY:
+        case endpoint.DELETE_AUTO_SCALE_POLICY:   
+        case endpoint.SHOW_TRUST_POLICY:
+        case endpoint.UPDATE_TRUST_POLICY:
+        case endpoint.CREATE_TRUST_POLICY:
+        case endpoint.DELETE_TRUST_POLICY:
+        case endpoint.SHOW_BILLING_ORG:
+        case endpoint.CREATE_BILLING_ORG:
+        case endpoint.UPDATE_BILLING_ORG:
+        case endpoint.DELETE_BILLING_ORG:
+        case endpoint.INVOICE_BILLING:
+        case endpoint.BILLING_ORG_ADD_CHILD:
+        case endpoint.BILLING_ORG_REMOVE_CHILD: 
+        case endpoint.SHOW_ROLE:
+        case endpoint.SHOW_CONTROLLER: 
+        case endpoint.SHOW_AUDIT_ORG:    
+        case endpoint.EVENTS_FIND:
+        case endpoint.EVENTS_SHOW:
+        case endpoint.ALERT_SHOW_RECEIVER:
+        case endpoint.ALERT_CREATE_RECEIVER:
+        case endpoint.ALERT_DELETE_RECEIVER:
+        case endpoint.SHOW_REPORTER:
+        case endpoint.CREATE_REPORTER:
+        case endpoint.UPDATE_REPORTER:
+        case endpoint.DELETE_REPORTER:
+        case endpoint.SHOW_REPORTS:
+        case endpoint.DOWNLOAD_REPORT:
+        case endpoint.GENERATE_REPORT:
+        case endpoint.SHOW_APP_INST_CLIENT:
+        case endpoint.SHOW_ALERT:
+        case endpoint.REVOKE_ACCESS_KEY:
+        case endpoint.CLOUDLET_METRICS_ENDPOINT:
+        case endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT:
+        case endpoint.CLUSTER_METRICS_ENDPOINT:
+        case endpoint.APP_INST_METRICS_ENDPOINT:
+        case endpoint.CLOUDLET_EVENT_LOG_ENDPOINT:
+        case endpoint.CLUSTER_EVENT_LOG_ENDPOINT:
+        case endpoint.APP_INST_EVENT_LOG_ENDPOINT:
+        case endpoint.CLIENT_METRICS_ENDPOINT:
+        case endpoint.CREATE_POOL_ACCESS_INVITATION:
+        case endpoint.DELETE_POOL_ACCESS_INVITATION:
+        case endpoint.SHOW_POOL_ACCESS_INVITATION:
+        case endpoint.SHOW_POOL_ACCESS_CONFIRMATION:
+        case endpoint.CREATE_POOL_ACCESS_CONFIRMATION:
+        case endpoint.DELETE_POOL_ACCESS_CONFIRMATION:
+        case endpoint.SHOW_POOL_ACCESS_GRANTED:
+        case endpoint.SHOW_POOL_ACCESS_PENDING:
+        case endpoint.APP_INST_USAGE_ENDPOINT:
+        case endpoint.CLUSTER_INST_USAGE_ENDPOINT:
+        case endpoint.NEW_PASSWORD:
             return `/api/v1/auth/${request.method}`;
-        case DELETE_ORG:
-            return '/api/v1/auth/org/delete';
-        case CREATE_ORG:
-            return '/api/v1/auth/org/create';
-        case UPDATE_ORG:
-            return '/api/v1/auth/org/update';
-        case SHOW_AUDIT_ORG:
-            return '/api/v1/auth/audit/showorg';
-        case SHOW_USERS:
-            return '/api/v1/auth/role/showuser';
-        case DELETE_USER:
-            return '/api/v1/auth/role/removeuser';
-        case SHOW_ACCOUNTS:
-            return '/api/v1/auth/user/show';
-        case DELETE_ACCOUNT:
-            return '/api/v1/auth/user/delete';
-        case SETTING_LOCK:
-            return '/api/v1/auth/restricted/user/update';
-        case CURRENT_USER:
-            return '/api/v1/auth/user/current';
-        case ADD_USER_ROLE:
-            return '/api/v1/auth/role/adduser';
-        case SHOW_CLOUDLET:
-        case SHOW_CLOUDLET_INFO:
-        case CREATE_CLOUDLET:
-        case UPDATE_CLOUDLET:
-        case DELETE_CLOUDLET:
-        case STREAM_CLOUDLET:
-        case SHOW_CLUSTER_INST:
-        case CREATE_CLUSTER_INST:
-        case UPDATE_CLUSTER_INST:
-        case DELETE_CLUSTER_INST:
-        case STREAM_CLUSTER_INST:
-        case SHOW_FLAVOR:
-        case CREATE_FLAVOR:
-        case DELETE_FLAVOR:
-        case SHOW_APP:
-        case CREATE_APP:
-        case UPDATE_APP:
-        case DELETE_APP:
-        case SHOW_APP_INST:
-        case UPDATE_APP_INST:
-        case CREATE_APP_INST:
-        case DELETE_APP_INST:
-        case REFRESH_APP_INST:
-        case STREAM_APP_INST:
-        case SHOW_CLOUDLET_POOL:
-        case DELETE_CLOUDLET_POOL:
-        case CREATE_CLOUDLET_POOL:
-        case UPDATE_CLOUDLET_POOL:
-        case SHOW_AUTO_PROV_POLICY:
-        case CREATE_AUTO_PROV_POLICY:
-        case UPDATE_AUTO_PROV_POLICY:
-        case DELETE_AUTO_PROV_POLICY:
-        case ADD_AUTO_PROV_POLICY_CLOUDLET:
-        case REMOVE_AUTO_PROV_POLICY_CLOUDLET:
-        case SHOW_TRUST_POLICY:
-        case UPDATE_TRUST_POLICY:
-        case CREATE_TRUST_POLICY:
-        case DELETE_TRUST_POLICY:
-        case SHOW_AUTO_SCALE_POLICY:
-        case CREATE_AUTO_SCALE_POLICY:
-        case UPDATE_AUTO_SCALE_POLICY:
-        case DELETE_AUTO_SCALE_POLICY:
-        case RUN_COMMAND:
-        case SHOW_LOGS:
-        case SHOW_CONSOLE:
-        case GET_CLOUDLET_MANIFEST:
-        case SHOW_APP_INST_CLIENT:
-        case SHOW_ALERT:
-        case REVOKE_ACCESS_KEY:
-        case GET_CLOUDLET_RESOURCE_QUOTA_PROPS:
-            return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:
         case VERIFY_EMAIL:
@@ -267,82 +162,82 @@ export function getPath(request) {
 export function formatData(request, response) {
     let data = undefined;
     switch (request.method) {
-        case SHOW_ORG:
+        case endpoint.SHOW_ORG:
             data = Organization.getData(response, request.data)
             break;
-        case SHOW_USERS:
+        case endpoint.SHOW_USERS:
             data = Users.getData(response, request.data)
             break;
-        case SHOW_ACCOUNTS:
+        case endpoint.SHOW_ACCOUNTS:
             data = Accounts.getData(response, request.data)
             break;
-        case SHOW_CLOUDLET:
-        case SHOW_ORG_CLOUDLET:
+        case endpoint.SHOW_CLOUDLET:
+        case endpoint.SHOW_ORG_CLOUDLET:
             data = Cloudlet.getData(response, request.data)
             break;
-        case SHOW_CLOUDLET_INFO:
-        case SHOW_ORG_CLOUDLET_INFO:
+        case endpoint.SHOW_CLOUDLET_INFO:
+        case endpoint.SHOW_ORG_CLOUDLET_INFO:
             data = CloudletInfo.getData(response, request.data)
             break;
-        case SHOW_CLUSTER_INST:
+        case endpoint.SHOW_CLUSTER_INST:
             data = ClusterInstance.getData(response, request.data)
             break;
-        case SHOW_FLAVOR:
+        case endpoint.SHOW_FLAVOR:
             data = Flavor.getData(response, request.data)
             break;
-        case SHOW_APP:
+        case endpoint.SHOW_APP:
             data = App.getData(response, request.data)
             break;
-        case SHOW_APP_INST:
+        case endpoint.SHOW_APP_INST:
             data = AppInstance.getData(response, request.data)
             break;
-        case SHOW_AUTO_PROV_POLICY:
+        case endpoint.SHOW_AUTO_PROV_POLICY:
             data = AutoProvPolicy.getData(response, request.data)
             break;
-        case SHOW_TRUST_POLICY:
+        case endpoint.SHOW_TRUST_POLICY:
             data = TrustPolicy.getData(response, request.data)
             break;
-        case SHOW_AUTO_SCALE_POLICY:
+        case endpoint.SHOW_AUTO_SCALE_POLICY:
             data = AutoScalePolicy.getData(response, request.data)
             break;
-        case SHOW_CLOUDLET_POOL:
+        case endpoint.SHOW_CLOUDLET_POOL:
             data = CloudletPool.getData(response, request.data)
             break;
-        case CLUSTER_EVENT_LOG_ENDPOINT:
+        case endpoint.CLUSTER_EVENT_LOG_ENDPOINT:
             data = ClusterEvent.getData(response, request.data)
             break;
-        case APP_INST_EVENT_LOG_ENDPOINT:
+        case endpoint.APP_INST_EVENT_LOG_ENDPOINT:
             data = AppInstEvent.getData(response, request.data)
             break;
-        case CLOUDLET_EVENT_LOG_ENDPOINT:
+        case endpoint.CLOUDLET_EVENT_LOG_ENDPOINT:
             data = CloudletEvent.getData(response, request.data)
             break;
-        case CLIENT_METRICS_ENDPOINT:
+        case endpoint.CLIENT_METRICS_ENDPOINT:
             data = ClientMetrics.getData(response, request.data)
             break;
-        case SHOW_APP_INST_CLIENT:
+        case endpoint.SHOW_APP_INST_CLIENT:
             data = AppInstClient.getData(response, request.data)
             break;
-        case ALERT_SHOW_RECEIVER:
+        case endpoint.ALERT_SHOW_RECEIVER:
             data = Alerts.getData(response, request.data)
             break;
-        case SHOW_BILLING_ORG:
+        case endpoint.SHOW_BILLING_ORG:
             data = BillingOrg.getData(response, request.data)
             break;
-        case EVENTS_SHOW:
-        case EVENTS_FIND:
+        case endpoint.EVENTS_SHOW:
+        case endpoint.EVENTS_FIND:
             data = Events.getData(response, request.data)
             break;
-        case SHOW_POOL_ACCESS_CONFIRMATION:
-        case SHOW_POOL_ACCESS_INVITATION:
-        case SHOW_POOL_ACCESS_GRANTED:
-        case SHOW_POOL_ACCESS_PENDING:
+        case endpoint.SHOW_POOL_ACCESS_CONFIRMATION:
+        case endpoint.SHOW_POOL_ACCESS_INVITATION:
+        case endpoint.SHOW_POOL_ACCESS_GRANTED:
+        case endpoint.SHOW_POOL_ACCESS_PENDING:
             data = poolAccess.getData(response, request.data)
             break;
-        case INVOICE_BILLING:
+        case endpoint.INVOICE_BILLING:
             data = invoices.getData(response, request.data)
             break;
-        case SHOW_REPORTER:
+        case endpoint.SHOW_REPORTER:
             data = reporter.getData(response, request.data)
             break;
         default:

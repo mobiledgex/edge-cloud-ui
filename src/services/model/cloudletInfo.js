@@ -1,8 +1,8 @@
 
 import * as constant from '../../constant';
-import { SHOW_CLOUDLET_INFO, SHOW_ORG_CLOUDLET_INFO } from './endPointTypes'
 import { redux_org } from '../../helper/reduxData'
 import * as formatter from './format'
+import { endpoint } from '../../helper/constant';
 
 let fields = formatter.fields;
 
@@ -36,7 +36,7 @@ export const getKey = (data) => {
 export const showCloudletInfoData = (self, data, specific) => {
     let requestData = {}
     let isDeveloper = redux_org.isDeveloper(self) || data.type === constant.DEVELOPER
-    let method = isDeveloper ? SHOW_ORG_CLOUDLET_INFO : SHOW_CLOUDLET_INFO
+    let method = isDeveloper ? endpoint.SHOW_ORG_CLOUDLET_INFO : endpoint.SHOW_CLOUDLET_INFO
     if (specific) {
         let cloudletinfo = { key: data.cloudletkey ? data.cloudletkey : data.cloudlet.key }
         requestData = {

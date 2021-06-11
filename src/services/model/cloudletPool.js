@@ -1,11 +1,11 @@
 import * as formatter from './format'
-import { SHOW_CLOUDLET_POOL, CREATE_CLOUDLET_POOL, DELETE_CLOUDLET_POOL, UPDATE_CLOUDLET_POOL, SHOW_POOL_ACCESS_INVITATION, SHOW_POOL_ACCESS_GRANTED, SHOW_POOL_ACCESS_PENDING, SHOW_POOL_ACCESS_CONFIRMATION } from './endPointTypes'
 import * as constant from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
 import isEqual from 'lodash/isEqual';
 import omit from 'lodash/omit';
 import { labelFormatter } from '../../helper/formatter';
 import { redux_org } from '../../helper/reduxData'
+import { endpoint } from '../../helper/constant';
 
 const fields = formatter.fields;
 
@@ -67,13 +67,13 @@ export const multiDataRequest = (keys, mcList) => {
     for (let i = 0; i < mcList.length; i++) {
         let mc = mcList[i];
         let request = mc.request;
-        if (request.method === SHOW_CLOUDLET_POOL) {
+        if (request.method === endpoint.SHOW_CLOUDLET_POOL) {
             poolList = mc.response.data
         }
-        else if (request.method === SHOW_POOL_ACCESS_INVITATION) {
+        else if (request.method === endpoint.SHOW_POOL_ACCESS_INVITATION) {
             invitationList = mc.response.data
         }
-        else if (request.method === SHOW_POOL_ACCESS_CONFIRMATION) {
+        else if (request.method === endpoint.SHOW_POOL_ACCESS_CONFIRMATION) {
             grantList = mc.response.data
         }
     }
@@ -100,22 +100,22 @@ export const showCloudletPools = (self, data) => {
     if (organization && redux_org.isOperator(self)) {
         data.cloudletpool = { key: { organization } }
     }
-    return { method: SHOW_CLOUDLET_POOL, data: data, keys: keys() }
+    return { method: endpoint.SHOW_CLOUDLET_POOL, data: data, keys: keys() }
 }
 
 export const createCloudletPool = (data) => {
     let requestData = getKey(data)
-    return { method: CREATE_CLOUDLET_POOL, data: requestData }
+    return { method: endpoint.CREATE_CLOUDLET_POOL, data: requestData }
 }
 
 export const updateCloudletPool = (data) => {
     let requestData = getKey(data)
-    return { method: UPDATE_CLOUDLET_POOL, data: requestData }
+    return { method: endpoint.UPDATE_CLOUDLET_POOL, data: requestData }
 }
 
 export const deleteCloudletPool = (self, data) => {
     let requestData = getKey(data)
-    return { method: DELETE_CLOUDLET_POOL, data: requestData, success: `Cloudlet Pool ${data[fields.poolName]} deleted successfully` }
+    return { method: endpoint.DELETE_CLOUDLET_POOL, data: requestData, success: `Cloudlet Pool ${data[fields.poolName]} deleted successfully` }
 }
 
 const customData = (value) => {

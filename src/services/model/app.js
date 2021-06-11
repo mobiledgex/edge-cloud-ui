@@ -1,10 +1,10 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
-import { SHOW_APP, CREATE_APP, UPDATE_APP, DELETE_APP } from './endPointTypes'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
 import { labelFormatter, idFormatter } from '../../helper/formatter';
 import { redux_org } from '../../helper/reduxData'
+import { endpoint } from '../../helper/constant';
 
 let fields = formatter.fields
 
@@ -132,7 +132,7 @@ export const showApps = (self, data) => {
             data.app = { key: { organization } }
         }
     }
-    return { method: SHOW_APP, data: data }
+    return { method: endpoint.SHOW_APP, data: data }
 }
 
 export const getAppList = async (self, data) => {
@@ -141,18 +141,18 @@ export const getAppList = async (self, data) => {
 
 export const createApp = (data) => {
     let requestData = getKey(data, true)
-    return { method: CREATE_APP, data: requestData }
+    return { method: endpoint.CREATE_APP, data: requestData }
 }
 
 export const updateApp = async (self, data) => {
     let requestData = getKey(data, true)
-    let request = { method: UPDATE_APP, data: requestData }
+    let request = { method: endpoint.UPDATE_APP, data: requestData }
     return await serverData.sendRequest(self, request)
 }
 
 export const deleteApp = (self, data) => {
     let requestData = getKey(data)
-    return { uuid: data.uuid, method: DELETE_APP, data: requestData, success: `App ${data[fields.appName]} deleted successfully` }
+    return { uuid: data.uuid, method: endpoint.DELETE_APP, data: requestData, success: `App ${data[fields.appName]} deleted successfully` }
 }
 
 

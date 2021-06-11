@@ -1,120 +1,36 @@
+import * as endpoint from '../../helper/constant/endpoint';
 import * as formatter from './format'
 
-export const SHOW_ORG = "org/show";
-export const CREATE_ORG = "createOrg";
-export const DELETE_ORG = "deleteOrg";
-export const UPDATE_ORG = "updateOrg";
-export const SHOW_AUDIT_ORG = "Auditshoworg";
-export const SHOW_USERS = "ShowUsers";
-export const DELETE_USER = "DeleteUser";
-export const SHOW_ACCOUNTS = "ShowAccounts";
-export const DELETE_ACCOUNT = "DeleteAccount";
-export const SHOW_ROLE = "role/assignment/show";
-export const SHOW_CONTROLLER = "controller/show"
-export const SHOW_CLOUDLET = "ShowCloudlet";
-export const SHOW_CLOUDLET_INFO = "ShowCloudletInfo";
-export const DELETE_CLOUDLET = "DeleteCloudlet";
-export const UPDATE_CLOUDLET = "UpdateCloudlet";
-export const CREATE_CLOUDLET = "CreateCloudlet";
-export const SHOW_CLUSTER_INST = "ShowClusterInst";
-export const CREATE_CLUSTER_INST = "CreateClusterInst";
-export const UPDATE_CLUSTER_INST = "UpdateClusterInst";
-export const DELETE_CLUSTER_INST = "DeleteClusterInst";
-export const SHOW_FLAVOR = "ShowFlavor";
-export const CREATE_FLAVOR = "CreateFlavor";
-export const DELETE_FLAVOR = "DeleteFlavor"
-export const SHOW_APP = "ShowApp";
-export const CREATE_APP = "CreateApp";
-export const UPDATE_APP = "UpdateApp";
-export const DELETE_APP = "DeleteApp";
-export const REFRESH_APP_INST = 'RefreshAppInst';
-export const SHOW_APP_INST = "ShowAppInst";
-export const CREATE_APP_INST = "CreateAppInst";
-export const UPDATE_APP_INST = "UpdateAppInst";
-export const DELETE_APP_INST = "DeleteAppInst";
-export const SHOW_SELF = "showself";
 export const LOGIN = "login";
-export const SETTING_LOCK = "SettingLock";
-export const CURRENT_USER = "current";
-export const UPDATE_USER = "user/update"
-export const NEW_PASSWORD = "user/newpass"
-export const VERIFY_EMAIL = "verifyemail";
-export const RESEND_VERIFY = "resendverify";
 export const RESET_PASSWORD = "passwordreset";
-export const RESET_PASSWORD_REQUEST = "passwordresetrequest";
-export const CREATE_USER = "usercreate";
-export const ADD_USER_ROLE = "addUserRole";
-export const STREAM_CLUSTER_INST = "StreamClusterInst";
-export const STREAM_CLOUDLET = "StreamCloudlet";
-export const STREAM_APP_INST = "StreamAppInst";
-export const SHOW_CLOUDLET_POOL = "ShowCloudletPool";
-export const CREATE_CLOUDLET_POOL = "CreateCloudletPool";
-export const UPDATE_CLOUDLET_POOL = "UpdateCloudletPool"
-export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
-export const SHOW_ORG_CLOUDLET = "orgcloudlet/show";
-export const SHOW_ORG_CLOUDLET_INFO = "orgcloudletinfo/show";
-export const RUN_COMMAND = "RunCommand";
-export const SHOW_LOGS = "ShowLogs";
-export const SHOW_CONSOLE = "RunConsole";
-export const SHOW_AUTO_PROV_POLICY = "ShowAutoProvPolicy";
-export const CREATE_AUTO_PROV_POLICY = "CreateAutoProvPolicy";
-export const UPDATE_AUTO_PROV_POLICY = "UpdateAutoProvPolicy";
-export const DELETE_AUTO_PROV_POLICY = "DeleteAutoProvPolicy";
-export const ADD_AUTO_PROV_POLICY_CLOUDLET = "AddAutoProvPolicyCloudlet";
-export const REMOVE_AUTO_PROV_POLICY_CLOUDLET = "RemoveAutoProvPolicyCloudlet";
-export const SHOW_TRUST_POLICY = "ShowTrustPolicy";
-export const UPDATE_TRUST_POLICY = "UpdateTrustPolicy";
-export const CREATE_TRUST_POLICY = "CreateTrustPolicy";
-export const DELETE_TRUST_POLICY = "DeleteTrustPolicy";
-export const GET_CLOUDLET_MANIFEST = "GetCloudletManifest";
-export const SHOW_AUTO_SCALE_POLICY = "ShowAutoScalePolicy";
-export const CREATE_AUTO_SCALE_POLICY = "CreateAutoScalePolicy";
-export const UPDATE_AUTO_SCALE_POLICY = "UpdateAutoScalePolicy";
-export const DELETE_AUTO_SCALE_POLICY = "DeleteAutoScalePolicy";
-export const CLOUDLET_EVENT_LOG_ENDPOINT = 'events/cloudlet';
-export const CLUSTER_EVENT_LOG_ENDPOINT = 'events/cluster';
-export const APP_INST_EVENT_LOG_ENDPOINT = 'events/app';
-export const CLOUDLET_METRICS_ENDPOINT = 'metrics/cloudlet';
-export const CLOUDLET_METRICS_USAGE_ENDPOINT = 'metrics/cloudlet/usage'
-export const CLUSTER_METRICS_ENDPOINT = 'metrics/cluster';
-export const APP_INST_METRICS_ENDPOINT = 'metrics/app';
-export const SHOW_APP_INST_CLIENT = 'ShowAppInstClient'
-export const APP_INST_USAGE_ENDPOINT = 'usage/app'
-export const CLUSTER_INST_USAGE_ENDPOINT = 'usage/cluster'
-export const CLIENT_METRICS_ENDPOINT = 'metrics/clientapiusage'
-export const EVENTS_FIND = 'events/find'
-export const EVENTS_SHOW = 'events/show'
-export const SHOW_ALERT = 'ShowAlert'
 export const PUBLIC_CONFIG = 'publicconfig'
-export const REVOKE_ACCESS_KEY = 'RevokeAccessKey'
 
 export const getPath = (request) => {
     switch (request.method) {
-        case SHOW_CLOUDLET:
-        case SHOW_CLOUDLET_INFO:
-        case SHOW_APP_INST:
-        case SHOW_CLUSTER_INST:
-        case SHOW_ALERT:
-        case REVOKE_ACCESS_KEY:
-            return `/api/v1/auth/ctrl/${request.method}`;
-        case SHOW_ORG_CLOUDLET_INFO:
-        case SHOW_ORG_CLOUDLET:
-        case SHOW_ORG:
-        case EVENTS_SHOW:
-        case CLOUDLET_METRICS_ENDPOINT:
-        case CLOUDLET_METRICS_USAGE_ENDPOINT:
-        case APP_INST_METRICS_ENDPOINT:
-        case CLUSTER_METRICS_ENDPOINT:
-        case CLIENT_METRICS_ENDPOINT:
-        case CLOUDLET_EVENT_LOG_ENDPOINT:
-        case CLUSTER_EVENT_LOG_ENDPOINT:
-        case APP_INST_EVENT_LOG_ENDPOINT:
-        case APP_INST_USAGE_ENDPOINT:
-        case CLUSTER_INST_USAGE_ENDPOINT:
-        case SHOW_ROLE:
-        case SHOW_CONTROLLER:
-        case UPDATE_USER:
-        case NEW_PASSWORD:
+        case endpoint.REVOKE_ACCESS_KEY:
+        case endpoint.SHOW_ALERT:
+        case endpoint.SHOW_CLOUDLET:
+        case endpoint.SHOW_ORG_CLOUDLET:
+        case endpoint.SHOW_ORG:
+        case endpoint.SHOW_ORG_CLOUDLET_INFO:
+        case endpoint.SHOW_CLOUDLET_INFO:
+        case endpoint.SHOW_CLUSTER_INST:
+        case endpoint.SHOW_APP_INST:
+        case endpoint.EVENTS_SHOW:
+        case endpoint.CLOUDLET_METRICS_ENDPOINT:
+        case endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT:
+        case endpoint.APP_INST_METRICS_ENDPOINT:
+        case endpoint.CLUSTER_METRICS_ENDPOINT:
+        case endpoint.CLIENT_METRICS_ENDPOINT:
+        case endpoint.CLOUDLET_EVENT_LOG_ENDPOINT:
+        case endpoint.CLUSTER_EVENT_LOG_ENDPOINT:
+        case endpoint.APP_INST_EVENT_LOG_ENDPOINT:
+        case endpoint.APP_INST_USAGE_ENDPOINT:
+        case endpoint.CLUSTER_INST_USAGE_ENDPOINT:
+        case endpoint.SHOW_ROLE:
+        case endpoint.SHOW_CONTROLLER:
+        case endpoint.UPDATE_USER:
+        case endpoint.NEW_PASSWORD:
             return `/api/v1/auth/${request.method}`
         case PUBLIC_CONFIG:
         case RESET_PASSWORD:
@@ -133,28 +49,28 @@ export const getHeader = (request) => {
 export function formatData(request, response) {
     let data = undefined
     switch (request.method) {
-        case SHOW_CLOUDLET:
-        case SHOW_CLOUDLET_INFO:
-        case SHOW_ORG_CLOUDLET_INFO:
-        case SHOW_APP_INST:
-        case SHOW_CLUSTER_INST:
-        case SHOW_ALERT:
-        case SHOW_ORG_CLOUDLET:
-        case SHOW_ORG:
+        case endpoint.SHOW_CLOUDLET:
+        case endpoint.SHOW_ORG_CLOUDLET:
+        case endpoint.SHOW_CLOUDLET_INFO:
+        case endpoint.SHOW_ORG_CLOUDLET_INFO:
+        case endpoint.SHOW_APP_INST:
+        case endpoint.SHOW_CLUSTER_INST:
+        case endpoint.SHOW_ALERT:
+        case endpoint.SHOW_ORG:
             data = formatter.formatData(response, request.data, request.keys)
             break;
-        case CLOUDLET_METRICS_ENDPOINT:
-        case CLOUDLET_METRICS_USAGE_ENDPOINT:
-        case APP_INST_METRICS_ENDPOINT:
-        case CLUSTER_METRICS_ENDPOINT:
-        case CLIENT_METRICS_ENDPOINT:
-        case CLOUDLET_EVENT_LOG_ENDPOINT:
-        case CLUSTER_EVENT_LOG_ENDPOINT:
-        case APP_INST_EVENT_LOG_ENDPOINT:
+        case endpoint.CLOUDLET_METRICS_ENDPOINT:
+        case endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT:
+        case endpoint.APP_INST_METRICS_ENDPOINT:
+        case endpoint.CLUSTER_METRICS_ENDPOINT:
+        case endpoint.CLIENT_METRICS_ENDPOINT:
+        case endpoint.CLOUDLET_EVENT_LOG_ENDPOINT:
+        case endpoint.CLUSTER_EVENT_LOG_ENDPOINT:
+        case endpoint.APP_INST_EVENT_LOG_ENDPOINT:
             data = formatter.formatEventData(response, request.data, request.keys)
             break;
-        case APP_INST_USAGE_ENDPOINT:
-        case CLUSTER_INST_USAGE_ENDPOINT:
+        case endpoint.APP_INST_USAGE_ENDPOINT:
+        case endpoint.CLUSTER_INST_USAGE_ENDPOINT:
             data = formatter.formatUsageData(response, request.data, request.keys)
             break;
         default:

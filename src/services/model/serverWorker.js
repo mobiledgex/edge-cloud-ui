@@ -1,6 +1,7 @@
 import ServerWorker from '../worker/server.worker.js'
 import { checkExpiry } from './serviceMC'
-import { NEW_PASSWORD, RESET_PASSWORD, UPDATE_USER } from './endpoints.js'
+import { RESET_PASSWORD } from './endpoints.js'
+import * as endpoint from '../../helper/constant/endpoint'
 
 const getToken = (self) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -26,12 +27,12 @@ const responseListener = (self, worker, callback) => {
 }
 
 export const updateUser = (self, data, callback) => {
-    let request = { method: UPDATE_USER, data: data }
+    let request = { method: endpoint.UPDATE_USER, data: data }
     sendAuthRequest(self, request, callback)
 }
 
 export const updatePwd = (self, data, callback) => {
-    let request = { method: NEW_PASSWORD, data: data }
+    let request = { method: endpoint.NEW_PASSWORD, data: data }
     sendAuthRequest(self, request, callback)
 }
 

@@ -1,8 +1,8 @@
 import { ADMIN_MANAGER, OPERATOR_MANAGER } from "../../constant";
+import { endpoint } from "../../helper/constant";
 import { idFormatter, labelFormatter } from "../../helper/formatter";
 import { redux_org } from "../../helper/reduxData";
 import { time, FORMAT_FULL_DATE } from "../../utils/date_util";
-import { CREATE_REPORTER, DELETE_REPORTER, DOWNLOAD_REPORT, GENERATE_REPORT, SHOW_REPORTER, SHOW_REPORTS, UPDATE_REPORTER } from "./endPointTypes";
 import * as formatter from './format'
 import { sendRequest } from "./serverData";
 
@@ -47,43 +47,43 @@ const generateRequestData = (data, isCreate) => {
 export const showGeneratedReports = async (self, data) => {
     let requestData = {}
     requestData.org = redux_org.nonAdminOrg(self) ? redux_org.nonAdminOrg(self) : data[fields.org]
-    let request = { method: SHOW_REPORTS, data: requestData }
+    let request = { method: endpoint.SHOW_REPORTS, data: requestData }
     return await sendRequest(self, request)
 }
 
 export const downloadReport = async (self, data) => {
     let requestData = data
     requestData.org = redux_org.nonAdminOrg(self) ? redux_org.nonAdminOrg(self) : data[fields.org]
-    let request = { method: DOWNLOAD_REPORT, data: requestData, responseType: 'arraybuffer', headers : {Accept: 'application/pdf'} }
+    let request = { method: endpoint.DOWNLOAD_REPORT, data: requestData, responseType: 'arraybuffer', headers : {Accept: 'application/pdf'} }
     return await sendRequest(self, request)
 }
 
 export const generateReport = async(self, data)=>{
     let requestData = data
     requestData.org = redux_org.nonAdminOrg(self) ? redux_org.nonAdminOrg(self) : data[fields.org]
-    let request = { method: GENERATE_REPORT, data: requestData, responseType: 'arraybuffer', headers : {Accept: 'application/pdf'} }
+    let request = { method: endpoint.GENERATE_REPORT, data: requestData, responseType: 'arraybuffer', headers : {Accept: 'application/pdf'} }
     return await sendRequest(self, request)
 }
 
 export const showReporter = (data) => {
-    return { method: SHOW_REPORTER, data: undefined, keys: keys() }
+    return { method: endpoint.SHOW_REPORTER, data: undefined, keys: keys() }
 }
 
 export const createReporter = async (self, data) => {
     let requestData = generateRequestData(data, true)
-    let request = { method: CREATE_REPORTER, data: requestData }
+    let request = { method: endpoint.CREATE_REPORTER, data: requestData }
     return await sendRequest(self, request)
 }
 
 export const updateReporter = async (self, data) => {
     let requestData = generateRequestData(data, true)
-    let request = { method: UPDATE_REPORTER, data: requestData }
+    let request = { method: endpoint.UPDATE_REPORTER, data: requestData }
     return await sendRequest(self, request)
 }
 
 export const deleteReporter = (self, data) => {
     let requestData = generateRequestData(data);
-    return { method: DELETE_REPORTER, data: requestData, success: `Report Scheduler ${data[fields.name]} deleted successfully` }
+    return { method: endpoint.DELETE_REPORTER, data: requestData, success: `Report Scheduler ${data[fields.name]} deleted successfully` }
 }
 
 const customData = (value) => {

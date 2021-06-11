@@ -1,11 +1,10 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
-import { SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, CREATE_CLOUDLET, UPDATE_CLOUDLET, STREAM_CLOUDLET, DELETE_CLOUDLET, SHOW_CLOUDLET_INFO, GET_CLOUDLET_MANIFEST, SHOW_ORG_CLOUDLET_INFO, GET_CLOUDLET_RESOURCE_QUOTA_PROPS } from './endPointTypes'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
-import { REVOKE_ACCESS_KEY } from './endpoints'
 import { idFormatter, labelFormatter } from '../../helper/formatter'
 import { redux_org } from '../../helper/reduxData'
+import { endpoint } from '../../helper/constant'
 
 const fields = formatter.fields;
 
@@ -145,10 +144,10 @@ export const cloudletWithInfo = (mcList) => {
     if (mcList && mcList.length > 0) {
         mcList.map(mc => {
             let request = mc.request
-            if (request.method === SHOW_ORG_CLOUDLET) {
+            if (request.method === endpoint.SHOW_ORG_CLOUDLET) {
                 cloudletList = mc.response.data
             }
-            else if (request.method === SHOW_ORG_CLOUDLET_INFO) {
+            else if (request.method === endpoint.SHOW_ORG_CLOUDLET_INFO) {
                 cloudletInfoList = mc.response.data
             }
         })
@@ -181,7 +180,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             for (let i = 0; i < newList.length; i++) {
                 let mcRequest = newList[i];
                 let request = mcRequest.request;
-                if (request.method === SHOW_CLOUDLET || request.method === SHOW_ORG_CLOUDLET) {
+                if (request.method === endpoint.SHOW_CLOUDLET || request.method === endpoint.SHOW_ORG_CLOUDLET) {
                     let dataList = mcRequest.response.data
                     if (dataList && dataList.length > 0) {
                         cloudlet = dataList[0]
@@ -190,7 +189,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
                         return null
                     }
                 }
-                else if (request.method === SHOW_CLOUDLET_INFO || request.method === SHOW_ORG_CLOUDLET_INFO) {
+                else if (request.method === endpoint.SHOW_CLOUDLET_INFO || request.method === endpoint.SHOW_ORG_CLOUDLET_INFO) {
                     let dataList = mcRequest.response.data
                     if (dataList && dataList.length > 0) {
                         cloudletInfo = dataList[0]
@@ -210,10 +209,10 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
         for (let i = 0; i < mcRequestList.length; i++) {
             let mcRequest = mcRequestList[i];
             let request = mcRequest.request;
-            if (request.method === SHOW_CLOUDLET || request.method === SHOW_ORG_CLOUDLET) {
+            if (request.method === endpoint.SHOW_CLOUDLET || request.method === endpoint.SHOW_ORG_CLOUDLET) {
                 cloudletList = mcRequest.response.data
             }
-            else if (request.method === SHOW_CLOUDLET_INFO || request.method === SHOW_ORG_CLOUDLET_INFO) {
+            else if (request.method === endpoint.SHOW_CLOUDLET_INFO || request.method === endpoint.SHOW_ORG_CLOUDLET_INFO) {
                 cloudletInfoList = mcRequest.response.data
             }
         }
@@ -235,7 +234,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
 export const showCloudlets = (self, data, specific) => {
     let requestData = {}
     let developer = redux_org.isDeveloper(self) || data.type === constant.DEVELOPER
-    let method = developer ? SHOW_ORG_CLOUDLET : SHOW_CLOUDLET
+    let method = developer ? endpoint.SHOW_ORG_CLOUDLET : endpoint.SHOW_CLOUDLET
     if (specific) {
         let cloudlet = { key: data.cloudletkey ? data.cloudletkey : data.cloudlet.key }
         requestData = {
@@ -266,27 +265,27 @@ export const fetchCloudletData = async (self, data) => {
 export const createCloudlet = (self, data, callback) => {
     let requestData = getKey(data, true)
     data.uuid = data[fields.cloudletName]
-    let request = { uuid: data.uuid, method: CREATE_CLOUDLET, data: requestData }
+    let request = { uuid: data.uuid, method: endpoint.CREATE_CLOUDLET, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
 }
 
 export const updateCloudlet = (self, data, callback) => {
     let requestData = getKey(data, true)
     data.uuid = data.uuid ? data.uuid : formatter.generateUUID(keys(), data)
-    let request = { uuid: data.uuid, method: UPDATE_CLOUDLET, data: requestData }
+    let request = { uuid: data.uuid, method: endpoint.UPDATE_CLOUDLET, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
 }
 
 export const deleteCloudlet = (self, data) => {
     let requestData = getKey(data)
-    return { uuid: data.uuid, method: DELETE_CLOUDLET, data: requestData, success: `Cloudlet ${data[fields.cloudletName]} deleted successfully` }
+    return { uuid: data.uuid, method: endpoint.DELETE_CLOUDLET, data: requestData, success: `Cloudlet ${data[fields.cloudletName]} deleted successfully` }
 }
 
 export const getCloudletManifest = async (self, data, showSpinner) => {
     let requestData = {}
     requestData.cloudletkey = getCloudletKey(data)
     requestData.region = data[fields.region]
-    let mcRequest = await serverData.sendRequest(self, { method: GET_CLOUDLET_MANIFEST, data: requestData, showSpinner: showSpinner })
+    let mcRequest = await serverData.sendRequest(self, { method: endpoint.GET_CLOUDLET_MANIFEST, data: requestData, showSpinner: showSpinner })
     return mcRequest
 }
 
@@ -294,13 +293,13 @@ export const revokeAccessKey = async (self, data, showSpinner) => {
     let requestData = {}
     requestData.cloudletkey = getCloudletKey(data)
     requestData.region = data[fields.region]
-    let mcRequest = await serverData.sendRequest(self, { method: REVOKE_ACCESS_KEY, data: requestData, showSpinner: showSpinner })
+    let mcRequest = await serverData.sendRequest(self, { method: endpoint.REVOKE_ACCESS_KEY, data: requestData, showSpinner: showSpinner })
     return mcRequest
 }
 
 export const streamCloudlet = (data) => {
     let requestData = { region: data[fields.region], cloudletkey: getCloudletKey(data) }
-    return { uuid: data.uuid, method: STREAM_CLOUDLET, data: requestData }
+    return { uuid: data.uuid, method: endpoint.STREAM_CLOUDLET, data: requestData }
 }
 
 export const cloudletResourceQuota = (self, data) => {
@@ -312,7 +311,7 @@ export const cloudletResourceQuota = (self, data) => {
         cloudletresourcequotaprops,
         region: data[fields.region]
     }
-    return { method: GET_CLOUDLET_RESOURCE_QUOTA_PROPS, data: requestData }
+    return { method: endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS, data: requestData }
 }
 
 const customData = (value) => {

@@ -1,8 +1,8 @@
 
 import * as formatter from './format'
 import * as serverData from './serverData'
-import { SHOW_FLAVOR, CREATE_FLAVOR, DELETE_FLAVOR } from './endPointTypes'
 import { ADMIN_MANAGER } from '../../constant'
+import { endpoint } from '../../helper/constant'
 
 let fields = formatter.fields
 
@@ -35,7 +35,7 @@ export const getKey = (data, isCreate) => {
 }
 
 export const showFlavors = (self, data) => {
-    return { method: SHOW_FLAVOR, data: data }
+    return { method: endpoint.SHOW_FLAVOR, data: data }
 }
 
 export const getFlavorList = async (self, data) => {
@@ -44,13 +44,13 @@ export const getFlavorList = async (self, data) => {
 
 export const createFlavor = async (self, data) => {
     let requestData = getKey(data, true)
-    let request = { method: CREATE_FLAVOR, data: requestData }
+    let request = { method: endpoint.CREATE_FLAVOR, data: requestData }
     return await serverData.sendRequest(self, request)
 }
 
 export const deleteFlavor = (self, data) => {
     let requestData = getKey(data);
-    return { method: DELETE_FLAVOR, data: requestData, success: `Flavor ${data[fields.flavorName]} deleted successfully` }
+    return { method: endpoint.DELETE_FLAVOR, data: requestData, success: `Flavor ${data[fields.flavorName]} deleted successfully` }
 }
 
 const customData = (value) => {

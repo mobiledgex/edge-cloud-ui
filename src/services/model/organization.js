@@ -1,8 +1,8 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
-import { SHOW_ORG, CREATE_ORG, UPDATE_ORG, DELETE_ORG, EDGEBOX_ONLY } from './endPointTypes'
 import { redux_org } from '../../helper/reduxData'
+import { endpoint } from '../../helper/constant'
 
 let fields = formatter.fields;
 
@@ -35,7 +35,7 @@ export const getKey = (data, isCreate) => {
 }
 
 export const showOrganizations = (self, data) => {
-    return { method: SHOW_ORG, data: data, keys: keys() }
+    return { method: endpoint.SHOW_ORG, data: data, keys: keys() }
 }
 
 export const getOrganizationList = async (self, data) => {
@@ -54,19 +54,19 @@ export const getOrganizationList = async (self, data) => {
 
 export const createOrganization = async (self, data) => {
     let requestData = getKey(data, true)
-    let request = { method: CREATE_ORG, data: requestData }
+    let request = { method: endpoint.CREATE_ORG, data: requestData }
     return await serverData.sendRequest(self, request)
 }
 
 export const updateOrganization = async (self, data) => {
     let requestData = getKey(data, true)
-    let request = { method: UPDATE_ORG, data: requestData }
+    let request = { method: endpoint.UPDATE_ORG, data: requestData }
     return await serverData.sendRequest(self, request)
 }
 
 export const deleteOrganization = (self, data) => {
     let requestData = getKey(data);
-    return { method: DELETE_ORG, data: requestData, success: `Organization ${data[fields.organizationName]} deleted successfully` }
+    return { method: endpoint.DELETE_ORG, data: requestData, success: `Organization ${data[fields.organizationName]} deleted successfully` }
 }
 
 export const edgeboxOnlyAPI = (data) => {
@@ -74,7 +74,7 @@ export const edgeboxOnlyAPI = (data) => {
         edgeboxonly: data[fields.edgeboxOnly] ? false : true,
         name: data[fields.organizationName]
     }
-    return { method: EDGEBOX_ONLY, data: requestData }
+    return { method: endpoint.EDGEBOX_ONLY, data: requestData }
 }
 
 const customData = (value, requestData) => {

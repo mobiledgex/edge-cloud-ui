@@ -1,7 +1,7 @@
 
 import * as formatter from './format'
-import { APP_INST_EVENT_LOG_ENDPOINT } from './endPointTypes'
 import * as dateUtil from '../../utils/date_util'
+import { endpoint } from '../../helper/constant'
 
 export const appEventKeys = [
     { label: 'Starttime', serverField: 'time', visible: true, detailedView: false, format: dateUtil.FORMAT_FULL_DATE_TIME },
@@ -23,7 +23,7 @@ export const appInstEventLogs = (data, org) => {
             organization: org
         }
     }
-    return { method: APP_INST_EVENT_LOG_ENDPOINT, data: data, keys: appEventKeys }
+    return { method: endpoint.APP_INST_EVENT_LOG_ENDPOINT, data: data, keys: appEventKeys }
 }
 
 export const getData = (response, body) => {

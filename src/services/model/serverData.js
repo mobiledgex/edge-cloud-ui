@@ -1,6 +1,8 @@
 import * as serviceMC from './serviceMC';
 
-import { SHOW_ROLE, RESEND_VERIFY, SETTING_LOCK, CURRENT_USER, SHOW_CONTROLLER, VERIFY_EMAIL, SHOW_AUDIT_ORG, RESET_PASSWORD, CREATE_USER, LOGIN, RESET_PASSWORD_REQUEST } from './endPointTypes'
+import { RESEND_VERIFY, VERIFY_EMAIL, RESET_PASSWORD, CREATE_USER, LOGIN, RESET_PASSWORD_REQUEST } from './endPointTypes'
+import { SHOW_AUDIT_ORG } from '../../helper/constant/endpoint';
+import { endpoint } from '../../helper/constant';
 
 export const getToken = (self) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -91,7 +93,7 @@ export const showSyncMultiData = async (self, requestType, filter) => {
 
 /* User Role */
 export const showUserRoles = async (self) => {
-    let mcRequest = await sendRequest(self, { method: SHOW_ROLE })
+    let mcRequest = await sendRequest(self, { method: endpoint.SHOW_ROLE })
     return mcRequest
 }
 
@@ -117,7 +119,7 @@ export const showAuditOrg = async (self, data, showSpinner) => {
 
 export const settingLock = async (self, data) => {
     let valid = false
-    let mcRequest = await sendRequest(self, { method: SETTING_LOCK, data: data })
+    let mcRequest = await sendRequest(self, { method: endpoint.SETTING_LOCK, data: data })
     if (mcRequest && mcRequest.response) {
         let response = mcRequest.response;
         valid = response.status === 200 ? true : false

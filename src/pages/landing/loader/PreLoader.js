@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { CURRENT_USER, SHOW_ROLE, SHOW_CONTROLLER } from '../../../services/model/endPointTypes';
 import { getToken, sendMultiRequest } from '../../main/monitoring/services/service';
 import RoleWorker from '../../../services/worker/role.worker.js'
 import { showOrganizations } from '../../../services/model/organization';
@@ -10,6 +9,7 @@ import { LS_ORGANIZATION_INFO, LS_USER_META_DATA, LS_REGIONS, organizationInfo }
 import './style.css'
 import { withRouter } from 'react-router-dom';
 import { redux_org } from '../../../helper/reduxData';
+import { endpoint } from '../../../helper/constant';
 
 class LogoLoader extends React.Component {
 
@@ -58,25 +58,25 @@ class LogoLoader extends React.Component {
 
     loadDefault = async () => {
         let requestList = []
-        requestList.push({ method: SHOW_CONTROLLER })
-        requestList.push({ method: SHOW_ROLE })
-        requestList.push({ method: CURRENT_USER })
+        requestList.push({ method: endpoint.SHOW_CONTROLLER })
+        requestList.push({ method: endpoint.SHOW_ROLE })
+        requestList.push({ method: endpoint.CURRENT_USER })
         let mcList = await sendMultiRequest(this, requestList)
         if (mcList && mcList.length > 0) {
             mcList.map(mc => {
                 if (mc.response && mc.response.status === 200) {
                     let request = mc.request
                     let data = mc.response.data
-                    if (request.method === SHOW_ROLE) {
+                    if (request.method === endpoint.SHOW_ROLE) {
                         this.validateAdmin(data)
                     }
-                    else if (request.method === SHOW_CONTROLLER) {
+                    else if (request.method === endpoint.SHOW_CONTROLLER) {
                         let regions = data.map(item => { return item.Region })
                         localStorage.setItem(LS_REGIONS, regions)
                         this.props.handleRegionInfo(regions)
                         this.count += 1
                     }
-                    else if (request.method === CURRENT_USER) {
+                    else if (request.method === endpoint.CURRENT_USER) {
                         localStorage.setItem(LS_USER_META_DATA, data.Metadata)
                         this.props.handleUserInfo(data)
                         this.count += 1

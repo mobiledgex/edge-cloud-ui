@@ -1,11 +1,11 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
-import { SHOW_CLUSTER_INST, STREAM_CLUSTER_INST, CREATE_CLUSTER_INST, UPDATE_CLUSTER_INST, DELETE_CLUSTER_INST, SHOW_CLOUDLET, SHOW_ORG_CLOUDLET, SHOW_CLOUDLET_INFO, SHOW_ORG_CLOUDLET_INFO } from './endPointTypes'
 import { TYPE_JSON } from '../../constant';
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 import { labelFormatter, idFormatter } from '../../helper/formatter';
 import { redux_org } from '../../helper/reduxData'
+import { endpoint } from '../../helper/constant';
 
 let fields = formatter.fields;
 
@@ -64,13 +64,13 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             let mcRequest = mcRequestList[i];
             if (mcRequest.response) {
                 let method = mcRequest.request.method
-                if (method === SHOW_CLOUDLET || method === SHOW_ORG_CLOUDLET) {
+                if (method === endpoint.SHOW_CLOUDLET || method === endpoint.SHOW_ORG_CLOUDLET) {
                     cloudletDataList = mcRequest.response.data;
                 }
-                if (method === SHOW_CLUSTER_INST) {
+                if (method === endpoint.SHOW_CLUSTER_INST) {
                     clusterDataList = mcRequest.response.data;
                 }
-                if (method === SHOW_CLOUDLET_INFO || method === SHOW_ORG_CLOUDLET_INFO) {
+                if (method === endpoint.SHOW_CLOUDLET_INFO || method === endpoint.SHOW_ORG_CLOUDLET_INFO) {
                     cloudletInfoList = mcRequest.response.data;
                 }
             }
@@ -129,7 +129,7 @@ export const showClusterInsts = (self, data, specific) => {
             }
         }
     }
-    return { method: SHOW_CLUSTER_INST, data: requestData, keys: keys() }
+    return { method: endpoint.SHOW_CLUSTER_INST, data: requestData, keys: keys() }
 }
 
 export const clusterInstanceKey = (data) => {
@@ -185,13 +185,13 @@ export const getClusterInstList = async (self, data) => {
 export const createClusterInst = (self, data, callback) => {
     let requestData = clusterKey(data, true)
     data.uuid = data[fields.cloudletName]
-    let request = { uuid: data.uuid, method: CREATE_CLUSTER_INST, data: requestData }
+    let request = { uuid: data.uuid, method: endpoint.CREATE_CLUSTER_INST, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
 }
 
 export const updateClusterInst = (self, data, callback) => {
     let requestData = clusterKey(data, true)
-    let request = { uuid: data.uuid ? data.uuid : formatter.generateUUID(keys(), data), method: UPDATE_CLUSTER_INST, data: requestData }
+    let request = { uuid: data.uuid ? data.uuid : formatter.generateUUID(keys(), data), method: endpoint.UPDATE_CLUSTER_INST, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
 }
 
@@ -200,12 +200,12 @@ export const deleteClusterInst = (self, data) => {
     if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && redux_org.isAdmin(self)) {
         requestData.clusterinst.crm_override = constant.CRM_OVERRIDE_IGNORE_CRM
     }
-    return { uuid: data.uuid, method: DELETE_CLUSTER_INST, data: requestData, success: `Cluster Instance ${data[fields.appName]} deleted successfully` }
+    return { uuid: data.uuid, method: endpoint.DELETE_CLUSTER_INST, data: requestData, success: `Cluster Instance ${data[fields.appName]} deleted successfully` }
 }
 
 export const streamClusterInst = (data) => {
     let requestData = { region: data[fields.region], clusterinstkey: clusterInstanceKey(data) }
-    return { uuid: data.uuid, method: STREAM_CLUSTER_INST, data: requestData }
+    return { uuid: data.uuid, method: endpoint.STREAM_CLUSTER_INST, data: requestData }
 }
 
 

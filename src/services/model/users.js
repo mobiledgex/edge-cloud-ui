@@ -1,6 +1,6 @@
 import { fields, formatData } from './format'
 import * as serverData from './serverData'
-import { SHOW_USERS, DELETE_USER, ADD_USER_ROLE } from './endPointTypes'
+import { endpoint } from '../../helper/constant'
 
 
 
@@ -20,18 +20,18 @@ export const getKey = (data) => {
 }
 
 export const showUsers = (self, data) => {
-    return { method: SHOW_USERS, data: data }
+    return { method: endpoint.SHOW_USERS, data: data }
 }
 
 export const addUser = async (self, data) => {
     let requestData = getKey(data, true)
-    let request = { method: ADD_USER_ROLE, data: requestData }
+    let request = { method: endpoint.ADD_USER_ROLE, data: requestData }
     return await serverData.sendRequest(self, request)
 }
 
 export const deleteUser = (self, data) => {
     let requestData = getKey(data);
-    return { method: DELETE_USER, data: requestData, success: `User ${data[fields.username]} removed successfully` }
+    return { method: endpoint.DELETE_USER, data: requestData, success: `User ${data[fields.username]} removed successfully` }
 }
 
 const customData = (value) => {

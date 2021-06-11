@@ -1,6 +1,5 @@
 
 import * as formatter from './format'
-import { CLUSTER_METRICS_ENDPOINT } from './endPointTypes'
 import { UNIT_BYTES, UNIT_PERCENTAGE } from '../../pages/main/monitoring/helper/unitConvertor';
 
 let fields = formatter.fields;
@@ -33,16 +32,16 @@ export const networkMetricType = [
 ]
 
 export const clusterMetricTypeKeys = () => ([
-    { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 6, unit: UNIT_PERCENTAGE, serverRequest: CLUSTER_METRICS_ENDPOINT },
-    { field: 'memory', serverField: 'mem', header: 'Memory', position: 6, unit: UNIT_PERCENTAGE, serverRequest: CLUSTER_METRICS_ENDPOINT },
-    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 6, unit: UNIT_PERCENTAGE, serverRequest: CLUSTER_METRICS_ENDPOINT },
-    { field: 'network', serverField: 'network', serverRequest: CLUSTER_METRICS_ENDPOINT, keys: networkMetricType },
+    { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 6, unit: UNIT_PERCENTAGE, serverRequest: endpoint.CLUSTER_METRICS_ENDPOINT },
+    { field: 'memory', serverField: 'mem', header: 'Memory', position: 6, unit: UNIT_PERCENTAGE, serverRequest: endpoint.CLUSTER_METRICS_ENDPOINT },
+    { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 6, unit: UNIT_PERCENTAGE, serverRequest: endpoint.CLUSTER_METRICS_ENDPOINT },
+    { field: 'network', serverField: 'network', serverRequest: endpoint.CLUSTER_METRICS_ENDPOINT, keys: networkMetricType },
     { field: 'map', header: 'Map' }
 ])
 
 export const clusterMetrics = (data, organization, isPrivate) => {
     data.clusterinst = isPrivate ? { cloudlet_key: { organization } } : { organization }
-    return { method: CLUSTER_METRICS_ENDPOINT, data: data, keys: clusterMetricsKeys }
+    return { method: endpoint.CLUSTER_METRICS_ENDPOINT, data: data, keys: clusterMetricsKeys }
 }
 
 export const getData = (response, body) => {

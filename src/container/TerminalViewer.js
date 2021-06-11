@@ -1,6 +1,5 @@
 
 import React, { Component, Suspense, lazy } from 'react';
-import * as serviceMC from '../services/model/serviceMC'
 import * as serverData from '../services/model/serverData'
 import * as actions from "../actions";
 import { withRouter } from "react-router-dom";
@@ -13,6 +12,7 @@ import {fields} from '../services/model/format'
 import { redux_org } from '../helper/reduxData';
 import {RUN_COMMAND, SHOW_LOGS, DEVELOPER_VIEWER, DEPLOYMENT_TYPE_VM} from '../constant'
 import '../hoc/terminal/style.css'
+import { endpoint } from '../helper/constant';
 const Terminal = lazy(() => import('../hoc/terminal/mexTerminal'))
 
 
@@ -61,16 +61,16 @@ class MexTerminal extends Component {
         
         let method = ''
         if (this.state.isVM) {
-            method = serviceMC.getEP().SHOW_CONSOLE
+            method = endpoint.SHOW_CONSOLE
         }
         else {
             execRequest.container_id = terminaData.Container
             if (terminaData.Request === RUN_COMMAND) {
-                method = serviceMC.getEP().RUN_COMMAND;
+                method = endpoint.RUN_COMMAND;
                 execRequest.cmd = { command: terminaData.Command }
             }
             else if (terminaData.Request === SHOW_LOGS) {
-                method = serviceMC.getEP().SHOW_LOGS;
+                method = endpoint.SHOW_LOGS;
                 let showLogs = terminaData.ShowLogs
                 let tail = showLogs.Tail ? parseInt(showLogs.Tail) : undefined
                 execRequest.log = showLogs ? { since: showLogs.Since, tail: tail, timestamps: showLogs.Timestamps, follow: showLogs.Follow } : {}

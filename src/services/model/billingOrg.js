@@ -1,8 +1,8 @@
-import { SHOW_BILLING_ORG, CREATE_BILLING_ORG, DELETE_BILLING_ORG, BILLING_ORG_ADD_CHILD, BILLING_ORG_REMOVE_CHILD, UPDATE_BILLING_ORG } from './endPointTypes'
 import * as serverData from './serverData'
 import * as formatter from './format'
 import { ADMIN_MANAGER, TYPE_DATE, DEVELOPER_MANAGER } from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
+import { endpoint } from '../../helper/constant'
 
 
 let fields = formatter.fields
@@ -63,32 +63,32 @@ const getRequestData = (data, edit, isAdd) => {
 }
 
 export const showBillingOrg = (self, data) => {
-    return { method: SHOW_BILLING_ORG, data }
+    return { method: endpoint.SHOW_BILLING_ORG, data }
 }
 
 export const createBillingOrg = async (self, data) => {
     let requestData = getRequestData(data, true, true)
-    let request = { method: CREATE_BILLING_ORG, data: requestData }
+    let request = { method: endpoint.CREATE_BILLING_ORG, data: requestData }
     return await serverData.sendRequest(self, request)
 }
 
 export const updateBillingOrg = async (self, data) => {
     let requestData = getRequestData(data, true)
-    let request = { method: UPDATE_BILLING_ORG, data: requestData }
+    let request = { method: endpoint.UPDATE_BILLING_ORG, data: requestData }
     return await serverData.sendRequest(self, request)
 }
 
 export const deleteBillingOrg = (self, data) => {
     let requestData = getRequestData(data)
-    return { method: DELETE_BILLING_ORG, data: requestData, success: `Billing Org ${data[fields.name]} deleted successfully` }
+    return { method: endpoint.DELETE_BILLING_ORG, data: requestData, success: `Billing Org ${data[fields.name]} deleted successfully` }
 }
 
 export const addBillingChild = (data) => {
-    return { method: BILLING_ORG_ADD_CHILD, data }
+    return { method: endpoint.BILLING_ORG_ADD_CHILD, data }
 }
 
 export const removeBillingChild = (data) => {
-    return { method: BILLING_ORG_REMOVE_CHILD, data }
+    return { method: endpoint.BILLING_ORG_REMOVE_CHILD, data }
 }
 
 const customData = (value) => {

@@ -1,6 +1,6 @@
 
 import * as formatter from './format'
-import { CLIENT_METRICS_ENDPOINT } from './endPointTypes'
+import { endpoint } from '../../helper/constant';
 
 let fields = formatter.fields;
 
@@ -28,7 +28,7 @@ export const clientMetricsKeys = [
 
 export const clientMetrics = (data, organization, isPrivate) => {
     data.appinst = isPrivate ? { cluster_inst_key: { cloudlet_key: { organization } } } : { app_key: { organization } }
-    return { method: CLIENT_METRICS_ENDPOINT, data: data, keys: clientMetricsKeys }
+    return { method: endpoint.CLIENT_METRICS_ENDPOINT, data: data, keys: clientMetricsKeys }
 }
 
 export const getData = (response, body) => {

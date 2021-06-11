@@ -1,6 +1,6 @@
 import * as formatter from './format'
-import { CLUSTER_EVENT_LOG_ENDPOINT } from './endPointTypes'
 import * as dateUtil from '../../utils/date_util'
+import { endpoint } from '../../helper/constant'
 
 export const clusterEventKeys = [
     { label: 'Starttime', serverField: 'time', visible: true, detailedView: false, format: dateUtil.FORMAT_FULL_DATE_TIME },
@@ -23,7 +23,7 @@ export const clusterEventLogs = (data, org) => {
     data.clusterinst = {
         organization: org
     }
-    return { method: CLUSTER_EVENT_LOG_ENDPOINT, data: data, keys: clusterEventKeys }
+    return { method: endpoint.CLUSTER_EVENT_LOG_ENDPOINT, data: data, keys: clusterEventKeys }
 }
 
 export const getData = (response, body) => {

@@ -1,7 +1,7 @@
 
 import * as formatter from './format'
-import { CLOUDLET_EVENT_LOG_ENDPOINT } from './endPointTypes'
 import * as dateUtil from '../../utils/date_util'
+import { endpoint } from '../../helper/constant'
 
 export const cloudletEventKeys = [
     { label: 'Starttime', serverField: 'time', visible: true, detailedView: false, format: dateUtil.FORMAT_FULL_DATE_TIME },
@@ -17,7 +17,7 @@ export const cloudletEventLogs = (data, org) => {
     data.cloudlet = {
         organization: org
     }
-    return { method: CLOUDLET_EVENT_LOG_ENDPOINT, data: data, keys: cloudletEventKeys }
+    return { method: endpoint.CLOUDLET_EVENT_LOG_ENDPOINT, data: data, keys: cloudletEventKeys }
 }
 
 export const getData = (response, body) => {

@@ -1,7 +1,6 @@
 import * as formatter from './format'
-import { CLOUDLET_METRICS_ENDPOINT } from './endPointTypes'
-import { CLOUDLET_METRICS_USAGE_ENDPOINT } from './endpoints';
 import { UNIT_FLOOR, UNIT_GB, UNIT_KB, UNIT_MB } from '../../pages/main/monitoring/helper/unitConvertor';
+import { endpoint } from '../../helper/constant';
 
 let fields = formatter.fields;
 
@@ -52,8 +51,8 @@ export const resourceUsageMetricType = [
 ]
 
 export const cloudletMetricTypeKeys = ()=>([
-    { field: 'utilization', serverField: 'utilization', header: 'Memory Usage', keys:utilizationMetricType, serverRequest: CLOUDLET_METRICS_ENDPOINT },
-    { field: 'resourceusage', serverField: 'resourceusage', header: 'Resource Usage', keys:resourceUsageMetricType, serverRequest: CLOUDLET_METRICS_USAGE_ENDPOINT },
+    { field: 'utilization', serverField: 'utilization', header: 'Memory Usage', keys:utilizationMetricType, serverRequest: endpoint.CLOUDLET_METRICS_ENDPOINT },
+    { field: 'resourceusage', serverField: 'resourceusage', header: 'Resource Usage', keys:resourceUsageMetricType, serverRequest: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT },
     { field: 'count', header: 'Flavor Usage'},
     { field: 'map', header: 'Map' },
     { field: 'event', header: 'Event'},
@@ -63,7 +62,7 @@ export const cloudletMetrics = (data, org) => {
     data.cloudlet = {
         organization: org
     }
-    return { method: CLOUDLET_METRICS_ENDPOINT, data: data, keys: cloudletMetricsKeys }
+    return { method: endpoint.CLOUDLET_METRICS_ENDPOINT, data: data, keys: cloudletMetricsKeys }
 }
 
 export const cloudletUsageMetrics = (data, org) => {
@@ -71,11 +70,11 @@ export const cloudletUsageMetrics = (data, org) => {
         organization: org
     }
     data.platformtype = 'openstack'
-    return { method: CLOUDLET_METRICS_USAGE_ENDPOINT, data: data, keys: cloudletMetricsKeys }
+    return { method: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, data: data, keys: cloudletMetricsKeys }
 }
 
 export const cloudletFlavorUsageMetrics = (data, org) => {
-    return { method: CLOUDLET_METRICS_USAGE_ENDPOINT, data: data, keys: cloudletFlavorMetricsKeys }
+    return { method: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, data: data, keys: cloudletFlavorMetricsKeys }
 }
 
 export const getData = (response, body) => {

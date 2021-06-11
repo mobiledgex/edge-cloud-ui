@@ -23,9 +23,9 @@ import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageM
 import { HELP_CLUSTER_INST_REG } from "../../../tutorial";
 
 import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
-import { SHOW_AUTO_SCALE_POLICY } from '../../../services/model/endPointTypes';
 import { sendRequests } from '../../../services/model/serverWorker'
 import { Grid } from '@material-ui/core';
+import { endpoint } from '../../../helper/constant';
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
@@ -437,7 +437,7 @@ class ClusterInstReg extends React.Component {
                 for (let i = 0; i < mcRequestList.length; i++) {
                     let mcRequest = mcRequestList[i];
                     let request = mcRequest.request;
-                    if (request.method === SHOW_AUTO_SCALE_POLICY) {
+                    if (request.method === endpoint.SHOW_AUTO_SCALE_POLICY) {
                         this.autoScalePolicyList = mcRequest.response.data
                     }
                 }
