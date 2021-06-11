@@ -1,16 +1,6 @@
 import * as endpoint from '../../helper/constant/endpoint';
 import * as formatter from './format'
 
-export const getPath = (request) => {
-    return `/api/v1/${request.method}`
-}
-
-export const getHeader = (request) => {
-    if (request.token) {
-        return { 'Authorization': `Bearer ${request.token}` }
-    }
-}
-
 export function formatData(request, response) {
     let data = undefined
     switch (request.method) {

@@ -1,52 +1,8 @@
 import axios from 'axios';
+import { fetchHeader, fetchPath, fetchURL, fetchHttpURL, validateExpiry, fetchResponseType } from '../config';
 import * as EP from './endPointTypes'
 
-
 let sockets = [];
-
-export function getEP() {
-    return EP;
-}
-
-export const mcURL = (isWebSocket) => {
-    let serverURL = ''
-    if (process.env.NODE_ENV === 'production') {
-        var url = window.location.href
-        var arr = url.split("/");
-        serverURL = arr[0] + "//" + arr[2]
-
-        if (isWebSocket) {
-            serverURL = serverURL.replace('http', 'ws')
-        }
-    }
-    else {
-        if (isWebSocket) {
-            serverURL = process.env.REACT_APP_API_ENDPOINT.replace('http', 'ws')
-        }
-    }
-    return serverURL
-}
-
-const getHttpURL = (request) => {
-    return mcURL(false) + EP.getPath(request)
-}
-
-const getHeader = (request) => {
-    let headers = {};
-    if (request.token) {
-        headers = {
-            'Authorization': `Bearer ${request.token}`
-        }
-    }
-    if (request.headers) {
-        headers = { ...headers, ...request.headers }
-    }
-    return headers;
-}
-
-const getResponseType = (request) => {
-    return request.responseType ? request.responseType : undefined
-}
 
 const showSpinner = (self, value) => {
     if (self && self.props.handleLoadingSpinner) {
@@ -61,22 +17,7 @@ const showError = (self, request, message) => {
     }
 }
 
-export const checkExpiry = (self, message) => {
-    if (message) {
-        message = message.toLowerCase()
-        let isExpired = message.indexOf('expired jwt') > -1 || message.indexOf('expired token') > -1 || message.indexOf('token is expired') > -1
-        if (isExpired && self) {
-            setTimeout(() => {
-                if (self && self.props && self.props.history) {
-                    self.props.history.push('/logout');
-                }
-            }, 2000);
-        }
-        return !isExpired;
-    }
-}
-
-function responseError(self, request, error, callback) {
+const responseError = (self, request, error, callback) => {
     if (error && error.response) {
         let response = error.response
         let message = 'UnKnown';
@@ -90,7 +31,7 @@ function responseError(self, request, error, callback) {
             else {
                 message = response.data.message ? response.data.message : message
             }
-            if (checkExpiry(self, message)) {
+            if (validateExpiry(self, message)) {
                 showSpinner(self, false)
                 showError(self, request, message);
                 if (callback) {
@@ -122,7 +63,7 @@ function responseStatus(self, status) {
 }
 
 export function sendWSRequest(request, callback) {
-    const ws = new WebSocket(`${mcURL(true)}/ws${EP.getPath(request)}`)
+    const ws = new WebSocket(`${fetchURL(true)}/ws${fetchPath(request)}`)
     ws.onopen = () => {
         sockets.push({ uuid: request.uuid, socket: ws, isClosed: false });
         ws.send(`{"token": "${request.token}"}`);
@@ -153,9 +94,9 @@ export function sendMultiRequest(self, requestDataList, callback) {
         let promise = [];
         let resResults = [];
         requestDataList.map((request) => {
-            promise.push(axios.post(getHttpURL(request), request.data,
+            promise.push(axios.post(fetchHttpURL(request), request.data,
                 {
-                    headers: getHeader(request)
+                    headers: fetchHeader(request)
                 }))
 
         })
@@ -182,9 +123,9 @@ export const sendSyncMultiRequest = async (self, requestDataList) => {
         let promise = [];
         let resResults = [];
         requestDataList.map((request) => {
-            promise.push(axios.post(getHttpURL(request), request.data,
+            promise.push(axios.post(fetchHttpURL(request), request.data,
                 {
-                    headers: getHeader(request)
+                    headers: fetchHeader(request)
                 }))
         })
         try {
@@ -207,10 +148,10 @@ export const sendSyncMultiRequest = async (self, requestDataList) => {
 export const sendSyncRequest = async (self, request) => {
     try {
         request.showSpinner === undefined && showSpinner(self, true)
-        let response = await axios.post(getHttpURL(request), request.data,
+        let response = await axios.post(fetchHttpURL(request), request.data,
             {
-                headers: getHeader(request),
-                responseType: getResponseType(request)
+                headers: fetchHeader(request),
+                responseType: fetchResponseType(request)
             });
         request.showSpinner === undefined && showSpinner(self, false)
         return EP.formatData(request, response);
@@ -226,9 +167,9 @@ export const sendSyncRequest = async (self, request) => {
 export const sendSyncRequestWithError = async (self, request) => {
     try {
         request.showSpinner === undefined && showSpinner(self, true)
-        let response = await axios.post(getHttpURL(request), request.data,
+        let response = await axios.post(fetchHttpURL(request), request.data,
             {
-                headers: getHeader(request)
+                headers: fetchHeader(request)
             });
         request.showSpinner === undefined && showSpinner(self, false)
         return EP.formatData(request, response);
@@ -243,9 +184,9 @@ export const sendSyncRequestWithError = async (self, request) => {
 
 export function sendRequest(self, request, callback) {
     request.showSpinner === undefined && showSpinner(self, true)
-    axios.post(getHttpURL(request), request.data,
+    axios.post(fetchHttpURL(request), request.data,
         {
-            headers: getHeader(request)
+            headers: fetchHeader(request)
         })
         .then(function (response) {
             request.showSpinner === undefined && showSpinner(self, false)

@@ -1,5 +1,6 @@
-import { getPath, getHeader, formatData } from '../model/endpoints'
+import { formatData } from '../model/endpoints'
 import axios from 'axios';
+import { fetchHeader, fetchPath } from '../config';
 
 const errorResponse = (error) => {
     let response = error.response
@@ -16,7 +17,7 @@ const errorResponse = (error) => {
 export const sendRequest = async (worker) => {
     let request = worker.request
     try {
-        let response = await axios.post(getPath(request), request.data, { headers: getHeader(worker) })
+        let response = await axios.post(fetchPath(request), request.data, { headers: fetchHeader(worker) })
         return formatData(request, response)
     }
     catch (e) {

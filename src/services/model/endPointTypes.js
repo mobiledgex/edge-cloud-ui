@@ -25,12 +25,6 @@ import * as invoices from './invoices';
 import * as reporter from './reporter';
 import * as endpoint from '../../helper/constant/endpoint';
 
-
-
-export function getPath(request) {
-    return `/api/v1/${request.method}`;
-}
-
 export function formatData(request, response) {
     let data = undefined;
     switch (request.method) {

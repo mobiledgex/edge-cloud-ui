@@ -1,6 +1,7 @@
 /* eslint-disable */
-import { getPath, getHeader, formatData } from '../model/endpoints'
+import { formatData } from '../model/endpoints'
 import axios from 'axios';
+import { fetchHeader, fetchPath } from '../config';
 
 const errorResponse = (error) => {
     let response = error.response
@@ -15,9 +16,9 @@ const errorResponse = (error) => {
 }
 const fetchResponse = (worker) => {
     let request = worker.request
-    axios.post(getPath(request), request.data,
+    axios.post(fetchPath(request), request.data,
         {
-            headers: getHeader(worker)
+            headers: fetchHeader(worker)
         }).then((response) => {
             if (response) {
                 self.postMessage(formatData(request, response))
@@ -31,9 +32,9 @@ const fetchResponses = (worker) => {
     let requestList = worker.request
     let promise = []
     requestList.map((request) => {
-        promise.push(axios.post(getPath(request), request.data,
+        promise.push(axios.post(fetchPath(request), request.data,
             {
-                headers: getHeader(worker)
+                headers: fetchHeader(worker)
             }))
     })
     axios.all(promise)

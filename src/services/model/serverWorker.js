@@ -1,6 +1,6 @@
 import ServerWorker from '../worker/server.worker.js'
-import { checkExpiry } from './serviceMC'
 import * as endpoint from '../../helper/constant/endpoint'
+import { validateExpiry } from '../config.js'
 
 const getToken = (self) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -15,7 +15,7 @@ const getToken = (self) => {
 const responseListener = (self, worker, callback) => {
     worker.addEventListener('message', event => {
         if (event.data.status && event.data.status !== 200) {
-            if (checkExpiry(self, event.data.message)) {
+            if (validateExpiry(self, event.data.message)) {
                 callback(event.data)
             }
         }
