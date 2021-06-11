@@ -219,7 +219,8 @@ export const fields = {
     compatibilityVersion: 'compatibilityVersion',
     kafkaCluster: 'kafkaCluster',
     kafkaUser: 'kafkaUser',
-    kafkaPassword: 'kafkaPassword'
+    kafkaPassword: 'kafkaPassword',
+    vmappostype:'vmappostype'
 }
 
 const mapObject = (currentObject, serverField) => {

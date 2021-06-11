@@ -11,7 +11,6 @@ import { validateRole } from '../../constant/role';
 import { withRouter } from 'react-router-dom';
 import { equal } from '../../constant/compare';
 import { redux_org } from '../../helper/reduxData';
-import LinearProgress from '@material-ui/core/LinearProgress';
 
 class Main extends React.Component {
     constructor(props) {
@@ -31,10 +30,9 @@ class Main extends React.Component {
     }
 
     render() {
-        const { loadMain, loading } = this.props
+        const { loadMain } = this.props
         return (
             loadMain ? <div className='view_body'>
-                {loading ? <LinearProgress style={{ zIndex: 9999, position: 'absolute', width: '100vw' }} /> : null}
                 <Menu />
                 {this.state.mexAlertMessage ? <MexAlert data={this.state.mexAlertMessage} onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
             </div> : null
@@ -91,7 +89,7 @@ class Main extends React.Component {
     componentDidUpdate(preProps, preState) {
         if (!equal(preProps.organizationInfo, this.props.organizationInfo)) {
             this.onOrgChange(this.props.organizationInfo)
-        }   
+        }
         this.redirectInvalidPath()
     }
 
@@ -108,8 +106,7 @@ const mapStateToProps = (state) => {
         roles: state.roleInfo ? state.roleInfo.role : null,
         organizationInfo: state.organizationInfo.data,
         privateAccess: state.privateAccess.data,
-        loadMain: state.loadMain.data,
-        loading:state.loadingSpinner.loading
+        loadMain: state.loadMain.data
     }
 };
 
