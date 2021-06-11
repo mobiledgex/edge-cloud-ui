@@ -157,3 +157,20 @@ export const reportInterval = (label) => {
             return 0
     }
 }
+
+export const vmAppOS = (label) => {
+    switch (label) {
+        case constant.VM_APP_OS_UNKNOWN:
+            return 0
+        case constant.VM_APP_OS_LINUX:
+            return 1
+        case constant.VM_APP_OS_WINDOWS_10:
+            return 2
+        case constant.VM_APP_OS_WINDOWS_2012:
+            return 3
+        case constant.VM_APP_OS_WINDOWS_2016:
+            return 4
+        case constant.VM_APP_OS_WINDOWS_2019:
+            return 5
+    }
+}

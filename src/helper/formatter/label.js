@@ -197,3 +197,20 @@ export const reporterInterval = (id) => {
             return constant.REPORTER_SCHEDULE_WEEKLY
     }
 }
+
+export const vmAppOS = (label) => {
+    switch (label) {
+        case 0:
+            return constant.VM_APP_OS_UNKNOWN
+        case 1:
+            return constant.VM_APP_OS_LINUX
+        case 2:
+            return constant.VM_APP_OS_WINDOWS_10
+        case 3:
+            return constant.VM_APP_OS_WINDOWS_2012
+        case 4:
+            return constant.VM_APP_OS_WINDOWS_2016
+        case 5:
+            return constant.VM_APP_OS_WINDOWS_2019
+    }
+}

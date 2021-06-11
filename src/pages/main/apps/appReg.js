@@ -275,7 +275,7 @@ class AppReg extends React.Component {
                 return form
             }
             else if (form.field === fields.scaleWithCluster) {
-                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? true : false
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES
                 return form
             }
             else if (form.field === fields.configs) {
@@ -284,7 +284,7 @@ class AppReg extends React.Component {
                 return form
             }
             else if (form.field === fields.annotations) {
-                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM ? true : false
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM
                 return form
             }
             else if (form.field === fields.annotationmulti) {
@@ -296,6 +296,10 @@ class AppReg extends React.Component {
                 if (currentForm.value === constant.DEPLOYMENT_TYPE_HELM || currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES) {
                     return form
                 }
+            }
+            else if (form.field === fields.vmappostype) {
+                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_VM
+                return form
             }
             else {
                 return form
@@ -458,7 +462,7 @@ class AppReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.updateState({forms})
+            this.updateState({ forms })
         }
     }
 
@@ -782,6 +786,9 @@ class AppReg extends React.Component {
                         case fields.autoProvPolicies:
                             form.options = this.autoProvPolicyList
                             break;
+                        case fields.vmappostype:
+                            form.options = [constant.VM_APP_OS_LINUX, constant.VM_APP_OS_WINDOWS_10, constant.VM_APP_OS_WINDOWS_2012, constant.VM_APP_OS_WINDOWS_2016, constant.VM_APP_OS_WINDOWS_2019]
+                            break;
                         case fields.deployment:
                             form.options = [constant.DEPLOYMENT_TYPE_DOCKER, constant.DEPLOYMENT_TYPE_KUBERNETES, constant.DEPLOYMENT_TYPE_VM, constant.DEPLOYMENT_TYPE_HELM]
                             break;
@@ -944,6 +951,7 @@ class AppReg extends React.Component {
             { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name', dataValidateFunc: this.validateAppName, update: { key: true } },
             { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version', update: { key: true } },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
+            { field: fields.vmappostype, label: 'VM App OS Type', formType: SELECT, placeholder: 'Select OS Type', rules: { required: false }, visible: false, tip: 'OS Type for VM Apps, one of VmAppOsUnknown, VmAppOsLinux, VmAppOsWindows10, VmAppOsWindows2012, VmAppOsWindows2016, VmAppOsWindows2019' },
             { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Deployment Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
             { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: { id: ['4'] }, tip: 'URI of where image resides' },
             { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, update: { id: ['9.1'] }, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },

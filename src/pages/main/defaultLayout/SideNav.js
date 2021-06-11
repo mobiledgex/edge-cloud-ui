@@ -20,9 +20,9 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import About from './About'
 import RoleLegend from './RoleLegend'
 
-import { Collapse, Icon, Tooltip } from '@material-ui/core';
+import { Collapse, Icon, LinearProgress, Tooltip } from '@material-ui/core';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import {validateRole} from '../../../constant/role'
+import { validateRole } from '../../../constant/role'
 
 //Header
 import Header from './Header'
@@ -189,6 +189,7 @@ const SideNav = (props) => {
     const theme = useTheme();
     const [open, setOpen] = React.useState(true);
     const orgInfo = useSelector(state => state.organizationInfo.data)
+    const loading = useSelector(state => state.loadingSpinner.loading)
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -207,6 +208,8 @@ const SideNav = (props) => {
                     [classes.appBarShift]: open,
                 })}
             >
+
+                {loading ? <LinearProgress style={{ postion: 'absolute', width: '100%' }} /> : null}
                 <Toolbar style={{ backgroundColor: '#3B3F47' }}>
                     <About className={clsx(classes.xLogo, { [classes.hide]: open, })} src='/assets/brand/X_Logo_green.svg' />
                     <IconButton
