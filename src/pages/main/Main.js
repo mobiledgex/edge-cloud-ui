@@ -48,32 +48,31 @@ class Main extends React.Component {
         }
     }
 
-    redirectInvalidPath = () => {
-        const orgInfo = this.props.organizationInfo
-        const pathname = this.props.history.location.pathname
-        let pathValid = false
-        if (pathname.includes('/logout')) {
-            pathValid = true
-        }
-        else {
-            for (let page of pages) {
+    validatePath = (pages, orgInfo, pathname) => {
+        for (let page of pages) {
+            if (page.sub) {
+                return this.validatePath(page.options, orgInfo, pathname)
+            }
+            else {
                 if (pathname.includes(page.path)) {
                     let roles = page.roles
                     if (roles) {
                         if (validateRole(page.roles, orgInfo)) {
-                            pathValid = true
+                            return true
                         }
                     }
                     else {
-                        pathValid = true
+                        return true
                     }
-                }
-                if (pathValid) {
-                    break;
                 }
             }
         }
-        if (!pathValid) {
+    }
+
+    redirectInvalidPath = () => {
+        const orgInfo = this.props.organizationInfo
+        const pathname = this.props.history.location.pathname
+        if (!(pathname.includes('/logout') || this.validatePath(pages, orgInfo, pathname))) {
             this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
         }
     }
