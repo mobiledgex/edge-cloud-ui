@@ -72,9 +72,7 @@ class Main extends React.Component {
     redirectInvalidPath = () => {
         const orgInfo = this.props.organizationInfo
         const pathname = this.props.history.location.pathname
-        let pathValid = pathname.includes('/logout') || this.validatePath(pages, orgInfo, pathname)
-        
-        if (!pathValid) {
+        if (!(pathname.includes('/logout') || this.validatePath(pages, orgInfo, pathname))) {
             this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
         }
     }
