@@ -1,5 +1,5 @@
 import {redux_org} from '../helper/reduxData'
-import * as constant from '../constant'
+import { perpetual } from '../helper/constant'
 
 export const HELP_ORG_LIST = 'OrgList'
 export const HELP_ORG_REG_1 = 'OrgREG_1'
@@ -325,7 +325,7 @@ const org = (org, type, isDoc) => {
     else {
         switch (type) {
             case HELP_ORG_LIST:
-                if (redux_org.role(org) === constant.ADMIN_MANAGER) {
+                if (redux_org.role(org) === perpetual.ADMIN_MANAGER) {
                     return [
                         {
                             element: '.none',
@@ -518,7 +518,7 @@ const flavor = (org, type, isDoc) => {
     else {
         switch (type) {
             case HELP_FLAVOR_LIST:
-                if (redux_org.role(org) === constant.ADMIN_MANAGER) {
+                if (redux_org.role(org) === perpetual.ADMIN_MANAGER) {
                     return [
                         {
                             element: '.none',
@@ -840,7 +840,7 @@ const cloudlet = (org, type, isDoc) => {
     else {
         switch (type) {
             case HELP_CLOUDLET_LIST:
-                if (redux_org.roleType(org) !== constant.DEVELOPER) {
+                if (redux_org.roleType(org) !== perpetual.DEVELOPER) {
                     return [
                         {
                             element: '.createAppInst0',

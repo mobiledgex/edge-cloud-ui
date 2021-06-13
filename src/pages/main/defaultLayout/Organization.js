@@ -5,8 +5,7 @@ import { fields } from '../../../services/model/format';
 import BusinessIcon from '@material-ui/icons/Business';
 import { FixedSizeList } from 'react-window';
 import { organizationInfo } from '../../../actions';
-import { LS_ORGANIZATION_INFO } from '../../../helper/ls';
-import { OPERATOR } from '../../../constant';
+import { perpetual } from '../../../helper/constant';
 
 const Organization = (props) => {
     const orgInfo = useSelector(state => state.organizationInfo.data)
@@ -16,7 +15,7 @@ const Organization = (props) => {
 
     const onSelect = (role) => {
         dispatch(organizationInfo(role))
-        localStorage.setItem(LS_ORGANIZATION_INFO,  JSON.stringify(role))
+        localStorage.setItem(perpetual.LS_ORGANIZATION_INFO,  JSON.stringify(role))
         setAnchorEl(null)
     }
     

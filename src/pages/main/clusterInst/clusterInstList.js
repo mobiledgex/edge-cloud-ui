@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 //redux
 import * as actions from '../../../actions';
 //model
-import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
 import { fields } from '../../../services/model/format';
 import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiDataRequest } from '../../../services/model/clusterInstance';
@@ -52,13 +51,13 @@ class ClusterInstView extends React.Component {
     }
 
     getDeleteActionMessage = (action, data) => {
-        if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && redux_org.isAdmin(this)) {
+        if (data[fields.cloudletStatus] !== perpetual.CLOUDLET_STATUS_READY && redux_org.isAdmin(this)) {
             return `Cloudlet status is not online, do you still want to proceed with ${data[fields.clusterName]} Cluster Instance deletion?`
         }
     }
 
     updateVisible = (data) => {
-        return data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES
+        return data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES
     }
 
     actionMenu = () => {
@@ -85,7 +84,7 @@ class ClusterInstView extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: constant.PAGE_CLUSTER_INSTANCES,
+            id: perpetual.PAGE_CLUSTER_INSTANCES,
             headerLabel: 'Cluster Instances',
             nameField: fields.clusterName,
             requestType: [showClusterInsts, showCloudlets, showCloudletInfoData],
@@ -105,7 +104,7 @@ class ClusterInstView extends React.Component {
     render() {
         const { currentView } = this.state
         return (
-            <DataView id={constant.PAGE_CLUSTER_INSTANCES} currentView={currentView} resetView={this.resetView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_CLUSTER_INSTANCES} currentView={currentView} resetView={this.resetView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
         )
     }
 

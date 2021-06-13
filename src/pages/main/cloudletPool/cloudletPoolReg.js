@@ -38,8 +38,8 @@ class CloudletPoolReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
-        this.action = props.action ? props.action : constant.ADD_ORGANIZATION
-        this.isOrgDelete = this.action === constant.DELETE_ORGANIZATION || this.action === perpetual.ACTION_POOL_ACCESS_ADMIN_REMOVE
+        this.action = props.action ? props.action : perpetual.ADD_ORGANIZATION
+        this.isOrgDelete = this.action === perpetual.DELETE_ORGANIZATION || this.action === perpetual.ACTION_POOL_ACCESS_ADMIN_REMOVE
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.operatorList = []
         this.organizationList = []
@@ -54,7 +54,7 @@ class CloudletPoolReg extends React.Component {
 
     getCloudletList = async (forms, form, region, operator) => {
         if (region && operator) {
-            this.cloudletList = await fetchCloudletData(this, { region: region, org: operator, type: constant.OPERATOR })
+            this.cloudletList = await fetchCloudletData(this, { region: region, org: operator, type: perpetual.OPERATOR })
             this.cloudletList = this.cloudletList.filter((cloudlet) => {
                 return cloudlet[fields.operatorName] === operator
             })
@@ -190,10 +190,10 @@ class CloudletPoolReg extends React.Component {
                         newData.decision = 'reject'
                         request = createConfirmation
                         break;
-                    case constant.ADD_ORGANIZATION:
+                    case perpetual.ADD_ORGANIZATION:
                         request = createInvitation
                         break;
-                    case constant.DELETE_ORGANIZATION:
+                    case perpetual.DELETE_ORGANIZATION:
                         request = deleteInvitation
                         break;
                 }
@@ -224,9 +224,9 @@ class CloudletPoolReg extends React.Component {
         let operator = data[fields.operatorName];
         let selectedDatas = data[fields.organizations]
         let errorMsg = 'No org to remove'
-        if (!this.props.action || this.action === constant.ADD_ORGANIZATION) {
+        if (!this.props.action || this.action === perpetual.ADD_ORGANIZATION) {
             errorMsg = 'No org to invite'
-            this.organizationList = await getOrganizationList(this, { type: constant.DEVELOPER })
+            this.organizationList = await getOrganizationList(this, { type: perpetual.DEVELOPER })
             if (!isNew) {
                 this.organizationList = constant.filterData(selectedDatas, this.organizationList, fields.organizationName);
             }
@@ -255,13 +255,13 @@ class CloudletPoolReg extends React.Component {
                 case perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT:
                     label = 'Reject Invitation'
                     break;
-                case constant.ADD_ORGANIZATION:
+                case perpetual.ADD_ORGANIZATION:
                     label = 'Create Invitation'
                     break;
                 case perpetual.ACTION_POOL_ACCESS_ADMIN_REMOVE:
                     label = 'Withdraw Confirmation'
                     break;
-                case constant.DELETE_ORGANIZATION:
+                case perpetual.DELETE_ORGANIZATION:
                     label = 'Withdraw Invitation'
                     break;
             }
@@ -406,8 +406,8 @@ class CloudletPoolReg extends React.Component {
         operator[fields.operatorName] = data[fields.operatorName];
         this.operatorList = [operator]
 
-        if (this.action === constant.ADD_CLOUDLET) {
-            this.cloudletList = await fetchCloudletData(this, { region: data[fields.region], org: data[fields.operatorName], type: constant.OPERATOR })
+        if (this.action === perpetual.ADD_CLOUDLET) {
+            this.cloudletList = await fetchCloudletData(this, { region: data[fields.region], org: data[fields.operatorName], type: perpetual.OPERATOR })
             if (this.cloudletList && this.cloudletList.length > 0) {
                 this.cloudletList = this.cloudletList.filter((cloudlet) => {
                     return cloudlet[fields.operatorName] === data[fields.operatorName]
@@ -421,7 +421,7 @@ class CloudletPoolReg extends React.Component {
             await this.loadDefaultData(data)
         }
         else {
-            let orgList = await getOrganizationList(this, { type: constant.OPERATOR })
+            let orgList = await getOrganizationList(this, { type: perpetual.OPERATOR })
             this.operatorList = orgList.map(org => {
                 return org[fields.organizationName]
             })

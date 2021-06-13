@@ -5,7 +5,7 @@ import * as constant from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 import { idFormatter } from '../../helper/formatter'
 import { redux_org } from '../../helper/reduxData'
-import { endpoint } from '../../helper/constant'
+import { endpoint, perpetual } from '../../helper/constant'
 import { customize } from '../modules/cloudlet'
 import { generateUUID } from '../format/shared'
 
@@ -15,7 +15,7 @@ export const keys = () => ([
     { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
     { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group: true, key: true },
     { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
+    { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: perpetual.TYPE_JSON },
     { field: fields.latitude, serverField: 'location#OS#latitude', label: 'Longitude', detailView: false },
     { field: fields.longitude, serverField: 'location#OS#longitude', label: 'Latitude', detailView: false },
     { field: fields.ipSupport, serverField: 'ip_support', label: 'IP Support' },
@@ -27,12 +27,12 @@ export const keys = () => ([
     { field: fields.caCertdata, serverField: 'access_vars#OS#CACERT_DATA', label: 'CA Cert Data' },
     { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true, format: true },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true, format: true },
-    { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON, detailView: false },
+    { field: fields.status, serverField: 'status', label: 'Status', dataType: perpetual.TYPE_JSON, detailView: false },
     { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: constant.operatorRoles },
     { field: fields.vmImageVersion, serverField: 'vm_image_version', label: 'VM Image Version', roles: constant.operatorRoles },
-    { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: constant.TYPE_JSON },
-    { field: fields.envVars, serverField: 'env_var', label: 'Environment Variables', dataType: constant.TYPE_JSON },
-    { field: fields.resourceQuotas, serverField: 'resource_quotas', label: 'Resource Quotas', dataType: constant.TYPE_JSON },
+    { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: perpetual.TYPE_JSON },
+    { field: fields.envVars, serverField: 'env_var', label: 'Environment Variables', dataType: perpetual.TYPE_JSON },
+    { field: fields.resourceQuotas, serverField: 'resource_quotas', label: 'Resource Quotas', dataType: perpetual.TYPE_JSON },
     { field: fields.defaultResourceAlertThreshold, serverField: 'default_resource_alert_threshold', label: 'Default Resource Alert Threshold' },
     { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access' },
     { field: fields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name' },
@@ -40,11 +40,11 @@ export const keys = () => ([
     { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView: false },
     { field: fields.trustPolicyName, serverField: 'trust_policy', label: 'Trust Policy' },
     { field: fields.kafkaCluster, serverField: 'kafka_cluster', label: 'Kafka Cluster' },
-    { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: constant.TYPE_YAML },
-    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+    { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: perpetual.TYPE_YAML },
+    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.trusted, label: 'Trusted', visible: true, format: true },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: constant.operatorRoles }
+    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: perpetual.operatorRoles }
 ])
 
 export const getCloudletKey = (data) => {
@@ -161,7 +161,7 @@ export const cloudletWithInfo = (mcList) => {
                 for (let j = 0; j < cloudletInfoList.length; j++) {
                     let cloudletInfo = cloudletInfoList[j]
                     if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
-                        cloudlet[fields.compatibilityVersion] = cloudletInfo[fields.compatibilityVersion] ? cloudletInfo[fields.compatibilityVersion] : constant.CLOUDLET_COMPAT_VERSION_2_4
+                        cloudlet[fields.compatibilityVersion] = cloudletInfo[fields.compatibilityVersion] ? cloudletInfo[fields.compatibilityVersion] : perpetual.CLOUDLET_COMPAT_VERSION_2_4
                         valid = cloudletInfo[fields.state] === 2 && (cloudlet[fields.maintenanceState] === undefined || cloudlet[fields.maintenanceState] === 0)
                         break;
                     }
@@ -236,7 +236,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
 
 export const showCloudlets = (self, data, specific) => {
     let requestData = {}
-    let developer = redux_org.isDeveloper(self) || data.type === constant.DEVELOPER
+    let developer = redux_org.isDeveloper(self) || data.type === perpetual.DEVELOPER
     let method = developer ? endpoint.SHOW_ORG_CLOUDLET : endpoint.SHOW_CLOUDLET
     if (specific) {
         let cloudlet = { key: data.cloudletkey ? data.cloudletkey : data.cloudlet.key }
@@ -253,7 +253,7 @@ export const showCloudlets = (self, data, specific) => {
             if (developer) {
                 requestData.org = organization
             }
-            else if (redux_org.isOperator(self) || data.type === constant.OPERATOR) {
+            else if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
                 requestData.cloudlet = { key: { organization } }
             }
         }

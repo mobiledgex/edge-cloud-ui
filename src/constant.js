@@ -1,196 +1,32 @@
 import { fields } from "./services/model/format"
 import { accessGranted } from "./services/model/privateCloudletAccess"
 import { sendRequest } from "./pages/main/monitoring/services/service"
-
-export const COLOR_GREEN = '#388E3C'
-export const COLOR_RED = '#ab2424'
-
-export const LOCAL_STRAGE_KEY = 'PROJECT_INIT'
-export const LS_USER_META_DATA = 'usermetadata'
-export const LS_REGIONS = 'regions'
-
-export const CLOUDLET_COMPAT_VERSION_2_4 = 0
-export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1
-
-export const UNKNOWN = 'Unknown'
-export const ADD = 'Add'
-export const UPDATE = 'Update'
-export const TYPE_JSON = 'JSON'
-export const TYPE_STRING = 'String'
-export const TYPE_YAML = 'YAML'
-export const TYPE_ARRAY = 'Array'
-export const TYPE_DATE = 'DATE'
-export const TYPE_URL = 'URL'
-export const ADD_CLOUDLET = 'AddCloudlet'
-export const DELETE_CLOUDLET = 'DeleteCloudlet'
-export const ADD_ORGANIZATION = 'AddOrganization'
-export const DELETE_ORGANIZATION = 'DeleteOrganization'
-export const DEPLOYMENT_TYPE_DOCKER = 'docker';
-export const DEPLOYMENT_TYPE_KUBERNETES = 'kubernetes';
-export const DEPLOYMENT_TYPE_VM = 'vm';
-export const DEPLOYMENT_TYPE_HELM = 'helm';
-export const ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT = 'Default For Deployment';
-export const ACCESS_TYPE_DIRECT = 'Direct';
-export const ACCESS_TYPE_LOAD_BALANCER = 'Load Balancer';
-export const IMAGE_TYPE_DOCKER = 'Docker';
-export const IMAGE_TYPE_QCOW = 'Qcow';
-export const IMAGE_TYPE_HELM = 'Helm';
-export const IP_ACCESS_DEDICATED = 'Dedicated';
-export const IP_ACCESS_SHARED = 'Shared';
-export const DELETE = 'Delete'
-export const SELECT = 'Select'
-export const CLOUDLET = 'Cloudlet'
-export const CLUSTER_INST = 'ClusterInst'
-export const APP_INST = 'AppInst'
-export const IP_SUPPORT_STATIC = 'Static'
-export const IP_SUPPORT_DYNAMIC = 'Dynamic'
-export const YES = 'Yes'
-export const NO = 'No'
-export const RUN_COMMAND = 'Run Command';
-export const SHOW_LOGS = 'Show Logs';
-export const RECEIVER_TYPE_EMAIL = 'Email'
-export const RECEIVER_TYPE_SLACK = 'Slack'
-export const RECEIVER_TYPE_PAGER_DUTY = 'PagerDuty'
-
-
-export const PLATFORM_TYPE_FAKE = 'Fake'
-export const PLATFORM_TYPE_DIND = 'DIND'
-export const PLATFORM_TYPE_OPEN_STACK = 'Openstack'
-export const PLATFORM_TYPE_AZURE = 'Azure'
-export const PLATFORM_TYPE_OPEN_GCP = 'GCP'
-export const PLATFORM_TYPE_EDGEBOX = 'Edgebox'
-export const PLATFORM_TYPE_FAKEINFRA = 'Fakeinfra'
-export const PLATFORM_TYPE_VSPHERE = 'vSphere'
-export const PLATFORM_TYPE_AWS_EKS = 'AWS EKS'
-export const PLATFORM_TYPE_VMPOOL = 'VM Pool'
-export const PLATFORM_TYPE_AWS_EC2 = 'AWS EC2'
-export const PLATFORM_TYPE_VCD = 'VCD'
-export const PLATFORM_TYPE_K8S_BARE_METAL = 'K8S Bare Metal'
-export const PLATFORM_TYPE_KIND = 'Kind'
-
-export const MAINTENANCE_STATE_NORMAL_OPERATION = 'Normal Operation'
-export const MAINTENANCE_STATE_MAINTENANCE_START = 'Maintenance Start'
-export const MAINTENANCE_STATE_FAILOVER_REQUESTED = 'Failover Requested'
-export const MAINTENANCE_STATE_FAILOVER_DONE = 'Failover Done'
-export const MAINTENANCE_STATE_FAILOVER_ERROR = 'Failover Error'
-export const MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER = 'Maintenance Start No Failover'
-export const MAINTENANCE_STATE_CRM_REQUESTED = 'CRM Requested'
-export const MAINTENANCE_STATE_CRM_UNDER_MAINTENANCE = 'CRM Under Maintenance'
-export const MAINTENANCE_STATE_CRM_ERROR = 'CRM Error'
-export const MAINTENANCE_STATE_UNDER_MAINTENANCE = 'Under Maintenance'
-
-export const INFRA_API_ACCESS_DIRECT = 'Direct'
-export const INFRA_API_ACCESS_RESTRICTED = 'Restricted'
-
-
-export const LIVENESS_STATIC = 'Static'
-export const LIVENESS_DYNAMIC = 'Dynamic'
-export const LIVENESS_AUTOPROV = 'Auto Prov'
-
-export const ALL = 'ALL'
-export const ADMIN = 'admin'
-export const OPERATOR = 'operator'
-export const DEVELOPER = 'developer'
-export const VIEWER = 'Viewer'
-export const ADMIN_MANAGER = 'AdminManager'
-export const ADMIN_CONTRIBUTOR = 'AdminContributor'
-export const ADMIN_VIEWER = 'AdminViewer'
-export const OPERATOR_MANAGER = 'OperatorManager'
-export const OPERATOR_CONTRIBUTOR = 'OperatorContributor'
-export const OPERATOR_VIEWER = 'OperatorViewer'
-export const DEVELOPER_MANAGER = 'DeveloperManager'
-export const DEVELOPER_CONTRIBUTOR = 'DeveloperContributor'
-export const DEVELOPER_VIEWER = 'DeveloperViewer'
-
-export const CONFIG_ENV_VAR = 'Environment Variables Yaml'
-export const CONFIG_HELM_CUST = 'Helm Customization Yaml'
-
-export const CRM_OVERRIDE_NO_OVERRIDE = 0
-export const CRM_OVERRIDE_IGNORE_CRM_ERRORS = 1
-export const CRM_OVERRIDE_IGNORE_CRM = 2
-export const CRM_OVERRIDE_IGNORE_TRANSIENT_STATE = 3
-export const CRM_OVERRIDE_IGNORE_CRM_AND_TRANSIENT_STATE = 4
-
-export const POWER_STATE_POWER_ON_REQUESTED = 'Power On Requested'
-export const POWER_STATE_POWERING_ON = 'Powering On'
-export const POWER_STATE_POWER_ON = 'Power On'
-export const POWER_STATE_POWER_OFF_REQUESTED = 'Power Off Requested'
-export const POWER_STATE_POWERING_OFF = 'Powering Off'
-export const POWER_STATE_POWER_OFF = 'Power Off'
-export const POWER_STATE_REBOOT_REQUESTED = 'Reboot Requested'
-export const POWER_STATE_REBOOTING = 'Rebooting'
-export const POWER_STATE_REBOOT = 'Reboot'
-export const POWER_STATE_ERROR = 'Error'
-
-export const HEALTH_CHECK = 'HEALTH_CHECK'
-export const HEALTH_CHECK_FAIL_ROOTLB_OFFLINE = 'Rootlb Offline'
-export const HEALTH_CHECK_FAIL_SERVER_FAIL = 'Server Fail'
-export const HEALTH_CHECK_OK = 'OK'
-
-export const OFFLINE = 'Offline'
-export const ONLINE = 'Online'
-
-export const PAGE_ORGANIZATIONS = 'Organizations'
-export const PAGE_USER_ROLES = 'UserRoles'
-export const PAGE_ACCOUNTS = 'Accounts'
-export const PAGE_CLOUDLETS = 'Cloudlets'
-export const PAGE_CLOUDLET_POOLS = 'CloudletPools'
-export const PAGE_POOL_ACCESS = 'PoolAccess'
-export const PAGE_FLAVORS = 'Flavors'
-export const PAGE_CLUSTER_INSTANCES = 'ClusterInstances'
-export const PAGE_APPS = 'Apps'
-export const PAGE_APP_INSTANCES = 'AppInstances'
-export const PAGE_POLICIES = 'Policies'
-export const PAGE_AUTO_PROVISIONING_POLICY = 'AutoProvisioningPolicy'
-export const PAGE_TRUST_POLICY = 'TrustPolicy'
-export const PAGE_AUTO_SCALE_POLICY = 'AutoScalePolicy'
-export const PAGE_MONITORING = 'Monitoring'
-export const PAGE_MONITORING_RELOAD = 'Reload'
-export const PAGE_ALERTS = 'AlertReceivers'
-export const PAGE_BILLING_ORG = 'BillingOrg'
-export const PAGE_INVOICES = 'Invoices'
-export const PAGE_REPORTER = 'Reporter'
-
-export const VM_APP_OS_UNKNOWN = UNKNOWN
-export const VM_APP_OS_LINUX = 'Linux'
-export const VM_APP_OS_WINDOWS_10 = 'Windows 10'
-export const VM_APP_OS_WINDOWS_2012 = 'Windows 2012'
-export const VM_APP_OS_WINDOWS_2016 = 'Windows 2016'
-export const VM_APP_OS_WINDOWS_2019 = 'Windows 2019'
-
-export const BILLING_TYPE_SELF = 'self'
-export const BILLING_TYPE_PARENT = 'parent'
-export const CLOUDLET_STATUS_READY = 2
-export const CLOUDLET_STATUS_UNKNOWN = 0
-
-export const REPORTER_SCHEDULE_WEEKLY = 'Every Week'
-export const REPORTER_SCHEDULE_15_DAYS = 'Every 15 Days'
-export const REPORTER_SCHEDULE_MONTHLY = 'Every Month'
+import { perpetual } from "./helper/constant"
 
 export const pages = [
-    { label: 'Organizations', icon: 'supervisor_account', id: PAGE_ORGANIZATIONS, path: 'organizations', visible: true },
-    { label: 'Users & Roles', icon: 'assignment_ind', id: PAGE_USER_ROLES, path: 'user-roles', visible: true },
-    { label: 'Accounts', icon: 'dvr', id: PAGE_ACCOUNTS, path: 'accounts', roles: [ADMIN], visible: true },
+    { label: 'Organizations', icon: 'supervisor_account', id: perpetual.PAGE_ORGANIZATIONS, path: 'organizations', visible: true },
+    { label: 'Users & Roles', icon: 'assignment_ind', id: perpetual.PAGE_USER_ROLES, path: 'user-roles', visible: true },
+    { label: 'Accounts', icon: 'dvr', id: perpetual.PAGE_ACCOUNTS, path: 'accounts', roles: [perpetual.ADMIN], visible: true },
     { divider: true },
-    { label: 'Cloudlets', icon: 'cloud_queue', id: PAGE_CLOUDLETS, path: 'cloudlets', visible: true },
-    { label: 'Cloudlet Pools', icon: 'cloud_circle', id: PAGE_CLOUDLET_POOLS, path: 'cloudlet-pools', roles: [ADMIN, OPERATOR], visible: true },
-    { label: 'Cloudlet Pools', icon: 'cloud_circle', id: PAGE_POOL_ACCESS, path: 'pool-access', roles: [DEVELOPER_MANAGER], visible: true },
-    { label: 'Flavors', icon: 'free_breakfast', id: PAGE_FLAVORS, path: 'flavors', roles: [ADMIN, DEVELOPER], visible: true },
-    { label: 'Cluster Instances', icon: 'storage', id: PAGE_CLUSTER_INSTANCES, path: 'cluster-insts', roles: [ADMIN, DEVELOPER, OPERATOR], visible: true },
-    { label: 'Apps', icon: 'apps', id: PAGE_APPS, path: 'apps', roles: [ADMIN, DEVELOPER], visible: true },
-    { label: 'App Instances', icon: 'games', id: PAGE_APP_INSTANCES, path: 'app-insts', roles: [ADMIN, DEVELOPER, OPERATOR], visible: true },
+    { label: 'Cloudlets', icon: 'cloud_queue', id: perpetual.PAGE_CLOUDLETS, path: 'cloudlets', visible: true },
+    { label: 'Cloudlet Pools', icon: 'cloud_circle', id: perpetual.PAGE_CLOUDLET_POOLS, path: 'cloudlet-pools', roles: [perpetual.ADMIN, perpetual.OPERATOR], visible: true },
+    { label: 'Cloudlet Pools', icon: 'cloud_circle', id: perpetual.PAGE_POOL_ACCESS, path: 'pool-access', roles: [perpetual.DEVELOPER_MANAGER], visible: true },
+    { label: 'Flavors', icon: 'free_breakfast', id: perpetual.PAGE_FLAVORS, path: 'flavors', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
+    { label: 'Cluster Instances', icon: 'storage', id: perpetual.PAGE_CLUSTER_INSTANCES, path: 'cluster-insts', roles: [perpetual.ADMIN, perpetual.DEVELOPER, perpetual.OPERATOR], visible: true },
+    { label: 'Apps', icon: 'apps', id: perpetual.PAGE_APPS, path: 'apps', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
+    { label: 'App Instances', icon: 'games', id: perpetual.PAGE_APP_INSTANCES, path: 'app-insts', roles: [perpetual.ADMIN, perpetual.DEVELOPER, perpetual.OPERATOR], visible: true },
     {
-        label: 'Policies', icon: 'track_changes', id: PAGE_POLICIES, sub: true, visible: true, options: [
-            { label: 'Auto Provisioning Policy', icon: 'group_work', id: PAGE_AUTO_PROVISIONING_POLICY, path: 'auto-prov-policy', roles: [ADMIN, DEVELOPER], visible: true },
-            { label: 'Trust Policy', icon: 'policy', id: PAGE_TRUST_POLICY, path: 'trust-policy', visible: true },
-            { label: 'Auto Scale Policy', icon: 'landscape', id: PAGE_AUTO_SCALE_POLICY, path: 'auto-scale-policy', roles: [ADMIN, DEVELOPER], visible: true },
+        label: 'Policies', icon: 'track_changes', id: perpetual.PAGE_POLICIES, sub: true, visible: true, options: [
+            { label: 'Auto Provisioning Policy', icon: 'group_work', id: perpetual.PAGE_AUTO_PROVISIONING_POLICY, path: 'auto-prov-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
+            { label: 'Trust Policy', icon: 'policy', id: perpetual.PAGE_TRUST_POLICY, path: 'trust-policy', visible: true },
+            { label: 'Auto Scale Policy', icon: 'landscape', id: perpetual.PAGE_AUTO_SCALE_POLICY, path: 'auto-scale-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
         ]
     },
-    { label: 'Monitoring', icon: 'tv', id: PAGE_MONITORING, path: 'monitoring', visible: true },
-    { label: 'Alert Receivers', icon: 'notification_important', id: PAGE_ALERTS, path: 'alerts', visible: true },
-    { label: 'Billing', icon: 'payment', id: PAGE_BILLING_ORG, path: 'billing-org', roles: [ADMIN], visible: true },
-    { label: 'Invoices', icon: 'payment', id: PAGE_INVOICES, path: 'invoices', roles: [DEVELOPER_MANAGER] },
-    { label: 'Reports', icon: 'assessment', id: PAGE_REPORTER, path: 'reporter', roles: [ADMIN, OPERATOR_MANAGER], visible: true },
+    { label: 'Monitoring', icon: 'tv', id: perpetual.PAGE_MONITORING, path: 'monitoring', visible: true },
+    { label: 'Alert Receivers', icon: 'notification_important', id: perpetual.PAGE_ALERTS, path: 'alerts', visible: true },
+    { label: 'Billing', icon: 'payment', id: perpetual.PAGE_BILLING_ORG, path: 'billing-org', roles: [perpetual.ADMIN], visible: true },
+    { label: 'Invoices', icon: 'payment', id: perpetual.PAGE_INVOICES, path: 'invoices', roles: [perpetual.DEVELOPER_MANAGER] },
+    { label: 'Reports', icon: 'assessment', id: perpetual.PAGE_REPORTER, path: 'reporter', roles: [perpetual.ADMIN, perpetual.OPERATOR_MANAGER], visible: true },
 ]
 
 export const getHeight = (height) => {
@@ -270,7 +106,7 @@ export const validatePhone = (form) => {
     }
 }
 
-export const operatorRoles = [ADMIN_MANAGER, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR]
+export const operatorRoles = [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_CONTRIBUTOR]
 
 
 export const legendRoles =
@@ -373,11 +209,5 @@ export const validatePrivateAccess = async (self, orgInfo) => {
         privateAccess = { isPrivate: false }
     }
     return privateAccess
-}
-
-export const toFirstUpperCase = (data) => {
-    if (data) {
-        return data.charAt(0).toUpperCase() + data.slice(1)
-    }
 }
 

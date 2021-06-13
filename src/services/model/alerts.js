@@ -1,8 +1,7 @@
 
 import * as formatter from './format'
-import { RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL, DEVELOPER, OPERATOR, RECEIVER_TYPE_PAGER_DUTY } from '../../constant'
 import { redux_org } from '../../helper/reduxData'
-import { endpoint } from '../../helper/constant'
+import { endpoint, perpetual } from '../../helper/constant'
 import { authSyncRequest } from '../service'
 
 let fields = formatter.fields
@@ -117,14 +116,14 @@ const getKey = (data, isDelete) => {
     if (data[fields.username]) {
         alert['user'] = data[fields.username]
     }
-    if (data[fields.type] === RECEIVER_TYPE_SLACK) {
+    if (data[fields.type] === perpetual.RECEIVER_TYPE_SLACK) {
         alert['slackchannel'] = data[fields.slackchannel]
         alert['slackwebhook'] = data[fields.slackwebhook]
     }
-    else if (data[fields.type] === RECEIVER_TYPE_EMAIL) {
+    else if (data[fields.type] === perpetual.RECEIVER_TYPE_EMAIL) {
         alert['email'] = data[fields.email]
     }
-    else if (data[fields.type] === RECEIVER_TYPE_PAGER_DUTY) {
+    else if (data[fields.type] === perpetual.RECEIVER_TYPE_PAGER_DUTY) {
         alert['pagerdutyintegrationkey'] = data[fields.pagerDutyIntegrationKey]
     }
 

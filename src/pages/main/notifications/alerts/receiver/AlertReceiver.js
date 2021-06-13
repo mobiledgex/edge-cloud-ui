@@ -9,7 +9,6 @@ import { showAlertReceiver, deleteAlertReceiver, showAlertReceiverKeys } from '.
 import Reg from './AlertReceiverReg';
 import { Icon } from 'semantic-ui-react';
 import { HELP_ALERTS } from '../../../../../tutorial';
-import { PAGE_ALERTS } from '../../../../../constant';
 import { perpetual } from '../../../../../helper/constant';
 class AlertList extends React.Component {
     constructor(props) {
@@ -82,7 +81,7 @@ class AlertList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: PAGE_ALERTS,
+            id: perpetual.PAGE_ALERTS,
             headerLabel: 'Alert Receivers',
             nameField: fields.alertname,
             requestType: [showAlertReceiver],
@@ -100,7 +99,7 @@ class AlertList extends React.Component {
     render() {
         const {currentView} = this.state
         return (
-            <DataView id={PAGE_ALERTS} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView}requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_ALERTS} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView}requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
     }
 

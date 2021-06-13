@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData';
 import { keys, showOrganizations, deleteOrganization, edgeboxOnlyAPI } from '../../../services/model/organization';
@@ -17,7 +16,6 @@ import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { perpetual } from '../../../helper/constant';
 import { getToken, sendRequest } from '../monitoring/services/service'
-import { LS_ORGANIZATION_INFO } from '../../../helper/ls';
 import { uiFormatter } from '../../../helper/formatter'
 import { lightGreen } from '@material-ui/core/colors';
 class OrganizationList extends React.Component {
@@ -79,7 +77,7 @@ class OrganizationList extends React.Component {
                     }
                     // subheader="Dynamically scale and deploy applications on Telco Edge geographically close to your end-users. Deploying to MobiledgeX's cloudlets provides applications the advantage of low latency, which can be extremely useful for real-time applications such as Augmented Reality, Mobile Gaming, Self-Driving Cars, Drones, etc."
                     action={
-                        <IconButton aria-label="developer" onClick={() => { this.onAdd(constant.DEVELOPER) }}>
+                        <IconButton aria-label="developer" onClick={() => { this.onAdd(perpetual.DEVELOPER) }}>
                             <ArrowForwardIosIcon style={{ fontSize: 20, color: lightGreen['A700'] }} />
                         </IconButton>
                     }
@@ -99,7 +97,7 @@ class OrganizationList extends React.Component {
                     }
                     // subheader='Register your cloudlet by providing MobiledgeX with a pool of compute resources and access to the OpenStack API endpoint by specifying a few required parameters, such as dynamic IP addresses, cloudlet names, location of cloudlets, certs, and more, using the Edge-Cloud Console. MobiledgeX relies on this information to remotely access the cloudlets to determine resource requirements as well as dynamically track usage.'
                     action={
-                        <IconButton aria-label="operator" onClick={() => { this.onAdd(constant.OPERATOR) }}>
+                        <IconButton aria-label="operator" onClick={() => { this.onAdd(perpetual.OPERATOR) }}>
                             <ArrowForwardIosIcon style={{ fontSize: 20, color: lightGreen['A700'] }} />
                         </IconButton>
                     }
@@ -115,7 +113,7 @@ class OrganizationList extends React.Component {
 
     onDelete = (data, success) => {
         if (success && data[fields.organizationName] === redux_org.orgName(this)) {
-            localStorage.removeItem(LS_ORGANIZATION_INFO)
+            localStorage.removeItem(perpetual.LS_ORGANIZATION_INFO)
             if (this._isMounted) {
                 this.forceUpdate()
             }
@@ -137,7 +135,7 @@ class OrganizationList extends React.Component {
             case perpetual.ACTION_WARNING:
                 return `${data[fields.edgeboxOnly] ? 'disable' : 'enable'} edgebox feature for`
             case perpetual.ACTION_DISABLE:
-                return data[fields.type].includes(constant.DEVELOPER.toLowerCase())
+                return data[fields.type].includes(perpetual.DEVELOPER)
         }
     }
 
@@ -172,7 +170,7 @@ class OrganizationList extends React.Component {
                 if (roleInfo[fields.organizationName] === data[fields.organizationName]) {
                     let organizationInfo = this.cacheOrgInfo(data, roleInfo)
                     this.props.handleOrganizationInfo(organizationInfo)
-                    localStorage.setItem(LS_ORGANIZATION_INFO, JSON.stringify(organizationInfo))
+                    localStorage.setItem(perpetual.LS_ORGANIZATION_INFO, JSON.stringify(organizationInfo))
                     break;
                 }
             }
@@ -198,7 +196,7 @@ class OrganizationList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: constant.PAGE_ORGANIZATIONS,
+            id: perpetual.PAGE_ORGANIZATIONS,
             headerLabel: 'Organizations',
             nameField: fields.organizationName,
             requestType: [showOrganizations],
@@ -215,7 +213,7 @@ class OrganizationList extends React.Component {
         const { tableHeight, currentView } = this.state
         return (
             <div style={{ width: '100%', height: '100%' }}>
-                <DataView id={constant.PAGE_ORGANIZATIONS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight} />
+                <DataView id={perpetual.PAGE_ORGANIZATIONS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight} />
             </div>
         )
     }

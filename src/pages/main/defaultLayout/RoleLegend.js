@@ -1,9 +1,10 @@
 import React from 'react';
 import { useSelector } from "react-redux";
 import { ListItem, Dialog, DialogContent, IconButton, Table, TableBody, TableRow, TableCell, TableHead } from '@material-ui/core';
-import { ADMIN_MANAGER, DEVELOPER_CONTRIBUTOR, DEVELOPER_MANAGER, DEVELOPER_VIEWER, legendRoles, OPERATOR_CONTRIBUTOR, OPERATOR_MANAGER, OPERATOR_VIEWER } from '../../../constant';
+import { ADMIN_MANAGER, DEVELOPER_CONTRIBUTOR, DEVELOPER_MANAGER, DEVELOPER_VIEWER, OPERATOR_CONTRIBUTOR, OPERATOR_MANAGER, OPERATOR_VIEWER } from '../../../helper/constant/perpetual';
 import CloseIcon from '@material-ui/icons/Close';
 import { redux_org } from '../../../helper/reduxData';
+import { legendRoles } from '../../../constant';
 
 const legends = [
     { role: ADMIN_MANAGER, class: 'mark markA markS', mark: 'AM' },

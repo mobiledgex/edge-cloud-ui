@@ -7,12 +7,12 @@ import * as actions from '../../../../actions';
 import { service } from '../../../../services';
 import { fields, updateFieldData } from '../../../../services/model/format';
 import { redux_org } from '../../../../helper/reduxData'
-import * as constant from '../../../../constant'
 import { getOrganizationList } from '../../../../services/model/organization';
 import { fetchCloudletData } from '../../../../services/model/cloudlet';
 import { createAutoProvPolicy, updateAutoProvPolicy, addAutoProvCloudletKey, deleteAutoProvCloudletKey } from '../../../../services/model/autoProvisioningPolicy';
 import { HELP_AUTO_PROV_REG_2, HELP_AUTO_PROV_REG_1 } from "../../../../tutorial";
 import { Grid } from '@material-ui/core';
+import { perpetual } from '../../../../helper/constant';
 class AutoProvPolicyReg extends React.Component {
     constructor(props) {
         super(props);
@@ -59,7 +59,7 @@ class AutoProvPolicyReg extends React.Component {
                 }
             }
             if (region && organization) {
-                this.cloudletList = await fetchCloudletData(this, { region: region, org: organization, type: constant.DEVELOPER })
+                this.cloudletList = await fetchCloudletData(this, { region: region, org: organization, type: perpetual.DEVELOPER })
             }
             this.updateUI(form)
             this.updateState({ forms })
@@ -143,10 +143,10 @@ class AutoProvPolicyReg extends React.Component {
                     for (let j = 0; j < this.cloudletList.length; j++) {
                         let cloudlet = this.cloudletList[j]
                         if (selectedCloudlet[fields.cloudletName] === cloudlet[fields.cloudletName]) {
-                            if (this.props.action === constant.ADD_CLOUDLET) {
+                            if (this.props.action === perpetual.ADD_CLOUDLET) {
                                 this.cloudletList.splice(j, 1)
                             }
-                            else if (this.props.action === constant.DELETE_CLOUDLET) {
+                            else if (this.props.action === perpetual.DELETE_CLOUDLET) {
                                 newCloudletList.push(cloudlet)
                             }
                             break;
@@ -165,7 +165,7 @@ class AutoProvPolicyReg extends React.Component {
         let autoPolicyName = data[fields.autoPolicyName]
         if (this.cloudletList && this.cloudletList.length > 0) {
             let action = 'Add'
-            if (this.props.action === constant.DELETE_CLOUDLET) {
+            if (this.props.action === perpetual.DELETE_CLOUDLET) {
                 action = 'Delete'
             }
             this.filterCloudlets();
@@ -205,7 +205,7 @@ class AutoProvPolicyReg extends React.Component {
         }
 
         if (valid) {
-            let msg = this.props.action === constant.DELETE_CLOUDLET ? 'removed' : 'added'
+            let msg = this.props.action === perpetual.DELETE_CLOUDLET ? 'removed' : 'added'
             this.props.handleAlertInfo('success', `Cloudlets ${msg} successfully`)
             this.props.onClose(true)
         }
@@ -254,7 +254,7 @@ class AutoProvPolicyReg extends React.Component {
                 let cloudlet = JSON.parse(cloudletList[i])
                 data.cloudletName = cloudlet[fields.cloudletName]
                 data.operatorName = cloudlet[fields.operatorName]
-                if (this.props.action === constant.DELETE_CLOUDLET) {
+                if (this.props.action === perpetual.DELETE_CLOUDLET) {
                     requestList.push(deleteAutoProvCloudletKey(data))
                 }
                 else {
@@ -422,7 +422,7 @@ class AutoProvPolicyReg extends React.Component {
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
-            this.cloudletList = await fetchCloudletData(this, { region: data[fields.region], org: data[fields.organizationName], type: constant.DEVELOPER })
+            this.cloudletList = await fetchCloudletData(this, { region: data[fields.region], org: data[fields.organizationName], type: perpetual.DEVELOPER })
         }
     }
 
@@ -431,10 +431,10 @@ class AutoProvPolicyReg extends React.Component {
             await this.loadDefaultData(data)
         }
         else {
-            this.organizationList = await getOrganizationList(this, { type: constant.DEVELOPER });
+            this.organizationList = await getOrganizationList(this, { type: perpetual.DEVELOPER });
         }
 
-        if (this.props.action === constant.ADD_CLOUDLET || this.props.action === constant.DELETE_CLOUDLET) {
+        if (this.props.action === perpetual.ADD_CLOUDLET || this.props.action === perpetual.DELETE_CLOUDLET) {
             this.selectCloudlet(data)
         }
         else {

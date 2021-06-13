@@ -24,7 +24,7 @@ import { HELP_APP_INST_REG } from "../../../tutorial";
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from '@material-ui/core';
-import { endpoint } from '../../../helper/constant';
+import { endpoint, perpetual } from '../../../helper/constant';
 import { service } from '../../../services';
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
@@ -48,7 +48,7 @@ class AppInstReg extends React.Component {
         this.flavorList = []
         this.appList = []
         this.updateFlowDataList = []
-        this.configOptions = [constant.CONFIG_ENV_VAR, constant.CONFIG_HELM_CUST]
+        this.configOptions = [perpetual.CONFIG_ENV_VAR, perpetual.CONFIG_HELM_CUST]
         //To avoid refecthing data from server
     }
 
@@ -72,7 +72,7 @@ class AppInstReg extends React.Component {
         }
         if (region && organizationName) {
             let requestList = []
-            let requestData = { region: region, org: organizationName, type: constant.DEVELOPER }
+            let requestData = { region: region, org: organizationName, type: perpetual.DEVELOPER }
             requestList.push(showCloudlets(this, requestData))
             requestList.push(showCloudletInfoData(this, requestData))
             this.props.handleLoadingSpinner(true)
@@ -168,23 +168,23 @@ class AppInstReg extends React.Component {
             if (app[fields.appName] === appName && app[fields.version] === currentForm.value) {
                 nForms = forms.filter((form) => {
                     if (form.field === fields.autoClusterInstance) {
-                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_VM ? false : true
+                        form.visible = app[fields.deployment] === perpetual.DEPLOYMENT_TYPE_VM ? false : true
                         form.value = false
                         this.autoClusterValueChange(form, forms, isInit)
                         return form
                     }
                     else if (form.field === fields.clusterName) {
-                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_VM ? false : true
+                        form.visible = app[fields.deployment] === perpetual.DEPLOYMENT_TYPE_VM ? false : true
                         form.value = undefined
                         return form
                     }
                     else if (form.field === fields.configs) {
-                        form.visible = app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM || app[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES
-                        this.configOptions = app[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.CONFIG_ENV_VAR] : [constant.CONFIG_HELM_CUST]
+                        form.visible = app[fields.deployment] === perpetual.DEPLOYMENT_TYPE_HELM || app[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES
+                        this.configOptions = app[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES ? [perpetual.CONFIG_ENV_VAR] : [perpetual.CONFIG_HELM_CUST]
                         return form
                     }
                     else if (form.field === fields.configmulti) {
-                        if (app[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM || app[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
+                        if (app[fields.deployment] === perpetual.DEPLOYMENT_TYPE_HELM || app[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
                             return form
                         }
                     }
@@ -202,7 +202,7 @@ class AppInstReg extends React.Component {
                     }
                 })
                 flowDataList.push(appFlow.ipAccessFlowApp(app))
-                flowDataList.push(appFlow.deploymentTypeFlow(app, constant.PAGE_APPS))
+                flowDataList.push(appFlow.deploymentTypeFlow(app, perpetual.PAGE_APPS))
                 if (app[fields.accessPorts]) {
                     flowDataList.push(appFlow.portFlow(app[fields.accessPorts].includes('tls') ? 1 : 0))
                 }
@@ -395,7 +395,7 @@ class AppInstReg extends React.Component {
     }
 
     fetchCompabilityVersion = (data) => {
-        let version = constant.CLOUDLET_COMPAT_VERSION_2_4
+        let version = perpetual.CLOUDLET_COMPAT_VERSION_2_4
         for (let i = 0; i < this.cloudletList.length; i++) {
             let cloudlet = this.cloudletList[i]
             if (data[fields.cloudletName] === cloudlet[fields.cloudletName] && data[fields.operatorName] === cloudlet[fields.operatorName] && data[fields.region] === cloudlet[fields.region]) {
@@ -528,7 +528,7 @@ class AppInstReg extends React.Component {
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
             if (this.props.isLaunch) {
-                let requestData = { region: data[fields.region], org: data[fields.organizationName], type: constant.DEVELOPER }
+                let requestData = { region: data[fields.region], org: data[fields.organizationName], type: perpetual.DEVELOPER }
                 requestList.push(showCloudlets(this, requestData))
                 requestList.push(showCloudletInfoData(this, requestData))
                 requestList.push(showClusterInsts(this, requestData))
@@ -619,7 +619,7 @@ class AppInstReg extends React.Component {
             await this.loadDefaultData(forms, data)
         }
         else {
-            this.organizationList = await getOrganizationList(this, { type: constant.DEVELOPER })
+            this.organizationList = await getOrganizationList(this, { type: perpetual.DEVELOPER })
         }
 
         forms.push(

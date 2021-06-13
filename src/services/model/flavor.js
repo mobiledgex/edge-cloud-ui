@@ -1,8 +1,7 @@
 
 import * as formatter from './format'
 import { authSyncRequest, showAuthSyncRequest } from '../service';
-import { ADMIN_MANAGER } from '../../constant'
-import { endpoint } from '../../helper/constant'
+import { endpoint, perpetual } from '../../helper/constant'
 
 let fields = formatter.fields
 
@@ -13,7 +12,7 @@ export const keys = () => ([
     { field: fields.vCPUs, serverField: 'vcpus', label: 'Number of vCPUs', sortable: true, visible: true },
     { field: fields.disk, serverField: 'disk', label: 'Disk Space(GB)', sortable: true, visible: true },
     { field: fields.gpu, serverField: 'opt_res_map#OS#gpu', label: 'Number of GPUs', sortable: true, visible: true },
-    { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: [ADMIN_MANAGER] }
+    { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: [perpetual.ADMIN_MANAGER] }
 ])
 
 export const getKey = (data, isCreate) => {

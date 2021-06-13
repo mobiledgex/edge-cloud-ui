@@ -9,7 +9,6 @@ import Verify from './verify/Verify'
 
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
-import { LOCAL_STRAGE_KEY, LS_REGIONS, LS_USER_META_DATA, PAGE_ORGANIZATIONS } from '../../constant';
 import * as serverData from '../../services/model/serverData';
 import MexAlert from '../../hoc/alert/AlertDialog';
 import PublicIP from 'public-ip';
@@ -18,6 +17,7 @@ import { Container } from 'semantic-ui-react';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import './style.css'
 import { withStyles } from '@material-ui/styles';
+import { perpetual } from '../../helper/constant';
 
 const styles = props => ({
     colorPrimary: {
@@ -125,12 +125,12 @@ class Landing extends Component {
     componentDidMount() {
         this.receiveClientIp()
         if (this.props.match.path === '/logout') {
-            localStorage.removeItem(LOCAL_STRAGE_KEY);
-            localStorage.removeItem(LS_USER_META_DATA);
-            localStorage.removeItem(LS_REGIONS);
+            localStorage.removeItem(perpetual.LOCAL_STRAGE_KEY);
+            localStorage.removeItem(perpetual.LS_USER_META_DATA);
+            localStorage.removeItem(perpetual.LS_REGIONS);
         }
-        else if (localStorage.getItem(LOCAL_STRAGE_KEY)) {
-            this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
+        else if (localStorage.getItem(perpetual.LOCAL_STRAGE_KEY)) {
+            this.props.history.push(`/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)
         }
     }
 }

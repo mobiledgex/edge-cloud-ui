@@ -1,7 +1,6 @@
 import * as formatter from './format'
-import { ADMIN_MANAGER, TYPE_DATE, DEVELOPER_MANAGER } from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
-import { endpoint } from '../../helper/constant'
+import { endpoint, perpetual } from '../../helper/constant'
 import { authSyncRequest } from '../service'
 
 
@@ -21,9 +20,9 @@ export const keys = () => (
         { field: fields.postalCode, serverField: 'PostalCode', label: 'Postal Code', sortable: true, visible: false },
         { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: false },
         { field: fields.children, serverField: 'Children', label: 'Children', sortable: true, visible: false },
-        { field: fields.createdAt, serverField: 'CreatedAt', label: 'Created', dataType: TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-        { field: fields.updatedAt, serverField: 'UpdatedAt', label: 'Updated', dataType: TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-        { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: [ADMIN_MANAGER, DEVELOPER_MANAGER ] }
+        { field: fields.createdAt, serverField: 'CreatedAt', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+        { field: fields.updatedAt, serverField: 'UpdatedAt', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+        { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: [perpetual.ADMIN_MANAGER, perpetual.DEVELOPER_MANAGER ] }
     ]
 )
 

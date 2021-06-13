@@ -3,9 +3,9 @@ import MexMap from '../../hoc/mexmap/MexMap'
 import { Icon } from 'semantic-ui-react'
 import { Marker, Popup } from "react-leaflet";
 import { fields } from '../../services/model/format';
-import { PAGE_APP_INSTANCES, PAGE_CLOUDLETS, PAGE_CLUSTER_INSTANCES } from '../../constant';
 import Legend from './MapLegend'
 import { mapLegendColor, renderSVG } from '../../hoc/mexmap/constant';
+import { perpetual } from '../../helper/constant';
 
 const DEFAULT_ZOOM = 3
 
@@ -48,11 +48,11 @@ class ListMexMap extends React.Component {
 
     renderLabel = (id, data) => {
         switch (id) {
-            case PAGE_CLOUDLETS:
+            case perpetual.PAGE_CLOUDLETS:
                 return data[fields.cloudletName]
-            case PAGE_CLUSTER_INSTANCES:
+            case perpetual.PAGE_CLUSTER_INSTANCES:
                 return data[fields.clusterName]
-            case PAGE_APP_INSTANCES:
+            case perpetual.PAGE_APP_INSTANCES:
                 return `${data[fields.appName]} [${data[fields.version]}]`
         }
     }
@@ -165,7 +165,7 @@ class ListMexMap extends React.Component {
                         </React.Fragment>
                     )
                 })}
-                {register ? null : this.props.id === PAGE_CLOUDLETS ? <Legend /> : null}
+                {register ? null : this.props.id === perpetual.PAGE_CLOUDLETS ? <Legend /> : null}
             </div> : null
     }
 

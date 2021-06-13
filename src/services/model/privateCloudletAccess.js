@@ -1,5 +1,4 @@
-import { DEVELOPER, OPERATOR } from "../../constant"
-import { endpoint } from "../../helper/constant"
+import { endpoint, perpetual } from "../../helper/constant"
 import { redux_org } from '../../helper/reduxData'
 import * as formatter from './format'
 
@@ -72,10 +71,10 @@ export const accessGranted = (self, orgInfo) => {
     let data = {}
     let org = orgInfo[fields.organizationName]
     if (org) {
-        if (orgInfo[fields.type] === DEVELOPER) {
+        if (orgInfo[fields.type] === perpetual.DEVELOPER) {
             data['Org'] = org
         }
-        else if (orgInfo[fields.type] === OPERATOR) {
+        else if (orgInfo[fields.type] === perpetual.OPERATOR) {
             data['CloudletPoolOrg'] = org
         }
     }

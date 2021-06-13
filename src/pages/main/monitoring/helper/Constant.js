@@ -1,14 +1,13 @@
-import * as mainConstant from '../../../../constant'
 import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, fetchLocation, customData as appCustomData, appInstActions } from '../../../../services/model/appMetrics'
 import { showAppInsts } from '../../../../services/model/appInstance'
 import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys } from '../../../../services/model/clusterMetrics'
 import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys, customData as cloudletCustomData, cloudletUsageMetrics } from '../../../../services/model/cloudletMetrics'
 import { showCloudlets } from '../../../../services/model/cloudlet'
 import { showClusterInsts } from '../../../../services/model/clusterInstance'
-import { endpoint } from '../../../../helper/constant'
+import { endpoint, perpetual } from '../../../../helper/constant'
 
-export const DEVELOPER = mainConstant.DEVELOPER
-export const OPERATOR = mainConstant.OPERATOR
+export const DEVELOPER = perpetual.DEVELOPER
+export const OPERATOR = perpetual.OPERATOR
 
 export const ACTION_REGION = 0
 export const ACTION_METRIC_PARENT_TYPE = 1
@@ -78,9 +77,9 @@ export const summaryList = [
 ]
 
 export const metricParentTypes = () => ([
-    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showAppInsts], metricListKeys: appMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData },
-    { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showCloudlets, showClusterInsts], metricListKeys: clusterMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.DEVELOPER] },
-    { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showCloudlets], metricListKeys: cloudletMetricsListKeys, role: [mainConstant.ADMIN, mainConstant.OPERATOR], customData: cloudletCustomData }
+    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showAppInsts], metricListKeys: appMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData },
+    { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showCloudlets, showClusterInsts], metricListKeys: clusterMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER] },
+    { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showCloudlets], metricListKeys: cloudletMetricsListKeys, role: [perpetual.ADMIN, perpetual.OPERATOR], customData: cloudletCustomData }
 ])
 
 export const validateRole = (roles, selectedRole) => {

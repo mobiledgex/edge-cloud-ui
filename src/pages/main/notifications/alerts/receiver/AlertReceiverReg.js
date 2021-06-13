@@ -19,9 +19,9 @@ import uuid from 'uuid'
 import cloneDeep from 'lodash/cloneDeep';
 import { Grid, LinearProgress } from '@material-ui/core'
 import { resetFormValue } from '../../../../../hoc/forms/helper/constant';
-import { endpoint } from '../../../../../helper/constant';
+import { endpoint, perpetual } from '../../../../../helper/constant';
 
-const RECEIVER_TYPE = [constant.RECEIVER_TYPE_EMAIL, constant.RECEIVER_TYPE_SLACK, constant.RECEIVER_TYPE_PAGER_DUTY]
+const RECEIVER_TYPE = [perpetual.RECEIVER_TYPE_EMAIL, perpetual.RECEIVER_TYPE_SLACK, perpetual.RECEIVER_TYPE_PAGER_DUTY]
 
 
 const selector = (self) => {
@@ -91,14 +91,14 @@ class FlavorReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.email) {
-                form.visible = currentForm.value === constant.RECEIVER_TYPE_EMAIL
+                form.visible = currentForm.value === perpetual.RECEIVER_TYPE_EMAIL
                 form.value = this.email
             }
             else if (form.field === fields.slack) {
-                form.visible = currentForm.value === constant.RECEIVER_TYPE_SLACK
+                form.visible = currentForm.value === perpetual.RECEIVER_TYPE_SLACK
             }
             else if (form.field === fields.pagerDutyIntegrationKey) {
-                form.visible = currentForm.value === constant.RECEIVER_TYPE_PAGER_DUTY
+                form.visible = currentForm.value === perpetual.RECEIVER_TYPE_PAGER_DUTY
             }
         }
         if (isInit === undefined || isInit === false) {

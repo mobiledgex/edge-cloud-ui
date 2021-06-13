@@ -9,7 +9,6 @@ import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst
 import { showApps } from '../../../services/model/app';
 import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
 import AppInstReg from './appInstReg';
-import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog } from '@material-ui/core';
@@ -58,8 +57,8 @@ class AppInstList extends React.Component {
     onTerminalVisible = (data) => {
         let visible = false;
         if (data) {
-            if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM) {
-                visible = redux_org.role(this) !== constant.DEVELOPER_VIEWER
+            if (data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_VM) {
+                visible = redux_org.role(this) !== perpetual.DEVELOPER_VIEWER
             }
             else {
                 let runtimeInfo = data[fields.runtimeInfo]
@@ -80,16 +79,16 @@ class AppInstList extends React.Component {
 
     onPrePowerState = (type, action, data) => {
         let powerState = labelFormatter.powerState(data[fields.powerState])
-        let visible = data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM
+        let visible = data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_VM
         if (visible) {
             if (action.id === perpetual.ACTION_POWER_ON) {
-                visible = powerState === constant.POWER_STATE_POWER_OFF
+                visible = powerState === perpetual.POWER_STATE_POWER_OFF
             }
             else if (action.id === perpetual.ACTION_POWER_OFF) {
-                visible = powerState === constant.POWER_STATE_POWER_ON
+                visible = powerState === perpetual.POWER_STATE_POWER_ON
             }
             else if (action.id === perpetual.ACTION_REBOOT) {
-                visible = powerState === constant.POWER_STATE_POWER_ON
+                visible = powerState === perpetual.POWER_STATE_POWER_ON
             }
         }
         return visible
@@ -100,33 +99,33 @@ class AppInstList extends React.Component {
     }
 
     onUpdateVisible = (data) => {
-        return data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES || data[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM
+        return data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES || data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_HELM
     }
 
     getDeleteActionMessage = (action, data) => {
-        if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && redux_org.isAdmin(this)) {
+        if (data[fields.cloudletStatus] !== perpetual.CLOUDLET_STATUS_READY && redux_org.isAdmin(this)) {
             return `Cloudlet status is not online, do you still want to proceed with ${data[fields.appName]} App Instance deletion?`
         }
     }
 
     getDialogNote = (data) => {
         if (data[fields.clusterName]) {
-            return data[fields.clusterName].includes('autocluster') || data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM ? '' :
+            return data[fields.clusterName].includes('autocluster') || data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_VM ? '' :
                 'Note: Deleting this Application Instance will not automatically delete the Cluster Instance associated with this Application Instance. You must go in and manually delete the Cluster Instance'
         }
     }
 
     onPowerState = (action, data, callback) => {
-        let powerState = idFormatter.powerState(constant.UNKNOWN)
+        let powerState = idFormatter.powerState(perpetual.UNKNOWN)
         switch (action.id) {
             case perpetual.ACTION_POWER_ON:
-                powerState = idFormatter.powerState(constant.POWER_STATE_POWER_ON)
+                powerState = idFormatter.powerState(perpetual.POWER_STATE_POWER_ON)
                 break;
             case perpetual.ACTION_POWER_OFF:
-                powerState = idFormatter.powerState(constant.POWER_STATE_POWER_OFF)
+                powerState = idFormatter.powerState(perpetual.POWER_STATE_POWER_OFF)
                 break;
             case perpetual.ACTION_REBOOT:
-                powerState = idFormatter.powerState(constant.POWER_STATE_REBOOT)
+                powerState = idFormatter.powerState(perpetual.POWER_STATE_REBOOT)
                 break;
         }
         data[fields.powerState] = powerState
@@ -182,7 +181,7 @@ class AppInstList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: constant.PAGE_APP_INSTANCES,
+            id: perpetual.PAGE_APP_INSTANCES,
             headerLabel: 'App Instances',
             nameField: fields.appName,
             requestType: redux_org.isOperator(this) ? [showAppInsts, showCloudletInfoData] : [showAppInsts, showApps, showCloudletInfoData],
@@ -203,7 +202,7 @@ class AppInstList extends React.Component {
         const { currentView } = this.state
         return (
             <React.Fragment>
-                <DataView id={constant.PAGE_APP_INSTANCES} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
+                <DataView id={perpetual.PAGE_APP_INSTANCES} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
                 <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => { this.updateState({ openTerminal: false }) }}>
                     <TerminalViewer data={this.state.terminalData} onClose={() => {
                         this.updateState({ openTerminal: false })

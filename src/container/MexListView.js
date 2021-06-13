@@ -8,7 +8,6 @@ import * as serverData from '../services/model/serverData';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import * as constant from '../constant'
 
 import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH, ACTION_GROUP } from './MexToolbar';
 import MexDetailViewer from './detail/DetailViewer';
@@ -421,7 +420,7 @@ class MexListView extends React.Component {
         let requestType = this.requestInfo.requestType
         data.uuid = uuid
         let requestList = []
-        if (this.requestInfo.id === constant.PAGE_CLOUDLETS) {
+        if (this.requestInfo.id === perpetual.PAGE_CLOUDLETS) {
             requestType.map(request => {
                 requestList.push(request(this, data, true))
             })

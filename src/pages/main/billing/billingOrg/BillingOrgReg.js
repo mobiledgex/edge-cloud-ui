@@ -6,12 +6,10 @@ import MexForms, { SELECT, INPUT, MAIN_HEADER, BUTTON, DUALLIST } from '../../..
 import { Grid } from '@material-ui/core'
 import { fields } from '../../../../services/model/format';
 import { redux_org } from '../../../../helper/reduxData'
-import { DEVELOPER } from '../../../../constant';
 import { perpetual } from '../../../../helper/constant';
 import { resetFormValue } from '../../../../hoc/forms/helper/constant';
 import { createBillingOrg, updateBillingOrg, addBillingChild, removeBillingChild } from '../../../../services/model/billingOrg';
 import { getOrganizationList } from '../../../../services/model/organization';
-import { BILLING_TYPE_PARENT, BILLING_TYPE_SELF } from '../../../../constant';
 import { service } from '../../../../services';
 
 class BillingOrgReg extends React.Component {
@@ -64,10 +62,10 @@ class BillingOrgReg extends React.Component {
         for (let i in forms) {
             let form = forms[i]
             if (form.field === fields.organizationName) {
-                form.visible = currentForm.value === BILLING_TYPE_SELF
+                form.visible = currentForm.value === perpetual.BILLING_TYPE_SELF
             }
             else if (form.field === fields.name) {
-                form.visible = currentForm.value === BILLING_TYPE_PARENT
+                form.visible = currentForm.value === perpetual.BILLING_TYPE_PARENT
             }
         }
         this.updateForm(forms, isInit)
@@ -126,7 +124,7 @@ class BillingOrgReg extends React.Component {
         else {
             let mc = this.isUpdate ? await updateBillingOrg(this, data) : await createBillingOrg(this, data)
             if (mc && mc.response && mc.response.status === 200) {
-                let isParent = data[fields.type] === BILLING_TYPE_PARENT
+                let isParent = data[fields.type] === perpetual.BILLING_TYPE_PARENT
                 this.props.handleAlertInfo('success', `Billing  ${isParent ? 'group' : 'org'} ${isParent ? data[fields.name] : data[fields.organizationName]} ${this.isUpdate ? 'update' : 'created'} successfully`)
                 this.props.onClose(true)
             }
@@ -156,7 +154,7 @@ class BillingOrgReg extends React.Component {
                 if (form.formType === SELECT || form.formType === DUALLIST) {
                     switch (form.field) {
                         case fields.type:
-                            form.options = [BILLING_TYPE_SELF, BILLING_TYPE_PARENT]
+                            form.options = [perpetual.BILLING_TYPE_SELF, perpetual.BILLING_TYPE_PARENT]
                             break;
                         case fields.organizationName:
                             form.options = this.organizationList
@@ -184,7 +182,7 @@ class BillingOrgReg extends React.Component {
                         break;
                     }
                 }
-                if (!exist && data[fields.type] === DEVELOPER) {
+                if (!exist && data[fields.type] === perpetual.DEVELOPER) {
                     optionList.push({ value: data[fields.organizationName], label: data[fields.organizationName] })
                 }
             }

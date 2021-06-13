@@ -1,5 +1,4 @@
-import { TYPE_JSON } from '../../constant'
-import { endpoint } from '../../helper/constant'
+import { endpoint, perpetual } from '../../helper/constant'
 import * as formatter from './format'
 
 let fields = formatter.fields
@@ -20,9 +19,9 @@ export const keys = () => ([
     { field: 'taxAmount', serverField: 'tax_amount', label: 'Tax Amount', visible: false, detailView: false },
     { field: 'totalAmount', serverField: 'total_amount', label: 'Total Amount', visible: true },
     { field: 'dueAmount', serverField: 'due_amount', label: 'Amount Due', visible: true },
-    { field: 'items', serverField: 'line_items', label: 'Item', visible: false, dataType: TYPE_JSON, detailView: false },
-    { field: 'customer', serverField: 'customer', label: 'Customer', visible: false, dataType: TYPE_JSON, detailView: false },
-    { field: 'seller', serverField: 'seller', label: 'Seller', visible: false, dataType: TYPE_JSON, detailView: false },
+    { field: 'items', serverField: 'line_items', label: 'Item', visible: false, dataType: perpetual.TYPE_JSON, detailView: false },
+    { field: 'customer', serverField: 'customer', label: 'Customer', visible: false, dataType: perpetual.TYPE_JSON, detailView: false },
+    { field: 'seller', serverField: 'seller', label: 'Seller', visible: false, dataType: perpetual.TYPE_JSON, detailView: false },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 

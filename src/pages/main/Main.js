@@ -6,10 +6,10 @@ import MexAlert from '../../hoc/alert/AlertDialog';
 import Menu from './Menu'
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
-import { pages, PAGE_ORGANIZATIONS, validatePrivateAccess } from '../../constant';
+import { pages, validatePrivateAccess } from '../../constant';
 import { role } from '../../helper/constant';
 import { withRouter } from 'react-router-dom';
-import { operators } from '../../helper/constant';
+import { operators, perpetual } from '../../helper/constant';
 import { redux_org } from '../../helper/reduxData';
 
 class Main extends React.Component {
@@ -73,7 +73,7 @@ class Main extends React.Component {
         const orgInfo = this.props.organizationInfo
         const pathname = this.props.history.location.pathname
         if (!(pathname.includes('/logout') || this.validatePath(pages, orgInfo, pathname))) {
-            // this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
+            // this.props.history.push(`/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)
         }
     }
 

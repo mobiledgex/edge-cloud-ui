@@ -23,45 +23,45 @@ import BillingOrg from './billing/billingOrg/BillingOrgList';
 import Invoices from './billing/invoices/Invoices';
 import Reporter from './reporter/Reporter';
 import * as constant from '../../constant';
-import { role } from '../../helper/constant';
+import { perpetual, role } from '../../helper/constant';
 
 const renderPage = (id) => {
     switch (id) {
-        case constant.PAGE_ORGANIZATIONS:
+        case perpetual.PAGE_ORGANIZATIONS:
             return Organization
-        case constant.PAGE_USER_ROLES:
+        case perpetual.PAGE_USER_ROLES:
             return User
-        case constant.PAGE_ACCOUNTS:
+        case perpetual.PAGE_ACCOUNTS:
             return Account
-        case constant.PAGE_CLOUDLETS:
+        case perpetual.PAGE_CLOUDLETS:
             return Cloudlet
-        case constant.PAGE_CLOUDLET_POOLS:
+        case perpetual.PAGE_CLOUDLET_POOLS:
             return CloudletPool
-        case constant.PAGE_FLAVORS:
+        case perpetual.PAGE_FLAVORS:
             return Flavor
-        case constant.PAGE_CLUSTER_INSTANCES:
+        case perpetual.PAGE_CLUSTER_INSTANCES:
             return ClusterInst
-        case constant.PAGE_APPS:
+        case perpetual.PAGE_APPS:
             return App
-        case constant.PAGE_APP_INSTANCES:
+        case perpetual.PAGE_APP_INSTANCES:
             return AppInst
-        case constant.PAGE_AUTO_PROVISIONING_POLICY:
+        case perpetual.PAGE_AUTO_PROVISIONING_POLICY:
             return AutoProvPolicy
-        case constant.PAGE_TRUST_POLICY:
+        case perpetual.PAGE_TRUST_POLICY:
             return TrustPolicy
-        case constant.PAGE_AUTO_SCALE_POLICY:
+        case perpetual.PAGE_AUTO_SCALE_POLICY:
             return AutoScalePolicy
-        case constant.PAGE_MONITORING:
+        case perpetual.PAGE_MONITORING:
             return Monitoring
-        case constant.PAGE_ALERTS:
+        case perpetual.PAGE_ALERTS:
             return AlertReceiver
-        case constant.PAGE_BILLING_ORG:
+        case perpetual.PAGE_BILLING_ORG:
             return BillingOrg
-        case constant.PAGE_POOL_ACCESS:
+        case perpetual.PAGE_POOL_ACCESS:
             return PoolAccess
-        case constant.PAGE_INVOICES:
+        case perpetual.PAGE_INVOICES:
             return Invoices
-        case constant.PAGE_REPORTER:
+        case perpetual.PAGE_REPORTER:
             return Reporter
     }
 }

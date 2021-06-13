@@ -1,8 +1,6 @@
-
-import * as constant from '../../constant';
 import { redux_org } from '../../helper/reduxData'
 import * as formatter from './format'
-import { endpoint } from '../../helper/constant';
+import { endpoint, perpetual } from '../../helper/constant';
 
 let fields = formatter.fields;
 
@@ -35,7 +33,7 @@ export const getKey = (data) => {
 
 export const showCloudletInfoData = (self, data, specific) => {
     let requestData = {}
-    let isDeveloper = redux_org.isDeveloper(self) || data.type === constant.DEVELOPER
+    let isDeveloper = redux_org.isDeveloper(self) || data.type === perpetual.DEVELOPER
     let method = isDeveloper ? endpoint.SHOW_ORG_CLOUDLET_INFO : endpoint.SHOW_CLOUDLET_INFO
     if (specific) {
         let cloudletinfo = { key: data.cloudletkey ? data.cloudletkey : data.cloudlet.key }
@@ -52,7 +50,7 @@ export const showCloudletInfoData = (self, data, specific) => {
             if (isDeveloper) {
                 requestData.org = organization
             }
-            else if (redux_org.isOperator(self) || data.type === constant.OPERATOR) {
+            else if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
                 requestData.cloudletinfo = { key: { organization } }
             }
         }

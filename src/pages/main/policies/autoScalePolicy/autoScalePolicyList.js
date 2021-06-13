@@ -9,7 +9,6 @@ import AutoScalePolicyReg from './autoScalePolicyReg'
 import { keys, fields, showAutoScalePolicies, deleteAutoScalePolicy } from '../../../../services/model/autoScalePolicy';
 import {HELP_SCALE_POLICY} from "../../../../tutorial";
 import { perpetual } from '../../../../helper/constant';
-import { PAGE_AUTO_SCALE_POLICY } from '../../../../constant';
 class AutoScalePolicy extends React.Component {
     constructor(props) {
         super(props);
@@ -58,7 +57,7 @@ class AutoScalePolicy extends React.Component {
 
     requestInfo = () => {
         return ({
-            id:PAGE_AUTO_SCALE_POLICY,
+            id:perpetual.PAGE_AUTO_SCALE_POLICY,
             headerLabel: 'Auto Scale Policy',
             requestType: [showAutoScalePolicies],
             isRegion: true,
@@ -74,7 +73,7 @@ class AutoScalePolicy extends React.Component {
     render() {
         const {currentView } = this.state
         return (
-            <DataView id={PAGE_AUTO_SCALE_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_AUTO_SCALE_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
     }
 

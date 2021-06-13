@@ -1,10 +1,9 @@
 import * as formatter from './format'
-import * as constant from '../../constant'
 import * as serverData from './serverData'
 import { showAuthSyncRequest } from '../service';
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 import { redux_org } from '../../helper/reduxData'
-import { endpoint } from '../../helper/constant'
+import { endpoint, perpetual } from '../../helper/constant'
 import { customize } from '../modules/appInst'
 import { generateUUID } from '../format/shared'
 
@@ -19,35 +18,35 @@ export const keys = () => ([
   { field: fields.cloudlet_name_operator, label: 'Cloudlet [Operator]', sortable: true, visible: true, detailView:false },
   { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: false, filter: true, group: true, key: true },
   { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: false, filter: true, group: true, key: true },
-  { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: constant.TYPE_JSON },
+  { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: perpetual.TYPE_JSON },
   { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false, key: true },
   { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true, filter: true, group: true, key: true },
   { field: fields.realclustername, serverField: 'real_cluster_name', sortable: true, label: 'Real Cluster Name', visible: false, filter: false },
-  { field: fields.deployment, label: 'Deployment', sortable: true, visible: true, filter: true, group: true, roles:[constant.ADMIN, constant.DEVELOPER] },
+  { field: fields.deployment, label: 'Deployment', sortable: true, visible: true, filter: true, group: true, roles:[perpetual.ADMIN, perpetual.DEVELOPER] },
   { field: fields.accessType, label: 'Access Type' },
   { field: fields.uri, serverField: 'uri', label: 'URI' },
   { field: fields.liveness, serverField: 'liveness', label: 'Liveness'},
-  { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: constant.TYPE_JSON },
+  { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: perpetual.TYPE_JSON },
   { field: fields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor' },
   { field: fields.ipAccess, serverField: 'auto_cluster_ip_access', label: 'IP Access'},
   { field: fields.sharedVolumeSize, serverField: 'shared_volume_size', label: 'Shared Volume Size' },
   { field: fields.revision, serverField: 'revision', label: 'Revision', visible: false },
   { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true, format:true },
   { field: fields.powerState, serverField: 'power_state', label: 'Power State', visible: false, format:true },
-  { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: constant.TYPE_JSON },
-  { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-  { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-  { field: fields.status, serverField: 'status', label: 'Status', dataType: constant.TYPE_JSON },
-  { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: constant.TYPE_JSON },
+  { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: perpetual.TYPE_JSON },
+  { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+  { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+  { field: fields.status, serverField: 'status', label: 'Status', dataType: perpetual.TYPE_JSON },
+  { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: perpetual.TYPE_JSON },
   { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true, format:true },
   { field: fields.autoPolicyName, label: 'Auto Prov Policy', visible: false },
   { field: fields.trusted, label: 'Trusted', visible: false, sortable: true, format:true },
-  { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles:[constant.ADMIN, constant.DEVELOPER] }
+  { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles:[perpetual.ADMIN, perpetual.DEVELOPER] }
 ])
 
 const getClusterOrg = (data) => {
   if (data[fields.autoClusterInstance]) {
-    return data[fields.compatibilityVersion] === constant.CLOUDLET_COMPAT_VERSION_2_4_1 ? 'MobiledgeX' : data[fields.organizationName]
+    return data[fields.compatibilityVersion] === perpetual.CLOUDLET_COMPAT_VERSION_2_4_1 ? 'MobiledgeX' : data[fields.organizationName]
   }
   else {
     return data[fields.clusterdeveloper] ? data[fields.clusterdeveloper] : data[fields.organizationName]
@@ -155,7 +154,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             appInst[fields.compatibilityVersion] = cloudletInfo[fields.compatibilityVersion]
           }
         }
-        appInst[fields.cloudletStatus] = appInst[fields.cloudletStatus] ? appInst[fields.cloudletStatus] : constant.CLOUDLET_STATUS_UNKNOWN
+        appInst[fields.cloudletStatus] = appInst[fields.cloudletStatus] ? appInst[fields.cloudletStatus] : perpetual.CLOUDLET_STATUS_UNKNOWN
       }
     }
     return appInstList;
@@ -177,10 +176,10 @@ export const showAppInsts = (self, data, specific) => {
     requestData.region = data.region
     let organization = data.org ? data.org : redux_org.orgName(self)
     if (organization) {
-      if (redux_org.isDeveloper(self) || data.type === constant.DEVELOPER) {
+      if (redux_org.isDeveloper(self) || data.type === perpetual.DEVELOPER) {
         requestData.appinst = { key: { app_key: { organization } } }
       }
-      else if (redux_org.isOperator(self) || data.type === constant.OPERATOR) {
+      else if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
         requestData.appinst = {
           key: {
             cluster_inst_key: {
@@ -222,8 +221,8 @@ export const changePowerState = (data) => {
 
 export const deleteAppInst = (self, data) => {
   let requestData = getKey(data)
-  if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && redux_org.isAdmin(self)) {
-    requestData.appinst.crm_override = constant.CRM_OVERRIDE_IGNORE_CRM
+  if (data[fields.cloudletStatus] !== perpetual.CLOUDLET_STATUS_READY && redux_org.isAdmin(self)) {
+    requestData.appinst.crm_override = perpetual.CRM_OVERRIDE_IGNORE_CRM
   }
   return { uuid: data.uuid, method: endpoint.DELETE_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]} deleted successfully` }
 }

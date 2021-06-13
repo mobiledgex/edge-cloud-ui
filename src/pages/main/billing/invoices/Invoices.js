@@ -1,6 +1,5 @@
 import React, { lazy, Suspense } from 'react'
 import LogoSpinner from '../../../../hoc/loader/LogoSpinner'
-import { PAGE_INVOICES, PAGE_ORGANIZATIONS } from '../../../../constant';
 
 import DataView from '../../../../container/DataView';
 import { fields } from '../../../../services/model/format';
@@ -9,6 +8,7 @@ import { showInvoices, keys } from '../../../../services/model/invoices'
 import { withRouter } from 'react-router-dom';
 import { redux_org } from '../../../../helper/reduxData';
 import { connect } from 'react-redux';
+import { perpetual } from '../../../../helper/constant';
 
 const Invoice = lazy(() => import('./Invoice'));
 class Invoices extends React.Component {
@@ -49,7 +49,7 @@ class Invoices extends React.Component {
     requestInfo = () => {
         const { billingOrg } = this.state
         return ({
-            id: PAGE_INVOICES,
+            id: perpetual.PAGE_INVOICES,
             headerLabel: redux_org.isAdmin(this) ? `Invoices - ${billingOrg[fields.name]}` : 'Invoices',
             nameField: fields.name,
             requestType: [showInvoices],
@@ -67,7 +67,7 @@ class Invoices extends React.Component {
         const { invoice, billingOrg } = this.state
         return (
             billingOrg ? <React.Fragment>
-                <DataView id={PAGE_INVOICES} actionMenu={this.actionMenu} requestInfo={this.requestInfo} />
+                <DataView id={perpetual.PAGE_INVOICES} actionMenu={this.actionMenu} requestInfo={this.requestInfo} />
                 <Suspense fallback={<LogoSpinner />}>
                     <Invoice data={invoice} close={this.onClose} />
                 </Suspense>
@@ -77,7 +77,7 @@ class Invoices extends React.Component {
 
     componentDidMount() {
         let billingOrg = this.props.data ? this.props.data : this.props.location.state ? this.props.location.state.data : undefined
-        billingOrg ? this.setState({ billingOrg }) : this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
+        billingOrg ? this.setState({ billingOrg }) : this.props.history.push(`/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)
         this._isMounted = true
     }
 

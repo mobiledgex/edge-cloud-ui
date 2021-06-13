@@ -10,7 +10,7 @@ import { fields } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
 import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
 import CloudletReg from './cloudletReg';
-import { operatorRoles, INFRA_API_ACCESS_RESTRICTED, PAGE_CLOUDLETS } from '../../../constant'
+import { operatorRoles } from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
@@ -74,7 +74,7 @@ class CloudletList extends React.Component {
     }
 
     onCloudletManifestVisible = (data) => {
-        return data[fields.infraApiAccess] === INFRA_API_ACCESS_RESTRICTED
+        return data[fields.infraApiAccess] === perpetual.INFRA_API_ACCESS_RESTRICTED
     }
 
     onPreAction = (type, action, data) => {
@@ -122,7 +122,7 @@ class CloudletList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: PAGE_CLOUDLETS,
+            id: perpetual.PAGE_CLOUDLETS,
             headerLabel: 'Cloudlets',
             nameField: fields.cloudletName,
             requestType: [showCloudlets, showCloudletInfoData],

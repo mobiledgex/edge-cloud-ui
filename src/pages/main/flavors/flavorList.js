@@ -8,7 +8,6 @@ import { redux_org } from '../../../helper/reduxData';
 import { keys, showFlavors, deleteFlavor } from '../../../services/model/flavor';
 import FlavorReg from './flavorReg';
 import { HELP_FLAVOR_LIST } from "../../../tutorial";
-import { PAGE_FLAVORS } from '../../../constant';
 import { perpetual } from '../../../helper/constant';
 
 class FlavorList extends React.Component {
@@ -58,7 +57,7 @@ class FlavorList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: PAGE_FLAVORS,
+            id: perpetual.PAGE_FLAVORS,
             headerLabel: 'Flavors',
             nameField: fields.flavorName,
             isRegion: true,
@@ -74,7 +73,7 @@ class FlavorList extends React.Component {
     render() {
         const {currentView} = this.state
         return (
-            <DataView id={PAGE_FLAVORS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_FLAVORS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
     }
 

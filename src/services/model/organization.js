@@ -1,8 +1,7 @@
 import * as formatter from './format'
 import { authSyncRequest, showAuthSyncRequest } from '../service';
-import * as constant from '../../constant'
 import { redux_org } from '../../helper/reduxData'
-import { endpoint } from '../../helper/constant'
+import { endpoint, perpetual } from '../../helper/constant'
 
 let fields = formatter.fields;
 
@@ -11,7 +10,7 @@ export const keys = () => ([
     { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true, filter: true, group: true },
     { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: true },
     { field: fields.address, serverField: 'Address', label: 'Address', sortable: true, visible: true },
-    { field: fields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', visible: true, roles: [constant.ADMIN_MANAGER], format: true },
+    { field: fields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', visible: true, roles: [perpetual.ADMIN_MANAGER], format: true },
     { field: fields.publicImages, serverField: 'PublicImages', label: 'Public Image', sortable: true, visible: true },
     {
         field: fields.userList, label: 'User List', sortable: true, visible: false,

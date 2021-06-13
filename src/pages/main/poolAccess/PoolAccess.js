@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
-import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/privateCloudletAccess';
 import { perpetual } from '../../../helper/constant';
@@ -68,7 +67,7 @@ class PoolAccessList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: constant.PAGE_POOL_ACCESS,
+            id: perpetual.PAGE_POOL_ACCESS,
             headerLabel: 'Cloudlet Pools',
             nameField: fields.poolName,
             requestType: [showConfirmation, showInvitation],
@@ -81,7 +80,7 @@ class PoolAccessList extends React.Component {
 
     render() {
         return (
-            <DataView id={constant.PAGE_POOL_ACCESS} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} />
+            <DataView id={perpetual.PAGE_POOL_ACCESS} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} />
         )
     }
 

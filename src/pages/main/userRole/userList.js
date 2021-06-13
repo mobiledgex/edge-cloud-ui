@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import { fields } from '../../../services/model/format';
 import { keys, showUsers, deleteUser } from '../../../services/model/users';
 import { HELP_USER_ROLES } from '../../../tutorial';
-import { PAGE_USER_ROLES } from '../../../constant';
 import { connect } from 'react-redux';
 import { redux_org } from '../../../helper/reduxData';
 import { perpetual } from '../../../helper/constant';
@@ -52,7 +51,7 @@ class UserList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: PAGE_USER_ROLES,
+            id: perpetual.PAGE_USER_ROLES,
             headerLabel: 'Users & Roles',
             nameField: fields.username,
             requestType: [showUsers],
@@ -67,7 +66,7 @@ class UserList extends React.Component {
 
     render() {
         return (
-            <DataView id={PAGE_USER_ROLES} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_USER_ROLES} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
     }
 

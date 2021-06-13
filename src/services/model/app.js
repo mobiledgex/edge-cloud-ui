@@ -1,16 +1,15 @@
 import * as formatter from './format'
-import * as constant from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
 import { idFormatter } from '../../helper/formatter';
 import { redux_org } from '../../helper/reduxData'
-import { endpoint } from '../../helper/constant';
+import { endpoint, perpetual } from '../../helper/constant';
 import { authSyncRequest, showAuthSyncRequest } from '../service';
 
 let fields = formatter.fields
 
 export const configs = () => ([
     { field: fields.kind, serverField: 'kind', label: 'Kind' },
-    { field: fields.config, serverField: 'config', label: 'Config', dataType: constant.TYPE_YAML }
+    { field: fields.config, serverField: 'config', label: 'Config', dataType: perpetual.TYPE_YAML }
 ])
 
 export const keys = () => ([
@@ -22,7 +21,7 @@ export const keys = () => ([
     { field: fields.deployment, serverField: 'deployment', label: 'Deployment', sortable: true, visible: true, filter: true, group: true },
     { field: fields.vmappostype, serverField: 'vm_app_os_type', label: 'VM App OS Type' },
     { field: fields.command, serverField: 'command', label: 'Command' },
-    { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: constant.TYPE_YAML },
+    { field: fields.deploymentManifest, serverField: 'deployment_manifest', label: 'Deployment Manifest', dataType: perpetual.TYPE_YAML },
     { field: fields.deploymentGenerator, serverField: 'deployment_generator', label: 'Deployment Generator' },
     { field: fields.imageType, serverField: 'image_type', label: 'Image Type' },
     { field: fields.imagePath, serverField: 'image_path', label: 'Image Path' },
@@ -34,16 +33,16 @@ export const keys = () => ([
     { field: fields.scaleWithCluster, serverField: 'scale_with_cluster', label: 'Scale With Cluster', format: true },
     { field: fields.officialFQDN, serverField: 'official_fqdn', label: 'Official FQDN' },
     { field: fields.androidPackageName, serverField: 'android_package_name', label: 'Android Package Name' },
-    { field: fields.autoProvPolicies, serverField: 'auto_prov_policies', label: 'Auto Provisioning Policies', dataType: constant.TYPE_ARRAY },
+    { field: fields.autoProvPolicies, serverField: 'auto_prov_policies', label: 'Auto Provisioning Policies', dataType: perpetual.TYPE_ARRAY },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
     { field: fields.trusted, serverField: 'trusted', label: 'Trusted', visible: false, sortable: true, format: true },
     { field: fields.configs, serverField: 'configs', label: 'Configs', keys: configs() },
     { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: false },
-    { field: fields.requiredOutboundConnections, serverField: 'required_outbound_connections', label: 'Required Outbound Connections', visible: false, dataType: constant.TYPE_JSON },
+    { field: fields.requiredOutboundConnections, serverField: 'required_outbound_connections', label: 'Required Outbound Connections', visible: false, dataType: perpetual.TYPE_JSON },
     { field: fields.templateDelimiter, serverField: 'template_delimiter', label: 'Template Delimiter' },
     { field: fields.revision, serverField: 'revision', label: 'Revision' },
-    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 

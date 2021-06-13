@@ -7,7 +7,6 @@ import * as actions from '../../../../actions';
 import AutoProvPolicyReg from './autoProvPolicyReg'
 //model
 import { fields } from '../../../../services/model/format';
-import * as constant from '../../../../constant';
 import { keys, showAutoProvPolicies, deleteAutoProvPolicy, multiDataRequest } from '../../../../services/model/autoProvisioningPolicy';
 import { showApps } from '../../../../services/model/app';
 //list
@@ -43,11 +42,11 @@ class AutoProvPolicy extends React.Component {
     }
 
     onAddCloudlet = (action, data) => {
-        this.updateState({ currentView: <AutoProvPolicyReg data={data} action={constant.ADD_CLOUDLET} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <AutoProvPolicyReg data={data} action={perpetual.ADD_CLOUDLET} onClose={this.onRegClose} /> });
     }
 
     onDeleteCloudlet = (action, data) => {
-        this.updateState({ currentView: <AutoProvPolicyReg data={data} action={constant.DELETE_CLOUDLET} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <AutoProvPolicyReg data={data} action={perpetual.DELETE_CLOUDLET} onClose={this.onRegClose} /> });
     }
 
     onDeleteCloudletVisible = (data) => {
@@ -90,7 +89,7 @@ class AutoProvPolicy extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: constant.PAGE_AUTO_PROVISIONING_POLICY,
+            id: perpetual.PAGE_AUTO_PROVISIONING_POLICY,
             headerLabel: 'Auto Provisioning Policy',
             nameField: fields.autoPolicyName,
             requestType: [showAutoProvPolicies, showApps],
@@ -106,7 +105,7 @@ class AutoProvPolicy extends React.Component {
     render() {
         const {currentView } = this.state
         return (
-            <DataView id={constant.PAGE_AUTO_PROVISIONING_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_AUTO_PROVISIONING_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
         )
     }
 

@@ -6,7 +6,6 @@ import MexTab from '../../../hoc/forms/tab/MexTab';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as constant from '../../../constant';
 import { fields, updateFieldData } from '../../../services/model/format';
 import { redux_org} from '../../../helper/reduxData'
 //model
@@ -24,7 +23,7 @@ import { HELP_CLUSTER_INST_REG } from "../../../tutorial";
 import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
 import { sendRequests } from '../../../services/model/serverWorker'
 import { Grid } from '@material-ui/core';
-import { endpoint } from '../../../helper/constant';
+import { endpoint, perpetual } from '../../../helper/constant';
 import { service } from '../../../services';
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
@@ -51,7 +50,7 @@ class ClusterInstReg extends React.Component {
         this.cloudletList = []
         this.flavorList = []
         this.autoScalePolicyList = []
-        this.ipAccessList = [constant.IP_ACCESS_DEDICATED, constant.IP_ACCESS_SHARED]
+        this.ipAccessList = [perpetual.IP_ACCESS_DEDICATED, perpetual.IP_ACCESS_SHARED]
         this.updateFlowDataList = []
     }
 
@@ -75,7 +74,7 @@ class ClusterInstReg extends React.Component {
         }
         if (region && organizationName) {
             let requestList = []
-            let requestData = { region: region, org: organizationName, type: constant.DEVELOPER }
+            let requestData = { region: region, org: organizationName, type: perpetual.DEVELOPER }
             requestList.push(showCloudlets(this, requestData))
             requestList.push(showCloudletInfoData(this, requestData))
             this.props.handleLoadingSpinner(true)
@@ -165,15 +164,15 @@ class ClusterInstReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field === fields.numberOfMasters) {
-                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? 1 : undefined
-                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
+                form.value = currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES ? 1 : undefined
+                form.visible = currentForm.value === perpetual.DEPLOYMENT_TYPE_DOCKER ? false : true
             }
             else if (form.field === fields.numberOfNodes || form.field === fields.sharedVolumeSize) {
-                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? form.value : undefined
-                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_DOCKER ? false : true
+                form.value = currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES ? form.value : undefined
+                form.visible = currentForm.value === perpetual.DEPLOYMENT_TYPE_DOCKER ? false : true
             }
             else if (form.field === fields.autoScalePolicyName) {
-                form.visible = currentForm.value !== constant.DEPLOYMENT_TYPE_DOCKER
+                form.visible = currentForm.value !== perpetual.DEPLOYMENT_TYPE_DOCKER
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -199,7 +198,7 @@ class ClusterInstReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field === fields.ipAccess) {
-                form.value = currentForm.value ? constant.IP_ACCESS_DEDICATED : form.value
+                form.value = currentForm.value ? perpetual.IP_ACCESS_DEDICATED : form.value
                 form.rules.disabled = currentForm.value
             }
         }
@@ -297,7 +296,7 @@ class ClusterInstReg extends React.Component {
     getMap = () =>
     (
         <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-            <ListMexMap dataList={this.state.mapData} id={constant.PAGE_CLUSTER_INSTANCES} region={this.state.region} register={true}/>
+            <ListMexMap dataList={this.state.mapData} id={perpetual.PAGE_CLUSTER_INSTANCES} region={this.state.region} register={true}/>
         </div>
     )
 
@@ -391,7 +390,7 @@ class ClusterInstReg extends React.Component {
                             form.options = this.flavorList
                             break;
                         case fields.deployment:
-                            form.options = [constant.DEPLOYMENT_TYPE_DOCKER, constant.DEPLOYMENT_TYPE_KUBERNETES]
+                            form.options = [perpetual.DEPLOYMENT_TYPE_DOCKER, perpetual.DEPLOYMENT_TYPE_KUBERNETES]
                             break;
                         case fields.autoScalePolicyName:
                             form.options = this.autoScalePolicyList
@@ -428,7 +427,7 @@ class ClusterInstReg extends React.Component {
             this.flavorList = [flavor]
 
             let requestList = []
-            if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
+            if (data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
                 requestList.push(showAutoScalePolicies(this, { region: data[fields.region] }))
             }
 
@@ -460,7 +459,7 @@ class ClusterInstReg extends React.Component {
             { field: fields.numberOfMasters, label: 'Number of Masters', formType: INPUT, placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, tip: 'Number of k8s masters (In case of docker deployment, this field is not required)' },
             { field: fields.numberOfNodes, label: 'Number of Workers', formType: INPUT, placeholder: 'Enter Number of Workers', rules: { type: 'number' }, visible: false, update: { id: ['14'] }, tip: 'Number of k8s nodes (In case of docker deployment, this field is not required)' },
             { field: fields.sharedVolumeSize, label: 'Shared Volume Size', formType: INPUT, placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false, update: false, tip: 'Size of an optional shared volume to be mounted on the master' },
-            { field: fields.reservable, label: 'Reservable', formType: SWITCH, visible: true, roles: [constant.ADMIN_MANAGER], value: false, update: false, tip: 'For reservable MobiledgeX ClusterInsts, the current developer tenant' },
+            { field: fields.reservable, label: 'Reservable', formType: SWITCH, visible: true, roles: [perpetual.ADMIN_MANAGER], value: false, update: false, tip: 'For reservable MobiledgeX ClusterInsts, the current developer tenant' },
         ]
     }
 
@@ -469,7 +468,7 @@ class ClusterInstReg extends React.Component {
             await this.loadDefaultData(data)
         }
         else {
-            this.organizationList = await getOrganizationList(this, {type:constant.DEVELOPER})
+            this.organizationList = await getOrganizationList(this, {type:perpetual.DEVELOPER})
         }
 
         let forms = this.formKeys()

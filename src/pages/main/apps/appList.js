@@ -3,7 +3,6 @@ import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import * as constant from '../../../constant'
 import { fields } from '../../../services/model/format';
 import { keys, showApps, deleteApp } from '../../../services/model/app';
 import AppReg from './appReg';
@@ -75,7 +74,7 @@ class AppList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: constant.PAGE_APPS,
+            id: perpetual.PAGE_APPS,
             headerLabel: 'Apps',
             nameField: fields.appName,
             requestType: [showApps],
@@ -93,7 +92,7 @@ class AppList extends React.Component {
     render() {
         const { currentView } = this.state
         return (
-            <DataView id={constant.PAGE_APPS} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_APPS} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
     }
 

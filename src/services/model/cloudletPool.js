@@ -1,5 +1,4 @@
 import * as formatter from './format'
-import * as constant from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
 import isEqual from 'lodash/isEqual';
 import omit from 'lodash/omit';
@@ -16,14 +15,14 @@ export const keys = () => ([
     { field: fields.cloudletCount, label: 'Number of  Cloudlets', sortable: true, visible: true },
     { field: fields.organizationCount, label: 'Number of Organizations', sortable: true, visible: true },
     {
-        field: fields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets', dataType: constant.TYPE_STRING
+        field: fields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets', dataType: perpetual.TYPE_STRING
     },
     {
         field: fields.organizations, label: 'Organizations',
         keys: [{ field: fields.organizationName, label: 'Organization' }, { field: fields.status, label: 'Status' }]
     },
-    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 

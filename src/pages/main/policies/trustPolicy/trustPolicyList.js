@@ -9,7 +9,7 @@ import TrustPolicyReg from './trustPolicyReg'
 import { keys, fields, showTrustPolicies, deleteTrustPolicy, multiDataRequest } from '../../../../services/model/trustPolicy';
 import { showCloudlets } from '../../../../services/model/cloudlet';
 import { HELP_TRUST_POLICY } from "../../../../tutorial";
-import { operatorRoles, PAGE_TRUST_POLICY } from '../../../../constant';
+import { operatorRoles } from '../../../../constant';
 import { role, perpetual } from '../../../../helper/constant';
 
 class TrustPolicy extends React.Component {
@@ -17,7 +17,7 @@ class TrustPolicy extends React.Component {
         super(props);
         this.state = {
             currentView: null
-        } 
+        }
         this._isMounted = false
         this.keys = keys();
     }
@@ -32,8 +32,7 @@ class TrustPolicy extends React.Component {
         this.updateState({ currentView: null })
     }
 
-    onRegClose = (isEdited)=>
-    {
+    onRegClose = (isEdited) => {
         this.resetView()
     }
 
@@ -74,7 +73,7 @@ class TrustPolicy extends React.Component {
 
     requestInfo = () => {
         return ({
-            id:PAGE_TRUST_POLICY,
+            id: perpetual.PAGE_TRUST_POLICY,
             headerLabel: 'Trust Policy',
             requestType: [showTrustPolicies, showCloudlets],
             isRegion: true,
@@ -89,9 +88,9 @@ class TrustPolicy extends React.Component {
 
 
     render() {
-        const {currentView} = this.state
+        const { currentView } = this.state
         return (
-            <DataView id={PAGE_TRUST_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_TRUST_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
         )
     }
 

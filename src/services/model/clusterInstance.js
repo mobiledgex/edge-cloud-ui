@@ -1,12 +1,10 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
 import { showAuthSyncRequest } from '../service';
-import * as constant from '../../constant'
-import { TYPE_JSON } from '../../constant';
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 import { idFormatter } from '../../helper/formatter';
 import { redux_org } from '../../helper/reduxData'
-import { endpoint } from '../../helper/constant';
+import { endpoint, perpetual } from '../../helper/constant';
 import { customize } from '../modules/clusterInst';
 import { generateUUID } from '../format/shared';
 
@@ -22,20 +20,20 @@ export const keys = () => ([
     { field: fields.flavorName, serverField: 'flavor#OS#name', sortable: true, label: 'Flavor', visible: true, filter: true, group: true },
     { field: fields.ipAccess, serverField: 'ip_access', label: 'IP Access', sortable: true, visible: false, filter: true },
     { field: fields.autoScalePolicyName, serverField: 'auto_scale_policy', label: 'Auto Scale Policy' },
-    { field: fields.cloudletLocation, label: 'Cloudlet Location', dataType: TYPE_JSON },
+    { field: fields.cloudletLocation, label: 'Cloudlet Location', dataType: perpetual.TYPE_JSON },
     { field: fields.nodeFlavor, serverField: 'node_flavor', label: 'Node Flavor' },
     { field: fields.numberOfMasters, serverField: 'num_masters', label: 'Number of Masters' },
     { field: fields.numberOfNodes, serverField: 'num_nodes', label: 'Number of Workers' },
     { field: fields.sharedVolumeSize, serverField: 'shared_volume_size', label: 'Shared Volume Size' },
     { field: fields.deployment, serverField: 'deployment', sortable: true, label: 'Deployment', visible: true, filter: true, group: true },
     { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true, format: true },
-    { field: fields.status, serverField: 'status', label: 'Status', dataType: TYPE_JSON },
-    { field: fields.reservable, serverField: 'reservable', label: 'Reservable', roles: [constant.ADMIN_MANAGER], format: true },
-    { field: fields.reservedBy, serverField: 'reserved_by', label: 'Reserved By', roles: [constant.ADMIN_MANAGER] },
-    { field: fields.resources, serverField: 'resources', label: 'Resources', dataType: TYPE_JSON },
-    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: constant.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles:[constant.ADMIN, constant.DEVELOPER] }
+    { field: fields.status, serverField: 'status', label: 'Status', dataType: perpetual.TYPE_JSON },
+    { field: fields.reservable, serverField: 'reservable', label: 'Reservable', roles: [perpetual.ADMIN_MANAGER], format: true },
+    { field: fields.reservedBy, serverField: 'reserved_by', label: 'Reserved By', roles: [perpetual.ADMIN_MANAGER] },
+    { field: fields.resources, serverField: 'resources', label: 'Resources', dataType: perpetual.TYPE_JSON },
+    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
+    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles:[perpetual.ADMIN, perpetual.DEVELOPER] }
 ])
 
 export const multiDataRequest = (keys, mcRequestList, specific) => {
@@ -99,7 +97,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
                             clusterData[fields.cloudletStatus] = cloudletInfo[fields.state]
                         }
                     }
-                    clusterData[fields.cloudletStatus] = clusterData[fields.cloudletStatus] ? clusterData[fields.cloudletStatus] : constant.CLOUDLET_STATUS_UNKNOWN
+                    clusterData[fields.cloudletStatus] = clusterData[fields.cloudletStatus] ? clusterData[fields.cloudletStatus] : perpetual.CLOUDLET_STATUS_UNKNOWN
                     dataList.push(clusterData)
                 }
             }
@@ -122,10 +120,10 @@ export const showClusterInsts = (self, data, specific) => {
         requestData.region = data.region
         let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
         if (organization) {
-            if (redux_org.isDeveloper(self) || data.type === constant.DEVELOPER) {
+            if (redux_org.isDeveloper(self) || data.type === perpetual.DEVELOPER) {
                 requestData.clusterinst = { key: { organization } }
             }
-            else if (redux_org.isOperator(self)  || data.type === constant.OPERATOR) {
+            else if (redux_org.isOperator(self)  || data.type === perpetual.OPERATOR) {
                 requestData.clusterinst = {
                     key: { cloudlet_key: { organization } }
                 }
@@ -200,8 +198,8 @@ export const updateClusterInst = (self, data, callback) => {
 
 export const deleteClusterInst = (self, data) => {
     let requestData = clusterKey(data)
-    if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && redux_org.isAdmin(self)) {
-        requestData.clusterinst.crm_override = constant.CRM_OVERRIDE_IGNORE_CRM
+    if (data[fields.cloudletStatus] !== perpetual.CLOUDLET_STATUS_READY && redux_org.isAdmin(self)) {
+        requestData.clusterinst.crm_override = perpetual.CRM_OVERRIDE_IGNORE_CRM
     }
     return { uuid: data.uuid, method: endpoint.DELETE_CLUSTER_INST, data: requestData, success: `Cluster Instance ${data[fields.appName]} deleted successfully` }
 }

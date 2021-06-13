@@ -10,8 +10,6 @@ import { showBillingOrg, deleteBillingOrg, keys } from '../../../../services/mod
 
 import Invoices from '../invoices/Invoices';
 import Reg from './BillingOrgReg';
-
-import { BILLING_TYPE_PARENT, PAGE_BILLING_ORG } from '../../../../constant'
 import { perpetual } from '../../../../helper/constant';
 import { redux_org } from '../../../../helper/reduxData';
 class BillingOrg extends React.Component {
@@ -55,7 +53,7 @@ class BillingOrg extends React.Component {
     }
 
     orgActionVisible = (data) => {
-        return data[fields.type] === BILLING_TYPE_PARENT.toLowerCase()
+        return data[fields.type] === perpetual.BILLING_TYPE_PARENT.toLowerCase()
     }
 
     invoices = async (action, data) => {
@@ -78,7 +76,7 @@ class BillingOrg extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: PAGE_BILLING_ORG,
+            id: perpetual.PAGE_BILLING_ORG,
             headerLabel: 'Billing Org',
             nameField: fields.name,
             requestType: [showBillingOrg],
@@ -92,7 +90,7 @@ class BillingOrg extends React.Component {
     render() {
         const { currentView } = this.state
         return (
-            <DataView id={PAGE_BILLING_ORG} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} />
+            <DataView id={perpetual.PAGE_BILLING_ORG} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} />
         )
     }
 

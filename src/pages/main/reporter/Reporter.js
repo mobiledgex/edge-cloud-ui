@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import * as constant from '../../../constant';
 import { perpetual } from '../../../helper/constant';
 import DataView from '../../../container/DataView';
 import { fields } from '../../../services/model/format';
@@ -79,7 +78,7 @@ class Reporter extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: constant.PAGE_REPORTER,
+            id: perpetual.PAGE_REPORTER,
             headerLabel: 'Report Scheduler',
             nameField: fields.name,
             requestType: [showReporter],
@@ -102,7 +101,7 @@ class Reporter extends React.Component {
             (
                 redux_org.isOperator(this) || orgList.length > 0) ?
                 <React.Fragment>
-                    <DataView id={constant.PAGE_REPORTER} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} toolbarAction={this.toolbarAction} customToolbar={this.customToolbar} tableHeight={300} />
+                    <DataView id={perpetual.PAGE_REPORTER} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} toolbarAction={this.toolbarAction} customToolbar={this.customToolbar} tableHeight={300} />
                     <Generated open={open} orgList={orgList} close={() => { this.updateState({ open: false }) }} />
                 </React.Fragment> : <LogoSpinner/>
         )

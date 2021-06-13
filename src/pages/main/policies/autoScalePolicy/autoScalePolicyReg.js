@@ -11,8 +11,8 @@ import { getOrganizationList } from '../../../../services/model/organization';
 import { updateAutoScalePolicy, createAutoScalePolicy } from '../../../../services/model/autoScalePolicy';
 import { HELP_SCALE_POLICY_REG } from "../../../../tutorial";
 import { Grid } from '@material-ui/core';
-import { DEVELOPER } from '../../../../constant';
 import { service } from '../../../../services';
+import { perpetual } from '../../../../helper/constant';
 
 class AutoScalePolicyReg extends React.Component {
     constructor(props) {
@@ -208,7 +208,7 @@ class AutoScalePolicyReg extends React.Component {
             this.loadData(forms, data)
         }
         else {
-            this.organizationList = await getOrganizationList(this, { type: DEVELOPER })
+            this.organizationList = await getOrganizationList(this, { type: perpetual.DEVELOPER })
             this.loadData(forms)
         }
 

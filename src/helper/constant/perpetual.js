@@ -2,6 +2,7 @@ export const COLOR_GREEN = '#388E3C'
 export const COLOR_RED = '#ab2424'
 
 export const LOCAL_STRAGE_KEY = 'PROJECT_INIT'
+export const LS_ORGANIZATION_INFO = 'organizationInfo'
 export const LS_USER_META_DATA = 'usermetadata'
 export const LS_REGIONS = 'regions'
 

@@ -1,8 +1,7 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
-import { ADMIN_MANAGER, OPERATOR_CONTRIBUTOR, OPERATOR_MANAGER, ADMIN_CONTRIBUTOR } from '../../constant';
 import { redux_org } from '../../helper/reduxData'
-import { endpoint } from '../../helper/constant';
+import { endpoint, perpetual } from '../../helper/constant';
 import { generateUUID } from '../format/shared';
 import { showAuthSyncRequest } from '../service';
 
@@ -24,7 +23,7 @@ export const keys = () => ([
     field: fields.outboundSecurityRules, serverField: 'outbound_security_rules', label: 'Outbound Security Rules',
     keys: outboundSecurityRulesKeys
   },
-  { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: [ADMIN_MANAGER, ADMIN_CONTRIBUTOR, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR] }
+  { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: [perpetual.ADMIN_MANAGER, perpetual.ADMIN_CONTRIBUTOR, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_CONTRIBUTOR] }
 ])
 
 const getKey = (data) => {

@@ -15,6 +15,8 @@ import { keys, createOrganization, updateOrganization } from '../../../services/
 import { addUser } from '../../../services/model/users';
 import { HELP_ORG_REG_3, HELP_ORG_REG_2, HELP_ORG_REG_1, userRoles } from "../../../tutorial";
 import { Grid, List } from "@material-ui/core";
+import { toFirstUpperCase } from "../../../utils/string_utils";
+import { perpetual } from "../../../helper/constant";
 
 const stepData = [
     {
@@ -118,7 +120,7 @@ class OrganizationReg extends React.Component {
     onAddUser = async (data) => {
         let userList = this.organizationInfo.userList ? this.organizationInfo.userList : [];
         if (data) {
-            data[fields.role] = constant.toFirstUpperCase(this.type) + data[fields.role]
+            data[fields.role] = toFirstUpperCase(this.type) + data[fields.role]
             let mcRequest = await addUser(this, data)
             if (mcRequest && mcRequest.response && mcRequest.response.data) {
                 let message = mcRequest.response.data.message
@@ -178,7 +180,7 @@ class OrganizationReg extends React.Component {
     }
 
     getStep3 = () => {
-        this.organizationInfo[fields.publicImages] = this.organizationInfo[fields.publicImages] ? constant.YES : constant.NO
+        this.organizationInfo[fields.publicImages] = this.organizationInfo[fields.publicImages] ? perpetual.YES : perpetual.NO
         return (
             <Fragment>
                 <Grid container>
@@ -299,13 +301,13 @@ class OrganizationReg extends React.Component {
             { field: fields.organizationName, label: 'Organization', formType: INPUT, placeholder: 'Enter Organization Name', rules: { required: true }, visible: true, },
             { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, update: { edit: true } },
             { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, update: { edit: true }, dataValidateFunc: constant.validatePhone },
-            { field: fields.publicImages, label: 'Public Image', formType: SWITCH, visible: true, value: false, update: { edit: true }, roles: [constant.ADMIN_MANAGER] }
+            { field: fields.publicImages, label: 'Public Image', formType: SWITCH, visible: true, value: false, update: { edit: true }, roles: [perpetual.ADMIN_MANAGER] }
         ]
     }
 
     loadDefaultData = async (data) => {
-        data[fields.publicImages] = data[fields.publicImages] === constant.YES ? true : false
-        data[fields.type] = data[fields.type] === constant.DEVELOPER ? 'developer' : 'operator'
+        data[fields.publicImages] = data[fields.publicImages] === perpetual.YES ? true : false
+        data[fields.type] = data[fields.type] === perpetual.DEVELOPER ? 'developer' : 'operator'
     }
 
     getFormData = (data) => {
@@ -314,7 +316,7 @@ class OrganizationReg extends React.Component {
                 this.loadDefaultData(data)
             }
             else {
-                this.type = data[fields.type] === constant.DEVELOPER ? 'developer' : 'operator'
+                this.type = data[fields.type] === perpetual.DEVELOPER ? 'developer' : 'operator'
                 this.organizationInfo = data
                 this.addUserForm(data)
                 this.setState({ step: 1 })
