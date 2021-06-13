@@ -1,5 +1,5 @@
 import * as formatter from './format'
-import * as serverData from './serverData'
+import { authSyncRequest, showAuthSyncRequest } from '../service';
 import * as constant from '../../constant'
 import { redux_org } from '../../helper/reduxData'
 import { endpoint } from '../../helper/constant'
@@ -11,13 +11,13 @@ export const keys = () => ([
     { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true, filter: true, group: true },
     { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: true },
     { field: fields.address, serverField: 'Address', label: 'Address', sortable: true, visible: true },
-    { field: fields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', visible: true, roles: [constant.ADMIN_MANAGER], format:true },
+    { field: fields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', visible: true, roles: [constant.ADMIN_MANAGER], format: true },
     { field: fields.publicImages, serverField: 'PublicImages', label: 'Public Image', sortable: true, visible: true },
     {
         field: fields.userList, label: 'User List', sortable: true, visible: false,
         keys: [{ field: fields.username, label: 'Username' }, { field: fields.userRole, label: 'Role' }]
     },
-    { field: fields.manage, label: 'Manage', visible: false, clickable: true, format:true },
+    { field: fields.manage, label: 'Manage', visible: false, clickable: true, format: true },
     { field: fields.actions, label: 'Actions', visible: true, clickable: true }
 ])
 
@@ -40,14 +40,14 @@ export const showOrganizations = (self, data) => {
 
 export const getOrganizationList = async (self, data) => {
     let dataList = []
-    let org  = redux_org.nonAdminOrg(self)
+    let org = redux_org.nonAdminOrg(self)
     if (org) {
         let organization = {}
         organization[fields.organizationName] = org;
         dataList = [organization]
     }
     else {
-        dataList = await serverData.showDataFromServer(self, showOrganizations(self, data))
+        dataList = await showAuthSyncRequest(self, showOrganizations(self, data))
     }
     return dataList;
 }
@@ -55,13 +55,13 @@ export const getOrganizationList = async (self, data) => {
 export const createOrganization = async (self, data) => {
     let requestData = getKey(data, true)
     let request = { method: endpoint.CREATE_ORG, data: requestData }
-    return await serverData.sendRequest(self, request)
+    return await authSyncRequest(self, request)
 }
 
 export const updateOrganization = async (self, data) => {
     let requestData = getKey(data, true)
     let request = { method: endpoint.UPDATE_ORG, data: requestData }
-    return await serverData.sendRequest(self, request)
+    return await authSyncRequest(self, request)
 }
 
 export const deleteOrganization = (self, data) => {

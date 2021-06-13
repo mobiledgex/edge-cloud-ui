@@ -12,7 +12,7 @@ import { resetFormValue } from '../../../../hoc/forms/helper/constant';
 import { createBillingOrg, updateBillingOrg, addBillingChild, removeBillingChild } from '../../../../services/model/billingOrg';
 import { getOrganizationList } from '../../../../services/model/organization';
 import { BILLING_TYPE_PARENT, BILLING_TYPE_SELF } from '../../../../constant';
-import * as serverData from '../../../../services/model/serverData';
+import { service } from '../../../../services';
 
 class BillingOrgReg extends React.Component {
     constructor(props) {
@@ -120,7 +120,7 @@ class BillingOrgReg extends React.Component {
                 requestList.push(requestType({ name: data[fields.name], children }))
             })
             if (requestList.length > 0) {
-                serverData.sendMultiRequest(this, requestList, this.childResponse)
+                service.multiAuthRequest(this, requestList, this.childResponse)
             }
         }
         else {

@@ -1,6 +1,6 @@
-import { fields, formatData } from './format'
-import * as serverData from './serverData'
+import { fields } from './format'
 import { endpoint } from '../../helper/constant'
+import { authSyncRequest } from '../service'
 
 
 
@@ -26,7 +26,7 @@ export const showUsers = (self, data) => {
 export const addUser = async (self, data) => {
     let requestData = getKey(data, true)
     let request = { method: endpoint.ADD_USER_ROLE, data: requestData }
-    return await serverData.sendRequest(self, request)
+    return await authSyncRequest(self, request)
 }
 
 export const deleteUser = (self, data) => {

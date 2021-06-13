@@ -1,10 +1,9 @@
 import { ADMIN_MANAGER, OPERATOR_MANAGER } from "../../constant";
 import { endpoint } from "../../helper/constant";
-import { idFormatter, labelFormatter } from "../../helper/formatter";
+import { idFormatter } from "../../helper/formatter";
 import { redux_org } from "../../helper/reduxData";
-import { time, FORMAT_FULL_DATE } from "../../utils/date_util";
+import { authSyncRequest } from "../service";
 import * as formatter from './format'
-import { sendRequest } from "./serverData";
 
 const fields = formatter.fields;
 
@@ -48,21 +47,21 @@ export const showGeneratedReports = async (self, data) => {
     let requestData = {}
     requestData.org = redux_org.nonAdminOrg(self) ? redux_org.nonAdminOrg(self) : data[fields.org]
     let request = { method: endpoint.SHOW_REPORTS, data: requestData }
-    return await sendRequest(self, request)
+    return await authSyncRequest(self, request)
 }
 
 export const downloadReport = async (self, data) => {
     let requestData = data
     requestData.org = redux_org.nonAdminOrg(self) ? redux_org.nonAdminOrg(self) : data[fields.org]
     let request = { method: endpoint.DOWNLOAD_REPORT, data: requestData, responseType: 'arraybuffer', headers : {Accept: 'application/pdf'} }
-    return await sendRequest(self, request)
+    return await authSyncRequest(self, request)
 }
 
 export const generateReport = async(self, data)=>{
     let requestData = data
     requestData.org = redux_org.nonAdminOrg(self) ? redux_org.nonAdminOrg(self) : data[fields.org]
     let request = { method: endpoint.GENERATE_REPORT, data: requestData, responseType: 'arraybuffer', headers : {Accept: 'application/pdf'} }
-    return await sendRequest(self, request)
+    return await authSyncRequest(self, request)
 }
 
 export const showReporter = (data) => {
@@ -72,13 +71,13 @@ export const showReporter = (data) => {
 export const createReporter = async (self, data) => {
     let requestData = generateRequestData(data, true)
     let request = { method: endpoint.CREATE_REPORTER, data: requestData }
-    return await sendRequest(self, request)
+    return await authSyncRequest(self, request)
 }
 
 export const updateReporter = async (self, data) => {
     let requestData = generateRequestData(data, true)
     let request = { method: endpoint.UPDATE_REPORTER, data: requestData }
-    return await sendRequest(self, request)
+    return await authSyncRequest(self, request)
 }
 
 export const deleteReporter = (self, data) => {

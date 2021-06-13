@@ -1,10 +1,10 @@
 import * as formatter from './format'
-import * as serverData from './serverData'
 import * as constant from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
 import { idFormatter } from '../../helper/formatter';
 import { redux_org } from '../../helper/reduxData'
 import { endpoint } from '../../helper/constant';
+import { authSyncRequest, showAuthSyncRequest } from '../service';
 
 let fields = formatter.fields
 
@@ -136,7 +136,7 @@ export const showApps = (self, data) => {
 }
 
 export const getAppList = async (self, data) => {
-    return await serverData.showDataFromServer(self, showApps(self, data))
+    return await showAuthSyncRequest(self, showApps(self, data))
 }
 
 export const createApp = (data) => {
@@ -147,7 +147,7 @@ export const createApp = (data) => {
 export const updateApp = async (self, data) => {
     let requestData = getKey(data, true)
     let request = { method: endpoint.UPDATE_APP, data: requestData }
-    return await serverData.sendRequest(self, request)
+    return await authSyncRequest(self, request)
 }
 
 export const deleteApp = (self, data) => {

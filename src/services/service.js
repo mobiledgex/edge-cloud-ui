@@ -63,13 +63,10 @@ export const fetchResponseType = (request) => {
 }
 
 const instance = (self, request, auth) => {
-    let token = fetchToken(self)
-    if (token) {
-        return axios.create({
-            headers: fetchHeader(self, request, auth),
-            responseType: fetchResponseType(request)
-        })
-    }
+    return axios.create({
+        headers: fetchHeader(self, request, auth),
+        responseType: fetchResponseType(request)
+    })
 }
 
 const responseStatus = (self, status) => {
@@ -118,21 +115,26 @@ const errorResponse = (self, request, error, callback) => {
 }
 
 const sendSyncRequest = async (self, request, auth) => {
-    let response = {}
+    let mc = {}
     try {
         showProgress(self, request)
-        response = await instance(self, request, auth).post(fetchHttpURL(request), request.data);
+        const response  = await instance(self, request, auth).post(fetchHttpURL(request), request.data)
+        mc = formatData(request, response)
     }
     catch (error) {
         errorResponse(self, request, error)
-        response = { request, error }
+        mc = { request, error }
     }
     showProgress(self)
-    return response
+    return mc
 }
 
 export const authSyncRequest = async (self, request) => {
     return await sendSyncRequest(self, request, true)
+}
+
+export const syncRequest = async (self, request) => {
+    return await sendSyncRequest(self, request, false)
 }
 
 export const multiAuthRequest = (self, requestList, callback) => {
@@ -155,4 +157,39 @@ export const multiAuthRequest = (self, requestList, callback) => {
             })
         showProgress(self)
     }
+}
+
+export const multiAuthSyncRequest = async (self, requestList) => {
+    let resResults = [];
+    if (requestList && requestList.length > 0) {
+        showProgress(self, requestList[0])
+        let promise = [];
+        requestList.forEach((request) => {
+            promise.push(instance(self, request, true).post(fetchHttpURL(request), request.data))
+        })   
+        
+        try {
+            let responseList = await axios.all(promise)
+            responseList.forEach((response, i) => {
+                resResults.push(formatData(requestList[i], response));
+            })
+        }
+        catch (error) {
+            errorResponse(self, requestList[0], error)
+        }
+        showProgress(self)
+        return resResults
+    }
+}
+
+export const showAuthSyncRequest = async (self, request) => {
+    let dataList = []
+    let mc = await authSyncRequest(self, request)
+    if (mc) {
+        const response = mc.response
+        if (response && response.status === 200 && response.data) {
+            dataList = response.data;
+        }
+    }
+    return dataList;
 }

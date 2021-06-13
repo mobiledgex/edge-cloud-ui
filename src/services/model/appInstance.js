@@ -1,6 +1,7 @@
 import * as formatter from './format'
 import * as constant from '../../constant'
 import * as serverData from './serverData'
+import { showAuthSyncRequest } from '../service';
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 import { redux_org } from '../../helper/reduxData'
 import { endpoint } from '../../helper/constant'
@@ -196,7 +197,7 @@ export const showAppInsts = (self, data, specific) => {
 }
 
 export const getAppInstList = async (self, data) => {
-  return await serverData.showDataFromServer(self, showAppInsts(data))
+  return await showAuthSyncRequest(self, showAppInsts(data))
 }
 
 export const createAppInst = (self, data, callback) => {

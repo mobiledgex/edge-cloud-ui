@@ -1,8 +1,9 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
+import { authSyncRequest, showAuthSyncRequest } from '../service';
 import * as constant from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
-import { idFormatter, labelFormatter } from '../../helper/formatter'
+import { idFormatter } from '../../helper/formatter'
 import { redux_org } from '../../helper/reduxData'
 import { endpoint } from '../../helper/constant'
 import { customize } from '../modules/cloudlet'
@@ -20,8 +21,8 @@ export const keys = () => ([
     { field: fields.ipSupport, serverField: 'ip_support', label: 'IP Support' },
     { field: fields.numDynamicIPs, serverField: 'num_dynamic_ips', label: 'Number of Dynamic IPs' },
     { field: fields.physicalName, serverField: 'physical_name', label: '	Physical Name' },
-    { field: fields.platformType, serverField: 'platform_type', label: 'Platform Type'},
-    { field: fields.vmPool, serverField:'vm_pool', label: 'VM Pool'},
+    { field: fields.platformType, serverField: 'platform_type', label: 'Platform Type' },
+    { field: fields.vmPool, serverField: 'vm_pool', label: 'VM Pool' },
     { field: fields.openRCData, serverField: 'access_vars#OS#OPENRC_DATA', label: 'Open RC Data' },
     { field: fields.caCertdata, serverField: 'access_vars#OS#CACERT_DATA', label: 'CA Cert Data' },
     { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true, format: true },
@@ -33,7 +34,7 @@ export const keys = () => ([
     { field: fields.envVars, serverField: 'env_var', label: 'Environment Variables', dataType: constant.TYPE_JSON },
     { field: fields.resourceQuotas, serverField: 'resource_quotas', label: 'Resource Quotas', dataType: constant.TYPE_JSON },
     { field: fields.defaultResourceAlertThreshold, serverField: 'default_resource_alert_threshold', label: 'Default Resource Alert Threshold' },
-    { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access'},
+    { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access' },
     { field: fields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name' },
     { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name' },
     { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView: false },
@@ -261,7 +262,7 @@ export const showCloudlets = (self, data, specific) => {
 }
 
 export const fetchCloudletData = async (self, data) => {
-    return await serverData.showDataFromServer(self, showCloudlets(self, data))
+    return await showAuthSyncRequest(self, showCloudlets(self, data))
 }
 
 export const createCloudlet = (self, data, callback) => {
@@ -287,16 +288,16 @@ export const getCloudletManifest = async (self, data, showSpinner) => {
     let requestData = {}
     requestData.cloudletkey = getCloudletKey(data)
     requestData.region = data[fields.region]
-    let mcRequest = await serverData.sendRequest(self, { method: endpoint.GET_CLOUDLET_MANIFEST, data: requestData, showSpinner: showSpinner })
-    return mcRequest
+    let mc = await authSyncRequest(self, { method: endpoint.GET_CLOUDLET_MANIFEST, data: requestData, showSpinner: showSpinner })
+    return mc
 }
 
 export const revokeAccessKey = async (self, data, showSpinner) => {
     let requestData = {}
     requestData.cloudletkey = getCloudletKey(data)
     requestData.region = data[fields.region]
-    let mcRequest = await serverData.sendRequest(self, { method: endpoint.REVOKE_ACCESS_KEY, data: requestData, showSpinner: showSpinner })
-    return mcRequest
+    let mc = await authSyncRequest(self, { method: endpoint.REVOKE_ACCESS_KEY, data: requestData, showSpinner: showSpinner })
+    return mc
 }
 
 export const streamCloudlet = (data) => {

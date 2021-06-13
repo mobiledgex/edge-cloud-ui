@@ -1,9 +1,9 @@
 
-import * as serverData from './serverData'
 import * as formatter from './format'
 import { RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL, DEVELOPER, OPERATOR, RECEIVER_TYPE_PAGER_DUTY } from '../../constant'
 import { redux_org } from '../../helper/reduxData'
 import { endpoint } from '../../helper/constant'
+import { authSyncRequest } from '../service'
 
 let fields = formatter.fields
 export const showAlertKeys = () => (
@@ -168,7 +168,7 @@ export const showAlertReceiver = (self, data) => {
 export const createAlertReceiver = async (self, data) => {
     let requestData = getKey(data)
     let request = { method: endpoint.ALERT_CREATE_RECEIVER, data: requestData }
-    return await serverData.sendRequest(self, request)
+    return await authSyncRequest(self, request)
 }
 
 export const deleteAlertReceiver = (self, data) => {

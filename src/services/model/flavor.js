@@ -1,6 +1,6 @@
 
 import * as formatter from './format'
-import * as serverData from './serverData'
+import { authSyncRequest, showAuthSyncRequest } from '../service';
 import { ADMIN_MANAGER } from '../../constant'
 import { endpoint } from '../../helper/constant'
 
@@ -39,13 +39,13 @@ export const showFlavors = (self, data) => {
 }
 
 export const getFlavorList = async (self, data) => {
-    return await serverData.showDataFromServer(self, showFlavors(self, data))
+    return await showAuthSyncRequest(self, showFlavors(self, data))
 }
 
 export const createFlavor = async (self, data) => {
     let requestData = getKey(data, true)
     let request = { method: endpoint.CREATE_FLAVOR, data: requestData }
-    return await serverData.sendRequest(self, request)
+    return await authSyncRequest(self, request)
 }
 
 export const deleteFlavor = (self, data) => {

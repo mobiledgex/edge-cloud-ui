@@ -12,6 +12,7 @@ import MexCurve from '../../../../../hoc/mexmap/utils/MexCurve'
 import { Dialog } from '@material-ui/core';
 import Legend from './MapLegend'
 import { fetchPath, fetchURL } from '../../../../../services/config';
+import { fetchToken } from '../../../../../services/service';
 
 const DEFAULT_ZOOM = 2
 class AppMexMap extends React.Component {
@@ -52,7 +53,7 @@ class AppMexMap extends React.Component {
         this.setState({ showDevices: true })
         this.ws = new WebSocket(`${fetchURL(true)}/ws${fetchPath(request)}`)
         this.ws.onopen = () => {
-            this.ws.send(`{"token": "${serverData.getToken(this)}"}`);
+            this.ws.send(`{"token": "${fetchToken(this)}"}`);
             this.ws.send(JSON.stringify(request.data));
         }
         this.ws.onmessage = evt => {

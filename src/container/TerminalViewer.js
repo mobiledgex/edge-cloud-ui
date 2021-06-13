@@ -1,6 +1,5 @@
 
 import React, { Component, Suspense, lazy } from 'react';
-import * as serverData from '../services/model/serverData'
 import * as actions from "../actions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -8,11 +7,12 @@ import { Image, Label } from 'semantic-ui-react';
 import * as style from '../hoc/terminal/TerminalStyle';
 import { Paper, Box } from '@material-ui/core';
 import MexForms, { SWITCH } from '../hoc/forms/MexForms';
-import {fields} from '../services/model/format'
+import { fields } from '../services/model/format'
 import { redux_org } from '../helper/reduxData';
-import {RUN_COMMAND, SHOW_LOGS, DEVELOPER_VIEWER, DEPLOYMENT_TYPE_VM} from '../constant'
-import '../hoc/terminal/style.css'
+import { RUN_COMMAND, SHOW_LOGS, DEVELOPER_VIEWER, DEPLOYMENT_TYPE_VM } from '../constant'
+import { service } from '../services'
 import { endpoint } from '../helper/constant';
+import '../hoc/terminal/style.css'
 const Terminal = lazy(() => import('../hoc/terminal/mexTerminal'))
 
 
@@ -27,10 +27,10 @@ class MexTerminal extends Component {
             forms: [],
             cmd: '',
             optionView: true,
-            containerIds : [],
-            vmURL : null,
-            isVM : false,
-            tempURL : undefined
+            containerIds: [],
+            vmURL: null,
+            isVM: false,
+            tempURL: undefined
         })
         this.ws = undefined
         this.request = redux_org.role(this) === DEVELOPER_VIEWER ? SHOW_LOGS : RUN_COMMAND
@@ -39,7 +39,7 @@ class MexTerminal extends Component {
         this.vmPage = React.createRef()
     }
 
-    sendRequest = async (terminaData) => { 
+    sendRequest = async (terminaData) => {
         let execRequest =
         {
             app_inst_key:
@@ -53,12 +53,12 @@ class MexTerminal extends Component {
                 cluster_inst_key:
                 {
                     cluster_key: { name: this.props.data[fields.clusterName] },
-                    cloudlet_key: { organization: this.props.data[fields.operatorName] , name: this.props.data[fields.cloudletName] },
+                    cloudlet_key: { organization: this.props.data[fields.operatorName], name: this.props.data[fields.cloudletName] },
                     organization: this.props.data[fields.clusterdeveloper]
                 }
             },
         }
-        
+
         let method = ''
         if (this.state.isVM) {
             method = endpoint.SHOW_CONSOLE
@@ -84,15 +84,15 @@ class MexTerminal extends Component {
 
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
-        let requestData = {
+        let request = {
             token: token,
             method: method,
             data: requestedData
         }
-        let mcRequest = await serverData.sendRequest(this, requestData)
-        if (mcRequest) {
-            if (mcRequest.response && mcRequest.response.data) {
-                let data = mcRequest.response.data;
+        let mc = await service.authSyncRequest(this, request)
+        if (mc) {
+            if (mc.response && mc.response.data) {
+                let data = mc.response.data;
                 let url = data.access_url
                 if (url) {
                     if (this.state.isVM) {
@@ -105,26 +105,24 @@ class MexTerminal extends Component {
                         this.setState({ tempURL: url, forceClose: false })
                     }
                 }
-                else
-                {
+                else {
                     this.props.handleAlertInfo('error', 'Access denied')
                     this.close()
                     this.setState({
-                        tempURL:undefined,
+                        tempURL: undefined,
                         optionView: true,
-                    }) 
+                    })
                 }
             }
-            else if (mcRequest.error) {
+            else if (mc.error) {
                 this.close()
                 this.setState({
-                    tempURL:undefined,
+                    tempURL: undefined,
                     optionView: true,
                 })
             }
         }
-        else
-        {
+        else {
             this.close()
         }
     }
@@ -261,7 +259,7 @@ class MexTerminal extends Component {
 
     loadVMPage = () => {
         return this.state.vmURL ?
-            <iframe title='VM' ref={this.vmPage} src={this.state.vmURL} style={{ width: '100%', height:window.innerHeight - 65}}></iframe> : null
+            <iframe title='VM' ref={this.vmPage} src={this.state.vmURL} style={{ width: '100%', height: window.innerHeight - 65 }}></iframe> : null
     }
 
     socketStatus = (flag, diff, ws) => {
@@ -271,7 +269,7 @@ class MexTerminal extends Component {
             status: flag ? 'Connected' : 'Not Connected'
         })
         if (diff > 5000) {
-            this.setState({ optionView: !flag, tempURL : undefined })
+            this.setState({ optionView: !flag, tempURL: undefined })
         }
     }
 
@@ -282,9 +280,9 @@ class MexTerminal extends Component {
                     <div style={style.layout}>
                         <div style={style.container} align='center'>
                             <Paper variant="outlined" style={style.optionBody}>
-                                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{}}/>
+                                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{}} />
                                 <div>
-                                    <p style={{color:'#FFC107'}}>Note: Only running containers are accessible</p>
+                                    <p style={{ color: '#FFC107' }}>Note: Only running containers are accessible</p>
                                 </div>
                             </Paper>
                         </div>
@@ -295,7 +293,7 @@ class MexTerminal extends Component {
                             <div className={`${this.request === RUN_COMMAND ? 'terminal_run_head' : 'terminal_log_head'}`}>
                                 <Terminal status={this.socketStatus} url={this.state.tempURL} request={this.request} />
                             </div>
-                        </Suspense> : 
+                        </Suspense> :
                         null
                 : null)
     }
@@ -305,8 +303,8 @@ class MexTerminal extends Component {
             <div style={{ backgroundColor: 'black', height: 'inherit' }}>
                 {this.loadHeader()}
                 {
-                    this.state.isVM ? this.loadVMPage() : 
-                    this.loadCommandSelector(this.state.containerIds)
+                    this.state.isVM ? this.loadVMPage() :
+                        this.loadCommandSelector(this.state.containerIds)
                 }
             </div>)
     }
@@ -314,21 +312,18 @@ class MexTerminal extends Component {
     componentDidMount() {
         let data = this.props.data
         if (data[fields.deployment] === DEPLOYMENT_TYPE_VM) {
-            this.setState({isVM : true})
-            setTimeout(()=>{this.sendRequest()}, 1000)
+            this.setState({ isVM: true })
+            setTimeout(() => { this.sendRequest() }, 1000)
         }
-        else if(data[fields.runtimeInfo] && data[fields.runtimeInfo][fields.container_ids])
-        {
-            this.setState({isVM : false})
+        else if (data[fields.runtimeInfo] && data[fields.runtimeInfo][fields.container_ids]) {
+            this.setState({ isVM: false })
             let tempContainerIds = data[fields.runtimeInfo][fields.container_ids];
-            
+
             let containerIds = []
-            for(let i=0;i<tempContainerIds.length;i++)
-            {
+            for (let i = 0; i < tempContainerIds.length; i++) {
                 let id = tempContainerIds[i]
                 let containEnvoy = id.substring(0, 5)
-                if(containEnvoy !== 'envoy')
-                {
+                if (containEnvoy !== 'envoy') {
                     containerIds.push(id)
                 }
             }

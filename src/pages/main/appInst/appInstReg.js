@@ -17,7 +17,6 @@ import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
 import { getClusterInstList, showClusterInsts } from '../../../services/model/clusterInstance';
 import { getFlavorList, showFlavors } from '../../../services/model/flavor';
 import { getAppList } from '../../../services/model/app';
-import * as serverData from '../../../services/model/serverData'
 import { createAppInst, updateAppInst } from '../../../services/model/appInstance';
 
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
@@ -26,6 +25,7 @@ import { HELP_APP_INST_REG } from "../../../tutorial";
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from '@material-ui/core';
 import { endpoint } from '../../../helper/constant';
+import { service } from '../../../services';
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
@@ -523,16 +523,16 @@ class AppInstReg extends React.Component {
 
     loadDefaultData = async (forms, data) => {
         if (data) {
-            let requestTypeList = []
+            let requestList = []
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
             if (this.props.isLaunch) {
                 let requestData = { region: data[fields.region], org: data[fields.organizationName], type: constant.DEVELOPER }
-                requestTypeList.push(showCloudlets(this, requestData))
-                requestTypeList.push(showCloudletInfoData(this, requestData))
-                requestTypeList.push(showClusterInsts(this, requestData))
-                requestTypeList.push(showFlavors(this, { region: data[fields.region] }))
+                requestList.push(showCloudlets(this, requestData))
+                requestList.push(showCloudletInfoData(this, requestData))
+                requestList.push(showClusterInsts(this, requestData))
+                requestList.push(showFlavors(this, { region: data[fields.region] }))
                 let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]
 
                 for (let i = 0; i < forms.length; i++) {
@@ -595,8 +595,8 @@ class AppInstReg extends React.Component {
             app[fields.trusted] = data[fields.trusted]
             this.appList = [app];
 
-            if (requestTypeList.length > 0) {
-                let mcList = await serverData.showSyncMultiData(this, requestTypeList)
+            if (requestList.length > 0) {
+                let mcList = await service.multiAuthSyncRequest(this, requestList)
                 this.cloudletList = cloudletWithInfo(mcList)
                 if (mcList && mcList.length > 0) {
                     for (let mc of mcList) {

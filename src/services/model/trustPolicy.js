@@ -4,6 +4,7 @@ import { ADMIN_MANAGER, OPERATOR_CONTRIBUTOR, OPERATOR_MANAGER, ADMIN_CONTRIBUTO
 import { redux_org } from '../../helper/reduxData'
 import { endpoint } from '../../helper/constant';
 import { generateUUID } from '../format/shared';
+import { showAuthSyncRequest } from '../service';
 
 export const fields = formatter.fields;
 
@@ -49,7 +50,7 @@ export const showTrustPolicies = (self, data) => {
 }
 
 export const getTrustPolicyList = async (self, data) => {
-  return await serverData.showDataFromServer(self, showTrustPolicies(self, data))
+  return await showAuthSyncRequest(self, showTrustPolicies(self, data))
 }
 
 export const updateTrustPolicy = (self, data, callback) => {

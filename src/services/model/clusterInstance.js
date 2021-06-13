@@ -1,5 +1,6 @@
 import * as formatter from './format'
 import * as serverData from './serverData'
+import { showAuthSyncRequest } from '../service';
 import * as constant from '../../constant'
 import { TYPE_JSON } from '../../constant';
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
@@ -181,7 +182,7 @@ export const clusterKey = (data, isCreate) => {
 }
 
 export const getClusterInstList = async (self, data) => {
-    return await serverData.showDataFromServer(self, showClusterInsts(self, data))
+    return await showAuthSyncRequest(self, showClusterInsts(self, data))
 }
 
 export const createClusterInst = (self, data, callback) => {

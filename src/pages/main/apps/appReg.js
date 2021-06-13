@@ -12,6 +12,7 @@ import { fields, updateFieldData } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData';
 //model
 import * as serverData from '../../../services/model/serverData'
+import { service } from '../../../services'
 import { getOrganizationList } from '../../../services/model/organization';
 import { getFlavorList, showFlavors } from '../../../services/model/flavor';
 import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/model/autoProvisioningPolicy';
@@ -700,7 +701,7 @@ class AppReg extends React.Component {
                         }
                         else {
                             let regions = data[fields.region]
-                            let requestDataList = []
+                            let requestList = []
                             if (regions.includes('All')) {
                                 regions = cloneDeep(this.regions)
                                 regions.splice(0, 1)
@@ -726,11 +727,11 @@ class AppReg extends React.Component {
                                         }
                                     }
                                 }
-                                requestDataList.push(createApp(requestData))
+                                requestList.push(createApp(requestData))
                             })
 
-                            if (requestDataList && requestDataList.length > 0) {
-                                serverData.sendMultiRequest(this, requestDataList, this.onAddResponse)
+                            if (requestList && requestList.length > 0) {
+                                service.multiAuthRequest(this, requestList, this.onAddResponse)
                             }
                         }
                     }
@@ -801,15 +802,15 @@ class AppReg extends React.Component {
 
     loadDefaultData = async (forms, data) => {
         if (data) {
-            let requestTypeList = []
+            let requestList = []
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
-            requestTypeList.push(showAppInsts(this, { region: data[fields.region], appinst: { key: { app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] } } } }, true))
-            requestTypeList.push(showFlavors(this, { region: data[fields.region] }))
-            requestTypeList.push(showAutoProvPolicies(this, { region: data[fields.region] }))
+            requestList.push(showAppInsts(this, { region: data[fields.region], appinst: { key: { app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] } } } }, true))
+            requestList.push(showFlavors(this, { region: data[fields.region] }))
+            requestList.push(showAutoProvPolicies(this, { region: data[fields.region] }))
 
-            let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
+            let mcRequestList = await service.multiAuthSyncRequest(this, requestList)
             if (mcRequestList && mcRequestList.length > 0) {
                 for (let i = 0; i < mcRequestList.length; i++) {
                     let mcRequest = mcRequestList[i];

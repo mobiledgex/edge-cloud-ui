@@ -10,7 +10,6 @@ import * as constant from '../../../constant';
 import { fields, updateFieldData } from '../../../services/model/format';
 import { redux_org} from '../../../helper/reduxData'
 //model
-import * as serverData from '../../../services/model/serverData'
 import { createClusterInst, updateClusterInst } from '../../../services/model/clusterInstance';
 import { getOrganizationList } from '../../../services/model/organization';
 import { showCloudlets, cloudletWithInfo } from '../../../services/model/cloudlet';
@@ -26,6 +25,7 @@ import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
 import { sendRequests } from '../../../services/model/serverWorker'
 import { Grid } from '@material-ui/core';
 import { endpoint } from '../../../helper/constant';
+import { service } from '../../../services';
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 
@@ -427,15 +427,15 @@ class ClusterInstReg extends React.Component {
             flavor[fields.flavorName] = data[fields.flavorName]
             this.flavorList = [flavor]
 
-            let requestTypeList = []
+            let requestList = []
             if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
-                requestTypeList.push(showAutoScalePolicies(this, { region: data[fields.region] }))
+                requestList.push(showAutoScalePolicies(this, { region: data[fields.region] }))
             }
 
-            let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
-            if (mcRequestList && mcRequestList.length > 0) {
-                for (let i = 0; i < mcRequestList.length; i++) {
-                    let mcRequest = mcRequestList[i];
+            let mcList = await service.multiAuthSyncRequest(this, requestList)
+            if (mcList && mcList.length > 0) {
+                for (let i = 0; i < mcList.length; i++) {
+                    let mcRequest = mcList[i];
                     let request = mcRequest.request;
                     if (request.method === endpoint.SHOW_AUTO_SCALE_POLICY) {
                         this.autoScalePolicyList = mcRequest.response.data

@@ -10,10 +10,10 @@ import { redux_org} from '../../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../../services/model/organization';
 import { updateTrustPolicy, createTrustPolicy } from '../../../../services/model/trustPolicy';
-import * as serverData from '../../../../services/model/serverData';
 import { HELP_TRUST_POLICY_REG } from "../../../../tutorial";
 import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/mexMessageMultiStream'
 import { Grid } from '@material-ui/core';
+import { service } from '../../../../services';
 
 class TrustPolicyReg extends React.Component {
     constructor(props) {
@@ -174,13 +174,13 @@ class TrustPolicyReg extends React.Component {
         return data
     }
 
-    onUpdateResponse = (mcRequest) => {
+    onUpdateResponse = (mc) => {
         this.props.handleLoadingSpinner(false)
-        if (mcRequest) {
+        if (mc) {
             let responseData = undefined;
-            let request = mcRequest.request;
-            if (mcRequest.response && mcRequest.response.data) {
-                responseData = mcRequest.response.data;
+            let request = mc.request;
+            if (mc.response && mc.response.data) {
+                responseData = mc.response.data;
             }
             let labels = [{ label: 'Trust Policy', field: fields.trustPolicyName }]
             this.updateState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
@@ -220,9 +220,9 @@ class TrustPolicyReg extends React.Component {
                 }
             }
             else {
-                let mcRequest = await serverData.sendRequest(this, createTrustPolicy(data))
-                if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                    let policyName = mcRequest.request.data.trustpolicy.key.name;
+                let mc = await service.authSyncRequest(this, createTrustPolicy(data))
+                if (mc && mc.response && mc.response.status === 200) {
+                    let policyName = mc.request.data.trustpolicy.key.name;
                     this.props.handleAlertInfo('success', `Trust Policy ${policyName} created successfully`)
                     this.props.onClose(true)
                 }

@@ -6,10 +6,10 @@ import * as actions from '../../../actions';
 import { connect } from 'react-redux';
 import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
-import * as serverData from '../../../services/model/serverData'
 import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/privateCloudletAccess';
 import { perpetual } from '../../../helper/constant';
 import { labelFormatter } from '../../../helper/formatter';
+import { service } from '../../../services';
 
 class PoolAccessList extends React.Component {
     constructor(props) {
@@ -41,7 +41,7 @@ class PoolAccessList extends React.Component {
             data[fields.decision] = action.id === perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT ? 'reject' : 'accept'
             request = createConfirmation
         }
-        let mc = await serverData.sendRequest(this, request(data))
+        let mc = await service.authSyncRequest(this, request(data))
         if (mc && mc.response && mc.response.status === 200) {
             this.props.handleAlertInfo('success', `${isRemove ? 'Access Removed' : 'Access Granted'}`)
             callback()

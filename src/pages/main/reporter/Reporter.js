@@ -15,8 +15,9 @@ import { IconButton } from '../../../hoc/mexui'
 import { uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
 import { showOrganizations } from '../../../services/model/organization';
-import { responseValid, sendRequest } from '../../../services/model/serverData';
+import { responseValid } from '../../../services/model/serverData';
 import LogoSpinner from '../../../hoc/loader/LogoSpinner'
+import { service } from '../../../services';
 
 class Reporter extends React.Component {
 
@@ -108,7 +109,7 @@ class Reporter extends React.Component {
     }
 
     fetchOrgs = async () => {
-        let mc = await sendRequest(this, showOrganizations())
+        let mc = await service.authSyncRequest(this, showOrganizations())
         if (responseValid(mc)) {
             const dataList = mc.response.data
             const orgList = dataList.map(data => (data[fields.organizationName]))

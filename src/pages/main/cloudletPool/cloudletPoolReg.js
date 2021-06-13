@@ -5,7 +5,7 @@ import MexForms, { MAIN_HEADER, SELECT, INPUT, DUALLIST } from '../../../hoc/for
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as serverData from '../../../services/model/serverData';
+import { service } from '../../../services';
 import { fields, updateFieldData } from '../../../services/model/format';
 
 import { getOrganizationList } from '../../../services/model/organization';
@@ -168,7 +168,7 @@ class CloudletPoolReg extends React.Component {
 
     onAddOrganizations = async () => {
         let data = this.formattedData()
-        let requestDataList = []
+        let requestList = []
         let responseCallback = this.isOrgDelete ? this.organizationRemoveResponse : this.organizationAddResponse
         let organizationList = (redux_org.isAdmin(this) || this.isOrgDelete) ? data[fields.organizations] : [{ organizationName: data[fields.organizationName] }]
         if (organizationList && organizationList.length > 0) {
@@ -198,11 +198,11 @@ class CloudletPoolReg extends React.Component {
                         break;
                 }
                 if (request) {
-                    requestDataList.push(request(newData))
+                    requestList.push(request(newData))
                 }
             })
         }
-        serverData.sendMultiRequest(this, requestDataList, responseCallback)
+        service.multiAuthRequest(this, requestList, responseCallback)
     }
 
     getOrganizationData = (dataList, field) => {
@@ -233,7 +233,7 @@ class CloudletPoolReg extends React.Component {
         }
         else if (this.action === perpetual.ACTION_POOL_ACCESS_ADMIN_CONFIRM || this.action === perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT) {
             errorMsg = `No pending invitation`
-            
+
             this.organizationList = selectedDatas.filter(org => {
                 return org[fields.status] === 'Pending'
             })
@@ -313,11 +313,11 @@ class CloudletPoolReg extends React.Component {
         if (this.isUpdate) {
             let updateData = updateFieldData(this, forms, data, this.props.data)
             if (updateData.fields.length > 0) {
-                mcRequest = await serverData.sendRequest(this, updateCloudletPool(updateData))
+                mcRequest = await service.authSyncRequest(this, updateCloudletPool(updateData))
             }
         }
         else {
-            mcRequest = await serverData.sendRequest(this, createCloudletPool(data))
+            mcRequest = await service.authSyncRequest(this, createCloudletPool(data))
         }
         if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
             this.props.handleAlertInfo('success', `Cloudlet Pool ${data[fields.poolName]} ${this.isUpdate ? 'updated' : 'created'} successfully`)

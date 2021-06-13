@@ -4,7 +4,7 @@ import MexForms, { SELECT, DUALLIST, INPUT, BUTTON, HEADER, MULTI_FORM, MAIN_HEA
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import * as serverData from '../../../../services/model/serverData';
+import { service } from '../../../../services';
 import { fields, updateFieldData } from '../../../../services/model/format';
 import { redux_org } from '../../../../helper/reduxData'
 import * as constant from '../../../../constant'
@@ -230,11 +230,11 @@ class AutoProvPolicyReg extends React.Component {
             if (this.isUpdate) {
                 let updateData = updateFieldData(this, this.state.forms, data, this.props.data)
                 if (updateData.fields.length > 0) {
-                    mcRequest = await serverData.sendRequest(this, updateAutoProvPolicy(updateData))
+                    mcRequest = await service.authSyncRequest(this, updateAutoProvPolicy(updateData))
                 }
             }
             else {
-                mcRequest = await serverData.sendRequest(this, createAutoProvPolicy(data))
+                mcRequest = await service.authSyncRequest(this, createAutoProvPolicy(data))
             }
             if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                 this.props.handleAlertInfo('success', `Auto Provisioning Policy ${data[fields.autoPolicyName]} ${this.isUpdate ? 'update' : 'created'} successfully`)
@@ -247,7 +247,7 @@ class AutoProvPolicyReg extends React.Component {
     }
 
     onAddCloudlets = (data) => {
-        let requestDataList = []
+        let requestList = []
         let cloudletList = data[fields.cloudlets]
         if (cloudletList && cloudletList.length > 0) {
             for (let i = 0; i < cloudletList.length; i++) {
@@ -255,14 +255,14 @@ class AutoProvPolicyReg extends React.Component {
                 data.cloudletName = cloudlet[fields.cloudletName]
                 data.operatorName = cloudlet[fields.operatorName]
                 if (this.props.action === constant.DELETE_CLOUDLET) {
-                    requestDataList.push(deleteAutoProvCloudletKey(data))
+                    requestList.push(deleteAutoProvCloudletKey(data))
                 }
                 else {
-                    requestDataList.push(addAutoProvCloudletKey(data))
+                    requestList.push(addAutoProvCloudletKey(data))
                 }
             }
         }
-        serverData.sendMultiRequest(this, requestDataList, this.addCloudletResponse)
+        service.multiAuthRequest(this, requestList, this.addCloudletResponse)
     }
 
     /*Required*/

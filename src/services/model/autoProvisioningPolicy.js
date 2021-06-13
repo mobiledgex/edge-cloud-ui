@@ -1,6 +1,6 @@
 import { TYPE_JSON } from '../../constant'
 import * as formatter from './format'
-import * as serverData from './serverData'
+import { showAuthSyncRequest } from '../service';
 import { getCloudletKey } from './cloudlet'
 import { redux_org } from '../../helper/reduxData'
 import { endpoint } from '../../helper/constant'
@@ -84,7 +84,7 @@ export const showAutoProvPolicies = (self, data) => {
 }
 
 export const getAutoProvPolicyList = async (self, data) => {
-  return await serverData.showDataFromServer(self, showAutoProvPolicies(self, data))
+  return await showAuthSyncRequest(self, showAutoProvPolicies(self, data))
 }
 
 export const deleteAutoProvPolicy = (self, data) => {

@@ -19,10 +19,10 @@ import { HELP_CLOUDLET_REG } from "../../../tutorial";
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
 import { getTrustPolicyList, showTrustPolicies } from '../../../services/model/trustPolicy';
 
-import * as serverData from '../../../services/model/serverData'
 import { Grid } from '@material-ui/core';
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint } from '../../../helper/constant';
+import { service } from '../../../services';
 
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
 const CloudletManifest = React.lazy(() => import('./cloudletManifestForm'));
@@ -139,7 +139,7 @@ class CloudletReg extends React.Component {
 
     getCloudletResourceQuota = async (region, platformType) => {
         if (region && platformType) {
-            let mc = await serverData.sendRequest(this, cloudletResourceQuota(this, { region, platformType }))
+            let mc = await service.authSyncRequest(this, cloudletResourceQuota(this, { region, platformType }))
             if (mc && mc.response && mc.response.status === 200) {
                 if (mc.response.data.properties) {
                     this.resourceQuotaList = mc.response.data.properties
@@ -511,16 +511,16 @@ class CloudletReg extends React.Component {
 
     loadDefaultData = async (forms, data) => {
         if (data) {
-            let requestTypeList = []
+            let requestList = []
 
             let operator = {}
             operator[fields.operatorName] = data[fields.operatorName];
             this.operatorList = [operator]
             this.updateState({ mapData: [data] })
 
-            requestTypeList.push(showTrustPolicies(this, { region: data[fields.region] }))
-            requestTypeList.push(cloudletResourceQuota(this, { region: data[fields.region], platformType: data[fields.platformType] }))
-            let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
+            requestList.push(showTrustPolicies(this, { region: data[fields.region] }))
+            requestList.push(cloudletResourceQuota(this, { region: data[fields.region], platformType: data[fields.platformType] }))
+            let mcRequestList = await service.multiAuthSyncRequest(this, requestList)
 
             if (mcRequestList && mcRequestList.length > 0) {
                 for (let i = 0; i < mcRequestList.length; i++) {

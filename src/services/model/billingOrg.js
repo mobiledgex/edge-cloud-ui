@@ -1,8 +1,8 @@
-import * as serverData from './serverData'
 import * as formatter from './format'
 import { ADMIN_MANAGER, TYPE_DATE, DEVELOPER_MANAGER } from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 import { endpoint } from '../../helper/constant'
+import { authSyncRequest } from '../service'
 
 
 let fields = formatter.fields
@@ -69,13 +69,13 @@ export const showBillingOrg = (self, data) => {
 export const createBillingOrg = async (self, data) => {
     let requestData = getRequestData(data, true, true)
     let request = { method: endpoint.CREATE_BILLING_ORG, data: requestData }
-    return await serverData.sendRequest(self, request)
+    return await authSyncRequest(self, request)
 }
 
 export const updateBillingOrg = async (self, data) => {
     let requestData = getRequestData(data, true)
     let request = { method: endpoint.UPDATE_BILLING_ORG, data: requestData }
-    return await serverData.sendRequest(self, request)
+    return await authSyncRequest(self, request)
 }
 
 export const deleteBillingOrg = (self, data) => {
