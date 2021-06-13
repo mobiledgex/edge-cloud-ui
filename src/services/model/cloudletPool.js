@@ -117,15 +117,3 @@ export const deleteCloudletPool = (self, data) => {
     let requestData = getKey(data)
     return { method: endpoint.DELETE_CLOUDLET_POOL, data: requestData, success: `Cloudlet Pool ${data[fields.poolName]} deleted successfully` }
 }
-
-const customData = (value) => {
-    value[fields.cloudletCount] = value[fields.cloudlets] ? value[fields.cloudlets].length : 0
-    value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
-    value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
-    value[fields.organizationCount] = 0
-    return value
-}
-
-export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys(), customData, true)
-}

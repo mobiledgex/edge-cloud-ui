@@ -1,5 +1,5 @@
-import { formatData } from '../model/endpoints'
 import axios from 'axios';
+import { formatData } from '../format/format'
 import { fetchHeader, fetchPath } from '../config';
 
 const errorResponse = (error) => {

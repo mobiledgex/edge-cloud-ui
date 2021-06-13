@@ -139,12 +139,3 @@ export const multiDataRequest = (keys, mcList) => {
     }
     return dataList
 }
-
-const customData = (value) => {
-    value[fields.decision] = value[fields.decision] ? value[fields.decision] : 'pending'
-    return value
-}
-
-export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys(), customData)
-}

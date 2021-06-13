@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { fetchHeader, fetchPath, fetchURL, fetchHttpURL, validateExpiry, fetchResponseType } from '../config';
-import * as EP from './endPointTypes'
+import { formatData } from '../format/format';
 
 let sockets = [];
 
@@ -104,7 +104,7 @@ export function sendMultiRequest(self, requestDataList, callback) {
             .then(responseList => {
                 requestDataList[0].showSpinner === undefined && showSpinner(self, false)
                 responseList.map((response, i) => {
-                    resResults.push(EP.formatData(requestDataList[i], response));
+                    resResults.push(formatData(requestDataList[i], response));
                 })
                 callback(resResults);
 
@@ -132,7 +132,7 @@ export const sendSyncMultiRequest = async (self, requestDataList) => {
             let responseList = await axios.all(promise)
             requestDataList[0].showSpinner === undefined && showSpinner(self, false)
             responseList.map((response, i) => {
-                resResults.push(EP.formatData(requestDataList[i], response));
+                resResults.push(formatData(requestDataList[i], response));
             })
             return resResults
         }
@@ -154,7 +154,7 @@ export const sendSyncRequest = async (self, request) => {
                 responseType: fetchResponseType(request)
             });
         request.showSpinner === undefined && showSpinner(self, false)
-        return EP.formatData(request, response);
+        return formatData(request, response);
     } catch (error) {
         request.showSpinner === undefined && showSpinner(self, false)
         if (error.response && responseStatus(self, error.response.status)) {
@@ -172,7 +172,7 @@ export const sendSyncRequestWithError = async (self, request) => {
                 headers: fetchHeader(request)
             });
         request.showSpinner === undefined && showSpinner(self, false)
-        return EP.formatData(request, response);
+        return formatData(request, response);
     } catch (error) {
         request.showSpinner === undefined && showSpinner(self, false)
         if (error.response && responseStatus(self, error.response.status)) {
@@ -190,7 +190,7 @@ export function sendRequest(self, request, callback) {
         })
         .then(function (response) {
             request.showSpinner === undefined && showSpinner(self, false)
-            callback(EP.formatData(request, response));
+            callback(formatData(request, response));
         })
         .catch(function (error) {
             request.showSpinner === undefined && showSpinner(self, false)

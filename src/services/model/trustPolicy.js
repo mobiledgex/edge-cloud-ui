@@ -3,6 +3,7 @@ import * as serverData from './serverData'
 import { ADMIN_MANAGER, OPERATOR_CONTRIBUTOR, OPERATOR_MANAGER, ADMIN_CONTRIBUTOR } from '../../constant';
 import { redux_org } from '../../helper/reduxData'
 import { endpoint } from '../../helper/constant';
+import { generateUUID } from '../format/shared';
 
 export const fields = formatter.fields;
 
@@ -14,15 +15,15 @@ export const outboundSecurityRulesKeys = [
 ]
 
 export const keys = () => ([
-  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key:true },
-  { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Organization', sortable: true, visible: true, filter: true, key:true },
-  { field: fields.trustPolicyName, serverField: 'key#OS#name', label: 'Trust Policy Name', sortable: true, visible: true, filter: true, key:true },
+  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
+  { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Organization', sortable: true, visible: true, filter: true, key: true },
+  { field: fields.trustPolicyName, serverField: 'key#OS#name', label: 'Trust Policy Name', sortable: true, visible: true, filter: true, key: true },
   { field: fields.outboundSecurityRulesCount, label: 'Rules Count', sortable: true, visible: true },
   {
     field: fields.outboundSecurityRules, serverField: 'outbound_security_rules', label: 'Outbound Security Rules',
     keys: outboundSecurityRulesKeys
   },
-  { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles:[ADMIN_MANAGER, ADMIN_CONTRIBUTOR, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR] }
+  { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: [ADMIN_MANAGER, ADMIN_CONTRIBUTOR, OPERATOR_MANAGER, OPERATOR_CONTRIBUTOR] }
 ])
 
 const getKey = (data) => {
@@ -44,7 +45,7 @@ export const showTrustPolicies = (self, data) => {
   if (redux_org.isOperator(self)) {
     data.trustpolicy = { key: { organization: redux_org.nonAdminOrg(self) } }
   }
-  return { method: endpoint.SHOW_TRUST_POLICY, data: data }
+  return { method: endpoint.SHOW_TRUST_POLICY, data: data, keys: keys() }
 }
 
 export const getTrustPolicyList = async (self, data) => {
@@ -53,7 +54,7 @@ export const getTrustPolicyList = async (self, data) => {
 
 export const updateTrustPolicy = (self, data, callback) => {
   let requestData = getKey(data)
-  let request = { uuid: data.uuid ? data.uuid : formatter.generateUUID(keys(), data), method: endpoint.UPDATE_TRUST_POLICY, data: requestData }
+  let request = { uuid: data.uuid ? data.uuid : generateUUID(keys(), data), method: endpoint.UPDATE_TRUST_POLICY, data: requestData }
   return serverData.sendWSRequest(self, request, callback, data)
 }
 
@@ -98,14 +99,3 @@ export const multiDataRequest = (keys, mcRequestList) => {
   }
   return trustPolicyList;
 }
-
-const customData = (value) => {
-  value[fields.outboundSecurityRulesCount] = value[fields.outboundSecurityRules].length;
-  value[fields.outboundSecurityRulesCount] = value[fields.outboundSecurityRulesCount] === 0 ? 'Full Isolation' : value[fields.outboundSecurityRulesCount];
-  return value
-}
-
-export const getData = (response, body) => {
-  return formatter.formatData(response, body, keys(), customData, true)
-}
-

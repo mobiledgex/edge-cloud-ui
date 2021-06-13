@@ -7,7 +7,7 @@ import minBy from 'lodash/minBy';
 import cloneDeep from 'lodash/cloneDeep';
 import { convertUnit } from '../helper/unitConvertor';
 import { generateDataset } from './chart';
-import { formatData } from '../../../../services/model/endpoints';
+import { formatData } from '../../../../services/format/format';
 
 const processLineChartData = (chartDataList, worker) => {
     const { avgData, timezone } = worker

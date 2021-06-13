@@ -85,14 +85,3 @@ export const deleteReporter = (self, data) => {
     let requestData = generateRequestData(data);
     return { method: endpoint.DELETE_REPORTER, data: requestData, success: `Report Scheduler ${data[fields.name]} deleted successfully` }
 }
-
-const customData = (value) => {
-    value[fields.schedule] = labelFormatter.reporterInterval(value[fields.schedule])
-    value[fields.startdate] = time(FORMAT_FULL_DATE, value[fields.startdate])
-    value[fields.nextDate] = time(FORMAT_FULL_DATE, value[fields.nextDate])
-    return value
-}
-
-export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys(), customData)
-}

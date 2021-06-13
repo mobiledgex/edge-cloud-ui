@@ -2,9 +2,10 @@ import * as formatter from './format'
 import * as constant from '../../constant'
 import * as serverData from './serverData'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
-import { labelFormatter } from '../../helper/formatter'
 import { redux_org } from '../../helper/reduxData'
 import { endpoint } from '../../helper/constant'
+import { customize } from '../modules/appInst'
+import { generateUUID } from '../format/shared'
 
 let fields = formatter.fields;
 
@@ -107,7 +108,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
           newData[fields.updateAvailable] = oldData[fields.updateAvailable]
           newData[fields.appRevision] = oldData[fields.appRevision]
           newData[fields.cloudletStatus] = oldData[fields.cloudletStatus]
-          newData = customData(newData)
+          newData = customize(undefined, newData)
           return newData
         }
       }
@@ -207,7 +208,7 @@ export const createAppInst = (self, data, callback) => {
 
 export const updateAppInst = (self, data, callback) => {
   let requestData = getKey(data, true)
-  let request = { uuid: data.uuid ? data.uuid : formatter.generateUUID(keys(), data), method: endpoint.UPDATE_APP_INST, data: requestData }
+  let request = { uuid: data.uuid ? data.uuid : generateUUID(keys(), data), method: endpoint.UPDATE_APP_INST, data: requestData }
   return serverData.sendWSRequest(self, request, callback, data)
 }
 
@@ -251,24 +252,4 @@ export const refreshAllAppInst = (data) => {
 export const streamAppInst = (data) => {
   let requestData = { region: data[fields.region], appinstkey: getAppInstanceKey(data) }
   return { uuid: data.uuid, method: endpoint.STREAM_APP_INST, data: requestData }
-}
-
-export const customData = (value) => {
-  value[fields.liveness] = labelFormatter.liveness(value[fields.liveness])
-  value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
-  value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
-  value[fields.ipAccess] = value[fields.ipAccess] ? labelFormatter.ipAccess(value[fields.ipAccess]) : undefined
-  value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
-  value[fields.healthCheck] = value[fields.healthCheck] ? value[fields.healthCheck] : 0
-  value[fields.sharedVolumeSize] = value[fields.autoClusterInstance] ? value[fields.sharedVolumeSize] ? value[fields.sharedVolumeSize] : 0 : undefined
-  value[fields.cloudlet_name_operator] = `${value[fields.cloudletName]} [${value[fields.operatorName]}]`
-  value[fields.app_name_version] = `${value[fields.appName]} [${value[fields.version]}]`
-  if (value[fields.appName] === 'MEXPrometheusAppName') {
-    value = undefined
-  }
-  return value
-}
-
-export const getData = (response, body) => {
-  return formatter.formatData(response, body, keys(), customData, true)
 }

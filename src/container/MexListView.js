@@ -21,6 +21,8 @@ import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
 import ListMexMap from './map/ListMexMap'
 import cloneDeep from 'lodash/cloneDeep';
 import { operators, shared, perpetual } from '../helper/constant';
+import { fetchDataFromServer } from './service';
+import { service } from '../services';
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -113,7 +115,7 @@ class MexListView extends React.Component {
             }
             else {
                 let valid = false
-                let mc = await serverData.sendRequest(this, action.onClick(this, data))
+                let mc = await service.authSyncRequest(this, action.onClick(this, data))
                 if (mc && mc.response && mc.response.status === 200) {
                     this.props.handleAlertInfo('success', `${mc.request.success}`)
                     if (this._isMounted) {
@@ -176,7 +178,7 @@ class MexListView extends React.Component {
             serverData.sendWSRequest(this, action.onClick(this, data), this.onMultiResponse, { action: action, data: data })
         }
         else {
-            let mc = await serverData.sendRequest(this, action.onClick(this, data))
+            let mc = await service.authSyncRequest(this, action.onClick(this, data))
             let message = ''
             let code = 404
             if (mc && mc.response && mc.response.status === 200) {
@@ -427,7 +429,7 @@ class MexListView extends React.Component {
         else {
             requestList.push(requestType[0](this, data, true))
         }
-        serverData.sendMultiRequest(this, requestList, this.specificResponse)
+        service.multiAuthRequest(this, requestList, this.specificResponse)
     }
 
     render() {
@@ -555,11 +557,11 @@ class MexListView extends React.Component {
             if (filterList && filterList.length > 0) {
                 for (let i = 0; i < filterList.length; i++) {
                     let filter = filterList[i];
-                    serverData.showMultiDataFromServer(this, requestInfo.requestType, filter, this.onServerResponse)
+                    fetchDataFromServer(this, requestInfo.requestType, filter, this.onServerResponse)
                 }
             }
             else {
-                serverData.showMultiDataFromServer(this, requestInfo.requestType, this.onServerResponse)
+                fetchDataFromServer(this, requestInfo.requestType, this.onServerResponse)
             }
         }
 

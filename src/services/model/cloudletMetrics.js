@@ -77,7 +77,3 @@ export const cloudletFlavorUsageMetrics = (data, org) => {
     return { method: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, data: data, keys: cloudletFlavorMetricsKeys }
 }
 
-export const getData = (response, body) => {
-    return formatter.formatEventData(response, body, cloudletMetricsKeys)
-}
-

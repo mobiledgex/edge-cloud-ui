@@ -59,11 +59,3 @@ export const showCloudletInfoData = (self, data, specific) => {
     }
     return { method, data: requestData, keys: keys() }
 }
-
-const customData = (value) => {
-    return value
-}
-
-export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys(), customData)
-}

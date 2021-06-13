@@ -26,20 +26,10 @@ export const getKey = (data) => {
 }
 
 export const showAccounts = () => {
-    return { method: endpoint.SHOW_ACCOUNTS }
+    return { method: endpoint.SHOW_ACCOUNTS, keys:keys() }
 }
 
 export const deleteAccount = (self, data) => {
     let requestData = getKey(data)
     return { method: endpoint.DELETE_ACCOUNT, data: requestData, success: `Account ${data[fields.username]} deleted successfully` }
-}
-
-const customData = (value) => {
-    value[fields.emailVerified] = value[fields.emailVerified] ? value[fields.emailVerified] : false
-    value[fields.locked] = value[fields.locked] ? value[fields.locked] : false
-    return value
-}
-
-export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys(), customData)
 }

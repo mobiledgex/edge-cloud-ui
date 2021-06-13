@@ -3,9 +3,11 @@ import * as serverData from './serverData'
 import * as constant from '../../constant'
 import { TYPE_JSON } from '../../constant';
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
-import { labelFormatter, idFormatter } from '../../helper/formatter';
+import { idFormatter } from '../../helper/formatter';
 import { redux_org } from '../../helper/reduxData'
 import { endpoint } from '../../helper/constant';
+import { customize } from '../modules/clusterInst';
+import { generateUUID } from '../format/shared';
 
 let fields = formatter.fields;
 
@@ -48,7 +50,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
                     newData[fields.uuid] = oldData[fields.uuid]
                     newData[fields.cloudletStatus] = oldData[fields.cloudletStatus]
                     newData[fields.cloudletLocation] = oldData[fields.cloudletLocation];
-                    newData = customData(newData)
+                    newData = customize(undefined, newData)
                     return newData
                 }
             }
@@ -191,7 +193,7 @@ export const createClusterInst = (self, data, callback) => {
 
 export const updateClusterInst = (self, data, callback) => {
     let requestData = clusterKey(data, true)
-    let request = { uuid: data.uuid ? data.uuid : formatter.generateUUID(keys(), data), method: endpoint.UPDATE_CLUSTER_INST, data: requestData }
+    let request = { uuid: data.uuid ? data.uuid : generateUUID(keys(), data), method: endpoint.UPDATE_CLUSTER_INST, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
 }
 
@@ -206,20 +208,4 @@ export const deleteClusterInst = (self, data) => {
 export const streamClusterInst = (data) => {
     let requestData = { region: data[fields.region], clusterinstkey: clusterInstanceKey(data) }
     return { uuid: data.uuid, method: endpoint.STREAM_CLUSTER_INST, data: requestData }
-}
-
-
-const customData = (value) => {
-    value[fields.ipAccess] = labelFormatter.ipAccess(value[fields.ipAccess])
-    value[fields.reservable] = value[fields.reservable] ? value[fields.reservable] : false
-    value[fields.numberOfNodes] = value[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? value[fields.numberOfNodes] ? value[fields.numberOfNodes] : 0 : undefined
-    value[fields.sharedVolumeSize] = value[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES ? value[fields.sharedVolumeSize] ? value[fields.sharedVolumeSize] : 0 : undefined
-    value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
-    value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
-    value[fields.cloudlet_name_operator] = `${value[fields.cloudletName]} [${value[fields.operatorName]}]`
-    return value
-}
-
-export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys(), customData, true)
 }

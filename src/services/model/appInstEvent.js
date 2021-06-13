@@ -25,8 +25,3 @@ export const appInstEventLogs = (data, org) => {
     }
     return { method: endpoint.APP_INST_EVENT_LOG_ENDPOINT, data: data, keys: appEventKeys }
 }
-
-export const getData = (response, body) => {
-    return formatter.formatEventData(response, body, appEventKeys)
-}
-

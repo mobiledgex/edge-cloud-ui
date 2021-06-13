@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { UNKNOWN } from '../../../../constant';
 import { fetchHttpURL, validateExpiry } from '../../../../services/config';
-import * as EP from '../../../../services/model/endPointTypes'
+import { formatData } from '../../../../services/format/format';
+import { UNKNOWN } from '../../../../helper/constant/perpetual';
 
 export const getToken = (self) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -71,7 +71,7 @@ export const sendRequest = async (self, request, format) => {
     try {
         let response = await authInstance(self).post(fetchHttpURL(request), request.data);
         response = { status: response.status, data: response.data }
-        return format ? EP.formatData(request, response) : { request, response }
+        return format ? formatData(request, response) : { request, response }
     } catch (error) {
         if (error.response && responseStatus(self, error.response.status)) {
             responseError(self, request, error)
@@ -103,7 +103,7 @@ export const sendMultiRequest = async (self, requestDataList, format) => {
                 responseList.forEach((response, i) => {
                     let request = requestDataList[i]
                     response = { status: response.status, data: response.data }
-                    mcList.push(format ? EP.formatData(request, response) : { request, response })
+                    mcList.push(format ? formatData(request, response) : { request, response })
                 })
                 return mcList
             }

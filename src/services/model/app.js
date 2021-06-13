@@ -2,7 +2,7 @@ import * as formatter from './format'
 import * as serverData from './serverData'
 import * as constant from '../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
-import { labelFormatter, idFormatter } from '../../helper/formatter';
+import { idFormatter } from '../../helper/formatter';
 import { redux_org } from '../../helper/reduxData'
 import { endpoint } from '../../helper/constant';
 
@@ -132,7 +132,7 @@ export const showApps = (self, data) => {
             data.app = { key: { organization } }
         }
     }
-    return { method: endpoint.SHOW_APP, data: data }
+    return { method: endpoint.SHOW_APP, data: data, keys:keys() }
 }
 
 export const getAppList = async (self, data) => {
@@ -153,34 +153,4 @@ export const updateApp = async (self, data) => {
 export const deleteApp = (self, data) => {
     let requestData = getKey(data)
     return { uuid: data.uuid, method: endpoint.DELETE_APP, data: requestData, success: `App ${data[fields.appName]} deleted successfully` }
-}
-
-
-const customData = (value) => {
-    value[fields.trusted] = value[fields.trusted] ? value[fields.trusted] : false
-    value[fields.accessType] = labelFormatter.accessType(value[fields.accessType])
-    value[fields.imageType] = labelFormatter.imageType(value[fields.imageType])
-    value[fields.vmappostype] = labelFormatter.vmAppOS(value[fields.vmappostype])
-    value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
-    value[fields.deploymentManifest] = value[fields.deploymentManifest] ? value[fields.deploymentManifest].trim() : value[fields.deploymentManifest]
-    if (value[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
-        value[fields.scaleWithCluster] = value[fields.scaleWithCluster] ? value[fields.scaleWithCluster] : false
-    }
-    value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
-    value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
-    value[fields.autoProvPolicies] = value[fields.autoPolicyName] ? [value[fields.autoPolicyName]] : value[fields.autoProvPolicies]
-    value[fields.autoPolicyName] = undefined
-    if (value[fields.configs]) {
-        let configs = value[fields.configs]
-        for (let i = 0; i < configs.length; i++) {
-            let config = configs[i]
-            config.kind = labelFormatter.kind(config.kind)
-        }
-    }
-    value[fields.app_name_version] = `${value[fields.appName]} [${value[fields.version]}]`
-    return value
-}
-
-export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys(), customData, true)
 }

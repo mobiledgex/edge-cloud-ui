@@ -30,21 +30,3 @@ export const showInvoices = (self, data) => {
     let requestData = { name: data[fields.name] }
     return { method: endpoint.INVOICE_BILLING, data: requestData, keys: keys() }
 }
-
-const formatInvoiceNo = (value)=>{
-    let number = value['number']
-    let length = number.length - 1
-    let prefix = '0'
-    prefix = length > 5 ? '' : prefix.repeat(5 - length)
-    value['number'] = `#${prefix}${number}`
-}
-
-const customData = (value) => {
-    value['name'] = `${value['firstname']} ${value['lastname']}`
-    formatInvoiceNo(value)
-    return value
-}
-
-export const getData = (response, body) => {
-    return formatter.formatChargifyData(response, body, keys(), customData, true)
-}

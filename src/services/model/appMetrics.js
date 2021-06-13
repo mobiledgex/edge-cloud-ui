@@ -100,7 +100,3 @@ export const appInstMetrics = (data, organization, isPrivate) => {
     return { method: endpoint.APP_INST_METRICS_ENDPOINT, data: data, keys: appMetricsKeys }
 }
 
-export const getData = (response, body) => {
-    return formatter.formatEventData(response, body, appMetricsKeys)
-}
-

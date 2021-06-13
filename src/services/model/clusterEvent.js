@@ -25,7 +25,3 @@ export const clusterEventLogs = (data, org) => {
     }
     return { method: endpoint.CLUSTER_EVENT_LOG_ENDPOINT, data: data, keys: clusterEventKeys }
 }
-
-export const getData = (response, body) => {
-    return formatter.formatEventData(response, body, clusterEventKeys)
-}

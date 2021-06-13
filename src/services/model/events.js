@@ -22,7 +22,3 @@ export const showAudits = async (self, data, showSpinner, isPrivate) => {
     let mcRequest = await serverData.sendRequest(self, { method: endpoint.EVENTS_SHOW, data: data, showSpinner: showSpinner })
     return mcRequest
 }
-
-export const getData = (response, body) => {
-    return response && response.data ? response.data : []
-}

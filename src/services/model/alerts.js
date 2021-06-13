@@ -2,7 +2,7 @@
 import * as serverData from './serverData'
 import * as formatter from './format'
 import { RECEIVER_TYPE_SLACK, RECEIVER_TYPE_EMAIL, DEVELOPER, OPERATOR, RECEIVER_TYPE_PAGER_DUTY } from '../../constant'
-import {redux_org} from '../../helper/reduxData'
+import { redux_org } from '../../helper/reduxData'
 import { endpoint } from '../../helper/constant'
 
 let fields = formatter.fields
@@ -35,7 +35,7 @@ export const showAlertReceiverKeys = () => (
     [
         { field: fields.region, serverField: 'Region', label: 'Region', visible: false, filter: true },
         { field: fields.alertname, serverField: 'Name', label: 'Receiver Name', sortable: true, visible: true, filter: true },
-        { field: fields.severity, serverField: 'Severity', label: 'Severity', detailView:false },
+        { field: fields.severity, serverField: 'Severity', label: 'Severity', detailView: false },
         { field: fields.username, serverField: 'User', label: 'Username', sortable: true, visible: true, filter: true },
         { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: false, filter: true },
         { field: fields.email, serverField: 'Email', label: 'Email', sortable: true, visible: false, filter: true },
@@ -162,7 +162,7 @@ const getKey = (data, isDelete) => {
 
 
 export const showAlertReceiver = (self, data) => {
-    return { method: endpoint.ALERT_SHOW_RECEIVER, data: data }
+    return { method: endpoint.ALERT_SHOW_RECEIVER, data: data, keys: showAlertReceiverKeys() }
 }
 
 export const createAlertReceiver = async (self, data) => {
@@ -194,14 +194,4 @@ export const showAlerts = (self, data) => {
     }
 
     return { method: endpoint.SHOW_ALERT, data: data, keys: showAlertKeys() }
-}
-
-const customData = (value) => {
-    value[fields.receiverAddress] = value[fields.type] === 'pagerduty' ? 'PagerDuty' : value[fields.type] === 'email' ? value[fields.email] : value[fields.slackchannel]
-    value[fields.receiverAddress] = value[fields.type] + '#OS#' + value[fields.receiverAddress]
-    return value
-}
-
-export const getData = (response, body) => {
-    return formatter.formatAlertData(response, body, showAlertReceiverKeys(), customData)
 }

@@ -30,8 +30,3 @@ export const clientMetrics = (data, organization, isPrivate) => {
     data.appinst = isPrivate ? { cluster_inst_key: { cloudlet_key: { organization } } } : { app_key: { organization } }
     return { method: endpoint.CLIENT_METRICS_ENDPOINT, data: data, keys: clientMetricsKeys }
 }
-
-export const getData = (response, body) => {
-    return formatter.formatEventData(response, body, clientMetricsKeys)
-}
-

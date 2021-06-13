@@ -73,7 +73,7 @@ class Main extends React.Component {
         const orgInfo = this.props.organizationInfo
         const pathname = this.props.history.location.pathname
         if (!(pathname.includes('/logout') || this.validatePath(pages, orgInfo, pathname))) {
-            this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
+            // this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
         }
     }
 

@@ -35,7 +35,7 @@ export const getKey = (data, isCreate) => {
 }
 
 export const showFlavors = (self, data) => {
-    return { method: endpoint.SHOW_FLAVOR, data: data }
+    return { method: endpoint.SHOW_FLAVOR, data: data, keys: keys() }
 }
 
 export const getFlavorList = async (self, data) => {
@@ -51,13 +51,4 @@ export const createFlavor = async (self, data) => {
 export const deleteFlavor = (self, data) => {
     let requestData = getKey(data);
     return { method: endpoint.DELETE_FLAVOR, data: requestData, success: `Flavor ${data[fields.flavorName]} deleted successfully` }
-}
-
-const customData = (value) => {
-    value[fields.gpu] = value.gpu === 'gpu:1' ? 1 : 0;
-    return value
-}
-
-export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys(), customData, true)
 }

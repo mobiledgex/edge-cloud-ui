@@ -90,11 +90,3 @@ export const addBillingChild = (data) => {
 export const removeBillingChild = (data) => {
     return { method: endpoint.BILLING_ORG_REMOVE_CHILD, data }
 }
-
-const customData = (value) => {
-    return value
-}
-
-export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys(), customData)
-}

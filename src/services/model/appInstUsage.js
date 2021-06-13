@@ -29,7 +29,3 @@ export const appInstUsageLogs = (data, org) => {
     return { method: endpoint.APP_INST_USAGE_ENDPOINT, data: data, keys: appUsageKeys }
 }
 
-export const getData = (response, body) => {
-    return formatter.formatUsageData(response, body, appUsageKeys)
-}
-

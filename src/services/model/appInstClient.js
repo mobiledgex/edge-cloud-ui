@@ -32,10 +32,3 @@ export const showAppInstClient = (data) => {
     }
     return { method: endpoint.SHOW_APP_INST_CLIENT, data: requestData }
 }
-
-const customData = (value) => {
-}
-
-export const getData = (response, body) => {
-    //return formatter.formatData(response, body, keys(), customData, true)
-}

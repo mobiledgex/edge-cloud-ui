@@ -44,7 +44,3 @@ export const clusterMetrics = (data, organization, isPrivate) => {
     return { method: endpoint.CLUSTER_METRICS_ENDPOINT, data: data, keys: clusterMetricsKeys }
 }
 
-export const getData = (response, body) => {
-    return formatter.formatEventData(response, body, clusterMetricsKeys)
-}
-

@@ -80,7 +80,7 @@ export const showAutoProvPolicies = (self, data) => {
       data.AutoProvPolicy = { key: { organization } }
     }
   }
-  return { method: endpoint.SHOW_AUTO_PROV_POLICY, data: data }
+  return { method: endpoint.SHOW_AUTO_PROV_POLICY, data: data, keys: keys() }
 }
 
 export const getAutoProvPolicyList = async (self, data) => {
@@ -144,19 +144,4 @@ export const multiDataRequest = (keys, mcRequestList) => {
     }
   }
   return autoProvList;
-}
-
-/** 
- * Function to add customized data along with server data
- * **/
-const customData = (value) => {
-  value[fields.cloudletCount] = value[fields.cloudlets].length;
-  return value
-}
-
-/** 
- * Format server data to required local data format based on keys object
- * **/
-export const getData = (response, body) => {
-  return formatter.formatData(response, body, keys(), customData, true)
 }

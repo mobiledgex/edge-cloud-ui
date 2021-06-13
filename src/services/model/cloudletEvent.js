@@ -19,8 +19,3 @@ export const cloudletEventLogs = (data, org) => {
     }
     return { method: endpoint.CLOUDLET_EVENT_LOG_ENDPOINT, data: data, keys: cloudletEventKeys }
 }
-
-export const getData = (response, body) => {
-    return formatter.formatEventData(response, body, cloudletEventKeys)
-}
-

@@ -5,6 +5,8 @@ import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
 import { idFormatter, labelFormatter } from '../../helper/formatter'
 import { redux_org } from '../../helper/reduxData'
 import { endpoint } from '../../helper/constant'
+import { customize } from '../modules/cloudlet'
+import { generateUUID } from '../format/shared'
 
 const fields = formatter.fields;
 
@@ -196,7 +198,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
                     }
                 }
             }
-            cloudlet = customData(cloudlet)
+            cloudlet = customize(undefined, cloudlet)
             cloudlet[fields.uuid] = oldData[fields.uuid]
             cloudlet[fields.cloudletStatus] = cloudlet[fields.maintenanceState] && cloudlet[fields.maintenanceState] !== 0 ? 999 : cloudletInfo[fields.state]
             return cloudlet
@@ -271,7 +273,7 @@ export const createCloudlet = (self, data, callback) => {
 
 export const updateCloudlet = (self, data, callback) => {
     let requestData = getKey(data, true)
-    data.uuid = data.uuid ? data.uuid : formatter.generateUUID(keys(), data)
+    data.uuid = data.uuid ? data.uuid : generateUUID(keys(), data)
     let request = { uuid: data.uuid, method: endpoint.UPDATE_CLOUDLET, data: requestData }
     return serverData.sendWSRequest(self, request, callback, data)
 }
@@ -312,19 +314,4 @@ export const cloudletResourceQuota = (self, data) => {
         region: data[fields.region]
     }
     return { method: endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS, data: requestData }
-}
-
-const customData = (value) => {
-    value[fields.cloudletStatus] = value[fields.maintenanceState] && value[fields.maintenanceState] !== 0 ? 999 : 4
-    value[fields.ipSupport] = labelFormatter.ipSupport(value[fields.ipSupport])
-    value[fields.platformType] = labelFormatter.platformType(value[fields.platformType])
-    value[fields.infraApiAccess] = labelFormatter.infraApiAccess(value[fields.infraApiAccess] ? value[fields.infraApiAccess] : 0)
-    value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
-    value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
-    value[fields.trusted] = value[fields.trustPolicyName] !== undefined
-    return value
-}
-
-export const getData = (response, body) => {
-    return formatter.formatData(response, body, keys(), customData, true)
 }

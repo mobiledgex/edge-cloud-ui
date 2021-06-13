@@ -1,7 +1,7 @@
 /* eslint-disable */
-import { formatData } from '../model/endpoints'
 import axios from 'axios';
 import { fetchHeader, fetchPath } from '../config';
+import { formatData } from '../format/format'
 
 const errorResponse = (error) => {
     let response = error.response
