@@ -13,7 +13,9 @@ import {fields} from '../services/model/format'
 import { redux_org } from '../helper/reduxData';
 import {RUN_COMMAND, SHOW_LOGS, DEVELOPER_VIEWER, DEPLOYMENT_TYPE_VM} from '../constant'
 import '../hoc/terminal/style.css'
-const Terminal = lazy(() => import('../hoc/terminal/mexTerminal'))
+import { componentLoader } from '../hoc/loader/componentLoader';
+
+const Terminal = lazy(() => componentLoader(import('../hoc/terminal/mexTerminal')));
 
 
 class MexTerminal extends Component {
