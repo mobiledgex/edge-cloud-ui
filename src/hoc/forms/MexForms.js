@@ -324,8 +324,22 @@ const MexForms = (props) => {
     }
 
     const showTip = (form) => {
+        let tips = form.tip.split('\n')
         return (
-            <Tooltip title={<ul style={{ listStyleType: 'none', padding: 0 }}>{form.tip.split('\n').map((info, i) => { return <li key={i} style={{ fontSize: 13, marginTop: 5 }}>{info}</li> })}</ul>} aria-label="tip" style={{ marginTop: 7 }}>
+            <Tooltip title={
+                <ul style={{ listStyleType: 'none', padding: 0 }}>{tips.map((info, i) => {
+                    const temp = info.split('</b>')
+                    return (
+                        <li key={i} style={{ fontSize: 13, marginTop: 5 }}>{temp.length === 2 ?
+                            <React.Fragment>
+                                <b>{`${temp[0]} `}</b>
+                                <code style={{lineHeight:1.2}}>{temp[1]}</code>
+                            </React.Fragment> : <code style={{lineHeight:1.2}}>{info}</code>}
+                            <br/>
+                        </li>
+                    )
+                })}</ul>
+            } aria-label="tip" style={{ marginTop: 7 }}>
                 {getIcon('help')}
             </Tooltip>
         )
