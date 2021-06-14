@@ -26,8 +26,9 @@ import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
 import { SHOW_AUTO_SCALE_POLICY } from '../../../services/model/endPointTypes';
 import { sendRequests } from '../../../services/model/serverWorker'
 import { Grid } from '@material-ui/core';
+import { componentLoader } from '../../../hoc/loader/componentLoader';
 
-const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
+const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 
 class ClusterInstReg extends React.Component {
     constructor(props) {

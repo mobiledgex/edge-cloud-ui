@@ -9,8 +9,9 @@ import { showInvoices, keys } from '../../../../services/model/invoices'
 import { withRouter } from 'react-router-dom';
 import { redux_org } from '../../../../helper/reduxData';
 import { connect } from 'react-redux';
+import { componentLoader } from '../../../../hoc/loader/componentLoader';
 
-const Invoice = lazy(() => import('./Invoice'));
+const Invoice = lazy(() => componentLoader(import('./Invoice')));
 class Invoices extends React.Component {
     constructor(props) {
         super(props)
