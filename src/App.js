@@ -11,10 +11,11 @@ import './css/components/timelineH.css';
 import { ThemeProvider } from "@material-ui/styles";
 import { getDarkTheme, getLightTheme, THEME_TYPE } from "./themeStyle";
 import LogoSpinner from './hoc/loader/LogoSpinner'
+import { componentLoader } from './hoc/loader/componentLoader';
 
-const Main = lazy(() => import('./pages/main/Main'));
-const Landing = lazy(() => import('./pages/landing/Landing'));
-const PreLoader = lazy(() => import('./pages/landing/loader/PreLoader'));
+const Main = lazy(() => componentLoader(import('./pages/main/Main')));
+const Landing = lazy(() => componentLoader(import('./pages/landing/Landing')));
+const PreLoader = lazy(() => componentLoader(import('./pages/landing/loader/PreLoader')));
 class App extends Component {
     constructor() {
         super();
@@ -24,7 +25,7 @@ class App extends Component {
         return (
             <ThemeProvider theme={this.props.themeType === THEME_TYPE.DARK ? getDarkTheme() : getLightTheme()}>
                 <Router>
-                    <Suspense fallback={<LogoSpinner/>}>
+                    <Suspense fallback={<LogoSpinner />}>
                         <Switch>
                             <Route exact path='/' component={Landing} />
                             <Route exact path='/register' component={Landing} />

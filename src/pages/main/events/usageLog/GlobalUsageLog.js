@@ -19,8 +19,10 @@ import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy';
 import { operators } from '../../../../helper/constant';
 import './style.css'
+import { equal } from '../../../../constant/compare';
+import { componentLoader } from '../../../../hoc/loader/componentLoader';
 
-const UsageLog = lazy(() => import('./UsageLog'));
+const UsageLog = lazy(() => componentLoader(import('./UsageLog')));
 const drawerWidth = 450
 
 const styles = theme => ({

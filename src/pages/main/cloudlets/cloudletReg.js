@@ -22,9 +22,10 @@ import { Grid } from '@material-ui/core';
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
 import { service } from '../../../services';
+import { componentLoader } from '../../../hoc/loader/componentLoader';
 
-const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
-const CloudletManifest = React.lazy(() => import('./cloudletManifestForm'));
+const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
+const CloudletManifest = React.lazy(() => componentLoader(import('./cloudletManifestForm')));
 
 class CloudletReg extends React.Component {
     constructor(props) {

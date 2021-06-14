@@ -12,7 +12,9 @@ import { redux_org } from '../helper/reduxData';
 import { service } from '../services'
 import { endpoint, perpetual } from '../helper/constant';
 import '../hoc/terminal/style.css'
-const Terminal = lazy(() => import('../hoc/terminal/mexTerminal'))
+import { componentLoader } from '../hoc/loader/componentLoader';
+
+const Terminal = lazy(() => componentLoader(import('../hoc/terminal/mexTerminal')));
 
 
 class MexTerminal extends Component {

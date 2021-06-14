@@ -25,6 +25,9 @@ import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from '@material-ui/core';
 import { endpoint, perpetual } from '../../../helper/constant';
 const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
+import { SHOW_APP_INST } from '../../../services/model/endpoints';
+import { componentLoader } from '../../../hoc/loader/componentLoader';
+const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 
 class AppReg extends React.Component {
     constructor(props) {
