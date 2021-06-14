@@ -51,7 +51,9 @@ class Main extends React.Component {
     validatePath = (pages, orgInfo, pathname) => {
         for (let page of pages) {
             if (page.sub) {
-                return this.validatePath(page.options, orgInfo, pathname)
+                if (this.validatePath(page.options, orgInfo, pathname)) {
+                    return true
+                }
             }
             else {
                 if (pathname.includes(page.path)) {
