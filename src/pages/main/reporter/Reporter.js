@@ -11,12 +11,13 @@ import Generated from './Generated';
 import Generator from './Generator';
 import { lightGreen } from '@material-ui/core/colors';
 import { IconButton } from '../../../hoc/mexui'
-import { uiFormatter } from '../../../helper/formatter';
+import { dateFormatter, uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
 import { showOrganizations } from '../../../services/modules/organization';
 import { responseValid } from '../../../services/model/serverData';
 import LogoSpinner from '../../../hoc/loader/LogoSpinner'
 import { service } from '../../../services';
+import { FORMAT_FULL_DATE } from '../../../utils/date_util';
 
 class Reporter extends React.Component {
 
@@ -73,6 +74,9 @@ class Reporter extends React.Component {
     dataFormatter = (key, data, isDetail) => {
         if (key.field === fields.status) {
             return uiFormatter.reporterStatus(key, data, isDetail)
+        }
+        else if (key.field === fields.startdate || key.field === fields.nextDate) {
+            return dateFormatter.formatDate(FORMAT_FULL_DATE, data[key.field], data[fields.timezone])
         }
     }
 
