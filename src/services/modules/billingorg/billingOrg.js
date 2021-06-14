@@ -1,7 +1,7 @@
-import * as formatter from './format'
-import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
-import { endpoint, perpetual } from '../../helper/constant'
-import { authSyncRequest } from '../service'
+import * as formatter from '../../model/format'
+import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util'
+import { endpoint, perpetual } from '../../../helper/constant'
+import { authSyncRequest } from '../../service'
 
 
 let fields = formatter.fields
@@ -22,7 +22,7 @@ export const keys = () => (
         { field: fields.children, serverField: 'Children', label: 'Children', sortable: true, visible: false },
         { field: fields.createdAt, serverField: 'CreatedAt', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
         { field: fields.updatedAt, serverField: 'UpdatedAt', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-        { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: [perpetual.ADMIN_MANAGER, perpetual.DEVELOPER_MANAGER ] }
+        { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: [perpetual.ADMIN_MANAGER, perpetual.DEVELOPER_MANAGER] }
     ]
 )
 
@@ -62,7 +62,7 @@ const getRequestData = (data, edit, isAdd) => {
 }
 
 export const showBillingOrg = (self, data) => {
-    return { method: endpoint.SHOW_BILLING_ORG, data }
+    return { method: endpoint.SHOW_BILLING_ORG, data, keys: keys() }
 }
 
 export const createBillingOrg = async (self, data) => {

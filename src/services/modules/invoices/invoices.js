@@ -1,5 +1,5 @@
-import { endpoint, perpetual } from '../../helper/constant'
-import * as formatter from './format'
+import { endpoint, perpetual } from '../../../helper/constant'
+import * as formatter from '../../model/format'
 
 let fields = formatter.fields
 

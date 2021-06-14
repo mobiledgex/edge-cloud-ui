@@ -1,6 +1,9 @@
 import { customize } from './custom'
-
+import { keys, showAccounts, deleteAccount } from './accounts'
 export {
-    customize
+    customize,
+    keys,
+    showAccounts,
+    deleteAccount
 }
 

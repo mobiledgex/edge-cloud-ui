@@ -7,9 +7,9 @@ import * as actions from '../../../../actions';
 import { service } from '../../../../services';
 import { fields, updateFieldData } from '../../../../services/model/format';
 import { redux_org } from '../../../../helper/reduxData'
-import { getOrganizationList } from '../../../../services/model/organization';
-import { fetchCloudletData } from '../../../../services/model/cloudlet';
-import { createAutoProvPolicy, updateAutoProvPolicy, addAutoProvCloudletKey, deleteAutoProvCloudletKey } from '../../../../services/model/autoProvisioningPolicy';
+import { getOrganizationList } from '../../../../services/modules/organization';
+import { fetchCloudletData } from '../../../../services/modules/cloudlet';
+import { createAutoProvPolicy, updateAutoProvPolicy, addAutoProvCloudletKey, deleteAutoProvCloudletKey } from '../../../../services/modules/autoProvPolicy';
 import { HELP_AUTO_PROV_REG_2, HELP_AUTO_PROV_REG_1 } from "../../../../tutorial";
 import { Grid } from '@material-ui/core';
 import { perpetual } from '../../../../helper/constant';

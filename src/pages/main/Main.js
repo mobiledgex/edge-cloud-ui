@@ -51,7 +51,9 @@ class Main extends React.Component {
     validatePath = (pages, orgInfo, pathname) => {
         for (let page of pages) {
             if (page.sub) {
-                return this.validatePath(page.options, orgInfo, pathname)
+                if (this.validatePath(page.options, orgInfo, pathname)) {
+                    return true
+                }
             }
             else {
                 if (pathname.includes(page.path)) {
@@ -73,7 +75,7 @@ class Main extends React.Component {
         const orgInfo = this.props.organizationInfo
         const pathname = this.props.history.location.pathname
         if (!(pathname.includes('/logout') || this.validatePath(pages, orgInfo, pathname))) {
-            // this.props.history.push(`/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)
+            this.props.history.push(`/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)
         }
     }
 

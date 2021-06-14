@@ -8,8 +8,8 @@ import uuid from 'uuid';
 import { fields, updateFieldData } from '../../../../services/model/format';
 import { redux_org} from '../../../../helper/reduxData'
 //model
-import { getOrganizationList } from '../../../../services/model/organization';
-import { updateTrustPolicy, createTrustPolicy } from '../../../../services/model/trustPolicy';
+import { getOrganizationList } from '../../../../services/modules/organization';
+import { updateTrustPolicy, createTrustPolicy } from '../../../../services/modules/trustPolicy';
 import { HELP_TRUST_POLICY_REG } from "../../../../tutorial";
 import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/mexMessageMultiStream'
 import { Grid } from '@material-ui/core';

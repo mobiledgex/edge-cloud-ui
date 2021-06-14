@@ -8,7 +8,7 @@ import { clusterEventLogs } from '../../../../services/model/clusterEvent'
 import { appInstEventLogs } from '../../../../services/model/appInstEvent'
 import { cloudletEventLogs } from '../../../../services/model/cloudletEvent'
 import { sendAuthRequest, sendRequests } from '../../../../services/model/serverWorker'
-import { showOrganizations } from '../../../../services/model/organization'
+import { showOrganizations } from '../../../../services/modules/organization'
 
 import { fields } from '../../../../services/model/format';
 import {redux_org}  from '../../../../helper/reduxData'

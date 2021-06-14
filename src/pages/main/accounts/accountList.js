@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
-import { keys, showAccounts, deleteAccount } from '../../../services/model/accounts';
+import { keys, showAccounts, deleteAccount } from '../../../services/modules/accounts';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import * as serverData from '../../../services/model/serverData';
 import { perpetual } from '../../../helper/constant';

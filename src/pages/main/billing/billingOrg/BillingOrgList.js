@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import DataView from '../../../../container/DataView';
 import { fields } from '../../../../services/model/format';
-import { showBillingOrg, deleteBillingOrg, keys } from '../../../../services/model/billingOrg';
+import { showBillingOrg, deleteBillingOrg, keys } from '../../../../services/modules/billingorg';
 
 import Invoices from '../invoices/Invoices';
 import Reg from './BillingOrgReg';

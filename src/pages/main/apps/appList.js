@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
-import { keys, showApps, deleteApp } from '../../../services/model/app';
+import { keys, showApps, deleteApp } from '../../../services/modules/app';
 import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
 import { HELP_APP_LIST } from "../../../tutorial";

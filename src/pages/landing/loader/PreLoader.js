@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { getToken, sendMultiRequest } from '../../main/monitoring/services/service';
 import RoleWorker from '../../../services/worker/role.worker.js'
-import { showOrganizations } from '../../../services/model/organization';
+import { showOrganizations } from '../../../services/modules/organization';
 import { validatePrivateAccess } from '../../../constant';
 import { organizationInfo } from '../../../helper/ls';
 import './style.css'

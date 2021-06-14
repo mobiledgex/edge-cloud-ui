@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData';
-import { keys, showFlavors, deleteFlavor } from '../../../services/model/flavor';
+import { keys, showFlavors, deleteFlavor } from '../../../services/modules/flavor';
 import FlavorReg from './flavorReg';
 import { HELP_FLAVOR_LIST } from "../../../tutorial";
 import { perpetual } from '../../../helper/constant';

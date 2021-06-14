@@ -12,11 +12,11 @@ import { redux_org } from '../../../helper/reduxData';
 //model
 import * as serverData from '../../../services/model/serverData'
 import { service } from '../../../services'
-import { getOrganizationList } from '../../../services/model/organization';
-import { getFlavorList, showFlavors } from '../../../services/model/flavor';
-import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/model/autoProvisioningPolicy';
-import { createApp, updateApp } from '../../../services/model/app';
-import { refreshAllAppInst, showAppInsts } from '../../../services/model/appInstance';
+import { getOrganizationList } from '../../../services/modules/organization';
+import { getFlavorList, showFlavors } from '../../../services/modules/flavor/flavor';
+import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/modules/autoProvPolicy';
+import { createApp, updateApp } from '../../../services/modules/app';
+import { refreshAllAppInst, showAppInsts } from '../../../services/modules/appInst';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { HELP_APP_REG } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'

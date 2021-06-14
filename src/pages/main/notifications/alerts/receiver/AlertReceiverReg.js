@@ -8,13 +8,13 @@ import * as actions from '../../../../../actions';
 import { fields } from '../../../../../services/model/format';
 import {redux_org} from '../../../../../helper/reduxData'
 //model
-import { createAlertReceiver } from '../../../../../services/model/alerts';
+import { createAlertReceiver } from '../../../../../services/modules/alerts';
 import { sendRequests } from '../../../../../services/model/serverWorker'
 import * as constant from '../../../../../constant'
-import { showOrganizations } from '../../../../../services/model/organization';
-import { showCloudlets } from '../../../../../services/model/cloudlet';
-import { showAppInsts } from '../../../../../services/model/appInstance';
-import { showClusterInsts } from '../../../../../services/model/clusterInstance';
+import { showOrganizations } from '../../../../../services/modules/organization';
+import { showCloudlets } from '../../../../../services/modules/cloudlet';
+import { showAppInsts } from '../../../../../services/modules/appInst';
+import { showClusterInsts } from '../../../../../services/modules/clusterInst';
 import uuid from 'uuid'
 import cloneDeep from 'lodash/cloneDeep';
 import { Grid, LinearProgress } from '@material-ui/core'

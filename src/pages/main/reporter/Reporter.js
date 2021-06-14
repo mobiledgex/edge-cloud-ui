@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { perpetual } from '../../../helper/constant';
 import DataView from '../../../container/DataView';
 import { fields } from '../../../services/model/format';
-import { keys, showReporter, deleteReporter } from '../../../services/model/reporter';
+import { keys, showReporter, deleteReporter } from '../../../services/modules/reporter';
 import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
 import { Box } from '@material-ui/core';
 import Reg from './ReporterReg'
@@ -13,7 +13,7 @@ import { lightGreen } from '@material-ui/core/colors';
 import { IconButton } from '../../../hoc/mexui'
 import { uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
-import { showOrganizations } from '../../../services/model/organization';
+import { showOrganizations } from '../../../services/modules/organization';
 import { responseValid } from '../../../services/model/serverData';
 import LogoSpinner from '../../../hoc/loader/LogoSpinner'
 import { service } from '../../../services';

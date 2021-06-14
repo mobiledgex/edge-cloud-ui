@@ -1,13 +1,10 @@
 
-import * as formatter from './format'
-import { UNIT_BYTES, UNIT_PERCENTAGE, UNIT_FLOOR } from '../../pages/main/monitoring/helper/unitConvertor';
-import { labelFormatter } from '../../helper/formatter';
-import { endpoint } from '../../helper/constant';
+import * as formatter from '../../model/format'
+import { UNIT_BYTES, UNIT_PERCENTAGE, UNIT_FLOOR } from '../../../pages/main/monitoring/helper/unitConvertor';
+import { labelFormatter } from '../../../helper/formatter';
+import { endpoint, perpetual } from '../../../helper/constant';
 
 let fields = formatter.fields;
-
-export const LIST_TOOLBAR_TRACK_DEVICES = 'TrackDevices'
-export const LIST_TOOLBAR_TERMINAL = 'Terminal'
 
 export const appMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },
@@ -70,7 +67,7 @@ export const appInstMetricTypeKeys = () => ([
 ])
 
 export const appInstActions = [
-    { label: 'Track Devices', action: LIST_TOOLBAR_TRACK_DEVICES }
+    { label: 'Track Devices', action: perpetual.LIST_TOOLBAR_TRACK_DEVICES }
 ]
 
 

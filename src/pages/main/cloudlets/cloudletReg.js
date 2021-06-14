@@ -9,14 +9,14 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields, updateFieldData } from '../../../services/model/format';
 //model
-import { getOrganizationList } from '../../../services/model/organization';
-import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota } from '../../../services/model/cloudlet';
+import { getOrganizationList } from '../../../services/modules/organization';
+import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota } from '../../../services/modules/cloudlet';
 //Map
 import ListMexMap from '../../../container/map/ListMexMap'
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { HELP_CLOUDLET_REG } from "../../../tutorial";
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
-import { getTrustPolicyList, showTrustPolicies } from '../../../services/model/trustPolicy';
+import { getTrustPolicyList, showTrustPolicies } from '../../../services/modules/trustPolicy';
 
 import { Grid } from '@material-ui/core';
 import { redux_org } from '../../../helper/reduxData'

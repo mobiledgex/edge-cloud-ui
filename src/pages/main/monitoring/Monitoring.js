@@ -23,7 +23,7 @@ import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
 import CloudletSkeleton from './modules/cloudlet/CloudletSkeleton'
 
 //services
-import { showOrganizations } from '../../../services/model/organization';
+import { showOrganizations } from '../../../services/modules/organization';
 import ShowWorker from './services/show.worker.js'
 import { processWorker } from '../../../services/worker/interceptor'
 import { sendRequest, sendMultiRequest } from './services/service'

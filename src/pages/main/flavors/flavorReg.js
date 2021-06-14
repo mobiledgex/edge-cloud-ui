@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 //model
-import { createFlavor } from '../../../services/model/flavor';
+import { createFlavor } from '../../../services/modules/flavor';
 import { HELP_FLAVOR_REG } from "../../../tutorial";
 import { Grid } from '@material-ui/core';
 

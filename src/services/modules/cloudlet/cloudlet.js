@@ -1,13 +1,13 @@
-import * as formatter from './format'
-import * as serverData from './serverData'
-import { authSyncRequest, showAuthSyncRequest } from '../service';
-import * as constant from '../../constant'
-import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util'
-import { idFormatter } from '../../helper/formatter'
-import { redux_org } from '../../helper/reduxData'
-import { endpoint, perpetual } from '../../helper/constant'
-import { customize } from '../modules/cloudlet'
-import { generateUUID } from '../format/shared'
+import * as formatter from '../../model/format'
+import * as serverData from '../../model/serverData'
+import { authSyncRequest, showAuthSyncRequest } from '../../service';
+import * as constant from '../../../constant'
+import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util'
+import { idFormatter } from '../../../helper/formatter'
+import { redux_org } from '../../../helper/reduxData'
+import { endpoint, perpetual } from '../../../helper/constant'
+import { customize } from '../../modules/cloudlet'
+import { generateUUID } from '../../format/shared'
 
 const fields = formatter.fields;
 

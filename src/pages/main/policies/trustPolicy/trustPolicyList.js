@@ -6,11 +6,12 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 
 import TrustPolicyReg from './trustPolicyReg'
-import { keys, fields, showTrustPolicies, deleteTrustPolicy, multiDataRequest } from '../../../../services/model/trustPolicy';
-import { showCloudlets } from '../../../../services/model/cloudlet';
+import { keys, showTrustPolicies, deleteTrustPolicy, multiDataRequest } from '../../../../services/modules/trustPolicy';
+import { showCloudlets } from '../../../../services/modules/cloudlet';
 import { HELP_TRUST_POLICY } from "../../../../tutorial";
 import { operatorRoles } from '../../../../constant';
 import { role, perpetual } from '../../../../helper/constant';
+import { fields } from '../../../../services/model/format';
 
 class TrustPolicy extends React.Component {
     constructor(props) {

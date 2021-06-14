@@ -9,11 +9,11 @@ import * as actions from '../../../actions';
 import { fields, updateFieldData } from '../../../services/model/format';
 import { redux_org} from '../../../helper/reduxData'
 //model
-import { createClusterInst, updateClusterInst } from '../../../services/model/clusterInstance';
-import { getOrganizationList } from '../../../services/model/organization';
-import { showCloudlets, cloudletWithInfo } from '../../../services/model/cloudlet';
+import { createClusterInst, updateClusterInst } from '../../../services/modules/clusterInst';
+import { getOrganizationList } from '../../../services/modules/organization';
+import { showCloudlets, cloudletWithInfo } from '../../../services/modules/cloudlet';
 import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
-import { getFlavorList } from '../../../services/model/flavor';
+import { getFlavorList } from '../../../services/modules/flavor';
 import { getAutoScalePolicyList, showAutoScalePolicies } from '../../../services/model/autoScalePolicy';
 //Map
 import ListMexMap from "../../../container/map/ListMexMap"

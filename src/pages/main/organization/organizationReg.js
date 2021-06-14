@@ -11,7 +11,7 @@ import * as constant from '../../../constant';
 import { additionalDetail } from '../../../services/model/shared';
 import { fields } from '../../../services/model/format';
 //model
-import { keys, createOrganization, updateOrganization } from '../../../services/model/organization';
+import { keys, createOrganization, updateOrganization } from '../../../services/modules/organization';
 import { addUser } from '../../../services/model/users';
 import { HELP_ORG_REG_3, HELP_ORG_REG_2, HELP_ORG_REG_1, userRoles } from "../../../tutorial";
 import { Grid, List } from "@material-ui/core";

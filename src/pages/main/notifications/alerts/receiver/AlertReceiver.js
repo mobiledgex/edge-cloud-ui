@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { fields } from '../../../../../services/model/format';
-import { showAlertReceiver, deleteAlertReceiver, showAlertReceiverKeys } from '../../../../../services/model/alerts';
+import { showAlertReceiver, deleteAlertReceiver, showAlertReceiverKeys } from '../../../../../services/modules/alerts';
 import Reg from './AlertReceiverReg';
 import { Icon } from 'semantic-ui-react';
 import { HELP_ALERTS } from '../../../../../tutorial';

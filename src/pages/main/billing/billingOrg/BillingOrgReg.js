@@ -8,8 +8,8 @@ import { fields } from '../../../../services/model/format';
 import { redux_org } from '../../../../helper/reduxData'
 import { perpetual } from '../../../../helper/constant';
 import { resetFormValue } from '../../../../hoc/forms/helper/constant';
-import { createBillingOrg, updateBillingOrg, addBillingChild, removeBillingChild } from '../../../../services/model/billingOrg';
-import { getOrganizationList } from '../../../../services/model/organization';
+import { createBillingOrg, updateBillingOrg, addBillingChild, removeBillingChild } from '../../../../services/modules/billingorg';
+import { getOrganizationList } from '../../../../services/modules/organization';
 import { service } from '../../../../services';
 
 class BillingOrgReg extends React.Component {

@@ -190,3 +190,6 @@ export const CLOUDLET_STATUS_UNKNOWN = 0
 export const REPORTER_SCHEDULE_WEEKLY = 'Every Week'
 export const REPORTER_SCHEDULE_15_DAYS = 'Every 15 Days'
 export const REPORTER_SCHEDULE_MONTHLY = 'Every Month'
+
+export const LIST_TOOLBAR_TRACK_DEVICES = 'TrackDevices'
+export const LIST_TOOLBAR_TERMINAL = 'Terminal'

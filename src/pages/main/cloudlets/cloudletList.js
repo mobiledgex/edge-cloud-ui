@@ -7,14 +7,14 @@ import { connect } from 'react-redux';
 import { redux_org } from '../../../helper/reduxData'
 
 import { fields } from '../../../services/model/format';
-import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/model/cloudlet';
+import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/modules/cloudlet';
 import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
 import CloudletReg from './cloudletReg';
 import { operatorRoles } from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
-import { getCloudletManifest, revokeAccessKey } from '../../../services/model/cloudlet';
+import { getCloudletManifest, revokeAccessKey } from '../../../services/modules/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import { labelFormatter, uiFormatter } from '../../../helper/formatter';
 import { perpetual, role } from '../../../helper/constant';

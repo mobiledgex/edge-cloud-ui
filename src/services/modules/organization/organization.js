@@ -1,7 +1,7 @@
-import * as formatter from './format'
-import { authSyncRequest, showAuthSyncRequest } from '../service';
-import { redux_org } from '../../helper/reduxData'
-import { endpoint, perpetual } from '../../helper/constant'
+import * as formatter from '../../model/format'
+import { authSyncRequest, showAuthSyncRequest } from '../../service';
+import { redux_org } from '../../../helper/reduxData'
+import { endpoint, perpetual } from '../../../helper/constant'
 
 let fields = formatter.fields;
 

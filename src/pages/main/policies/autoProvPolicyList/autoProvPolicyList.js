@@ -7,8 +7,8 @@ import * as actions from '../../../../actions';
 import AutoProvPolicyReg from './autoProvPolicyReg'
 //model
 import { fields } from '../../../../services/model/format';
-import { keys, showAutoProvPolicies, deleteAutoProvPolicy, multiDataRequest } from '../../../../services/model/autoProvisioningPolicy';
-import { showApps } from '../../../../services/model/app';
+import { keys, showAutoProvPolicies, deleteAutoProvPolicy, multiDataRequest } from '../../../../services/modules/autoProvPolicy';
+import { showApps } from '../../../../services/modules/app';
 //list
 import DataView from '../../../../container/DataView';
 import { HELP_POLICY_LIST } from "../../../../tutorial";

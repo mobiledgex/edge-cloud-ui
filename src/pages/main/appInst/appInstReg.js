@@ -10,14 +10,14 @@ import * as constant from '../../../constant';
 import { fields, updateFieldData } from '../../../services/model/format';
 import { redux_org} from '../../../helper/reduxData'
 //model
-import { getOrganizationList } from '../../../services/model/organization';
-import { showCloudlets, cloudletWithInfo } from '../../../services/model/cloudlet';
+import { getOrganizationList } from '../../../services/modules/organization';
+import { showCloudlets, cloudletWithInfo } from '../../../services/modules/cloudlet';
 import { sendRequests } from '../../../services/model/serverWorker'
 import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
-import { getClusterInstList, showClusterInsts } from '../../../services/model/clusterInstance';
-import { getFlavorList, showFlavors } from '../../../services/model/flavor';
-import { getAppList } from '../../../services/model/app';
-import { createAppInst, updateAppInst } from '../../../services/model/appInstance';
+import { getClusterInstList, showClusterInsts } from '../../../services/modules/clusterInst';
+import { getFlavorList, showFlavors } from '../../../services/modules/flavor/flavor';
+import { getAppList } from '../../../services/modules/app';
+import { createAppInst, updateAppInst } from '../../../services/modules/appInst';
 
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { HELP_APP_INST_REG } from "../../../tutorial";

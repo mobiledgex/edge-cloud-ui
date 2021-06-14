@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Popover from '@material-ui/core/Popover';
 import { Badge, IconButton } from '@material-ui/core';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
-import { showAlerts } from '../../../services/model/alerts'
+import { showAlerts } from '../../../services/modules/alerts'
 import { redux_org} from '../../../helper/reduxData'
 import * as constant from '../../../constant'
 import Alerts from './alerts/Alerts'

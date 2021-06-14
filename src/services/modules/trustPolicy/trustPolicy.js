@@ -1,11 +1,11 @@
-import * as formatter from './format'
-import * as serverData from './serverData'
-import { redux_org } from '../../helper/reduxData'
-import { endpoint, perpetual } from '../../helper/constant';
-import { generateUUID } from '../format/shared';
-import { showAuthSyncRequest } from '../service';
+import * as formatter from '../../model/format'
+import * as serverData from '../../model/serverData'
+import { redux_org } from '../../../helper/reduxData'
+import { endpoint, perpetual } from '../../../helper/constant';
+import { generateUUID } from '../../format/shared';
+import { showAuthSyncRequest } from '../../service';
 
-export const fields = formatter.fields;
+const fields = formatter.fields;
 
 export const outboundSecurityRulesKeys = [
   { field: fields.protocol, serverField: 'protocol', label: 'Protocol' },

@@ -6,8 +6,8 @@ import * as actions from '../../../actions';
 //model
 import * as shared from '../../../services/model/shared';
 import { fields } from '../../../services/model/format';
-import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiDataRequest } from '../../../services/model/clusterInstance';
-import { showCloudlets } from '../../../services/model/cloudlet';
+import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiDataRequest } from '../../../services/modules/clusterInst';
+import { showCloudlets } from '../../../services/modules/cloudlet';
 import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
 //list
 import DataView from '../../../container/DataView';

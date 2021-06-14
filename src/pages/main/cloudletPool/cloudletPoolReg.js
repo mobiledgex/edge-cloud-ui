@@ -8,8 +8,8 @@ import * as actions from '../../../actions';
 import { service } from '../../../services';
 import { fields, updateFieldData } from '../../../services/model/format';
 
-import { getOrganizationList } from '../../../services/model/organization';
-import { fetchCloudletData } from '../../../services/model/cloudlet';
+import { getOrganizationList } from '../../../services/modules/organization';
+import { fetchCloudletData } from '../../../services/modules/cloudlet';
 import { createCloudletPool, updateCloudletPool } from '../../../services/model/cloudletPool';
 import { createConfirmation, createInvitation, deleteConfirmation, deleteInvitation } from '../../../services/model/privateCloudletAccess';
 

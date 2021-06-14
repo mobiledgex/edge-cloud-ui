@@ -4,7 +4,7 @@ import isEqual from 'lodash/isEqual';
 import omit from 'lodash/omit';
 import { labelFormatter } from '../../helper/formatter';
 import { redux_org } from '../../helper/reduxData'
-import { endpoint } from '../../helper/constant';
+import { endpoint, perpetual } from '../../helper/constant';
 
 const fields = formatter.fields;
 

@@ -7,11 +7,11 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 //model
-import { createReporter, updateReporter } from '../../../services/model/reporter';
+import { createReporter, updateReporter } from '../../../services/modules/reporter';
 import { Grid } from '@material-ui/core';
 
-import { getOrganizationList } from '../../../services/model/organization';
-import { timezones, time, FORMAT_FULL_T_Z, diff } from '../../../utils/date_util';
+import { getOrganizationList } from '../../../services/modules/organization';
+import { timezones, time, FORMAT_FULL_T_Z } from '../../../utils/date_util';
 import { timezonePref } from '../../../utils/sharedPreferences_util';
 import moment from 'moment';
 import { redux_org } from '../../../helper/reduxData';

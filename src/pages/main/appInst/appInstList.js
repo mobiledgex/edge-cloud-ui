@@ -5,8 +5,8 @@ import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
-import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst } from '../../../services/model/appInstance';
-import { showApps } from '../../../services/model/app';
+import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst } from '../../../services/modules/appInst';
+import { showApps } from '../../../services/modules/app';
 import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
 import AppInstReg from './appInstReg';
 import * as shared from '../../../services/model/shared';

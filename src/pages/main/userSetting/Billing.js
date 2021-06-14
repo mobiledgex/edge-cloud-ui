@@ -2,9 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
-import { Button, Dialog, DialogActions, DialogTitle, IconButton, List, ListItem, ListItemText, MenuItem, Switch, Tooltip } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogTitle, IconButton, List, ListItem, ListItemText, MenuItem, Tooltip } from '@material-ui/core';
 import { FORMAT_FULL_DATE_TIME, time } from '../../../utils/date_util'
-import { showBillingOrg, keys } from '../../../services/model/billingOrg';
+import { showBillingOrg, keys } from '../../../services/modules/billingorg';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import PaymentOutlinedIcon from '@material-ui/icons/PaymentOutlined';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';

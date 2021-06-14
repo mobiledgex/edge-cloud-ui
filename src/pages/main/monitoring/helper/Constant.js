@@ -1,9 +1,9 @@
-import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, fetchLocation, customData as appCustomData, appInstActions } from '../../../../services/model/appMetrics'
-import { showAppInsts } from '../../../../services/model/appInstance'
-import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys } from '../../../../services/model/clusterMetrics'
+import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, fetchLocation, customData as appCustomData, appInstActions } from '../../../../services/modules/appInstMetrics'
+import { showAppInsts } from '../../../../services/modules/appInst'
+import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys } from '../../../../services/modules/clusterInstMetrics'
 import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys, customData as cloudletCustomData, cloudletUsageMetrics } from '../../../../services/model/cloudletMetrics'
-import { showCloudlets } from '../../../../services/model/cloudlet'
-import { showClusterInsts } from '../../../../services/model/clusterInstance'
+import { showCloudlets } from '../../../../services/modules/cloudlet'
+import { showClusterInsts } from '../../../../services/modules/clusterInst'
 import { endpoint, perpetual } from '../../../../helper/constant'
 
 export const DEVELOPER = perpetual.DEVELOPER
