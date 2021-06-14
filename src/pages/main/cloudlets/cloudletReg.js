@@ -23,9 +23,10 @@ import * as serverData from '../../../services/model/serverData'
 import { GET_CLOUDLET_RESOURCE_QUOTA_PROPS, SHOW_TRUST_POLICY } from '../../../services/model/endPointTypes';
 import { Grid } from '@material-ui/core';
 import { redux_org } from '../../../helper/reduxData'
+import { componentLoader } from '../../../hoc/loader/componentLoader';
 
-const MexFlow = React.lazy(() => import('../../../hoc/mexFlow/MexFlow'));
-const CloudletManifest = React.lazy(() => import('./cloudletManifestForm'));
+const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
+const CloudletManifest = React.lazy(() => componentLoader(import('./cloudletManifestForm')));
 
 class CloudletReg extends React.Component {
     constructor(props) {
