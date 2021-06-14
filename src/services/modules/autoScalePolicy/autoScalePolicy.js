@@ -1,9 +1,9 @@
-import * as formatter from './format'
-import { showAuthSyncRequest } from '../service';
-import { redux_org } from '../../helper/reduxData'
-import { endpoint } from '../../helper/constant';
+import * as formatter from '../../model/format'
+import { showAuthSyncRequest } from '../../service';
+import { redux_org } from '../../../helper/reduxData'
+import { endpoint } from '../../../helper/constant';
 
-export const fields = formatter.fields;
+const fields = formatter.fields;
 
 export const keys = () => ([
   { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },

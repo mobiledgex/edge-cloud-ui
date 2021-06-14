@@ -8,7 +8,7 @@ import * as shared from '../../../services/model/shared';
 import { fields } from '../../../services/model/format';
 import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiDataRequest } from '../../../services/modules/clusterInst';
 import { showCloudlets } from '../../../services/modules/cloudlet';
-import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
+import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 //list
 import DataView from '../../../container/DataView';
 //reg

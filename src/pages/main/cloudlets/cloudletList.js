@@ -8,7 +8,7 @@ import { redux_org } from '../../../helper/reduxData'
 
 import { fields } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/modules/cloudlet';
-import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
+import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import CloudletReg from './cloudletReg';
 import { operatorRoles } from '../../../constant'
 import * as shared from '../../../services/model/shared';

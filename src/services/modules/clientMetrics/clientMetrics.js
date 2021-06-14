@@ -1,8 +1,4 @@
-
-import * as formatter from './format'
-import { endpoint } from '../../helper/constant';
-
-let fields = formatter.fields;
+import { endpoint } from '../../../helper/constant';
 
 export const clientMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },

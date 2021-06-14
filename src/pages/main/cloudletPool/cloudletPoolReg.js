@@ -10,8 +10,8 @@ import { fields, updateFieldData } from '../../../services/model/format';
 
 import { getOrganizationList } from '../../../services/modules/organization';
 import { fetchCloudletData } from '../../../services/modules/cloudlet';
-import { createCloudletPool, updateCloudletPool } from '../../../services/model/cloudletPool';
-import { createConfirmation, createInvitation, deleteConfirmation, deleteInvitation } from '../../../services/model/privateCloudletAccess';
+import { createCloudletPool, updateCloudletPool } from '../../../services/modules/cloudletPool';
+import { createConfirmation, createInvitation, deleteConfirmation, deleteInvitation } from '../../../services/modules/poolAccess';
 
 import * as constant from '../../../constant';
 import { HELP_CLOUDLET_POOL_REG_3, HELP_CLOUDLET_POOL_REG_1 } from "../../../tutorial";

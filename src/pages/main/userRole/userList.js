@@ -2,7 +2,7 @@ import React from 'react';
 import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 import { fields } from '../../../services/model/format';
-import { keys, showUsers, deleteUser } from '../../../services/model/users';
+import { keys, showUsers, deleteUser } from '../../../services/modules/users';
 import { HELP_USER_ROLES } from '../../../tutorial';
 import { connect } from 'react-redux';
 import { redux_org } from '../../../helper/reduxData';

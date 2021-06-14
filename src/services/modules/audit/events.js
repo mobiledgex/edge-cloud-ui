@@ -1,6 +1,6 @@
-import { endpoint } from '../../helper/constant'
-import { redux_org } from '../../helper/reduxData'
-import { authSyncRequest } from '../service'
+import { endpoint } from '../../../helper/constant'
+import { redux_org } from '../../../helper/reduxData'
+import { authSyncRequest } from '../../service'
 
 export const orgEvents = (data) => {
     return { method: endpoint.EVENTS_SHOW, data: data, showSpinner: false }

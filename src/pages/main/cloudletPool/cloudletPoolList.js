@@ -6,10 +6,10 @@ import * as actions from '../../../actions';
 import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData';
-import { keys, showCloudletPools, deleteCloudletPool, multiDataRequest } from '../../../services/model/cloudletPool';
+import { keys, showCloudletPools, deleteCloudletPool, multiDataRequest } from '../../../services/modules/cloudletPool';
 import CloudletPoolReg from './cloudletPoolReg';
 import {HELP_CLOUDLET_POOL_LIST} from "../../../tutorial";
-import { showConfirmation, showInvitation } from '../../../services/model/privateCloudletAccess';
+import { showConfirmation, showInvitation } from '../../../services/modules/poolAccess';
 import { perpetual, role } from '../../../helper/constant';
 class CloudletPoolList extends React.Component {
     constructor(props) {

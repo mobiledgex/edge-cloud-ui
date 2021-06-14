@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 //redux
 import { Drawer } from '@material-ui/core';
-import { clusterEventLogs } from '../../../../services/model/clusterEvent'
-import { appInstEventLogs } from '../../../../services/model/appInstEvent'
-import { cloudletEventLogs } from '../../../../services/model/cloudletEvent'
+import { clusterEventLogs } from '../../../../services/modules/clusterInstEvent'
+import { appInstEventLogs } from '../../../../services/modules/appInstEvent'
+import { cloudletEventLogs } from '../../../../services/modules/cloudletEvent'
 import { sendAuthRequest, sendRequests } from '../../../../services/model/serverWorker'
 import { showOrganizations } from '../../../../services/modules/organization'
 

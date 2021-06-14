@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { sendRequest } from '../../services/service'
-import { cloudletFlavorUsageMetrics } from '../../../../../services/model/cloudletMetrics'
+import { cloudletFlavorUsageMetrics } from '../../../../../services/modules/cloudletMetrics'
 import LineChart from '../../charts/linechart/MexLineChart'
 import MexWorker from '../../services/flavor.worker.js'
 import { Card, GridListTile } from '@material-ui/core'

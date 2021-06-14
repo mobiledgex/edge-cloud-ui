@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { showAudits } from '../../../../services/model/events'
+import { showAudits } from '../../../../services/modules/audit'
 import { Drawer } from '@material-ui/core';
 import HeaderAuditLog from "./HeaderAuditLog"
 import * as dateUtil from '../../../../utils/date_util'

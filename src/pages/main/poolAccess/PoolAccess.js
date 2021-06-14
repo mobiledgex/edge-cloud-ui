@@ -5,7 +5,7 @@ import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
-import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/privateCloudletAccess';
+import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/modules/poolAccess';
 import { perpetual } from '../../../helper/constant';
 import { labelFormatter } from '../../../helper/formatter';
 import { service } from '../../../services';

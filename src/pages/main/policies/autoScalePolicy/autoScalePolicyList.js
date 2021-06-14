@@ -6,9 +6,10 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 
 import AutoScalePolicyReg from './autoScalePolicyReg'
-import { keys, fields, showAutoScalePolicies, deleteAutoScalePolicy } from '../../../../services/model/autoScalePolicy';
+import { keys, showAutoScalePolicies, deleteAutoScalePolicy } from '../../../../services/modules/autoScalePolicy';
 import {HELP_SCALE_POLICY} from "../../../../tutorial";
 import { perpetual } from '../../../../helper/constant';
+import { fields } from '../../../../services/model/format';
 class AutoScalePolicy extends React.Component {
     constructor(props) {
         super(props);

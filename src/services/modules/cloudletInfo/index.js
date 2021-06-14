@@ -1,6 +1,8 @@
 import { customize } from './custom'
-
+import {keys, showCloudletInfoData} from './cloudletInfo'
 export {
-    customize
+    customize,
+    keys, 
+    showCloudletInfoData
 }
 

@@ -1,8 +1,6 @@
-import { endpoint, perpetual } from "../../helper/constant"
-import { redux_org } from '../../helper/reduxData'
-import * as formatter from './format'
-
-const fields = formatter.fields
+import { endpoint, perpetual } from "../../../helper/constant"
+import { redux_org } from '../../../helper/reduxData'
+import { fields } from "../../model/format"
 
 export const keys = () => ([
     { field: fields.region, label: 'Region', serverField: 'Region', sortable: true, visible: true, filter: true, key: true },

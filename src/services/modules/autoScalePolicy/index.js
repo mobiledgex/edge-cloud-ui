@@ -1,6 +1,12 @@
 import { customize } from './custom'
-
+import { keys, showAutoScalePolicies, createAutoScalePolicy, updateAutoScalePolicy, deleteAutoScalePolicy, getAutoScalePolicyList } from './autoScalePolicy'
 export {
-    customize
+    customize,
+    keys,
+    showAutoScalePolicies, 
+    createAutoScalePolicy,
+     updateAutoScalePolicy,
+     deleteAutoScalePolicy,
+     getAutoScalePolicyList
 }
 

@@ -1,4 +1,4 @@
-import isEqual from 'lodash/isEqual';
+import { operators } from '../../helper/constant';
 
 export const fields = {
     uuid: 'uuid',
@@ -239,7 +239,7 @@ export const colorType = (value) => {
     }
 }
 
-export const compareObjects = (newData, oldData, ignoreCase) => {
+const compareObjects = (newData, oldData, ignoreCase) => {
     if ((newData === undefined || newData.length === 0) && (oldData === undefined || oldData.length === 0)) {
         return true
     }
@@ -250,10 +250,10 @@ export const compareObjects = (newData, oldData, ignoreCase) => {
         return false
     }
     else if (ignoreCase) {
-        return isEqual(newData.toLowerCase(), oldData.toLowerCase())
+        return operators.equal(newData.toLowerCase(), oldData.toLowerCase())
     }
     else {
-        return isEqual(newData, oldData)
+        return operators.equal(newData, oldData)
     }
 }
 

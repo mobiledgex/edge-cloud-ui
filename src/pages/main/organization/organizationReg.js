@@ -12,7 +12,7 @@ import { additionalDetail } from '../../../services/model/shared';
 import { fields } from '../../../services/model/format';
 //model
 import { keys, createOrganization, updateOrganization } from '../../../services/modules/organization';
-import { addUser } from '../../../services/model/users';
+import { addUser } from '../../../services/modules/users';
 import { HELP_ORG_REG_3, HELP_ORG_REG_2, HELP_ORG_REG_1, userRoles } from "../../../tutorial";
 import { Grid, List } from "@material-ui/core";
 import { toFirstUpperCase } from "../../../utils/string_utils";

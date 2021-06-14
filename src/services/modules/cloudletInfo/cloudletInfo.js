@@ -1,10 +1,8 @@
-import { redux_org } from '../../helper/reduxData'
-import * as formatter from './format'
-import { endpoint, perpetual } from '../../helper/constant';
+import { redux_org } from '../../../helper/reduxData'
+import { endpoint, perpetual } from '../../../helper/constant';
+import { fields } from '../../model/format';
 
-let fields = formatter.fields;
-
-const keys = () => ([
+export const keys = () => ([
     { field: fields.cloudletName, serverField: 'key#OS#name' },
     { field: fields.operatorName, serverField: 'key#OS#organization' },
     { field: fields.state, serverField: 'state' },

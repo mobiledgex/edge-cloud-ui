@@ -1,5 +1,5 @@
 import { fields } from "./services/model/format"
-import { accessGranted } from "./services/model/privateCloudletAccess"
+import { accessGranted } from "./services/modules/poolAccess"
 import { sendRequest } from "./pages/main/monitoring/services/service"
 import { perpetual } from "./helper/constant"
 

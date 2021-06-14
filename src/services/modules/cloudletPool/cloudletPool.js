@@ -1,10 +1,10 @@
-import * as formatter from './format'
-import { FORMAT_FULL_DATE_TIME } from '../../utils/date_util';
+import * as formatter from '../../model/format'
+import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util';
 import isEqual from 'lodash/isEqual';
 import omit from 'lodash/omit';
-import { labelFormatter } from '../../helper/formatter';
-import { redux_org } from '../../helper/reduxData'
-import { endpoint, perpetual } from '../../helper/constant';
+import { labelFormatter } from '../../../helper/formatter';
+import { redux_org } from '../../../helper/reduxData'
+import { endpoint, perpetual } from '../../../helper/constant';
 
 const fields = formatter.fields;
 
@@ -79,7 +79,7 @@ export const multiDataRequest = (keys, mcList) => {
 
     if (invitationList.length > 0) {
         invitationList.forEach(invitation => {
-            for(let grant of grantList){
+            for (let grant of grantList) {
                 if (isEqual(omit(invitation, [fields.uuid, fields.decision]), omit(grant, [fields.uuid, fields.decision]))) {
                     invitation[fields.decision] = grant[fields.decision] ? grant[fields.decision] : invitation[fields.decision]
                     break;

@@ -1,8 +1,6 @@
-import * as formatter from './format'
-import { UNIT_FLOOR, UNIT_GB, UNIT_KB, UNIT_MB } from '../../pages/main/monitoring/helper/unitConvertor';
-import { endpoint } from '../../helper/constant';
-
-let fields = formatter.fields;
+import { UNIT_FLOOR, UNIT_GB, UNIT_MB } from '../../../pages/main/monitoring/helper/unitConvertor';
+import { endpoint } from '../../../helper/constant';
+import { fields } from '../../model/format';
 
 export const customData = (id, data) => {
     switch (id) {

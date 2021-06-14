@@ -1,6 +1,4 @@
-import * as formatter from './format'
-
-const fields = formatter.fields
+import { fields } from "../../model/format"
 
 export const appInstanceKey = (data) => {
     return {

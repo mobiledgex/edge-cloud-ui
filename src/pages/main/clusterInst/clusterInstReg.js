@@ -12,9 +12,9 @@ import { redux_org} from '../../../helper/reduxData'
 import { createClusterInst, updateClusterInst } from '../../../services/modules/clusterInst';
 import { getOrganizationList } from '../../../services/modules/organization';
 import { showCloudlets, cloudletWithInfo } from '../../../services/modules/cloudlet';
-import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
+import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import { getFlavorList } from '../../../services/modules/flavor';
-import { getAutoScalePolicyList, showAutoScalePolicies } from '../../../services/model/autoScalePolicy';
+import { getAutoScalePolicyList, showAutoScalePolicies } from '../../../services/modules/autoScalePolicy';
 //Map
 import ListMexMap from "../../../container/map/ListMexMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'

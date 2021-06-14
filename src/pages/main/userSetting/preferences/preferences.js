@@ -5,7 +5,7 @@ import * as actions from '../../../../actions';
 import moment from 'moment'
 import AppsIcon from '@material-ui/icons/Apps';
 import CloseIcon from '@material-ui/icons/Close';
-import { updateUser } from '../../../../services/model/user'
+import { updateUser } from '../../../../services/modules/users'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, IconButton, List, ListItem, ListItemText, MenuItem, Select, Switch } from '@material-ui/core'
 

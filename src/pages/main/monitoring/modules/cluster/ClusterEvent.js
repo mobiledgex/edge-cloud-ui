@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import EventList from '../../list/EventList'
-import { orgEvents } from '../../../../../services/model/events'
-import {redux_org} from '../../../../../helper/reduxData'
+import { orgEvents } from '../../../../../services/modules/audit'
+import { redux_org } from '../../../../../helper/reduxData'
 import { sendRequest } from '../../services/service'
 import randomColor from 'randomcolor'
 import { CircularProgress, IconButton, Tooltip } from '@material-ui/core'
@@ -90,9 +90,9 @@ class MexAppEvent extends React.Component {
                 dataList = [...this.state.eventData, ...dataList]
                 colors = [...this.state.colors, ...colors]
             }
-            this.setState({ eventData: dataList, colors, showMore})
+            this.setState({ eventData: dataList, colors, showMore })
         }
-        this.setState({loading: false })
+        this.setState({ loading: false })
     }
 
     componentDidUpdate(prevProps, prevState) {

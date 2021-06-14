@@ -13,7 +13,7 @@ import { redux_org} from '../../../helper/reduxData'
 import { getOrganizationList } from '../../../services/modules/organization';
 import { showCloudlets, cloudletWithInfo } from '../../../services/modules/cloudlet';
 import { sendRequests } from '../../../services/model/serverWorker'
-import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
+import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import { getClusterInstList, showClusterInsts } from '../../../services/modules/clusterInst';
 import { getFlavorList, showFlavors } from '../../../services/modules/flavor/flavor';
 import { getAppList } from '../../../services/modules/app';

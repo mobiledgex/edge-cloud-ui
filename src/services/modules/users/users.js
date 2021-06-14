@@ -1,6 +1,7 @@
-import { fields } from './format'
-import { endpoint } from '../../helper/constant'
-import { authSyncRequest } from '../service'
+import { fields } from '../../model/format'
+import { endpoint } from '../../../helper/constant'
+import { authSyncRequest } from '../../service'
+import {sendAuthRequest} from '../../model/serverWorker'
 
 
 
@@ -33,3 +34,8 @@ export const deleteUser = (self, data) => {
     let requestData = getKey(data);
     return { method: endpoint.DELETE_USER, data: requestData, success: `User ${data[fields.username]} removed successfully` }
 }
+
+export const updateUser = (self, data, callback)=>{
+    let request = {method : endpoint.UPDATE_USER, data : data}
+    sendAuthRequest(self, request, callback)
+} 

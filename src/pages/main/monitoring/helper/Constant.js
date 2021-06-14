@@ -1,7 +1,7 @@
 import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, fetchLocation, customData as appCustomData, appInstActions } from '../../../../services/modules/appInstMetrics'
 import { showAppInsts } from '../../../../services/modules/appInst'
 import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys } from '../../../../services/modules/clusterInstMetrics'
-import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys, customData as cloudletCustomData, cloudletUsageMetrics } from '../../../../services/model/cloudletMetrics'
+import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys, customData as cloudletCustomData, cloudletUsageMetrics } from '../../../../services/modules/cloudletMetrics'
 import { showCloudlets } from '../../../../services/modules/cloudlet'
 import { showClusterInsts } from '../../../../services/modules/clusterInst'
 import { endpoint, perpetual } from '../../../../helper/constant'

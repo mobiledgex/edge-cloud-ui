@@ -8,7 +8,7 @@ import { fields, updateFieldData } from '../../../../services/model/format';
 import { redux_org} from '../../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../../services/modules/organization';
-import { updateAutoScalePolicy, createAutoScalePolicy } from '../../../../services/model/autoScalePolicy';
+import { updateAutoScalePolicy, createAutoScalePolicy } from '../../../../services/modules/autoScalePolicy';
 import { HELP_SCALE_POLICY_REG } from "../../../../tutorial";
 import { Grid } from '@material-ui/core';
 import { service } from '../../../../services';
