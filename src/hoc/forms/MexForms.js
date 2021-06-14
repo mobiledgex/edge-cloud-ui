@@ -330,8 +330,13 @@ const MexForms = (props) => {
                 <ul style={{ listStyleType: 'none', padding: 0 }}>{tips.map((info, i) => {
                     const temp = info.split('</b>')
                     return (
-                        <li key={i} style={{ fontSize: 13, marginTop: 5}}>{temp.length ===2 ?
-                            <React.Fragment><strong style={{fontSize:14}}>{`${temp[0]} `}</strong>{temp[1]}</React.Fragment> : temp[0]}</li>
+                        <li key={i} style={{ fontSize: 13, marginTop: 5 }}>{temp.length === 2 ?
+                            <React.Fragment>
+                                <b>{`${temp[0]} `}</b>
+                                <code style={{lineHeight:1.2}}>{temp[1]}</code>
+                            </React.Fragment> : <code style={{lineHeight:1.2}}>{info}</code>}
+                            <br/>
+                        </li>
                     )
                 })}</ul>
             } aria-label="tip" style={{ marginTop: 7 }}>
