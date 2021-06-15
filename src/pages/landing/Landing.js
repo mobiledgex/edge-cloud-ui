@@ -61,6 +61,7 @@ class Landing extends Component {
         if (valid) {
             this.props.handleAlertInfo('success', 'We have e-mailed your verification link')
         }
+        return valid
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -93,7 +94,7 @@ class Landing extends Component {
                             <img src='/assets/brand/MobiledgeX_Logo_tm_white.svg' width={200} alt="MobiledgeX" />
                             <Container style={{ width: path === '/register' ? 500 : 400 }}>
                                 {
-                                    path === '/forgotpassword' ? <ForgotPassword onPasswordReset={this.onPasswordReset} /> :
+                                    path === '/forgotpassword' ? <ForgotPassword onPasswordReset={this.onPasswordReset} onVerificationEmail={this.onVerificationEmail}/> :
                                         path === '/register' ? <Register clientSysInfo={clientSysInfo} onVerificationEmail={this.onVerificationEmail} /> :
                                             path === '/passwordreset' ? <ResetPassword /> :
                                                 path === '/verify' ? <Verify /> :

@@ -1,16 +1,19 @@
 import React from 'react'
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Button, Grid, Input } from 'semantic-ui-react'
 
-const Message = () => {
+const HOST = window.location.host;
+
+const Message = (props) => {
     const history = useHistory()
+    const type = props.type
     return (
         <Grid>
             <Grid.Row>
-                <span className='title'>Reset your password</span>
+                <span className='title'>{type === 0 ? 'Reset your password' : 'Verify your email'}</span>
             </Grid.Row>
             <Grid.Row>
-                <span className="login-text">Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.</span>
+                <span className="login-text">{`Check your email for a link to ${type === 0 ? 'reset your password' : 'verify your email'}. If it doesn’t appear within a few minutes, check your spam folder.`}</span>
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column>
@@ -23,19 +26,25 @@ const Message = () => {
 }
 
 const ForgotPassword = (props) => {
-    const { onPasswordReset } = props
+    const { onPasswordReset, onVerificationEmail } = props
     const [email, setEmail] = React.useState(undefined)
     const [success, setSuccess] = React.useState(false)
-
+    const location = useLocation()
+    const type = location.state && location.state.type ? location.state.type : 0
     const onReset = async () => {
-        setSuccess(await onPasswordReset(email))
+        if (type === 0) {
+            setSuccess(await onPasswordReset(email))
+        }
+        else {
+            setSuccess(await onVerificationEmail(email))
+        }
     }
 
     return (success ?
-        <Message /> :
+        <Message type={type}/> :
         <Grid >
             <Grid.Row>
-                <span className='title'>Recover your password</span>
+                <span className='title'>{type === 0 ? 'Recover your password' : 'Verify your email'}</span>
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column>
