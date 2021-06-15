@@ -193,3 +193,6 @@ export const REPORTER_SCHEDULE_MONTHLY = 'Every Month'
 
 export const LIST_TOOLBAR_TRACK_DEVICES = 'TrackDevices'
 export const LIST_TOOLBAR_TERMINAL = 'Terminal'
+
+export const VERIFY_PASSWORD = 0
+export const VERIFY_EMAIL = 1
