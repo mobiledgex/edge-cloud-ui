@@ -15,9 +15,9 @@ import { Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core
 import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { perpetual } from '../../../helper/constant';
-import { getToken, sendRequest } from '../monitoring/services/service'
 import { uiFormatter } from '../../../helper/formatter'
 import { lightGreen } from '@material-ui/core/colors';
+import { authSyncRequest, fetchToken } from '../../../services/service';
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
@@ -121,7 +121,7 @@ class OrganizationList extends React.Component {
     }
 
     onEdgebox = async (action, data, callback) => {
-        let mc = await sendRequest(this, edgeboxOnlyAPI(data))
+        let mc = await authSyncRequest(this, edgeboxOnlyAPI(data))
         if (mc && mc.response && mc.response.status === 200) {
             this.props.handleAlertInfo('success', `Edgebox ${data[fields.edgeboxOnly] ? 'disabled' : 'enabled'} successfully for organization ${data[fields.organizationName]}`)
             callback(mc)
@@ -234,7 +234,7 @@ class OrganizationList extends React.Component {
     refreshRole = async () => {
         let mc = await serverData.showUserRoles(this)
         if (mc && mc.response && mc.response.status === 200) {
-            this.worker.postMessage({ data: mc.response.data, request: showOrganizations(), token: getToken(this) })
+            this.worker.postMessage({ data: mc.response.data, request: showOrganizations(), token: fetchToken(this) })
             this.worker.addEventListener('message', async (event) => {
                 this.props.handleRoleInfo(event.data.roles)
             })

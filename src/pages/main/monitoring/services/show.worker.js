@@ -1,8 +1,9 @@
 /* eslint-disable */
 
 import randomColor from 'randomcolor'
-import { fields, formatData } from '../../../../services/model/format'
 import sortBy from 'lodash/sortBy'
+import { formatData } from '../../../../services/format'
+import { fields } from '../../../../services/model/format'
 
 const PARENT_APP_INST = 'appinst'
 const PARENT_CLOUDLET = 'cloudlet'
@@ -28,7 +29,7 @@ const fetchAppInstData = (parentId, showList, keys) => {
             data[key.field] = show[key.field]
             if (key.groupBy) {
                 //replace cluster name with realclustername for appmetrics
-                let isRealCluster = parentId === PARENT_APP_INST && show[fields.realclustername] 
+                let isRealCluster = parentId === PARENT_APP_INST && show[fields.realclustername]
                 if (isRealCluster && key.field === fields.clusterName) {
                     dataKey = dataKey + show[fields.realclustername] + '_'
                 }
@@ -96,8 +97,7 @@ const format = (worker) => {
     worker.mcList = mcList.map(mc => {
         let request = mc.request
         let response = mc.response
-        response.data = formatData(response, request.data, request.keys)
-        return { request, response }
+        return formatData(request, response)
     })
     processData(worker)
 }

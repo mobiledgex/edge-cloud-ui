@@ -1,16 +1,7 @@
 import ServerWorker from '../worker/server.worker.js'
 import * as endpoint from '../../helper/constant/endpoint'
 import { validateExpiry } from '../config.js'
-
-const getToken = (self) => {
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-    if (store) {
-        return store.userToken
-    }
-    if (self && self.props && self.props.history) {
-        self.props.history.push('/logout');
-    }
-}
+import { fetchToken } from '../service.js'
 
 const responseListener = (self, worker, callback) => {
     worker.addEventListener('message', event => {
@@ -52,7 +43,7 @@ export const sendRequest = (self, request, callback, token) => {
 }
 
 export const sendAuthRequest = (self, request, callback) => {
-    let token = getToken(self)
+    let token = fetchToken(self)
     if (token) {
         return sendRequest(self, request, callback, token)
     }
@@ -60,7 +51,7 @@ export const sendAuthRequest = (self, request, callback) => {
 
 export const sendRequests = (self, requestList, callback) => {
     const worker = new ServerWorker();
-    worker.postMessage({ request: requestList, requestType: 'array', token: getToken(self) });
+    worker.postMessage({ request: requestList, requestType: 'array', token: fetchToken(self) });
     if (callback) {
         responseListener(self, worker, callback)
     }

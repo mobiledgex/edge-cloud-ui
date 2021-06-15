@@ -9,7 +9,7 @@ import { fields } from '../../../../services/model/format'
 import { redux_org } from '../../../../helper/reduxData';
 import { processWorker } from '../../../../services/worker/interceptor'
 import MetricWorker from '../services/metric.worker.js'
-import { sendRequest } from '../services/service'
+import { authSyncRequest } from '../../../../services/service'
 class MexChart extends React.Component {
     constructor(props) {
         super()
@@ -85,7 +85,7 @@ class MexChart extends React.Component {
             data[fields.selector] = metric.serverField
             let org = redux_org.isAdmin(this) ? this.props.org : redux_org.nonAdminOrg(this)
             let request = metricRequest(metric.serverRequest, data, org, isPrivate)
-            let mc = await sendRequest(this, request)
+            let mc = await authSyncRequest(this, { ...request, format: false })
             if (mc && mc.response && mc.response.status === 200) {
                 let response = await processWorker(this.metricWorker, {
                     response: { data: mc.response.data },

@@ -11,8 +11,8 @@ import Alerts from './alerts/Alerts'
 import './style.css'
 
 import notificationWorker from './services/notifcation.worker.js';
-import { getToken } from '../monitoring/services/service';
 import { operators } from '../../../helper/constant';
+import { fetchToken } from '../../../services/service';
 
 class AlertGlobal extends React.Component {
 
@@ -97,7 +97,7 @@ class AlertGlobal extends React.Component {
     }
 
     sendRequest = (region) => {
-        this.worker.postMessage({ token: getToken(this), request: showAlerts(this, { region }) })
+        this.worker.postMessage({ token: fetchToken(this), request: showAlerts(this, { region }) })
     }
 
     fetchdata = () => {

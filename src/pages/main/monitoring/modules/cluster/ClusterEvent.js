@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import EventList from '../../list/EventList'
 import { orgEvents } from '../../../../../services/modules/audit'
 import { redux_org } from '../../../../../helper/reduxData'
-import { sendRequest } from '../../services/service'
 import randomColor from 'randomcolor'
 import { CircularProgress, IconButton, Tooltip } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { authSyncRequest } from '../../../../../services/service'
 
 const clusterEventKeys = [
     { label: 'Cluster', serverField: 'cluster', summary: false, filter: true },
@@ -69,7 +69,7 @@ class MexAppEvent extends React.Component {
 
     event = async (range, more) => {
         this.setState({ loading: true })
-        let mc = await sendRequest(this, orgEvents({
+        const requestData = orgEvents({
             match: {
                 orgs: [redux_org.isAdmin(this) ? this.props.org : redux_org.nonAdminOrg(this)],
                 types: ["event"],
@@ -80,7 +80,8 @@ class MexAppEvent extends React.Component {
             endtime: range.endtime,
             more: more,
             limit: 10
-        }))
+        })
+        let mc = await authSyncRequest(this, { ...requestData, format: false })
         if (mc && mc.response && mc.response.status === 200) {
             let more = mc.request.data.more
             let dataList = mc.response.data

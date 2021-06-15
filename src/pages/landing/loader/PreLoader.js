@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { getToken, sendMultiRequest } from '../../main/monitoring/services/service';
 import RoleWorker from '../../../services/worker/role.worker.js'
 import { showOrganizations } from '../../../services/modules/organization';
 import { validatePrivateAccess } from '../../../constant';
@@ -10,6 +9,7 @@ import './style.css'
 import { withRouter } from 'react-router-dom';
 import { redux_org } from '../../../helper/reduxData';
 import { endpoint, perpetual } from '../../../helper/constant';
+import { fetchToken, multiAuthSyncRequest } from '../../../services/service';
 
 class LogoLoader extends React.Component {
 
@@ -33,7 +33,7 @@ class LogoLoader extends React.Component {
     }
 
     validateAdmin = (dataList) => {
-        this.worker.postMessage({ data: dataList, request: showOrganizations(), token: getToken(this) })
+        this.worker.postMessage({ data: dataList, request: showOrganizations(), token: fetchToken(this) })
         this.worker.addEventListener('message', async (event) => {
             let roles = event.data.roles
             this.props.handleRoleInfo(roles)
@@ -61,7 +61,7 @@ class LogoLoader extends React.Component {
         requestList.push({ method: endpoint.SHOW_CONTROLLER })
         requestList.push({ method: endpoint.SHOW_ROLE })
         requestList.push({ method: endpoint.CURRENT_USER })
-        let mcList = await sendMultiRequest(this, requestList)
+        let mcList = await multiAuthSyncRequest(this, requestList)
         if (mcList && mcList.length > 0) {
             mcList.map(mc => {
                 if (mc.response && mc.response.status === 200) {

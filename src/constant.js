@@ -1,7 +1,7 @@
 import { fields } from "./services/model/format"
 import { accessGranted } from "./services/modules/poolAccess"
-import { sendRequest } from "./pages/main/monitoring/services/service"
 import { perpetual } from "./helper/constant"
+import { authSyncRequest } from "./services/service"
 
 export const pages = [
     { label: 'Organizations', icon: 'supervisor_account', id: perpetual.PAGE_ORGANIZATIONS, path: 'organizations', visible: true },
@@ -191,7 +191,7 @@ export const legendRoles =
 
 export const validatePrivateAccess = async (self, orgInfo) => {
     let privateAccess = undefined
-    let mc = await sendRequest(self, accessGranted(self, orgInfo))
+    let mc = await authSyncRequest(self, accessGranted(self, orgInfo))
     if (mc.response && mc.response.status === 200) {
         let dataList = mc.response.data
         if (dataList.length > 0) {

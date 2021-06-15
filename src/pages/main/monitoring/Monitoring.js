@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 
-import { Card, LinearProgress } from '@material-ui/core'
+import { Card } from '@material-ui/core'
 
 import * as constant from './helper/Constant'
 import * as dateUtil from '../../../utils/date_util'
@@ -26,7 +26,6 @@ import CloudletSkeleton from './modules/cloudlet/CloudletSkeleton'
 import { showOrganizations } from '../../../services/modules/organization';
 import ShowWorker from './services/show.worker.js'
 import { processWorker } from '../../../services/worker/interceptor'
-import { sendRequest, sendMultiRequest } from './services/service'
 
 import './common/PageMonitoringStyles.css'
 import './style.css'
@@ -35,6 +34,7 @@ import sortBy from 'lodash/sortBy'
 import { Skeleton } from '@material-ui/lab';
 import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../utils/sharedPreferences_util';
 import isEqual from 'lodash/isEqual';
+import { authSyncRequest, multiAuthSyncRequest } from '../../../services/service';
 
 const defaultParent = (self) => {
     return constant.metricParentTypes()[redux_org.isOperator(self) ? 2 : 0]
@@ -66,7 +66,6 @@ class Monitoring extends React.Component {
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         let parent = defaultParent(this)
         this.state = {
-            loading: false,
             minimize: false,
             duration: constant.relativeTimeRanges[0],
             range: timeRangeInMin(constant.relativeTimeRanges[0].duration),
@@ -157,7 +156,7 @@ class Monitoring extends React.Component {
         let selectedOrg = value[fields.organizationName]
         this.orgType = value[fields.type]
         if (this._isMounted) {
-            this.setState({ loading: true, showLoaded: false, selectedOrg, rowSelected:0 }, () => {
+            this.setState({ showLoaded: false, selectedOrg, rowSelected:0 }, () => {
                 this.setState({ avgData: this.defaultStructure() }, () => {
                     this.fetchShowData()
                 })
@@ -250,11 +249,10 @@ class Monitoring extends React.Component {
     }
 
     render() {
-        const { loading, minimize, filter, range, duration, organizations, avgData, rowSelected, showLoaded, isPrivate } = this.state
+        const { minimize, filter, range, duration, organizations, avgData, rowSelected, showLoaded, isPrivate } = this.state
         return (
             <div style={{ flexGrow: 1 }} mex-test="component-monitoring">
                 <Card>
-                    {loading ? <LinearProgress /> : null}
                     <MonitoringToolbar regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} isPrivate={isPrivate} />
                 </Card>
                 <React.Fragment>
@@ -282,7 +280,6 @@ class Monitoring extends React.Component {
         let parentId = parent.id
         if (this.regions && this.regions.length > 0 && constant.validateRole(parent.role, redux_org.roleType(this))) {
             let count = this.regions.length
-            this.updateState({ loading: true })
             this.regions.forEach(async (region) => {
                 let showRequests = parent.showRequest
                 let requestList = []
@@ -290,7 +287,7 @@ class Monitoring extends React.Component {
                     let org = redux_org.isAdmin(this) ? this.state.selectedOrg : redux_org.nonAdminOrg(this)
                     return showRequest(this, { region, org, type: this.orgType, isPrivate })
                 })
-                let mcList = await sendMultiRequest(this, requestList)
+                let mcList = await multiAuthSyncRequest(this, requestList, false)
                 if (mcList && mcList.length > 0) {
                     count = count - 1
                     let worker = ShowWorker()
@@ -310,7 +307,7 @@ class Monitoring extends React.Component {
                                 return { avgData }
                             }, () => {
                                 if (count === 0) {
-                                    this.updateState({ loading: false, showLoaded: true })
+                                    this.updateState({ showLoaded: true })
                                 }
                             })
                         }
@@ -321,7 +318,7 @@ class Monitoring extends React.Component {
     }
 
     fetchOrgList = async () => {
-        let mc = await sendRequest(this, showOrganizations(), true)
+        let mc = await authSyncRequest(this, showOrganizations())
         if (mc && mc.response && mc.response.status === 200) {
             let organizations = sortBy(mc.response.data, [item => item[fields.organizationName].toLowerCase()], ['asc']);
             this.updateState({ organizations })
@@ -402,6 +399,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
     };

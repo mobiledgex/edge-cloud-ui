@@ -1,12 +1,23 @@
 import { fetchHttpURL, validateExpiry } from "./config"
 import axios from 'axios';
 import { formatData } from "./format";
+import { isBoolean } from "../utils/boolean_utils";
+
+const formatter = (request, response, format = true) => {
+    format = isBoolean(request.format) ? request.format : format
+    if (format) {
+        return formatData(request, response)
+    }
+    else {
+        return { request, response: { status: response.status, data: response.data } }
+    }
+}
 /**
  * Show progress while fetching data from server, default is true
  * @param {*} request
  */
 const showProgress = (self, request) => {
-    const flag = request ? (typeof request.showSpinner === 'boolean') ? request.showSpinner : true : false
+    const flag = request ? isBoolean(request.showSpinner) ? request.showSpinner : true : false
     if (self && self.props && self.props.handleLoadingSpinner) {
         self.props.handleLoadingSpinner(flag)
     }
@@ -17,7 +28,7 @@ const showProgress = (self, request) => {
  * @param {*} request
  */
 const showMessage = (self, request, message) => {
-    const flag = request ? (typeof request.showMessage === 'boolean') ? request.showMessage : true : false
+    const flag = request ? isBoolean(request.showMessage) ? request.showMessage : true : false
     if (self && self.props && self.props.handleAlertInfo && message !== 'Forbidden') {
         self.props.handleLoadingSpinner(flag)
     }
@@ -114,12 +125,17 @@ const errorResponse = (self, request, error, callback) => {
     }
 }
 
-const sendSyncRequest = async (self, request, auth) => {
+/**
+ * @param {*} self: current class object
+ * @param {*} request: method, data, format 
+ * @param {*} auth: token is required if auth true 
+ */
+const sendSyncRequest = async (self, request, auth = true) => {
     let mc = {}
     try {
         showProgress(self, request)
-        const response  = await instance(self, request, auth).post(fetchHttpURL(request), request.data)
-        mc = formatData(request, response)
+        const response = await instance(self, request, auth).post(fetchHttpURL(request), request.data)
+        mc = formatter(request, response)
     }
     catch (error) {
         errorResponse(self, request, error)
@@ -130,25 +146,34 @@ const sendSyncRequest = async (self, request, auth) => {
 }
 
 export const authSyncRequest = async (self, request) => {
-    return await sendSyncRequest(self, request, true)
+    return await sendSyncRequest(self, request)
 }
 
 export const syncRequest = async (self, request) => {
     return await sendSyncRequest(self, request, false)
 }
 
-export const multiAuthRequest = (self, requestList, callback) => {
+
+/**
+ * Asynchronous request
+ * @param {*} self: current class object
+ * @param {*} requestList: list of method & data 
+ * @param {*} callback: callback function
+ * @param {*} format: if not using worker then format the data
+ * @returns list of request, response object
+ */
+export const multiAuthRequest = (self, requestList, callback, format = true) => {
     if (requestList && requestList.length > 0) {
         let promise = [];
         requestList.forEach((request) => {
             promise.push(instance(self, request, true).post(fetchHttpURL(request), request.data))
-        })        
+        })
         let responseList = [];
         showProgress(self, requestList[0])
         axios.all(promise)
             .then(list => {
-                list.map((response, i) => {
-                    responseList.push(formatData(requestList[i], response));
+                list.forEach((response, i) => {
+                    responseList.push(formatter(requestList[i], response, format));
                 })
                 callback(responseList);
 
@@ -159,19 +184,27 @@ export const multiAuthRequest = (self, requestList, callback) => {
     }
 }
 
-export const multiAuthSyncRequest = async (self, requestList) => {
+/**
+ * Synchronous request
+ * @param {*} self: current class object
+ * @param {*} requestList: list of method & data 
+ * @param {*} callback: callback function
+ * @param {*} format: if not using worker then format the data
+ * @returns list of request, response object
+ */
+export const multiAuthSyncRequest = async (self, requestList, format = true) => {
     let resResults = [];
     if (requestList && requestList.length > 0) {
         showProgress(self, requestList[0])
         let promise = [];
         requestList.forEach((request) => {
             promise.push(instance(self, request, true).post(fetchHttpURL(request), request.data))
-        })   
-        
+        })
+
         try {
             let responseList = await axios.all(promise)
             responseList.forEach((response, i) => {
-                resResults.push(formatData(requestList[i], response));
+                resResults.push(formatter(requestList[i], response, format));
             })
         }
         catch (error) {
