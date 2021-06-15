@@ -175,12 +175,13 @@ export const multiAuthRequest = (self, requestList, callback, format = true) => 
                 list.forEach((response, i) => {
                     responseList.push(formatter(requestList[i], response, format));
                 })
+                showProgress(self)
                 callback(responseList);
 
             }).catch(error => {
+                showProgress(self)
                 errorResponse(self, requestList[0], error, callback)
             })
-        showProgress(self)
     }
 }
 

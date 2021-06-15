@@ -108,6 +108,9 @@ export const formatData = (request, response) => {
         case endpoint.CLUSTER_INST_USAGE_ENDPOINT:
             data = formatUsageData(request, response, clusterInstUsage)
             break;
+        case endpoint.SHOW_ALERT:
+            data = formatShowData(request, response, alerts, true)
+            break;
         case endpoint.ALERT_SHOW_RECEIVER:
             data = formatAlertData(request, response, alerts)
             break;

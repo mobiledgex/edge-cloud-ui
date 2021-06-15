@@ -139,20 +139,19 @@ class headerGlobalAudit extends React.Component {
         )
     }
 
+    fetchDefaultData = ()=>{
+        this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
+        this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
+        if (this._isMounted) {
+            this.setState({ liveData: [] })
+        }
+        this.initAudit(this.starttime, this.endtime, false)
+    }
+
     componentDidUpdate(prevProps, prevState) {
         this.isPrivate = this.props.privateAccess
         if (this.props.organizationInfo && !operators.equal(this.props.organizationInfo, prevProps.organizationInfo)) {
-            if (redux_org.isAdmin(this)) {
-                this.initAudit(this.starttime, this.endtime, false)
-            }
-            else {
-                this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
-                this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
-                if (this._isMounted) {
-                    this.setState({ liveData: [] })
-                }
-                this.initAudit(this.starttime, this.endtime, false)
-            }
+            this.fetchDefaultData()
         }
 
         if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg) {
@@ -191,6 +190,7 @@ class headerGlobalAudit extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
+        this.fetchDefaultData()
     }
 
     componentWillUnmount = () => {
