@@ -6,8 +6,8 @@ import MexTab from '../../../hoc/forms/tab/MexTab';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { fields, updateFieldData } from '../../../services/model/format';
-import { redux_org} from '../../../helper/reduxData'
+import { fields } from '../../../services/model/format';
+import { redux_org } from '../../../helper/reduxData'
 //model
 import { createClusterInst, updateClusterInst } from '../../../services/modules/clusterInst';
 import { getOrganizationList } from '../../../services/modules/organization';
@@ -24,7 +24,7 @@ import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
 import { sendRequests } from '../../../services/model/serverWorker'
 import { Grid } from '@material-ui/core';
 import { endpoint, perpetual } from '../../../helper/constant';
-import { service } from '../../../services';
+import { service, updateFieldData } from '../../../services';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
@@ -297,7 +297,7 @@ class ClusterInstReg extends React.Component {
     getMap = () =>
     (
         <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-            <ListMexMap dataList={this.state.mapData} id={perpetual.PAGE_CLUSTER_INSTANCES} region={this.state.region} register={true}/>
+            <ListMexMap dataList={this.state.mapData} id={perpetual.PAGE_CLUSTER_INSTANCES} region={this.state.region} register={true} />
         </div>
     )
 
@@ -450,7 +450,7 @@ class ClusterInstReg extends React.Component {
             { label: `${this.isUpdate ? 'Update' : 'Create'} Cluster Instances`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
             { field: fields.clusterName, label: 'Cluster Name', formType: INPUT, placeholder: 'Enter Cluster Inst Name', rules: { required: true }, visible: true, update: { key: true } },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this)}, visible: true, value: redux_org.nonAdminOrg(this), update: { key: true } },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], update: { key: true } },
             { field: fields.cloudletName, label: 'Cloudlet', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }], update: { key: true } },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: false, tip: 'Deployment type (kubernetes or docker)' },
@@ -469,7 +469,7 @@ class ClusterInstReg extends React.Component {
             await this.loadDefaultData(data)
         }
         else {
-            this.organizationList = await getOrganizationList(this, {type:perpetual.DEVELOPER})
+            this.organizationList = await getOrganizationList(this, { type: perpetual.DEVELOPER })
         }
 
         let forms = this.formKeys()
@@ -506,7 +506,7 @@ class ClusterInstReg extends React.Component {
         this.props.handleViewMode(HELP_CLUSTER_INST_REG)
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         this._isMounted = false
     }
 };

@@ -5,8 +5,8 @@ import MexForms, { MAIN_HEADER, SELECT, INPUT, DUALLIST } from '../../../hoc/for
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { service } from '../../../services';
-import { fields, updateFieldData } from '../../../services/model/format';
+import { service, updateFieldData } from '../../../services';
+import { fields } from '../../../services/model/format';
 
 import { getOrganizationList } from '../../../services/modules/organization';
 import { fetchCloudletData } from '../../../services/modules/cloudlet';

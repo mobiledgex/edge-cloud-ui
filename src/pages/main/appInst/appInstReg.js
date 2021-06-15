@@ -7,7 +7,7 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, SWITCH, ICON_BUTTON, TEXT_AREA,
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { fields, updateFieldData } from '../../../services/model/format';
+import { fields } from '../../../services/model/format';
 import { redux_org} from '../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../services/modules/organization';
@@ -25,7 +25,7 @@ import { HELP_APP_INST_REG } from "../../../tutorial";
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from '@material-ui/core';
 import { endpoint, perpetual } from '../../../helper/constant';
-import { service } from '../../../services';
+import { service, updateFieldData } from '../../../services';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));

@@ -5,7 +5,7 @@ import MexForms, { MAIN_HEADER, HEADER, SWITCH, INPUT, SELECT } from '../../../.
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import uuid from 'uuid';
-import { fields, updateFieldData } from '../../../../services/model/format';
+import { fields } from '../../../../services/model/format';
 import { redux_org} from '../../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../../services/modules/organization';
@@ -13,7 +13,7 @@ import { updateTrustPolicy, createTrustPolicy } from '../../../../services/modul
 import { HELP_TRUST_POLICY_REG } from "../../../../tutorial";
 import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/mexMessageMultiStream'
 import { Grid } from '@material-ui/core';
-import { service } from '../../../../services';
+import { service, updateFieldData } from '../../../../services';
 
 class TrustPolicyReg extends React.Component {
     constructor(props) {

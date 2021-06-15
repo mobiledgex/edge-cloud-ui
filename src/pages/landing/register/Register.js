@@ -13,12 +13,12 @@ import { generate } from 'generate-password'
 import { Button, Checkbox, FormControlLabel } from "@material-ui/core";
 import { copyData } from '../../../utils/file_util'
 import cloneDeep from "lodash/cloneDeep";
-import { sendRequest } from '../../../services/model/serverWorker'
 import { load } from "../../../helper/zxcvbn";
 import ReCAPTCHA from "react-google-recaptcha";
 import MexOTPRegistration from '../otp/MexOTPRegistration';
 import { useHistory } from 'react-router-dom';
 import { endpoint } from "../../../helper/constant";
+import { authSyncRequest } from "../../../services/service";
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
 const HOST = window.location.host;
@@ -357,8 +357,8 @@ class RegistryUserForm extends React.Component {
         })
     }
 
-    publicConfigResponse = (mc) => {
-        this.props.handleLoadingSpinner(false)
+    publicConfig = async () => {
+        let mc = await authSyncRequest(this, { method: endpoint.PUBLIC_CONFIG })
         if (mc && mc.response && mc.response.status === 200) {
             this.passwordMinCrackTimeSec = mc.response.data.PasswordMinCrackTimeSec
             this.getFormData()
@@ -366,8 +366,7 @@ class RegistryUserForm extends React.Component {
     }
 
     componentDidMount() {
-        this.props.handleLoadingSpinner(true)
-        sendRequest(this, { method: endpoint.PUBLIC_CONFIG }, this.publicConfigResponse)
+        this.publicConfig()
     }
 };
 

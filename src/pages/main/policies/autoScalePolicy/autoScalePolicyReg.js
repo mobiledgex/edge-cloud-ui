@@ -4,14 +4,14 @@ import MexForms, { MAIN_HEADER } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { fields, updateFieldData } from '../../../../services/model/format';
+import { fields } from '../../../../services/model/format';
 import { redux_org} from '../../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../../services/modules/organization';
 import { updateAutoScalePolicy, createAutoScalePolicy } from '../../../../services/modules/autoScalePolicy';
 import { HELP_SCALE_POLICY_REG } from "../../../../tutorial";
 import { Grid } from '@material-ui/core';
-import { service } from '../../../../services';
+import { service, updateFieldData } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';
 
 class AutoScalePolicyReg extends React.Component {

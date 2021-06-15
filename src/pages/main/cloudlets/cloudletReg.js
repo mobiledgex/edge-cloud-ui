@@ -7,7 +7,7 @@ import MexTab from '../../../hoc/forms/tab/MexTab';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { fields, updateFieldData } from '../../../services/model/format';
+import { fields } from '../../../services/model/format';
 //model
 import { getOrganizationList } from '../../../services/modules/organization';
 import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota } from '../../../services/modules/cloudlet';
@@ -21,7 +21,7 @@ import { getTrustPolicyList, showTrustPolicies } from '../../../services/modules
 import { Grid } from '@material-ui/core';
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
-import { service } from '../../../services';
+import { service, updateFieldData } from '../../../services';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));

@@ -4,8 +4,8 @@ import MexForms, { SELECT, DUALLIST, INPUT, BUTTON, HEADER, MULTI_FORM, MAIN_HEA
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { service } from '../../../../services';
-import { fields, updateFieldData } from '../../../../services/model/format';
+import { service, updateFieldData } from '../../../../services';
+import { fields } from '../../../../services/model/format';
 import { redux_org } from '../../../../helper/reduxData'
 import { getOrganizationList } from '../../../../services/modules/organization';
 import { fetchCloudletData } from '../../../../services/modules/cloudlet';

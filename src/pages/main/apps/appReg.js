@@ -7,11 +7,11 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, SWITCH, TEXT_AREA, ICON_
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { fields, updateFieldData } from '../../../services/model/format';
+import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData';
 //model
 import * as serverData from '../../../services/model/serverData'
-import { service } from '../../../services'
+import { service, updateFieldData } from '../../../services'
 import { getOrganizationList } from '../../../services/modules/organization';
 import { getFlavorList, showFlavors } from '../../../services/modules/flavor/flavor';
 import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/modules/autoProvPolicy';
