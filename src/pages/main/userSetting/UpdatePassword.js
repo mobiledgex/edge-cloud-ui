@@ -4,7 +4,6 @@ import * as actions from '../../../actions';
 import MexForms, { INPUT, BUTTON, POPUP_INPUT } from "../../../hoc/forms/MexForms";
 import { fields } from "../../../services/model/format";
 import { Icon } from "semantic-ui-react";
-import { generate } from 'generate-password'
 import { copyData } from '../../../utils/file_util'
 import cloneDeep from "lodash/cloneDeep";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -162,16 +161,19 @@ class UpdatePassword extends React.Component {
         })
     }
 
-    passwordGenerator = (length) => {
-        let password = generate({ length, numbers: true, symbols: true, lowercase: true, uppercase: true, strict: true })
+    passwordGenerator = async (length) => {
+        if (this.generator === undefined) {
+            this.generator = await import('../../../helper/passwordGenerator')
+        }
+        let password = this.generator.generate({ length, numbers: true, symbols: true, lowercase: true, uppercase: true, strict: true })
         if (this.calculateStrength(password) < this.passwordMinCrackTimeSec) {
             return this.passwordGenerator(length + 1)
         }
         return password
     }
 
-    generatePassword = (length) => {
-        let password = this.passwordGenerator(length)
+    generatePassword = async (length) => {
+        let password = await this.passwordGenerator(length)
         copyData(password, document.getElementById('temp_copy'))
         let forms = cloneDeep(this.state.forms)
         for (let i = 0; i < forms.length; i++) {
