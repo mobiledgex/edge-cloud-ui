@@ -2,8 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import MexListView from './MexListView';
-import { equal } from '../constant/compare';
-import { isPathOrg } from '../constant/common';
+import { operators, shared } from '../helper/constant';
 
 class DataView extends React.Component {
     constructor(props) {
@@ -17,7 +16,7 @@ class DataView extends React.Component {
         if (this.props.currentView) {
             this.props.resetView()
         }
-        if (!isPathOrg(this)) {
+        if (!shared.isPathOrg(this)) {
             this.setState({ visible: false }, () => {
                 this.setState({ visible: true })
             })
@@ -25,7 +24,7 @@ class DataView extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.organizationInfo && !equal(nextProps.organizationInfo, this.props.organizationInfo)) {
+        if (nextProps.organizationInfo && !operators.equal(nextProps.organizationInfo, this.props.organizationInfo)) {
             this.resetOrRedirect()
             return true
         }

@@ -1,8 +1,7 @@
 import React from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
 import { Button, Grid, Input } from 'semantic-ui-react'
-
-const HOST = window.location.host;
+import { perpetual } from '../../../helper/constant';
 
 const Message = (props) => {
     const history = useHistory()
@@ -10,10 +9,10 @@ const Message = (props) => {
     return (
         <Grid>
             <Grid.Row>
-                <span className='title'>{type === 0 ? 'Reset your password' : 'Verify your email'}</span>
+                <span className='title'>{type === perpetual.VERIFY_PASSWORD ? 'Reset your password' : 'Verify your email'}</span>
             </Grid.Row>
             <Grid.Row>
-                <span className="login-text">{`Check your email for a link to ${type === 0 ? 'reset your password' : 'verify your email'}. If it doesn’t appear within a few minutes, check your spam folder.`}</span>
+                <span className="login-text">{`Check your email for a link to ${type === perpetual.VERIFY_PASSWORD ? 'reset your password' : 'verify your email'}. If it doesn’t appear within a few minutes, check your spam folder.`}</span>
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column>
@@ -44,7 +43,7 @@ const ForgotPassword = (props) => {
         <Message type={type}/> :
         <Grid >
             <Grid.Row>
-                <span className='title'>{type === 0 ? 'Recover your password' : 'Verify your email'}</span>
+                <span className='title'>{type === perpetual.VERIFY_PASSWORD ? 'Recover your password' : 'Verify your email'}</span>
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column>

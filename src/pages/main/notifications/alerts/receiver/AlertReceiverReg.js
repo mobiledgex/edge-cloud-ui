@@ -8,20 +8,20 @@ import * as actions from '../../../../../actions';
 import { fields } from '../../../../../services/model/format';
 import {redux_org} from '../../../../../helper/reduxData'
 //model
-import { createAlertReceiver } from '../../../../../services/model/alerts';
+import { createAlertReceiver } from '../../../../../services/modules/alerts';
 import { sendRequests } from '../../../../../services/model/serverWorker'
 import * as constant from '../../../../../constant'
-import * as endpoints from '../../../../../services/model/endpoints'
-import { showOrganizations } from '../../../../../services/model/organization';
-import { showCloudlets } from '../../../../../services/model/cloudlet';
-import { showAppInsts } from '../../../../../services/model/appInstance';
-import { showClusterInsts } from '../../../../../services/model/clusterInstance';
+import { showOrganizations } from '../../../../../services/modules/organization';
+import { showCloudlets } from '../../../../../services/modules/cloudlet';
+import { showAppInsts } from '../../../../../services/modules/appInst';
+import { showClusterInsts } from '../../../../../services/modules/clusterInst';
 import uuid from 'uuid'
 import cloneDeep from 'lodash/cloneDeep';
 import { Grid, LinearProgress } from '@material-ui/core'
 import { resetFormValue } from '../../../../../hoc/forms/helper/constant';
+import { endpoint, perpetual } from '../../../../../helper/constant';
 
-const RECEIVER_TYPE = [constant.RECEIVER_TYPE_EMAIL, constant.RECEIVER_TYPE_SLACK, constant.RECEIVER_TYPE_PAGER_DUTY]
+const RECEIVER_TYPE = [perpetual.RECEIVER_TYPE_EMAIL, perpetual.RECEIVER_TYPE_SLACK, perpetual.RECEIVER_TYPE_PAGER_DUTY]
 
 
 const selector = (self) => {
@@ -91,14 +91,14 @@ class FlavorReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.email) {
-                form.visible = currentForm.value === constant.RECEIVER_TYPE_EMAIL
+                form.visible = currentForm.value === perpetual.RECEIVER_TYPE_EMAIL
                 form.value = this.email
             }
             else if (form.field === fields.slack) {
-                form.visible = currentForm.value === constant.RECEIVER_TYPE_SLACK
+                form.visible = currentForm.value === perpetual.RECEIVER_TYPE_SLACK
             }
             else if (form.field === fields.pagerDutyIntegrationKey) {
-                form.visible = currentForm.value === constant.RECEIVER_TYPE_PAGER_DUTY
+                form.visible = currentForm.value === perpetual.RECEIVER_TYPE_PAGER_DUTY
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -429,17 +429,17 @@ class FlavorReg extends React.Component {
                 if (mc && mc.response && mc.response.status === 200) {
                     let request = mc.request
                     let data = mc.response.data
-                    if (request.method === endpoints.SHOW_CLOUDLET || request.method === endpoints.SHOW_ORG_CLOUDLET) {
+                    if (request.method === endpoint.SHOW_CLOUDLET || request.method === endpoint.SHOW_ORG_CLOUDLET) {
                         this.cloudletList = [...this.cloudletList, ...data]
                         this.checkOrgExist()
                     }
-                    else if (request.method === endpoints.SHOW_APP_INST) {
+                    else if (request.method === endpoint.SHOW_APP_INST) {
                         this.appInstList = [...this.appInstList, ...data]
                     }
-                    else if (request.method === endpoints.SHOW_CLUSTER_INST) {
+                    else if (request.method === endpoint.SHOW_CLUSTER_INST) {
                         this.clusterInstList = [...this.clusterInstList, ...data]
                     }
-                    else if (request.method === endpoints.SHOW_ORG) {
+                    else if (request.method === endpoint.SHOW_ORG) {
                         this.organizationList = [...this.organizationList, ...data]
                     }
                 }

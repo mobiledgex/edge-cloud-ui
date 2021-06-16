@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Box, Card, CardContent, Dialog, Divider, Grid, List, Typography, CircularProgress } from '@material-ui/core';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
-import { showGeneratedReports, downloadReport } from '../../../services/model/reporter';
+import { showGeneratedReports, downloadReport } from '../../../services/modules/reporter';
 import CloudDownloadOutlinedIcon from '@material-ui/icons/CloudDownloadOutlined';
 import PictureAsPdfOutlinedIcon from '@material-ui/icons/PictureAsPdfOutlined';
 import { withStyles } from '@material-ui/styles';

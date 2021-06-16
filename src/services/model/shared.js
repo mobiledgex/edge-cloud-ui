@@ -1,7 +1,7 @@
 import { lightGreen } from '@material-ui/core/colors';
 import React from 'react'
 import {Icon, Popup} from 'semantic-ui-react';
-import { DEVELOPER } from '../../constant';
+import { perpetual } from '../../helper/constant';
 import {fields} from './format';
 
 const TRACKED_STATE_UNKNOWN = 0
@@ -23,7 +23,7 @@ const DELETE_DONE = 15
 
 export const additionalDetail = (data) => {
     return (
-        data[fields.type] && data[fields.type] === DEVELOPER ?
+        data[fields.type] && data[fields.type] === perpetual.DEVELOPER ?
             <div style={{ margin: 20, color: 'white' }}>
                 <div className="newOrg3-2">
                     <div>

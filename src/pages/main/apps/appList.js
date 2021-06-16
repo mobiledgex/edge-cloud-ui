@@ -3,13 +3,12 @@ import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import * as constant from '../../../constant'
 import { fields } from '../../../services/model/format';
-import { keys, showApps, deleteApp } from '../../../services/model/app';
+import { keys, showApps, deleteApp } from '../../../services/modules/app';
 import AppReg from './appReg';
 import AppInstReg from '../appInst/appInstReg';
 import { HELP_APP_LIST } from "../../../tutorial";
-import { ACTION_DELETE, ACTION_UPDATE } from '../../../constant/actions';
+import { perpetual } from '../../../helper/constant';
 import { labelFormatter } from '../../../helper/formatter';
 class AppList extends React.Component {
     constructor(props) {
@@ -51,8 +50,8 @@ class AppList extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_UPDATE, label: 'Update', onClick: this.onAdd, type: 'Edit' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteApp, type: 'Edit' },
+            { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onAdd, type: 'Edit' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteApp, type: 'Edit' },
             { label: 'Create Instance', onClick: this.onLaunch, type: 'Edit' }
         ]
     }
@@ -75,7 +74,7 @@ class AppList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: constant.PAGE_APPS,
+            id: perpetual.PAGE_APPS,
             headerLabel: 'Apps',
             nameField: fields.appName,
             requestType: [showApps],
@@ -93,7 +92,7 @@ class AppList extends React.Component {
     render() {
         const { currentView } = this.state
         return (
-            <DataView id={constant.PAGE_APPS} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_APPS} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
     }
 

@@ -5,12 +5,11 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
-import { keys, showAccounts, deleteAccount } from '../../../services/model/accounts';
+import { keys, showAccounts, deleteAccount } from '../../../services/modules/accounts';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
-import * as serverData from '../../../services/model/serverData'
-import { ACTION_DELETE } from '../../../constant/actions';
+import * as serverData from '../../../services/model/serverData';
+import { perpetual } from '../../../helper/constant';
 import { uiFormatter } from '../../../helper/formatter';
-import { PAGE_ACCOUNTS } from '../../../constant';
 
 class AccountList extends React.Component {
     constructor(props) {
@@ -39,7 +38,7 @@ class AccountList extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_DELETE, label: 'Delete', visible: this.deleteVisible, onClick: deleteAccount, type: 'Edit' }
+            { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.deleteVisible, onClick: deleteAccount, type: 'Edit' }
         ]
     }
 
@@ -110,7 +109,7 @@ class AccountList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: PAGE_ACCOUNTS,
+            id: perpetual.PAGE_ACCOUNTS,
             headerLabel: 'Accounts',
             nameField: fields.username,
             selection: true,
@@ -126,7 +125,7 @@ class AccountList extends React.Component {
         return (
             <React.Fragment>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
-                <DataView id={PAGE_ACCOUNTS} actionMenu={this.actionMenu} requestInfo={this.requestInfo} refreshToggle={this.state.refreshViewToggle} groupActionMenu={this.groupActionMenu} />
+                <DataView id={perpetual.PAGE_ACCOUNTS} actionMenu={this.actionMenu} requestInfo={this.requestInfo} refreshToggle={this.state.refreshViewToggle} groupActionMenu={this.groupActionMenu} />
             </React.Fragment>
         )
     }

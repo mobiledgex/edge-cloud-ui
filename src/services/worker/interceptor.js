@@ -1,3 +1,5 @@
+import { validateExpiry } from "../config"
+
 export const postMessage = (worker, message) => new Promise((resolve, reject) => {
     const resolution = (event) => {
         let response = event.data
@@ -6,7 +8,7 @@ export const postMessage = (worker, message) => new Promise((resolve, reject) =>
             resolve(response)
         }
         else {
-            if (checkExpiry(self, response.message)) {
+            if (validateExpiry(self, response.message)) {
                 reject(response)
             }
         }

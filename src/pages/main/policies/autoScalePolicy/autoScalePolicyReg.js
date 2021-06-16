@@ -4,15 +4,15 @@ import MexForms, { MAIN_HEADER } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { fields, updateFieldData } from '../../../../services/model/format';
+import { fields } from '../../../../services/model/format';
 import { redux_org} from '../../../../helper/reduxData'
 //model
-import { getOrganizationList } from '../../../../services/model/organization';
-import { updateAutoScalePolicy, createAutoScalePolicy } from '../../../../services/model/autoScalePolicy';
-import * as serverData from '../../../../services/model/serverData';
+import { getOrganizationList } from '../../../../services/modules/organization';
+import { updateAutoScalePolicy, createAutoScalePolicy } from '../../../../services/modules/autoScalePolicy';
 import { HELP_SCALE_POLICY_REG } from "../../../../tutorial";
 import { Grid } from '@material-ui/core';
-import { DEVELOPER } from '../../../../constant';
+import { service, updateFieldData } from '../../../../services';
+import { perpetual } from '../../../../helper/constant';
 
 class AutoScalePolicyReg extends React.Component {
     constructor(props) {
@@ -114,11 +114,11 @@ class AutoScalePolicyReg extends React.Component {
             if (this.isUpdate) {
                 let updateData = updateFieldData(this, this.state.forms, data, this.props.data)
                 if (updateData.fields.length > 0) {
-                    mcRequest = await serverData.sendRequest(this, updateAutoScalePolicy(updateData))
+                    mcRequest = await service.authSyncRequest(this, updateAutoScalePolicy(updateData))
                 }
             }
             else {
-                mcRequest = await serverData.sendRequest(this, createAutoScalePolicy(data))
+                mcRequest = await service.authSyncRequest(this, createAutoScalePolicy(data))
             }
             if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
                 let msg = this.isUpdate ? 'updated' : 'created'
@@ -208,7 +208,7 @@ class AutoScalePolicyReg extends React.Component {
             this.loadData(forms, data)
         }
         else {
-            this.organizationList = await getOrganizationList(this, { type: DEVELOPER })
+            this.organizationList = await getOrganizationList(this, { type: perpetual.DEVELOPER })
             this.loadData(forms)
         }
 

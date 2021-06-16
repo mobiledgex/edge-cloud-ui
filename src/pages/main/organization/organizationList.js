@@ -4,10 +4,9 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData';
-import { keys, showOrganizations, deleteOrganization, edgeboxOnlyAPI } from '../../../services/model/organization';
+import { keys, showOrganizations, deleteOrganization, edgeboxOnlyAPI } from '../../../services/modules/organization';
 import OrganizationReg from './organizationReg';
 import * as serverData from '../../../services/model/serverData'
 import * as shared from '../../../services/model/shared';
@@ -15,11 +14,10 @@ import RoleWorker from '../../../services/worker/role.worker.js'
 import { Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core';
 import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import { ACTION_DELETE, ACTION_DISABLE, ACTION_EDGE_BOX_ENABLE, ACTION_LABEL, ACTION_UPDATE, ACTION_WARNING } from '../../../constant/actions';
-import { getToken, sendRequest } from '../monitoring/services/service'
-import { LS_ORGANIZATION_INFO } from '../../../helper/ls';
+import { perpetual } from '../../../helper/constant';
 import { uiFormatter } from '../../../helper/formatter'
 import { lightGreen } from '@material-ui/core/colors';
+import { authSyncRequest, fetchToken } from '../../../services/service';
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
@@ -79,7 +77,7 @@ class OrganizationList extends React.Component {
                     }
                     // subheader="Dynamically scale and deploy applications on Telco Edge geographically close to your end-users. Deploying to MobiledgeX's cloudlets provides applications the advantage of low latency, which can be extremely useful for real-time applications such as Augmented Reality, Mobile Gaming, Self-Driving Cars, Drones, etc."
                     action={
-                        <IconButton aria-label="developer" onClick={() => { this.onAdd(constant.DEVELOPER) }}>
+                        <IconButton aria-label="developer" onClick={() => { this.onAdd(perpetual.DEVELOPER) }}>
                             <ArrowForwardIosIcon style={{ fontSize: 20, color: lightGreen['A700'] }} />
                         </IconButton>
                     }
@@ -99,7 +97,7 @@ class OrganizationList extends React.Component {
                     }
                     // subheader='Register your cloudlet by providing MobiledgeX with a pool of compute resources and access to the OpenStack API endpoint by specifying a few required parameters, such as dynamic IP addresses, cloudlet names, location of cloudlets, certs, and more, using the Edge-Cloud Console. MobiledgeX relies on this information to remotely access the cloudlets to determine resource requirements as well as dynamically track usage.'
                     action={
-                        <IconButton aria-label="operator" onClick={() => { this.onAdd(constant.OPERATOR) }}>
+                        <IconButton aria-label="operator" onClick={() => { this.onAdd(perpetual.OPERATOR) }}>
                             <ArrowForwardIosIcon style={{ fontSize: 20, color: lightGreen['A700'] }} />
                         </IconButton>
                     }
@@ -115,7 +113,7 @@ class OrganizationList extends React.Component {
 
     onDelete = (data, success) => {
         if (success && data[fields.organizationName] === redux_org.orgName(this)) {
-            localStorage.removeItem(LS_ORGANIZATION_INFO)
+            localStorage.removeItem(perpetual.LS_ORGANIZATION_INFO)
             if (this._isMounted) {
                 this.forceUpdate()
             }
@@ -123,7 +121,7 @@ class OrganizationList extends React.Component {
     }
 
     onEdgebox = async (action, data, callback) => {
-        let mc = await sendRequest(this, edgeboxOnlyAPI(data))
+        let mc = await authSyncRequest(this, edgeboxOnlyAPI(data))
         if (mc && mc.response && mc.response.status === 200) {
             this.props.handleAlertInfo('success', `Edgebox ${data[fields.edgeboxOnly] ? 'disabled' : 'enabled'} successfully for organization ${data[fields.organizationName]}`)
             callback(mc)
@@ -132,12 +130,12 @@ class OrganizationList extends React.Component {
 
     onPreEdgebox = (type, action, data) => {
         switch (type) {
-            case ACTION_LABEL:
+            case perpetual.ACTION_LABEL:
                 return data[fields.edgeboxOnly] ? 'Disable Edgebox' : 'Enable Edgebox'
-            case ACTION_WARNING:
+            case perpetual.ACTION_WARNING:
                 return `${data[fields.edgeboxOnly] ? 'disable' : 'enable'} edgebox feature for`
-            case ACTION_DISABLE:
-                return data[fields.type].includes(constant.DEVELOPER.toLowerCase())
+            case perpetual.ACTION_DISABLE:
+                return data[fields.type].includes(perpetual.DEVELOPER)
         }
     }
 
@@ -149,9 +147,9 @@ class OrganizationList extends React.Component {
         return [
             { label: 'Audit', onClick: this.onAudit },
             { label: 'Add User', onClick: this.onAddUser, type: 'Edit' },
-            { id: ACTION_EDGE_BOX_ENABLE, label: this.onPreEdgebox, visible: this.edgeboxOnlyVisibility, type: 'Edit', warning: this.onPreEdgebox, disable: this.onPreEdgebox, onClick: this.onEdgebox },
-            { id: ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type: 'Edit' }
+            { id: perpetual.ACTION_EDGE_BOX_ENABLE, label: this.onPreEdgebox, visible: this.edgeboxOnlyVisibility, type: 'Edit', warning: this.onPreEdgebox, disable: this.onPreEdgebox, onClick: this.onEdgebox },
+            { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteOrganization, onFinish: this.onDelete, type: 'Edit' }
         ]
     }
 
@@ -172,7 +170,7 @@ class OrganizationList extends React.Component {
                 if (roleInfo[fields.organizationName] === data[fields.organizationName]) {
                     let organizationInfo = this.cacheOrgInfo(data, roleInfo)
                     this.props.handleOrganizationInfo(organizationInfo)
-                    localStorage.setItem(LS_ORGANIZATION_INFO, JSON.stringify(organizationInfo))
+                    localStorage.setItem(perpetual.LS_ORGANIZATION_INFO, JSON.stringify(organizationInfo))
                     break;
                 }
             }
@@ -198,7 +196,7 @@ class OrganizationList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: constant.PAGE_ORGANIZATIONS,
+            id: perpetual.PAGE_ORGANIZATIONS,
             headerLabel: 'Organizations',
             nameField: fields.organizationName,
             requestType: [showOrganizations],
@@ -215,7 +213,7 @@ class OrganizationList extends React.Component {
         const { tableHeight, currentView } = this.state
         return (
             <div style={{ width: '100%', height: '100%' }}>
-                <DataView id={constant.PAGE_ORGANIZATIONS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight} />
+                <DataView id={perpetual.PAGE_ORGANIZATIONS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight} />
             </div>
         )
     }
@@ -236,7 +234,7 @@ class OrganizationList extends React.Component {
     refreshRole = async () => {
         let mc = await serverData.showUserRoles(this)
         if (mc && mc.response && mc.response.status === 200) {
-            this.worker.postMessage({ data: mc.response.data, request: showOrganizations(), token: getToken(this) })
+            this.worker.postMessage({ data: mc.response.data, request: showOrganizations(), token: fetchToken(this) })
             this.worker.addEventListener('message', async (event) => {
                 this.props.handleRoleInfo(event.data.roles)
             })

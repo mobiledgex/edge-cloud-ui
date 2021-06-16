@@ -1,5 +1,5 @@
-import { ADMIN, DEVELOPER, DEVELOPER_MANAGER, OPERATOR } from "../../constant"
 import { fields } from "../../services/model/format"
+import { perpetual } from "../constant"
 
 const getObject = (self) => {
     if (self && self.props && self.props.organizationInfo) {
@@ -14,7 +14,7 @@ const getObject = (self) => {
 export const isAdmin = (self) => {
     let info = getObject(self)
     if (info) {
-        return info.type === ADMIN
+        return info.type === perpetual.ADMIN
     }
     return false
 }
@@ -22,7 +22,7 @@ export const isAdmin = (self) => {
 export const isDeveloperManager = (self) => {
     let info = getObject(self)
     if (info) {
-        return info.role === DEVELOPER_MANAGER
+        return info.role === perpetual.DEVELOPER_MANAGER
     }
     return false
 }
@@ -30,7 +30,7 @@ export const isDeveloperManager = (self) => {
 export const isOperator = (self) => {
     let info = getObject(self)
     if (info) {
-        return info.type === OPERATOR
+        return info.type === perpetual.OPERATOR
     }
     return false
 }
@@ -38,7 +38,7 @@ export const isOperator = (self) => {
 export const isDeveloper = (self) => {
     let info = getObject(self)
     if (info) {
-        return info.type === DEVELOPER
+        return info.type === perpetual.DEVELOPER
     }
     return false
 }

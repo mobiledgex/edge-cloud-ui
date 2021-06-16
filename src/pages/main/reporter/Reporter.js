@@ -1,10 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import * as constant from '../../../constant';
-import { ACTION_DELETE, ACTION_UPDATE } from '../../../constant/actions';
+import { perpetual } from '../../../helper/constant';
 import DataView from '../../../container/DataView';
 import { fields } from '../../../services/model/format';
-import { keys, showReporter, deleteReporter } from '../../../services/model/reporter';
+import { keys, showReporter, deleteReporter } from '../../../services/modules/reporter';
 import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
 import { Box } from '@material-ui/core';
 import Reg from './ReporterReg'
@@ -12,11 +11,12 @@ import Generated from './Generated';
 import Generator from './Generator';
 import { lightGreen } from '@material-ui/core/colors';
 import { IconButton } from '../../../hoc/mexui'
-import { uiFormatter } from '../../../helper/formatter';
+import { dateFormatter, uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
-import { showOrganizations } from '../../../services/model/organization';
-import { responseValid, sendRequest } from '../../../services/model/serverData';
+import { showOrganizations } from '../../../services/modules/organization';
 import LogoSpinner from '../../../hoc/loader/LogoSpinner'
+import { service } from '../../../services';
+import { FORMAT_FULL_DATE } from '../../../utils/date_util';
 
 class Reporter extends React.Component {
 
@@ -51,8 +51,8 @@ class Reporter extends React.Component {
     }
 
     actionMenu = () => ([
-        { id: ACTION_UPDATE, label: 'Update', onClick: this.onReg, type: 'Edit' },
-        { id: ACTION_DELETE, label: 'Delete', onClick: deleteReporter, type: 'Edit' }
+        { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onReg, type: 'Edit' },
+        { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteReporter, type: 'Edit' }
     ])
 
     customToolbar = () => {
@@ -74,11 +74,14 @@ class Reporter extends React.Component {
         if (key.field === fields.status) {
             return uiFormatter.reporterStatus(key, data, isDetail)
         }
+        else if (key.field === fields.startdate || key.field === fields.nextDate) {
+            return dateFormatter.formatDate(FORMAT_FULL_DATE, data[key.field], data[fields.timezone])
+        }
     }
 
     requestInfo = () => {
         return ({
-            id: constant.PAGE_REPORTER,
+            id: perpetual.PAGE_REPORTER,
             headerLabel: 'Report Scheduler',
             nameField: fields.name,
             requestType: [showReporter],
@@ -101,15 +104,15 @@ class Reporter extends React.Component {
             (
                 redux_org.isOperator(this) || orgList.length > 0) ?
                 <React.Fragment>
-                    <DataView id={constant.PAGE_REPORTER} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} toolbarAction={this.toolbarAction} customToolbar={this.customToolbar} tableHeight={300} />
+                    <DataView id={perpetual.PAGE_REPORTER} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} toolbarAction={this.toolbarAction} customToolbar={this.customToolbar} tableHeight={300} />
                     <Generated open={open} orgList={orgList} close={() => { this.updateState({ open: false }) }} />
                 </React.Fragment> : <LogoSpinner/>
         )
     }
 
     fetchOrgs = async () => {
-        let mc = await sendRequest(this, showOrganizations())
-        if (responseValid(mc)) {
+        let mc = await service.authSyncRequest(this, showOrganizations())
+        if (service.responseValid(mc)) {
             const dataList = mc.response.data
             const orgList = dataList.map(data => (data[fields.organizationName]))
             this.updateState({ orgList })

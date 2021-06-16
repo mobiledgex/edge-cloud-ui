@@ -2,18 +2,18 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
-import { Button, Dialog, DialogActions, DialogTitle, IconButton, List, ListItem, ListItemText, MenuItem, Switch, Tooltip } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogTitle, IconButton, List, ListItem, ListItemText, MenuItem, Tooltip } from '@material-ui/core';
 import { FORMAT_FULL_DATE_TIME, time } from '../../../utils/date_util'
-import { sendRequest } from '../../../services/model/serverData';
-import { showBillingOrg, keys } from '../../../services/model/billingOrg';
+import { showBillingOrg, keys } from '../../../services/modules/billingorg';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import PaymentOutlinedIcon from '@material-ui/icons/PaymentOutlined';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import { fields } from '../../../services/model/format';
-import { equal } from '../../../constant/compare';
+import { operators } from '../../../helper/constant';
 import { redux_org } from '../../../helper/reduxData';
 import cloneDeep from 'lodash/cloneDeep';
 import { lightGreen } from '@material-ui/core/colors';
+import { service } from '../../../services';
 
 const orgKeys = [
     { field: fields.name, label: 'Billing Org' },
@@ -132,13 +132,13 @@ class Billing extends React.Component {
     }
 
     componentDidUpdate(preProps, preState) {
-        if (!equal(preProps.organizationInfo, this.props.organizationInfo)) {
+        if (!operators.equal(preProps.organizationInfo, this.props.organizationInfo)) {
             this.setManagedOrg()
         }
     }
 
     fetchBillingOrg = async () => {
-        let mc = await sendRequest(this, showBillingOrg(this))
+        let mc = await service.authSyncRequest(this, showBillingOrg(this))
         if (mc && mc.response && mc.response.status === 200) {
             this.billingOrgList = mc.response.data
             this.setManagedOrg()

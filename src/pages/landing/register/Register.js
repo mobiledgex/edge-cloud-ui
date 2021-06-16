@@ -9,16 +9,17 @@ import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined'
 import * as serverData from '../../../services/model/serverData';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Icon, Grid, Button as SButton } from "semantic-ui-react";
-import { generate } from 'generate-password'
 import { Button, Checkbox, FormControlLabel } from "@material-ui/core";
 import { copyData } from '../../../utils/file_util'
 import cloneDeep from "lodash/cloneDeep";
-import { sendRequest } from '../../../services/model/serverWorker'
-import { PUBLIC_CONFIG } from '../../../services/model/endpoints'
 import { load } from "../../../helper/zxcvbn";
 import ReCAPTCHA from "react-google-recaptcha";
 import MexOTPRegistration from '../otp/MexOTPRegistration';
 import { useHistory } from 'react-router-dom';
+import { endpoint } from "../../../helper/constant";
+import { authSyncRequest } from "../../../services/service";
+
+
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
 const HOST = window.location.host;
@@ -226,16 +227,19 @@ class RegistryUserForm extends React.Component {
         })
     }
 
-    passwordGenerator = (length) => {
-        let password = generate({ length, numbers: true, symbols: true, lowercase: true, uppercase: true, strict: true })
+    passwordGenerator = async (length) => {
+        if (this.generator === undefined) {
+            this.generator = await import('../../../helper/passwordGenerator')
+        }
+        let password = this.generator.generate({ length, numbers: true, symbols: true, lowercase: true, uppercase: true, strict: true })
         if (this.calculateStrength(password) < this.passwordMinCrackTimeSec) {
             return this.passwordGenerator(length + 1)
         }
         return password
     }
 
-    generatePassword = (length) => {
-        let password = this.passwordGenerator(length)
+    generatePassword = async (length) => {
+        let password = await this.passwordGenerator(length)
         copyData(password)
         let forms = cloneDeep(this.state.forms)
         for (let i = 0; i < forms.length; i++) {
@@ -357,8 +361,8 @@ class RegistryUserForm extends React.Component {
         })
     }
 
-    publicConfigResponse = (mc) => {
-        this.props.handleLoadingSpinner(false)
+    publicConfig = async () => {
+        let mc = await authSyncRequest(this, { method: endpoint.PUBLIC_CONFIG })
         if (mc && mc.response && mc.response.status === 200) {
             this.passwordMinCrackTimeSec = mc.response.data.PasswordMinCrackTimeSec
             this.getFormData()
@@ -366,8 +370,7 @@ class RegistryUserForm extends React.Component {
     }
 
     componentDidMount() {
-        this.props.handleLoadingSpinner(true)
-        sendRequest(this, { method: PUBLIC_CONFIG }, this.publicConfigResponse)
+        this.publicConfig()
     }
 };
 

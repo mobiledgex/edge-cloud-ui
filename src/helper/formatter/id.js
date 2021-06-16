@@ -1,72 +1,72 @@
-import * as constant from "../../constant"
+import * as perpetual from "../constant/perpetual"
 
 export const powerState = (label) => {
     switch (label) {
-        case constant.UNKNOWN:
+        case perpetual.UNKNOWN:
             return 0
-        case constant.POWER_STATE_POWER_ON_REQUESTED:
+        case perpetual.POWER_STATE_POWER_ON_REQUESTED:
             return 1
-        case constant.POWER_STATE_POWERING_ON:
+        case perpetual.POWER_STATE_POWERING_ON:
             return 2
-        case constant.POWER_STATE_POWER_ON:
+        case perpetual.POWER_STATE_POWER_ON:
             return 3
-        case constant.POWER_STATE_POWER_OFF_REQUESTED:
+        case perpetual.POWER_STATE_POWER_OFF_REQUESTED:
             return 4
-        case constant.POWER_STATE_POWERING_OFF:
+        case perpetual.POWER_STATE_POWERING_OFF:
             return 5
-        case constant.POWER_STATE_POWER_OFF:
+        case perpetual.POWER_STATE_POWER_OFF:
             return 6
-        case constant.POWER_STATE_REBOOT_REQUESTED:
+        case perpetual.POWER_STATE_REBOOT_REQUESTED:
             return 7
-        case constant.POWER_STATE_REBOOTING:
+        case perpetual.POWER_STATE_REBOOTING:
             return 8
-        case constant.POWER_STATE_REBOOT:
+        case perpetual.POWER_STATE_REBOOT:
             return 9
-        case constant.POWER_STATE_ERROR:
+        case perpetual.POWER_STATE_ERROR:
             return 10
     }
 }
 
 export const maintainance = (label) => {
     switch (label) {
-        case constant.MAINTENANCE_STATE_NORMAL_OPERATION:
+        case perpetual.MAINTENANCE_STATE_NORMAL_OPERATION:
             return 0
-        case constant.MAINTENANCE_STATE_MAINTENANCE_START:
+        case perpetual.MAINTENANCE_STATE_MAINTENANCE_START:
             return 1
-        case constant.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER:
+        case perpetual.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER:
             return 5
     }
 }
 
 export const platformType = (label) => {
     switch (label) {
-        case constant.PLATFORM_TYPE_FAKE:
+        case perpetual.PLATFORM_TYPE_FAKE:
             return 0
-        case constant.PLATFORM_TYPE_DIND:
+        case perpetual.PLATFORM_TYPE_DIND:
             return 1
-        case constant.PLATFORM_TYPE_OPEN_STACK:
+        case perpetual.PLATFORM_TYPE_OPEN_STACK:
             return 2
-        case constant.PLATFORM_TYPE_AZURE:
+        case perpetual.PLATFORM_TYPE_AZURE:
             return 3
-        case constant.PLATFORM_TYPE_OPEN_GCP:
+        case perpetual.PLATFORM_TYPE_OPEN_GCP:
             return 4
-        case constant.PLATFORM_TYPE_EDGEBOX:
+        case perpetual.PLATFORM_TYPE_EDGEBOX:
             return 5
-        case constant.PLATFORM_TYPE_FAKEINFRA:
+        case perpetual.PLATFORM_TYPE_FAKEINFRA:
             return 6
-        case constant.PLATFORM_TYPE_VSPHERE:
+        case perpetual.PLATFORM_TYPE_VSPHERE:
             return 7
-        case constant.PLATFORM_TYPE_AWS_EKS:
+        case perpetual.PLATFORM_TYPE_AWS_EKS:
             return 8
-        case constant.PLATFORM_TYPE_VMPOOL:
+        case perpetual.PLATFORM_TYPE_VMPOOL:
             return 9
-        case constant.PLATFORM_TYPE_AWS_EC2:
+        case perpetual.PLATFORM_TYPE_AWS_EC2:
             return 10
-        case constant.PLATFORM_TYPE_VCD:
+        case perpetual.PLATFORM_TYPE_VCD:
             return 11
-        case constant.PLATFORM_TYPE_K8S_BARE_METAL:
+        case perpetual.PLATFORM_TYPE_K8S_BARE_METAL:
             return 12
-        case constant.PLATFORM_TYPE_KIND:
+        case perpetual.PLATFORM_TYPE_KIND:
             return 13
         default:
             return label
@@ -75,9 +75,9 @@ export const platformType = (label) => {
 
 export const infraApiAccess = (label) => {
     switch (label) {
-        case constant.INFRA_API_ACCESS_DIRECT:
+        case perpetual.INFRA_API_ACCESS_DIRECT:
             return 0
-        case constant.INFRA_API_ACCESS_RESTRICTED:
+        case perpetual.INFRA_API_ACCESS_RESTRICTED:
             return 1
         default:
             return label
@@ -86,9 +86,9 @@ export const infraApiAccess = (label) => {
 
 export const ipSupport = (label) => {
     switch (label) {
-        case constant.IP_SUPPORT_STATIC:
+        case perpetual.IP_SUPPORT_STATIC:
             return 1
-        case constant.IP_SUPPORT_DYNAMIC:
+        case perpetual.IP_SUPPORT_DYNAMIC:
             return 2
         default:
             return label
@@ -97,11 +97,11 @@ export const ipSupport = (label) => {
 
 export const ipAccess = (label) => {
     switch (label) {
-        case constant.UNKNOWN:
+        case perpetual.UNKNOWN:
             return 0
-        case constant.IP_ACCESS_DEDICATED:
+        case perpetual.IP_ACCESS_DEDICATED:
             return 1
-        case constant.IP_ACCESS_SHARED:
+        case perpetual.IP_ACCESS_SHARED:
             return 3
         default:
             return label
@@ -110,11 +110,11 @@ export const ipAccess = (label) => {
 
 export const imageType = (label) => {
     switch (label) {
-        case constant.IMAGE_TYPE_DOCKER:
+        case perpetual.IMAGE_TYPE_DOCKER:
             return 1
-        case constant.IMAGE_TYPE_QCOW:
+        case perpetual.IMAGE_TYPE_QCOW:
             return 2
-        case constant.IMAGE_TYPE_HELM:
+        case perpetual.IMAGE_TYPE_HELM:
             return 3
         default:
             return label
@@ -123,11 +123,11 @@ export const imageType = (label) => {
 
 export const accessType = (label) => {
     switch (label) {
-        case constant.ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT:
+        case perpetual.ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT:
             return 0
-        case constant.ACCESS_TYPE_DIRECT:
+        case perpetual.ACCESS_TYPE_DIRECT:
             return 1
-        case constant.ACCESS_TYPE_LOAD_BALANCER:
+        case perpetual.ACCESS_TYPE_LOAD_BALANCER:
             return 2
         default:
             return label
@@ -136,9 +136,9 @@ export const accessType = (label) => {
 
 export const kind = (label) => {
     switch (label) {
-        case constant.CONFIG_HELM_CUST:
+        case perpetual.CONFIG_HELM_CUST:
             return 'helmCustomizationYaml'
-        case constant.CONFIG_ENV_VAR:
+        case perpetual.CONFIG_ENV_VAR:
             return 'envVarsYaml'
         default:
             return label
@@ -147,11 +147,11 @@ export const kind = (label) => {
 
 export const reportInterval = (label) => {
     switch (label) {
-        case constant.REPORTER_SCHEDULE_WEEKLY:
+        case perpetual.REPORTER_SCHEDULE_WEEKLY:
             return 0
-        case constant.REPORTER_SCHEDULE_15_DAYS:
+        case perpetual.REPORTER_SCHEDULE_15_DAYS:
             return 1
-        case constant.REPORTER_SCHEDULE_MONTHLY:
+        case perpetual.REPORTER_SCHEDULE_MONTHLY:
             return 2
         default:
             return 0
@@ -160,17 +160,17 @@ export const reportInterval = (label) => {
 
 export const vmAppOS = (label) => {
     switch (label) {
-        case constant.VM_APP_OS_UNKNOWN:
+        case perpetual.VM_APP_OS_UNKNOWN:
             return 0
-        case constant.VM_APP_OS_LINUX:
+        case perpetual.VM_APP_OS_LINUX:
             return 1
-        case constant.VM_APP_OS_WINDOWS_10:
+        case perpetual.VM_APP_OS_WINDOWS_10:
             return 2
-        case constant.VM_APP_OS_WINDOWS_2012:
+        case perpetual.VM_APP_OS_WINDOWS_2012:
             return 3
-        case constant.VM_APP_OS_WINDOWS_2016:
+        case perpetual.VM_APP_OS_WINDOWS_2016:
             return 4
-        case constant.VM_APP_OS_WINDOWS_2019:
+        case perpetual.VM_APP_OS_WINDOWS_2019:
             return 5
     }
 }

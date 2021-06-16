@@ -1,10 +1,10 @@
 import React from 'react';
 import { useSelector } from "react-redux";
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
-import * as constant from '../../constant'
 import { syntaxHighLighter } from '../../hoc/highLighter/highLighter'
 import { time } from '../../utils/date_util'
 import {redux_org} from '../../helper/reduxData'
+import { perpetual } from '../../helper/constant';
 
 const checkRole = (selectedRole, form) => {
     return form.roles ? form.roles.includes(selectedRole) : true   
@@ -44,7 +44,7 @@ const getArray = (dataList) => {
 }
 
 const isArrayString = (item, data) => {
-    return Array.isArray(data) && item.dataType === constant.TYPE_STRING
+    return Array.isArray(data) && item.dataType === perpetual.TYPE_STRING
 }
 
 const getArrayRow = (id, item, dataList) => {
@@ -80,15 +80,15 @@ const MexDetailViewer = (props) => {
         let data = info[item.field]
         if (data !== undefined) {
             return (
-                item.dataType === constant.TYPE_ARRAY ?
+                item.dataType === perpetual.TYPE_ARRAY ?
                     getArray(data) :
-                    item.dataType === constant.TYPE_URL ?
+                    item.dataType === perpetual.TYPE_URL ?
                         getURL(data) :
-                        item.dataType === constant.TYPE_DATE ?
+                        item.dataType === perpetual.TYPE_DATE ?
                             getDate(data, item) :
-                            item.dataType === constant.TYPE_JSON ?
+                            item.dataType === perpetual.TYPE_JSON ?
                                 getHighLighter('json', JSON.stringify(data, null, 1)) :
-                                item.dataType === constant.TYPE_YAML ?
+                                item.dataType === perpetual.TYPE_YAML ?
                                     getHighLighter('yaml', data.toString()) :
                                     <div style={{ wordBreak: 'break-all' }}>{item.format ? props.formatData(item, info, true) : data}</div>
             )

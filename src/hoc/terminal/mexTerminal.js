@@ -7,8 +7,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import './style.css'
 import * as date_util from '../../utils/date_util';
-import { RUN_COMMAND, SHOW_LOGS } from '../../constant';
 import { FitAddon } from 'xterm-addon-fit';
+import { perpetual } from '../../helper/constant';
 
 class MexTerminal extends React.Component {
 
@@ -27,7 +27,7 @@ class MexTerminal extends React.Component {
                 this.ws.send(e)
             }
         });
-        if (this.props.request === SHOW_LOGS) {
+        if (this.props.request === perpetual.SHOW_LOGS) {
             fitAddon.fit()
         }
     }
@@ -56,7 +56,7 @@ class MexTerminal extends React.Component {
 
     render() {
         return (
-            <div className={`${this.props.request === RUN_COMMAND ? 'term_run' : 'term_log'}`}>
+            <div className={`${this.props.request === perpetual.RUN_COMMAND ? 'term_run' : 'term_log'}`}>
                 <div id="terminal"></div>
             </div>
         )

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { LOCAL_STRAGE_KEY } from '../../../constant'
 import * as serverData from '../../../services/model/serverData';
 import MexOTPValidation from './MexOTPValidation';
 import LoginForm from './LoginForm'
 import { withRouter } from 'react-router-dom';
+import { perpetual } from '../../../helper/constant';
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -23,7 +23,7 @@ class Login extends Component {
     loadMainPage = (data) => {
         if (data.token) {
             this.params['userToken'] = data.token
-            localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(this.params))
+            localStorage.setItem(perpetual.LOCAL_STRAGE_KEY, JSON.stringify(this.params))
             this.props.history.push('preloader')
         }
     }

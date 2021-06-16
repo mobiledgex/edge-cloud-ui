@@ -3,12 +3,12 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { showAudits } from '../../../../services/model/events'
+import { showAudits } from '../../../../services/modules/audit'
 import { Drawer } from '@material-ui/core';
 import HeaderAuditLog from "./HeaderAuditLog"
 import * as dateUtil from '../../../../utils/date_util'
 import cloneDeep from 'lodash/cloneDeep'
-import { equal } from '../../../../constant/compare';
+import { operators } from '../../../../helper/constant';
 import { redux_org } from '../../../../helper/reduxData';
 let _self = null;
 
@@ -139,7 +139,7 @@ class headerGlobalAudit extends React.Component {
         )
     }
 
-    fetchDefaultData = () => {
+    fetchDefaultData = ()=>{
         this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
         this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
         if (this._isMounted) {
@@ -150,7 +150,7 @@ class headerGlobalAudit extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         this.isPrivate = this.props.privateAccess
-        if (this.props.organizationInfo && !equal(this.props.organizationInfo, prevProps.organizationInfo)) {
+        if (this.props.organizationInfo && !operators.equal(this.props.organizationInfo, prevProps.organizationInfo)) {
             this.fetchDefaultData()
         }
 

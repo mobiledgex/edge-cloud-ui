@@ -5,8 +5,7 @@ import * as actions from '../../../../actions';
 import moment from 'moment'
 import AppsIcon from '@material-ui/icons/Apps';
 import CloseIcon from '@material-ui/icons/Close';
-import { LS_USER_META_DATA } from '../../../../constant';
-import { updateUser } from '../../../../services/model/user'
+import { updateUser } from '../../../../services/modules/users'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, IconButton, List, ListItem, ListItemText, MenuItem, Select, Switch } from '@material-ui/core'
 
@@ -20,6 +19,7 @@ import { getUserMetaData } from '../../../../helper/ls';
 import { timezonePref } from '../../../../utils/sharedPreferences_util';
 import Help from '../../events/auditLog/Help'
 import { HEADER } from '../../../../hoc/forms/MexForms';
+import { perpetual } from '../../../../helper/constant';
 
 export const PREF_DATATABLE = 'Datatable'
 export const PREF_MONITORING = 'Monitoring'
@@ -87,25 +87,22 @@ class Preferences extends React.Component {
         window.dispatchEvent(event);
     }
 
-    onSaveResponse = (mc) => {
-        this.setState({ loading: false })
-        if (mc && mc.response && mc.response.status === 200) {
-            if (this.isTimezoneChanged) {
-                this.onTimezoneChangeEvent()
-            }
-            this.setState({ open: false, header: 1 })
-            this.props.handleAlertInfo('success', 'Preferences saved, please reload page to apply changes')
-        }
-    }
-
     onSave = () => {
-        this.setState({ loading: true }, () => {
+        this.setState({ loading: true }, async () => {
             let data = this.state.data
             let oldData = getUserMetaData()
             this.isTimezoneChanged = data[PREF_TIMEZONE] !== undefined && oldData[PREF_TIMEZONE] !== data[PREF_TIMEZONE]
             data = JSON.stringify(data)
-            localStorage.setItem(LS_USER_META_DATA, data)
-            updateUser(this, { Metadata: data }, this.onSaveResponse)
+            localStorage.setItem(perpetual.LS_USER_META_DATA, data)
+            let mc = await updateUser(this, { Metadata: data })
+            if (mc && mc.response && mc.response.status === 200) {
+                if (this.isTimezoneChanged) {
+                    this.onTimezoneChangeEvent()
+                }
+                this.setState({ open: false, header: 1 })
+                this.props.handleAlertInfo('success', 'Preferences saved, please reload page to apply changes')
+            }
+            this.setState({ loading: false })
         })
     }
 
@@ -193,7 +190,7 @@ class Preferences extends React.Component {
     }
 
     componentDidMount() {
-        let data = localStorage.getItem(LS_USER_META_DATA)
+        let data = localStorage.getItem(perpetual.LS_USER_META_DATA)
         try {
             data = data ? JSON.parse(data) : {}
         }

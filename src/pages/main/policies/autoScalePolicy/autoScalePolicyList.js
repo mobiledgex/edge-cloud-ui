@@ -6,10 +6,10 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 
 import AutoScalePolicyReg from './autoScalePolicyReg'
-import { keys, fields, showAutoScalePolicies, deleteAutoScalePolicy } from '../../../../services/model/autoScalePolicy';
+import { keys, showAutoScalePolicies, deleteAutoScalePolicy } from '../../../../services/modules/autoScalePolicy';
 import {HELP_SCALE_POLICY} from "../../../../tutorial";
-import { ACTION_DELETE, ACTION_UPDATE } from '../../../../constant/actions';
-import { PAGE_AUTO_SCALE_POLICY } from '../../../../constant';
+import { perpetual } from '../../../../helper/constant';
+import { fields } from '../../../../services/model/format';
 class AutoScalePolicy extends React.Component {
     constructor(props) {
         super(props);
@@ -45,8 +45,8 @@ class AutoScalePolicy extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteAutoScalePolicy, type: 'Edit' }
+            { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteAutoScalePolicy, type: 'Edit' }
         ]
     }
 
@@ -58,7 +58,7 @@ class AutoScalePolicy extends React.Component {
 
     requestInfo = () => {
         return ({
-            id:PAGE_AUTO_SCALE_POLICY,
+            id:perpetual.PAGE_AUTO_SCALE_POLICY,
             headerLabel: 'Auto Scale Policy',
             requestType: [showAutoScalePolicies],
             isRegion: true,
@@ -74,7 +74,7 @@ class AutoScalePolicy extends React.Component {
     render() {
         const {currentView } = this.state
         return (
-            <DataView id={PAGE_AUTO_SCALE_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_AUTO_SCALE_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
     }
 
