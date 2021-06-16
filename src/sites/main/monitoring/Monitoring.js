@@ -68,8 +68,8 @@ class Monitoring extends React.Component {
         this.state = {
             loading: false,
             minimize: false,
-            duration: constant.relativeTimeRanges[0],
-            range: timeRangeInMin(constant.relativeTimeRanges[0].duration),
+            duration: constant.relativeTimeRanges[3],
+            range: timeRangeInMin(constant.relativeTimeRanges[3].duration),
             organizations: [],
             filter: { region: defaultRegion(this.regions), search: '', parent, metricType: defaultMetricType(parent), summary: constant.summaryList[0] },
             avgData: {},

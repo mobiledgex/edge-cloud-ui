@@ -156,6 +156,13 @@ export const BILLING_TYPE_PARENT = 'Parent'
 export const CLOUDLET_STATUS_READY = 2
 export const CLOUDLET_STATUS_UNKNOWN = 0
 
+export const VM_APP_OS_UNKNOWN = UNKNOWN
+export const VM_APP_OS_LINUX = 'Linux'
+export const VM_APP_OS_WINDOWS_10 = 'Windows 10'
+export const VM_APP_OS_WINDOWS_2012 = 'Windows 2012'
+export const VM_APP_OS_WINDOWS_2016 = 'Windows 2016'
+export const VM_APP_OS_WINDOWS_2019 = 'Windows 2019'
+
 export const getHeight = (height) => {
     return window.innerHeight - (height ? height : 85)
 }

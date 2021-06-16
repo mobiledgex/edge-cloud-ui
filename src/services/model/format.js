@@ -28,6 +28,7 @@ export const fields = {
     reservable: 'reservable',
     reservedBy: 'reservedBy',
     deployment: 'deployment',
+    vmappostype: 'vmappostype',
     cloudletLocation: 'cloudletLocation',
     latitude: 'latitude',
     longitude: 'longitude',

@@ -17,10 +17,6 @@ export const generateDataset = (chartData, avgData, timezone, labelPosition) => 
                     return { x: moment.tz(value[0], timezone).valueOf(), y: value[chartData.metric.position] }
                 })
                 let steppedLine = chartData.metric.steppedLine ? chartData.metric.steppedLine : false
-                if(steppedLine)
-                {
-                    formattedList.push({x: moment.tz(dataList[dataList.length-1][0], timezone).valueOf(), y:0})
-                }
                 datasets[key] = {
                     label: dataList[0][labelPosition ? labelPosition : 2],
                     fill: false,
