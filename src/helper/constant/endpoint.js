@@ -119,13 +119,14 @@ export const SHOW_APP_INST_CLIENT = 'auth/ctrl/ShowAppInstClient';
 export const CLOUDLET_EVENT_LOG_ENDPOINT = 'auth/events/cloudlet';
 export const CLOUDLET_METRICS_ENDPOINT = 'auth/metrics/cloudlet';
 export const CLOUDLET_METRICS_USAGE_ENDPOINT = 'auth/metrics/cloudlet/usage';
-export const CLUSTER_METRICS_ENDPOINT = 'auth/metrics/cluster';
 export const APP_INST_METRICS_ENDPOINT = 'auth/metrics/app';
-export const CLIENT_METRICS_ENDPOINT = 'auth/metrics/clientapiusage'
-export const CLUSTER_EVENT_LOG_ENDPOINT = 'auth/events/cluster';
 export const APP_INST_EVENT_LOG_ENDPOINT = 'auth/events/app';
 export const APP_INST_USAGE_ENDPOINT = 'auth/usage/app';
+export const METRICS_CLIENT_APP_USAGE = 'auth/metrics/clientappusage'
+export const CLUSTER_METRICS_ENDPOINT = 'auth/metrics/cluster';
+export const CLUSTER_EVENT_LOG_ENDPOINT = 'auth/events/cluster';
 export const CLUSTER_INST_USAGE_ENDPOINT = 'auth/usage/cluster';
+export const CLIENT_METRICS_ENDPOINT = 'auth/metrics/clientapiusage'
 //Alerts
 export const SHOW_ALERT = 'auth/ctrl/ShowAlert';
 export const ALERT_SHOW_RECEIVER = 'auth/alertreceiver/show';
