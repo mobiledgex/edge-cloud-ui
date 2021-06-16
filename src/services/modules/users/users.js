@@ -1,9 +1,6 @@
 import { fields } from '../../model/format'
 import { endpoint } from '../../../helper/constant'
 import { authSyncRequest } from '../../service'
-import {sendAuthRequest} from '../../model/serverWorker'
-
-
 
 export const keys = () => ([
     { field: fields.username, serverField: 'username', label: 'Username', sortable: true, visible: true, filter: true, group: true },
@@ -35,7 +32,17 @@ export const deleteUser = (self, data) => {
     return { method: endpoint.DELETE_USER, data: requestData, success: `User ${data[fields.username]} removed successfully` }
 }
 
-export const updateUser = (self, data, callback)=>{
+export const updateUser = async (self, data)=>{
     let request = {method : endpoint.UPDATE_USER, data : data}
-    sendAuthRequest(self, request, callback)
-} 
+    return await authSyncRequest(self, request)
+}
+
+export const updatePwd = async (self, data) => {
+    let request = { method: endpoint.NEW_PASSWORD, data: data }
+    return await authSyncRequest(self, request,)
+}
+
+export const resetPwd = async (self, data) => {
+    let request = { method: endpoint.RESET_PASSWORD, data: data }
+    return await authSyncRequest(self, request)
+}

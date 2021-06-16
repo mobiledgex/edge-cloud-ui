@@ -1,11 +1,7 @@
 import * as serviceMC from './serviceMC';
 import { SHOW_AUDIT_ORG } from '../../helper/constant/endpoint';
 import { endpoint } from '../../helper/constant';
-import { authSyncRequest, fetchToken, syncRequest } from '../service';
-
-export const responseValid = (mc) => {
-    return mc && mc.response && mc.response.status === 200
-}
+import { authSyncRequest, fetchToken, responseValid, syncRequest } from '../service';
 
 /**
  * orgData : this parameter is useful when we are trying to process multiple 
@@ -45,11 +41,6 @@ export const showAuditOrg = async (self, data, showSpinner) => {
 export const settingLock = async (self, data) => {
     let mc = await authSyncRequest(self, { method: endpoint.SETTING_LOCK, data: data })
     return responseValid(mc)
-}
-
-export const resetPassword = async (self, data) => {
-    let mc = await syncRequest(self, { method: endpoint.RESET_PASSWORD, data: data })
-    return mc
 }
 
 export const createUser = async (self, data) => {

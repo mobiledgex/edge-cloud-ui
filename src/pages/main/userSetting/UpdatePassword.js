@@ -8,11 +8,12 @@ import { copyData } from '../../../utils/file_util'
 import cloneDeep from "lodash/cloneDeep";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
-import { resetPwd, sendRequest, updatePwd } from '../../../services/model/serverWorker'
 import { Button, Dialog, DialogContent, DialogTitle, ListItemText, MenuItem, LinearProgress } from '@material-ui/core';
 import { load } from "../../../helper/zxcvbn";
 import { withRouter } from 'react-router-dom';
 import { endpoint } from "../../../helper/constant";
+import { resetPwd, updatePwd } from "../../../services/modules/users";
+import { syncRequest } from "../../../services/service";
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
 
@@ -55,8 +56,7 @@ class UpdatePassword extends React.Component {
     }
 
     calculateStrength = (value) => {
-        if(this.zxcvbn === undefined)
-        {
+        if (this.zxcvbn === undefined) {
             this.zxcvbn = load()
         }
         return this.zxcvbn(value).guesses / BRUTE_FORCE_GUESSES_PER_SECOND
@@ -110,44 +110,38 @@ class UpdatePassword extends React.Component {
         }
     }
 
-    updateState = (data) => { 
+    updateState = (data) => {
         if (this._isMounted) {
-            this.setState({...data})
+            this.setState({ ...data })
         }
     }
 
-    updateResponse = (mc) => {
-        this.updateState({ loading: false })
-        if (mc && mc.response && mc.response.status === 200) {
-            this.updateState({ open: false })
-            this.props.handleAlertInfo('success', 'Password updated successfully')
-        }
-        else {
-            this.props.handleAlertInfo('error', 'Password update failed')
-        }
-    }
-
-    resetResponse = (mc) => {
-        this.props.handleLoadingSpinner(false)
-        if (mc && mc.response && mc.response.status === 200) {
-            this.props.handleAlertInfo('success', mc.response.data.message)
-            this.props.onReset()
-        }
-        else {
-            this.props.handleAlertInfo('error', mc.message)
-        }
-    }
-
-    onCreate = (data) => {
+    onCreate = async (data) => {
         if (this.props.dialog) {
             this.updateState({ loading: true })
-            updatePwd(this, { password: data.password }, this.updateResponse)
+            let mc = await updatePwd(this, { password: data.password })
+            if (mc && mc.response && mc.response.status === 200) {
+                this.updateState({ open: false })
+                this.props.handleAlertInfo('success', 'Password updated successfully')
+            }
+            else {
+                this.props.handleAlertInfo('error', 'Password update failed')
+            }
+            this.updateState({ loading: false })
         }
         else {
             this.props.handleLoadingSpinner(true)
             let token = this.props.location.search
             token = token.substring(token.indexOf('token=') + 6)
-            resetPwd(this, { token, password: data.password }, this.resetResponse)
+            let mc = await resetPwd(this, { token, password: data.password })
+            if (mc && mc.response && mc.response.status === 200) {
+                this.props.handleAlertInfo('success', mc.response.data.message)
+                this.props.onReset()
+            }
+            else {
+                this.props.handleAlertInfo('error', mc.message)
+            }
+            this.props.handleLoadingSpinner(false)
         }
     }
 
@@ -239,7 +233,7 @@ class UpdatePassword extends React.Component {
     }
 
     renderPasswordForm = () => (
-        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop:5}} />
+        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
     )
 
     render() {
@@ -299,9 +293,8 @@ class UpdatePassword extends React.Component {
         })
     }
 
-
-    publicConfigResponse = (mc) => {
-        this.props.handleLoadingSpinner(false)
+    fetchPublicConfig = async () => {
+        let mc = await syncRequest(this, { method: endpoint.PUBLIC_CONFIG })
         if (mc && mc.response && mc.response.status === 200) {
             this.passwordMinCrackTimeSec = mc.response.data.PasswordMinCrackTimeSec
             this.getFormData()
@@ -310,12 +303,11 @@ class UpdatePassword extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
-        this.props.handleLoadingSpinner(true)
-        sendRequest(this, { method: endpoint.PUBLIC_CONFIG }, this.publicConfigResponse)
+        this.fetchPublicConfig()
     }
 
     componentWillUnmount() {
-        this._isMounted = false 
+        this._isMounted = false
     }
 };
 

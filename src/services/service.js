@@ -125,6 +125,10 @@ const errorResponse = (self, request, error, callback) => {
     }
 }
 
+export const responseValid = (mc) => {
+    return mc && mc.response && mc.response.status === 200
+}
+
 /**
  * @param {*} self: current class object
  * @param {*} request: method, data, format 

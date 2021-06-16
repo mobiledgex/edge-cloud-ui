@@ -14,7 +14,6 @@ import { IconButton } from '../../../hoc/mexui'
 import { dateFormatter, uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
 import { showOrganizations } from '../../../services/modules/organization';
-import { responseValid } from '../../../services/model/serverData';
 import LogoSpinner from '../../../hoc/loader/LogoSpinner'
 import { service } from '../../../services';
 import { FORMAT_FULL_DATE } from '../../../utils/date_util';
@@ -113,7 +112,7 @@ class Reporter extends React.Component {
 
     fetchOrgs = async () => {
         let mc = await service.authSyncRequest(this, showOrganizations())
-        if (responseValid(mc)) {
+        if (service.responseValid(mc)) {
             const dataList = mc.response.data
             const orgList = dataList.map(data => (data[fields.organizationName]))
             this.updateState({ orgList })

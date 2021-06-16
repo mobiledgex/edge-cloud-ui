@@ -1,5 +1,4 @@
 import ServerWorker from '../worker/server.worker.js'
-import * as endpoint from '../../helper/constant/endpoint'
 import { validateExpiry } from '../config.js'
 import { fetchToken } from '../service.js'
 
@@ -13,23 +12,6 @@ const responseListener = (self, worker, callback) => {
         else {
             callback(event.data)
         }
-    });
-}
-
-export const updateUser = (self, data, callback) => {
-    let request = { method: endpoint.UPDATE_USER, data: data }
-    sendAuthRequest(self, request, callback)
-}
-
-export const updatePwd = (self, data, callback) => {
-    let request = { method: endpoint.NEW_PASSWORD, data: data }
-    sendAuthRequest(self, request, callback)
-}
-
-export const resetPwd = (self, data, callback) => {
-    let request = { method: endpoint.RESET_PASSWORD, data: data }
-    sendRequest(self, request).addEventListener('message', event => {
-        callback(event.data)
     });
 }
 

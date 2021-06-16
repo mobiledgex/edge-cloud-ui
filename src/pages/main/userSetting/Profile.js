@@ -8,11 +8,11 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import * as dateUtil from '../../../utils/date_util'
 import { withStyles } from '@material-ui/styles';
-import { updateUser } from '../../../services/model/serverWorker'
 import MexOTPRegistration from '../../landing/otp/MexOTPRegistration'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { operators } from '../../../helper/constant';
 import { lightGreen } from '@material-ui/core/colors';
+import { updateUser } from '../../../services/modules/users';
 
 const iconGreen = lightGreen['A700']
 
@@ -131,21 +131,18 @@ class Profile extends React.Component {
         })
     }
 
-    updateResponse = (mc) => {
-        if (mc && mc.response && mc.response.status === 200) {
-            let responseData = mc.response.data
-            let OTPData = this.state.isOTP ? { responseData } : undefined
-            this.props.updateUserInfo()
-            this.setState({ OTPData })
-        }
-        this.setState({ loading: false })
-    }
-
-    updateProfile = () => {
+    updateProfile = async () => {
         let isOTP = this.state.isOTP
         if (isOTP !== this.props.userInfo['EnableTOTP']) {
             this.setState({ loading: true })
-            updateUser(this, { enabletotp: isOTP }, this.updateResponse)
+            let mc = await updateUser(this, { enabletotp: isOTP })
+            if (mc && mc.response && mc.response.status === 200) {
+                let responseData = mc.response.data
+                let OTPData = this.state.isOTP ? { responseData } : undefined
+                this.props.updateUserInfo()
+                this.setState({ OTPData })
+            }
+            this.setState({ loading: false })
         }
     }
 

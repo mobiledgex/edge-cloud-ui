@@ -87,25 +87,22 @@ class Preferences extends React.Component {
         window.dispatchEvent(event);
     }
 
-    onSaveResponse = (mc) => {
-        this.setState({ loading: false })
-        if (mc && mc.response && mc.response.status === 200) {
-            if (this.isTimezoneChanged) {
-                this.onTimezoneChangeEvent()
-            }
-            this.setState({ open: false, header: 1 })
-            this.props.handleAlertInfo('success', 'Preferences saved, please reload page to apply changes')
-        }
-    }
-
     onSave = () => {
-        this.setState({ loading: true }, () => {
+        this.setState({ loading: true }, async () => {
             let data = this.state.data
             let oldData = getUserMetaData()
             this.isTimezoneChanged = data[PREF_TIMEZONE] !== undefined && oldData[PREF_TIMEZONE] !== data[PREF_TIMEZONE]
             data = JSON.stringify(data)
             localStorage.setItem(perpetual.LS_USER_META_DATA, data)
-            updateUser(this, { Metadata: data }, this.onSaveResponse)
+            let mc = await updateUser(this, { Metadata: data })
+            if (mc && mc.response && mc.response.status === 200) {
+                if (this.isTimezoneChanged) {
+                    this.onTimezoneChangeEvent()
+                }
+                this.setState({ open: false, header: 1 })
+                this.props.handleAlertInfo('success', 'Preferences saved, please reload page to apply changes')
+            }
+            this.setState({ loading: false })
         })
     }
 
