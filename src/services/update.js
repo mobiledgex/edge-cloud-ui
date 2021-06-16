@@ -1,3 +1,5 @@
+import { operators } from "../helper/constant"
+
 const compareObjects = (newData, oldData, ignoreCase) => {
     if ((newData === undefined || newData.length === 0) && (oldData === undefined || oldData.length === 0)) {
         return true

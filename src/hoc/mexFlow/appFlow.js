@@ -86,7 +86,7 @@ export const deploymentTypeFlow = (data, type) => {
         }
         dataList.push({ type: 'edges', data: { id: 2101, source: 2, target: 101, as: 'none' } })
     }
-    else if (data[fields.deployment] === DEPLOYMENT_TYPE_DOCKER) {
+    else if (data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_DOCKER) {
         dataList.push({ type: 'nodes', data: { id: 2, shape: SHAPE_ROUND_RECTANGLE, label: 'Docker VM', width: 170, height: 110, bg: '#5AB1EF', zi: 1, tva: 'top', tmy: -10, bw: 2, bc: '#c3daf9' }, position: { x: 600, y: 185 } })
         dataList.push({ type: 'nodes', data: { id: 20004, shape: SHAPE_ELLIPSE, label: 'App', width: 100, height: 50, bg: '#FFF', bw: 1, zi: 4, tc: '#5AB1EF' }, position: { x: 600, y: 185 } })
         if (type === perpetual.PAGE_APPS) {
