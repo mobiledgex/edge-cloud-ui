@@ -4,7 +4,7 @@ import { Card, Grid, Typography } from '@material-ui/core'
 import { Button, DateTimePicker, Select } from '../../../hoc/mexui'
 import { currentDate, diff, FORMAT_FULL_DATE, FORMAT_FULL_T_Z, subtractDays, time, timezones } from '../../../utils/date_util'
 import { timezonePref } from '../../../utils/sharedPreferences_util'
-import { generateReport } from '../../../services/model/reporter'
+import { generateReport } from '../../../services/modules/reporter'
 import * as actions from '../../../actions'
 import { redux_org } from '../../../helper/reduxData'
 

@@ -7,24 +7,23 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, SWITCH, TEXT_AREA, ICON_
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as constant from '../../../constant';
-import { fields, updateFieldData } from '../../../services/model/format';
+import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData';
 //model
 import * as serverData from '../../../services/model/serverData'
-import { getOrganizationList } from '../../../services/model/organization';
-import { getFlavorList, showFlavors } from '../../../services/model/flavor';
-import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/model/autoProvisioningPolicy';
-import { createApp, updateApp } from '../../../services/model/app';
-import { refreshAllAppInst, showAppInsts } from '../../../services/model/appInstance';
+import { service, updateFieldData } from '../../../services'
+import { getOrganizationList } from '../../../services/modules/organization';
+import { getFlavorList, showFlavors } from '../../../services/modules/flavor/flavor';
+import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/modules/autoProvPolicy';
+import { createApp, updateApp } from '../../../services/modules/app';
+import { refreshAllAppInst, showAppInsts } from '../../../services/modules/appInst';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { HELP_APP_REG } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
-import { SHOW_AUTO_PROV_POLICY, SHOW_FLAVOR } from '../../../services/model/endPointTypes';
 import { Grid } from '@material-ui/core';
-import { SHOW_APP_INST } from '../../../services/model/endpoints';
+import { endpoint, perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 
@@ -45,7 +44,7 @@ class AppReg extends React.Component {
         this.autoProvPolicyList = []
         this.requestedRegionList = []
         this.appInstanceList = []
-        this.configOptions = [constant.CONFIG_ENV_VAR, constant.CONFIG_HELM_CUST]
+        this.configOptions = [perpetual.CONFIG_ENV_VAR, perpetual.CONFIG_HELM_CUST]
         this.originalData = undefined
         this.expandAdvanceMenu = false
         this.tlsCount = 0
@@ -256,9 +255,9 @@ class AppReg extends React.Component {
             }
         }
         if (deployment && organizationName && appName && version) {
-            form.value = deployment === constant.DEPLOYMENT_TYPE_VM ?
+            form.value = deployment === perpetual.DEPLOYMENT_TYPE_VM ?
                 `https://artifactory.mobiledgex.net/artifactory/repo-${organizationName}` :
-                deployment === constant.DEPLOYMENT_TYPE_HELM ?
+                deployment === perpetual.DEPLOYMENT_TYPE_HELM ?
                     `https://chart.registry.com/charts:${organizationName}/${appName}` :
                     `docker.mobiledgex.net/${organizationName.toLowerCase()}/images/${appName.toLowerCase()}:${version.toLowerCase()}`
         }
@@ -267,8 +266,8 @@ class AppReg extends React.Component {
     deploymentValueChange = (currentForm, forms, isInit) => {
         forms = forms.filter((form) => {
             if (form.field === fields.imageType) {
-                form.value = currentForm.value === constant.DEPLOYMENT_TYPE_HELM ? constant.IMAGE_TYPE_HELM :
-                    currentForm.value === constant.DEPLOYMENT_TYPE_VM ? constant.IMAGE_TYPE_QCOW : constant.IMAGE_TYPE_DOCKER
+                form.value = currentForm.value === perpetual.DEPLOYMENT_TYPE_HELM ? perpetual.IMAGE_TYPE_HELM :
+                    currentForm.value === perpetual.DEPLOYMENT_TYPE_VM ? perpetual.IMAGE_TYPE_QCOW : perpetual.IMAGE_TYPE_DOCKER
                 return form
             }
             else if (form.field === fields.imagePath) {
@@ -276,30 +275,30 @@ class AppReg extends React.Component {
                 return form
             }
             else if (form.field === fields.scaleWithCluster) {
-                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES
+                form.visible = currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES
                 return form
             }
             else if (form.field === fields.configs) {
-                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM || currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES
-                this.configOptions = currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES ? [constant.CONFIG_ENV_VAR] : [constant.CONFIG_HELM_CUST]
+                form.visible = currentForm.value === perpetual.DEPLOYMENT_TYPE_HELM || currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES
+                this.configOptions = currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES ? [perpetual.CONFIG_ENV_VAR] : [perpetual.CONFIG_HELM_CUST]
                 return form
             }
             else if (form.field === fields.annotations) {
-                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_HELM
+                form.visible = currentForm.value === perpetual.DEPLOYMENT_TYPE_HELM
                 return form
             }
             else if (form.field === fields.annotationmulti) {
-                if (currentForm.value === constant.DEPLOYMENT_TYPE_HELM) {
+                if (currentForm.value === perpetual.DEPLOYMENT_TYPE_HELM) {
                     return form
                 }
             }
             else if (form.field === fields.configmulti) {
-                if (currentForm.value === constant.DEPLOYMENT_TYPE_HELM || currentForm.value === constant.DEPLOYMENT_TYPE_KUBERNETES) {
+                if (currentForm.value === perpetual.DEPLOYMENT_TYPE_HELM || currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
                     return form
                 }
             }
             else if (form.field === fields.vmappostype) {
-                form.visible = currentForm.value === constant.DEPLOYMENT_TYPE_VM
+                form.visible = currentForm.value === perpetual.DEPLOYMENT_TYPE_VM
                 return form
             }
             else {
@@ -481,7 +480,7 @@ class AppReg extends React.Component {
         else if (form.field === fields.deployment) {
             this.deploymentValueChange(form, forms, isInit)
             let finalData = isInit ? data : formattedData(forms)
-            flowDataList.push(appFlow.deploymentTypeFlow(finalData, constant.PAGE_APPS))
+            flowDataList.push(appFlow.deploymentTypeFlow(finalData, perpetual.PAGE_APPS))
             flowDataList.push(appFlow.ipAccessFlowApp(finalData))
             flowDataList.push(appFlow.portFlow(this.tlsCount))
         }
@@ -500,7 +499,7 @@ class AppReg extends React.Component {
         }
         else if (form.field === fields.accessType) {
             let finalData = isInit ? data : formattedData(forms)
-            flowDataList.push(appFlow.deploymentTypeFlow(finalData, constant.PAGE_APPS))
+            flowDataList.push(appFlow.deploymentTypeFlow(finalData, perpetual.PAGE_APPS))
             flowDataList.push(appFlow.ipAccessFlowApp(finalData))
             flowDataList.push(appFlow.portFlow(this.tlsCount))
         }
@@ -669,7 +668,7 @@ class AppReg extends React.Component {
                     }
 
                     if (udpPorts.length > 0 && this.updRangeExceeds(udpPorts)) {
-                        if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
+                        if (data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
                             valid = false
                             this.props.handleAlertInfo('error', 'Maximum 1000 UDP ports are allowed for deployment type kubernetes app')
                         }
@@ -702,7 +701,7 @@ class AppReg extends React.Component {
                         }
                         else {
                             let regions = data[fields.region]
-                            let requestDataList = []
+                            let requestList = []
                             if (regions.includes('All')) {
                                 regions = cloneDeep(this.regions)
                                 regions.splice(0, 1)
@@ -728,11 +727,11 @@ class AppReg extends React.Component {
                                         }
                                     }
                                 }
-                                requestDataList.push(createApp(requestData))
+                                requestList.push(createApp(requestData))
                             })
 
-                            if (requestDataList && requestDataList.length > 0) {
-                                serverData.sendMultiRequest(this, requestDataList, this.onAddResponse)
+                            if (requestList && requestList.length > 0) {
+                                service.multiAuthRequest(this, requestList, this.onAddResponse)
                             }
                         }
                     }
@@ -788,10 +787,10 @@ class AppReg extends React.Component {
                             form.options = this.autoProvPolicyList
                             break;
                         case fields.vmappostype:
-                            form.options = [constant.VM_APP_OS_LINUX, constant.VM_APP_OS_WINDOWS_10, constant.VM_APP_OS_WINDOWS_2012, constant.VM_APP_OS_WINDOWS_2016, constant.VM_APP_OS_WINDOWS_2019]
+                            form.options = [perpetual.VM_APP_OS_LINUX, perpetual.VM_APP_OS_WINDOWS_10, perpetual.VM_APP_OS_WINDOWS_2012, perpetual.VM_APP_OS_WINDOWS_2016, perpetual.VM_APP_OS_WINDOWS_2019]
                             break;
                         case fields.deployment:
-                            form.options = [constant.DEPLOYMENT_TYPE_DOCKER, constant.DEPLOYMENT_TYPE_KUBERNETES, constant.DEPLOYMENT_TYPE_VM, constant.DEPLOYMENT_TYPE_HELM]
+                            form.options = [perpetual.DEPLOYMENT_TYPE_DOCKER, perpetual.DEPLOYMENT_TYPE_KUBERNETES, perpetual.DEPLOYMENT_TYPE_VM, perpetual.DEPLOYMENT_TYPE_HELM]
                             break;
                         default:
                             form.options = undefined;
@@ -803,33 +802,33 @@ class AppReg extends React.Component {
 
     loadDefaultData = async (forms, data) => {
         if (data) {
-            let requestTypeList = []
+            let requestList = []
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
-            requestTypeList.push(showAppInsts(this, { region: data[fields.region], appinst: { key: { app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] } } } }, true))
-            requestTypeList.push(showFlavors(this, { region: data[fields.region] }))
-            requestTypeList.push(showAutoProvPolicies(this, { region: data[fields.region] }))
+            requestList.push(showAppInsts(this, { region: data[fields.region], appinst: { key: { app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] } } } }, true))
+            requestList.push(showFlavors(this, { region: data[fields.region] }))
+            requestList.push(showAutoProvPolicies(this, { region: data[fields.region] }))
 
-            let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
+            let mcRequestList = await service.multiAuthSyncRequest(this, requestList)
             if (mcRequestList && mcRequestList.length > 0) {
                 for (let i = 0; i < mcRequestList.length; i++) {
                     let mcRequest = mcRequestList[i];
                     let request = mcRequest.request;
-                    if (request.method === SHOW_FLAVOR) {
+                    if (request.method === endpoint.SHOW_FLAVOR) {
                         this.flavorList = mcRequest.response.data
                     }
-                    else if (request.method === SHOW_AUTO_PROV_POLICY) {
+                    else if (request.method === endpoint.SHOW_AUTO_PROV_POLICY) {
                         this.autoProvPolicyList = mcRequest.response.data
                     }
-                    else if (request.method === SHOW_APP_INST) {
+                    else if (request.method === endpoint.SHOW_APP_INST) {
                         this.appInstExist = mcRequest.response.data.length > 0
                     }
                 }
             }
 
-            if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES) {
-                this.configOptions = [constant.CONFIG_ENV_VAR]
+            if (data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
+                this.configOptions = [perpetual.CONFIG_ENV_VAR]
             }
             let multiFormCount = 0
             if (data[fields.accessPorts]) {
@@ -982,7 +981,7 @@ class AppReg extends React.Component {
             if (data) {
 
                 if (form.field === fields.refreshAppInst) {
-                    form.visible = this.appInstExist && (data[fields.deployment] !== constant.DEPLOYMENT_TYPE_VM)
+                    form.visible = this.appInstExist && (data[fields.deployment] !== perpetual.DEPLOYMENT_TYPE_VM)
                 }
                 if (form.forms && form.formType !== HEADER && form.formType !== MULTI_FORM) {
                     this.updateFormData(form.forms, data)
@@ -1022,7 +1021,7 @@ class AppReg extends React.Component {
             await this.loadDefaultData(forms, data)
         }
         else {
-            this.organizationList = await getOrganizationList(this, { type: constant.DEVELOPER })
+            this.organizationList = await getOrganizationList(this, { type: perpetual.DEVELOPER })
         }
 
         forms.push(

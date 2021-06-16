@@ -5,11 +5,10 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData';
-import { keys, showFlavors, deleteFlavor } from '../../../services/model/flavor';
+import { keys, showFlavors, deleteFlavor } from '../../../services/modules/flavor';
 import FlavorReg from './flavorReg';
 import { HELP_FLAVOR_LIST } from "../../../tutorial";
-import { ACTION_DELETE } from '../../../constant/actions';
-import { PAGE_FLAVORS } from '../../../constant';
+import { perpetual } from '../../../helper/constant';
 
 class FlavorList extends React.Component {
     constructor(props) {
@@ -44,7 +43,7 @@ class FlavorList extends React.Component {
     /**Action menu block */
     actionMenu = () => {
         return [
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteFlavor, type: 'Edit' }
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteFlavor, type: 'Edit' }
         ]
     }
 
@@ -58,7 +57,7 @@ class FlavorList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: PAGE_FLAVORS,
+            id: perpetual.PAGE_FLAVORS,
             headerLabel: 'Flavors',
             nameField: fields.flavorName,
             isRegion: true,
@@ -74,7 +73,7 @@ class FlavorList extends React.Component {
     render() {
         const {currentView} = this.state
         return (
-            <DataView id={PAGE_FLAVORS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_FLAVORS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
     }
 

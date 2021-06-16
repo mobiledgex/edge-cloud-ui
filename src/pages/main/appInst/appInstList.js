@@ -5,16 +5,15 @@ import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
-import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst } from '../../../services/model/appInstance';
-import { showApps } from '../../../services/model/app';
-import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
+import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst } from '../../../services/modules/appInst';
+import { showApps } from '../../../services/modules/app';
+import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import AppInstReg from './appInstReg';
-import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog } from '@material-ui/core';
 import { HELP_APP_INST_LIST } from "../../../tutorial";
-import { ACTION_DELETE, ACTION_UPDATE, ACTION_POWER_OFF, ACTION_POWER_ON, ACTION_TERMINAL, ACTION_UPGRADE, ACTION_REFRESH, ACTION_REBOOT } from '../../../constant/actions';
+import { perpetual } from '../../../helper/constant';
 import * as serverData from '../../../services/model/serverData'
 import { idFormatter, labelFormatter, uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
@@ -58,8 +57,8 @@ class AppInstList extends React.Component {
     onTerminalVisible = (data) => {
         let visible = false;
         if (data) {
-            if (data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM) {
-                visible = redux_org.role(this) !== constant.DEVELOPER_VIEWER
+            if (data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_VM) {
+                visible = redux_org.role(this) !== perpetual.DEVELOPER_VIEWER
             }
             else {
                 let runtimeInfo = data[fields.runtimeInfo]
@@ -80,16 +79,16 @@ class AppInstList extends React.Component {
 
     onPrePowerState = (type, action, data) => {
         let powerState = labelFormatter.powerState(data[fields.powerState])
-        let visible = data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM
+        let visible = data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_VM
         if (visible) {
-            if (action.id === ACTION_POWER_ON) {
-                visible = powerState === constant.POWER_STATE_POWER_OFF
+            if (action.id === perpetual.ACTION_POWER_ON) {
+                visible = powerState === perpetual.POWER_STATE_POWER_OFF
             }
-            else if (action.id === ACTION_POWER_OFF) {
-                visible = powerState === constant.POWER_STATE_POWER_ON
+            else if (action.id === perpetual.ACTION_POWER_OFF) {
+                visible = powerState === perpetual.POWER_STATE_POWER_ON
             }
-            else if (action.id === ACTION_REBOOT) {
-                visible = powerState === constant.POWER_STATE_POWER_ON
+            else if (action.id === perpetual.ACTION_REBOOT) {
+                visible = powerState === perpetual.POWER_STATE_POWER_ON
             }
         }
         return visible
@@ -100,33 +99,33 @@ class AppInstList extends React.Component {
     }
 
     onUpdateVisible = (data) => {
-        return data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES || data[fields.deployment] === constant.DEPLOYMENT_TYPE_HELM
+        return data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES || data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_HELM
     }
 
     getDeleteActionMessage = (action, data) => {
-        if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && redux_org.isAdmin(this)) {
+        if (data[fields.cloudletStatus] !== perpetual.CLOUDLET_STATUS_READY && redux_org.isAdmin(this)) {
             return `Cloudlet status is not online, do you still want to proceed with ${data[fields.appName]} App Instance deletion?`
         }
     }
 
     getDialogNote = (data) => {
         if (data[fields.clusterName]) {
-            return data[fields.clusterName].includes('autocluster') || data[fields.deployment] === constant.DEPLOYMENT_TYPE_VM ? '' :
+            return data[fields.clusterName].includes('autocluster') || data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_VM ? '' :
                 'Note: Deleting this Application Instance will not automatically delete the Cluster Instance associated with this Application Instance. You must go in and manually delete the Cluster Instance'
         }
     }
 
     onPowerState = (action, data, callback) => {
-        let powerState = idFormatter.powerState(constant.UNKNOWN)
+        let powerState = idFormatter.powerState(perpetual.UNKNOWN)
         switch (action.id) {
-            case ACTION_POWER_ON:
-                powerState = idFormatter.powerState(constant.POWER_STATE_POWER_ON)
+            case perpetual.ACTION_POWER_ON:
+                powerState = idFormatter.powerState(perpetual.POWER_STATE_POWER_ON)
                 break;
-            case ACTION_POWER_OFF:
-                powerState = idFormatter.powerState(constant.POWER_STATE_POWER_OFF)
+            case perpetual.ACTION_POWER_OFF:
+                powerState = idFormatter.powerState(perpetual.POWER_STATE_POWER_OFF)
                 break;
-            case ACTION_REBOOT:
-                powerState = idFormatter.powerState(constant.POWER_STATE_REBOOT)
+            case perpetual.ACTION_REBOOT:
+                powerState = idFormatter.powerState(perpetual.POWER_STATE_REBOOT)
                 break;
         }
         data[fields.powerState] = powerState
@@ -137,14 +136,14 @@ class AppInstList extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_UPDATE, label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Edit' },
-            { id: ACTION_UPGRADE, label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, type: 'Edit', warning: 'upgrade' },
-            { id: ACTION_REFRESH, label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, warning: 'refresh' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader, type: 'Edit', dialogNote: this.getDialogNote },
-            { id: ACTION_TERMINAL, label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
-            { id: ACTION_POWER_ON, label: 'Power On', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power on' },
-            { id: ACTION_POWER_OFF, label: 'Power Off', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power off' },
-            { id: ACTION_REBOOT, label: 'Reboot', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'reboot' }
+            { id: perpetual.ACTION_UPDATE, label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Edit' },
+            { id: perpetual.ACTION_UPGRADE, label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, type: 'Edit', warning: 'upgrade' },
+            { id: perpetual.ACTION_REFRESH, label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, warning: 'refresh' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader, type: 'Edit', dialogNote: this.getDialogNote },
+            { id: perpetual.ACTION_TERMINAL, label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
+            { id: perpetual.ACTION_POWER_ON, label: 'Power On', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power on' },
+            { id: perpetual.ACTION_POWER_OFF, label: 'Power Off', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power off' },
+            { id: perpetual.ACTION_REBOOT, label: 'Reboot', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'reboot' }
         ]
     }
 
@@ -182,7 +181,7 @@ class AppInstList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: constant.PAGE_APP_INSTANCES,
+            id: perpetual.PAGE_APP_INSTANCES,
             headerLabel: 'App Instances',
             nameField: fields.appName,
             requestType: redux_org.isOperator(this) ? [showAppInsts, showCloudletInfoData] : [showAppInsts, showApps, showCloudletInfoData],
@@ -203,7 +202,7 @@ class AppInstList extends React.Component {
         const { currentView } = this.state
         return (
             <React.Fragment>
-                <DataView id={constant.PAGE_APP_INSTANCES} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
+                <DataView id={perpetual.PAGE_APP_INSTANCES} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
                 <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => { this.updateState({ openTerminal: false }) }}>
                     <TerminalViewer data={this.state.terminalData} onClose={() => {
                         this.updateState({ openTerminal: false })

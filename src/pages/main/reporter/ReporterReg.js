@@ -7,16 +7,15 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 //model
-import { createReporter, updateReporter } from '../../../services/model/reporter';
+import { createReporter, updateReporter } from '../../../services/modules/reporter';
 import { Grid } from '@material-ui/core';
 
-import { getOrganizationList } from '../../../services/model/organization';
-import { OPERATOR, REPORTER_SCHEDULE_15_DAYS, REPORTER_SCHEDULE_WEEKLY, REPORTER_SCHEDULE_MONTHLY } from '../../../constant';
-import { timezones, time, FORMAT_FULL_T_Z, diff } from '../../../utils/date_util';
+import { getOrganizationList } from '../../../services/modules/organization';
+import { timezones, time, FORMAT_FULL_T_Z } from '../../../utils/date_util';
 import { timezonePref } from '../../../utils/sharedPreferences_util';
 import moment from 'moment';
-import { ACTION_UPDATE } from '../../../constant/actions';
 import { redux_org } from '../../../helper/reduxData';
+import { perpetual } from '../../../helper/constant';
 
 class ReporterReg extends React.Component {
     constructor(props) {
@@ -26,8 +25,8 @@ class ReporterReg extends React.Component {
             forms: [],
         }
         this._isMounted = false
-        this.isUpdate = props.id ? props.id === ACTION_UPDATE : false
-        this.scheduleList = [REPORTER_SCHEDULE_WEEKLY, REPORTER_SCHEDULE_15_DAYS, REPORTER_SCHEDULE_MONTHLY]
+        this.isUpdate = props.id ? props.id === perpetual.ACTION_UPDATE : false
+        this.scheduleList = [perpetual.REPORTER_SCHEDULE_WEEKLY, perpetual.REPORTER_SCHEDULE_15_DAYS, perpetual.REPORTER_SCHEDULE_MONTHLY]
         this.timezoneList = timezones()
     }
 
@@ -128,7 +127,7 @@ class ReporterReg extends React.Component {
             await this.loadDefaultData(data)
         }
         else {
-            this.organizationList = await getOrganizationList(this, { type: OPERATOR })
+            this.organizationList = await getOrganizationList(this, { type: perpetual.OPERATOR })
         }
 
         let forms = this.formKeys()

@@ -6,13 +6,11 @@ import { connect } from 'react-redux';
 
 import DataView from '../../../../container/DataView';
 import { fields } from '../../../../services/model/format';
-import { showBillingOrg, deleteBillingOrg, keys } from '../../../../services/model/billingOrg';
+import { showBillingOrg, deleteBillingOrg, keys } from '../../../../services/modules/billingorg';
 
 import Invoices from '../invoices/Invoices';
 import Reg from './BillingOrgReg';
-
-import { BILLING_TYPE_PARENT, PAGE_BILLING_ORG } from '../../../../constant'
-import { ACTION_BILLING_ADD_CHILD, ACTION_BILLING_REMOVE_CHILD, ACTION_DELETE, ACTION_UPDATE } from '../../../../constant/actions';
+import { perpetual } from '../../../../helper/constant';
 import { redux_org } from '../../../../helper/reduxData';
 class BillingOrg extends React.Component {
     constructor(props) {
@@ -43,7 +41,7 @@ class BillingOrg extends React.Component {
     onReg = (action, data) => {
         let valid = true
         let actionId = action ? action.id : undefined
-        if (actionId === ACTION_BILLING_REMOVE_CHILD && data[fields.children] === undefined) {
+        if (actionId === perpetual.ACTION_BILLING_REMOVE_CHILD && data[fields.children] === undefined) {
             valid = false
         }
         if (valid) {
@@ -55,7 +53,7 @@ class BillingOrg extends React.Component {
     }
 
     orgActionVisible = (data) => {
-        return data[fields.type] === BILLING_TYPE_PARENT.toLowerCase()
+        return data[fields.type] === perpetual.BILLING_TYPE_PARENT.toLowerCase()
     }
 
     invoices = async (action, data) => {
@@ -68,17 +66,17 @@ class BillingOrg extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_UPDATE, label: 'Update', onClick: this.onReg, type: 'Edit' },
+            { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onReg, type: 'Edit' },
             { label: 'Invoices', onClick: this.invoices, type: 'Edit' },
-            { id: ACTION_BILLING_ADD_CHILD, label: 'Add Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
-            { id: ACTION_BILLING_REMOVE_CHILD, label: 'Remove Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteBillingOrg, visibility: this.onBillingAction, type: 'Edit' }
+            { id: perpetual.ACTION_BILLING_ADD_CHILD, label: 'Add Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
+            { id: perpetual.ACTION_BILLING_REMOVE_CHILD, label: 'Remove Child', onClick: this.onReg, visible: this.orgActionVisible, icon: 'delete', warning: 'delete all the selected alerts', type: 'Edit' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteBillingOrg, visibility: this.onBillingAction, type: 'Edit' }
         ]
     }
 
     requestInfo = () => {
         return ({
-            id: PAGE_BILLING_ORG,
+            id: perpetual.PAGE_BILLING_ORG,
             headerLabel: 'Billing Org',
             nameField: fields.name,
             requestType: [showBillingOrg],
@@ -92,7 +90,7 @@ class BillingOrg extends React.Component {
     render() {
         const { currentView } = this.state
         return (
-            <DataView id={PAGE_BILLING_ORG} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} />
+            <DataView id={perpetual.PAGE_BILLING_ORG} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} />
         )
     }
 

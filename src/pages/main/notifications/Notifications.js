@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 import Popover from '@material-ui/core/Popover';
 import { Badge, IconButton } from '@material-ui/core';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
-import { showAlerts } from '../../../services/model/alerts'
+import { showAlerts } from '../../../services/modules/alerts'
 import { redux_org} from '../../../helper/reduxData'
 import * as constant from '../../../constant'
 import Alerts from './alerts/Alerts'
 import './style.css'
 
-import notificationWorker from './services/notifcation.worker.js'
-import { getToken } from '../monitoring/services/service';
-import { equal } from '../../../constant/compare';
+import notificationWorker from './services/notifcation.worker.js';
+import { operators } from '../../../helper/constant';
+import { fetchToken } from '../../../services/service';
 
 class AlertGlobal extends React.Component {
 
@@ -97,7 +97,7 @@ class AlertGlobal extends React.Component {
     }
 
     sendRequest = (region) => {
-        this.worker.postMessage({ token: getToken(this), request: showAlerts(this, { region }) })
+        this.worker.postMessage({ token: fetchToken(this), request: showAlerts(this, { region }) })
     }
 
     fetchdata = () => {
@@ -121,7 +121,7 @@ class AlertGlobal extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.organizationInfo && !equal(this.props.organizationInfo, prevProps.organizationInfo)) {
+        if (this.props.organizationInfo && !operators.equal(this.props.organizationInfo, prevProps.organizationInfo)) {
             if (redux_org.isAdmin(this)) {
                 this.fetchdata()
             }

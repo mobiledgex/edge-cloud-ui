@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { formatData } from "../../../../services/model/endpoints"
+import { formatData } from "../../../../services/format/format"
 
 const processData = (worker) => {
     const { dataList, region } = worker

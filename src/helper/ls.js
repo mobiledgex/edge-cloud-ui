@@ -1,11 +1,8 @@
 import {redux_org} from '../helper/reduxData'
-
-export const LS_USER_META_DATA = 'usermetadata'
-export const LS_ORGANIZATION_INFO = 'organizationInfo'
-export const LS_REGIONS = 'regions'
+import { perpetual } from './constant'
 
 export const getUserMetaData = () => {
-    let data = localStorage.getItem(LS_USER_META_DATA)
+    let data = localStorage.getItem(perpetual.LS_USER_META_DATA)
     try {
         data = data ? JSON.parse(data) : {}
     }
@@ -30,7 +27,7 @@ export const orgUserMetaDataLS = (self) => {
 
 export const organizationInfo = () => {
     try {
-        return JSON.parse(localStorage.getItem(LS_ORGANIZATION_INFO))
+        return JSON.parse(localStorage.getItem(perpetual.LS_ORGANIZATION_INFO))
     }
     catch (e) {
 

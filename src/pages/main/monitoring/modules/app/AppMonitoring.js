@@ -2,16 +2,16 @@ import React from 'react'
 import AppMexMap from './AppMexMap'
 import { Card, GridList, GridListTile } from '@material-ui/core'
 import { fields } from '../../../../../services/model/format'
-import { OFFLINE, ONLINE } from '../../../../../constant';
 import AppClient from './AppClient'
 import AppEvent from './AppEvent'
 import MexMetric from '../../common/MexMetric'
 import { mapGridHeight } from '../../helper/Constant';
+import { perpetual } from '../../../../../helper/constant';
 
 const healthDataStructure = () => {
     let healthData = {}
-    healthData[ONLINE] = { value: 0, color: '#66BB6A' }
-    healthData[OFFLINE] = { value: 0, color: '#EF5350' }
+    healthData[perpetual.ONLINE] = { value: 0, color: '#66BB6A' }
+    healthData[perpetual.OFFLINE] = { value: 0, color: '#EF5350' }
     return healthData
 }
 
@@ -24,10 +24,10 @@ const processData = (avgData) => {
             let keyData = avgDataRegion[key]
             let health = keyData[fields.healthCheck]
             if (health === 3) {
-                healthData[ONLINE]['value'] = parseInt(healthData[ONLINE]['value']) + 1
+                healthData[perpetual.ONLINE]['value'] = parseInt(healthData[perpetual.ONLINE]['value']) + 1
             }
             else {
-                healthData[OFFLINE]['value'] = parseInt(healthData[OFFLINE]['value']) + 1
+                healthData[perpetual.OFFLINE]['value'] = parseInt(healthData[perpetual.OFFLINE]['value']) + 1
             }
             if (keyData[fields.cloudletLocation]) {
                 let cloudletLocation = keyData[fields.cloudletLocation]

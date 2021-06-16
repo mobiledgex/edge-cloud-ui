@@ -2,6 +2,7 @@ import React from 'react'
 import { useHistory } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import { Icon, Input, Button } from 'semantic-ui-react';
+import { perpetual } from '../../../helper/constant';
 
 
 const Login = (props) => {
@@ -57,8 +58,8 @@ const Login = (props) => {
                         {loginDanger}
                     </div>
                 </Grid>
-                <div style={{ float: 'left', display: 'inline', left: 0, color: 'white', cursor: 'pointer', marginBottom: 15, marginTop: 0, color:'#C4D3DC' }} onClick={() => reValidate(1)}>Verify Email</div>
-                <div style={{ float: 'right', display: 'inline', right: 0, color: 'white', cursor: 'pointer', marginBottom: 15, marginTop: 0, color:'#C4D3DC' }} onClick={()=> reValidate(0)}>Forgot Password</div>
+                <div style={{ float: 'left', display: 'inline', left: 0, color: 'white', cursor: 'pointer', marginBottom: 15, marginTop: 0, color:'#C4D3DC' }} onClick={() => reValidate(perpetual.VERIFY_EMAIL)}>Verify Email</div>
+                <div style={{ float: 'right', display: 'inline', right: 0, color: 'white', cursor: 'pointer', marginBottom: 15, marginTop: 0, color:'#C4D3DC' }} onClick={()=> reValidate(perpetual.VERIFY_PASSWORD)}>Forgot Password</div>
                 <Button onClick={() => onSubmit()}>Log In</Button>
             </div>
         </React.Fragment>

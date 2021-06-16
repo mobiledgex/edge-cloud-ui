@@ -1,6 +1,5 @@
 import React from 'react'
 import { useSelector } from "react-redux";
-import * as constant from '../../constant'
 import { Icon, Popup } from 'semantic-ui-react';
 import { fields } from '../../services/model/format';
 import { IconButton, Tooltip } from '@material-ui/core';
@@ -10,6 +9,8 @@ import { redux_org } from '../reduxData';
 
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
+import { perpetual } from '../constant';
+import { toFirstUpperCase } from '../../utils/string_utils';
 
 export const trusted = (key, data, isDetail) => {
     return labelFormatter.showYesNo(data[key.field])
@@ -27,12 +28,12 @@ export const Manage = (props) => {
 
 export const edgeboxOnly = (key, data, isDetail) => {
     let edgeboxOnly = data[key.field]
-    let isOperator = data[fields.type].includes(constant.OPERATOR.toLowerCase())
+    let isOperator = data[fields.type].includes(perpetual.OPERATOR)
     if (isDetail) {
         return labelFormatter.showYesNo(edgeboxOnly)
     }
     else {
-        return <Icon name={edgeboxOnly ? 'check' : 'close'} style={{ color: isOperator ? edgeboxOnly ? constant.COLOR_GREEN : constant.COLOR_RED : '#9E9E9E' }} />
+        return <Icon name={edgeboxOnly ? 'check' : 'close'} style={{ color: isOperator ? edgeboxOnly ? perpetual.COLOR_GREEN : perpetual.COLOR_RED : '#9E9E9E' }} />
     }
 }
 
@@ -42,17 +43,17 @@ export const cloudletInfoState = (key, data, isDetail) => {
     let color = 'red'
     switch (id) {
         case 0:
-            state = constant.UNKNOWN
+            state = perpetual.UNKNOWN
             break;
         case 1:
             state = 'Error'
             break;
         case 2:
-            state = constant.ONLINE
+            state = perpetual.ONLINE
             color = 'green'
             break;
         case 3:
-            state = constant.OFFLINE
+            state = perpetual.OFFLINE
             break;
         case 4:
             state = 'Not Present'
@@ -64,7 +65,7 @@ export const cloudletInfoState = (key, data, isDetail) => {
             state = 'Upgrade'
             break;
         case 999:
-            state = constant.MAINTENANCE_STATE_UNDER_MAINTENANCE
+            state = perpetual.MAINTENANCE_STATE_UNDER_MAINTENANCE
             color = 'yellow'
             break;
         default:
@@ -138,11 +139,11 @@ export const lock = (key, data, isDetail, callback) => {
 export const reporterStatus = (key, data, isDetail) => {
     let success = data[key.field] === 'success' 
     if (isDetail) {
-        return constant.toFirstUpperCase(data[key.field])
+        return toFirstUpperCase(data[key.field])
     }
     else
     {
-        return <Icon name={success ? 'check' : 'close'} style={{ color: success ? constant.COLOR_GREEN : constant.COLOR_RED }} /> 
+        return <Icon name={success ? 'check' : 'close'} style={{ color: success ? perpetual.COLOR_GREEN : perpetual.COLOR_RED }} /> 
     }
 }
 

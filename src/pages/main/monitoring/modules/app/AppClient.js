@@ -2,10 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import HorizontalBar from '../../charts/horizontalBar/MexHorizontalBar'
-import { clientMetrics } from '../../../../../services/model/clientMetrics'
-import { sendRequest } from '../../services/service'
+import { clientMetrics } from '../../../../../services/modules/clientMetrics'
 import {redux_org} from '../../../../../helper/reduxData'
 import MexWorker from '../../services/client.worker.js'
+import { authSyncRequest } from '../../../../../services/service'
 
 class MexAppClient extends React.Component {
 
@@ -43,12 +43,14 @@ class MexAppClient extends React.Component {
     }
 
     fetchData = async (region, range) => {
-        let mc = await sendRequest(this, clientMetrics({
+        const requestData = clientMetrics({
             region: region,
             selector: "api",
             starttime: range.starttime,
             endtime: range.endtime
-        }, redux_org.isAdmin(this) ? this.props.org : redux_org.nonAdminOrg(this), this.props.isPrivate))
+        }, redux_org.isAdmin(this) ? this.props.org : redux_org.nonAdminOrg(this), this.props.isPrivate)
+
+        let mc = await authSyncRequest(this, { ...requestData, format: false })
         if (mc && mc.response && mc.response.status === 200) {
             let worker = new MexWorker();
             worker.postMessage({

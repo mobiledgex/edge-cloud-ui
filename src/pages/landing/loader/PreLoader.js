@@ -1,15 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { CURRENT_USER, SHOW_ROLE, SHOW_CONTROLLER } from '../../../services/model/endPointTypes';
-import { getToken, sendMultiRequest } from '../../main/monitoring/services/service';
 import RoleWorker from '../../../services/worker/role.worker.js'
-import { showOrganizations } from '../../../services/model/organization';
-import { PAGE_ORGANIZATIONS, validatePrivateAccess } from '../../../constant';
-import { LS_ORGANIZATION_INFO, LS_USER_META_DATA, LS_REGIONS, organizationInfo } from '../../../helper/ls';
+import { showOrganizations } from '../../../services/modules/organization';
+import { validatePrivateAccess } from '../../../constant';
+import { organizationInfo } from '../../../helper/ls';
 import './style.css'
 import { withRouter } from 'react-router-dom';
 import { redux_org } from '../../../helper/reduxData';
+import { endpoint, perpetual } from '../../../helper/constant';
+import { fetchToken, multiAuthSyncRequest } from '../../../services/service';
 
 class LogoLoader extends React.Component {
 
@@ -23,17 +23,17 @@ class LogoLoader extends React.Component {
         if (this.count === 3) {
             this.props.handleLoadMain(true)
             let currentPage = this.props.location.state ? this.props.location.state.currentPage : undefined
-            this.props.history.push(currentPage ? currentPage : `/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
+            this.props.history.push(currentPage ? currentPage : `/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)
         }
     }
 
     cacheOrgInfo = (data) => {
         this.props.handleOrganizationInfo(data)
-        localStorage.setItem(LS_ORGANIZATION_INFO, JSON.stringify(data))
+        localStorage.setItem(perpetual.LS_ORGANIZATION_INFO, JSON.stringify(data))
     }
 
     validateAdmin = (dataList) => {
-        this.worker.postMessage({ data: dataList, request: showOrganizations(), token: getToken(this) })
+        this.worker.postMessage({ data: dataList, request: showOrganizations(), token: fetchToken(this) })
         this.worker.addEventListener('message', async (event) => {
             let roles = event.data.roles
             this.props.handleRoleInfo(roles)
@@ -43,7 +43,7 @@ class LogoLoader extends React.Component {
             else {
                 let orgInfo = organizationInfo()
                 if (redux_org.isAdmin(orgInfo)) {
-                    localStorage.removeItem(LS_ORGANIZATION_INFO)
+                    localStorage.removeItem(perpetual.LS_ORGANIZATION_INFO)
                 }
                 else if (redux_org.isOperator(orgInfo)) {
                     let privateAccess = await validatePrivateAccess(this, orgInfo)
@@ -58,26 +58,26 @@ class LogoLoader extends React.Component {
 
     loadDefault = async () => {
         let requestList = []
-        requestList.push({ method: SHOW_CONTROLLER })
-        requestList.push({ method: SHOW_ROLE })
-        requestList.push({ method: CURRENT_USER })
-        let mcList = await sendMultiRequest(this, requestList)
+        requestList.push({ method: endpoint.SHOW_CONTROLLER })
+        requestList.push({ method: endpoint.SHOW_ROLE })
+        requestList.push({ method: endpoint.CURRENT_USER })
+        let mcList = await multiAuthSyncRequest(this, requestList)
         if (mcList && mcList.length > 0) {
             mcList.map(mc => {
                 if (mc.response && mc.response.status === 200) {
                     let request = mc.request
                     let data = mc.response.data
-                    if (request.method === SHOW_ROLE) {
+                    if (request.method === endpoint.SHOW_ROLE) {
                         this.validateAdmin(data)
                     }
-                    else if (request.method === SHOW_CONTROLLER) {
+                    else if (request.method === endpoint.SHOW_CONTROLLER) {
                         let regions = data.map(item => { return item.Region })
-                        localStorage.setItem(LS_REGIONS, regions)
+                        localStorage.setItem(perpetual.LS_REGIONS, regions)
                         this.props.handleRegionInfo(regions)
                         this.count += 1
                     }
-                    else if (request.method === CURRENT_USER) {
-                        localStorage.setItem(LS_USER_META_DATA, data.Metadata)
+                    else if (request.method === endpoint.CURRENT_USER) {
+                        localStorage.setItem(perpetual.LS_USER_META_DATA, data.Metadata)
                         this.props.handleUserInfo(data)
                         this.count += 1
                     }

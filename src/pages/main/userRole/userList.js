@@ -2,12 +2,11 @@ import React from 'react';
 import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 import { fields } from '../../../services/model/format';
-import { keys, showUsers, deleteUser } from '../../../services/model/users';
+import { keys, showUsers, deleteUser } from '../../../services/modules/users';
 import { HELP_USER_ROLES } from '../../../tutorial';
-import { ACTION_DELETE } from '../../../constant/actions';
-import { PAGE_USER_ROLES } from '../../../constant';
 import { connect } from 'react-redux';
 import { redux_org } from '../../../helper/reduxData';
+import { perpetual } from '../../../helper/constant';
 
 class UserList extends React.Component {
     constructor(props) {
@@ -40,7 +39,7 @@ class UserList extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage, disable: this.onDeleteAction, type: 'Edit' }
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteUser, dialogMessage: this.getDeleteActionMessage, disable: this.onDeleteAction, type: 'Edit' }
         ]
     }
 
@@ -52,7 +51,7 @@ class UserList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: PAGE_USER_ROLES,
+            id: perpetual.PAGE_USER_ROLES,
             headerLabel: 'Users & Roles',
             nameField: fields.username,
             requestType: [showUsers],
@@ -67,7 +66,7 @@ class UserList extends React.Component {
 
     render() {
         return (
-            <DataView id={PAGE_USER_ROLES} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_USER_ROLES} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
     }
 

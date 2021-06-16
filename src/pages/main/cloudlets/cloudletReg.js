@@ -7,22 +7,21 @@ import MexTab from '../../../hoc/forms/tab/MexTab';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as constant from '../../../constant';
-import { fields, updateFieldData } from '../../../services/model/format';
+import { fields } from '../../../services/model/format';
 //model
-import { getOrganizationList } from '../../../services/model/organization';
-import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota } from '../../../services/model/cloudlet';
+import { getOrganizationList } from '../../../services/modules/organization';
+import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota } from '../../../services/modules/cloudlet';
 //Map
 import ListMexMap from '../../../container/map/ListMexMap'
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { HELP_CLOUDLET_REG } from "../../../tutorial";
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
-import { getTrustPolicyList, showTrustPolicies } from '../../../services/model/trustPolicy';
+import { getTrustPolicyList, showTrustPolicies } from '../../../services/modules/trustPolicy';
 
-import * as serverData from '../../../services/model/serverData'
-import { GET_CLOUDLET_RESOURCE_QUOTA_PROPS, SHOW_TRUST_POLICY } from '../../../services/model/endPointTypes';
 import { Grid } from '@material-ui/core';
 import { redux_org } from '../../../helper/reduxData'
+import { endpoint, perpetual } from '../../../helper/constant';
+import { service, updateFieldData } from '../../../services';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
@@ -47,7 +46,7 @@ class CloudletReg extends React.Component {
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
-        this.infraApiAccessList = [constant.INFRA_API_ACCESS_DIRECT, constant.INFRA_API_ACCESS_RESTRICTED]
+        this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT, perpetual.INFRA_API_ACCESS_RESTRICTED]
         //To avoid refeching data from server
         this.requestedRegionList = [];
         this.operatorList = [];
@@ -80,11 +79,11 @@ class CloudletReg extends React.Component {
                 }
             }
             else if (form.field === fields.openRCData || form.field === fields.caCertdata) {
-                form.visible = currentForm.value === constant.PLATFORM_TYPE_OPEN_STACK
+                form.visible = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
             }
             else if (form.field === fields.vmPool) {
-                form.visible = currentForm.value === constant.PLATFORM_TYPE_VMPOOL
-                form.rules.required = currentForm.value === constant.PLATFORM_TYPE_VMPOOL
+                form.visible = currentForm.value === perpetual.PLATFORM_TYPE_VMPOOL
+                form.rules.required = currentForm.value === perpetual.PLATFORM_TYPE_VMPOOL
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -96,7 +95,7 @@ class CloudletReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.infraFlavorName || form.field === fields.infraExternalNetworkName) {
-                form.rules.required = currentForm.value === constant.INFRA_API_ACCESS_RESTRICTED
+                form.rules.required = currentForm.value === perpetual.INFRA_API_ACCESS_RESTRICTED
             }
         }
         if (isInit === undefined || isInit === false) {
@@ -140,7 +139,7 @@ class CloudletReg extends React.Component {
 
     getCloudletResourceQuota = async (region, platformType) => {
         if (region && platformType) {
-            let mc = await serverData.sendRequest(this, cloudletResourceQuota(this, { region, platformType }))
+            let mc = await service.authSyncRequest(this, cloudletResourceQuota(this, { region, platformType }))
             if (mc && mc.response && mc.response.status === 200) {
                 if (mc.response.data.properties) {
                     this.resourceQuotaList = mc.response.data.properties
@@ -266,7 +265,7 @@ class CloudletReg extends React.Component {
                     responseData = mc.response.data;
                 }
                 let orgData = request.orgData;
-                let isRestricted = orgData[fields.infraApiAccess] === constant.INFRA_API_ACCESS_RESTRICTED
+                let isRestricted = orgData[fields.infraApiAccess] === perpetual.INFRA_API_ACCESS_RESTRICTED
 
                 let labels = [{ label: 'Cloudlet', field: fields.cloudletName }]
                 if (!this.isUpdate && isRestricted) {
@@ -389,7 +388,7 @@ class CloudletReg extends React.Component {
     getMap = () =>
     (
         <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-            <ListMexMap dataList={this.state.mapData} id={constant.PAGE_CLOUDLETS} onMapClick={this.onMapClick} region={this.state.region} register={true} />
+            <ListMexMap dataList={this.state.mapData} id={perpetual.PAGE_CLOUDLETS} onMapClick={this.onMapClick} region={this.state.region} register={true} />
         </div>
     )
 
@@ -484,17 +483,17 @@ class CloudletReg extends React.Component {
                             form.options = this.regions;
                             break;
                         case fields.ipSupport:
-                            form.options = [constant.IP_SUPPORT_DYNAMIC];
+                            form.options = [perpetual.IP_SUPPORT_DYNAMIC];
                             break;
                         case fields.platformType:
-                            form.options = [constant.PLATFORM_TYPE_OPEN_STACK, constant.PLATFORM_TYPE_VMPOOL, constant.PLATFORM_TYPE_VSPHERE, constant.PLATFORM_TYPE_VCD];
+                            form.options = [perpetual.PLATFORM_TYPE_OPEN_STACK, perpetual.PLATFORM_TYPE_VMPOOL, perpetual.PLATFORM_TYPE_VSPHERE, perpetual.PLATFORM_TYPE_VCD];
                             break;
                         case fields.maintenanceState:
-                            form.options = [constant.MAINTENANCE_STATE_NORMAL_OPERATION, constant.MAINTENANCE_STATE_MAINTENANCE_START, constant.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER];
+                            form.options = [perpetual.MAINTENANCE_STATE_NORMAL_OPERATION, perpetual.MAINTENANCE_STATE_MAINTENANCE_START, perpetual.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER];
                             break;
                         case fields.infraApiAccess:
                             form.options = this.infraApiAccessList;
-                            form.value = constant.INFRA_API_ACCESS_DIRECT;
+                            form.value = perpetual.INFRA_API_ACCESS_DIRECT;
                             break;
                         case fields.trustPolicyName:
                             form.options = this.trustPolicyList
@@ -512,16 +511,16 @@ class CloudletReg extends React.Component {
 
     loadDefaultData = async (forms, data) => {
         if (data) {
-            let requestTypeList = []
+            let requestList = []
 
             let operator = {}
             operator[fields.operatorName] = data[fields.operatorName];
             this.operatorList = [operator]
             this.updateState({ mapData: [data] })
 
-            requestTypeList.push(showTrustPolicies(this, { region: data[fields.region] }))
-            requestTypeList.push(cloudletResourceQuota(this, { region: data[fields.region], platformType: data[fields.platformType] }))
-            let mcRequestList = await serverData.showSyncMultiData(this, requestTypeList)
+            requestList.push(showTrustPolicies(this, { region: data[fields.region] }))
+            requestList.push(cloudletResourceQuota(this, { region: data[fields.region], platformType: data[fields.platformType] }))
+            let mcRequestList = await service.multiAuthSyncRequest(this, requestList)
 
             if (mcRequestList && mcRequestList.length > 0) {
                 for (let i = 0; i < mcRequestList.length; i++) {
@@ -529,10 +528,10 @@ class CloudletReg extends React.Component {
                     if (mc && mc.response && mc.response.data) {
                         let responseData = mc.response.data
                         let request = mc.request;
-                        if (request.method === SHOW_TRUST_POLICY) {
+                        if (request.method === endpoint.SHOW_TRUST_POLICY) {
                             this.trustPolicyList = responseData
                         }
-                        else if (request.method === GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
+                        else if (request.method === endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
                             if (responseData.properties) {
                                 this.resourceQuotaList = responseData.properties
                                 this.resourceQuotaList = this.resourceQuotaList.map(quota => {
@@ -597,7 +596,7 @@ class CloudletReg extends React.Component {
 
     cloudletManifest = () => {
         return [
-            { field: fields.manifest, serverField: 'manifest', label: 'Manifest', dataType: constant.TYPE_YAML },
+            { field: fields.manifest, serverField: 'manifest', label: 'Manifest', dataType: perpetual.TYPE_YAML },
         ]
     }
 
@@ -709,7 +708,7 @@ class CloudletReg extends React.Component {
             }
         }
         else {
-            let organizationList = await getOrganizationList(this, { type: constant.OPERATOR })
+            let organizationList = await getOrganizationList(this, { type: perpetual.OPERATOR })
             this.operatorList = organizationList.map(org => {
                 return org[fields.organizationName]
             })

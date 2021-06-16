@@ -5,12 +5,11 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { fields } from '../../../../../services/model/format';
-import { showAlertReceiver, deleteAlertReceiver, showAlertReceiverKeys } from '../../../../../services/model/alerts';
+import { showAlertReceiver, deleteAlertReceiver, showAlertReceiverKeys } from '../../../../../services/modules/alerts';
 import Reg from './AlertReceiverReg';
 import { Icon } from 'semantic-ui-react';
 import { HELP_ALERTS } from '../../../../../tutorial';
-import { ACTION_DELETE } from '../../../../../constant/actions';
-import { PAGE_ALERTS } from '../../../../../constant';
+import { perpetual } from '../../../../../helper/constant';
 class AlertList extends React.Component {
     constructor(props) {
         super(props);
@@ -44,7 +43,7 @@ class AlertList extends React.Component {
     actionMenu = () => {
         return [
             // { label: 'Update', onClick: this.onAdd, type: 'Edit' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteAlertReceiver, type: 'Edit' }
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteAlertReceiver, type: 'Edit' }
         ]
     }
 
@@ -82,7 +81,7 @@ class AlertList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: PAGE_ALERTS,
+            id: perpetual.PAGE_ALERTS,
             headerLabel: 'Alert Receivers',
             nameField: fields.alertname,
             requestType: [showAlertReceiver],
@@ -100,7 +99,7 @@ class AlertList extends React.Component {
     render() {
         const {currentView} = this.state
         return (
-            <DataView id={PAGE_ALERTS} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView}requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_ALERTS} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView}requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
     }
 

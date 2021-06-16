@@ -4,12 +4,11 @@ import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
-import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
-import * as serverData from '../../../services/model/serverData'
-import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/model/privateCloudletAccess';
-import { ACTION_LABEL, ACTION_POOL_ACCESS_DEVELOPER, ACTION_POOL_ACCESS_DEVELOPER_REJECT, ACTION_WARNING } from '../../../constant/actions'
+import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/modules/poolAccess';
+import { perpetual } from '../../../helper/constant';
 import { labelFormatter } from '../../../helper/formatter';
+import { service } from '../../../services';
 
 class PoolAccessList extends React.Component {
     constructor(props) {
@@ -26,10 +25,10 @@ class PoolAccessList extends React.Component {
 
     onPrePoolAccess = (type, action, data) => {
         let isRemove = data[fields.confirm]
-        if (type === ACTION_LABEL) {
+        if (type === perpetual.ACTION_LABEL) {
             return isRemove ? 'Withdraw' : 'Accept'
         }
-        else if (type === ACTION_WARNING) {
+        else if (type === perpetual.ACTION_WARNING) {
             return `${isRemove ? 'withdraw invitation for' : 'accept invitation to'} cloudlet pool`
         }
     }
@@ -38,10 +37,10 @@ class PoolAccessList extends React.Component {
         let isRemove = data[fields.confirm]
         let request = deleteConfirmation
         if (!isRemove) {
-            data[fields.decision] = action.id === ACTION_POOL_ACCESS_DEVELOPER_REJECT ? 'reject' : 'accept'
+            data[fields.decision] = action.id === perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT ? 'reject' : 'accept'
             request = createConfirmation
         }
-        let mc = await serverData.sendRequest(this, request(data))
+        let mc = await service.authSyncRequest(this, request(data))
         if (mc && mc.response && mc.response.status === 200) {
             this.props.handleAlertInfo('success', `${isRemove ? 'Access Removed' : 'Access Granted'}`)
             callback()
@@ -55,8 +54,8 @@ class PoolAccessList extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: ACTION_POOL_ACCESS_DEVELOPER, label: this.onPrePoolAccess, warning: this.onPrePoolAccess, onClick: this.onPoolAccess },
-            { id: ACTION_POOL_ACCESS_DEVELOPER_REJECT, label: 'Reject', visible: this.onRejectVisible, warning: 'reject invitation to cloudlet pool', onClick: this.onPoolAccess },
+            { id: perpetual.ACTION_POOL_ACCESS_DEVELOPER, label: this.onPrePoolAccess, warning: this.onPrePoolAccess, onClick: this.onPoolAccess },
+            { id: perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT, label: 'Reject', visible: this.onRejectVisible, warning: 'reject invitation to cloudlet pool', onClick: this.onPoolAccess },
         ]
     }
 
@@ -68,7 +67,7 @@ class PoolAccessList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: constant.PAGE_POOL_ACCESS,
+            id: perpetual.PAGE_POOL_ACCESS,
             headerLabel: 'Cloudlet Pools',
             nameField: fields.poolName,
             requestType: [showConfirmation, showInvitation],
@@ -81,7 +80,7 @@ class PoolAccessList extends React.Component {
 
     render() {
         return (
-            <DataView id={constant.PAGE_POOL_ACCESS} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} />
+            <DataView id={perpetual.PAGE_POOL_ACCESS} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} />
         )
     }
 

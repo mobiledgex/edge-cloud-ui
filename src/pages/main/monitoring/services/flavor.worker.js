@@ -3,7 +3,7 @@ import { fields } from "../../../../services/model/format"
 import moment from 'moment'
 import randomColor from 'randomcolor'
 import { generateDataset } from './chart'
-import { formatData } from "../../../../services/model/endpoints"
+import { formatData } from "../../../../services/format/format"
 
 const FLAVOR_USAGE_TIME = 0
 const FLAVOR_USAGE_REGION = 1

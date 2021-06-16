@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 //redux
 import { Drawer } from '@material-ui/core';
-import { clusterEventLogs } from '../../../../services/model/clusterEvent'
-import { appInstEventLogs } from '../../../../services/model/appInstEvent'
-import { cloudletEventLogs } from '../../../../services/model/cloudletEvent'
+import { clusterEventLogs } from '../../../../services/modules/clusterInstEvent'
+import { appInstEventLogs } from '../../../../services/modules/appInstEvent'
+import { cloudletEventLogs } from '../../../../services/modules/cloudletEvent'
 import { sendAuthRequest, sendRequests } from '../../../../services/model/serverWorker'
-import { showOrganizations } from '../../../../services/model/organization'
+import { showOrganizations } from '../../../../services/modules/organization'
 
 import { fields } from '../../../../services/model/format';
 import {redux_org}  from '../../../../helper/reduxData'
@@ -17,8 +17,8 @@ import { withStyles } from '@material-ui/styles';
 import * as dateUtil from '../../../../utils/date_util'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy';
+import { operators } from '../../../../helper/constant';
 import './style.css'
-import { equal } from '../../../../constant/compare';
 import { componentLoader } from '../../../../hoc/loader/componentLoader';
 
 const UsageLog = lazy(() => componentLoader(import('./UsageLog')));
@@ -218,7 +218,7 @@ class GlobalUsageLog extends React.Component {
     }
 
     componentDidUpdate(prePros, preState) {
-        if (this.props.organizationInfo && !equal(this.props.organizationInfo, prePros.organizationInfo)) {
+        if (this.props.organizationInfo && !operators.equal(this.props.organizationInfo, prePros.organizationInfo)) {
             this.endRange = dateUtil.currentUTCTime()
             this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
             if (this._isMounted) {

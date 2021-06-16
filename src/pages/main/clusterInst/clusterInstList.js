@@ -4,18 +4,17 @@ import { connect } from 'react-redux';
 //redux
 import * as actions from '../../../actions';
 //model
-import * as constant from '../../../constant';
 import * as shared from '../../../services/model/shared';
 import { fields } from '../../../services/model/format';
-import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiDataRequest } from '../../../services/model/clusterInstance';
-import { showCloudlets } from '../../../services/model/cloudlet';
-import { showCloudletInfoData } from '../../../services/model/cloudletInfo';
+import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiDataRequest } from '../../../services/modules/clusterInst';
+import { showCloudlets } from '../../../services/modules/cloudlet';
+import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 //list
 import DataView from '../../../container/DataView';
 //reg
 import ClusterInstReg from './clusterInstReg';
 import { HELP_CLUSTER_INST_LIST } from "../../../tutorial";
-import { ACTION_DELETE, ACTION_UPDATE } from '../../../constant/actions';
+import { perpetual } from '../../../helper/constant';
 import { labelFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
 
@@ -52,19 +51,19 @@ class ClusterInstView extends React.Component {
     }
 
     getDeleteActionMessage = (action, data) => {
-        if (data[fields.cloudletStatus] !== constant.CLOUDLET_STATUS_READY && redux_org.isAdmin(this)) {
+        if (data[fields.cloudletStatus] !== perpetual.CLOUDLET_STATUS_READY && redux_org.isAdmin(this)) {
             return `Cloudlet status is not online, do you still want to proceed with ${data[fields.clusterName]} Cluster Instance deletion?`
         }
     }
 
     updateVisible = (data) => {
-        return data[fields.deployment] === constant.DEPLOYMENT_TYPE_KUBERNETES
+        return data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES
     }
 
     actionMenu = () => {
         return [
-            { id: ACTION_UPDATE, label: 'Update', onClick: this.onAdd, visible: this.updateVisible, type: 'Edit' },
-            { id: ACTION_DELETE, label: 'Delete', onClick: deleteClusterInst, dialogMessage: this.getDeleteActionMessage, ws: true, type: 'Edit' }
+            { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onAdd, visible: this.updateVisible, type: 'Edit' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteClusterInst, dialogMessage: this.getDeleteActionMessage, ws: true, type: 'Edit' }
         ]
     }
 
@@ -85,7 +84,7 @@ class ClusterInstView extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: constant.PAGE_CLUSTER_INSTANCES,
+            id: perpetual.PAGE_CLUSTER_INSTANCES,
             headerLabel: 'Cluster Instances',
             nameField: fields.clusterName,
             requestType: [showClusterInsts, showCloudlets, showCloudletInfoData],
@@ -105,7 +104,7 @@ class ClusterInstView extends React.Component {
     render() {
         const { currentView } = this.state
         return (
-            <DataView id={constant.PAGE_CLUSTER_INSTANCES} currentView={currentView} resetView={this.resetView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_CLUSTER_INSTANCES} currentView={currentView} resetView={this.resetView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
         )
     }
 

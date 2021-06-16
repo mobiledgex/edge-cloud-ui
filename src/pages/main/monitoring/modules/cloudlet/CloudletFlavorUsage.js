@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { sendRequest } from '../../services/service'
-import { cloudletFlavorUsageMetrics } from '../../../../../services/model/cloudletMetrics'
+import { cloudletFlavorUsageMetrics } from '../../../../../services/modules/cloudletMetrics'
 import LineChart from '../../charts/linechart/MexLineChart'
 import MexWorker from '../../services/flavor.worker.js'
 import { Card, GridListTile } from '@material-ui/core'
 import { timezonePref } from '../../../../../utils/sharedPreferences_util'
 import {redux_org} from '../../../../../helper/reduxData'
+import { authSyncRequest } from '../../../../../services/service'
 
 const metric = { field: 'count', serverField: 'count', serverHead: 'cloudlet-flavor-usage', header: 'Flavor Usage', position: 4, steppedLine:'after' }
 class CloudletFlavorUsage extends React.Component {
@@ -77,7 +77,7 @@ class CloudletFlavorUsage extends React.Component {
         }
         if (this._isMounted) {
             this.updateState({ loading: true })
-            let mc = await sendRequest(this, cloudletFlavorUsageMetrics(requestData))
+            let mc = await authSyncRequest(this, { ...cloudletFlavorUsageMetrics(requestData), format: false })
             if (mc && mc.response && mc.response.status === 200) {
                 this.mc = mc
                 this.formatData(true)

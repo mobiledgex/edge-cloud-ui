@@ -2,10 +2,8 @@ import React from 'react'
 import { Icon } from 'semantic-ui-react'
 import { Marker, Popup } from "react-leaflet";
 import { fields } from '../../../../../services/model/format';
-import { mcURL } from '../../../../../services/model/serviceMC'
-import { getPath } from '../../../../../services/model/endPointTypes'
 import * as serverData from '../../../../../services/model/serverData'
-import { showAppInstClient } from '../../../../../services/model/appInstClient'
+import { showAppInstClient } from '../../../../../services/modules/appInstClient'
 import cloneDeep from 'lodash/cloneDeep'
 import MexCircleMarker from '../../../../../hoc/mexmap/utils/MexCircleMarker'
 import { cloudGreenIcon, mobileIcon } from "../../../../../hoc/mexmap/MapProperties";
@@ -13,6 +11,8 @@ import MexMap from '../../../../../hoc/mexmap/MexMap'
 import MexCurve from '../../../../../hoc/mexmap/utils/MexCurve'
 import { Dialog } from '@material-ui/core';
 import Legend from './MapLegend'
+import { fetchPath, fetchURL } from '../../../../../services/config';
+import { fetchToken } from '../../../../../services/service';
 
 const DEFAULT_ZOOM = 2
 class AppMexMap extends React.Component {
@@ -51,9 +51,9 @@ class AppMexMap extends React.Component {
 
     sendWSRequest = (request) => {
         this.setState({ showDevices: true })
-        this.ws = new WebSocket(`${mcURL(true)}/ws${getPath(request)}`)
+        this.ws = new WebSocket(`${fetchURL(true)}/ws${fetchPath(request)}`)
         this.ws.onopen = () => {
-            this.ws.send(`{"token": "${serverData.getToken(this)}"}`);
+            this.ws.send(`{"token": "${fetchToken(this)}"}`);
             this.ws.send(JSON.stringify(request.data));
         }
         this.ws.onmessage = evt => {

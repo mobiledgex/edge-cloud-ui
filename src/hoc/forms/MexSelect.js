@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { Popup, Icon, Dropdown } from 'semantic-ui-react';
-import { toFirstUpperCase } from '../../constant';
+import { toFirstUpperCase } from '../../utils/string_utils';
 
 
 const MexSelect = (props) => {
