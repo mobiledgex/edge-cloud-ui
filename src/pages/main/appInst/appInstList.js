@@ -17,6 +17,7 @@ import { perpetual } from '../../../helper/constant';
 import * as serverData from '../../../services/model/serverData'
 import { idFormatter, labelFormatter, uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
+import DMEMetrics from '../monitoring/dme/DMEMetrics'
 class AppInstList extends React.Component {
     constructor(props) {
         super(props);
@@ -134,6 +135,13 @@ class AppInstList extends React.Component {
 
     }
 
+    onMetrics = (action, data) =>{
+        if(this._isMounted)
+        {
+            this.updateState({currentView : <DMEMetrics data={data}/>})
+        }
+    }
+
     actionMenu = () => {
         return [
             { id: perpetual.ACTION_UPDATE, label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Edit' },
@@ -143,7 +151,8 @@ class AppInstList extends React.Component {
             { id: perpetual.ACTION_TERMINAL, label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
             { id: perpetual.ACTION_POWER_ON, label: 'Power On', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power on' },
             { id: perpetual.ACTION_POWER_OFF, label: 'Power Off', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power off' },
-            { id: perpetual.ACTION_REBOOT, label: 'Reboot', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'reboot' }
+            { id: perpetual.ACTION_REBOOT, label: 'Reboot', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'reboot' },
+            { id: perpetual.ACTION_DME_METRICS, label: 'DME Metrics', onClick: this.onMetrics },
         ]
     }
 

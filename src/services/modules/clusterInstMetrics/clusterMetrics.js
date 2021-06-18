@@ -1,8 +1,7 @@
 
-import * as formatter from '../../model/format'
+import { endpoint } from '../../../helper/constant';
 import { UNIT_BYTES, UNIT_PERCENTAGE } from '../../../pages/main/monitoring/helper/unitConvertor';
-
-let fields = formatter.fields;
+import { fields } from '../../model/format';
 
 export const clusterMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },

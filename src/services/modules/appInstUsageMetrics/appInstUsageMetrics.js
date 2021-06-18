@@ -1,29 +1,34 @@
-import * as dateUtil from '../../../utils/date_util'
-import { endpoint } from '../../../helper/constant'
+import { endpoint } from '../../../helper/constant';
+import { fields } from '../../model/format';
 
-export const appUsageKeys = [
-    { label: 'Region', serverField: 'region', visible: true, filter: true },
-    { label: 'App', serverField: 'app', visible: true, filter: true },
-    { label: 'App Developer', serverField: 'apporg', visible: false, filter: true },
-    { label: 'Version', serverField: 'version', visible: true },
-    { label: 'Cluster', serverField: 'cluster', visible: true, filter: true },
-    { label: 'Cluster Developer', serverField: 'clusterorg', visible: true, filter: true },
-    { label: 'Cloudlet', serverField: 'cloudlet', visible: true, filter: true },
-    { label: 'Operator', serverField: 'cloudletorg', visible: true, filter: true },
-    { label: 'Flavor', serverField: 'flavor', visible: true, filter: true },
-    { label: 'Deployment', serverField: 'deployment', visible: true, filter: true },
-    { label: 'Starttime', serverField: 'startime', visible: true, filter: true, formatDate: dateUtil.FORMAT_FULL_DATE_TIME },
-    { label: 'Endtime', serverField: 'endtime', visible: true, filter: true, formatDate: dateUtil.FORMAT_FULL_DATE_TIME },
-    { label: 'Duration', serverField: 'duration', visible: true, filter: true },
-    { label: 'Note', serverField: 'note', visible: true, filter: true },
-]
+const keys = () => (
+    [
+        { label: 'Date', field: 'time', serverField: 'time', visible: false, groupBy: 2 },
+        { label: 'Region', field: fields.region, visible: true, groupBy: 1 },
+        { label: 'App', field: fields.appName, serverField: 'app', visible: true, groupBy: 1, filter: true },
+        { label: 'Version', field: fields.version, serverField: 'ver', visible: true, groupBy: 1 },
+        { label: 'App Developer', field: fields.organizationName, serverField: 'apporg', visible: true, groupBy: 1 },
+        { label: 'Cluster', field: fields.clusterName, serverField: 'cluster', visible: true, groupBy: 1 },
+        { label: 'Cluster Developer', field: fields.clusterdeveloper, serverField: 'clusterorg', visible: true, groupBy: 1 },
+        { label: 'Cloudlet', field: fields.cloudletName, serverField: 'cloudlet', visible: true, groupBy: 1 },
+        { label: 'Operator', field: fields.operatorName, serverField: 'cloudletorg', visible: true, groupBy: 1 },
+        { label: '0s', field: '0s', serverField: '0s' },
+        { label: '5ms', field: '5ms', serverField: '5ms' },
+        { label: '10ms', field: '10ms', serverField: '10ms' },
+        { label: '25ms', field: '25ms', serverField: '25ms' },
+        { label: '50ms', field: '50ms', serverField: '50ms' },
+        { label: '100ms', field: '100ms', serverField: '100ms' },
+        { label: 'Mmax', field: 'max', serverField: 'max' },
+        { label: 'Min', field: 'min', serverField: 'min' },
+        { label: 'Avg', field: 'avg', serverField: 'avg' },
+        { label: 'Variance', field: 'variance', serverField: 'variance' },
+        { label: 'Stddev', field: 'stddev', serverField: 'stddev' },
+        { label: 'Samples', field: 'numsamples', serverField: 'numsamples' },
+        { label: 'Location', field: 'locationtile', serverField: 'locationtile', groupBy: 3 }
+    ]
+)
 
-export const appInstUsageLogs = (data, org) => {
-    data.appinst = {
-        app_key: {
-            organization: org
-        }
-    }
-    return { method: endpoint.APP_INST_USAGE_ENDPOINT, data: data, keys: appUsageKeys }
+export const appInstUsageMetrics = (self, data) => {
+    return { method: endpoint.METRICS_CLIENT_APP_USAGE, data, keys: keys() }
 }
 
