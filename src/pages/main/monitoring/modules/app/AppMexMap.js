@@ -2,7 +2,6 @@ import React from 'react'
 import { Icon } from 'semantic-ui-react'
 import { Marker, Popup } from "react-leaflet";
 import { fields } from '../../../../../services/model/format';
-import * as serverData from '../../../../../services/model/serverData'
 import { showAppInstClient } from '../../../../../services/modules/appInstClient'
 import cloneDeep from 'lodash/cloneDeep'
 import MexCircleMarker from '../../../../../hoc/mexmap/utils/MexCircleMarker'

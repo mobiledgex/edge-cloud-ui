@@ -1,9 +1,7 @@
 /* eslint-disable */
 
+import { CON_TAGS, CON_VALUES } from "../../../../helper/constant/perpetual"
 import { fields } from "../../../../services/model/format"
-
-const VALUES = 'values'
-const TAGS = 'tags'
 
 const formatColumns = (columns, keys) => {
     let newColumns = []
@@ -31,8 +29,8 @@ const generateKey = (columns, value, level) => {
 
 const nGrouper = (parent, key, value, columns, selections, levellength, level) => {
     parent[key] = parent[key] ? parent[key] : {}
-    parent[key][VALUES] = parent[key][VALUES] ? parent[key][VALUES] : level < levellength ? {} : []
-    if (!parent[key][TAGS]) {
+    parent[key][CON_VALUES] = parent[key][CON_VALUES] ? parent[key][CON_VALUES] : level < levellength ? {} : []
+    if (!parent[key][CON_TAGS]) {
         let tags = {}
         value.forEach((item, i) => {
             const column = columns[i]
@@ -59,11 +57,11 @@ const nGrouper = (parent, key, value, columns, selections, levellength, level) =
             }
             tags[fields.cloudletLocation] = selection[fields.cloudletLocation]
         }
-        parent[key][TAGS] = tags
+        parent[key][CON_TAGS] = tags
     }
     if (level < levellength) {
         let nextKey = generateKey(columns, value, level + 1)
-        parent[key][VALUES][nextKey] = nGrouper(parent[key][VALUES], nextKey, value, columns, selections, levellength, level + 1)[nextKey]
+        parent[key][CON_VALUES][nextKey] = nGrouper(parent[key][CON_VALUES], nextKey, value, columns, selections, levellength, level + 1)[nextKey]
     }
     else {
         let values = {}
@@ -73,7 +71,7 @@ const nGrouper = (parent, key, value, columns, selections, levellength, level) =
                 values[column.field] = item
             }
         })
-        parent[key][VALUES].push(values)
+        parent[key][CON_VALUES].push(values)
     }
     return parent
 }
@@ -109,6 +107,7 @@ const formatMetricUsage = (worker) => {
             }
         }
     }
+    console.log('Rahul1234', formatted)
     self.postMessage({ data: formatted })
 }
 export const format = (worker) => {

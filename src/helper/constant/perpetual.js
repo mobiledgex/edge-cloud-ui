@@ -197,3 +197,6 @@ export const LIST_TOOLBAR_TERMINAL = 'Terminal'
 
 export const VERIFY_PASSWORD = 0
 export const VERIFY_EMAIL = 1
+
+export const CON_VALUES = 'values'
+export const CON_TAGS = 'tags'
