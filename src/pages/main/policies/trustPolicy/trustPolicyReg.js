@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import uuid from 'uuid';
 import { fields } from '../../../../services/model/format';
-import { redux_org} from '../../../../helper/reduxData'
+import { redux_org } from '../../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../../services/modules/organization';
 import { updateTrustPolicy, createTrustPolicy } from '../../../../services/modules/trustPolicy';
@@ -14,6 +14,7 @@ import { HELP_TRUST_POLICY_REG } from "../../../../tutorial";
 import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/mexMessageMultiStream'
 import { Grid } from '@material-ui/core';
 import { service, updateFieldData } from '../../../../services';
+import { perpetual } from '../../../../helper/constant';
 
 class TrustPolicyReg extends React.Component {
     constructor(props) {
@@ -77,7 +78,7 @@ class TrustPolicyReg extends React.Component {
                 break;
             }
         }
-            this.updateState({ forms })
+        this.updateState({ forms })
     }
 
     onValueChange = (currentForm) => {
@@ -347,7 +348,7 @@ class TrustPolicyReg extends React.Component {
             }
         }
         else {
-            this.organizationList = await getOrganizationList(this)
+            this.organizationList = await getOrganizationList(this, { type: perpetual.OPERATOR })
             this.loadData(forms)
             forms.push(this.getOutboundSecurityForm(this.getOutBoundRules('udp', 53, 53, '0.0.0.0/0')))
             forms.push(this.getOutboundSecurityForm(this.getOutBoundRules('tcp', 443, 443, '0.0.0.0/0')))

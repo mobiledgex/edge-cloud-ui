@@ -216,5 +216,6 @@ export const fields = {
     kafkaCluster: 'kafkaCluster',
     kafkaUser: 'kafkaUser',
     kafkaPassword: 'kafkaPassword',
-    vmappostype: 'vmappostype'
+    vmappostype: 'vmappostype',
+    locationtile:'locationtile'
 }

@@ -2,6 +2,7 @@
 
 import { CON_TAGS, CON_VALUES } from "../../../../helper/constant/perpetual"
 import { fields } from "../../../../services/model/format"
+import { center } from "../../../../utils/math_utils"
 
 const formatColumns = (columns, keys) => {
     let newColumns = []
@@ -27,6 +28,27 @@ const generateKey = (columns, value, level) => {
     return key.toLowerCase()
 }
 
+const formatTile = (tags, item) => {
+    const tiles = item.split('_')
+    let geo1 = undefined
+    let geo2 = undefined
+    tiles.forEach((tile, i) => {
+        if (i === 2) {
+           tags['length'] = tile
+        }
+        else {
+            const cords = tile.split(',')
+            if (geo1 === undefined) {
+                geo1 = [cords[1], cords[0]]
+            }
+            else if (geo2 === undefined) {
+                geo2 = [cords[1], cords[0]]
+            }
+        }
+    })
+    tags['location'] = center(...geo1, ...geo2)
+}
+
 const nGrouper = (parent, key, value, columns, selections, levellength, level) => {
     parent[key] = parent[key] ? parent[key] : {}
     parent[key][CON_VALUES] = parent[key][CON_VALUES] ? parent[key][CON_VALUES] : level < levellength ? {} : []
@@ -35,7 +57,14 @@ const nGrouper = (parent, key, value, columns, selections, levellength, level) =
         value.forEach((item, i) => {
             const column = columns[i]
             if (column && column.groupBy === level) {
-                tags[column.field] = item
+                if(column.field === fields.locationtile)
+                {
+                    formatTile(tags, item)
+                }
+                else
+                {
+                    tags[column.field] = item
+                }
             }
         })
         if (level === 1) {
@@ -91,7 +120,6 @@ const formatMetricUsage = (worker) => {
     let formatted
     if (response && response.data && response.data.data) {
         const dataList = response.data.data;
-
         if (dataList && dataList.length > 0) {
             const series = dataList[0].Series
             const messages = dataList[0].messages
@@ -107,7 +135,6 @@ const formatMetricUsage = (worker) => {
             }
         }
     }
-    console.log('Rahul1234', formatted)
     self.postMessage({ data: formatted })
 }
 export const format = (worker) => {

@@ -24,7 +24,7 @@ const keys = () => (
         { label: 'Variance', field: 'variance', serverField: 'variance' },
         { label: 'Stddev', field: 'stddev', serverField: 'stddev' },
         { label: 'Samples', field: 'numsamples', serverField: 'numsamples' },
-        { label: 'Location', field: 'locationtile', serverField: 'locationtile', groupBy: 3 }
+        { label: 'Location', field: fields.locationtile, serverField: 'locationtile', groupBy: 3 }
     ]
 )
 
