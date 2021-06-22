@@ -159,7 +159,7 @@ class AppMexMap extends React.Component {
                 }
                 )}
                 {showDevices && polyline.length > 0 ?
-                    <MexCurve data={polyline} color={curveColor} /> : null
+                    <MexCurve data={[polyline]} color={curveColor} /> : null
                 }
                 <Legend data={mapData}/>
             </div> : null

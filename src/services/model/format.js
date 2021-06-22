@@ -217,5 +217,11 @@ export const fields = {
     kafkaUser: 'kafkaUser',
     kafkaPassword: 'kafkaPassword',
     vmappostype: 'vmappostype',
-    locationtile:'locationtile'
+    locationtile:'locationtile',
+    _0s:'0s',
+    _5ms:'5ms',
+    _10ms:'10ms',
+    _25ms:'25ms',
+    _50ms:'50ms',
+    _100ms:'100ms'
 }

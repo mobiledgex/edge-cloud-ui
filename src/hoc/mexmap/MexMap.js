@@ -79,10 +79,10 @@ class MexMap extends React.Component {
     }
 
     render() {
-        const { renderMarker, backswitch, fullscreen } = this.props
+        const { renderMarker, backswitch, fullscreen, wheel, style } = this.props
         const { mapCenter, zoom } = this.state
         return (
-            <div className={fullscreen ? 'mex-map-full' : 'mex-map'} mex-test="component-map">
+            <div className={fullscreen ? 'mex-map-full' : 'mex-map'} mex-test="component-map" style={style ? style : {}}>
                 <Map
                     ref={this.map}
                     center={mapCenter}
@@ -94,7 +94,7 @@ class MexMap extends React.Component {
                     minZoom={2}
                     minNativeZoom={3}
                     animate={false}
-                    scrollWheelZoom={false}
+                    scrollWheelZoom={wheel ? wheel : false}
                     zoomControl={false}
                     onClick={this.onMapClick}
                     maxBounds={[[-90.0, -180.0], [90.0, 180.0]]}>

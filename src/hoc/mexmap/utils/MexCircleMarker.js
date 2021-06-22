@@ -20,10 +20,10 @@ const renderPopup = (dataList) => {
 }
 
 const MexCircleMarker = props => {
-    const {radius, coords, popupData, label, popup} = props
+    const {radius, coords, popupData, label, popup, color, onClick} = props
     const center = latLng(coords.lat, coords.lng)
     return (
-        <CircleMarker radius={radius ? radius : 13} center={center}>
+        <CircleMarker radius={radius ? radius : 13} center={center} color={color ? color : '#3288FF'} onClick={onClick}>
             {label ? <Tooltip permanent={true} direction={'center'} className='text'>
                 {label}
             </Tooltip> : null}

@@ -200,3 +200,4 @@ export const VERIFY_EMAIL = 1
 
 export const CON_VALUES = 'values'
 export const CON_TAGS = 'tags'
+export const CON_TOTAL = 'total'
