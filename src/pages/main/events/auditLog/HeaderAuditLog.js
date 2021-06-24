@@ -68,6 +68,7 @@ const eventKeys = [
     { label: 'Span ID', field: 'spanid', mtags: true, detail: true },
     { label: 'Duration', field: 'duration', mtags: true, detail: true },
     { label: 'State', field: 'state', mtags: true, detail: true },
+    { label: 'Error', field: 'error', filter: false, detail: true },
     { label: 'Name', field: 'name', filter: true, detail: false },
     { label: 'App', field: 'app', mtags: true, filter: true, detail: false },
     { label: 'Version', field: 'appver', mtags: true, filter: true, detail: false },
@@ -162,8 +163,14 @@ class HeaderAuditLog extends React.Component {
                     let value = key.mtags ? mtags[key.field] : data[key.field]
                     return (
                         key.detail && value ? <div key={i} className='audit_timeline_detail_row'>
-                            <div className='audit_timeline_detail_left'>{key.label}</div>
-                            <div className='audit_timeline_detail_right'>{key.format ? dataFormatter(key, value) : value}</div>
+                            <table style={{borderCollapse:'separate'}}>
+                                <tbody>
+                                    <tr>
+                                        <td className='audit_timeline_detail_left'>{key.label}</td>
+                                        <td className='audit_timeline_detail_right'>{key.format ? dataFormatter(key, value) : value}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                             : null
                     )

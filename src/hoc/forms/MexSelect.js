@@ -11,7 +11,7 @@ const MexSelect = (props) => {
 
     useEffect(() => {
         if (refSelect && refSelect.current && refSelect.current.searchRef && refSelect.current.searchRef.current && refSelect.current.searchRef.current.type !== 'search') {
-            console.log(refSelect.current.searchRef.current.type = 'search')
+            refSelect.current.searchRef.current.type = 'search'
         }
     }, []);
 
