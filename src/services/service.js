@@ -29,8 +29,8 @@ const showProgress = (self, request) => {
  */
 const showMessage = (self, request, message) => {
     const flag = request ? isBoolean(request.showMessage) ? request.showMessage : true : false
-    if (self && self.props && self.props.handleAlertInfo && message !== 'Forbidden') {
-        self.props.handleLoadingSpinner(flag)
+    if (flag && self && self.props && self.props.handleAlertInfo && message !== 'Forbidden') {
+        self.props.handleAlertInfo('error', message)
     }
 }
 
@@ -112,9 +112,9 @@ const errorResponse = (self, request, error, callback) => {
                 var obj = JSON.parse(decodedString);
                 message = obj['message'];
             }
-        }
-        else {
-            message = data.message ? data.message : message
+            else {
+                message = data.message ? data.message : message
+            }
         }
         if (validateExpiry(self, message)) {
             showMessage(self, request, message)
