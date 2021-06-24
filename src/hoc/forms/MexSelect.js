@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Popup, Icon, Dropdown } from 'semantic-ui-react';
 import { toFirstUpperCase } from '../../utils/string_utils';
 
@@ -8,6 +8,12 @@ const MexSelect = (props) => {
     let form = props.form;
     const refSelect = useRef(null);
     const [selected, setSelected] = useState(props.form.value ? props.form.value : null)
+
+    useEffect(() => {
+        if (refSelect && refSelect.current && refSelect.current.searchRef && refSelect.current.searchRef.current && refSelect.current.searchRef.current.type !== 'search') {
+            console.log(refSelect.current.searchRef.current.type = 'search')
+        }
+    }, []);
 
     //Filter data is based on dependent data array defined in form
     const getFilteredData = (form) => {

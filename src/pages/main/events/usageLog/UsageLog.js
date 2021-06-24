@@ -48,14 +48,18 @@ const formatCalendarData = (dataList, columns) => {
         let formattedList = []
         let time = columns[0]
         let groupList = []
+        let colorSelector = '#9F6BD3'
         for (let k = 0; k < columns.length; k++) {
             let column = columns[k]
             if (column && column.detailedView) {
                 groupList.push({ id: k, title: column.label, rightTitle: column.label, bgColor: "#FFF" })
+                
                 for (let i = dataList.length - 1; i >= 0; i--) {
                     let data = dataList[i]
                     let color = colorType(data[k])
-                    color = color ? color : i % 2 === 0 ? '#9F6BD3' : '#B990E1'
+                    colorSelector = colorSelector === '#9F6BD3' ? '#B990E1' : '#9F6BD3'
+                    color = color ? color : colorSelector
+                    
                     let calendar = {
                         id: uuid(),
                         group: k,
@@ -197,9 +201,11 @@ class EventLog extends React.Component {
             <div key={index} style={style}>
                 <div style={{ pointer: 'cursor', borderRadius: 5, border: '1px solid #E0E0E1', margin: '0 10px 10px 10px', padding: 10, backgroundColor: this.state.activeIndex === index ? '#1E2123' : 'transparent' }} onClick={() => this.onEventTimeLine(dataList[keys[index]], columns, index)}>
                     <div style={{ display: 'inline-block' }}>{columns.map((column, i) => {
-                        let value = column.format ? this.formatDate(column.format, latestData[i]) : latestData[i]
-                        return column && column.visible ?
-                            <p style={{ fontSize: 12 }} key={i}><strong>{column.label}</strong>{`: ${value}`}</p> : false
+                        if (column) {
+                            let value = column.format ? this.formatDate(column.format, latestData[i]) : latestData[i]
+                            return column && column.visible ?
+                                <p style={{ fontSize: 12 }} key={i}><strong>{column.label}</strong>{`: ${value}`}</p> : false
+                        }
                     })}
                     </div>
                 </div>
