@@ -13,6 +13,7 @@ export const clusterEventKeys = [
     { label: 'vCPU', serverField: 'vcpu', visible: false, detailedView: true },
     { label: 'RAM', serverField: 'ram', visible: false, detailedView: true },
     { label: 'Disk', serverField: 'disk', visible: false, detailedView: true },
+    { label: 'Node Count', serverField: 'nodecount', visible: false, detailedView: true },
     { label: 'Other', serverField: 'other', visible: false, detailedView: false },
     { label: 'Action', serverField: 'event', visible: true, detailedView: true },
     { label: 'Status', serverField: 'status', visible: true, detailedView: true }
