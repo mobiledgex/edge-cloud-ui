@@ -29,8 +29,8 @@ const showProgress = (self, request) => {
  */
 const showMessage = (self, request, message) => {
     const flag = request ? isBoolean(request.showMessage) ? request.showMessage : true : false
-    if (self && self.props && self.props.handleAlertInfo && message !== 'Forbidden') {
-        self.props.handleLoadingSpinner(flag)
+    if (flag && self && self.props && self.props.handleAlertInfo && message !== 'Forbidden') {
+        self.props.handleAlertInfo('error', message)
     }
 }
 
