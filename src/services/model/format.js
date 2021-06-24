@@ -223,5 +223,6 @@ export const fields = {
     _10ms:'10ms',
     _25ms:'25ms',
     _50ms:'50ms',
-    _100ms:'100ms'
+    _100ms:'100ms',
+    color:'color'
 }

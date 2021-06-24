@@ -1,5 +1,5 @@
 import React from "react";
-import { Map, Pane, TileLayer } from "react-leaflet";
+import { Map, TileLayer } from "react-leaflet";
 import Control from 'react-leaflet-control';
 import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import { Icon } from "semantic-ui-react";
@@ -89,6 +89,7 @@ class MexMap extends React.Component {
                     zoom={zoom}
                     easeLinearity={1}
                     useFlyTo={true}
+                    boxZoom={true}
                     dragging={true}
                     boundsOptions={{ padding: [50, 50] }}
                     minZoom={2}
@@ -111,19 +112,31 @@ class MexMap extends React.Component {
         )
     }
 
-    componentDidUpdate(preProps, preState) {
-        if (!isEqual(preProps.region, this.props.region)) {
-            if (this.props.region.length > 1) {
+    calculateCenter = () => {
+        const { region } = this.props
+        if (region) {
+            if (region.length > 1) {
                 this.updateView(MAP_CENTER, this.props.zoom)
             }
             else {
-                const { center, zoom } = regionLocation(this.props.region[0])
+                const { center, zoom } = regionLocation(region[0])
                 this.updateView(center, zoom)
             }
         }
     }
 
+    componentDidUpdate(preProps, preState) {
+        if (!isEqual(preProps.region, this.props.region)) {
+            this.calculateCenter()
+        }
+        else if (!isEqual(preProps.center, this.props.center)) {
+            const { center, zoom } = this.props
+            this.updateView(center ? center : MAP_CENTER, center ? 5 : zoom)
+        }
+    }
+
     componentDidMount() {
+        this.calculateCenter()
     }
 }
 

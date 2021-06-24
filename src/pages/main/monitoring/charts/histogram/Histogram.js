@@ -2,7 +2,6 @@ import React from 'react';
 import * as d3 from 'd3'
 import { operators } from '../../../../../helper/constant';
 
-var all
 class Histogram extends React.Component {
     constructor(props) {
         super(props)
@@ -14,8 +13,8 @@ class Histogram extends React.Component {
     histogramChart = () => {
 
         var margin = { top: 30, right: 30, bottom: 50, left: 70 },
-            width = this.inputField.offsetWidth - 60 - margin.left - margin.right,
-            height = this.inputField.offsetHeight - 20 - margin.top - margin.bottom,
+            width = this.inputField.offsetWidth - 10 - margin.left - margin.right,
+            height = this.inputField.offsetHeight - margin.top - margin.bottom,
             title = '';
 
         var preprocessor = function (d) { return d };
@@ -30,6 +29,15 @@ class Histogram extends React.Component {
                         .attr("height", height + margin.top + margin.bottom)
                         .append("g")
                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                    // header
+                    // chart.append("text")
+                    //     .attr("x", (width/3))
+                    //     .attr("y", 0 - (margin.top / 3))
+                    //     .attr("text-anchor", "middle")
+                    //     .style("font-size", "16px")
+                    //     .style('fill', '#CCC')
+                    //     .text("Latency Histogram");
 
                     //x-axis title
                     chart.append("text")
@@ -55,8 +63,17 @@ class Histogram extends React.Component {
                 }
 
                 // preparing data
-                var data = raw.data;
-                var values = Object.keys(data).map(key => (data[key]))
+                var data = {};
+                let keys = Object.keys(raw.data)
+                for(const key of keys)
+                {
+                    if(key === 'avg' || key === 'max' || key === 'min')
+                    {
+                        continue;
+                    }
+                    data[key] = raw.data[key]
+                }
+                var values = keys.map(key => (data[key]))
                 var max = d3.max(values)
                 var buckets = raw.buckets;
 
@@ -67,7 +84,7 @@ class Histogram extends React.Component {
 
                 var x_axis = d3
                     .axisBottom(x)
-                    .tickValues(Object.keys(data).map(key => (key)))
+                    .tickValues(keys.map(key => (key)))
                     .tickSizeInner(0)
                     .tickSizeOuter(0)
                     .tickPadding(10)
@@ -103,7 +120,7 @@ class Histogram extends React.Component {
                 newBar.append('rect');
                 newBar.append('text');
 
-                all = newBar.merge(bar);
+                var all = newBar.merge(bar);
 
                 all.select('rect')
                     .attr("x", 1)
@@ -115,8 +132,8 @@ class Histogram extends React.Component {
 
                 all.select("text")
                     .attr("dy", ".75em")
-                    .attr("y", 6)
-                    .attr("x", (x(bins[0].x1) - x(bins[0].x0)) / 4)
+                    .attr("y", -14)
+                    .attr("x", (x(bins[0].x1) - x(bins[0].x0)) / 2)
                     .attr("text-anchor", "middle")
                     .text(function (d, i) {
                         return values[i];
@@ -130,9 +147,11 @@ class Histogram extends React.Component {
 
     render() {
         const { toggle } = this.state
+        const { width, height } = this.props
         return (
             toggle ? <React.Fragment>
-                <div style={{ width: '100%', height: '50vh' }} className='charts' ref={elem => this.inputField = elem}></div>
+                <div style={{width:'calc(25vw - 0px)'}} align='center'><h4>Latency Historgram</h4></div>
+                <div style={{ width: `${width ? width : '100%'}`, height: `${height ? height : '50vh'}` }} className='charts' ref={elem => this.inputField = elem}></div>
             </React.Fragment> : null
         )
     }

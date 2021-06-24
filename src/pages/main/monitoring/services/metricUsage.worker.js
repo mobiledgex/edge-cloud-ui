@@ -2,6 +2,10 @@
 import { CON_TAGS, CON_TOTAL, CON_VALUES } from "../../../../helper/constant/perpetual"
 import { fields } from "../../../../services/model/format"
 import { center } from "../../../../utils/math_utils"
+import { darkColors } from "../../../../utils/color_utils"
+import { generateColor } from "../../../../utils/heatmap_utils"
+import { _avg } from "../../../../helper/constant/operators"
+
 
 const formatColumns = (columns, keys) => {
     let newColumns = []
@@ -51,24 +55,31 @@ const formatTile = (tags, item) => {
 const sumLatency = (columns, total, values, isObject) => {
     if (total) {
         columns.forEach(column => {
+            let value = isObject ? values[column.field] : values[column.index]
             if (column.sum) {
-                total[column.field] = total[column.field] + (isObject ? values[column.field] : values[column.index])
+                total[column.field] = total[column.field] + value
+            }
+            else if (column.concat) {
+                total[column.field] = [...total[column.field], value]
             }
         })
     }
     else {
         total = {}
         columns.forEach(column => {
+            let value = isObject ? values[column.field] : values[column.index]
             if (column.sum) {
-                total[column.field] = isObject ? values[column.field] : values[column.index]
+                total[column.field] = value
+            }
+            else if (column.concat) {
+                total[column.field] = [value]
             }
         })
     }
-   
     return total
 }
 
-const nGrouper = (connector, parent, key, value, columns, selections, levellength, level) => {
+const nGrouper = (parent, key, value, columns, selections, levellength, level) => {
     parent[key] = parent[key] ? parent[key] : {}
     parent[key][CON_VALUES] = parent[key][CON_VALUES] ? parent[key][CON_VALUES] : level < levellength ? {} : []
     if (!parent[key][CON_TAGS]) {
@@ -79,14 +90,13 @@ const nGrouper = (connector, parent, key, value, columns, selections, levellengt
                 if (column.field === fields.locationtile) {
                     formatTile(tags, item)
                     const location = tags[fields.location]
-                    connector.push([location.lat, location.lng])
                 }
                 else {
                     tags[column.field] = item
                 }
             }
         })
-        if (level === 1) {
+        if (level === 2) {
             let selection = undefined
             for (const item of selections) {
                 let valid = true
@@ -103,14 +113,15 @@ const nGrouper = (connector, parent, key, value, columns, selections, levellengt
                     break;
                 }
             }
-            tags[fields.cloudletLocation] = selection[fields.cloudletLocation]
+            const location = selection[fields.cloudletLocation]
+            tags[fields.cloudletLocation] = location
         }
 
         parent[key][CON_TAGS] = tags
     }
     if (level < levellength) {
         let nextKey = generateKey(columns, value, level + 1)
-        parent[key][CON_VALUES][nextKey] = nGrouper(connector, parent[key][CON_VALUES], nextKey, value, columns, selections, levellength, level + 1)[nextKey]
+        parent[key][CON_VALUES][nextKey] = nGrouper(parent[key][CON_VALUES], nextKey, value, columns, selections, levellength, level + 1)[nextKey]
         parent[key][CON_TOTAL] = sumLatency(columns, parent[key][CON_TOTAL], value)
     }
     else {
@@ -129,23 +140,26 @@ const nGrouper = (connector, parent, key, value, columns, selections, levellengt
 
 const grouper = (dataList, columns, selections, levellength, level = 1) => {
     let parent = {}
-    let connectors = {}
+    let slider = []
     dataList.forEach(item => {
-        let connector = []
         let key = generateKey(columns, item, level)
-        parent = nGrouper(connector, parent, key, item, columns, selections, levellength, level)
-        if (connectors[key] === undefined) {
-            let cloudletLocation = parent[key][CON_TAGS][fields.cloudletLocation]
-            connectors[key] = [[cloudletLocation[fields.latitude], cloudletLocation[fields.longitude]]]
-        }
-        connectors[key].push(...connector)
+        parent = nGrouper(parent, key, item, columns, selections, levellength, level)
     })
-
-    let appLatency = undefined
-    Object.keys(parent).forEach(key=>{
-        appLatency = sumLatency(columns, appLatency, parent[key][CON_TOTAL], true)
+    Object.keys(parent).forEach((key, j) => {
+        const appInstObject = parent[key][CON_VALUES]
+        const time = parent[key][CON_TAGS].time.toLowerCase()
+        const total = parent[key][CON_TOTAL]
+        slider.push({ value: j, label: time, color_avg: generateColor(_avg(total['avg'])) })
+        let appInstKeys = Object.keys(appInstObject)
+        let colors = darkColors(appInstKeys.length)
+        appInstKeys.forEach((appInstKey, i) => {
+            appInstObject[appInstKey][CON_TAGS].color = colors[i]
+        })
     })
-    return { data:parent, connectors, appLatency }
+    for (let i = 1; i < 100; i++) {
+        slider.push({ value: i, label: '2021-05-13t01:00:00z', color_avg: generateColor(i) })
+    }
+    return { data: parent, slider }
 }
 
 const formatMetricUsage = (worker) => {
@@ -168,7 +182,7 @@ const formatMetricUsage = (worker) => {
             }
         }
     }
-    self.postMessage({ ...formatted})
+    self.postMessage({ ...formatted })
 }
 export const format = (worker) => {
     formatMetricUsage(worker)

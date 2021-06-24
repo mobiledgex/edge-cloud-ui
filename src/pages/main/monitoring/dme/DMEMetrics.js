@@ -1,27 +1,28 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
+import * as actions from '../../../../actions';
 import { fields } from '../../../../services/model/format'
 import { primaryKeys as appInstKeys } from '../../../../services/modules/appInst'
 import { appInstUsageMetrics } from '../../../../services/modules/appInstUsageMetrics/appInstUsageMetrics'
 import { authSyncRequest, responseValid } from '../../../../services/service'
 import MexWorker from '../services/metricUsage.worker.js'
-import { Card, Dialog, Grid } from '@material-ui/core'
+import { Dialog } from '@material-ui/core'
 import { Marker } from "react-leaflet";
 import MexMap from '../../../../hoc/mexmap/MexMap'
-import { cloudGreenIcon } from '../../../../hoc/mexmap/MapProperties'
+import { cloudIcon } from '../../../../hoc/mexmap/MapProperties'
 import { perpetual } from '../../../../helper/constant'
 import { FORMAT_FULL_DATE_TIME, FORMAT_FULL_T, time, timeInMilli } from '../../../../utils/date_util'
-import { Slider } from '../../../../hoc/mexui'
+import { IconButton, Slider } from '../../../../hoc/mexui'
 import { CON_TAGS, CON_TOTAL, CON_VALUES } from '../../../../helper/constant/perpetual'
 import MexCircleMarker from '../../../../hoc/mexmap/utils/MexCircleMarker'
-import { Popup } from 'react-leaflet';
-import DoughnutChart from '../charts/doughnut/Doughnut'
-import { generateColor } from '../../../../utils/heatmap_utils'
+import { colors, generateColor } from '../../../../utils/heatmap_utils'
 import MapLegend from './MapLegend'
 import './style.css'
 import Histogram from '../charts/histogram/Histogram'
 import MexCurve from '../../../../hoc/mexmap/utils/MexCurve'
+import CloseIcon from '@material-ui/icons/Close';
+import Legend from '../charts/heatmapLegend/Legend'
 
 const buckets = [0, 5, 10, 25, 50, 100]
 class DMEMetrics extends React.Component {
@@ -30,22 +31,16 @@ class DMEMetrics extends React.Component {
         this.state = {
             data: {},
             connectors: {},
-            selectedDate: '2021-05-13T00:00:00',
+            selectedDate: '2021-05-13t00:00:00z',
             markerType: 'avg',
-            histogramData: undefined
+            sliderMarks: undefined,
+            histogramData: undefined,
+            selectCloudlet: undefined,
+            selectDevice: undefined,
+            mapcenter: undefined
         }
         this._isMounted = false
         this.worker = new MexWorker()
-    }
-
-    circlePopup = (dataList) => {
-        return (
-            <Popup style={{ height: 400, borderRadius: 10 }} >
-                <div style={{ width: 200 }}>
-                    <DoughnutChart />
-                </div>
-            </Popup>
-        )
     }
 
     generateColor = (geoValues, markerType) => {
@@ -53,52 +48,88 @@ class DMEMetrics extends React.Component {
         return generateColor(geoValues[0][markerType])
     }
 
-    setHistogramData = (histogramData) => {
-        this.setState({ histogramData })
-    }
-
-    renderDevice = (selectedDate, data, markerType) => {
-        const datetime = time(FORMAT_FULL_T, selectedDate).toLowerCase() + 'z'
-        const deviceGeo = data[CON_VALUES][datetime]
-        if (deviceGeo) {
-            const deviceGeoObject = deviceGeo[CON_VALUES]
-            return Object.keys(deviceGeoObject).map(key => {
-                const geoTags = deviceGeoObject[key][perpetual.CON_TAGS]
-                const geoValues = deviceGeoObject[key][perpetual.CON_VALUES]
-                const geoTotal = deviceGeoObject[key][perpetual.CON_TOTAL]
-                return (
-                    <React.Fragment key={key}>
-                        <MexCircleMarker coords={geoTags['location']} popup={this.circlePopup(geoValues)} color={this.generateColor(geoValues, markerType)} onClick={() => { this.setHistogramData(geoTotal) }} radius={3} />
-                    </React.Fragment>
-                )
-            })
+    setHistogramData = (cloudlet, key, histogramData, mapcenter) => {
+        const selectCloudlet = this.state.selectCloudlet
+        let update = false
+        let data = {}
+        if (cloudlet) {
+            data.selectCloudlet = key
+            data.selectDevice = undefined
+            update = true
+        }
+        else if (selectCloudlet) {
+            data.selectDevice = !cloudlet ? key : undefined
+            update = true
+        }
+        else {
+            this.props.handleAlertInfo('error', 'Please select cloudlet')
+        }
+        if (update) {
+            this.setState({ histogramData, mapcenter, ...data })
         }
     }
 
+    renderDevice = (data, markerType, connectorMerge) => {
+        const { selectDevice } = this.state
+        const deviceGeoObject = data[CON_VALUES]
+        return Object.keys(deviceGeoObject).map(key => {
+            if (selectDevice === undefined || selectDevice === key) {
+                const geoTags = deviceGeoObject[key][perpetual.CON_TAGS]
+                const geoValues = deviceGeoObject[key][perpetual.CON_VALUES]
+                const geoTotal = deviceGeoObject[key][perpetual.CON_TOTAL]
+                const location = geoTags['location']
+                connectorMerge.push([location.lat, location.lng])
+                return (
+                    <React.Fragment key={key}>
+                        <MexCircleMarker coords={location} color={this.generateColor(geoValues, markerType)} onClick={() => { this.setHistogramData(false, key, geoTotal, [location.lat, location.lng]) }} radius={3} />
+                    </React.Fragment>
+                )
+            }
+        })
+    }
+
+    fetchLegendData = (timeData, selectCloudlet) => {
+        let dataList = []
+        Object.keys(timeData).forEach((key) => {
+            if (selectCloudlet === undefined || selectCloudlet === key) {
+                dataList.push(timeData[key][CON_TAGS])
+            }
+        })
+        return dataList
+    }
+
     renderMarker = () => {
-        const { data, connectors, selectedDate, markerType } = this.state
-        let connectorMerge = []
-        return data ?
+        const { data, selectedDate, markerType, selectCloudlet } = this.state
+        const timeData = selectedDate && data && data[selectedDate] && data[selectedDate][CON_VALUES]
+        const connectorMerge = { values: [], color: [] }
+        return timeData ?
             <div>
                 {
-                    Object.keys(data).map((key, i) => {
-                        let location = data[key][perpetual.CON_TAGS][fields.cloudletLocation]
-                        let lat = location[fields.latitude]
-                        let lon = location[fields.longitude]
-                        connectorMerge.push(connectors[key])
-
-                        return (
-                            <React.Fragment key={key}>
-                                <Marker icon={cloudGreenIcon()} position={[lat, lon]} onClick={() => { this.setHistogramData(data[key][CON_TOTAL]) }} />
-                                {
-                                    selectedDate ? this.renderDevice(selectedDate, data[key], markerType) : null
-                                }
-                            </React.Fragment>
-                        )
+                    Object.keys(timeData).map((key, i) => {
+                        if (selectCloudlet === undefined || selectCloudlet === key) {
+                            const tags = timeData[key][perpetual.CON_TAGS]
+                            let location = tags[fields.cloudletLocation]
+                            let lat = location[fields.latitude]
+                            let lon = location[fields.longitude]
+                            connectorMerge.color.push(tags[fields.color])
+                            connectorMerge.values[i] = [[lat, lon]]
+                            return (
+                                <React.Fragment key={key}>
+                                    <Marker icon={cloudIcon(i, tags[fields.color])} position={[lat, lon]} onClick={() => { this.setHistogramData(true, key, timeData[key][CON_TOTAL], [lat, lon]) }} />
+                                    {
+                                        this.renderDevice(timeData[key], markerType, connectorMerge.values[i])
+                                    }
+                                </React.Fragment>
+                            )
+                        }
                     })
                 }
-                <MexCurve data={connectorMerge} option={{ color: 'red', fill: false, dashArray: '10', weight: 0.2 }} />
-                <MapLegend onChange={(value) => this.setState({ markerType: value })} />
+                {
+                    connectorMerge.values.length > 0 && connectorMerge.values.map((connector, i) => (
+                        <MexCurve key={i} data={[connector]} option={{ color: connectorMerge.color[i], fill: false, dashArray: '10', weight: 0.6 }} />
+                    ))
+                }
+                <MapLegend onChange={(value) => this.setState({ markerType: value })} data={this.fetchLegendData(timeData, selectCloudlet)} />
             </div> : null
     }
 
@@ -107,40 +138,68 @@ class DMEMetrics extends React.Component {
     }
 
     valueLabelFormat = (value) => {
-        return time(FORMAT_FULL_DATE_TIME, value)
+        const { sliderMarks } = this.state
+        let selectedDate = sliderMarks[value].label
+        return time(FORMAT_FULL_DATE_TIME, selectedDate.toUpperCase())
     }
 
     onSliderChange = (e, value) => {
-        if (this.state.selectedDate !== value) {
-            this.setState({ selectedDate: value })
+        const { sliderMarks } = this.state
+        let selectedDate = sliderMarks[value].label
+        if (this.state.selectedDate !== selectedDate) {
+            this.setState({ selectedDate })
         }
     }
 
     renderMap = () => {
+        const { mapcenter } = this.state
         return (
-            <React.Fragment>
-                <MexMap renderMarker={this.renderMarker} zoom={2} wheel={true} style={{ height: 'calc(50vh - 0px)' }} />
-                <div style={{ position: 'absolute', top: 'calc(46vh - 0px)', zIndex: 999, width: '100%', paddingLeft: 25, paddingRight: 25 }} align='center'>
-                    <Slider min={timeInMilli('2021-05-13T00:00:00')} max={timeInMilli('2021-05-13T00:05:00')} valueLabelFormat={this.valueLabelFormat} step={3000} onChange={this.onSliderChange} />
+            <MexMap renderMarker={this.renderMarker} zoom={3} fullscreen={true} center={mapcenter} />
+        )
+    }
+
+    onSelectClose = () => {
+        this.setState({
+            histogramData: undefined,
+            mapcenter: undefined,
+            selectedData: undefined,
+            selectCloudlet: undefined,
+            selectDevice: undefined,
+        })
+    }
+
+
+
+    renderSlider = () => {
+        const { histogramData, sliderMarks } = this.state
+        const visibility = Boolean(histogramData)
+        return (
+            <div style={{ position: 'absolute', bottom: 23, zIndex: 999, width: '100%', paddingRight: 15, paddingLeft: 15 }}>
+                <div style={{ backgroundColor: `${visibility ? 'rgba(41,44,51,0.6)' : 'transparent'}` }}>
+                    <div align='right'>
+                        {visibility ? <IconButton onClick={this.onSelectClose}><CloseIcon /></IconButton> : null}
+                    </div>
+                    {histogramData ? <Histogram data={histogramData} buckets={buckets} width={'calc(25vw - 0px)'} height={'calc(30vh - 0px)'} />
+                        : null}
+                    <br/>
+                    <div align='center'>
+                        {sliderMarks ? <Slider defaultValue={sliderMarks[0].value} min={sliderMarks[0].value} max={sliderMarks[sliderMarks.length - 1].value} valueLabelFormat={this.valueLabelFormat} marks={sliderMarks} onChange={this.onSliderChange} step={null} /> : null}
+                    </div>
                 </div>
-            </React.Fragment>
+            </div>
         )
     }
 
     render() {
-        const { histogramData } = this.state
+        const { selectedDate, data, histogramData } = this.state
         return (
             <React.Fragment>
-                <Dialog fullScreen open={true} PaperProps={{
-                    style: {
-                        backgroundColor: '#0A0A0A'
-                    }
-                }}>
+                <Dialog fullScreen open={true}>
                     {this.renderMap()}
-                    <Grid container>
-                        <Grid item xs={6}>{histogramData ? <Card style={{margin:3}}><Histogram data={histogramData} buckets={buckets} /></Card> : null}</Grid>
-                        <Grid item xs={6}>{histogramData ? <Card style={{margin:3}}></Card> : null}</Grid>
-                    </Grid>
+                    {this.renderSlider()}
+                    <div style={{ position: 'absolute', top: 100, zIndex: 9999 }}>
+                        <Legend colors={colors} buckets={buckets} />
+                    </div>
                 </Dialog>
             </React.Fragment>
         )
@@ -152,6 +211,7 @@ class DMEMetrics extends React.Component {
 
     fetchData = async () => {
         const { data } = this.props
+        const { selectedDate } = this.state
         const tempData = this.tempFetch()
         const request = appInstUsageMetrics(this, {
             appInst: appInstKeys(tempData),
@@ -166,7 +226,8 @@ class DMEMetrics extends React.Component {
             })
             this.worker.addEventListener('message', event => {
                 if (this._isMounted) {
-                    this.setState({ data: event.data.data, connectors: event.data.connectors, histogramData:event.data.appLatency })
+                    console.log(event.data.data)
+                    this.setState({ data: event.data.data, sliderMarks: event.data.slider })
                 }
             })
         }
@@ -183,4 +244,10 @@ class DMEMetrics extends React.Component {
     }
 }
 
-export default withRouter(connect(null, null)(DMEMetrics))
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+    };
+};
+
+export default withRouter(connect(null, mapDispatchProps)(DMEMetrics))

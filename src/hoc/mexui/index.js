@@ -3,7 +3,7 @@ import DatePicker from './DatePicker'
 import DateTimePicker from './DateTimePicker'
 import Button from './Button'
 import Select from './select/Select'
-import Slider from './Slider'
+import Slider from './slider/Slider'
 
 export {
     IconButton,

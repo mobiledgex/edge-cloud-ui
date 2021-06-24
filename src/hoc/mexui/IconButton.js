@@ -6,7 +6,6 @@ import { IconButton as IB, Tooltip } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        display: 'flex',
         alignItems: 'center',
     },
     wrapper: {
