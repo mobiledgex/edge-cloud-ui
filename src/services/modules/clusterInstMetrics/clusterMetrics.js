@@ -1,6 +1,7 @@
 
 import * as formatter from '../../model/format'
 import { UNIT_BYTES, UNIT_PERCENTAGE } from '../../../pages/main/monitoring/helper/unitConvertor';
+import { endpoint } from '../../../helper/constant';
 
 let fields = formatter.fields;
 
