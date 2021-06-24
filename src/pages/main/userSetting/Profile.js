@@ -95,7 +95,7 @@ class Profile extends React.Component {
     }
 
     renderEmail = (data) => {
-        let isVerified = data['EmailVerified']
+        let isVerified = data ? data['EmailVerified'] : false
         let title = isVerified ? 'Email Verified' : 'Email Verification Pending'
         return (
             <Tooltip title={<strong style={{ fontSize: 13 }}>{title}</strong>}>
@@ -105,7 +105,7 @@ class Profile extends React.Component {
     }
 
     renderOTP = (data) => {
-        let isOTP = data['EnableTOTP']
+        let isOTP = data ? data['EnableTOTP'] : false
         let title = isOTP ? '2FA Enable' : '2FA Disabled'
         return (
             <Tooltip title={<strong style={{ fontSize: 13 }}>{title}</strong>}>
@@ -115,7 +115,7 @@ class Profile extends React.Component {
     }
 
     renderLock = (data) => {
-        let isLocked = data['Locked']
+        let isLocked = data ? data['Locked'] : false
         let title = isLocked ? 'Locked' : 'Active'
         return (
             <Tooltip title={<strong style={{ fontSize: 13 }}>{title}</strong>}>
