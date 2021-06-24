@@ -169,20 +169,15 @@
 }
 
 .audit_timeline_detail_left {
-    width:130px;
     font-size: 13px;
-    margin-left: 12px;
     font-weight: bold;
-    line-height: 1.43;
-    letter-spacing: 0.1px;
-    text-align: left;
     color: #ffffff;
+    width:100px;
 }
 
 .audit_timeline_detail_right {
     font-size: 13px;
-    line-height: 1.43;
-    letter-spacing: 0.1px;
+    word-wrap: break-word;
     color: #ffffff;
 }
 
