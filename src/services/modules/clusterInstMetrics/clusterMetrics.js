@@ -1,7 +1,7 @@
 
-import { endpoint } from '../../../helper/constant';
 import { UNIT_BYTES, UNIT_PERCENTAGE } from '../../../pages/main/monitoring/helper/unitConvertor';
 import { fields } from '../../model/format';
+import { endpoint } from '../../../helper/constant';
 
 export const clusterMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },

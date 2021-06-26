@@ -56,7 +56,7 @@ export const fetchToken = (self) => {
  * @returns headers
  */
 export const fetchHeader = (self, request, auth) => {
-    const token = fetchToken()
+    const token = fetchToken(self)
     let headers = {};
     if (token && auth) {
         headers = {

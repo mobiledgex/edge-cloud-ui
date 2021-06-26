@@ -249,11 +249,11 @@ class Monitoring extends React.Component {
     }
 
     render() {
-        const { minimize, filter, range, duration, organizations, avgData, rowSelected, showLoaded, isPrivate } = this.state
+        const { minimize, filter, range, duration, organizations, avgData, rowSelected, showLoaded, isPrivate, selectedOrg } = this.state
         return (
             <div style={{ flexGrow: 1 }} mex-test="component-monitoring">
                 <Card>
-                    <MonitoringToolbar regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} isPrivate={isPrivate} />
+                    <MonitoringToolbar selectedOrg={selectedOrg} regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} isPrivate={isPrivate} />
                 </Card>
                 <React.Fragment>
                     <div style={{ margin: 1 }}></div>
