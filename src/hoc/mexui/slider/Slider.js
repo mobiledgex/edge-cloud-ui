@@ -62,13 +62,9 @@ export default function MSlider(props) {
     useEffect(() => {
         const ticks = document.getElementsByClassName('MuiSlider-mark')
         props.marks.forEach((mark, i)=>{
-            ticks[i].style.backgroundColor = mark.color_avg
+            ticks[i].style.backgroundColor = mark[`color_${props.markertype}`]
         })
-        // for(let tick of ticks)
-        // {
-        //     tick.style.backgroundColor = 'red'
-        // }
-    }, []);
+    }, [props.markertype]);
 
     return (
         <div className={classes.root}>

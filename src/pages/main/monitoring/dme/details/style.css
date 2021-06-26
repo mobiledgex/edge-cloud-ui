@@ -1,0 +1,31 @@
+
+table.details {
+    font-size:12px;
+    border-spacing: 2em 0em;
+}
+
+table.details tbody,
+table.details thead tr { display: block; }
+
+table.details tbody {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+table.details tbody td,
+table.details thead th {
+    width: 200px;
+}
+
+table.details thead th {
+    border-bottom: 1px solid white;
+}
+
+table.details thead th:last-child {
+    width: 216px; /* 140px + 16px detailsbar width */
+}
+
+thead tr th { 
+    text-align: left;
+}

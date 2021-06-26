@@ -7,22 +7,26 @@ import { primaryKeys as appInstKeys } from '../../../../services/modules/appInst
 import { appInstUsageMetrics } from '../../../../services/modules/appInstUsageMetrics/appInstUsageMetrics'
 import { authSyncRequest, responseValid } from '../../../../services/service'
 import MexWorker from '../services/metricUsage.worker.js'
-import { Dialog } from '@material-ui/core'
+import { Dialog, Grid } from '@material-ui/core'
 import { Marker } from "react-leaflet";
 import MexMap from '../../../../hoc/mexmap/MexMap'
 import { cloudIcon } from '../../../../hoc/mexmap/MapProperties'
 import { perpetual } from '../../../../helper/constant'
-import { FORMAT_FULL_DATE_TIME, FORMAT_FULL_T, time, timeInMilli } from '../../../../utils/date_util'
+import { FORMAT_FULL_DATE_TIME, time } from '../../../../utils/date_util'
 import { IconButton, Slider } from '../../../../hoc/mexui'
 import { CON_TAGS, CON_TOTAL, CON_VALUES } from '../../../../helper/constant/perpetual'
 import MexCircleMarker from '../../../../hoc/mexmap/utils/MexCircleMarker'
 import { colors, generateColor } from '../../../../utils/heatmap_utils'
 import MapLegend from './MapLegend'
-import './style.css'
 import Histogram from '../charts/histogram/Histogram'
 import MexCurve from '../../../../hoc/mexmap/utils/MexCurve'
 import CloseIcon from '@material-ui/icons/Close';
 import Legend from '../charts/heatmapLegend/Legend'
+import DMEToolbar, { ACTION_DATA_TYPE } from './DMEToolbar';
+import CloudletDetails from './details/CloudletDetails';
+import DeviceDetails from './details/DeviceDetails';
+import { operators } from "../../../../helper/constant";
+import './style.css'
 
 const buckets = [0, 5, 10, 25, 50, 100]
 class DMEMetrics extends React.Component {
@@ -48,7 +52,8 @@ class DMEMetrics extends React.Component {
         return generateColor(geoValues[0][markerType])
     }
 
-    setHistogramData = (cloudlet, key, histogramData, mapcenter) => {
+    setHistogramData = (cloudlet, key, selection, mapcenter) => {
+        let histogramData = selection[key]
         const selectCloudlet = this.state.selectCloudlet
         let update = false
         let data = {}
@@ -76,23 +81,22 @@ class DMEMetrics extends React.Component {
             if (selectDevice === undefined || selectDevice === key) {
                 const geoTags = deviceGeoObject[key][perpetual.CON_TAGS]
                 const geoValues = deviceGeoObject[key][perpetual.CON_VALUES]
-                const geoTotal = deviceGeoObject[key][perpetual.CON_TOTAL]
                 const location = geoTags['location']
                 connectorMerge.push([location.lat, location.lng])
                 return (
                     <React.Fragment key={key}>
-                        <MexCircleMarker coords={location} color={this.generateColor(geoValues, markerType)} onClick={() => { this.setHistogramData(false, key, geoTotal, [location.lat, location.lng]) }} radius={3} />
+                        <MexCircleMarker coords={location} color={this.generateColor(geoValues, markerType)} onClick={() => { this.setHistogramData(false, key, deviceGeoObject, [location.lat, location.lng]) }} radius={3} />
                     </React.Fragment>
                 )
             }
         })
     }
 
-    fetchLegendData = (timeData, selectCloudlet) => {
+    fetchLegendData = (timeData, selectCloudlet, markerType) => {
         let dataList = []
         Object.keys(timeData).forEach((key) => {
             if (selectCloudlet === undefined || selectCloudlet === key) {
-                dataList.push(timeData[key][CON_TAGS])
+                dataList.push({ ...timeData[key][CON_TAGS], key, locationColor:generateColor(operators._avg(timeData[key][CON_TOTAL][markerType])) })
             }
         })
         return dataList
@@ -115,7 +119,7 @@ class DMEMetrics extends React.Component {
                             connectorMerge.values[i] = [[lat, lon]]
                             return (
                                 <React.Fragment key={key}>
-                                    <Marker icon={cloudIcon(i, tags[fields.color])} position={[lat, lon]} onClick={() => { this.setHistogramData(true, key, timeData[key][CON_TOTAL], [lat, lon]) }} />
+                                    <Marker icon={cloudIcon(i, tags[fields.color])} position={[lat, lon]} onClick={() => { this.setHistogramData(true, key, timeData, [lat, lon]) }} />
                                     {
                                         this.renderDevice(timeData[key], markerType, connectorMerge.values[i])
                                     }
@@ -129,7 +133,7 @@ class DMEMetrics extends React.Component {
                         <MexCurve key={i} data={[connector]} option={{ color: connectorMerge.color[i], fill: false, dashArray: '10', weight: 0.6 }} />
                     ))
                 }
-                <MapLegend onChange={(value) => this.setState({ markerType: value })} data={this.fetchLegendData(timeData, selectCloudlet)} />
+                <MapLegend data={this.fetchLegendData(timeData, selectCloudlet, markerType)} onClick={(key, location) => { this.setHistogramData(true, key, timeData, location) }} />
             </div> : null
     }
 
@@ -168,36 +172,57 @@ class DMEMetrics extends React.Component {
         })
     }
 
-
+    renderDetails = () => {
+        const { selectDevice, histogramData, markerType } = this.state
+        return selectDevice ? <DeviceDetails data={histogramData} /> :
+            <CloudletDetails data={histogramData} markerType={markerType} onClick={(key, data, location) => { this.setHistogramData(false, key, data, location) }} />
+    }
 
     renderSlider = () => {
-        const { histogramData, sliderMarks } = this.state
-        const visibility = Boolean(histogramData)
+        const { histogramData, sliderMarks, markerType, selectCloudlet } = this.state
+        const visibility = Boolean(selectCloudlet)
         return (
             <div style={{ position: 'absolute', bottom: 23, zIndex: 999, width: '100%', paddingRight: 15, paddingLeft: 15 }}>
                 <div style={{ backgroundColor: `${visibility ? 'rgba(41,44,51,0.6)' : 'transparent'}` }}>
-                    <div align='right'>
-                        {visibility ? <IconButton onClick={this.onSelectClose}><CloseIcon /></IconButton> : null}
-                    </div>
-                    {histogramData ? <Histogram data={histogramData} buckets={buckets} width={'calc(25vw - 0px)'} height={'calc(30vh - 0px)'} />
-                        : null}
-                    <br/>
-                    <div align='center'>
-                        {sliderMarks ? <Slider defaultValue={sliderMarks[0].value} min={sliderMarks[0].value} max={sliderMarks[sliderMarks.length - 1].value} valueLabelFormat={this.valueLabelFormat} marks={sliderMarks} onChange={this.onSliderChange} step={null} /> : null}
-                    </div>
+                    {visibility ?
+                        <React.Fragment>
+                            <div align='right'>
+                                <IconButton onClick={this.onSelectClose}><CloseIcon /></IconButton>
+                            </div>
+                            <Grid container>
+                                <Grid xs={4} item>
+                                    <Histogram data={histogramData[CON_TOTAL]} buckets={buckets} width={'calc(25vw - 0px)'} height={'calc(30vh - 0px)'} />
+                                </Grid>
+                                <Grid xs={4} item>
+                                    {this.renderDetails()}
+                                </Grid>
+                            </Grid>
+                            <br />
+                        </React.Fragment> : <div align='center'>
+                        {sliderMarks ? <Slider defaultValue={sliderMarks[0].value} min={sliderMarks[0].value} max={sliderMarks[sliderMarks.length - 1].value} valueLabelFormat={this.valueLabelFormat} marks={sliderMarks} onChange={this.onSliderChange} markertype={markerType} step={null} /> : null}
+                    </div>}
+                    
                 </div>
             </div>
         )
     }
 
+    onToolbar = (action, value) => {
+        switch (action) {
+            case ACTION_DATA_TYPE:
+                this.setState({ markerType: value })
+                break;
+        }
+    }
+
     render() {
-        const { selectedDate, data, histogramData } = this.state
         return (
             <React.Fragment>
                 <Dialog fullScreen open={true}>
+                    <DMEToolbar onChange={this.onToolbar}></DMEToolbar>
                     {this.renderMap()}
                     {this.renderSlider()}
-                    <div style={{ position: 'absolute', top: 100, zIndex: 9999 }}>
+                    <div style={{ position: 'absolute', top: 150, zIndex: 9999 }}>
                         <Legend colors={colors} buckets={buckets} />
                     </div>
                 </Dialog>
@@ -211,7 +236,6 @@ class DMEMetrics extends React.Component {
 
     fetchData = async () => {
         const { data } = this.props
-        const { selectedDate } = this.state
         const tempData = this.tempFetch()
         const request = appInstUsageMetrics(this, {
             appInst: appInstKeys(tempData),
@@ -226,7 +250,6 @@ class DMEMetrics extends React.Component {
             })
             this.worker.addEventListener('message', event => {
                 if (this._isMounted) {
-                    console.log(event.data.data)
                     this.setState({ data: event.data.data, sliderMarks: event.data.slider })
                 }
             })

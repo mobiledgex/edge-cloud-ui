@@ -4,7 +4,7 @@ import { fields } from "../../../../services/model/format"
 import { center } from "../../../../utils/math_utils"
 import { darkColors } from "../../../../utils/color_utils"
 import { generateColor } from "../../../../utils/heatmap_utils"
-import { _avg } from "../../../../helper/constant/operators"
+import { _avg, _min, _max } from "../../../../helper/constant/operators"
 
 
 const formatColumns = (columns, keys) => {
@@ -149,7 +149,7 @@ const grouper = (dataList, columns, selections, levellength, level = 1) => {
         const appInstObject = parent[key][CON_VALUES]
         const time = parent[key][CON_TAGS].time.toLowerCase()
         const total = parent[key][CON_TOTAL]
-        slider.push({ value: j, label: time, color_avg: generateColor(_avg(total['avg'])) })
+        slider.push({ value: j, label: time, color_avg: generateColor(_avg(total['avg'])), color_min: generateColor(_min(total['min'])), color_max: generateColor(_max(total['max'])) })
         let appInstKeys = Object.keys(appInstObject)
         let colors = darkColors(appInstKeys.length)
         appInstKeys.forEach((appInstKey, i) => {
@@ -157,7 +157,7 @@ const grouper = (dataList, columns, selections, levellength, level = 1) => {
         })
     })
     for (let i = 1; i < 100; i++) {
-        slider.push({ value: i, label: '2021-05-13t01:00:00z', color_avg: generateColor(i) })
+        slider.push({ value: i, label: '2021-05-13t01:00:00z', color_avg: generateColor(i), color_min: generateColor(3),color_max: generateColor(i)  })
     }
     return { data: parent, slider }
 }

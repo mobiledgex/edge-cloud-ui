@@ -2,7 +2,6 @@ import { MapControl, withLeaflet } from "react-leaflet";
 import L from "leaflet";
 import { fields } from "../../../../services/model/format";
 import { operators } from "../../../../helper/constant";
-
 class Legend extends MapControl {
 
     createLeafletElement(props) {
@@ -10,16 +9,16 @@ class Legend extends MapControl {
     }
 
     onChange = (e) => {
-        this.props.onChange(e.target.value)
+        let index = e.target.id
+        if (index) {
+            const data = this.props.data[e.target.id]
+            const location = data[fields.cloudletLocation]
+            const key = data[fields.key]
+            this.props.onClick(key, [location[fields.latitude], location[fields.longitude]])
+        }
     }
 
-    // <select (click)="onChange()" style="border-radius:5px;width:70px;background-color:#000;color:white;padding:2px">\
-    //                 <option value='min'>Min</option>\
-    //                 <option value='max'>Max</option>\
-    //                 <option value='avg'>Avg</option>\
-    //             </select>\
-
-    removeLegend = ()=>{
+    removeLegend = () => {
         const { map } = this.props.leaflet;
         map.removeControl(this.legend)
     }
@@ -29,14 +28,30 @@ class Legend extends MapControl {
         let gt = `<table class="scroll">\
         <thead>
                 <tr align='left'>
-                    <th style='width:50px;'></th></th><th style='border-bottom:1px solid white;'><code>Cloudlet</code></th>
+                    <th style='width:50px;'></th>
+                    <th style='border-bottom:1px solid white;'><code>Cloudlet</code></th>
                     <th style='border-bottom:1px solid white;'><code>Cluster</code></th>
+                    <th style='width:50px;border-bottom:1px solid white;'>Location</th>
                 </tr>
             </thead>
             <tbody>`
         data.forEach((item, i) => {
             if (item) {
-                gt = gt + `<tr><td style='width:50px'><div style='width:20px;height:10px;background-color:${item[fields.color]}'></div></td><td><code>${item[fields.cloudletName]} [${item[fields.operatorName]}]</code></td><td><code>${item[fields.clusterName]} [${item[fields.clusterdeveloper]}]</code></td></tr>`
+                gt = gt + `<tr>
+                <td style='width:50px'>
+                    <div style='width:20px;height:10px;background-color:${item[fields.color]}'></div>
+                </td>
+                <td>
+                    <code>${item[fields.cloudletName]} [${item[fields.operatorName]}]</code>
+                </td>
+                <td>
+                    <code>${item[fields.clusterName]} [${item[fields.clusterdeveloper]}]</code>
+                </td>
+                <td style='width:50px'>
+                    <button onMouseOver="this.style.backgroundColor='rgb(57,58,63)';this.style.borderRadius='100px'" onMouseOut="this.style.backgroundColor='transparent'" style='background:transparent;border:none;width:40px;height:40px;'>
+                        <span id='${i}' class='material-icons-outlined' style='cursor:pointer;color:${item['locationColor']}' onClick=''>gps_fixed</span>
+                    </button>
+                </td></tr>`
             }
         })
         gt = gt + '</tbody></table>'
@@ -52,7 +67,7 @@ class Legend extends MapControl {
                         ${gt}
                 </div>
             </div>`
-            div.addEventListener('change', this.onChange);
+            div.addEventListener('click', this.onChange);
             return div;
         };
 
@@ -65,6 +80,10 @@ class Legend extends MapControl {
             this.removeLegend()
             this.renderMapLegend()
         }
+    }
+
+    demo = () => {
+        alert()
     }
 
     componentDidMount() {
