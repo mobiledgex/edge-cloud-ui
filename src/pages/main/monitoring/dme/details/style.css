@@ -8,7 +8,7 @@ table.details tbody,
 table.details thead tr { display: block; }
 
 table.details tbody {
-    max-height: 300px;
+    max-height: 250px;
     overflow-y: auto;
     overflow-x: hidden;
 }

@@ -150,7 +150,7 @@ class Histogram extends React.Component {
         const { width, height } = this.props
         return (
             toggle ? <React.Fragment>
-                <div style={{width:'calc(25vw - 0px)'}} align='center'><h4>Latency Historgram</h4></div>
+                <div style={{width:'calc(25vw - 0px)'}} align='center'><h4><b>Latency Histogram</b></h4></div>
                 <div style={{ width: `${width ? width : '100%'}`, height: `${height ? height : '50vh'}` }} className='charts' ref={elem => this.inputField = elem}></div>
             </React.Fragment> : null
         )

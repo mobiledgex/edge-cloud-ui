@@ -28,7 +28,7 @@ class AppInstList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentView: <DMEMetrics data={temp}/>,
+            currentView: undefined,//<DMEMetrics data={temp}/>,
             terminalData: [],
             openTerminal: false,
             stepsArray: []
@@ -144,7 +144,7 @@ class AppInstList extends React.Component {
     onMetrics = (action, data) =>{
         if(this._isMounted)
         {
-            this.updateState({currentView : <DMEMetrics data={data}/>})
+            this.updateState({currentView : <DMEMetrics data={temp} onClose={this.onRegClose}/>})
         }
     }
 
@@ -158,7 +158,7 @@ class AppInstList extends React.Component {
             { id: perpetual.ACTION_POWER_ON, label: 'Power On', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power on' },
             { id: perpetual.ACTION_POWER_OFF, label: 'Power Off', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power off' },
             { id: perpetual.ACTION_REBOOT, label: 'Reboot', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'reboot' },
-            { id: perpetual.ACTION_DME_METRICS, label: 'DME Metrics', onClick: this.onMetrics },
+            { id: perpetual.ACTION_DME_METRICS, label: 'DME Metrics', onClick: this.onMetrics, group:true },
         ]
     }
 
@@ -209,6 +209,7 @@ class AppInstList extends React.Component {
             onAdd:  redux_org.isOperator(this) ?  null : this.onAdd,
             viewMode: HELP_APP_INST_LIST,
             grouping: true,
+            groupingAction:true,
             formatData: this.dataFormatter
         })
     }

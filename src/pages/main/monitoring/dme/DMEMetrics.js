@@ -22,7 +22,7 @@ import Histogram from '../charts/histogram/Histogram'
 import MexCurve from '../../../../hoc/mexmap/utils/MexCurve'
 import CloseIcon from '@material-ui/icons/Close';
 import Legend from '../charts/heatmapLegend/Legend'
-import DMEToolbar, { ACTION_DATA_TYPE } from './DMEToolbar';
+import DMEToolbar, { ACTION_CLOSE, ACTION_DATA_TYPE } from './DMEToolbar';
 import CloudletDetails from './details/CloudletDetails';
 import DeviceDetails from './details/DeviceDetails';
 import { operators } from "../../../../helper/constant";
@@ -212,6 +212,10 @@ class DMEMetrics extends React.Component {
             case ACTION_DATA_TYPE:
                 this.setState({ markerType: value })
                 break;
+            case ACTION_CLOSE:
+                this.props.onClose()
+                break;
+
         }
     }
 
@@ -222,7 +226,7 @@ class DMEMetrics extends React.Component {
                     <DMEToolbar onChange={this.onToolbar}></DMEToolbar>
                     {this.renderMap()}
                     {this.renderSlider()}
-                    <div style={{ position: 'absolute', top: 150, zIndex: 9999 }}>
+                    <div style={{ position: 'absolute', top: 170, zIndex: 9999 }}>
                         <Legend colors={colors} buckets={buckets} />
                     </div>
                 </Dialog>

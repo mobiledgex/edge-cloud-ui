@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Slider from '@material-ui/core/Slider';
 import './style.css'
+
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '95%',
@@ -11,8 +12,6 @@ const useStyles = makeStyles((theme) => ({
     },
 
 }));
-
-
 
 const CustomSlider = withStyles(() => {
     return ({

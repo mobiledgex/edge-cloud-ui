@@ -226,7 +226,6 @@ class MexListView extends React.Component {
                             case 'Delete':
                                 this.onDeleteMultiple(action, item)
                                 break;
-
                         }
                     }
                 })
@@ -266,8 +265,8 @@ class MexListView extends React.Component {
     /***Action Block */
     /*Todo this is temporary we can't hardocode Action type in mexlistview 
     will be changed to make it more generalize*/
-    onActionClose = (action) => {
-        let data = this.selectedRow;
+    onActionClose = (action, dataList) => {
+        let data = dataList ? dataList : this.selectedRow;
         let valid = action.onClickInterept ? action.onClickInterept(action, data) : true
         if (valid) {
             if (action.warning) {
