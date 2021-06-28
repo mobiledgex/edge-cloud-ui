@@ -9,7 +9,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
-import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH, ACTION_GROUP } from './MexToolbar';
+import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH, ACTION_GROUP, ACTION_PICKER } from './MexToolbar';
 import MexDetailViewer from './detail/DetailViewer';
 import MexListViewer from '../hoc/listView/ListViewer';
 import MexMessageStream from '../hoc/stepper/mexMessageStream';
@@ -22,6 +22,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import { operators, shared, perpetual } from '../helper/constant';
 import { fetchDataFromServer } from './service';
 import { service } from '../services';
+import { timeRangeInMin } from '../hoc/mexui/Picker';
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -50,6 +51,7 @@ class MexListView extends React.Component {
         this.selectedRow = {};
         this.sorting = false;
         this.selectedRegion = REGION_ALL
+        this.range = timeRangeInMin()
     }
 
     updateState = (data) => {
@@ -471,6 +473,9 @@ class MexListView extends React.Component {
                 break;
             case ACTION_GROUP:
                 this.setState({ dropList: value })
+            case ACTION_PICKER:
+                this.range = value
+                this.dataFromServer(this.selectedRegion)
             default:
 
         }
@@ -551,6 +556,19 @@ class MexListView extends React.Component {
         let requestInfo = this.requestInfo
         if (requestInfo) {
             let filterList = this.getFilterInfo(requestInfo, region)
+            if (requestInfo.picker && this.range) {
+                if (filterList.length > 0) {
+                    filterList = filterList.map(filter => {
+                        filter.startdate = this.range.from
+                        filter.enddate = this.range.to
+                        return filter
+                    })
+                }
+                else {
+                    filterList = [{ startdate: this.range.from, enddate: this.range.to }]
+                }
+            }
+            
             this.requestCount = filterList.length;
             if (filterList && filterList.length > 0) {
                 for (let i = 0; i < filterList.length; i++) {

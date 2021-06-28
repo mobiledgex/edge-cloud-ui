@@ -26,6 +26,6 @@ export const keys = () => ([
 ])
 
 export const showInvoices = (self, data) => {
-    let requestData = { name: data[fields.name] }
+    let requestData = data
     return { method: endpoint.INVOICE_BILLING, data: requestData, keys: keys() }
 }

@@ -1,23 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Popover, Grid, Button, Divider, Box, Tooltip } from '@material-ui/core';
-import * as dateUtil from '../../../../utils/date_util'
-import * as constant from './Constant'
 import * as moment from 'moment'
 import { Icon } from 'semantic-ui-react';
+
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import {
     MuiPickersUtilsProvider,
     KeyboardDateTimePicker,
 } from '@material-ui/pickers';
-import { alertInfo } from '../../../../actions';
+import { useDispatch } from 'react-redux';
+import { alertInfo } from '../../actions';
+import * as dateUtil from '../../utils/date_util';
+
+export const relativeTimeRanges = [
+    { label: 'Last 5 minutes', duration: 5 },
+    { label: 'Last 15 minutes', duration: 15 },
+    { label: 'Last 30 minutes', duration: 30 },
+    { label: 'Last 1 hour', duration: 60 },
+    { label: 'Last 3 hours', duration: 180 },
+    { label: 'Last 6 hours', duration: 360 },
+    { label: 'Last 12 hours', duration: 720 },
+]
 
 const rangeLabel = (from, to) => {
     return <div>
         <div>
             {dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, from)}
         </div>
-        <div style={{marginTop:10, marginBottom:10}} align="center">
+        <div style={{ marginTop: 10, marginBottom: 10 }} align="center">
             to
         </div>
         <div>
@@ -26,11 +37,23 @@ const rangeLabel = (from, to) => {
     </div>
 }
 
+export const timeRangeInMin = (range) => {
+    range = range ? range : relativeTimeRanges[3].duration
+    let endtime = dateUtil.currentUTCTime()
+    let starttime = dateUtil.subtractMins(range, endtime).valueOf()
+    starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
+    endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
+    return { from : starttime, to: endtime }
+}
+
 const MexTimer = (props) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [from, setFrom] = React.useState(dateUtil.currentDate());
     const [to, setTo] = React.useState(dateUtil.currentDate());
+    const [relativeRange, setRelativeRange] = React.useState(relativeTimeRanges[3]);
     const dispatch = useDispatch();
+
+    const { onChange } = props
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -50,25 +73,26 @@ const MexTimer = (props) => {
         }
         else {
             setAnchorEl(null)
-            let utcFrom  = dateUtil.utcTime(dateUtil.FORMAT_FULL_T, from) + '+00:00'
-            let utcTo  = dateUtil.utcTime(dateUtil.FORMAT_FULL_T, to) + '+00:00'
-            props.onChange(utcFrom, utcTo)
+            let utcFrom = dateUtil.utcTime(dateUtil.FORMAT_FULL_T, from) + '+00:00'
+            let utcTo = dateUtil.utcTime(dateUtil.FORMAT_FULL_T, to) + '+00:00'
+            onChange({ from: utcFrom, to: utcTo })
         }
     }
 
-    const applyRelativeTimeRange = (relativeTimeRange)=>{
+    const applyRelativeTimeRange = (relativeTimeRange) => {
         setAnchorEl(null)
-        props.onRelativeChange(relativeTimeRange)
+        setRelativeRange(relativeTimeRange)
+        onChange(timeRangeInMin(relativeTimeRange.duration))
     }
 
     const open = Boolean(anchorEl);
     const id = open ? 'mex-timer' : undefined;
 
     return (
-        <Box order={props.order}style={{marginTop:8, marginRight:10}}>
-            <Tooltip title={<strong style={{fontSize:13}}>{rangeLabel(props.range.starttime, props.range.endtime)}</strong>} arrow>
-                <button size='small' aria-controls="mex-timer" aria-haspopup="true" onClick={handleClick} style={{backgroundColor:'transparent', border:'1px solid rgba(118, 255, 3, 0.7)', borderRadius:5, cursor:'pointer', padding:5}}>
-                    <Icon name='clock outline' style={{color:'rgba(118, 255, 3, 0.7)'}}/><strong style={{marginLeft:5, color:'rgba(118, 255, 3, 0.7)'}}>{props.duration.label}</strong><Icon name='chevron down'  style={{marginLeft:5, color:'rgba(118, 255, 3, 0.7)'}}/>
+        <React.Fragment>
+            <Tooltip title={<strong style={{ fontSize: 13 }}>{rangeLabel(from, to)}</strong>} arrow>
+                <button size='small' aria-controls="mex-timer" aria-haspopup="true" onClick={handleClick} style={{ backgroundColor: 'transparent', border: '1px solid rgba(118, 255, 3, 0.7)', borderRadius: 5, cursor: 'pointer', padding: 5 }}>
+                    <Icon name='clock outline' style={{ color: 'rgba(118, 255, 3, 0.7)' }} /><strong style={{ marginLeft: 5, color: 'rgba(118, 255, 3, 0.7)' }}>{relativeRange.label}</strong><Icon name='chevron down' style={{ marginLeft: 5, color: 'rgba(118, 255, 3, 0.7)' }} />
                 </button>
             </Tooltip>
             <Popover
@@ -123,10 +147,10 @@ const MexTimer = (props) => {
                         <Grid item xs={5}>
                             <div>
                                 <h4 style={{ marginBottom: 20 }}><b> Relative Time Ranges</b></h4>
-                                {constant.relativeTimeRanges.map((relativeTimeRange, i) => {
+                                {relativeTimeRanges.map((relativeTimeRange, i) => {
                                     return (
                                         <div key={i}>
-                                            <Button onClick={()=>{applyRelativeTimeRange(relativeTimeRange)}}>{relativeTimeRange.label}</Button>
+                                            <Button onClick={() => { applyRelativeTimeRange(relativeTimeRange) }}>{relativeTimeRange.label}</Button>
                                         </div>
                                     )
                                 })}
@@ -135,7 +159,7 @@ const MexTimer = (props) => {
                     </Grid>
                 </div>
             </Popover>
-        </Box>
+        </React.Fragment>
     );
 }
 

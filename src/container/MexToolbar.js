@@ -9,6 +9,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import SelectMenu from '../hoc/selectMenu/SelectMenu'
 import { redux_org } from '../helper/reduxData'
+import Picker from '../hoc/mexui/Picker'
 import { lightGreen } from '@material-ui/core/colors';
 
 export const REGION_ALL = 1;
@@ -21,6 +22,7 @@ export const ACTION_SEARCH = 6;
 export const ACTION_CLEAR = 7;
 export const ACTION_BACK = 8;
 export const ACTION_GROUP = 9;
+export const ACTION_PICKER = 10;
 
 const iconColor = lightGreen['A700']
 
@@ -200,6 +202,16 @@ const MexToolbar = (props) => {
         return props.toolbarAction ? props.toolbarAction() : null
     }
 
+    const picker = (order) => {
+        const { requestInfo } = props
+        return (
+            requestInfo.picker ?
+                <Box order={order} style={{marginLeft:15, marginRight:10}} m={0.7}>
+                    <Picker onChange={(value) => { props.onAction(ACTION_PICKER, value) }}/>
+                </Box> : null
+        )
+    }
+
     return (
         <Toolbar>
             <div style={{ width: '100%' }}>
@@ -225,6 +237,7 @@ const MexToolbar = (props) => {
                                 {addForm()}
                                 {refreshForm()}
                                 {renderGroup()}
+                                {picker(5)}
                             </React.Fragment>
                     }
                 </Box></div>
