@@ -1,3 +1,24 @@
+
+.outer {
+    display: flex;
+    flex-direction: column;
+    height: calc(89vh - 15px);
+}
+
+.block-1 {
+    height: 25%;
+    resize: vertical; /* resize vertical */
+    overflow: auto; /* resize works for overflow other than visible */
+}
+
+.block-2 {
+    height: 75%;
+    flex: 1; /* adjust automatically */
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto; /* hide overflow on small width */
+}
+   
 .monitoring-header {
     padding: 10px 0px 0px 0px;
     font-size:25px;
@@ -109,11 +130,11 @@
     margin-top: 4px;
 }
 
-.grid-charts::-webkit-scrollbar { 
+.block-2::-webkit-scrollbar { 
     display: none;  /* Safari and Chrome */
 }
 
-.grid-charts{
+.block-2{
     scrollbar-width: thin;
     scrollbar-color: transparent transparent;
   
@@ -188,3 +209,4 @@
 }
 
 canvas#race{position:relative; z-index:999999;}
+

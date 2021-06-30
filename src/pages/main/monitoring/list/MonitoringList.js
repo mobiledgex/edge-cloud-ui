@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -7,15 +7,21 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Icon } from 'semantic-ui-react';
-import { Collapse } from '@material-ui/core';
 import ListToolbar from './MonitoringListToolbar'
 import { monitoringActions } from '../helper/Constant';
+import DragButton from './DragButton'
 
 const MexChartList = (props) => {
 
   const data = props.data
   const rows = props.filter.parent.metricListKeys
   const actions = monitoringActions(props.filter.parent.id)
+  const [maxHeight, setMaxHeight] = React.useState(0)
+  const tableRef = useRef()
+
+  if (tableRef.current && maxHeight < tableRef.current.scrollHeight) {
+    setMaxHeight(tableRef.current.scrollHeight)
+  }
 
   const validateRegionFilter = (region) => {
     let regionFilter = props.filter.region
@@ -42,9 +48,9 @@ const MexChartList = (props) => {
   }
 
   return (
-    <Collapse in={!props.minimize}>
+    <React.Fragment>
       {props.rowSelected === 1 && actions && actions.length > 0 ? <ListToolbar actions={actions} click={onToolbar} /> : null}
-      <TableContainer component={Paper} style={{ height: 170, overflow: 'auto' }}>
+      <TableContainer component={Paper} ref={tableRef}>
         <Table aria-label="mex chart list" stickyHeader size={'small'}>
           <TableHead>
             <TableRow>
@@ -82,7 +88,8 @@ const MexChartList = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
-    </Collapse>
+      <DragButton height={maxHeight} />
+    </React.Fragment>
   );
 }
 export default MexChartList

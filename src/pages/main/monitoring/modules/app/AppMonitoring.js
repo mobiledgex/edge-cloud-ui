@@ -5,7 +5,6 @@ import { fields } from '../../../../../services/model/format'
 import AppClient from './AppClient'
 import AppEvent from './AppEvent'
 import MexMetric from '../../common/MexMetric'
-import { mapGridHeight } from '../../helper/Constant';
 import { perpetual } from '../../../../../helper/constant';
 
 const healthDataStructure = () => {
@@ -74,7 +73,7 @@ class AppMonitoring extends React.Component {
         let selected = mapData.selected
         return (
             filter.parent.id === 'appinst' ?
-                <div className={'grid-charts'} style={{height : mapGridHeight(minimize, selected)}}>
+                <React.Fragment>
                     <GridList cols={4} cellHeight={300}>
                         {filter.metricType.includes('client') ?
                             <GridListTile cols={1}>
@@ -94,7 +93,7 @@ class AppMonitoring extends React.Component {
                             </GridListTile> : null}
                         <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} isPrivate={isPrivate}/>
                     </GridList> 
-                </div> : null
+                </React.Fragment> : null
         )
     }
 }

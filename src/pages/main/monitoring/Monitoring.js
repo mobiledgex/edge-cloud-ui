@@ -80,6 +80,7 @@ class Monitoring extends React.Component {
         }
         this._isMounted = false
         this.selectedRow = undefined
+
     }
 
     updateState = (data) => {
@@ -259,8 +260,15 @@ class Monitoring extends React.Component {
                     <div style={{ margin: 1 }}></div>
                     {showLoaded ?
                         <React.Fragment>
-                            <MonitoringList data={avgData} filter={filter} onCellClick={this.onCellClick} minimize={minimize} rowSelected={rowSelected} onToolbarClick={this.onListToolbarClick} />
-                            {this.renderMonitoringParent()}
+                            <div className="outer">
+                                <div className="block block-1">
+                                    <MonitoringList data={avgData} filter={filter} onCellClick={this.onCellClick} minimize={minimize} rowSelected={rowSelected} onToolbarClick={this.onListToolbarClick} />
+                                </div>
+                                <div style={{height:4}}></div>
+                                <div className="block block-2">
+                                    {this.renderMonitoringParent()}
+                                </div>
+                            </div>
                         </React.Fragment> :
                         <React.Fragment>
                             <Skeleton variant="rect" height={180} />
