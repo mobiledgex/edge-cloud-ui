@@ -1,5 +1,5 @@
 import { customize } from './custom'
-import { changePowerState, createAppInst, updateAppInst, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst, refreshAllAppInst } from './appInstance'
+import { changePowerState, createAppInst, updateAppInst, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst, refreshAllAppInst, requestAppInstLatency } from './appInstance'
 import { primaryKeys } from './primary'
 
 export {
@@ -14,6 +14,7 @@ export {
     refreshAppInst,
     showAppInsts,
     streamAppInst,
-    refreshAllAppInst
+    refreshAllAppInst,
+    requestAppInstLatency
 }
 

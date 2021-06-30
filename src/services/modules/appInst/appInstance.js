@@ -6,6 +6,8 @@ import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant'
 import { customize } from '.'
 import { generateUUID } from '../../format/shared'
+import { REQUEST_APP_INST_LATENCY } from '../../../helper/constant/endpoint';
+import { primaryKeys } from './primary';
 
 let fields = formatter.fields;
 
@@ -230,6 +232,11 @@ export const deleteAppInst = (self, data) => {
 export const refreshAppInst = (data) => {
   let requestData = getKey(data)
   return { uuid: data.uuid, method: endpoint.REFRESH_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]}` }
+}
+
+export const requestAppInstLatency = (self, data) => {
+  data = primaryKeys(data)
+  return { method: REQUEST_APP_INST_LATENCY, data }
 }
 
 export const refreshAllAppInst = (data) => {

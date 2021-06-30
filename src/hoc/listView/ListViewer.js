@@ -211,7 +211,6 @@ class ListViewer extends React.Component {
                                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((key, j) => {
                                                 return (
                                                     <React.Fragment key={j}>
-                                                        {expandedGroups === undefined || expandedGroups === key ?
                                                             <StyledTableRow>
                                                                 <StyledTableCell
                                                                     colSpan={columnLength - (groupingAction ? 1 : 0)}
@@ -228,7 +227,7 @@ class ListViewer extends React.Component {
                                                                         <Icon style={{ color: lightGreen['A700'] }}>list</Icon>
                                                                     </IconButton>
                                                                 </StyledTableCell> : null}
-                                                            </StyledTableRow> : null}
+                                                            </StyledTableRow>
                                                         {expandedGroups === key ?
                                                             <ListBody
                                                                 colSpan={columnLength}

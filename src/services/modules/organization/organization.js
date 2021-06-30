@@ -16,7 +16,7 @@ export const keys = () => ([
         field: fields.userList, label: 'User List', sortable: true, visible: false,
         keys: [{ field: fields.username, label: 'Username' }, { field: fields.userRole, label: 'Role' }]
     },
-    { field: fields.manage, label: 'Manage', visible: false, clickable: true, format: true },
+    { field: fields.manage, label: 'Manage', visible: true, clickable: true, format: true },
     { field: fields.actions, label: 'Actions', visible: true, clickable: true }
 ])
 

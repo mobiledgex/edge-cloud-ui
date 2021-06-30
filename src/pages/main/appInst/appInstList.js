@@ -5,7 +5,7 @@ import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
-import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst } from '../../../services/modules/appInst';
+import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst, requestAppInstLatency } from '../../../services/modules/appInst';
 import { showApps } from '../../../services/modules/app';
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import AppInstReg from './appInstReg';
@@ -148,6 +148,10 @@ class AppInstList extends React.Component {
         }
     }
 
+    requestLantency = (action , data)=>{
+        console.log(requestAppInstLatency(this, data))
+    }
+
     actionMenu = () => {
         return [
             { id: perpetual.ACTION_UPDATE, label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Edit' },
@@ -159,6 +163,7 @@ class AppInstList extends React.Component {
             { id: perpetual.ACTION_POWER_OFF, label: 'Power Off', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power off' },
             { id: perpetual.ACTION_REBOOT, label: 'Reboot', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'reboot' },
             { id: perpetual.ACTION_DME_METRICS, label: 'DME Metrics', onClick: this.onMetrics, group:true },
+            { id: perpetual.ACTION_REQUEST_LATENCY, label: 'Request Latency Info', onClick: this.requestLantency },
         ]
     }
 

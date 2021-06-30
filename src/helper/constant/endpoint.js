@@ -60,6 +60,7 @@ export const UPDATE_APP_INST = 'auth/ctrl/UpdateAppInst';
 export const DELETE_APP_INST = 'auth/ctrl/DeleteAppInst';
 export const STREAM_APP_INST = 'auth/ctrl/StreamAppInst';
 export const REFRESH_APP_INST = 'auth/ctrl/RefreshAppInst';
+export const REQUEST_APP_INST_LATENCY = 'auth/ctrl/RequestAppInstLatency';
 //Flavor
 export const SHOW_FLAVOR = 'auth/ctrl/ShowFlavor';
 export const CREATE_FLAVOR = 'auth/ctrl/CreateFlavor';
