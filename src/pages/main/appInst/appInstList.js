@@ -18,6 +18,7 @@ import * as serverData from '../../../services/model/serverData'
 import { idFormatter, labelFormatter, uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
 import DMEMetrics from '../monitoring/dme/DMEMetrics'
+import { responseValid } from '../../../services/service';
 
 
 const temp = [{ region: 'EU', organizationName: "MobiledgeX", appName: "automation-sdk-porttest", version: "1.0", operatorName: "TDG", cloudletName: "automationHamburgCloudlet", clusterName: "porttestcluster", clusterdeveloper: "MobiledgeX", cloudletLocation: { latitude: 60.110922, longitude: 10.682127 } },
@@ -148,8 +149,9 @@ class AppInstList extends React.Component {
         }
     }
 
-    requestLantency = (action , data)=>{
-        console.log(requestAppInstLatency(this, data))
+    requestLantency = async (action , data)=>{
+        let mc = await requestAppInstLatency(this, data)
+        responseValid(mc) && this.props.handleAlertInfo('success', mc.response.data.message)
     }
 
     actionMenu = () => {
@@ -252,6 +254,7 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 

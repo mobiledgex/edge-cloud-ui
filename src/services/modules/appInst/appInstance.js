@@ -1,6 +1,6 @@
 import * as formatter from '../../model/format'
 import * as serverData from '../../model/serverData'
-import { showAuthSyncRequest } from '../../service';
+import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util'
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant'
@@ -234,9 +234,12 @@ export const refreshAppInst = (data) => {
   return { uuid: data.uuid, method: endpoint.REFRESH_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]}` }
 }
 
-export const requestAppInstLatency = (self, data) => {
-  data = primaryKeys(data)
-  return { method: REQUEST_APP_INST_LATENCY, data }
+export const requestAppInstLatency = async (self, data) => {
+  let requestData = {
+    region: data[fields.region],
+    appInstLatency: { key: primaryKeys(data) }
+  }
+  return await authSyncRequest(self, { method: REQUEST_APP_INST_LATENCY, data: requestData })
 }
 
 export const refreshAllAppInst = (data) => {
