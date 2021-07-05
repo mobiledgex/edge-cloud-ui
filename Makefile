@@ -7,6 +7,7 @@ build:
 	docker build --build-arg TAG=$(TAG) -t $(IMAGE) .
 	docker build -f Dockerfile.prod --build-arg CONSOLE_IMAGE=$(IMAGE) \
 		--build-arg REACT_APP_CAPTCHA_V2_KEY=$(REACT_APP_CAPTCHA_V2_KEY) \
+		--build-arg REACT_APP_GA_MEASUREMENT_ID=$(REACT_APP_GA_MEASUREMENT_ID) \
 		-t $(PROD_IMAGE) .
 
 publish:
