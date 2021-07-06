@@ -1,5 +1,6 @@
 /* eslint-disable */
 import sortBy from 'lodash/sortBy'
+import { SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET } from '../../../../helper/constant/endpoint'
 import { formatData } from '../../../../services/format'
 import { fields } from '../../../../services/model/format'
 import {darkColors} from '../../../../utils/color_utils'
@@ -43,7 +44,6 @@ const fetchAppInstData = (parentId, showList, keys) => {
 
 const processData = (worker) => {
     const { parentId, mcList, metricListKeys } = worker
-
     let formattedList = []
     if (mcList && mcList.length > 0) {
         if (parentId === PARENT_APP_INST || parentId === PARENT_CLOUDLET) {
@@ -57,10 +57,10 @@ const processData = (worker) => {
             mcList.map(mc => {
                 let request = mc.request
                 if (mc && mc.response && mc.response.status === 200) {
-                    if (request.method === 'ShowClusterInst') {
+                    if (request.method === SHOW_CLUSTER_INST) {
                         clusterList = mc.response.data
                     }
-                    else if (request.method === 'orgcloudlet/show' || request.method === 'ShowCloudlet') {
+                    else if (request.method === SHOW_ORG_CLOUDLET || request.method === SHOW_CLOUDLET) {
                         cloudletList = mc.response.data
                     }
                 }
@@ -84,6 +84,7 @@ const processData = (worker) => {
     sortBy(Object.keys(formattedList)).forEach(sorted => {
         sortedList[sorted] = formattedList[sorted]
     })
+
     self.postMessage({ status: 200, data: sortedList })
 }
 

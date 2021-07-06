@@ -80,17 +80,20 @@ export default function Select(props) {
         return value ? toUpper(value) : placeholder ? placeholder : ''
     }
 
+    const color = { color: props.color ? props.color : 'white' }
+    const border = { border: props.border ? `1px solid ${color.color}` : 'none', borderRadius: 5, paddingLeft: 5, paddingRight: 5, height: 25 }
+    
     return (
         <div>
             <FormControl className={classes.formControl}>
                 {props.label ? <InputLabel shrink id="mex-ui-select">
                     {props.label}
                 </InputLabel> : null}
-                <div style={{ display: 'inline', cursor: 'pointer', marginTop: props.label ? 21 : 0 }} aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorEl(e.currentTarget) }}>
+                <div style={{ display: 'inline', cursor: 'pointer', marginTop: props.label ? 21 : 0, ...color, ...border }} aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorEl(e.currentTarget) }}>
                     <Typography aria-controls="chart" aria-haspopup="true" className={classes.wrapIcon}>
-                        {selectLabel()}
+                        {props.border ? <strong style={{ fontSize: 13, marginTop:2 }}>{selectLabel()}</strong> : selectLabel()}
                     </Typography>
-                    <KeyboardArrowDownOutlinedIcon className={classes.icon} />
+                    <KeyboardArrowDownOutlinedIcon className={classes.icon} style={{ ...color }} />
                     <div style={{ borderBottom: props.underline ? '0.1em solid #BFC0C2' : '', marginTop: 3 }}></div>
                 </div>
                 <Menu

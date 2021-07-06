@@ -5,6 +5,14 @@ import CloudletMexMap from './CloudletMexMap'
 import CloudletEvent from './CloudletEvent'
 import MexMetric from '../../common/MexMetric'
 import CloudletFlavorUsage from './CloudletFlavorUsage'
+import DMEMetrics from '../../dme/DMEMetrics'
+import { ACTION_LATENCY_METRICS } from '../../../../../helper/constant/perpetual'
+
+const temp = [
+    { region: 'EU', organizationName: "MobiledgeX", appName: "automation-sdk-porttest", version: "1.0", operatorName: "TDG", cloudletName: "automationHamburgCloudlet", clusterName: "porttestcluster", clusterdeveloper: "MobiledgeX", cloudletLocation: { latitude: 60.110922, longitude: 10.682127 } },
+    { region: 'EU', organizationName: "MobiledgeX", appName: "automation-sdk-porttest", version: "1.0", operatorName: "TDG", cloudletName: "automationBonnCloudlet", clusterName: "porttestcluster", clusterdeveloper: "MobiledgeX", cloudletLocation: { latitude: 44, longitude: -2 } },
+    { region: 'EU', organizationName: "MobiledgeX", appName: "automation-sdk-porttest", version: "1.0", operatorName: "TDG", cloudletName: "automationFrankfurtCloudlet", clusterName: "porttestcluster", clusterdeveloper: "MobiledgeX", cloudletLocation: { latitude: 50.73438, longitude: 7.09549 } }
+]
 
 const processData = (avgData) => {
     let mapData = {}
@@ -54,7 +62,7 @@ class CloudletMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { avgData, filter, rowSelected, range, selectedOrg, updateAvgData, listAction } = this.props
+        const { avgData, filter, rowSelected, range, selectedOrg, updateAvgData, listAction, onActionClose } = this.props
         return (
             <React.Fragment>
                 <GridList cols={4} cellHeight={300}>
@@ -71,6 +79,7 @@ class CloudletMonitoring extends React.Component {
                     ))}
                     <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
                 </GridList>
+                {listAction && listAction.id === ACTION_LATENCY_METRICS ? <DMEMetrics id={filter.parent.id} onClose={onActionClose} data={temp} /> : null}
             </React.Fragment>
         )
     }

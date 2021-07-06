@@ -1,6 +1,5 @@
 import React from 'react';
 import { TableContainer, Table, TableHead, TableBody, TableCell, TableRow, Paper, Grow, Popper, ClickAwayListener, MenuList, MenuItem } from '@material-ui/core'
-import { fields } from '../../../../services/model/format';
 import { Icon } from '../../../../hoc/mexui';
 import { lightGreen } from '@material-ui/core/colors';
 import { monitoringActions } from '../helper/Constant';
@@ -9,7 +8,7 @@ const Action = (props) => {
   const { anchorEl, onClose, actionMenu, onClick, group } = props
   return (
     <React.Fragment>
-      <Popper open={Boolean(anchorEl)} anchorEl={anchorEl} role={undefined} transition disablePortal style={{zIndex:1}}>
+      <Popper open={Boolean(anchorEl)} anchorEl={anchorEl} role={undefined} transition disablePortal style={{ zIndex: 1 }}>
         {({ TransitionProps, placement }) => (
           <Grow
             {...TransitionProps}
@@ -21,7 +20,7 @@ const Action = (props) => {
                   {
                     actionMenu.map((action, i) => {
                       const visible = group ? action.group : true
-                      return visible ? <MenuItem key={i} onClick={(e)=>{onClick(e, action)}}>{action.label}</MenuItem> : null
+                      return visible ? <MenuItem key={i} onClick={(e) => { onClick(e, action) }}>{action.label}</MenuItem> : null
                     })
                   }
                 </MenuList>
@@ -35,7 +34,7 @@ const Action = (props) => {
 }
 
 const ActionButton = (props) => {
-  const { actionMenu, onClick} = props
+  const { actionMenu, onClick } = props
   return (
     actionMenu && actionMenu.length > 0 ? <TableCell>
       <button onClick={onClick} style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }}><Icon style={{ color: lightGreen['A700'], height: 18 }}>list</Icon></button>
@@ -43,7 +42,7 @@ const ActionButton = (props) => {
   )
 }
 
-const getGroupedData = rows => {
+const getGroupedData = (rows, groupBy) => {
   let dataList = []
   Object.keys(rows).forEach(key => {
     let regionData = rows[key]
@@ -55,13 +54,21 @@ const getGroupedData = rows => {
     }
   })
 
-  const groupedData = dataList.reduce((acc, item) => {
-    let key = `${item[fields.appName]}_${item[fields.version]}`;
-    let groupData = acc[key] || [];
-    acc[key] = groupData.concat([item]);
-    return acc;
-  }, {});
-  return groupedData
+  if (groupBy) {
+    const fields = groupBy.fields
+    const groupedData = dataList.reduce((acc, item) => {
+      let key = undefined
+      fields.forEach(field => {
+        key = key ? (key + '_') : ''
+        key = key + item[field]
+      })
+      let groupData = acc[key] || [];
+      acc[key] = groupData.concat([item]);
+      return acc;
+    }, {});
+    return groupedData
+  }
+  return {'all' : dataList}
 };
 
 const rowValue = (filter, row, value) => {
@@ -82,7 +89,8 @@ class MonitoringList extends React.Component {
     }
     const filter = props.filter
     this.rows = filter.parent.metricListKeys
-    this.colLen = this.rows.filter(row => (row.visible)).length + 1
+    this.groupBy = filter.parent.groupBy
+    this.colLen = this.rows.filter(row => (row.visible)).length + 1 + (this.groupBy.action ? 0 : 1)
     this.actionMenu = monitoringActions(props.id)
     this.selection = []
 
@@ -103,10 +111,22 @@ class MonitoringList extends React.Component {
     this.onActionClose()
   }
 
+  groupByFormat = (data, groupBy) => {
+    let format = undefined
+    const fields = groupBy.fields
+    const label = groupBy.label
+    fields.map(field => {
+      format = format ? (format + ' [') : ''
+      format = format + data[field]
+      format = format.includes('[') ? (format + ']') : format
+    })
+    return `${label}: ${format}`
+  }
+
   render() {
     const { anchorEl } = this.state
     const { filter, onCellClick, data } = this.props
-    const dataList = getGroupedData(data)
+    const dataList = getGroupedData(data, this.groupBy)
     return (
       <React.Fragment>
         <TableContainer component={Paper}>
@@ -125,10 +145,10 @@ class MonitoringList extends React.Component {
                 let values = dataList[key]
                 return (
                   <React.Fragment key={key}>
-                    <TableRow style={{ backgroundColor: '#1d1d26' }} >
-                      <TableCell colSpan={this.colLen}><b>{`${values[0][fields.appName]} [${values[0][fields.version]}]`}</b></TableCell>
-                      <ActionButton actionMenu={this.actionMenu} onClick={(e) => { this.actionMenuClick(e, values, true) }} />
-                    </TableRow>
+                    {this.groupBy && values[0].key.includes(filter.search) ? <TableRow style={{ backgroundColor: '#1d1d26' }} >
+                      <TableCell colSpan={this.colLen}><b>{this.groupByFormat(values[0], this.groupBy)}</b></TableCell>
+                      {this.groupBy.action ? <ActionButton actionMenu={this.actionMenu} onClick={(e) => { this.actionMenuClick(e, values, true) }} /> : null}
+                    </TableRow> : null}
                     {
                       values.map((value, i) => {
                         let visible = value.hidden ? false : true

@@ -149,7 +149,6 @@ const MexToolbar = (props) => {
         }
         return constant.metricParentTypes()
     }
-
     return (
         <Toolbar>
             <label className='monitoring-header'>Monitoring</label>

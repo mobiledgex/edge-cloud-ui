@@ -1,6 +1,7 @@
 import IconButton from './IconButton'
 import DatePicker from './DatePicker'
 import DateTimePicker from './DateTimePicker'
+import Picker from './Picker'
 import Button from './Button'
 import Select from './select/Select'
 import Slider from './slider/Slider'
@@ -13,5 +14,6 @@ export {
     Button,
     Select,
     Slider,
-    Icon
+    Icon,
+    Picker
 }

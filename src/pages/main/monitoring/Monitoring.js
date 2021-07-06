@@ -35,7 +35,6 @@ import { Skeleton } from '@material-ui/lab';
 import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../utils/sharedPreferences_util';
 import isEqual from 'lodash/isEqual';
 import { authSyncRequest, multiAuthSyncRequest } from '../../../services/service';
-import { perpetual } from '../../../helper/constant';
 
 const defaultParent = (self) => {
     return constant.metricParentTypes()[redux_org.isOperator(self) ? 2 : 0]
@@ -249,7 +248,7 @@ class Monitoring extends React.Component {
             return <ClusterMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} isPrivate={isPrivate} />
         }
         else if (parentId === constant.PARENT_CLOUDLET) {
-            return <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} onActionClose={this.onActionClose} />
+            return <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} listAction={listAction}  onActionClose={this.onActionClose} />
         }
     }
 
@@ -353,6 +352,9 @@ class Monitoring extends React.Component {
 
     componentDidUpdate(preProps, preState) {
         let privateAccess = this.props.privateAccess
+        if (this.tableRef.current && this.state.maxHeight !== this.tableRef.current.scrollHeight) {
+            this.setState({ maxHeight: this.tableRef.current.scrollHeight })
+        }
         if (privateAccess && !isEqual(preProps.privateAccess, privateAccess)) {
             this.isAccessPrivate(privateAccess)
         }
@@ -383,13 +385,6 @@ class Monitoring extends React.Component {
             this.setState({ isPrivate })
         }
     }
-
-    componentDidUpdate(preProps, preState) {
-        if (this.tableRef.current && this.state.maxHeight !== this.tableRef.current.scrollHeight) {
-            this.setState({ maxHeight: this.tableRef.current.scrollHeight })
-        }
-    }
-
 
     componentDidMount() {
         this._isMounted = true

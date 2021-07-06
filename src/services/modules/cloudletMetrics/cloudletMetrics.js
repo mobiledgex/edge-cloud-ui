@@ -1,5 +1,5 @@
 import { UNIT_FLOOR, UNIT_GB, UNIT_MB } from '../../../pages/main/monitoring/helper/unitConvertor';
-import { endpoint } from '../../../helper/constant';
+import { endpoint, perpetual } from '../../../helper/constant';
 import { fields } from '../../model/format';
 
 export const customData = (id, data) => {
@@ -8,6 +8,10 @@ export const customData = (id, data) => {
             return `${data[fields.cloudletName]} [${data[fields.operatorName]}]`
     }
 }
+
+export const cloudletActions = [
+    { id: perpetual.ACTION_LATENCY_METRICS, label: 'Show Latency Metrics' },
+]
 
 export const cloudletMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },

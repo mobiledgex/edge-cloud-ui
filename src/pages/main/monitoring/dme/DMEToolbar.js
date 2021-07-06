@@ -1,9 +1,10 @@
 import { Box, Toolbar } from '@material-ui/core'
 import React from 'react'
-import { IconButton, Select, Icon } from '../../../../hoc/mexui'
+import { IconButton, Select, Icon, Picker } from '../../../../hoc/mexui'
 
 export const ACTION_DATA_TYPE = 'DataType'
 export const ACTION_CLOSE = 'Close'
+export const ACTION_PICKER = 'Picker'
 
 const DataType = (props) => {
     const {order} = props
@@ -14,8 +15,17 @@ const DataType = (props) => {
     }
     
     return (
-        <Box order={order} m={2.5}>
-            <Select list={dataTypeList} onChange={onChange} value={dataTypeList[0]} width={50} height={120} upper={true}/>
+        <Box order={order} m={1.2}>
+            <Select list={dataTypeList} onChange={onChange} value={dataTypeList[0]} width={50} height={120} upper={true} color='rgba(118, 255, 3, 0.7)' border={true}/>
+        </Box>
+    )
+}
+
+const MPicker = (props) => {
+    const { order } = props
+    return (
+        <Box order={order} style={{ marginLeft: 15, marginRight: 10 }} m={1.2}>
+            <Picker onChange={(value) => { props.onChange(ACTION_PICKER, value) }}/>
         </Box>
     )
 }
@@ -25,18 +35,19 @@ const Close = (props) => {
 
     return (
         <Box order={order}>
-            <IconButton tooltip='Close' onClick={()=>{props.onChange(ACTION_CLOSE)}}><Icon>close</Icon></IconButton>
+            <IconButton tooltip='Close' onClick={()=>{props.onChange(ACTION_CLOSE)}}><Icon style={{color:'rgba(118, 255, 3, 0.7)'}}>close</Icon></IconButton>
         </Box> 
     )
 }
 const DMEToolbar = (props) => {
 
     return (
-        <Toolbar variant='dense'>
+        <Toolbar>
             <div style={{ width: '100%' }}>
                 <Box display="flex" justifyContent="flex-end">
-                    <Close order={2} {...props}/>
-                    <DataType order={1} {...props}/>
+                    <Close order={3} {...props}/>
+                    <DataType order={2} {...props}/>
+                    <MPicker order={1} {...props}/>
                 </Box>
             </div>
         </Toolbar>

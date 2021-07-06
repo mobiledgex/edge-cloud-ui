@@ -22,7 +22,7 @@ class CloudletSkeleton extends React.Component {
                             <Skeleton variant='rect' height={300} />
                         </GridListTile>
                     </GridList>
-                    <div style={{ margin: 5 }}></div>
+                    <div style={{ margin: 3 }}></div>
                     <Skeleton variant="rect" style={{ height: '56vh', width: '100%' }} />
                 </React.Fragment> : null
         )

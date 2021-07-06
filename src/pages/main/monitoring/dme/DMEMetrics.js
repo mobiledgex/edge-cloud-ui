@@ -4,7 +4,9 @@ import { withRouter } from 'react-router'
 import * as actions from '../../../../actions';
 import { fields } from '../../../../services/model/format'
 import { primaryKeys as appInstKeys } from '../../../../services/modules/appInst'
+import { primaryKeys as cloudletKeys } from '../../../../services/modules/cloudlet'
 import { appInstUsageMetrics } from '../../../../services/modules/appInstUsageMetrics/appInstUsageMetrics'
+import { cloudletUsageMetrics } from '../../../../services/modules/cloudletMetricUsage/cloudletUsageMetrics'
 import { authSyncRequest, responseValid } from '../../../../services/service'
 import MexWorker from '../services/metricUsage.worker.js'
 import { Dialog, Grid } from '@material-ui/core'
@@ -22,11 +24,13 @@ import Histogram from '../charts/histogram/Histogram'
 import MexCurve from '../../../../hoc/mexmap/utils/MexCurve'
 import CloseIcon from '@material-ui/icons/Close';
 import Legend from '../charts/heatmapLegend/Legend'
-import DMEToolbar, { ACTION_CLOSE, ACTION_DATA_TYPE } from './DMEToolbar';
+import DMEToolbar, { ACTION_CLOSE, ACTION_DATA_TYPE, ACTION_PICKER } from './DMEToolbar';
 import CloudletDetails from './details/CloudletDetails';
 import DeviceDetails from './details/DeviceDetails';
 import { operators } from "../../../../helper/constant";
 import './style.css'
+import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
+import { PARENT_APP_INST } from '../helper/Constant';
 
 const buckets = [0, 5, 10, 25, 50, 100]
 class DMEMetrics extends React.Component {
@@ -45,6 +49,7 @@ class DMEMetrics extends React.Component {
         }
         this._isMounted = false
         this.worker = new MexWorker()
+        this.range = timeRangeInMin()
     }
 
     generateColor = (geoValues, markerType) => {
@@ -96,7 +101,7 @@ class DMEMetrics extends React.Component {
         let dataList = []
         Object.keys(timeData).forEach((key) => {
             if (selectCloudlet === undefined || selectCloudlet === key) {
-                dataList.push({ ...timeData[key][CON_TAGS], key, locationColor:generateColor(operators._avg(timeData[key][CON_TOTAL][markerType])) })
+                dataList.push({ ...timeData[key][CON_TAGS], key, locationColor: generateColor(operators._avg(timeData[key][CON_TOTAL][markerType])) })
             }
         })
         return dataList
@@ -199,9 +204,9 @@ class DMEMetrics extends React.Component {
                             </Grid>
                             <br />
                         </React.Fragment> : <div align='center'>
-                        {sliderMarks ? <Slider defaultValue={sliderMarks[0].value} min={sliderMarks[0].value} max={sliderMarks[sliderMarks.length - 1].value} valueLabelFormat={this.valueLabelFormat} marks={sliderMarks} onChange={this.onSliderChange} markertype={markerType} step={null} /> : null}
-                    </div>}
-                    
+                            {sliderMarks ? <Slider defaultValue={sliderMarks[0].value} min={sliderMarks[0].value} max={sliderMarks[sliderMarks.length - 1].value} valueLabelFormat={this.valueLabelFormat} marks={sliderMarks} onChange={this.onSliderChange} markertype={markerType} step={null} /> : null}
+                        </div>}
+
                 </div>
             </div>
         )
@@ -214,6 +219,9 @@ class DMEMetrics extends React.Component {
                 break;
             case ACTION_CLOSE:
                 this.props.onClose()
+                break;
+            case ACTION_PICKER:
+                this.range = value
                 break;
 
         }
@@ -235,16 +243,24 @@ class DMEMetrics extends React.Component {
     }
 
     tempFetch = () => {
-        return { region: "EU", organizationName: "MobiledgeX", appName: "automation-sdk-porttest", version: '1.0' }
+        return { region: "EU", operatorName: "TDG", cloudletName: "automation-sdk-porttest", version: '1.0' }
     }
 
     fetchData = async () => {
-        const { data } = this.props
+        const { data, id } = this.props
         const tempData = this.tempFetch()
-        const request = appInstUsageMetrics(this, {
-            appInst: appInstKeys(tempData),
+        const commonRequest = {
             region: tempData[fields.region],
-            selector: 'latency'
+            selector: 'latency',
+            starttime: this.range.from,
+            endtime: this.range.to
+        }
+        const request = id === PARENT_APP_INST ? appInstUsageMetrics(this, {
+            appInst: appInstKeys(tempData),
+            ...commonRequest
+        }) : cloudletUsageMetrics(this, {
+            cloudlet: cloudletKeys(data[0]),
+            ...commonRequest
         })
         let mc = await authSyncRequest(this, request)
         if (responseValid(mc)) {

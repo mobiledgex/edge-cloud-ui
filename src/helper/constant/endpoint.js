@@ -124,6 +124,7 @@ export const APP_INST_METRICS_ENDPOINT = 'auth/metrics/app';
 export const APP_INST_EVENT_LOG_ENDPOINT = 'auth/events/app';
 export const APP_INST_USAGE_ENDPOINT = 'auth/usage/app';
 export const METRICS_CLIENT_APP_USAGE = 'auth/metrics/clientappusage'
+export const METRICS_CLIENT_CLOUDLET_USAGE = 'auth/metrics/clientcloudletusage'
 export const CLUSTER_METRICS_ENDPOINT = 'auth/metrics/cluster';
 export const CLUSTER_EVENT_LOG_ENDPOINT = 'auth/events/cluster';
 export const CLUSTER_INST_USAGE_ENDPOINT = 'auth/usage/cluster';
