@@ -94,7 +94,7 @@ class AppMonitoring extends React.Component {
                         </GridListTile> : null}
                     {filter.metricType.includes('map') ?
                         <GridListTile cols={2}>
-                            <AppMexMap data={mapData} region={filter.region} listAction={listAction} avgData={avgData} onListToolbarClear={onActionClose} />
+                            <AppMexMap data={mapData} region={filter.region} listAction={listAction} avgData={avgData} onActionClose={onActionClose} />
                         </GridListTile> : null}
                     {filter.metricType.includes('event') ?
                         <GridListTile cols={1}>
