@@ -21,7 +21,7 @@ import ClusterMonitoring from './modules/cluster/ClusterMonitoring'
 import ClusterSkeleton from './modules/cluster/ClusterSkeleton'
 import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
 import CloudletSkeleton from './modules/cloudlet/CloudletSkeleton'
-
+import DragButton from './list/DragButton'
 //services
 import { showOrganizations } from '../../../services/modules/organization';
 import ShowWorker from './services/show.worker.js'
@@ -35,6 +35,7 @@ import { Skeleton } from '@material-ui/lab';
 import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../utils/sharedPreferences_util';
 import isEqual from 'lodash/isEqual';
 import { authSyncRequest, multiAuthSyncRequest } from '../../../services/service';
+import { perpetual } from '../../../helper/constant';
 
 const defaultParent = (self) => {
     return constant.metricParentTypes()[redux_org.isOperator(self) ? 2 : 0]
@@ -66,7 +67,7 @@ class Monitoring extends React.Component {
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         let parent = defaultParent(this)
         this.state = {
-            minimize: false,
+            maxHeight: 0,
             duration: constant.relativeTimeRanges[3],
             range: timeRangeInMin(constant.relativeTimeRanges[3].duration),
             organizations: [],
@@ -76,9 +77,10 @@ class Monitoring extends React.Component {
             selectedOrg: undefined,
             showLoaded: false,
             listAction: undefined,
-            isPrivate: false
+            isPrivate: false,
         }
         this._isMounted = false
+        this.tableRef = React.createRef()
         this.selectedRow = undefined
 
     }
@@ -89,12 +91,13 @@ class Monitoring extends React.Component {
         }
     }
 
-    onCellClick = (region, value, key) => {
+    onCellClick = (value) => {
+        const { region, key, selected } = value
         if (this._isMounted) {
             this.setState(prevState => {
                 let avgData = prevState.avgData
                 let rowSelected = prevState.rowSelected
-                avgData[region][key]['selected'] = !value['selected']
+                avgData[region][key]['selected'] = !selected
                 rowSelected = avgData[region][key]['selected'] ? rowSelected + 1 : rowSelected - 1
                 this.selectedRow = avgData[region][key]
                 return { avgData, rowSelected }
@@ -106,7 +109,11 @@ class Monitoring extends React.Component {
         this.updateState({ listAction: { action: action, data: this.selectedRow } })
     }
 
-    onListToolbarClear = () => {
+    onActionClick = (action, data) => {
+        this.updateState({ listAction: { ...action, data } })
+    }
+
+    onActionClose = () => {
         this.updateState({ listAction: undefined })
     }
 
@@ -157,7 +164,7 @@ class Monitoring extends React.Component {
         let selectedOrg = value[fields.organizationName]
         this.orgType = value[fields.type]
         if (this._isMounted) {
-            this.setState({ showLoaded: false, selectedOrg, rowSelected:0 }, () => {
+            this.setState({ showLoaded: false, selectedOrg, rowSelected: 0 }, () => {
                 this.setState({ avgData: this.defaultStructure() }, () => {
                     this.fetchShowData()
                 })
@@ -166,7 +173,7 @@ class Monitoring extends React.Component {
     }
 
     onToolbar = async (action, value) => {
-        if (action === constant.ACTION_ORG || action === constant.ACTION_MINIMIZE || action === constant.ACTION_REFRESH_RATE || action === constant.ACTION_TIME_RANGE || action === constant.ACTION_RELATIVE_TIME || action === constant.ACTION_REFRESH) {
+        if (action === constant.ACTION_ORG || action === constant.ACTION_REFRESH_RATE || action === constant.ACTION_TIME_RANGE || action === constant.ACTION_RELATIVE_TIME || action === constant.ACTION_REFRESH) {
             switch (action) {
                 case constant.ACTION_REFRESH_RATE:
                     this.onRefreshChange(value)
@@ -179,9 +186,6 @@ class Monitoring extends React.Component {
                     break;
                 case constant.ACTION_REFRESH:
                     this.onRefresh()
-                    break;
-                case constant.ACTION_MINIMIZE:
-                    this.setState(prevState => ({ minimize: !prevState.minimize }))
                     break;
                 case constant.ACTION_ORG:
                     this.onOrgChange(value)
@@ -236,45 +240,50 @@ class Monitoring extends React.Component {
     }
 
     renderMonitoringParent = () => {
-        const { minimize, filter, range, avgData, rowSelected, selectedOrg, listAction, isPrivate } = this.state
+        const { filter, range, avgData, rowSelected, selectedOrg, listAction, isPrivate } = this.state
         let parentId = filter.parent.id
         if (parentId === constant.PARENT_APP_INST) {
-            return <AppInstMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} listAction={listAction} onListToolbarClear={this.onListToolbarClear} isPrivate={isPrivate} />
+            return <AppInstMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} listAction={listAction} onActionClose={this.onActionClose} isPrivate={isPrivate} />
         }
         else if (parentId === constant.PARENT_CLUSTER_INST) {
-            return <ClusterMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} isPrivate={isPrivate} />
+            return <ClusterMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} isPrivate={isPrivate} />
         }
         else if (parentId === constant.PARENT_CLOUDLET) {
-            return <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} minimize={minimize} selectedOrg={selectedOrg} onListToolbarClear={this.onListToolbarClear} />
+            return <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} onActionClose={this.onActionClose} />
         }
     }
 
     render() {
-        const { minimize, filter, range, duration, organizations, avgData, rowSelected, showLoaded, isPrivate, selectedOrg } = this.state
+        const { filter, range, duration, organizations, avgData, rowSelected, showLoaded, isPrivate, selectedOrg, maxHeight } = this.state
         return (
-            <div style={{ flexGrow: 1 }} mex-test="component-monitoring">
-                <Card>
+            <div mex-test="component-monitoring" style={{position:'relative'}}>
+                <Card style={{height:50, marginBottom:2}}>
                     <MonitoringToolbar selectedOrg={selectedOrg} regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} isPrivate={isPrivate} />
                 </Card>
                 <React.Fragment>
-                    <div style={{ margin: 1 }}></div>
                     {showLoaded ?
                         <React.Fragment>
-                            <div className="outer">
-                                <div className="block block-1">
-                                    <MonitoringList data={avgData} filter={filter} onCellClick={this.onCellClick} minimize={minimize} rowSelected={rowSelected} onToolbarClick={this.onListToolbarClick} />
+                            <div className="outer" style={{height: 'calc(100vh - 106px)'}}>
+                                <div className="block block-1" ref={this.tableRef}>
+                                    <MonitoringList id={filter.parent.id} data={avgData} filter={filter} onCellClick={this.onCellClick} onActionClick={this.onActionClick} rowSelected={rowSelected} onToolbarClick={this.onListToolbarClick} />
                                 </div>
-                                <div style={{height:4}}></div>
+                                <div style={{ position: 'relative', height:4 }}>
+                                    <DragButton height={maxHeight}/>
+                                </div>
                                 <div className="block block-2">
                                     {this.renderMonitoringParent()}
                                 </div>
                             </div>
                         </React.Fragment> :
                         <React.Fragment>
-                            <Skeleton variant="rect" height={180} />
-                            <AppSkeleton filter={filter} />
-                            <ClusterSkeleton filter={filter} />
-                            <CloudletSkeleton filter={filter} />
+                            <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
+                                <Skeleton variant="rect" style={{ height: '25%' }} />
+                                <div style={{ height: 'auto' }}>
+                                    <AppSkeleton filter={filter} />
+                                    <ClusterSkeleton filter={filter} />
+                                    <CloudletSkeleton filter={filter} />
+                                </div>
+                            </div>
                         </React.Fragment>
                     }
                 </React.Fragment>
@@ -355,7 +364,7 @@ class Monitoring extends React.Component {
                 let filter = prevState.filter
                 filter.metricType = defaultMetricType(this, parent)
                 filter.parent = parent
-                return { avgData: this.defaultStructure(), filter, showLoaded:false }
+                return { avgData: this.defaultStructure(), filter, showLoaded: false }
             }, () => {
                 if (redux_org.isAdmin(this)) {
                     this.fetchOrgList()
@@ -376,6 +385,13 @@ class Monitoring extends React.Component {
             this.setState({ isPrivate })
         }
     }
+
+    componentDidUpdate(preProps, preState) {
+        if (this.tableRef.current && this.state.maxHeight !== this.tableRef.current.scrollHeight) {
+            this.setState({ maxHeight: this.tableRef.current.scrollHeight })
+        }
+    }
+
 
     componentDidMount() {
         this._isMounted = true

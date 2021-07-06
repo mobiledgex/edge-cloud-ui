@@ -3,7 +3,6 @@ import React from 'react'
 import { fields } from '../../../../../services/model/format'
 import ClusterMexMap from './ClusterMexMap'
 import MexMetric from '../../common/MexMetric'
-import { mapGridHeight } from '../../helper/Constant'
 
 const processData = (avgData) => {
     let mapData = {}
@@ -49,19 +48,17 @@ class ClusterMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { avgData, filter, rowSelected, range, minimize, selectedOrg, updateAvgData, isPrivate } = this.props
-        let selected = mapData.selected
+        const { avgData, filter, rowSelected, range, selectedOrg, updateAvgData, isPrivate } = this.props
         return (
-            filter.parent.id === 'cluster' ?
-                <div className='grid-charts' style={{height : mapGridHeight(minimize, selected)}}>
-                    <GridList cols={4} cellHeight={300}>
-                        {filter.metricType.includes('map') ?
-                            <GridListTile cols={4}>
-                                <ClusterMexMap data={mapData} region={filter.region} />
-                            </GridListTile> : null}
-                            <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} isPrivate={isPrivate}/>
-                    </GridList> 
-                </div> : null
+            <React.Fragment>
+                <GridList cols={4} cellHeight={300}>
+                    {filter.metricType.includes('map') ?
+                        <GridListTile cols={4}>
+                            <ClusterMexMap data={mapData} region={filter.region} />
+                        </GridListTile> : null}
+                    <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} isPrivate={isPrivate} />
+                </GridList>
+            </React.Fragment>
         )
     }
 }

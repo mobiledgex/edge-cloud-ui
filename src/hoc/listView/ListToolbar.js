@@ -39,7 +39,7 @@ const icons = (action) => {
             break;
 
     }
-    return icon ? <Icon style={style}>{icon}</Icon> : undefined
+    return icon ? <Icon outlined={true} style={style}>{icon}</Icon> : undefined
 }
 
 const ListToolbar = (props) => {

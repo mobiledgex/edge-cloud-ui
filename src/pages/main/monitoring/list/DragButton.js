@@ -1,10 +1,10 @@
 import { IconButton } from '@material-ui/core';
-import React from 'react'
-import { Icon} from '../../../../hoc/mexui'
+import React, { useEffect } from 'react'
+import { Icon } from '../../../../hoc/mexui'
 
 let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
-const sliderMouseDown = (e, maxHeight)=>{
+const sliderMouseDown = (e, maxHeight) => {
     e = e || window.event;
     e.preventDefault();
     // get the mouse cursor position at startup:
@@ -28,8 +28,8 @@ const sliderMouseDown = (e, maxHeight)=>{
             pos3 = e.clientX;
             pos4 = e.clientY;
             // set the element's new position:
-            let elmnt = document.querySelector(".slider")
-            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            // let elmnt = document.querySelector(".slider")
+            // elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
         }
     }
 
@@ -37,11 +37,23 @@ const sliderMouseDown = (e, maxHeight)=>{
         /* stop moving when mouse button is released:*/
         document.onmouseup = null;
         document.onmousemove = null;
-      }
+    }
 }
 
 
 const Slider = (props) => {
+    const [first, setFirst] = React.useState(true)
+
+    useEffect(() => {
+        // let elmnt = document.querySelector(".slider")
+        // if (first) {
+        //     setFirst(false)
+        // }
+        // else {
+        //     elmnt.style.top = (elmnt.offsetTop + (showToolbar ? 47 : -47)) + 'px'
+        // }
+    }, []);
+
     return (
         <div>
             <div className="slider">

@@ -8,7 +8,7 @@ import { fields } from '../../../services/model/format';
 import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst, requestAppInstLatency } from '../../../services/modules/appInst';
 import { showApps } from '../../../services/modules/app';
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
-import AppInstReg from './appInstReg';
+import AppInstReg from './AppInstReg';
 import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog } from '@material-ui/core';
@@ -17,19 +17,13 @@ import { perpetual } from '../../../helper/constant';
 import * as serverData from '../../../services/model/serverData'
 import { idFormatter, labelFormatter, uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
-import DMEMetrics from '../monitoring/dme/DMEMetrics'
 import { responseValid } from '../../../services/service';
 
-
-const temp = [{ region: 'EU', organizationName: "MobiledgeX", appName: "automation-sdk-porttest", version: "1.0", operatorName: "TDG", cloudletName: "automationHamburgCloudlet", clusterName: "porttestcluster", clusterdeveloper: "MobiledgeX", cloudletLocation: { latitude: 60.110922, longitude: 10.682127 } },
-{ region: 'EU', organizationName: "MobiledgeX", appName: "automation-sdk-porttest", version: "1.0", operatorName: "TDG", cloudletName: "automationBonnCloudlet", clusterName: "porttestcluster", clusterdeveloper: "MobiledgeX", cloudletLocation: { latitude: 44, longitude: -2 } },
-{ region: 'EU', organizationName: "MobiledgeX", appName: "automation-sdk-porttest", version: "1.0", operatorName: "TDG", cloudletName: "automationFrankfurtCloudlet", clusterName: "porttestcluster", clusterdeveloper: "MobiledgeX", cloudletLocation: { latitude: 50.73438, longitude: 7.09549 } }
-]
 class AppInstList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentView: undefined,//<DMEMetrics data={temp}/>,
+            currentView: undefined,
             terminalData: [],
             openTerminal: false,
             stepsArray: []
@@ -139,19 +133,6 @@ class AppInstList extends React.Component {
         data[fields.powerState] = powerState
         this.props.handleLoadingSpinner(true)
         serverData.sendWSRequest(this, changePowerState(data), callback, data)
-
-    }
-
-    onMetrics = (action, data) =>{
-        if(this._isMounted)
-        {
-            this.updateState({currentView : <DMEMetrics data={temp} onClose={this.onRegClose}/>})
-        }
-    }
-
-    requestLantency = async (action , data)=>{
-        let mc = await requestAppInstLatency(this, data)
-        responseValid(mc) && this.props.handleAlertInfo('success', mc.response.data.message)
     }
 
     actionMenu = () => {
@@ -164,8 +145,6 @@ class AppInstList extends React.Component {
             { id: perpetual.ACTION_POWER_ON, label: 'Power On', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power on' },
             { id: perpetual.ACTION_POWER_OFF, label: 'Power Off', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power off' },
             { id: perpetual.ACTION_REBOOT, label: 'Reboot', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'reboot' },
-            { id: perpetual.ACTION_DME_METRICS, label: 'DME Metrics', onClick: this.onMetrics, group:true },
-            { id: perpetual.ACTION_REQUEST_LATENCY, label: 'Request Latency Info', onClick: this.requestLantency },
         ]
     }
 

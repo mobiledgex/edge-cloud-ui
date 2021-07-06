@@ -2,8 +2,17 @@
 .outer {
     display: flex;
     flex-direction: column;
-    height: calc(89vh - 15px);
 }
+
+.slider {
+    position: absolute;
+    z-index: 999;
+    left: 50%;
+    top:-20px;
+    cursor: row-resize;
+    user-select: none; /* disable selection */
+}
+
 
 .block-1 {
     height: 25%;
@@ -12,7 +21,7 @@
 }
 
 .block-2 {
-    height: 75%;
+    height: auto;
     flex: 1; /* adjust automatically */
     min-height: 0;
     overflow-x: hidden;
@@ -28,13 +37,6 @@
 
 .mex-monitoring-header-label {
     width: 100%;
-}
-
-.monitoring-content {
-    width: 100%;
-    padding: 0px 15px 0px 15px;
-    height: calc(100vh - 119px);
-    overflow: auto;
 }
 
 .mex-monitoring-select-container {
@@ -209,4 +211,6 @@
 }
 
 canvas#race{position:relative; z-index:999999;}
+
+
 

@@ -1,24 +1,18 @@
 /* eslint-disable */
-
-import randomColor from 'randomcolor'
 import sortBy from 'lodash/sortBy'
 import { formatData } from '../../../../services/format'
 import { fields } from '../../../../services/model/format'
+import {darkColors} from '../../../../utils/color_utils'
 
 const PARENT_APP_INST = 'appinst'
 const PARENT_CLOUDLET = 'cloudlet'
 const PARENT_CLUSTER_INST = 'cluster'
 
-const defaultFields = (data) => {
-    data['color'] = randomColor({
-        count: 1,
-    })[0]
-    data['selected'] = false
-}
-
 const fetchAppInstData = (parentId, showList, keys) => {
     let dataList = {}
-    for (let show of showList) {
+    let colors = darkColors(showList.length + 10)
+    for (let i = 0; i < showList.length; i++) {
+        const show = showList[i]
         if (show[fields.appName] === 'MEXPrometheusAppName' || show[fields.appName] === 'NFSAutoProvision' || (show.cloudletLocation === undefined || Object.keys(show.cloudletLocation).length === 0)) {
             continue;
         }
@@ -40,7 +34,8 @@ const fetchAppInstData = (parentId, showList, keys) => {
         })
         dataKey = dataKey.replace('.', '')
         dataKey = dataKey.toLowerCase().slice(0, -1)
-        defaultFields(data)
+        data['selected'] = false
+        data['color'] = colors[i]
         dataList[dataKey] = data
     }
     return dataList

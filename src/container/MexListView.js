@@ -31,7 +31,6 @@ class MexListView extends React.Component {
             newDataList: [],
             dataList: [],
             filterList: [],
-            anchorEl: null,
             currentView: null,
             isDetail: false,
             multiStepsArray: [],

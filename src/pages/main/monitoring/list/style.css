@@ -1,13 +1,4 @@
 
-.slider {
-    position: absolute;
-    z-index: 99999999;
-    letter-spacing: 10px;
-    top: calc(32vh - 0px);
-    left:55%;
-    cursor: row-resize;
-    user-select: none; /* disable selection */
-}
 
 .event-list-main{
     padding-top: 5px;

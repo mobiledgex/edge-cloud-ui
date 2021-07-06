@@ -32,8 +32,8 @@ export const customData = (id, data) => {
 }
 
 export const appMetricsListKeys = [
-    { field: fields.region, label: 'Region', sortable: true, visible: false, groupBy: true },
-    { field: fields.appName, label: 'App', sortable: true, visible: true, groupBy: true, customData: true },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, groupBy: true },
+    { field: fields.appName, label: 'App', sortable: true, visible: false, groupBy: true},
     { field: fields.organizationName, label: 'App Developer', sortable: false, visible: false, groupBy: false },
     { field: fields.version, label: 'Version', sortable: true, visible: false, groupBy: true },
     { field: fields.clusterName, label: 'Cluster', sortable: true, visible: true, groupBy: true, customData: true },
@@ -67,9 +67,10 @@ export const appInstMetricTypeKeys = () => ([
 ])
 
 export const appInstActions = [
-    { label: 'Track Devices', action: perpetual.LIST_TOOLBAR_TRACK_DEVICES }
+    { id: perpetual.ACTION_LATENCY_METRICS, label: 'Show Latency Metrics', group: true },
+    { id: perpetual.ACTION_REQUEST_LATENCY, label: 'Request Latency Metrics' },
+    { id: perpetual.ACTION_TRACK_DEVICES, label: 'Track Devices' }
 ]
-
 
 export const fetchLocation = (avgValues, metricData, showList) => {
     for (let i = 0; i < showList.length; i++) {

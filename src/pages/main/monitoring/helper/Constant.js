@@ -120,7 +120,3 @@ export const refreshRates = [
     { label: '2h', duration: 7200 },
     { label: '1d', duration: 86400 }
 ]
-
-export const mapGridHeight = (minimize, selected) => {
-    return minimize ? 'calc(100vh - 117px)' : selected === 1 ? 'calc(100vh - 335px)' : 'calc(100vh - 287px)'
-}

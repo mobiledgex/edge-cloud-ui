@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect, useSelector } from 'react-redux';
-import { Toolbar, Input, InputAdornment, makeStyles, Box, IconButton, Tooltip, Grid, Divider, Menu } from '@material-ui/core'
+import { Toolbar, Input, InputAdornment, makeStyles, Box, IconButton, Tooltip, Grid, Divider } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search';
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
 import * as constant from '../helper/Constant';
@@ -8,7 +8,6 @@ import MexTimer from '../helper/MexTimer'
 import MonitoringMenu from './MonitoringMenu'
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import IndeterminateCheckBoxOutlinedIcon from '@material-ui/icons/IndeterminateCheckBoxOutlined';
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 import { fields } from '../../../../services/model/format';
 import {redux_org} from '../../../../helper/reduxData'
@@ -117,10 +116,6 @@ const MexToolbar = (props) => {
         props.onChange(constant.ACTION_REFRESH)
     }
 
-    const onMinimize = () => {
-        props.onChange(constant.ACTION_MINIMIZE)
-    }
-
     const renderRefresh = (order) => (
         <Box order={order}>
             <Grid container>
@@ -129,16 +124,6 @@ const MexToolbar = (props) => {
                 </Tooltip>
                 <Divider orientation="vertical" style={{ marginTop: 13, marginBottom: 13 }} flexItem />
                 <MonitoringMenu showTick={true} data={constant.refreshRates} labelKey='label' onChange={onRefreshRateChange} icon={<ExpandMoreIcon style={{ color: lightGreen['A700'] }} />} value={refreshRange} tip={'Refresh Rate'} />
-            </Grid>
-        </Box>
-    )
-
-    const renderMinimize = (order) => (
-        <Box order={order}>
-            <Grid container>
-                <Tooltip title={<strong style={{ fontSize: 13 }}>Minimize</strong>} arrow>
-                    <IconButton onClick={onMinimize}><IndeterminateCheckBoxOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} /></IconButton>
-                </Tooltip>
             </Grid>
         </Box>
     )
@@ -180,7 +165,6 @@ const MexToolbar = (props) => {
                             {showSummary() ? <MonitoringMenu order={6} data={constant.summaryList} labelKey='label' onChange={onSummaryChange} /> : null}
                             {renderRefresh(7)}
                             {searchForm(8)}
-                            {renderMinimize(9)}
                         </React.Fragment> : null}
                     </Box>
                 </div>

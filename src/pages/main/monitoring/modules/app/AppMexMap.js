@@ -12,6 +12,7 @@ import { Dialog } from '@material-ui/core';
 import Legend from './MapLegend'
 import { fetchPath, fetchURL } from '../../../../../services/config';
 import { fetchToken } from '../../../../../services/service';
+import { LIST_TOOLBAR_TRACK_DEVICES } from '../../../../../helper/constant/perpetual';
 
 const DEFAULT_ZOOM = 2
 class AppMexMap extends React.Component {
@@ -204,13 +205,15 @@ class AppMexMap extends React.Component {
 
     componentDidUpdate(preProps, preState) {
         let listAction = this.props.listAction
+        if(listAction && listAction.action && listAction.action.action === LIST_TOOLBAR_TRACK_DEVICES)
+        {
         let preListAction = preProps.listAction
 
         let action = listAction ? listAction.action : ''
         let preAction = preListAction ? preListAction.action : ''
         if (listAction && action !== preAction) {
             this.mapClick(listAction.data)
-        }
+        }}
     }
 }
 
