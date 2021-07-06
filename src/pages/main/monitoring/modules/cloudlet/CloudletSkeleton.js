@@ -14,7 +14,7 @@ class CloudletSkeleton extends React.Component {
         return (
             filter.parent.id === PARENT_CLOUDLET ?
                 <React.Fragment>
-                    <GridList cols={4} cellHeight={300}>
+                    <GridList cols={4} cellHeight={300} style={{ overflow: 'hidden' }}>
                         <GridListTile cols={3}>
                             <Skeleton variant='rect' height={300} />
                         </GridListTile>

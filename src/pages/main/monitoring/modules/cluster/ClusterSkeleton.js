@@ -14,7 +14,7 @@ class AppSkeleton extends React.Component {
         return (
             filter.parent.id === PARENT_CLUSTER_INST ?
                 <React.Fragment>
-                    <GridList cols={4} cellHeight={300}>
+                    <GridList cols={4} cellHeight={300} style={{ overflow: 'hidden' }}>
                         <GridListTile cols={4}>
                             <Skeleton variant='rect' height={300} />
                         </GridListTile>

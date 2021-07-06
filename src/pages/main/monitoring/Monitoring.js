@@ -277,12 +277,10 @@ class Monitoring extends React.Component {
                         </React.Fragment> :
                         <React.Fragment>
                             <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
-                                <Skeleton variant="rect" style={{ height: '25%' }} />
-                                <div style={{ height: 'auto' }}>
-                                    <AppSkeleton filter={filter} />
-                                    <ClusterSkeleton filter={filter} />
-                                    <CloudletSkeleton filter={filter} />
-                                </div>
+                                <Skeleton variant="rect"  height={'25%'} style={{marginBottom:3}}/>
+                                <AppSkeleton filter={filter} />
+                                <ClusterSkeleton filter={filter} />
+                                <CloudletSkeleton filter={filter} />
                             </div>
                         </React.Fragment>
                     }
