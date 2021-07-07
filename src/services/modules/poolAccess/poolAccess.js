@@ -76,7 +76,7 @@ export const accessGranted = (self, orgInfo) => {
             data['CloudletPoolOrg'] = org
         }
     }
-    return { method: endpoint.SHOW_POOL_ACCESS_GRANTED, data }
+    return { method: endpoint.SHOW_POOL_ACCESS_GRANTED, data, keys: keys() }
 }
 
 export const accessPending = (self, data) => {

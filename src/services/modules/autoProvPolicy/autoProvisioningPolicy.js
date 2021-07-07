@@ -1,10 +1,8 @@
-import * as formatter from '../../model/format'
 import { showAuthSyncRequest } from '../../service';
 import { getCloudletKey } from '../../modules/cloudlet'
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant'
-
-let fields = formatter.fields
+import { fields } from '../../model/format';
 
 export const keys = () => ([
   { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key:true },

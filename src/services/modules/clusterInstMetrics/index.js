@@ -1,9 +1,10 @@
 import { customize } from './custom'
-import {clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys} from './clusterMetrics'
+import {clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys, customData} from './clusterMetrics'
 export {
     customize,
     clusterMetrics, 
     clusterMetricTypeKeys, 
-    clusterMetricsListKeys
+    clusterMetricsListKeys,
+    customData
 }
 

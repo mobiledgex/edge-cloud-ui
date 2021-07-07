@@ -106,6 +106,7 @@ const errorResponse = (self, request, error, callback) => {
         const code = response.status
         const data = response.data
         let message = 'Unknown'
+
         if (responseStatus(self, code) && data) {
             if (request.responseType === 'arraybuffer') {
                 var decodedString = String.fromCharCode.apply(null, new Uint8Array(data));

@@ -5,10 +5,10 @@ import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
-import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst } from '../../../services/modules/appInst';
+import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst, requestAppInstLatency } from '../../../services/modules/appInst';
 import { showApps } from '../../../services/modules/app';
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
-import AppInstReg from './appInstReg';
+import AppInstReg from './AppInstReg';
 import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog } from '@material-ui/core';
@@ -17,11 +17,13 @@ import { perpetual } from '../../../helper/constant';
 import * as serverData from '../../../services/model/serverData'
 import { idFormatter, labelFormatter, uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
+import { responseValid } from '../../../services/service';
+
 class AppInstList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentView: null,
+            currentView: undefined,
             terminalData: [],
             openTerminal: false,
             stepsArray: []
@@ -131,7 +133,6 @@ class AppInstList extends React.Component {
         data[fields.powerState] = powerState
         this.props.handleLoadingSpinner(true)
         serverData.sendWSRequest(this, changePowerState(data), callback, data)
-
     }
 
     actionMenu = () => {
@@ -143,7 +144,7 @@ class AppInstList extends React.Component {
             { id: perpetual.ACTION_TERMINAL, label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
             { id: perpetual.ACTION_POWER_ON, label: 'Power On', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power on' },
             { id: perpetual.ACTION_POWER_OFF, label: 'Power Off', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power off' },
-            { id: perpetual.ACTION_REBOOT, label: 'Reboot', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'reboot' }
+            { id: perpetual.ACTION_REBOOT, label: 'Reboot', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'reboot' },
         ]
     }
 
@@ -194,6 +195,7 @@ class AppInstList extends React.Component {
             onAdd:  redux_org.isOperator(this) ?  null : this.onAdd,
             viewMode: HELP_APP_INST_LIST,
             grouping: true,
+            groupingAction:true,
             formatData: this.dataFormatter
         })
     }
@@ -231,6 +233,7 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 

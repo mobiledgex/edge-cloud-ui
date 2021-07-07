@@ -80,8 +80,8 @@ class Main extends React.Component {
     }
 
     onOrgChange = async (orgInfo) => {
+        this.props.handlePrivateAccess(undefined)
         if (redux_org.isOperator(this)) {
-            this.props.handlePrivateAccess(undefined)
             let privateAccess = await validatePrivateAccess(this, orgInfo)
             this.props.handlePrivateAccess(privateAccess)
         }

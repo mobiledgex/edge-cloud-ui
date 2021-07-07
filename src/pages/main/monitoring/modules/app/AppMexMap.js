@@ -2,7 +2,6 @@ import React from 'react'
 import { Icon } from 'semantic-ui-react'
 import { Marker, Popup } from "react-leaflet";
 import { fields } from '../../../../../services/model/format';
-import * as serverData from '../../../../../services/model/serverData'
 import { showAppInstClient } from '../../../../../services/modules/appInstClient'
 import cloneDeep from 'lodash/cloneDeep'
 import MexCircleMarker from '../../../../../hoc/mexmap/utils/MexCircleMarker'
@@ -13,6 +12,8 @@ import { Dialog } from '@material-ui/core';
 import Legend from './MapLegend'
 import { fetchPath, fetchURL } from '../../../../../services/config';
 import { fetchToken } from '../../../../../services/service';
+import { ACTION_TRACK_DEVICES } from '../../../../../helper/constant/perpetual';
+import { equal } from '../../../../../helper/constant/operators';
 
 const DEFAULT_ZOOM = 2
 class AppMexMap extends React.Component {
@@ -45,7 +46,7 @@ class AppMexMap extends React.Component {
             this.ws = undefined
         }
         this.setState({ showDevices: false, mapData: {}, backswitch: false }, () => {
-            this.props.onListToolbarClear()
+            this.props.onActionClose()
         })
     }
 
@@ -131,9 +132,8 @@ class AppMexMap extends React.Component {
     calculateLength = (data) => {
         let cost = 0
         Object.keys(data).map(key => {
-            if(key !== fields.cloudletLocation && key !== 'selected')
-            {
-                cost = cost + data[key].length 
+            if (key !== fields.cloudletLocation && key !== 'selected') {
+                cost = cost + data[key].length
             }
         })
         return cost
@@ -160,9 +160,9 @@ class AppMexMap extends React.Component {
                 }
                 )}
                 {showDevices && polyline.length > 0 ?
-                    <MexCurve data={polyline} color={curveColor} /> : null
+                    <MexCurve data={[polyline]} color={curveColor} /> : null
                 }
-                <Legend data={mapData}/>
+                <Legend data={mapData} />
             </div> : null
     }
 
@@ -204,13 +204,9 @@ class AppMexMap extends React.Component {
     }
 
     componentDidUpdate(preProps, preState) {
-        let listAction = this.props.listAction
-        let preListAction = preProps.listAction
-
-        let action = listAction ? listAction.action : ''
-        let preAction = preListAction ? preListAction.action : ''
-        if (listAction && action !== preAction) {
-            this.mapClick(listAction.data)
+        const { listAction } = this.props
+        if (listAction && listAction.id === ACTION_TRACK_DEVICES && !equal(listAction, preProps.listAction)) {
+            this.mapClick(listAction.data[0])
         }
     }
 }

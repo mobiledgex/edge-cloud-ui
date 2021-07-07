@@ -191,7 +191,7 @@ export const reporterInterval = (id) => {
             return perpetual.REPORTER_SCHEDULE_WEEKLY
         case 1:
             return perpetual.REPORTER_SCHEDULE_15_DAYS
-        case 3:
+        case 2:
             return perpetual.REPORTER_SCHEDULE_MONTHLY
         default:
             return perpetual.REPORTER_SCHEDULE_WEEKLY

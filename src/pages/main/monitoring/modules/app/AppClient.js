@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import HorizontalBar from '../../charts/horizontalBar/MexHorizontalBar'
 import { clientMetrics } from '../../../../../services/modules/clientMetrics'
-import {redux_org} from '../../../../../helper/reduxData'
+import {redux_org, redux_private} from '../../../../../helper/reduxData'
 import MexWorker from '../../services/client.worker.js'
 import { authSyncRequest } from '../../../../../services/service'
 
@@ -48,7 +48,7 @@ class MexAppClient extends React.Component {
             selector: "api",
             starttime: range.starttime,
             endtime: range.endtime
-        }, redux_org.isAdmin(this) ? this.props.org : redux_org.nonAdminOrg(this), this.props.isPrivate)
+        }, redux_org.isAdmin(this) ? this.props.org : redux_org.nonAdminOrg(this), redux_private.isPrivate(this))
 
         let mc = await authSyncRequest(this, { ...requestData, format: false })
         if (mc && mc.response && mc.response.status === 200) {
@@ -102,7 +102,8 @@ class MexAppClient extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        privateAccess: state.privateAccess.data,
     }
 };
 

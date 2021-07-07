@@ -2,7 +2,7 @@ import React from 'react';
 import { latLng } from 'leaflet';
 import { CircleMarker, Tooltip, Popup } from 'react-leaflet';
 
-const renderMarkerPopup = (dataList) => {
+const renderPopup = (dataList) => {
     return (
         <Popup className="map-control-div-marker-popup" >
             <div className="map-control-div-marker-popup-label">
@@ -20,14 +20,14 @@ const renderMarkerPopup = (dataList) => {
 }
 
 const MexCircleMarker = props => {
-    const center = latLng(props.coords.lat, props.coords.lng)
-    const dataList = props.popupData
+    const {radius, coords, popupData, label, popup, color, onClick} = props
+    const center = latLng(coords.lat, coords.lng)
     return (
-        <CircleMarker radius={13} center={center}>
-            <Tooltip permanent={true} direction={'center'} className='text'>
-                {props.label}
-            </Tooltip>
-            {renderMarkerPopup(dataList)}
+        <CircleMarker radius={radius ? radius : 13} center={center} color={color ? color : '#3288FF'} onClick={onClick}>
+            {label ? <Tooltip permanent={true} direction={'center'} className='text'>
+                {label}
+            </Tooltip> : null}
+            {popupData ? renderPopup(popupData) : popup ? popup : null}
         </CircleMarker>
     );
 }

@@ -60,6 +60,7 @@ export const UPDATE_APP_INST = 'auth/ctrl/UpdateAppInst';
 export const DELETE_APP_INST = 'auth/ctrl/DeleteAppInst';
 export const STREAM_APP_INST = 'auth/ctrl/StreamAppInst';
 export const REFRESH_APP_INST = 'auth/ctrl/RefreshAppInst';
+export const REQUEST_APP_INST_LATENCY = 'auth/ctrl/RequestAppInstLatency';
 //Flavor
 export const SHOW_FLAVOR = 'auth/ctrl/ShowFlavor';
 export const CREATE_FLAVOR = 'auth/ctrl/CreateFlavor';
@@ -119,13 +120,15 @@ export const SHOW_APP_INST_CLIENT = 'auth/ctrl/ShowAppInstClient';
 export const CLOUDLET_EVENT_LOG_ENDPOINT = 'auth/events/cloudlet';
 export const CLOUDLET_METRICS_ENDPOINT = 'auth/metrics/cloudlet';
 export const CLOUDLET_METRICS_USAGE_ENDPOINT = 'auth/metrics/cloudlet/usage';
-export const CLUSTER_METRICS_ENDPOINT = 'auth/metrics/cluster';
 export const APP_INST_METRICS_ENDPOINT = 'auth/metrics/app';
-export const CLIENT_METRICS_ENDPOINT = 'auth/metrics/clientapiusage'
-export const CLUSTER_EVENT_LOG_ENDPOINT = 'auth/events/cluster';
 export const APP_INST_EVENT_LOG_ENDPOINT = 'auth/events/app';
 export const APP_INST_USAGE_ENDPOINT = 'auth/usage/app';
+export const METRICS_CLIENT_APP_USAGE = 'auth/metrics/clientappusage'
+export const METRICS_CLIENT_CLOUDLET_USAGE = 'auth/metrics/clientcloudletusage'
+export const CLUSTER_METRICS_ENDPOINT = 'auth/metrics/cluster';
+export const CLUSTER_EVENT_LOG_ENDPOINT = 'auth/events/cluster';
 export const CLUSTER_INST_USAGE_ENDPOINT = 'auth/usage/cluster';
+export const CLIENT_METRICS_ENDPOINT = 'auth/metrics/clientapiusage'
 //Alerts
 export const SHOW_ALERT = 'auth/ctrl/ShowAlert';
 export const ALERT_SHOW_RECEIVER = 'auth/alertreceiver/show';

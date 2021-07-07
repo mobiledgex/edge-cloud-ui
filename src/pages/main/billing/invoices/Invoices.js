@@ -59,6 +59,7 @@ class Invoices extends React.Component {
             keys: this.keys,
             onAdd: undefined,
             grouping: false,
+            picker: true,
             filter: { name: billingOrg[fields.name] },
             back: redux_org.isAdmin(this) ? this.onBackClick : null
         })

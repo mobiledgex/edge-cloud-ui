@@ -6,7 +6,7 @@ import { Card, GridListTile } from '@material-ui/core'
 import { timezonePref } from '../../../../utils/sharedPreferences_util'
 //services
 import { fields } from '../../../../services/model/format'
-import { redux_org } from '../../../../helper/reduxData';
+import { redux_org, redux_private } from '../../../../helper/reduxData';
 import { processWorker } from '../../../../services/worker/interceptor'
 import MetricWorker from '../services/metric.worker.js'
 import { authSyncRequest } from '../../../../services/service'
@@ -76,7 +76,6 @@ class MexChart extends React.Component {
         let parent = this.props.filter.parent
         let metric = this.props.metric
         let region = this.props.region
-        let isPrivate = this.props.isPrivate
         if (metric.serverRequest) {
             let data = {}
             data[fields.region] = region
@@ -84,7 +83,7 @@ class MexChart extends React.Component {
             data[fields.endtime] = this.props.range.endtime
             data[fields.selector] = metric.serverField
             let org = redux_org.isAdmin(this) ? this.props.org : redux_org.nonAdminOrg(this)
-            let request = metricRequest(metric.serverRequest, data, org, isPrivate)
+            let request = metricRequest(metric.serverRequest, data, org, redux_private.isPrivate(this))
             let mc = await authSyncRequest(this, { ...request, format: false })
             if (mc && mc.response && mc.response.status === 200) {
                 let response = await processWorker(this.metricWorker, {
@@ -165,7 +164,8 @@ class MexChart extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        privateAccess: state.privateAccess.data,
     }
 };
 
