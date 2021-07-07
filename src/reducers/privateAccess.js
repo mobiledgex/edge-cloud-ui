@@ -9,7 +9,6 @@ export default function privateAccess( state = initialState, action) {
             return Object.assign({}, state, {
                 data:action.isPrivate
             })
-            break;
         default:
             return state
     }

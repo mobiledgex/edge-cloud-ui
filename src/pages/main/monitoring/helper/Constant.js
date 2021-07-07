@@ -46,7 +46,7 @@ export const monitoringActions = (id) => {
     }
 }
 
-export const metricRequest = (method, data, org, isPrivate) => {
+export const metricRequest = (method, data, org, isPrivate) => {        
     switch (method) {
         case endpoint.APP_INST_METRICS_ENDPOINT:
             return appInstMetrics(data, org, isPrivate)

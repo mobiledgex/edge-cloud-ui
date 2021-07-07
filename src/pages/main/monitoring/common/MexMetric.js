@@ -10,14 +10,14 @@ class MexMetric extends React.Component {
     }
 
     render() {
-        const { avgData, filter, rowSelected, style, range, org, updateAvgData, isPrivate } = this.props
+        const { avgData, filter, rowSelected, style, range, org, updateAvgData } = this.props
         let parent = filter.parent
         return (
             <React.Fragment>
                 {filter.region.map(region => {
                     return (
                         metricType(parent.id).map(metric => (
-                            <MexChart key={`${region}-${metric.field}`} region={region} metric={metric} avgData={avgData} filter={filter} rowSelected={rowSelected} style={style} range={range} org={org} updateAvgData={updateAvgData} isPrivate={isPrivate}/>
+                            <MexChart key={`${region}-${metric.field}`} region={region} metric={metric} avgData={avgData} filter={filter} rowSelected={rowSelected} style={style} range={range} org={org} updateAvgData={updateAvgData}/>
                         ))
                     )
                 })}

@@ -8,7 +8,7 @@ import { Card } from '@material-ui/core'
 import * as constant from './helper/Constant'
 import * as dateUtil from '../../../utils/date_util'
 import { fields } from '../../../services/model/format';
-import { redux_org } from '../../../helper/reduxData';
+import { redux_org, redux_private } from '../../../helper/reduxData';
 
 import MonitoringToolbar from './toolbar/MonitoringToolbar'
 
@@ -75,8 +75,7 @@ class Monitoring extends React.Component {
             rowSelected: 0,
             selectedOrg: undefined,
             showLoaded: false,
-            listAction: undefined,
-            isPrivate: false,
+            listAction: undefined
         }
         this._isMounted = false
         this.tableRef = React.createRef()
@@ -239,13 +238,13 @@ class Monitoring extends React.Component {
     }
 
     renderMonitoringParent = () => {
-        const { filter, range, avgData, rowSelected, selectedOrg, listAction, isPrivate } = this.state
+        const { filter, range, avgData, rowSelected, selectedOrg, listAction } = this.state
         let parentId = filter.parent.id
         if (parentId === constant.PARENT_APP_INST) {
-            return <AppInstMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} listAction={listAction} onActionClose={this.onActionClose} isPrivate={isPrivate} />
+            return <AppInstMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} listAction={listAction} onActionClose={this.onActionClose} />
         }
         else if (parentId === constant.PARENT_CLUSTER_INST) {
-            return <ClusterMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} isPrivate={isPrivate} />
+            return <ClusterMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} />
         }
         else if (parentId === constant.PARENT_CLOUDLET) {
             return <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} listAction={listAction}  onActionClose={this.onActionClose} />
@@ -253,11 +252,11 @@ class Monitoring extends React.Component {
     }
 
     render() {
-        const { filter, range, duration, organizations, avgData, rowSelected, showLoaded, isPrivate, selectedOrg, maxHeight } = this.state
+        const { filter, range, duration, organizations, avgData, rowSelected, showLoaded, selectedOrg, maxHeight } = this.state
         return (
             <div mex-test="component-monitoring" style={{position:'relative'}}>
                 <Card style={{height:50, marginBottom:2}}>
-                    <MonitoringToolbar selectedOrg={selectedOrg} regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} isPrivate={isPrivate} />
+                    <MonitoringToolbar selectedOrg={selectedOrg} regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar}/>
                 </Card>
                 <React.Fragment>
                     {showLoaded ?
@@ -289,7 +288,7 @@ class Monitoring extends React.Component {
     }
 
     fetchShowData = async () => {
-        const { filter, isPrivate } = this.state
+        const { filter } = this.state
         let parent = filter.parent
         let parentId = parent.id
         if (this.regions && this.regions.length > 0 && constant.validateRole(parent.role, redux_org.roleType(this))) {
@@ -299,7 +298,7 @@ class Monitoring extends React.Component {
                 let requestList = []
                 requestList = showRequests.map(showRequest => {
                     let org = redux_org.isAdmin(this) ? this.state.selectedOrg : redux_org.nonAdminOrg(this)
-                    return showRequest(this, { region, org, type: this.orgType, isPrivate })
+                    return showRequest(this, { region, org, type: this.orgType, isPrivate: redux_private.isPrivate(this) })
                 })
                 let mcList = await multiAuthSyncRequest(this, requestList, false)
                 if (mcList && mcList.length > 0) {
@@ -356,7 +355,7 @@ class Monitoring extends React.Component {
             this.setState({ maxHeight: this.tableRef.current.scrollHeight })
         }
         if (privateAccess && !isEqual(preProps.privateAccess, privateAccess)) {
-            this.isAccessPrivate(privateAccess)
+            this.isAccessPrivate()
         }
         else if (this.props.organizationInfo && !isEqual(this.props.organizationInfo, preProps.organizationInfo)) {
             let parent = defaultParent(this)
@@ -376,19 +375,15 @@ class Monitoring extends React.Component {
         }
     }
 
-    isAccessPrivate = (privateAccess) => {
-        if (privateAccess) {
-            let isPrivate = privateAccess.isPrivate
-            if (isPrivate) {
-                this.privateRegions = privateAccess.regions
-            }
-            this.setState({ isPrivate })
+    isAccessPrivate = () => {
+        if (redux_private.isPrivate(this)) {
+            this.privateRegions = this.props.privateAccess.regions
         }
     }
 
     componentDidMount() {
         this._isMounted = true
-        this.isAccessPrivate(this.props.privateAccess)
+        this.isAccessPrivate()
         this.props.handleViewMode(HELP_MONITORING)
         if (this._isMounted) {
             this.setState({ avgData: this.defaultStructure() }, () => {

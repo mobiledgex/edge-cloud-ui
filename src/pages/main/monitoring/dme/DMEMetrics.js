@@ -242,13 +242,9 @@ class DMEMetrics extends React.Component {
         )
     }
 
-    tempFetch = () => {
-        return { region: "EU", operatorName: "TDG", cloudletName: "automation-sdk-porttest", version: '1.0' }
-    }
-
     fetchData = async () => {
         const { data, id } = this.props
-        const tempData = this.tempFetch()
+        const tempData = data[0]
         const commonRequest = {
             region: tempData[fields.region],
             selector: 'latency',
@@ -259,7 +255,7 @@ class DMEMetrics extends React.Component {
             appInst: appInstKeys(tempData),
             ...commonRequest
         }) : cloudletUsageMetrics(this, {
-            cloudlet: cloudletKeys(data[0]),
+            cloudlet: cloudletKeys(tempData),
             ...commonRequest
         })
         let mc = await authSyncRequest(this, request)

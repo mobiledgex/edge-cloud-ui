@@ -48,7 +48,7 @@ class ClusterMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { avgData, filter, rowSelected, range, selectedOrg, updateAvgData, isPrivate } = this.props
+        const { avgData, filter, rowSelected, range, selectedOrg, updateAvgData } = this.props
         return (
             <React.Fragment>
                 <GridList cols={4} cellHeight={300}>
@@ -56,7 +56,7 @@ class ClusterMonitoring extends React.Component {
                         <GridListTile cols={4}>
                             <ClusterMexMap data={mapData} region={filter.region} />
                         </GridListTile> : null}
-                    <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} isPrivate={isPrivate} />
+                    <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
                 </GridList>
             </React.Fragment>
         )

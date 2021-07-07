@@ -10,7 +10,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 import { fields } from '../../../../services/model/format';
-import {redux_org} from '../../../../helper/reduxData'
+import {redux_org, redux_private} from '../../../../helper/reduxData'
 import { lightGreen } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
@@ -137,8 +137,7 @@ const MexToolbar = (props) => {
     }
 
     const parentType = () => {
-        let isPrivate = props.isPrivate
-        if (isPrivate) {
+        if (redux_private.isPrivate(this)) {
             return constant.metricParentTypes().map(parent => {
                 if(parent.id === constant.PARENT_APP_INST || parent.id === constant.PARENT_CLUSTER_INST )
                 {
@@ -175,7 +174,8 @@ const MexToolbar = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        privateAccess: state.privateAccess.data,
     }
 };
 

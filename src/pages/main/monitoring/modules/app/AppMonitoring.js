@@ -82,14 +82,14 @@ class AppMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { avgData, filter, range, rowSelected, selectedOrg, updateAvgData, onActionClose, listAction, isPrivate } = this.props
+        const { avgData, filter, range, rowSelected, selectedOrg, updateAvgData, onActionClose, listAction } = this.props
         return (
             <React.Fragment>
                 <GridList cols={4} cellHeight={300}>
                     {filter.metricType.includes('client') ?
                         <GridListTile cols={1}>
                             <Card style={{ height: 300, width: '100%' }}>
-                                <AppClient regions={this.regions} filter={filter} range={range} org={selectedOrg} isPrivate={isPrivate} />
+                                <AppClient regions={this.regions} filter={filter} range={range} org={selectedOrg} />
                             </Card>
                         </GridListTile> : null}
                     {filter.metricType.includes('map') ?
@@ -102,7 +102,7 @@ class AppMonitoring extends React.Component {
                                 <AppEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} avgData={avgData} />
                             </Card>
                         </GridListTile> : null}
-                    <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} isPrivate={isPrivate} />
+                    <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
                 </GridList>
                 {listAction && listAction.id === ACTION_LATENCY_METRICS ? <DMEMetrics id={filter.parent.id} onClose={onActionClose} data={temp} /> : null}
             </React.Fragment>
