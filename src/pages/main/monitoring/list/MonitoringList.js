@@ -48,12 +48,11 @@ const getGroupedData = (rows, groupBy) => {
     let regionData = rows[key]
     let dataKeys = Object.keys(regionData)
     if (dataKeys.length > 0) {
-      dataList = dataKeys.map(dataKey => {
-        return { ...regionData[dataKey], key: dataKey }
+      dataKeys.forEach(dataKey => {
+        dataList.push({ ...regionData[dataKey], key: dataKey })
       })
     }
   })
-
   if (groupBy) {
     const fields = groupBy.fields
     const groupedData = dataList.reduce((acc, item) => {
@@ -68,7 +67,7 @@ const getGroupedData = (rows, groupBy) => {
     }, {});
     return groupedData
   }
-  return {'all' : dataList}
+  return { 'all': dataList }
 };
 
 const rowValue = (filter, row, value) => {

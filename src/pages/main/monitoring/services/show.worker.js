@@ -84,7 +84,6 @@ const processData = (worker) => {
     sortBy(Object.keys(formattedList)).forEach(sorted => {
         sortedList[sorted] = formattedList[sorted]
     })
-
     self.postMessage({ status: 200, data: sortedList })
 }
 

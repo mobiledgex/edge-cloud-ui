@@ -7,7 +7,7 @@ import { endpoint, perpetual } from '../../../helper/constant'
 import { customize } from '.'
 import { generateUUID } from '../../format/shared'
 import { REQUEST_APP_INST_LATENCY } from '../../../helper/constant/endpoint';
-import { primaryKeys } from './primary';
+import { APP_CLOUDLET_CLUSTER, primaryKeys } from './primary';
 
 let fields = formatter.fields;
 
@@ -237,7 +237,7 @@ export const refreshAppInst = (data) => {
 export const requestAppInstLatency = async (self, data) => {
   let requestData = {
     region: data[fields.region],
-    appInstLatency: { key: primaryKeys(data) }
+    appInstLatency: { key: primaryKeys(data, APP_CLOUDLET_CLUSTER) }
   }
   return await authSyncRequest(self, { method: REQUEST_APP_INST_LATENCY, data: requestData })
 }
