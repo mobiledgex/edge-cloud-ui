@@ -29,7 +29,7 @@ const showProgress = (self, request) => {
  */
 const showMessage = (self, request, message) => {
     const flag = request ? isBoolean(request.showMessage) ? request.showMessage : true : false
-    if (flag && self && self.props && self.props.handleAlertInfo && message !== 'Forbidden') {
+    if (flag && self && self.props && self.props.handleAlertInfo && message !== 'Forbidden' && message !== 'No bearer token found') {
         self.props.handleAlertInfo('error', message)
     }
 }
