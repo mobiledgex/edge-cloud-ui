@@ -197,7 +197,7 @@ export const validatePrivateAccess = async (self, orgInfo) => {
         if (dataList.length > 0) {
             let regions = new Set()
             dataList.forEach(data => {
-                regions.add(data.Region)
+                regions.add(data[fields.region])
             })
             privateAccess = { isPrivate: true, regions: Array.from(regions) }
         }

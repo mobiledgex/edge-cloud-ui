@@ -5,7 +5,14 @@ import CloudletMexMap from './CloudletMexMap'
 import CloudletEvent from './CloudletEvent'
 import MexMetric from '../../common/MexMetric'
 import CloudletFlavorUsage from './CloudletFlavorUsage'
-import { mapGridHeight } from '../../helper/Constant'
+import DMEMetrics from '../../dme/DMEMetrics'
+import { ACTION_LATENCY_METRICS } from '../../../../../helper/constant/perpetual'
+
+const temp = [
+    { region: 'EU', organizationName: "MobiledgeX", appName: "automation-sdk-porttest", version: "1.0", operatorName: "GDDT", cloudletName: "automationHawkinsCloudlet", clusterName: "porttestcluster", clusterdeveloper: "MobiledgeX", cloudletLocation: { latitude: 60.110922, longitude: 10.682127 } },
+    { region: 'EU', organizationName: "MobiledgeX", appName: "automation-sdk-porttest", version: "1.0", operatorName: "GDDT", cloudletName: "automationBuckhornCloudlet", clusterName: "porttestcluster", clusterdeveloper: "MobiledgeX", cloudletLocation: { latitude: 44, longitude: -2 } },
+    { region: 'EU', organizationName: "MobiledgeX", appName: "automation-sdk-porttest", version: "1.0", operatorName: "GDDT", cloudletName: "automationFairviewCloudlet", clusterName: "porttestcluster", clusterdeveloper: "MobiledgeX", cloudletLocation: { latitude: 50.73438, longitude: 7.09549 } }
+]
 
 const processData = (avgData) => {
     let mapData = {}
@@ -55,26 +62,25 @@ class CloudletMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { avgData, filter, rowSelected, range, minimize, selectedOrg, updateAvgData, listAction } = this.props
-        let selected = mapData.selected
+        const { avgData, filter, rowSelected, range, selectedOrg, updateAvgData, listAction, onActionClose } = this.props
         return (
-            filter.parent.id === 'cloudlet' ?
-                <div className='grid-charts' style={{height : mapGridHeight(minimize, selected)}}>
-                    <GridList cols={4} cellHeight={300}>
-                        {filter.metricType.includes('map') ? <GridListTile cols={3}>
-                            <CloudletMexMap data={mapData} region={filter.region} />
-                        </GridListTile> : null}
-                        {filter.metricType.includes('event') ? <GridListTile cols={1}>
-                            <Card style={{ height: 300 }}>
-                                <CloudletEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} />
-                            </Card>
-                        </GridListTile> : null}
-                        {filter.region.map((region, i) => (
-                            <CloudletFlavorUsage key={`flavor_${region}_${i}`} range={range} filter={filter} avgData={avgData[region]} rowSelected={rowSelected} region={region}  org={selectedOrg}/>
-                        ))}
-                        <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
-                    </GridList>
-                </div> : null
+            <React.Fragment>
+                <GridList cols={4} cellHeight={300}>
+                    {filter.metricType.includes('map') ? <GridListTile cols={3}>
+                        <CloudletMexMap data={mapData} region={filter.region} />
+                    </GridListTile> : null}
+                    {filter.metricType.includes('event') ? <GridListTile cols={1}>
+                        <Card style={{ height: 300 }}>
+                            <CloudletEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} />
+                        </Card>
+                    </GridListTile> : null}
+                    {filter.region.map((region, i) => (
+                        <CloudletFlavorUsage key={`flavor_${region}_${i}`} range={range} filter={filter} avgData={avgData[region]} rowSelected={rowSelected} region={region} org={selectedOrg} />
+                    ))}
+                    <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
+                </GridList>
+                {listAction && listAction.id === ACTION_LATENCY_METRICS ? <DMEMetrics id={filter.parent.id} onClose={onActionClose} data={temp} /> : null}
+            </React.Fragment>
         )
     }
 

@@ -1,3 +1,33 @@
+
+.outer {
+    display: flex;
+    flex-direction: column;
+}
+
+.slider {
+    position: absolute;
+    z-index: 999;
+    left: 50%;
+    top:-20px;
+    cursor: row-resize;
+    user-select: none; /* disable selection */
+}
+
+.block-1 {
+    height: 25%;
+    resize: vertical; /* resize vertical */
+    overflow: auto; /* resize works for overflow other than visible */
+    background-color: #292C33;
+}
+
+.block-2 {
+    height: auto;
+    flex: 1; /* adjust automatically */
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto; /* hide overflow on small width */
+}
+   
 .monitoring-header {
     padding: 10px 0px 0px 0px;
     font-size:25px;
@@ -7,13 +37,6 @@
 
 .mex-monitoring-header-label {
     width: 100%;
-}
-
-.monitoring-content {
-    width: 100%;
-    padding: 0px 15px 0px 15px;
-    height: calc(100vh - 119px);
-    overflow: auto;
 }
 
 .mex-monitoring-select-container {
@@ -109,11 +132,11 @@
     margin-top: 4px;
 }
 
-.grid-charts::-webkit-scrollbar { 
+.block-2::-webkit-scrollbar { 
     display: none;  /* Safari and Chrome */
 }
 
-.grid-charts{
+.block-2{
     scrollbar-width: thin;
     scrollbar-color: transparent transparent;
   
@@ -188,3 +211,6 @@
 }
 
 canvas#race{position:relative; z-index:999999;}
+
+
+

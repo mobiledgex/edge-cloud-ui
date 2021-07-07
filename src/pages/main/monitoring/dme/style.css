@@ -1,0 +1,33 @@
+/*react-leaflet popup*/
+.leaflet-popup-content-wrapper{
+    border-radius: 5px !important;
+    padding: 5px;
+
+}
+
+table.scroll {
+    font-size:12px;
+    border-spacing: 1em 0.2em;
+}
+
+table.scroll tbody,
+table.scroll thead tr { display: block; }
+
+table.scroll tbody {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+table.scroll tbody td,
+table.scroll thead th {
+    width: 200px;
+}
+
+table.scroll thead th:last-child {
+    width: 216px; /* 140px + 16px scrollbar width */
+}
+
+thead tr th { 
+    text-align: left;
+}

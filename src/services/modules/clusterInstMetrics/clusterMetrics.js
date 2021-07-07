@@ -1,9 +1,14 @@
 
-import * as formatter from '../../model/format'
 import { UNIT_BYTES, UNIT_PERCENTAGE } from '../../../pages/main/monitoring/helper/unitConvertor';
+import { fields } from '../../model/format';
 import { endpoint } from '../../../helper/constant';
 
-let fields = formatter.fields;
+export const customData = (id, data) => {
+    switch (id) {
+        case fields.cloudletName:
+            return `${data[fields.cloudletName]} [${data[fields.operatorName]}]`
+    }
+}
 
 export const clusterMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },
@@ -17,8 +22,8 @@ export const clusterMetricsKeys = [
 export const clusterMetricsListKeys = [
     { field: fields.region, label: 'Region', sortable: true, visible: false, groupBy: true },
     { field: fields.clusterName, label: 'Cluster', sortable: true, visible: true, groupBy: true },
-    { field: fields.cloudletName, label: 'Cloudlet', sortable: true, visible: true, groupBy: true },
-    { field: fields.operatorName, label: 'Operator', sortable: true, visible: true, groupBy: true },
+    { field: fields.cloudletName, label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData:true  },
+    { field: fields.operatorName, label: 'Operator', sortable: true, visible: false, groupBy: true },
     { field: fields.cloudletLocation, label: 'Location', sortable: false, visible: false, groupBy: false },
     { field: 'cpu', label: 'CPU', sortable: true, visible: true, isArray: true },
     { field: 'disk', label: 'Disk Usage', sortable: true, visible: true, isArray: true },

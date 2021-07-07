@@ -20,22 +20,20 @@ const useStyles = makeStyles((theme) => ({
 
 const ListHead = (props) => {
     const classes = useStyles()
-    const orgInfo = useSelector(state => state.organizationInfo.data)
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
 
-    const headerLabel = (headCell)=>
-    {
+    const headerLabel = (headCell) => {
         return (
-            headCell.label 
+            headCell.label
         )
     }
 
     return (
         <TableHead>
-            <TableRow style={{height:50}}>
+            <TableRow style={{ height: 50 }}>
                 {props.requestInfo.selection ? <TableCell padding="checkbox" style={{ backgroundColor: '#292C33' }}>
                     <Checkbox
                         indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -45,34 +43,27 @@ const ListHead = (props) => {
                     />
                 </TableCell> : null}
                 {props.headCells.map((headCell) => {
-                    let roleVisible = checkRole(orgInfo, headCell)
-                    if (headCell.label === 'Actions' && headCell.visible && roleVisible) {
-                        headCell.visible = props.actionMenuLength > 0
-                    }
-                    if (headCell.visible && roleVisible) {
-                        props.updateColLength()
-                        return <TableCell
-                            style={{ backgroundColor: '#292C33' }}
-                            key={headCell.field}
-                            align={headCell.numeric ? 'right' : 'left'}
-                            padding={headCell.disablePadding ? 'none' : 'default'}
-                            sortDirection={orderBy === headCell.field ? order : false}
-                        >
-                            {headCell.sortable ?
-                                <TableSortLabel
-                                    active={orderBy === headCell.field}
-                                    direction={orderBy === headCell.field ? order : 'asc'}
-                                    onClick={createSortHandler(headCell.field)}
-                                >
-                                    {headerLabel(headCell)}
-                                    {orderBy === headCell.field ? (
-                                        <span className={classes.visuallyHidden}>
-                                            {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                        </span>
-                                    ) : null}
-                                </TableSortLabel> : headerLabel(headCell)}
-                        </TableCell>
-                    }
+                    return <TableCell
+                        style={{ backgroundColor: '#292C33' }}
+                        key={headCell.field}
+                        align={headCell.numeric ? 'right' : 'left'}
+                        padding={headCell.disablePadding ? 'none' : 'default'}
+                        sortDirection={orderBy === headCell.field ? order : false}
+                    >
+                        {headCell.sortable ?
+                            <TableSortLabel
+                                active={orderBy === headCell.field}
+                                direction={orderBy === headCell.field ? order : 'asc'}
+                                onClick={createSortHandler(headCell.field)}
+                            >
+                                {headerLabel(headCell)}
+                                {orderBy === headCell.field ? (
+                                    <span className={classes.visuallyHidden}>
+                                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                    </span>
+                                ) : null}
+                            </TableSortLabel> : headerLabel(headCell)}
+                    </TableCell>
                 })}
             </TableRow>
         </TableHead>

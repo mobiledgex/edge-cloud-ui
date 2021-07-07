@@ -11,6 +11,7 @@ const useStyles = makeStyles((theme) => ({
     root: {
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(1),
+        height:50
     },
     highlight:
     {

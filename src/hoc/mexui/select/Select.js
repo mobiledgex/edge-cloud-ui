@@ -4,6 +4,7 @@ import { FormControl, MenuItem, InputLabel, Menu, Typography } from '@material-u
 import SearchFilter from '../../filter/SearchFilter'
 import KeyboardArrowDownOutlinedIcon from '@material-ui/icons/KeyboardArrowDownOutlined';
 import { FixedSizeList } from 'react-window';
+import { toFirstUpperCase } from '../../../utils/string_utils';
 
 /**
  * optional params
@@ -12,6 +13,8 @@ import { FixedSizeList } from 'react-window';
  * value: default value
  * search: enable/disable search option
  * underline: show bottom line
+ * upper: first letter capital
+ * height: dropdown height
 **/
 
 /**
@@ -60,30 +63,37 @@ export default function Select(props) {
         setList(props.list.filter(data => (data.toLowerCase().includes(value.toLowerCase()))))
     }
 
+    const toUpper = (value) => {
+        return props.upper ? toFirstUpperCase(value) : value
+    }
+
     const renderRow = (virtualProps) => {
         const { index, style } = virtualProps;
         let value = list[index]
         return (
-            <MenuItem onClick={() => { handleChange(value) }} style={style}>{value}</MenuItem>
+            <MenuItem onClick={() => { handleChange(value) }} style={style}>{toUpper(value)}</MenuItem>
         );
     }
 
     const selectLabel = () => {
         const { placeholder } = props
-        return value ? value : placeholder ? placeholder : ''
+        return value ? toUpper(value) : placeholder ? placeholder : ''
     }
 
+    const color = { color: props.color ? props.color : 'white' }
+    const border = { border: props.border ? `1px solid ${color.color}` : 'none', borderRadius: 5, paddingLeft: 5, paddingRight: 5, height: 25 }
+    
     return (
         <div>
             <FormControl className={classes.formControl}>
                 {props.label ? <InputLabel shrink id="mex-ui-select">
                     {props.label}
                 </InputLabel> : null}
-                <div style={{ display: 'inline', cursor: 'pointer', marginTop: props.label ? 21 : 0 }} aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorEl(e.currentTarget) }}>
+                <div style={{ display: 'inline', cursor: 'pointer', marginTop: props.label ? 21 : 0, ...color, ...border }} aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorEl(e.currentTarget) }}>
                     <Typography aria-controls="chart" aria-haspopup="true" className={classes.wrapIcon}>
-                        {selectLabel()}
+                        {props.border ? <strong style={{ fontSize: 13, marginTop:2 }}>{selectLabel()}</strong> : selectLabel()}
                     </Typography>
-                    <KeyboardArrowDownOutlinedIcon className={classes.icon} />
+                    <KeyboardArrowDownOutlinedIcon className={classes.icon} style={{ ...color }} />
                     <div style={{ borderBottom: props.underline ? '0.1em solid #BFC0C2' : '', marginTop: 3 }}></div>
                 </div>
                 <Menu
@@ -93,7 +103,7 @@ export default function Select(props) {
                     open={Boolean(anchorEl)}
                 >
                     {props.search ? <SearchFilter onFilter={onFilter} style={{ marginBottom: 10 }} /> : null}
-                    <FixedSizeList height={300} style={{ minWidth: 213 }} itemSize={40} itemCount={list.length}>
+                    <FixedSizeList height={props.height ? props.height : 300} style={{ minWidth: 213 }} itemSize={40} itemCount={list.length}>
                         {renderRow}
                     </FixedSizeList>
                 </Menu>

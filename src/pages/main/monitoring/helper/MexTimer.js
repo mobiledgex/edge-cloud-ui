@@ -10,6 +10,8 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDateTimePicker,
 } from '@material-ui/pickers';
+import { alertInfo } from '../../../../actions';
+import { useDispatch } from 'react-redux';
 
 const rangeLabel = (from, to) => {
     return <div>
@@ -29,6 +31,7 @@ const MexTimer = (props) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [from, setFrom] = React.useState(dateUtil.currentDate());
     const [to, setTo] = React.useState(dateUtil.currentDate());
+    const dispatch = useDispatch();
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -41,13 +44,12 @@ const MexTimer = (props) => {
     const applyTimeRange = () => {
         let diff = moment(to).diff(moment(from))
         if (diff <= 0) {
-            console.log('Alert', 'From date cannot be greater than to date')
+            dispatch(alertInfo('error', 'From date cannot be greater than to date'))
         }
         else if (diff > 86400000) {
-            console.log('Alert', 'Range cannot be greater than one day')
+            dispatch(alertInfo('error', 'Range cannot be greater than one day'))
         }
-        else
-        {
+        else {
             setAnchorEl(null)
             let utcFrom  = dateUtil.utcTime(dateUtil.FORMAT_FULL_T, from) + '+00:00'
             let utcTo  = dateUtil.utcTime(dateUtil.FORMAT_FULL_T, to) + '+00:00'

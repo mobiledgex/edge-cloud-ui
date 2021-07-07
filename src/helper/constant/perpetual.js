@@ -19,6 +19,8 @@ export const ACTION_ADD_USER = 'ACTION_ADD_USER'
 export const ACTION_EDGE_BOX_ENABLE = 'ACTION_EDGE_BOX_ENABLE'
 export const ACTION_UPDATE = 'Update'
 export const ACTION_DELETE = 'Delete'
+export const ACTION_DME_METRICS = 'DMEMetrics'
+export const ACTION_REQUEST_LATENCY = 'RequestLatency'
 export const ACTION_TERMINAL = 'Terminal'
 export const ACTION_POWER_ON = 'Power On'
 export const ACTION_POWER_OFF = 'Power Off'
@@ -28,6 +30,8 @@ export const ACTION_UPGRADE = 'Upgrade'
 export const ACTION_BILLING_ADD_CHILD = 'AddChild'
 export const ACTION_BILLING_REMOVE_CHILD = 'RemovedChild'
 export const ACTION_MANIFEST = 'Show Manifest'
+export const ACTION_LATENCY_METRICS = 'LatencyMetrics'
+export const ACTION_TRACK_DEVICES = 'TrackDevices'
 
 export const CLOUDLET_COMPAT_VERSION_2_4 = 0
 export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1
@@ -196,3 +200,8 @@ export const LIST_TOOLBAR_TERMINAL = 'Terminal'
 
 export const VERIFY_PASSWORD = 0
 export const VERIFY_EMAIL = 1
+
+export const CON_VALUES = 'values'
+export const CON_TAGS = 'tags'
+export const CON_TOTAL = 'total'
+export const CON_CONNECTOR = 'connector'

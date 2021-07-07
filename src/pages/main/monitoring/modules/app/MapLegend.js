@@ -1,4 +1,3 @@
-import React from 'react'
 import { MapControl, withLeaflet } from "react-leaflet";
 import L from "leaflet";
 import { fields } from '../../../../../services/model/format';

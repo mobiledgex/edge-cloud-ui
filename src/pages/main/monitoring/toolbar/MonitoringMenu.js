@@ -92,7 +92,6 @@ const MonitoringMenu = (props) => {
             }
         })
     }
-
     return (
         <Box order={props.order}>
             {props.tip ? <Tooltip title={<strong style={{ fontSize: 13 }}>{props.tip}</strong>} arrow>

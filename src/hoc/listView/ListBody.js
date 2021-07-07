@@ -1,9 +1,8 @@
 import React from 'react'
-import { TableCell, Checkbox, Tooltip, IconButton, makeStyles, TablePagination } from '@material-ui/core';
+import { TableCell, Checkbox, Tooltip, IconButton, makeStyles } from '@material-ui/core';
 import { fields } from '../../services/model/format';
 import ListIcon from '@material-ui/icons/List';
-import { StyledTableCell, StyledTableRow, stableSort, getComparator, checkRole } from './ListConstant';
-import { useSelector } from 'react-redux';
+import { StyledTableCell, StyledTableRow, stableSort, getComparator } from './ListConstant';
 import { lightGreen } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
@@ -17,11 +16,6 @@ const useStyles = makeStyles((theme) => ({
 
 const ListBody = (props) => {
     const classes = useStyles()
-    const orgInfo = useSelector(state => state.organizationInfo.data)
-    const [page, setPage] = React.useState(0)
-    const [rowsPerPage, settRowsPerPage] = React.useState(10)
-    const [order, setOrder] = React.useState('asc')
-    const [orderBy, setOrderBy] = React.useState(props.requestInfo.sortBy && props.requestInfo.sortBy.length > 0 ? props.requestInfo.sortBy[0] : 'region')
 
     const cellClick = (header, row) => {
         props.selectedRow(header, row)
@@ -31,14 +25,12 @@ const ListBody = (props) => {
         const exist = props.selected.includes(row.uuid);
         let newSelected = [];
 
-        if(exist)
-        {
-            newSelected = props.selected.filter(select=>{
+        if (exist) {
+            newSelected = props.selected.filter(select => {
                 return select !== row.uuid
             })
         }
-        else
-        {
+        else {
             newSelected = [...props.selected, row.uuid]
         }
         props.setSelected(newSelected);
@@ -56,8 +48,6 @@ const ListBody = (props) => {
 
     const getRowData = (row, index) => {
         const isItemSelected = isSelected(row.uuid);
-        const labelId = `enhanced-table-checkbox-${index}`;
-
         return (
             <StyledTableRow
                 key={index}
@@ -76,58 +66,36 @@ const ListBody = (props) => {
                     </TableCell> : null}
 
                 {props.keys.map((header, j) => {
-                    let roleVisible = checkRole(orgInfo, header)
-                    if (header.visible && roleVisible) {
-                        let field = header.field;
-                        return (
-                            <StyledTableCell key={j} onClick={(event) => cellClick(header, row)}>
-                                {field.indexOf('Name') !== -1 ?
-                                    <Tooltip title={header.format ? props.requestInfo.formatData(header, row) : row[field] ? row[field] : ''} arrow>
-                                        <div className={classes.tip}>
-                                            {header.format ? props.requestInfo.formatData(header, row) : row[field]}
-                                        </div>
-                                    </Tooltip>
-                                    :
-                                    field === fields.actions ? actionView(row) :
-                                        header.format ? props.requestInfo.formatData(header, row) : row[field]
-                                }
-                            </StyledTableCell>
-                        )
-                    }
+                    let field = header.field;
+                    return (
+                        <StyledTableCell key={j} onClick={(event) => cellClick(header, row)}>
+                            {field.indexOf('Name') !== -1 ?
+                                <Tooltip title={header.format ? props.requestInfo.formatData(header, row) : row[field] ? row[field] : ''} arrow>
+                                    <div className={classes.tip}>
+                                        {header.format ? props.requestInfo.formatData(header, row) : row[field]}
+                                    </div>
+                                </Tooltip>
+                                :
+                                field === fields.actions ? actionView(row) :
+                                    header.format ? props.requestInfo.formatData(header, row) : row[field]
+                            }
+                        </StyledTableCell>
+                    )
                 })
                 }
             </StyledTableRow>)
     }
 
-    const handleChangePage = (e, newPage) => {
-        setPage(newPage)
-    };
-
-    const handleChangeRowsPerPage = (e) => {
-        setPage(0)
-        settRowsPerPage(parseInt(e.target.value, 10))
-    };
-
+    const { page, rowsPerPage, order, orderBy } = props
     return (
         props.dataList ?
             <React.Fragment>
-                {stableSort(props.dataList, getComparator(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
-                        getRowData(row, index)
-                    ))}
-                <StyledTableRow>
-                    <StyledTableCell colSpan={props.colSpan}>
-                        <TablePagination
-                            rowsPerPageOptions={[10, 20, 30]}
-                            component="div"
-                            count={props.dataList.length}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onChangePage={handleChangePage}
-                            onChangeRowsPerPage={handleChangeRowsPerPage}
-                        />
-                    </StyledTableCell>
-                </StyledTableRow>
+                {
+                    stableSort(props.dataList, getComparator(order, orderBy))
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
+                            getRowData(row, index)
+                        ))
+                }
             </React.Fragment>
             : getRowData(props.row, props.index)
     )

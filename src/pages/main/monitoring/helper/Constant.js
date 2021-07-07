@@ -1,10 +1,11 @@
 import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, fetchLocation, customData as appCustomData, appInstActions } from '../../../../services/modules/appInstMetrics'
 import { showAppInsts } from '../../../../services/modules/appInst'
-import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys } from '../../../../services/modules/clusterInstMetrics'
-import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys, customData as cloudletCustomData, cloudletUsageMetrics } from '../../../../services/modules/cloudletMetrics'
+import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys, customData as clusterCustomData } from '../../../../services/modules/clusterInstMetrics'
+import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys, customData as cloudletCustomData, cloudletUsageMetrics, cloudletActions } from '../../../../services/modules/cloudletMetrics'
 import { showCloudlets } from '../../../../services/modules/cloudlet'
 import { showClusterInsts } from '../../../../services/modules/clusterInst'
 import { endpoint, perpetual } from '../../../../helper/constant'
+import { fields } from '../../../../services/model/format'
 
 export const DEVELOPER = perpetual.DEVELOPER
 export const OPERATOR = perpetual.OPERATOR
@@ -40,10 +41,12 @@ export const monitoringActions = (id) => {
     switch (id) {
         case PARENT_APP_INST:
             return appInstActions
+        case PARENT_CLOUDLET:
+            return cloudletActions
     }
 }
 
-export const metricRequest = (method, data, org, isPrivate) => {
+export const metricRequest = (method, data, org, isPrivate) => {        
     switch (method) {
         case endpoint.APP_INST_METRICS_ENDPOINT:
             return appInstMetrics(data, org, isPrivate)
@@ -77,9 +80,9 @@ export const summaryList = [
 ]
 
 export const metricParentTypes = () => ([
-    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showAppInsts], metricListKeys: appMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData },
-    { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showCloudlets, showClusterInsts], metricListKeys: clusterMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER] },
-    { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showCloudlets], metricListKeys: cloudletMetricsListKeys, role: [perpetual.ADMIN, perpetual.OPERATOR], customData: cloudletCustomData }
+    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showAppInsts], metricListKeys: appMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData, groupBy: { label: 'App', fields: [fields.appName, fields.version], action: true } },
+    { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showCloudlets, showClusterInsts], metricListKeys: clusterMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER], customData: clusterCustomData, groupBy: { label: 'Region', fields: [fields.region] } },
+    { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showCloudlets], metricListKeys: cloudletMetricsListKeys, role: [perpetual.ADMIN, perpetual.OPERATOR], customData: cloudletCustomData, groupBy: { label: 'Region', fields: [fields.region] } }
 ])
 
 export const validateRole = (roles, selectedRole) => {
@@ -120,7 +123,3 @@ export const refreshRates = [
     { label: '2h', duration: 7200 },
     { label: '1d', duration: 86400 }
 ]
-
-export const mapGridHeight = (minimize, selected) => {
-    return minimize ? 'calc(100vh - 117px)' : selected === 1 ? 'calc(100vh - 335px)' : 'calc(100vh - 287px)'
-}

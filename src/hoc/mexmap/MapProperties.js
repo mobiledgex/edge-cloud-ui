@@ -1,8 +1,15 @@
 import * as L from "leaflet";
-import { renderSVG } from "./constant";
+import { renderSVG, renderColorSVG } from "./constant";
 
 export const cloudGreenIcon = (cost) => L.divIcon({
     html: `<div style="width:28px; height:28px">${renderSVG(1, cost)}</div>`,
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+    className: 'map-marker'
+});
+
+export const cloudIcon = (key, color, cost) => L.divIcon({
+    html: `<div style="width:28px; height:28px">${renderColorSVG(key, color, cost)}</div>`,
     iconSize: [28, 28],
     iconAnchor: [14, 14],
     className: 'map-marker'

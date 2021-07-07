@@ -29,7 +29,12 @@ class OrganizationList extends React.Component {
         this.action = '';
         this.data = {}
         this.worker = new RoleWorker();
-        this.keys = keys()
+        this.keys = keys().map(key => {
+            if (key.field === fields.manage) {
+                key.visible = !redux_org.isAdmin(this)
+            }
+            return key
+        })
     }
 
     updateState = (data) => {
@@ -219,13 +224,6 @@ class OrganizationList extends React.Component {
     }
 
     getUserRoles = () => {
-        this.keys = this.keys.map(key => {
-            if (key.field === fields.manage) {
-                key.visible = !redux_org.isAdmin(this)
-            }
-            return key
-        })
-
         if (this._isMounted) {
             this.forceUpdate()
         }

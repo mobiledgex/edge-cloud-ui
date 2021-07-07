@@ -79,22 +79,23 @@ class MexMap extends React.Component {
     }
 
     render() {
-        const { renderMarker, backswitch, fullscreen } = this.props
+        const { renderMarker, backswitch, fullscreen, wheel, style } = this.props
         const { mapCenter, zoom } = this.state
         return (
-            <div className={fullscreen ? 'mex-map-full' : 'mex-map'} mex-test="component-map">
+            <div className={fullscreen ? 'mex-map-full' : 'mex-map'} mex-test="component-map" style={style ? style : {}}>
                 <Map
                     ref={this.map}
                     center={mapCenter}
                     zoom={zoom}
                     easeLinearity={1}
                     useFlyTo={true}
+                    boxZoom={true}
                     dragging={true}
                     boundsOptions={{ padding: [50, 50] }}
                     minZoom={2}
                     minNativeZoom={3}
                     animate={false}
-                    scrollWheelZoom={false}
+                    scrollWheelZoom={wheel ? wheel : false}
                     zoomControl={false}
                     onClick={this.onMapClick}
                     maxBounds={[[-90.0, -180.0], [90.0, 180.0]]}>
@@ -111,19 +112,31 @@ class MexMap extends React.Component {
         )
     }
 
-    componentDidUpdate(preProps, preState) {
-        if (!isEqual(preProps.region, this.props.region)) {
-            if (this.props.region.length > 1) {
+    calculateCenter = () => {
+        const { region } = this.props
+        if (region) {
+            if (region.length > 1) {
                 this.updateView(MAP_CENTER, this.props.zoom)
             }
             else {
-                const { center, zoom } = regionLocation(this.props.region[0])
+                const { center, zoom } = regionLocation(region[0])
                 this.updateView(center, zoom)
             }
         }
     }
 
+    componentDidUpdate(preProps, preState) {
+        if (!isEqual(preProps.region, this.props.region)) {
+            this.calculateCenter()
+        }
+        else if (!isEqual(preProps.center, this.props.center)) {
+            const { center, zoom } = this.props
+            this.updateView(center ? center : MAP_CENTER, center ? 5 : zoom)
+        }
+    }
+
     componentDidMount() {
+        this.calculateCenter()
     }
 }
 
