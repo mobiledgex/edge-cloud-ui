@@ -8,7 +8,7 @@ import { fields } from '../../../services/model/format';
 import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst, requestAppInstLatency } from '../../../services/modules/appInst';
 import { showApps } from '../../../services/modules/app';
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
-import AppInstReg from './AppInstReg';
+import AppInstReg from './appInstReg';
 import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog } from '@material-ui/core';
