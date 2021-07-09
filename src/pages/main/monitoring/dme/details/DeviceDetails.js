@@ -1,29 +1,30 @@
 import React from 'react'
 import { perpetual } from '../../../../../helper/constant';
-import { fields } from '../../../../../services/model/format';
 import './style.css'
 
 const Details = (props) => {
 
-    const { data } = props
+    const { data, keys } = props
     const values = data[perpetual.CON_VALUES]
     return (
         <React.Fragment>
             <div style={{ marginBottom: 20 }} align='center'><h4><b>No of Samples</b></h4></div>
             <table className="details">
-                <thead><tr><th>0 - 5 ms</th><th>5 - 10 ms</th><th>10 - 25 ms</th><th>25 - 50 ms</th><th>50 - 100 ms</th><th>&gt; 100 ms</th><th>Network</th></tr></thead>
+                <thead>
+                    <tr>
+                        {keys.map((item, i) => (
+                            <th key={i}>{item.label}</th>
+                        ))}
+                    </tr>
+                </thead>
                 <tbody>
                     {
                         values.map((data, i) => {
                             return (
                                 <tr key={i}>
-                                    <td>{data[fields._0s]}</td>
-                                    <td>{data[fields._5ms]}</td>
-                                    <td>{data[fields._10ms]}</td>
-                                    <td>{data[fields._25ms]}</td>
-                                    <td>{data[fields._50ms]}</td>
-                                    <td>{data[fields._100ms]}</td>
-                                    <td>{data[fields.networkType]}</td>
+                                    {keys.map((item, i) => (
+                                        <td key={i}>{data[item.field] ? data[item.field] : 0}</td>
+                                    ))}
                                 </tr>
                             )
                         })

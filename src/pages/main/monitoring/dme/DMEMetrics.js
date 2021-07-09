@@ -5,8 +5,8 @@ import * as actions from '../../../../actions';
 import { fields } from '../../../../services/model/format'
 import { primaryKeys as appInstKeys } from '../../../../services/modules/appInst'
 import { primaryKeys as cloudletKeys } from '../../../../services/modules/cloudlet'
-import { appInstUsageMetrics } from '../../../../services/modules/appInstUsageMetrics/appInstUsageMetrics'
-import { cloudletUsageMetrics } from '../../../../services/modules/cloudletMetricUsage/cloudletUsageMetrics'
+import { appInstUsageMetrics, deviceKeys as appDeviceKeys } from '../../../../services/modules/appInstUsageMetrics/appInstUsageMetrics'
+import { cloudletUsageMetrics, deviceKeys as cloudletDeviceKeys } from '../../../../services/modules/cloudletMetricUsage/cloudletUsageMetrics'
 import { authSyncRequest, responseValid } from '../../../../services/service'
 import MexWorker from '../services/metricUsage.worker.js'
 import { Dialog, Grid } from '@material-ui/core'
@@ -39,7 +39,7 @@ class DMEMetrics extends React.Component {
         this.state = {
             data: {},
             connectors: {},
-            selectedDate: '2021-05-13t00:00:00z',
+            selectedDate: undefined,
             markerType: 'avg',
             sliderMarks: undefined,
             histogramData: undefined,
@@ -109,6 +109,7 @@ class DMEMetrics extends React.Component {
 
     renderMarker = () => {
         const { data, selectedDate, markerType, selectCloudlet } = this.state
+        const { id } = this.props
         const timeData = selectedDate && data && data[selectedDate] && data[selectedDate][CON_VALUES]
         const connectorMerge = { values: [], color: [] }
         return timeData ?
@@ -138,7 +139,7 @@ class DMEMetrics extends React.Component {
                         <MexCurve key={i} data={[connector]} option={{ color: connectorMerge.color[i], fill: false, dashArray: '10', weight: 0.6 }} />
                     ))
                 }
-                <MapLegend data={this.fetchLegendData(timeData, selectCloudlet, markerType)} onClick={(key, location) => { this.setHistogramData(true, key, timeData, location) }} />
+                <MapLegend id={id} data={this.fetchLegendData(timeData, selectCloudlet, markerType)} onClick={(key, location) => { this.setHistogramData(true, key, timeData, location) }} />
             </div> : null
     }
 
@@ -179,7 +180,8 @@ class DMEMetrics extends React.Component {
 
     renderDetails = () => {
         const { selectDevice, histogramData, markerType } = this.state
-        return selectDevice ? <DeviceDetails data={histogramData} /> :
+        const { id } = this.props
+        return selectDevice ? <DeviceDetails data={histogramData} keys={id === PARENT_APP_INST ? appDeviceKeys : cloudletDeviceKeys} /> :
             <CloudletDetails data={histogramData} markerType={markerType} onClick={(key, data, location) => { this.setHistogramData(false, key, data, location) }} />
     }
 
@@ -224,6 +226,7 @@ class DMEMetrics extends React.Component {
                 break;
             case ACTION_PICKER:
                 this.range = value
+                this.fetchData()
                 break;
 
         }
@@ -245,6 +248,7 @@ class DMEMetrics extends React.Component {
     }
 
     fetchData = async () => {
+        this.setState({ data: {}, sliderMarks: undefined, selectedDate: undefined })
         const { data, id } = this.props
         const tempData = data[0]
         const commonRequest = {
@@ -273,7 +277,6 @@ class DMEMetrics extends React.Component {
                     }
                     else {
                         this.props.handleAlertInfo('error', 'Latency Info Not Found')
-                        this.props.onClose()
                     }
                 }
             })

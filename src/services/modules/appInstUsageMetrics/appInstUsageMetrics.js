@@ -1,6 +1,16 @@
 import { endpoint } from '../../../helper/constant';
 import { fields } from '../../model/format';
 
+export const deviceKeys = [
+    { label: '0 - 5 ms', field: fields._0s },
+    { label: '5 - 10 ms', field: fields._5ms },
+    { label: '10 - 25 ms', field: fields._10ms },
+    { label: '25 - 50 ms', field: fields._25ms },
+    { label: '50 - 100 ms', field: fields._50ms },
+    { label: '> 100 ms', field: fields._100ms },
+    { label: 'Network', field: fields.networkType }
+]
+
 const keys = () => (
     [
         { label: 'Date', field: 'time', serverField: 'time', visible: false, groupBy: 1 },
@@ -19,9 +29,9 @@ const keys = () => (
         { label: '25ms', field: '25ms', serverField: '25ms', sum: true },
         { label: '50ms', field: '50ms', serverField: '50ms', sum: true },
         { label: '100ms', field: '100ms', serverField: '100ms', sum: true },
-        { label: 'Mmax', field: 'max', serverField: 'max', concat:true },
-        { label: 'Min', field: 'min', serverField: 'min', concat:true },
-        { label: 'Avg', field: 'avg', serverField: 'avg', concat:true },
+        { label: 'Mmax', field: 'max', serverField: 'max', concat: true },
+        { label: 'Min', field: 'min', serverField: 'min', concat: true },
+        { label: 'Avg', field: 'avg', serverField: 'avg', concat: true },
         { label: 'Variance', field: 'variance', serverField: 'variance' },
         { label: 'Stddev', field: 'stddev', serverField: 'stddev' },
         { label: 'Samples', field: 'numsamples', serverField: 'numsamples' },

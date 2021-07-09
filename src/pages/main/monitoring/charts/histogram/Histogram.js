@@ -1,6 +1,7 @@
 import React from 'react';
 import * as d3 from 'd3'
 import { operators } from '../../../../../helper/constant';
+import cloneDeep from 'lodash/cloneDeep';
 
 class Histogram extends React.Component {
     constructor(props) {
@@ -71,7 +72,7 @@ class Histogram extends React.Component {
                 }
                 var values = keys.map(key => (data[key]))
                 var max = d3.max(values)
-                var buckets = raw.buckets;
+                var buckets = cloneDeep(raw.buckets);
                 buckets.push(max > 100 ? max : 101)
                 var bins = d3.histogram().thresholds(buckets)([0, max > 100 ? max : 100]);
                 var x = d3.scaleOrdinal()

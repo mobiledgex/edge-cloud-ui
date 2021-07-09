@@ -225,5 +225,6 @@ export const fields = {
     _50ms:'50ms',
     _100ms:'100ms',
     color:'color',
-    networkType:'networkType'
+    networkType:'networkType',
+    deviceCarrier:'deviceCarrier'
 }
