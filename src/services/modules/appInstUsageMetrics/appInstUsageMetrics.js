@@ -12,6 +12,7 @@ const keys = () => (
         { label: 'Cluster Developer', field: fields.clusterdeveloper, serverField: 'clusterorg', visible: true, groupBy: 2 },
         { label: 'Cloudlet', field: fields.cloudletName, serverField: 'cloudlet', visible: true, groupBy: 2 },
         { label: 'Operator', field: fields.operatorName, serverField: 'cloudletorg', visible: true, groupBy: 2 },
+        { label: 'Network Type', field: fields.networkType, serverField: 'datanetworktype' },
         { label: '0s', field: '0s', serverField: '0s', sum: true },
         { label: '5ms', field: '5ms', serverField: '5ms', sum: true },
         { label: '10ms', field: '10ms', serverField: '10ms', sum: true },

@@ -11,7 +11,7 @@ const Details = (props) => {
         <React.Fragment>
             <div style={{ marginBottom: 20 }} align='center'><h4><b>No of Samples</b></h4></div>
             <table className="details">
-                <thead><tr><th>0 ms</th><th>5 ms</th><th>10 ms</th><th>25 ms</th><th>50 ms</th><th>100 ms</th></tr></thead>
+                <thead><tr><th>0 - 5 ms</th><th>5 - 10 ms</th><th>10 - 25 ms</th><th>25 - 50 ms</th><th>50 - 100 ms</th><th>&gt; 100 ms</th><th>Network</th></tr></thead>
                 <tbody>
                     {
                         values.map((data, i) => {
@@ -23,6 +23,7 @@ const Details = (props) => {
                                     <td>{data[fields._25ms]}</td>
                                     <td>{data[fields._50ms]}</td>
                                     <td>{data[fields._100ms]}</td>
+                                    <td>{data[fields.networkType]}</td>
                                 </tr>
                             )
                         })

@@ -189,24 +189,26 @@ class DMEMetrics extends React.Component {
         return (
             <div style={{ position: 'absolute', bottom: 23, zIndex: 999, width: '100%', paddingRight: 15, paddingLeft: 15 }}>
                 <div style={{ backgroundColor: `${visibility ? 'rgba(41,44,51,0.6)' : 'transparent'}` }}>
-                    {visibility ?
-                        <React.Fragment>
-                            <div align='right'>
-                                <IconButton onClick={this.onSelectClose}><CloseIcon /></IconButton>
+                    {
+                        visibility ?
+                            <React.Fragment>
+                                <div align='right'>
+                                    <IconButton onClick={this.onSelectClose}><CloseIcon /></IconButton>
+                                </div>
+                                <Grid container>
+                                    <Grid xs={4} item>
+                                        <Histogram data={histogramData[CON_TOTAL]} buckets={buckets} width={'calc(25vw - 0px)'} height={'calc(30vh - 0px)'} />
+                                    </Grid>
+                                    <Grid xs={4} item>
+                                        {this.renderDetails()}
+                                    </Grid>
+                                </Grid>
+                                <br />
+                            </React.Fragment> :
+                            <div align='center'>
+                                {sliderMarks ? <Slider defaultValue={sliderMarks[0].value} min={sliderMarks[0].value} max={sliderMarks[sliderMarks.length - 1].value} valueLabelFormat={this.valueLabelFormat} marks={sliderMarks} onChange={this.onSliderChange} markertype={markerType} step={null} /> : null}
                             </div>
-                            <Grid container>
-                                <Grid xs={4} item>
-                                    <Histogram data={histogramData[CON_TOTAL]} buckets={buckets} width={'calc(25vw - 0px)'} height={'calc(30vh - 0px)'} />
-                                </Grid>
-                                <Grid xs={4} item>
-                                    {this.renderDetails()}
-                                </Grid>
-                            </Grid>
-                            <br />
-                        </React.Fragment> : <div align='center'>
-                            {sliderMarks ? <Slider defaultValue={sliderMarks[0].value} min={sliderMarks[0].value} max={sliderMarks[sliderMarks.length - 1].value} valueLabelFormat={this.valueLabelFormat} marks={sliderMarks} onChange={this.onSliderChange} markertype={markerType} step={null} /> : null}
-                        </div>}
-
+                    }
                 </div>
             </div>
         )
@@ -266,7 +268,13 @@ class DMEMetrics extends React.Component {
             })
             this.worker.addEventListener('message', event => {
                 if (this._isMounted) {
-                    this.setState({ data: event.data.data, sliderMarks: event.data.slider })
+                    if (event.data.data) {
+                        this.setState({ data: event.data.data, sliderMarks: event.data.slider, selectedDate: event.data.starttime })
+                    }
+                    else {
+                        this.props.handleAlertInfo('error', 'Latency Info Not Found')
+                        this.props.onClose()
+                    }
                 }
             })
         }

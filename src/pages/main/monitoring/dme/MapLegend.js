@@ -31,7 +31,7 @@ class Legend extends MapControl {
                     <th style='width:50px;'></th>
                     <th style='border-bottom:1px solid white;'><code>Cloudlet</code></th>
                     <th style='border-bottom:1px solid white;'><code>Cluster</code></th>
-                    <th style='width:50px;border-bottom:1px solid white;'>Location Tile</th>
+                    <th style='border-bottom:1px solid white;'>Cloudlet Location</th>
                 </tr>
             </thead>
             <tbody>`
