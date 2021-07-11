@@ -1,7 +1,8 @@
 import { customize } from './custom'
-import { appInstUsageLogs } from './appInstUsageMetrics'
+import { appInstUsageLogs, deviceKeys } from './appInstUsageMetrics'
 export {
     customize,
-    appInstUsageLogs
+    appInstUsageLogs,
+    deviceKeys
 }
 

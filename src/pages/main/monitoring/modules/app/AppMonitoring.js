@@ -14,12 +14,6 @@ import { equal } from '../../../../../helper/constant/operators'
 import { requestAppInstLatency } from '../../../../../services/modules/appInst'
 import { responseValid } from '../../../../../services/service'
 
-const temp = [
-    { region: 'EU', organizationName: "MobiledgeX", appName: "automation-sdk-porttest", version: "1.0", operatorName: "TDG", cloudletName: "automationHamburgCloudlet", clusterName: "porttestcluster", clusterdeveloper: "MobiledgeX", cloudletLocation: { latitude: 60.110922, longitude: 10.682127 } },
-    { region: 'EU', organizationName: "MobiledgeX", appName: "automation-sdk-porttest", version: "1.0", operatorName: "TDG", cloudletName: "automationBonnCloudlet", clusterName: "porttestcluster", clusterdeveloper: "MobiledgeX", cloudletLocation: { latitude: 44, longitude: -2 } },
-    { region: 'EU', organizationName: "MobiledgeX", appName: "automation-sdk-porttest", version: "1.0", operatorName: "TDG", cloudletName: "automationFrankfurtCloudlet", clusterName: "porttestcluster", clusterdeveloper: "MobiledgeX", cloudletLocation: { latitude: 50.73438, longitude: 7.09549 } }
-]
-
 const healthDataStructure = () => {
     let healthData = {}
     healthData[perpetual.ONLINE] = { value: 0, color: '#66BB6A' }
@@ -104,7 +98,7 @@ class AppMonitoring extends React.Component {
                         </GridListTile> : null}
                     <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
                 </GridList>
-                {listAction && listAction.id === ACTION_LATENCY_METRICS ? <DMEMetrics id={filter.parent.id} onClose={onActionClose} data={temp} /> : null}
+                {listAction && listAction.id === ACTION_LATENCY_METRICS ? <DMEMetrics id={filter.parent.id} onClose={onActionClose} data={listAction.data} /> : null}
             </React.Fragment>
         )
     }

@@ -1,11 +1,8 @@
 
 table.details {
     font-size:12px;
-    border-spacing: 2em 0em;
+    border-spacing: 1.2em 0em;
 }
-
-table.details tbody,
-table.details thead tr { display: block; }
 
 table.details tbody {
     max-height: 250px;
