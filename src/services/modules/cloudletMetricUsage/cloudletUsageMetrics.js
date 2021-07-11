@@ -1,15 +1,21 @@
 import { endpoint } from '../../../helper/constant';
 import { fields } from '../../model/format';
 
+export const deviceKeys = [
+    { label: '0 - 5 ms', field: fields._0s },
+    { label: '5 - 10 ms', field: fields._5ms },
+    { label: '10 - 25 ms', field: fields._10ms },
+    { label: '25 - 50 ms', field: fields._25ms },
+    { label: '50 - 100 ms', field: fields._50ms },
+    { label: '> 100 ms', field: fields._100ms },
+    { label: 'Network', field: fields.networkType },
+    { label: 'Carrier', field: fields.deviceCarrier },
+]
+
 const keys = () => (
     [
         { label: 'Date', field: 'time', serverField: 'time', visible: false, groupBy: 1 },
         { label: 'Region', field: fields.region, visible: true, groupBy: 2 },
-        { label: 'App', field: fields.appName, serverField: 'app', visible: true, groupBy: 2, filter: true },
-        { label: 'Version', field: fields.version, serverField: 'ver', visible: true, groupBy: 2 },
-        { label: 'App Developer', field: fields.organizationName, serverField: 'apporg', visible: true, groupBy: 2 },
-        { label: 'Cluster', field: fields.clusterName, serverField: 'cluster', visible: true, groupBy: 2 },
-        { label: 'Cluster Developer', field: fields.clusterdeveloper, serverField: 'clusterorg', visible: true, groupBy: 2 },
         { label: 'Cloudlet', field: fields.cloudletName, serverField: 'cloudlet', visible: true, groupBy: 2 },
         { label: 'Operator', field: fields.operatorName, serverField: 'cloudletorg', visible: true, groupBy: 2 },
         { label: '0s', field: '0s', serverField: '0s', sum: true },
@@ -24,7 +30,9 @@ const keys = () => (
         { label: 'Variance', field: 'variance', serverField: 'variance' },
         { label: 'Stddev', field: 'stddev', serverField: 'stddev' },
         { label: 'Samples', field: 'numsamples', serverField: 'numsamples' },
-        { label: 'Location', field: fields.locationtile, serverField: 'locationtile', groupBy: 3 }
+        { label: 'Location', field: fields.locationtile, serverField: 'locationtile', groupBy: 3 },
+        { label: 'Network Type', field: fields.networkType, serverField: 'datanetworktype' },
+        { label: 'Device Carrier', field: fields.deviceCarrier, serverField: 'devicecarrier' },
     ]
 )
 

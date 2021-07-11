@@ -8,7 +8,7 @@ const Action = (props) => {
   const { anchorEl, onClose, actionMenu, onClick, group } = props
   return (
     <React.Fragment>
-      <Popper open={Boolean(anchorEl)} anchorEl={anchorEl} role={undefined} transition disablePortal style={{ zIndex: 1 }}>
+      <Popper open={Boolean(anchorEl)} anchorEl={anchorEl} role={undefined} transition disablePortal style={{ zIndex: 999 }}>
         {({ TransitionProps, placement }) => (
           <Grow
             {...TransitionProps}

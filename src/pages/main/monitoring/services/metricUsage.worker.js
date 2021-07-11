@@ -2,10 +2,9 @@
 import { CON_TAGS, CON_TOTAL, CON_VALUES } from "../../../../helper/constant/perpetual"
 import { fields } from "../../../../services/model/format"
 import { center } from "../../../../utils/math_utils"
-import { darkColors } from "../../../../utils/color_utils"
-import { generateColor } from "../../../../utils/heatmap_utils"
+import { fetchColorWithElimination } from "../../../../utils/color_utils"
+import { generateColor, severityHexColors } from "../../../../utils/heatmap_utils"
 import { _avg, _min, _max } from "../../../../helper/constant/operators"
-
 
 const formatColumns = (columns, keys) => {
     let newColumns = []
@@ -89,7 +88,6 @@ const nGrouper = (parent, key, value, columns, selections, levellength, level) =
             if (column && column.groupBy === level) {
                 if (column.field === fields.locationtile) {
                     formatTile(tags, item)
-                    const location = tags[fields.location]
                 }
                 else {
                     tags[column.field] = item
@@ -145,21 +143,56 @@ const grouper = (dataList, columns, selections, levellength, level = 1) => {
         let key = generateKey(columns, item, level)
         parent = nGrouper(parent, key, item, columns, selections, levellength, level)
     })
+
+    let colors = fetchColorWithElimination(selections.length, severityHexColors)
+    let usedColors = {}
+    let starttime = undefined
     Object.keys(parent).forEach((key, j) => {
         const appInstObject = parent[key][CON_VALUES]
         const time = parent[key][CON_TAGS].time.toLowerCase()
+        if (starttime === undefined) {
+            starttime = time
+        }
         const total = parent[key][CON_TOTAL]
         slider.push({ value: j, label: time, color_avg: generateColor(_avg(total['avg'])), color_min: generateColor(_min(total['min'])), color_max: generateColor(_max(total['max'])) })
         let appInstKeys = Object.keys(appInstObject)
-        let colors = darkColors(appInstKeys.length)
         appInstKeys.forEach((appInstKey, i) => {
-            appInstObject[appInstKey][CON_TAGS].color = colors[i]
+            let color = colors[i]
+            if(usedColors[appInstKey])
+            {
+                color = usedColors[appInstKey]
+            }
+            else
+            {
+                usedColors[appInstKey] = colors[i]
+                colors.splice(i, 1)
+            }
+            appInstObject[appInstKey][CON_TAGS].color = color
         })
     })
-    for (let i = 1; i < 100; i++) {
-        slider.push({ value: i, label: '2021-05-13t01:00:00z', color_avg: generateColor(i), color_min: generateColor(3),color_max: generateColor(i)  })
-    }
-    return { data: parent, slider }
+    
+    // for (let i = 1; i < 100; i++) {
+    //     slider.push({ value: i, label: '2021-05-13t01:00:00z', color_avg: generateColor(i), color_min: generateColor(3),color_max: generateColor(i)  })
+    // }
+    return { data: parent, slider, starttime }
+}
+
+const mergeData = (data)=>{
+    let {columns, values, tags} = data
+    const tagKeys = Object.keys(tags)
+    const tagValues = tagKeys.map(key=>{
+        if(key === 'datanetworktype')
+        {
+            return tags[key].replace('NETWORK_TYPE_', '')
+        }
+        return tags[key]
+    })
+    columns = [...columns, ...tagKeys]
+    values = values.map(value => {
+        value = [...value, ...tagValues]
+        return value
+    })
+    return { columns, values }
 }
 
 const formatMetricUsage = (worker) => {
@@ -173,12 +206,14 @@ const formatMetricUsage = (worker) => {
             if (series && series.length > 0) {
                 const keys = request.keys
                 const requestData = request.data
+                let mergedData = {values:[]}
                 for (const data of series) {
-                    const values = data.values
-                    const columns = formatColumns(data.columns, keys)
-                    formatted = grouper(values, columns, selections, 3)
-                    break;
+                    const {columns, values} = mergeData(data)
+                    mergedData.columns = columns
+                    mergedData.values = [...mergedData.values, ...values]
                 }
+                const columns = formatColumns(mergedData.columns, keys)
+                formatted = grouper(mergedData.values, columns, selections, 3)
             }
         }
     }

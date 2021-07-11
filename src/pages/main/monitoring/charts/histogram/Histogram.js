@@ -1,6 +1,7 @@
 import React from 'react';
 import * as d3 from 'd3'
 import { operators } from '../../../../../helper/constant';
+import cloneDeep from 'lodash/cloneDeep';
 
 class Histogram extends React.Component {
     constructor(props) {
@@ -64,19 +65,15 @@ class Histogram extends React.Component {
 
                 // preparing data
                 var data = {};
-                let keys = Object.keys(raw.data)
+                let keys = Object.keys(raw.data).filter(key => (!(key === 'avg' || key === 'max' || key === 'min')))
                 for(const key of keys)
                 {
-                    if(key === 'avg' || key === 'max' || key === 'min')
-                    {
-                        continue;
-                    }
                     data[key] = raw.data[key]
                 }
                 var values = keys.map(key => (data[key]))
                 var max = d3.max(values)
-                var buckets = raw.buckets;
-
+                var buckets = cloneDeep(raw.buckets);
+                buckets.push(max > 100 ? max : 101)
                 var bins = d3.histogram().thresholds(buckets)([0, max > 100 ? max : 100]);
                 var x = d3.scaleOrdinal()
                     .domain(buckets)
@@ -84,7 +81,7 @@ class Histogram extends React.Component {
 
                 var x_axis = d3
                     .axisBottom(x)
-                    .tickValues(keys.map(key => (key)))
+                    .tickValues(keys)
                     .tickSizeInner(0)
                     .tickSizeOuter(0)
                     .tickPadding(10)

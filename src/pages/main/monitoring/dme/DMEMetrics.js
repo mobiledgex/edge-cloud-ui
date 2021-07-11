@@ -5,8 +5,8 @@ import * as actions from '../../../../actions';
 import { fields } from '../../../../services/model/format'
 import { primaryKeys as appInstKeys } from '../../../../services/modules/appInst'
 import { primaryKeys as cloudletKeys } from '../../../../services/modules/cloudlet'
-import { appInstUsageMetrics } from '../../../../services/modules/appInstUsageMetrics/appInstUsageMetrics'
-import { cloudletUsageMetrics } from '../../../../services/modules/cloudletMetricUsage/cloudletUsageMetrics'
+import { appInstUsageMetrics, deviceKeys as appDeviceKeys } from '../../../../services/modules/appInstUsageMetrics/appInstUsageMetrics'
+import { cloudletUsageMetrics, deviceKeys as cloudletDeviceKeys } from '../../../../services/modules/cloudletMetricUsage/cloudletUsageMetrics'
 import { authSyncRequest, responseValid } from '../../../../services/service'
 import MexWorker from '../services/metricUsage.worker.js'
 import { Dialog, Grid } from '@material-ui/core'
@@ -31,7 +31,6 @@ import { operators } from "../../../../helper/constant";
 import './style.css'
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
 import { PARENT_APP_INST } from '../helper/Constant';
-
 const buckets = [0, 5, 10, 25, 50, 100]
 class DMEMetrics extends React.Component {
     constructor(props) {
@@ -39,7 +38,7 @@ class DMEMetrics extends React.Component {
         this.state = {
             data: {},
             connectors: {},
-            selectedDate: '2021-05-13t00:00:00z',
+            selectedDate: undefined,
             markerType: 'avg',
             sliderMarks: undefined,
             histogramData: undefined,
@@ -109,6 +108,7 @@ class DMEMetrics extends React.Component {
 
     renderMarker = () => {
         const { data, selectedDate, markerType, selectCloudlet } = this.state
+        const { id } = this.props
         const timeData = selectedDate && data && data[selectedDate] && data[selectedDate][CON_VALUES]
         const connectorMerge = { values: [], color: [] }
         return timeData ?
@@ -138,7 +138,7 @@ class DMEMetrics extends React.Component {
                         <MexCurve key={i} data={[connector]} option={{ color: connectorMerge.color[i], fill: false, dashArray: '10', weight: 0.6 }} />
                     ))
                 }
-                <MapLegend data={this.fetchLegendData(timeData, selectCloudlet, markerType)} onClick={(key, location) => { this.setHistogramData(true, key, timeData, location) }} />
+                <MapLegend id={id} data={this.fetchLegendData(timeData, selectCloudlet, markerType)} onClick={(key, location) => { this.setHistogramData(true, key, timeData, location) }} />
             </div> : null
     }
 
@@ -152,11 +152,38 @@ class DMEMetrics extends React.Component {
         return time(FORMAT_FULL_DATE_TIME, selectedDate.toUpperCase())
     }
 
+    updateSelectCharts = (data, selectedDate, selectCloudlet, selectDevice) => {
+        const timeData = selectedDate && data && data[selectedDate] && data[selectedDate][CON_VALUES]
+        if(timeData)
+        {
+            let isCloudlet = true
+            let chartData = timeData
+            let key = selectCloudlet
+            let location = timeData[selectCloudlet][perpetual.CON_TAGS][fields.cloudletLocation]
+            location = [location[fields.latitude], location[fields.longitude]]
+            if(selectDevice)
+            {
+                key = selectDevice
+                chartData = timeData[selectCloudlet][perpetual.CON_VALUES]
+                location = chartData[selectDevice][perpetual.CON_TAGS]['location']
+                location = [location.lat, location.lng]
+                isCloudlet = false
+            }
+            this.setHistogramData(isCloudlet, key, chartData, location)
+        }
+    }
+
     onSliderChange = (e, value) => {
-        const { sliderMarks } = this.state
+        const { data, sliderMarks, selectCloudlet, selectDevice } = this.state
         let selectedDate = sliderMarks[value].label
         if (this.state.selectedDate !== selectedDate) {
-            this.setState({ selectedDate })
+            this.setState({ selectedDate }, ()=>{
+                if(selectCloudlet || selectDevice)
+                {
+                    this.updateSelectCharts(data, selectedDate, selectCloudlet, selectDevice)
+                }
+            })
+            
         }
     }
 
@@ -179,7 +206,8 @@ class DMEMetrics extends React.Component {
 
     renderDetails = () => {
         const { selectDevice, histogramData, markerType } = this.state
-        return selectDevice ? <DeviceDetails data={histogramData} /> :
+        const { id } = this.props
+        return selectDevice ? <DeviceDetails data={histogramData} keys={id === PARENT_APP_INST ? appDeviceKeys : cloudletDeviceKeys} /> :
             <CloudletDetails data={histogramData} markerType={markerType} onClick={(key, data, location) => { this.setHistogramData(false, key, data, location) }} />
     }
 
@@ -189,24 +217,26 @@ class DMEMetrics extends React.Component {
         return (
             <div style={{ position: 'absolute', bottom: 23, zIndex: 999, width: '100%', paddingRight: 15, paddingLeft: 15 }}>
                 <div style={{ backgroundColor: `${visibility ? 'rgba(41,44,51,0.6)' : 'transparent'}` }}>
-                    {visibility ?
-                        <React.Fragment>
-                            <div align='right'>
-                                <IconButton onClick={this.onSelectClose}><CloseIcon /></IconButton>
-                            </div>
-                            <Grid container>
-                                <Grid xs={4} item>
-                                    <Histogram data={histogramData[CON_TOTAL]} buckets={buckets} width={'calc(25vw - 0px)'} height={'calc(30vh - 0px)'} />
+                    {
+                        visibility ?
+                            <React.Fragment>
+                                <div align='right'>
+                                    <IconButton onClick={this.onSelectClose}><CloseIcon /></IconButton>
+                                </div>
+                                <Grid container>
+                                    <Grid xs={4} item>
+                                        <Histogram data={histogramData[CON_TOTAL]} buckets={buckets} width={'calc(25vw - 0px)'} height={'calc(30vh - 0px)'} />
+                                    </Grid>
+                                    <Grid xs={4} item>
+                                        {this.renderDetails()}
+                                    </Grid>
                                 </Grid>
-                                <Grid xs={4} item>
-                                    {this.renderDetails()}
-                                </Grid>
-                            </Grid>
-                            <br />
-                        </React.Fragment> : <div align='center'>
-                            {sliderMarks ? <Slider defaultValue={sliderMarks[0].value} min={sliderMarks[0].value} max={sliderMarks[sliderMarks.length - 1].value} valueLabelFormat={this.valueLabelFormat} marks={sliderMarks} onChange={this.onSliderChange} markertype={markerType} step={null} /> : null}
-                        </div>}
-
+                                <br />
+                            </React.Fragment> : null
+                    }
+                    <div align='center'>
+                        {sliderMarks ? <Slider defaultValue={sliderMarks[0].value} min={sliderMarks[0].value} max={sliderMarks[sliderMarks.length - 1].value} valueLabelFormat={this.valueLabelFormat} marks={sliderMarks} onChange={this.onSliderChange} markertype={markerType} step={null} /> : null}
+                    </div>
                 </div>
             </div>
         )
@@ -222,6 +252,7 @@ class DMEMetrics extends React.Component {
                 break;
             case ACTION_PICKER:
                 this.range = value
+                this.fetchData()
                 break;
 
         }
@@ -243,6 +274,7 @@ class DMEMetrics extends React.Component {
     }
 
     fetchData = async () => {
+        this.setState({ data: {}, sliderMarks: undefined, selectedDate: undefined })
         const { data, id } = this.props
         const tempData = data[0]
         const commonRequest = {
@@ -266,7 +298,12 @@ class DMEMetrics extends React.Component {
             })
             this.worker.addEventListener('message', event => {
                 if (this._isMounted) {
-                    this.setState({ data: event.data.data, sliderMarks: event.data.slider })
+                    if (event.data.data) {
+                        this.setState({ data: event.data.data, sliderMarks: event.data.slider, selectedDate: event.data.starttime })
+                    }
+                    else {
+                        this.props.handleAlertInfo('error', 'Latency Info Not Found')
+                    }
                 }
             })
         }
