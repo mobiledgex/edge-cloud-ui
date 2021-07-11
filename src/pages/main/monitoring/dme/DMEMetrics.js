@@ -31,7 +31,6 @@ import { operators } from "../../../../helper/constant";
 import './style.css'
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
 import { PARENT_APP_INST } from '../helper/Constant';
-
 const buckets = [0, 5, 10, 25, 50, 100]
 class DMEMetrics extends React.Component {
     constructor(props) {
@@ -153,11 +152,38 @@ class DMEMetrics extends React.Component {
         return time(FORMAT_FULL_DATE_TIME, selectedDate.toUpperCase())
     }
 
+    updateSelectCharts = (data, selectedDate, selectCloudlet, selectDevice) => {
+        const timeData = selectedDate && data && data[selectedDate] && data[selectedDate][CON_VALUES]
+        if(timeData)
+        {
+            let isCloudlet = true
+            let chartData = timeData
+            let key = selectCloudlet
+            let location = timeData[selectCloudlet][perpetual.CON_TAGS][fields.cloudletLocation]
+            location = [location[fields.latitude], location[fields.longitude]]
+            if(selectDevice)
+            {
+                key = selectDevice
+                chartData = timeData[selectCloudlet][perpetual.CON_VALUES]
+                location = chartData[selectDevice][perpetual.CON_TAGS]['location']
+                location = [location.lat, location.lng]
+                isCloudlet = false
+            }
+            this.setHistogramData(isCloudlet, key, chartData, location)
+        }
+    }
+
     onSliderChange = (e, value) => {
-        const { sliderMarks } = this.state
+        const { data, sliderMarks, selectCloudlet, selectDevice } = this.state
         let selectedDate = sliderMarks[value].label
         if (this.state.selectedDate !== selectedDate) {
-            this.setState({ selectedDate })
+            this.setState({ selectedDate }, ()=>{
+                if(selectCloudlet || selectDevice)
+                {
+                    this.updateSelectCharts(data, selectedDate, selectCloudlet, selectDevice)
+                }
+            })
+            
         }
     }
 
@@ -206,11 +232,11 @@ class DMEMetrics extends React.Component {
                                     </Grid>
                                 </Grid>
                                 <br />
-                            </React.Fragment> :
-                            <div align='center'>
-                                {sliderMarks ? <Slider defaultValue={sliderMarks[0].value} min={sliderMarks[0].value} max={sliderMarks[sliderMarks.length - 1].value} valueLabelFormat={this.valueLabelFormat} marks={sliderMarks} onChange={this.onSliderChange} markertype={markerType} step={null} /> : null}
-                            </div>
+                            </React.Fragment> : null
                     }
+                    <div align='center'>
+                        {sliderMarks ? <Slider defaultValue={sliderMarks[0].value} min={sliderMarks[0].value} max={sliderMarks[sliderMarks.length - 1].value} valueLabelFormat={this.valueLabelFormat} marks={sliderMarks} onChange={this.onSliderChange} markertype={markerType} step={null} /> : null}
+                    </div>
                 </div>
             </div>
         )
