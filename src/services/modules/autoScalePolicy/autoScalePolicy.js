@@ -11,8 +11,10 @@ export const keys = () => ([
   { field: fields.autoScalePolicyName, serverField: 'key#OS#name', label: 'Auto Scale Policy', sortable: true, visible: true, filter: true, key: true },
   { field: fields.minimumNodes, serverField: 'min_nodes', label: 'Minimun Nodes', visible: true },
   { field: fields.maximumNodes, serverField: 'max_nodes', label: 'Maximum Nodes', visible: true },
-  { field: fields.scaleDownCPUThreshold, serverField: 'scale_down_cpu_thresh', label: 'Scale Down CPU Threshold (%)' },
-  { field: fields.scaleUpCPUThreshold, serverField: 'scale_up_cpu_thresh', label: 'Scale Up CPU Threshold (%)' },
+  { field: fields.stabilizationWindowSec, serverField: 'stabilization_window_sec', label: 'Stabilization Window (sec)' },
+  { field: fields.targetActiveConnections, serverField: 'target_active_connections', label: 'Target Active Connections' },
+  { field: fields.targetMEM, serverField: 'target_mem', label: 'Target Memory (%)' },
+  { field: fields.targetCPU, serverField: 'target_cpu', label: 'Target CPU (%)' },
   { field: fields.triggerTime, serverField: 'trigger_time_sec', label: 'Trigger Time (sec)' },
   { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
@@ -30,11 +32,17 @@ const getKey = (data, isCreate) => {
     if (data[fields.maximumNodes]) {
       autoScalePolicy.max_nodes = parseInt(data[fields.maximumNodes])
     }
-    if (data[fields.scaleUpCPUThreshold]) {
-      autoScalePolicy.scale_up_cpu_thresh = parseInt(data[fields.scaleUpCPUThreshold])
+    if (data[fields.targetCPU]) {
+      autoScalePolicy.target_cpu = parseInt(data[fields.targetCPU])
     }
-    if (data[fields.scaleDownCPUThreshold]) {
-      autoScalePolicy.scale_down_cpu_thresh = parseInt(data[fields.scaleDownCPUThreshold])
+    if (data[fields.targetMEM]) {
+      autoScalePolicy.target_mem = parseInt(data[fields.targetMEM])
+    }
+    if (data[fields.targetActiveConnections]) {
+      autoScalePolicy.target_active_connections = parseInt(data[fields.targetActiveConnections])
+    }
+    if (data[fields.stabilizationWindowSec]) {
+      autoScalePolicy.stabilization_window_sec = parseInt(data[fields.stabilizationWindowSec])
     }
     if (data[fields.triggerTime]) {
       autoScalePolicy.trigger_time_sec = parseInt(data[fields.triggerTime])
