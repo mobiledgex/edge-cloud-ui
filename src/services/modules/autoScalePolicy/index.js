@@ -3,10 +3,10 @@ import { keys, showAutoScalePolicies, createAutoScalePolicy, updateAutoScalePoli
 export {
     customize,
     keys,
-    showAutoScalePolicies, 
+    showAutoScalePolicies,
     createAutoScalePolicy,
-     updateAutoScalePolicy,
-     deleteAutoScalePolicy,
-     getAutoScalePolicyList
+    updateAutoScalePolicy,
+    deleteAutoScalePolicy,
+    getAutoScalePolicyList
 }
 

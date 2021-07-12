@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import MexForms, { MAIN_HEADER } from '../../../../hoc/forms/MexForms';
+import MexForms, { INPUT, MAIN_HEADER, SELECT } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -58,30 +58,16 @@ class AutoScalePolicyReg extends React.Component {
         return true;
     }
 
-    validateScaleThreshold = (currentForm) => {
+    validateThreshold = (currentForm) => {
         if (currentForm.value && currentForm.value.length > 0) {
             let value = parseInt(currentForm.value)
             if (value <= 0 || value > 100) {
                 currentForm.error = 'Scale threshold must be between 1 and 100'
                 return false;
             }
-            else if (currentForm.field === fields.scaleUpCPUThreshold) {
-                let forms = this.state.forms
-                for (let i = 0; i < forms.length; i++) {
-                    let form = forms[i]
-                    if (form.field === fields.scaleDownCPUThreshold) {
-                        let scaleDown = parseInt(form.value)
-                        if (value <= scaleDown) {
-                            currentForm.error = 'Scale up threshold must be greater than scale down threshold'
-                            return false;
-                        }
-                        break;
-                    }
-                }
-            }
         }
         currentForm.error = undefined;
-        return true;
+        return true
     }
 
 
@@ -97,14 +83,16 @@ class AutoScalePolicyReg extends React.Component {
 
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Auto Scale Policy`, formType: MAIN_HEADER, visible: true },
-        { field: fields.region, label: 'Region', formType: 'Select', placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', tip: 'Select region where you want to create policy', update: { key: true } },
-        { field: fields.organizationName, label: 'Organization', formType: 'Select', placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Name of the Organization that this policy belongs to', update: { key: true } },
-        { field: fields.autoScalePolicyName, label: 'Auto Scale Policy Name', formType: 'Input', placeholder: 'Enter Auto Scale Policy Name', rules: { required: true }, visible: true, tip: 'Policy name', update: { key: true } },
-        { field: fields.minimumNodes, label: 'Minimum Nodes', formType: 'Input', placeholder: 'Enter Minimum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['3'] }, dataValidateFunc: this.validateNodes, tip: 'Minimum number of cluster nodes' },
-        { field: fields.maximumNodes, label: 'Maximum Nodes', formType: 'Input', placeholder: 'Enter Maximum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['4'] }, dataValidateFunc: this.validateNodes, tip: 'Maximum number of cluster nodes' },
-        { field: fields.scaleDownCPUThreshold, label: 'Scale Down CPU Threshold', formType: 'Input', placeholder: 'Enter Scale Down CPU Threshold', rules: { type: 'number', required: true, onBlur: true }, unit: '%', visible: true, update: { id: ['6'] }, dataValidateFunc: this.validateScaleThreshold, tip: 'Scale down cpu threshold (percentage 1 to 100)' },
-        { field: fields.scaleUpCPUThreshold, label: 'Scale Up CPU Threshold', formType: 'Input', placeholder: 'Enter Scale Up CPU Threshold', rules: { type: 'number', required: true, onBlur: true }, unit: '%', visible: true, update: { id: ['5'] }, dataValidateFunc: this.validateScaleThreshold, tip: 'Scale up cpu threshold (percentage 1 to 100)' },
-        { field: fields.triggerTime, label: 'Trigger Time', formType: 'Input', placeholder: 'Enter Trigger Time In Seconds', rules: { type: 'number', required: true }, unit: 'sec', visible: true, update: { id: ['7'] }, tip: 'The time that the sampled CPU threshold must be continuously met before triggering the auto-scale action. This is to prevent possible anomalies of CPU activity (or lack thereof) from triggering unwanted scale up/down actions, in the event that the anomaly activity occurs right when the CPU usage is sampled' },
+        { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', tip: 'Select region where you want to create policy', update: { key: true } },
+        { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Name of the Organization that this policy belongs to', update: { key: true } },
+        { field: fields.autoScalePolicyName, label: 'Auto Scale Policy Name', formType: INPUT, placeholder: 'Enter Auto Scale Policy Name', rules: { required: true }, visible: true, tip: 'Policy name', update: { key: true } },
+        { field: fields.minimumNodes, label: 'Minimum Nodes', formType: INPUT, placeholder: 'Enter Minimum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['3'] }, dataValidateFunc: this.validateNodes, tip: 'Minimum number of cluster nodes' },
+        { field: fields.maximumNodes, label: 'Maximum Nodes', formType: INPUT, placeholder: 'Enter Maximum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['4'] }, dataValidateFunc: this.validateNodes, tip: 'Maximum number of cluster nodes' },
+        { field: fields.triggerTime, label: 'Trigger Time', formType: INPUT, placeholder: 'Enter Trigger Time In Seconds', rules: { type: 'number', required: true }, unit: 'sec', visible: true, update: { id: ['7'] }, tip: 'The time that the sampled CPU threshold must be continuously met before triggering the auto-scale action. This is to prevent possible anomalies of CPU activity (or lack thereof) from triggering unwanted scale up/down actions, in the event that the anomaly activity occurs right when the CPU usage is sampled' },
+        { field: fields.stabilizationWindowSec, label: 'Stabilization Window (sec)', formType: INPUT, placeholder: 'Enter Stabilization Window In Seconds', unit: 'sec', visible: true, rules: { type: 'number', required: true }, update: { id: ['8'] }, tip: 'Stabilization window is the time for which past triggers are considered; the largest scale factor is always taken.' },
+        { field: fields.targetCPU, label: 'Target CPU', formType: INPUT, placeholder: 'Enter Target CPU', rules: { type: 'number', required: true }, unit: '%', visible: true, dataValidateFunc: this.validateThreshold, update: { id: ['9'] }, tip: 'Target per-node cpu utilization (percentage 1 to 100), 0 means disabled' },
+        { field: fields.targetMEM, label: 'Target Memory', formType: INPUT, placeholder: 'Enter Target Memory', rules: { type: 'number', required: true }, unit: '%', visible: true, dataValidateFunc: this.validateThreshold, update: { id: ['10'] }, tip: 'Target per-node memory utilization (percentage 1 to 100), 0 means disabled' },
+        { field: fields.targetActiveConnections, label: 'Target Active Connections', formType: INPUT, placeholder: 'Enter Target Active Connections', visible: true, rules: { type: 'number', required: true }, update: { id: ['11'] }, tip: 'Target per-node number of active connections, 0 means disabled' },
     ])
 
 
@@ -166,7 +154,7 @@ class AutoScalePolicyReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field) {
-                if (form.formType === 'Select') {
+                if (form.formType === SELECT) {
                     switch (form.field) {
                         case fields.organizationName:
                             form.options = this.organizationList
