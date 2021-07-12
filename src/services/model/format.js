@@ -230,5 +230,6 @@ export const fields = {
     _100ms:'100ms',
     color:'color',
     networkType:'networkType',
-    deviceCarrier:'deviceCarrier'
+    deviceCarrier:'deviceCarrier',
+    isPrivate:'isPrivate'
 }
