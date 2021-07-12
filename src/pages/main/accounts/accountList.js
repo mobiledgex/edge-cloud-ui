@@ -64,6 +64,7 @@ class AccountList extends React.Component {
             data[fields.locked] = locked
             this.updateState({ refreshViewToggle: !this.state.refreshViewToggle })
         }
+        return data[fields.locked]
     }
 
     onSendEmail = async (username, email) => {
