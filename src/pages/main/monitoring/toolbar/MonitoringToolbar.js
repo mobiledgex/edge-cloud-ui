@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
 const MexToolbar = (props) => {
     const classes = useStyles();
     const orgInfo = useSelector(state=>state.organizationInfo.data)
+    const privateAccess = useSelector(state=>state.privateAccess.data)
     const [search, setSearch] = React.useState('')
     const [focused, setFocused] = React.useState(false)
     const [refreshRange, setRefreshRange] = React.useState(constant.refreshRates[0])
@@ -137,7 +138,7 @@ const MexToolbar = (props) => {
     }
 
     const parentType = () => {
-        if (redux_private.isPrivate(this)) {
+        if (redux_private.isPrivate(privateAccess)) {
             return constant.metricParentTypes().map(parent => {
                 if(parent.id === constant.PARENT_APP_INST || parent.id === constant.PARENT_CLUSTER_INST )
                 {
