@@ -15,7 +15,6 @@ export const keys = () => ([
   { field: fields.targetActiveConnections, serverField: 'target_active_connections', label: 'Target Active Connections' },
   { field: fields.targetMEM, serverField: 'target_mem', label: 'Target Memory (%)' },
   { field: fields.targetCPU, serverField: 'target_cpu', label: 'Target CPU (%)' },
-  { field: fields.triggerTime, serverField: 'trigger_time_sec', label: 'Trigger Time (sec)' },
   { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
@@ -43,9 +42,6 @@ const getKey = (data, isCreate) => {
     }
     if (data[fields.stabilizationWindowSec]) {
       autoScalePolicy.stabilization_window_sec = parseInt(data[fields.stabilizationWindowSec])
-    }
-    if (data[fields.triggerTime]) {
-      autoScalePolicy.trigger_time_sec = parseInt(data[fields.triggerTime])
     }
     if (data[fields.fields]) {
       autoScalePolicy.fields = data[fields.fields]
