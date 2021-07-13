@@ -42,15 +42,17 @@ const ActionButton = (props) => {
   )
 }
 
-const getGroupedData = (rows, groupBy) => {
+const getGroupedData = (region, rows, groupBy) => {
   let dataList = []
   Object.keys(rows).forEach(key => {
-    let regionData = rows[key]
-    let dataKeys = Object.keys(regionData)
-    if (dataKeys.length > 0) {
-      dataKeys.forEach(dataKey => {
-        dataList.push({ ...regionData[dataKey], key: dataKey })
-      })
+    if (region.includes(key)) {
+      let regionData = rows[key]
+      let dataKeys = Object.keys(regionData)
+      if (dataKeys.length > 0) {
+        dataKeys.forEach(dataKey => {
+          dataList.push({ ...regionData[dataKey], key: dataKey })
+        })
+      }
     }
   })
   if (groupBy) {
@@ -125,7 +127,7 @@ class MonitoringList extends React.Component {
   render() {
     const { anchorEl } = this.state
     const { filter, onCellClick, data } = this.props
-    const dataList = getGroupedData(data, this.groupBy)
+    const dataList = getGroupedData(filter.region, data, this.groupBy)
     return (
       <React.Fragment>
         <TableContainer component={Paper}>
