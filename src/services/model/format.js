@@ -175,7 +175,6 @@ export const fields = {
     stabilizationWindowSec: 'stabilizationWindowSec',
     targetCPU: 'targetCPU',
     targetMEM: 'targetMEM',
-    triggerTime: 'triggerTime',
     minActiveInstances: 'minActiveInstances',
     maxInstances: 'maxInstances',
     fields: 'fields',
