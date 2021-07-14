@@ -11,6 +11,7 @@ export const fields = {
     cloudletName: 'cloudletName',
     flavorName: 'flavorName',
     ipAccess: 'ipAccess',
+    forceupdate:'forceupdate',
     nodeFlavor: 'nodeFlavor',
     numberOfMasters: 'numberOfMasters',
     numberOfNodes: 'numberOfNodes',
