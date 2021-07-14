@@ -200,8 +200,8 @@ class MexListView extends React.Component {
     }
 
 
-    onUpdate = async (action, data, forceRefresh) => {
-        if (forceRefresh || data[fields.updateAvailable]) {
+    onUpdate = async (action, data) => {
+        if (data[fields.forceupdate] || data[fields.updateAvailable]) {
             this.props.handleLoadingSpinner(true)
             serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, { action: action, data: data })
         }
@@ -222,7 +222,7 @@ class MexListView extends React.Component {
                                 this.onUpdate(action, item)
                                 break;
                             case 'Refresh':
-                                this.onUpdate(action, item, true)
+                                this.onUpdate(action, { ...item, forceupdate: true })
                                 break;
                             case 'Delete':
                                 this.onDeleteMultiple(action, item)
@@ -241,7 +241,7 @@ class MexListView extends React.Component {
                         this.onUpdate(action, data)
                         break;
                     case perpetual.ACTION_REFRESH:
-                        this.onUpdate(action, data, true)
+                        this.onUpdate(action, { ...data, forceupdate: true })
                         break;
                     case perpetual.ACTION_POWER_ON:
                     case perpetual.ACTION_POWER_OFF:
