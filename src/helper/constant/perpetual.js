@@ -1,3 +1,7 @@
+
+export const STATUS_READY = 2
+export const STATUS_UNDER_MAINTAINANCE = 999
+
 export const COLOR_GREEN = '#388E3C'
 export const COLOR_RED = '#ab2424'
 

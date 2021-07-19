@@ -162,7 +162,7 @@ export const cloudletWithInfo = (mcList) => {
                     let cloudletInfo = cloudletInfoList[j]
                     if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
                         cloudlet[fields.compatibilityVersion] = cloudletInfo[fields.compatibilityVersion] ? cloudletInfo[fields.compatibilityVersion] : perpetual.CLOUDLET_COMPAT_VERSION_2_4
-                        valid = cloudletInfo[fields.state] === 2 && (cloudlet[fields.maintenanceState] === undefined || cloudlet[fields.maintenanceState] === 0)
+                        valid = cloudletInfo[fields.state] === perpetual.STATUS_READY && (cloudlet[fields.maintenanceState] === undefined || cloudlet[fields.maintenanceState] === 0)
                         break;
                     }
                 }
@@ -201,7 +201,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             }
             cloudlet = customize(undefined, cloudlet)
             cloudlet[fields.uuid] = oldData[fields.uuid]
-            cloudlet[fields.cloudletStatus] = cloudlet[fields.maintenanceState] && cloudlet[fields.maintenanceState] !== 0 ? 999 : cloudletInfo[fields.state]
+            cloudlet[fields.cloudletStatus] = cloudlet[fields.maintenanceState] && cloudlet[fields.maintenanceState] !== 0 ? perpetual.STATUS_UNDER_MAINTAINANCE : cloudletInfo[fields.state]
             return cloudlet
         }
         return null
@@ -225,7 +225,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
                 for (let j = 0; j < cloudletInfoList.length; j++) {
                     let cloudletInfo = cloudletInfoList[j]
                     if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
-                        cloudlet[fields.cloudletStatus] = cloudlet[fields.maintenanceState] && cloudlet[fields.maintenanceState] !== 0 ? 999 : cloudletInfo[fields.state]
+                        cloudlet[fields.cloudletStatus] = cloudlet[fields.maintenanceState] && cloudlet[fields.maintenanceState] !== 0 ? perpetual.STATUS_UNDER_MAINTAINANCE : cloudletInfo[fields.state]
                     }
                 }
             }

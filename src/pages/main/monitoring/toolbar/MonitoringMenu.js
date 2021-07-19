@@ -8,6 +8,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import { Icon } from 'semantic-ui-react';
 import SearchFilter from '../../../../hoc/filter/SearchFilter'
 import { redux_org } from '../../../../helper/reduxData';
+import './style.css'
 
 const fetchArray = (props) => {
     return props.data.map(data => { return props.field ? data[props.field] : data })
@@ -54,7 +55,7 @@ const MonitoringMenu = (props) => {
 
     const renderIcon = () => (
         <IconButton aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorEl(e.currentTarget) }}>
-            {props.icon ? props.icon : <strong style={{ color: 'rgba(118, 255, 3, 0.7)', border: 'solid 1px rgba(118, 255, 3, 0.7)', borderRadius: 5, maxWidth: 150, fontSize: 12, padding: 5, marginTop: -4 }}>{getLabel()} <Icon name='chevron down' style={{ marginLeft: 5, color: 'rgba(118, 255, 3, 0.7)' }} /></strong>}
+            {props.icon ? props.icon : <div className='monitoring-menu-label-main'><strong className='monitoring-menu-label'>{getLabel()}</strong><Icon name='chevron down' style={{ marginLeft: 5, color: 'rgba(118, 255, 3, 0.7)' }} /></div>}
         </IconButton>
     )
 

@@ -80,14 +80,14 @@ class AppMonitoring extends React.Component {
         return (
             <React.Fragment>
                 <GridList cols={4} cellHeight={300}>
-                    {filter.metricType.includes('client') ?
+                    {/* {filter.metricType.includes('client') ?
                         <GridListTile cols={1}>
                             <Card style={{ height: 300, width: '100%' }}>
                                 <AppClient regions={this.regions} filter={filter} range={range} org={selectedOrg} />
                             </Card>
-                        </GridListTile> : null}
+                        </GridListTile> : null} */}
                     {filter.metricType.includes('map') ?
-                        <GridListTile cols={2}>
+                        <GridListTile cols={3}>
                             <AppMexMap data={mapData} region={filter.region} listAction={listAction} avgData={avgData} onActionClose={onActionClose} />
                         </GridListTile> : null}
                     {filter.metricType.includes('event') ?
