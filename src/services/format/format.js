@@ -46,6 +46,9 @@ export const formatData = (request, response) => {
         case endpoint.SHOW_ACCOUNTS:
             data = formatShowData(request, response, accounts)
             break;
+        case endpoint.SHOW_NODE:
+            data = formatShowData(request, response)
+            break;
         case endpoint.SHOW_CLOUDLET:
         case endpoint.SHOW_ORG_CLOUDLET:
             data = formatShowData(request, response, cloudlet, true)

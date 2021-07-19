@@ -8,6 +8,7 @@ import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant'
 import { customize } from '../../modules/cloudlet'
 import { generateUUID } from '../../format/shared'
+import { CLOUDLET_NAME, primaryKeys } from './primary';
 
 const fields = formatter.fields;
 
@@ -315,4 +316,17 @@ export const cloudletResourceQuota = (self, data) => {
         region: data[fields.region]
     }
     return { method: endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS, data: requestData }
+}
+
+export const fetchShowNode = async (self, data) => {
+    let requestData = {
+        node: {
+            key: {
+                cloudlet_key: primaryKeys(data),
+                region: data[fields.region]
+            }
+        }
+    }
+
+    return await authSyncRequest(self, { method: endpoint.SHOW_NODE, data: requestData })
 }

@@ -1,5 +1,5 @@
 import { customize } from './custom'
-import { keys, showCloudlets, cloudletWithInfo, fetchCloudletData, deleteCloudlet, streamCloudlet, multiDataRequest, getCloudletManifest, revokeAccessKey, createCloudlet, updateCloudlet, cloudletResourceQuota, getCloudletKey } from './cloudlet'
+import { keys, showCloudlets, cloudletWithInfo, fetchCloudletData, deleteCloudlet, streamCloudlet, multiDataRequest, getCloudletManifest, revokeAccessKey, createCloudlet, updateCloudlet, cloudletResourceQuota, getCloudletKey, fetchShowNode } from './cloudlet'
 import { primaryKeys } from './primary'
 export {
     customize,
@@ -16,6 +16,7 @@ export {
     createCloudlet,
     updateCloudlet,
     cloudletResourceQuota,
-    getCloudletKey
+    getCloudletKey,
+    fetchShowNode
 }
 
