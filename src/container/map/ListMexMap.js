@@ -37,10 +37,10 @@ class ListMexMap extends React.Component {
 
     renderColor = (data) => {
         let colorKey = 0
-        if (data[fields.cloudletStatus] === 2) {
+        if (data[fields.cloudletStatus] === perpetual.STATUS_READY) {
             colorKey = 1
         }
-        else if (data[fields.cloudletStatus] === 999) {
+        else if (data[fields.cloudletStatus] === perpetual.STATUS_UNDER_MAINTAINANCE) {
             colorKey = 2
         }
         return mapLegendColor[colorKey]
@@ -69,10 +69,10 @@ class ListMexMap extends React.Component {
             let maintenance = false;
 
             dataList.map(data => {
-                if (data[fields.cloudletStatus] === 2) {
+                if (data[fields.cloudletStatus] === perpetual.STATUS_READY) {
                     online = true
                 }
-                else if (data[fields.cloudletStatus] === 999) {
+                else if (data[fields.cloudletStatus] === perpetual.STATUS_UNDER_MAINTAINANCE) {
                     maintenance = true
                 }
                 else {

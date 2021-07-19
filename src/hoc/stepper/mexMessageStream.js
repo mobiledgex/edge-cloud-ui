@@ -7,6 +7,7 @@ import * as serverData from '../../services/model/serverData';
 import { fields } from '../../services/model/format';
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
+import { perpetual } from '../../helper/constant';
 
 export const CODE_FINISH = 100;
 export const CODE_SUCCESS = 200;
@@ -142,7 +143,7 @@ class VerticalStepper extends React.Component {
         if (stream) {
             let valid = false
             let state = data[fields.state];
-            if (state === 2 || state === 3 || state === 6 || state === 7 || state === 9 || state === 10 || state === 12 || state === 13 || state === 14) {
+            if (state === perpetual.STATUS_READY || state === 3 || state === 6 || state === 7 || state === 9 || state === 10 || state === 12 || state === 13 || state === 14) {
                 valid = true
             }
             else if (data[fields.powerState]) {
