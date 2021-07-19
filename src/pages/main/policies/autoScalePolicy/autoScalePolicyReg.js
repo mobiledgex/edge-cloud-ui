@@ -89,25 +89,25 @@ class AutoScalePolicyReg extends React.Component {
         { field: fields.minimumNodes, label: 'Minimum Nodes', formType: INPUT, placeholder: 'Enter Minimum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['3'] }, dataValidateFunc: this.validateNodes, tip: 'Minimum number of cluster nodes' },
         { field: fields.maximumNodes, label: 'Maximum Nodes', formType: INPUT, placeholder: 'Enter Maximum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['4'] }, dataValidateFunc: this.validateNodes, tip: 'Maximum number of cluster nodes' },
         { field: fields.stabilizationWindowSec, label: 'Stabilization Window (sec)', formType: INPUT, placeholder: 'Enter Stabilization Window In Seconds', unit: 'sec', visible: true, rules: { type: 'number', required: true }, update: { id: ['8'] }, tip: 'Stabilization window is the time for which past triggers are considered; the largest scale factor is always taken.' },
-        { field: fields.targetCPU, label: 'Target CPU', formType: INPUT, placeholder: 'Enter Target CPU', rules: { type: 'number', required: true }, unit: '%', visible: true, dataValidateFunc: this.validateThreshold, update: { id: ['9'] }, tip: 'Target per-node cpu utilization (percentage 1 to 100), 0 means disabled' },
-        { field: fields.targetMEM, label: 'Target Memory', formType: INPUT, placeholder: 'Enter Target Memory', rules: { type: 'number', required: true }, unit: '%', visible: true, dataValidateFunc: this.validateThreshold, update: { id: ['10'] }, tip: 'Target per-node memory utilization (percentage 1 to 100), 0 means disabled' },
-        { field: fields.targetActiveConnections, label: 'Target Active Connections', formType: INPUT, placeholder: 'Enter Target Active Connections', visible: true, rules: { type: 'number', required: true }, update: { id: ['11'] }, tip: 'Target per-node number of active connections, 0 means disabled' },
+        { field: fields.targetCPU, label: 'Target CPU', formType: INPUT, placeholder: 'Enter Target CPU', rules: { type: 'number' }, unit: '%', visible: true, dataValidateFunc: this.validateThreshold, update: { id: ['9'] }, tip: 'Target per-node cpu utilization (percentage 1 to 100), 0 means disabled' },
+        { field: fields.targetMEM, label: 'Target Memory', formType: INPUT, placeholder: 'Enter Target Memory', rules: { type: 'number' }, unit: '%', visible: true, dataValidateFunc: this.validateThreshold, update: { id: ['10'] }, tip: 'Target per-node memory utilization (percentage 1 to 100), 0 means disabled' },
+        { field: fields.targetActiveConnections, label: 'Target Active Connections', formType: INPUT, placeholder: 'Enter Target Active Connections', visible: true, rules: { type: 'number' }, update: { id: ['11'] }, tip: 'Target per-node number of active connections, 0 means disabled' },
     ])
 
 
     onCreate = async (data) => {
         if (data) {
-            let mcRequest = undefined
+            let mc = undefined
             if (this.isUpdate) {
                 let updateData = updateFieldData(this, this.state.forms, data, this.props.data)
                 if (updateData.fields.length > 0) {
-                    mcRequest = await service.authSyncRequest(this, updateAutoScalePolicy(updateData))
+                    mc = await service.authSyncRequest(this, updateAutoScalePolicy(updateData))
                 }
             }
             else {
-                mcRequest = await service.authSyncRequest(this, createAutoScalePolicy(data))
+                mc = await service.authSyncRequest(this, createAutoScalePolicy(data))
             }
-            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+            if (mc && mc.response && mc.response.status === 200) {
                 let msg = this.isUpdate ? 'updated' : 'created'
                 this.props.handleAlertInfo('success', `Auto Scale Policy ${data[fields.autoScalePolicyName]} ${msg} successfully`)
                 this.props.onClose(true)
