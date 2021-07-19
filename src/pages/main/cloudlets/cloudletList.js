@@ -94,6 +94,10 @@ class CloudletList extends React.Component {
             if (data && data.length > 0) {
                 this.setState({ currentView: <ShowNode data={data} onClose={this.onRegClose} /> })
             }
+            else
+            {
+                this.props.handleAlertInfo('error', 'Nodes not available')
+            }
         }
     }
 
@@ -212,7 +216,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 
