@@ -39,6 +39,7 @@ export const STREAM_CLOUDLET = 'auth/ctrl/StreamCloudlet';
 export const GET_CLOUDLET_MANIFEST = 'auth/ctrl/GetCloudletManifest';
 export const REVOKE_ACCESS_KEY = 'auth/ctrl/RevokeAccessKey';
 export const GET_CLOUDLET_RESOURCE_QUOTA_PROPS = 'auth/ctrl/GetCloudletResourceQuotaProps';
+export const SHOW_NODE = 'auth/ctrl/ShowNode'
 //Cloudlet Info
 export const SHOW_CLOUDLET_INFO = 'auth/ctrl/ShowCloudletInfo';
 export const SHOW_ORG_CLOUDLET_INFO = 'auth/orgcloudletinfo/show';

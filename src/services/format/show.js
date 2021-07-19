@@ -14,9 +14,14 @@ export const formatShowData = (request, response, customData, isUnique) => {
                     for (let dataObject of dataArray) {
                         let data = dataObject.data ? dataObject.data : dataObject;
                         let value = {}
-                        map(value, data, keys)
+                        if (keys) {
+                            map(value, data, keys)
+                        }
+                        else {
+                            value = data
+                        }
                         if (requestData && value.region === undefined) { value.region = requestData.region }
-                        value.uuid = (isUnique) ? generateUUID(keys, value) : uuid()
+                        value.uuid = keys ? (isUnique) ? generateUUID(keys, value) : uuid() : undefined
                         let newValue = customData ? customData(request, value) : value
                         if (newValue) {
                             values.push(newValue)

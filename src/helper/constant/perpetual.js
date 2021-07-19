@@ -36,6 +36,7 @@ export const ACTION_BILLING_REMOVE_CHILD = 'RemovedChild'
 export const ACTION_MANIFEST = 'Show Manifest'
 export const ACTION_LATENCY_METRICS = 'LatencyMetrics'
 export const ACTION_TRACK_DEVICES = 'TrackDevices'
+export const ACTION_SHOW_NODE = 'ShowNode'
 
 export const CLOUDLET_COMPAT_VERSION_2_4 = 0
 export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1

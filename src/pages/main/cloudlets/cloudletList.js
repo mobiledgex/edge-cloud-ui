@@ -14,10 +14,12 @@ import { operatorRoles } from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
-import { getCloudletManifest, revokeAccessKey } from '../../../services/modules/cloudlet';
+import { getCloudletManifest, revokeAccessKey, fetchShowNode } from '../../../services/modules/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import { labelFormatter, uiFormatter } from '../../../helper/formatter';
 import { perpetual, role } from '../../../helper/constant';
+import { responseValid } from '../../../services/service';
+import ShowNode from './ShowNode'
 class CloudletList extends React.Component {
     constructor(props) {
         super(props);
@@ -84,11 +86,27 @@ class CloudletList extends React.Component {
         }
     }
 
+    onShowNode = async (action, data)=>{
+        let mc = await fetchShowNode(this, data)
+        if(responseValid(mc))
+        {
+            const data = mc.response.data
+            if (data && data.length > 0) {
+                this.setState({ currentView: <ShowNode data={data} onClose={this.onRegClose} /> })
+            }
+        }
+    }
+
+    onPreNodeAction = (type, action, data) => {
+        return redux_org.isAdmin(this)
+    }
+
     actionMenu = () => {
         return [
             { id: perpetual.ACTION_UPDATE, label: 'Update', disable: this.onPreAction, onClick: this.onAdd, type: 'Edit' },
             { id: perpetual.ACTION_DELETE, label: 'Delete', disable: this.onPreAction, onClick: deleteCloudlet, ws: true, type: 'Edit' },
-            { id: perpetual.ACTION_MANIFEST, label: 'Show Manifest', disable: this.onPreAction, visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest }
+            { id: perpetual.ACTION_MANIFEST, label: 'Show Manifest', disable: this.onPreAction, visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest },
+            { id: perpetual.ACTION_SHOW_NODE, label: 'Show Nodes', visibility:this.onPreNodeAction, onClick: this.onShowNode }
         ]
     }
 
