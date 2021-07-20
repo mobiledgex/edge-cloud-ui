@@ -4,3 +4,9 @@ export const toFirstUpperCase = (data) => {
     }
 }
 
+export const onlyNumeric = (data) => {
+    if (data) {
+        return data.replace(/\D+/g, '')
+    }
+}
+

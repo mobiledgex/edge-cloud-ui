@@ -68,6 +68,7 @@ const eventKeys = [
     { label: 'Span ID', field: 'spanid', mtags: true, detail: true },
     { label: 'Duration', field: 'duration', mtags: true, detail: true },
     { label: 'State', field: 'state', mtags: true, detail: true },
+    { label: 'Reason', field: 'reason', mtags: true, detail: true },
     { label: 'Error', field: 'error', filter: false, detail: true },
     { label: 'Name', field: 'name', filter: true, detail: false },
     { label: 'App', field: 'app', mtags: true, filter: true, detail: false },

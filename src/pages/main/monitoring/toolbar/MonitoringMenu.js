@@ -88,7 +88,7 @@ const MonitoringMenu = (props) => {
                                     inputProps={{ 'aria-labelledby': 1 }}
                                 />
                             </ListItemIcon> : null}
-                        <ListItemText id={1} primary={<Typography style={{ minWidth:30, maxWidth: 200, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{itemData}</Typography>} />{props.showTick && selectedValue === item ? <CheckIcon style={{ marginLeft: 5 }} /> : null}
+                        <ListItemText id={1} primary={<Typography style={{ minWidth: props.showTick ? 40 : 'none', maxWidth: 200, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{itemData}</Typography>} />{props.showTick && selectedValue === item ? <CheckIcon style={{ marginLeft: 5 }} /> : null}
                     </ListItem> : null
             }
         })
