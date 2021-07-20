@@ -24,13 +24,15 @@ import Histogram from '../charts/histogram/Histogram'
 import MexCurve from '../../../../hoc/mexmap/utils/MexCurve'
 import CloseIcon from '@material-ui/icons/Close';
 import Legend from '../charts/heatmapLegend/Legend'
-import DMEToolbar, { ACTION_CLOSE, ACTION_DATA_TYPE, ACTION_PICKER } from './DMEToolbar';
+import DMEToolbar, { ACTION_CLOSE, ACTION_DATA_TYPE, ACTION_LATENCY_RANGE, ACTION_PICKER } from './DMEToolbar';
 import CloudletDetails from './details/CloudletDetails';
 import DeviceDetails from './details/DeviceDetails';
 import { operators } from "../../../../helper/constant";
 import './style.css'
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
 import { PARENT_APP_INST } from '../helper/Constant';
+import { onlyNumeric } from '../../../../utils/string_utils';
+
 const buckets = [0, 5, 10, 25, 50, 100]
 class DMEMetrics extends React.Component {
     constructor(props) {
@@ -44,7 +46,8 @@ class DMEMetrics extends React.Component {
             histogramData: undefined,
             selectCloudlet: undefined,
             selectDevice: undefined,
-            mapcenter: undefined
+            mapcenter: undefined,
+            latencyRange: 0
         }
         this._isMounted = false
         this.worker = new MexWorker()
@@ -175,15 +178,16 @@ class DMEMetrics extends React.Component {
 
     onSliderChange = (e, value) => {
         const { data, sliderMarks, selectCloudlet, selectDevice } = this.state
-        let selectedDate = sliderMarks[value].label
-        if (this.state.selectedDate !== selectedDate) {
-            this.setState({ selectedDate }, ()=>{
-                if(selectCloudlet || selectDevice)
-                {
-                    this.updateSelectCharts(data, selectedDate, selectCloudlet, selectDevice)
-                }
-            })
-            
+        if (sliderMarks && sliderMarks.length > 0) {
+            let selectedDate = sliderMarks[value].label
+            if (this.state.selectedDate !== selectedDate) {
+                this.setState({ selectedDate }, () => {
+                    if (selectCloudlet || selectDevice) {
+                        this.updateSelectCharts(data, selectedDate, selectCloudlet, selectDevice)
+                    }
+                })
+
+            }
         }
     }
 
@@ -235,17 +239,36 @@ class DMEMetrics extends React.Component {
                             </React.Fragment> : null
                     }
                     <div align='center'>
-                        {sliderMarks ? <Slider defaultValue={sliderMarks[0].value} min={sliderMarks[0].value} max={sliderMarks[sliderMarks.length - 1].value} valueLabelFormat={this.valueLabelFormat} marks={sliderMarks} onChange={this.onSliderChange} markertype={markerType} step={null} /> : null}
+                        {sliderMarks && sliderMarks.length > 0 ? <Slider defaultValue={sliderMarks[0].value} min={sliderMarks[0].value} max={sliderMarks.length > 1 ? sliderMarks[sliderMarks.length - 1].value : undefined} valueLabelFormat={this.valueLabelFormat} marks={sliderMarks} onChange={this.onSliderChange} markertype={markerType} step={null} /> : null}
                     </div>
                 </div>
             </div>
         )
     }
 
+    onLatencyRangeChange = () => {
+        const {markerType, latencyRange} = this.state
+        let index = 0
+        const sliderMarks = this.orgSliderMarks ? this.orgSliderMarks.filter((marks, i) => {
+            if (marks[markerType] >= latencyRange) {
+                marks.value = index
+                index++
+                return true
+            }
+        }) : []
+        this.setState({ sliderMarks: undefined }, () => {
+            this.setState({ sliderMarks }, () => {
+                this.onSliderChange(undefined, 0)
+            })
+        })
+    }
+
     onToolbar = (action, value) => {
         switch (action) {
             case ACTION_DATA_TYPE:
-                this.setState({ markerType: value })
+                this.setState({ markerType: value }, ()=>{
+                    this.onLatencyRangeChange()
+                })
                 break;
             case ACTION_CLOSE:
                 this.props.onClose()
@@ -254,7 +277,11 @@ class DMEMetrics extends React.Component {
                 this.range = value
                 this.fetchData()
                 break;
-
+            case ACTION_LATENCY_RANGE:
+                this.setState({latencyRange:onlyNumeric(value)}, ()=>{
+                    this.onLatencyRangeChange()
+                })
+                break;
         }
     }
 
@@ -299,7 +326,8 @@ class DMEMetrics extends React.Component {
             this.worker.addEventListener('message', event => {
                 if (this._isMounted) {
                     if (event.data.data) {
-                        this.setState({ data: event.data.data, sliderMarks: event.data.slider, selectedDate: event.data.starttime })
+                        this.orgSliderMarks = event.data.slider
+                        this.setState({ data: event.data.data, sliderMarks: this.orgSliderMarks, selectedDate: event.data.starttime })
                     }
                     else {
                         this.props.handleAlertInfo('error', 'Latency Info Not Found')
