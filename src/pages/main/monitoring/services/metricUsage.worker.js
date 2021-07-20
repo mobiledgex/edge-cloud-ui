@@ -154,7 +154,10 @@ const grouper = (dataList, columns, selections, levellength, level = 1) => {
             starttime = time
         }
         const total = parent[key][CON_TOTAL]
-        slider.push({ value: j, label: time, color_avg: generateColor(_avg(total['avg'])), color_min: generateColor(_min(total['min'])), color_max: generateColor(_max(total['max'])) })
+        const avg = _avg(total['avg'])
+        const min = _min(total['min'])
+        const max = _max(total['max'])
+        slider.push({ value: j, label: time, avg, color_avg: generateColor(avg), min, color_min: generateColor(min), max, color_max: generateColor(max) })
         let appInstKeys = Object.keys(appInstObject)
         appInstKeys.forEach((appInstKey, i) => {
             let color = colors[i]
