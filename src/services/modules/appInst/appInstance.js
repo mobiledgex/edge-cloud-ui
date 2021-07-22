@@ -48,7 +48,7 @@ export const keys = () => ([
 
 const getClusterOrg = (data) => {
   if (data[fields.autoClusterInstance]) {
-    return data[fields.compatibilityVersion] === perpetual.CLOUDLET_COMPAT_VERSION_2_4_1 ? 'MobiledgeX' : data[fields.organizationName]
+    return data[fields.compatibilityVersion] >= perpetual.CLOUDLET_COMPAT_VERSION_2_4_1 ? 'MobiledgeX' : data[fields.organizationName]
   }
   else {
     return data[fields.clusterdeveloper] ? data[fields.clusterdeveloper] : data[fields.organizationName]

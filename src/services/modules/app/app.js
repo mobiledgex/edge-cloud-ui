@@ -4,6 +4,7 @@ import { idFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
+import { primaryKeys as appInstKeys } from '../appInst';
 
 let fields = formatter.fields
 
@@ -152,4 +153,25 @@ export const updateApp = async (self, data) => {
 export const deleteApp = (self, data) => {
     let requestData = getKey(data)
     return { uuid: data.uuid, method: endpoint.DELETE_APP, data: requestData, success: `App ${data[fields.appName]} deleted successfully` }
+}
+
+export const showAppCloudlets = (self, data) => {
+    const keys = [
+        { field: fields.cloudletName, serverField: 'name' },
+        { field: fields.operatorName, serverField: 'organization' },
+    ]
+    const requestData = {
+        deploymentCloudletRequest: {
+            app: {
+                default_flavor: { name: data[fields.flavorName] },
+                key: {
+                    name: data[fields.appName],
+                    organization: data[fields.organizationName],
+                    version: data[fields.version]
+                }
+            }
+        },
+        region: data[fields.region]
+    }
+    return { method: endpoint.SHOW_CLOUDLETS_FOR_APP, data: requestData, keys }
 }

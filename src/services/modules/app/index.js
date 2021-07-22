@@ -1,5 +1,5 @@
 import { customize } from './custom'
-import {showApps, getAppList,  keys, createApp, updateApp, deleteApp} from './app'
+import {showApps, getAppList,  keys, createApp, updateApp, deleteApp, showAppCloudlets} from './app'
 
 export {
     customize,
@@ -8,6 +8,7 @@ export {
     keys, 
     createApp, 
     updateApp, 
-    deleteApp
+    deleteApp,
+    showAppCloudlets
 }
 
