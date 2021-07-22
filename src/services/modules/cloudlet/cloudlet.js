@@ -8,7 +8,7 @@ import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant'
 import { customize } from '../../modules/cloudlet'
 import { generateUUID } from '../../format/shared'
-import { CLOUDLET_NAME, primaryKeys } from './primary';
+import { primaryKeys } from './primary';
 
 const fields = formatter.fields;
 
@@ -148,7 +148,7 @@ export const cloudletWithInfo = (mcList) => {
     if (mcList && mcList.length > 0) {
         mcList.map(mc => {
             let request = mc.request
-            if (request.method === endpoint.SHOW_ORG_CLOUDLET) {
+            if (request.method === endpoint.SHOW_ORG_CLOUDLET || request.method === endpoint.SHOW_CLOUDLETS_FOR_APP) {
                 cloudletList = mc.response.data
             }
             else if (request.method === endpoint.SHOW_ORG_CLOUDLET_INFO) {

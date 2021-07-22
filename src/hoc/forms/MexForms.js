@@ -11,6 +11,7 @@ import MexSwitch from './MexSwitch';
 import MexButton from './MexButton';
 import MexDate from './MexDate';
 import MexSelectTree from './selectTree/MexSelectTree';
+import MexSelectTreeGroup from './selectTree/MexSelectTreeGroup';
 import { Form, Grid, Divider } from 'semantic-ui-react';
 import { IconButton, Tooltip } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
@@ -39,6 +40,7 @@ export const TEXT_AREA = 'TextArea'
 export const BUTTON = 'Button'
 export const MULTI_FORM = 'MultiForm'
 export const SELECT_RADIO_TREE = 'SelectRadioTree'
+export const SELECT_RADIO_TREE_GROUP = 'SelectRadioTreeGroup'
 export const DATE_PICKER = 'DatePicker'
 
 /***
@@ -151,6 +153,18 @@ const MexForms = (props) => {
                                 valid = false;
 
                             } else {
+                                form.error = undefined
+                                errorBanner(form)
+                            }
+                        }
+                        else if(form.formType === SELECT_RADIO_TREE_GROUP)
+                        {
+                            if ((form.value === undefined || Object.keys(form.options).length !== Object.keys(form.value).length)) {
+                                form.error = rules.requiredMsg ? rules.requiredMsg : `${form.label} is mandatory`
+                                errorBanner(form)
+                                valid = false;
+                            } else 
+                            {
                                 form.error = undefined
                                 errorBanner(form)
                             }
@@ -380,13 +394,15 @@ const MexForms = (props) => {
                                     loadDropDownForms(form, required, disabled) :
                                     form.formType === SELECT_RADIO_TREE ?
                                         <MexSelectTree form={form} forms={forms} onChange={onValueSelect} /> :
-                                        form.formType === INPUT || form.formType === TEXT_AREA || form.formType === POPUP_INPUT ?
-                                            loadInputForms(form, required, disabled) :
-                                            form.formType === SWITCH ?
-                                                <MexSwitch form={form} onChange={onValueSelect} /> :
-                                                form.formType === DATE_PICKER ?
-                                                    <MexDate form={form} onChange={onValueSelect} /> :
-                                                    null
+                                        form.formType === SELECT_RADIO_TREE_GROUP ?
+                                            <MexSelectTreeGroup form={form} forms={forms} onChange={onValueSelect} /> :
+                                            form.formType === INPUT || form.formType === TEXT_AREA || form.formType === POPUP_INPUT ?
+                                                loadInputForms(form, required, disabled) :
+                                                form.formType === SWITCH ?
+                                                    <MexSwitch form={form} onChange={onValueSelect} /> :
+                                                    form.formType === DATE_PICKER ?
+                                                        <MexDate form={form} onChange={onValueSelect} /> :
+                                                        null
                         }
                     </Grid.Column>
                     {
