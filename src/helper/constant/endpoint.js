@@ -54,6 +54,7 @@ export const SHOW_APP = 'auth/ctrl/ShowApp';
 export const CREATE_APP = 'auth/ctrl/CreateApp';
 export const UPDATE_APP = 'auth/ctrl/UpdateApp';
 export const DELETE_APP = 'auth/ctrl/DeleteApp';
+export const SHOW_CLOUDLETS_FOR_APP = 'auth/ctrl/ShowCloudletsForAppDeployment'
 //App Instance
 export const SHOW_APP_INST = 'auth/ctrl/ShowAppInst';
 export const CREATE_APP_INST = 'auth/ctrl/CreateAppInst';
@@ -66,6 +67,7 @@ export const REQUEST_APP_INST_LATENCY = 'auth/ctrl/RequestAppInstLatency';
 export const SHOW_FLAVOR = 'auth/ctrl/ShowFlavor';
 export const CREATE_FLAVOR = 'auth/ctrl/CreateFlavor';
 export const DELETE_FLAVOR = 'auth/ctrl/DeleteFlavor';
+export const SHOW_FLAVORS_FOR_CLOUDLET = 'auth/ctrl/ShowFlavorsForCloudlet';
 //CloudletPool
 export const SHOW_CLOUDLET_POOL = 'auth/ctrl/ShowCloudletPool';
 export const CREATE_CLOUDLET_POOL = 'auth/ctrl/CreateCloudletPool';

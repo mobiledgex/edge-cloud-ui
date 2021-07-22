@@ -2,6 +2,7 @@
 import * as formatter from '../../model/format'
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import { endpoint, perpetual } from '../../../helper/constant'
+import { primaryKeys as cloudletKeys } from '../cloudlet/primary';
 
 let fields = formatter.fields
 
@@ -36,6 +37,16 @@ export const getKey = (data, isCreate) => {
 export const showFlavors = (self, data) => {
     return { method: endpoint.SHOW_FLAVOR, data: data, keys: keys() }
 }
+
+export const fetchCloudletFlavors = async (self, data) => {
+    const keys = [{ label: 'Name', field: 'flavorName', serverField: 'name' }]
+    const requestData = {
+        cloudletKey: cloudletKeys(data),
+        region: data[fields.region]
+    }
+    return await showAuthSyncRequest(self, { method: endpoint.SHOW_FLAVORS_FOR_CLOUDLET, data: requestData, keys })
+}
+
 
 export const getFlavorList = async (self, data) => {
     return await showAuthSyncRequest(self, showFlavors(self, data))

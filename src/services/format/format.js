@@ -63,8 +63,14 @@ export const formatData = (request, response) => {
         case endpoint.SHOW_FLAVOR:
             data = formatShowData(request, response, flavor)
             break;
+        case endpoint.SHOW_FLAVORS_FOR_CLOUDLET:
+            data = formatShowData(request, response, undefined)
+            break;
         case endpoint.SHOW_APP:
             data = formatShowData(request, response, app)
+            break;
+        case endpoint.SHOW_CLOUDLETS_FOR_APP:
+            data = formatShowData(request, response, undefined)
             break;
         case endpoint.SHOW_APP_INST:
             data = formatShowData(request, response, appInst, true)

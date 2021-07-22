@@ -5,8 +5,11 @@ const MexMultiSelect = (props) => {
     const [selected, setSelected] = useState(props.form.value ? props.form.value : [])
 
     const onSelected = (value) => {
+        if(value.length < selected.length)
+        {
+            props.onChange(form, value, props.parentForm)
+        }
         setSelected(value)
-        props.onChange(form, value, props.parentForm)
     }
 
     //Filter data is based on dependent data array defined in form
@@ -89,6 +92,7 @@ const MexMultiSelect = (props) => {
             options={getData(form)}
             style={{backgroundColor:`${form.error ? 'rgba(211, 46, 46, 0.1)' : '#16181D'}`}}
             onChange={(e, { value }) => onSelected(value)}
+            onClose = {()=>{props.onChange(form, selected, props.parentForm)}}
             value={selected}
         />
     )
