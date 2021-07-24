@@ -49,12 +49,20 @@ export const CREATE_CLUSTER_INST = 'auth/ctrl/CreateClusterInst';
 export const UPDATE_CLUSTER_INST = 'auth/ctrl/UpdateClusterInst';
 export const DELETE_CLUSTER_INST = 'auth/ctrl/DeleteClusterInst';
 export const STREAM_CLUSTER_INST = 'auth/ctrl/StreamClusterInst';
-//App
+
+/************************************
+ **************App API***************
+ ************************************/
 export const SHOW_APP = 'auth/ctrl/ShowApp';
 export const CREATE_APP = 'auth/ctrl/CreateApp';
 export const UPDATE_APP = 'auth/ctrl/UpdateApp';
 export const DELETE_APP = 'auth/ctrl/DeleteApp';
+// Discover cloudlets supporting deployments of App.DefaultFlavor
 export const SHOW_CLOUDLETS_FOR_APP = 'auth/ctrl/ShowCloudletsForAppDeployment'
+// Add an AlertPolicy to the App
+export const ADD_APP_ALERT_POLICY = 'auth/ctrl/AddAppAlertPolicy'
+//Remove an AlertPolicy from the App
+export const REMOVE_APP_ALERT_POLICY = 'auth/ctrl/RemoveAppAlertPolicy'
 //App Instance
 export const SHOW_APP_INST = 'auth/ctrl/ShowAppInst';
 export const CREATE_APP_INST = 'auth/ctrl/CreateAppInst';
@@ -137,6 +145,10 @@ export const SHOW_ALERT = 'auth/ctrl/ShowAlert';
 export const ALERT_SHOW_RECEIVER = 'auth/alertreceiver/show';
 export const ALERT_CREATE_RECEIVER = 'auth/alertreceiver/create';
 export const ALERT_DELETE_RECEIVER = 'auth/alertreceiver/delete';
+export const SHOW_ALERT_POLICY = 'auth/ctrl/ShowAlertPolicy';
+export const CREATE_ALERT_POLICY = 'auth/ctrl/CreateAlertPolicy';
+export const DELETE_ALERT_POLICY = 'auth/ctrl/DeleteAlertPolicy';
+export const UPDATE_ALERT_POLICY = 'auth/ctrl/UpdateAlertPolicy';
 
 
 
