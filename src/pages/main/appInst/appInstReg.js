@@ -339,11 +339,10 @@ class AppInstReg extends React.Component {
 
     removeConfigForm = (e, form) => {
         if (form.parent) {
-            let updateForms = Object.assign([], this.state.forms)
-            updateForms.splice(form.parent.id, 1);
-            this.updateState({ updateForms })
+            let forms = cloneDeep(this.state.forms)
+            forms.splice(form.parent.id, 1);
+            this.updateState({ forms })
         }
-
     }
 
     configForm = () => ([
