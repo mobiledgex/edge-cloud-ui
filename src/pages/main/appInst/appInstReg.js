@@ -482,7 +482,9 @@ class AppInstReg extends React.Component {
                         let cloudlet = cloudlets[i];
                         newData[fields.cloudletName] = cloudlet;
                         newData[fields.compatibilityVersion] = this.fetchCompabilityVersion(data, cloudlet)
-                        newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
+                        if (flavors) {
+                            newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
+                        }
                         this.props.handleLoadingSpinner(true)
                         createAppInst(this, newData, this.onCreateResponse)
                     }
