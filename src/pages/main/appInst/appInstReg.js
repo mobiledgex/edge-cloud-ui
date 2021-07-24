@@ -339,11 +339,10 @@ class AppInstReg extends React.Component {
 
     removeConfigForm = (e, form) => {
         if (form.parent) {
-            let updateForms = Object.assign([], this.state.forms)
-            updateForms.splice(form.parent.id, 1);
-            this.updateState({ updateForms })
+            let forms = cloneDeep(this.state.forms)
+            forms.splice(form.parent.id, 1);
+            this.updateState({ forms })
         }
-
     }
 
     configForm = () => ([
@@ -482,7 +481,9 @@ class AppInstReg extends React.Component {
                         let cloudlet = cloudlets[i];
                         newData[fields.cloudletName] = cloudlet;
                         newData[fields.compatibilityVersion] = this.fetchCompabilityVersion(data, cloudlet)
-                        newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
+                        if (flavors) {
+                            newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
+                        }
                         this.props.handleLoadingSpinner(true)
                         createAppInst(this, newData, this.onCreateResponse)
                     }
