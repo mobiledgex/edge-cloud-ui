@@ -6,10 +6,12 @@ import { connect } from 'react-redux';
 
 import { fields } from '../../../../../services/model/format';
 import { showAlertReceiver, deleteAlertReceiver, showAlertReceiverKeys } from '../../../../../services/modules/alerts';
-import Reg from './AlertReceiverReg';
+
+import Reg from './Reg';
 import { Icon } from 'semantic-ui-react';
 import { HELP_ALERTS } from '../../../../../tutorial';
 import { perpetual } from '../../../../../helper/constant';
+import { uiFormatter } from '../../../../../helper/formatter';
 class AlertList extends React.Component {
     constructor(props) {
         super(props);
@@ -74,7 +76,10 @@ class AlertList extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.receiverAddress) {
+        if (key.field === fields.severity) {
+            return uiFormatter.RenderSeverity(data, isDetail)
+        }
+        else if (key.field === fields.receiverAddress) {
             return this.renderType(data, isDetail)
         }
     }

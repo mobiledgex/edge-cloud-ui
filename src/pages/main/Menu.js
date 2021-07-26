@@ -4,22 +4,23 @@ import SideNav from './defaultLayout/SideNav'
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 
 //Pages
-import Organization from './organization/organizationList'
-import Account from './accounts/accountList';
-import User from './userRole/userList';
-import Cloudlet from './cloudlets/cloudletList';
-import CloudletPool from './cloudletPool/cloudletPoolList';
+import Organization from './organization/Organization'
+import Account from './accounts/Account';
+import User from './userRole/UserRole';
+import Cloudlet from './cloudlets/Cloudlet';
+import CloudletPool from './cloudletPool/CloudletPool';
 import PoolAccess from './poolAccess/PoolAccess';
-import Flavor from './flavors/flavorList';
-import App from './apps/appList';
-import AppInst from './appInst/appInstList';
-import ClusterInst from './clusterInst/clusterInstList';
-import AutoProvPolicy from './policies/autoProvPolicyList/autoProvPolicyList';
-import TrustPolicy from './policies/trustPolicy/trustPolicyList';
-import AutoScalePolicy from './policies/autoScalePolicy/autoScalePolicyList';
+import Flavor from './flavors/Flavor';
+import App from './apps/App';
+import AppInst from './appInst/AppInst';
+import ClusterInst from './clusterInst/ClusterInst';
+import AutoProvPolicy from './policies/autoProvPolicy/AutoProvPolicy';
+import TrustPolicy from './policies/trustPolicy/TrustPolicy';
+import AutoScalePolicy from './policies/autoScalePolicy/AutoScalePolicy';
+import AlertPolicy from './policies/alertPolicy/AlertPolicy';
 import Monitoring from './monitoring/Monitoring';
 import AlertReceiver from './notifications/alerts/receiver/AlertReceiver';
-import BillingOrg from './billing/billingOrg/BillingOrgList';
+import BillingOrg from './billing/billingOrg/BillingOrg';
 import Invoices from './billing/invoices/Invoices';
 import Reporter from './reporter/Reporter';
 import * as constant from '../../constant';
@@ -51,6 +52,8 @@ const renderPage = (id) => {
             return TrustPolicy
         case perpetual.PAGE_AUTO_SCALE_POLICY:
             return AutoScalePolicy
+        case perpetual.PAGE_ALERT_POLICY:
+            return AlertPolicy
         case perpetual.PAGE_MONITORING:
             return Monitoring
         case perpetual.PAGE_ALERTS:

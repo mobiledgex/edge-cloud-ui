@@ -7,7 +7,7 @@ import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData';
 import { keys, showOrganizations, deleteOrganization, edgeboxOnlyAPI } from '../../../services/modules/organization';
-import OrganizationReg from './organizationReg';
+import OrganizationReg from './Reg';
 import * as serverData from '../../../services/model/serverData'
 import * as shared from '../../../services/model/shared';
 import RoleWorker from '../../../services/worker/role.worker.js'

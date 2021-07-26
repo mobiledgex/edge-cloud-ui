@@ -13,6 +13,7 @@ import { createAutoProvPolicy, updateAutoProvPolicy, addAutoProvCloudletKey, del
 import { HELP_AUTO_PROV_REG_2, HELP_AUTO_PROV_REG_1 } from "../../../../tutorial";
 import { Grid } from '@material-ui/core';
 import { perpetual } from '../../../../helper/constant';
+
 class AutoProvPolicyReg extends React.Component {
     constructor(props) {
         super(props);

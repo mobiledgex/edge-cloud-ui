@@ -12,7 +12,7 @@ import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 //list
 import DataView from '../../../container/DataView';
 //reg
-import ClusterInstReg from './clusterInstReg';
+import ClusterInstReg from './Reg';
 import { HELP_CLUSTER_INST_LIST } from "../../../tutorial";
 import { perpetual } from '../../../helper/constant';
 import { labelFormatter } from '../../../helper/formatter';

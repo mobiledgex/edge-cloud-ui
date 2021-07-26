@@ -20,6 +20,7 @@ export const pages = [
             { label: 'Auto Provisioning Policy', icon: 'group_work', id: perpetual.PAGE_AUTO_PROVISIONING_POLICY, path: 'auto-prov-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
             { label: 'Trust Policy', icon: 'policy', id: perpetual.PAGE_TRUST_POLICY, path: 'trust-policy', visible: true },
             { label: 'Auto Scale Policy', icon: 'landscape', id: perpetual.PAGE_AUTO_SCALE_POLICY, path: 'auto-scale-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
+            { label: 'Alert Policy', icon: 'notifications_active', id: perpetual.PAGE_ALERT_POLICY, path: 'alert-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
         ]
     },
     { label: 'Monitoring', icon: 'tv', id: perpetual.PAGE_MONITORING, path: 'monitoring', visible: true },

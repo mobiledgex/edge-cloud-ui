@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
 import { useSelector } from "react-redux";
 import { Icon, Popup } from 'semantic-ui-react';
+import { Icon as MIcon } from '../../hoc/mexui';
 import { fields } from '../../services/model/format';
-import { IconButton, Tooltip, CircularProgress } from '@material-ui/core';
+import { IconButton, Tooltip, CircularProgress, Chip } from '@material-ui/core';
 import { Button } from 'semantic-ui-react';
 import { labelFormatter } from '.';
 import { redux_org } from '../reduxData';
@@ -167,3 +168,38 @@ export const NoData = ()=>{
         </div>
     )
 }
+
+export const RenderSeverity = (data, isDetailView) => {
+    let id = data[fields.severity]
+    let color = '#ff4444'
+    let label = 'Error'
+    let icon = 'cancel'
+    switch (id) {
+        case 'info':
+            label = 'Info'
+            color = '#03A9F4'
+            icon = 'info'
+            break;
+        case 'error':
+            label = 'Error'
+            color = '#EF5350'
+            icon = 'cancel'
+            break;
+        case 'warning':
+            label = 'Warning'
+            color = '#ffa034'
+            icon = 'report_problem'
+            break;
+    }
+
+    return (
+        isDetailView ? label :
+            <Chip
+                size="small"
+                icon={<MIcon outlined={true} style={{ color }}>{icon}</MIcon>}
+                label={label}
+                style={{ color, width: 90, backgroundColor: 'transparent', border: `2px solid ${color}` }}
+            />
+    )
+}
+

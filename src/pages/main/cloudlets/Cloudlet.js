@@ -9,7 +9,7 @@ import { redux_org } from '../../../helper/reduxData'
 import { fields } from '../../../services/model/format';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/modules/cloudlet';
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
-import CloudletReg from './cloudletReg';
+import CloudletReg from './Reg';
 import { operatorRoles } from '../../../constant'
 import * as shared from '../../../services/model/shared';
 import { Icon, Popup } from 'semantic-ui-react';
@@ -20,6 +20,7 @@ import { labelFormatter, uiFormatter } from '../../../helper/formatter';
 import { perpetual, role } from '../../../helper/constant';
 import { responseValid } from '../../../services/service';
 import ShowNode from './ShowNode'
+
 class CloudletList extends React.Component {
     constructor(props) {
         super(props);

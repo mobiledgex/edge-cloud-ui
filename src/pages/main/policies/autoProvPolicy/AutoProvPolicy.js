@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 //redux
 import * as actions from '../../../../actions';
 //reg
-import AutoProvPolicyReg from './autoProvPolicyReg'
+import AutoProvPolicyReg from './Reg'
 //model
 import { fields } from '../../../../services/model/format';
 import { keys, showAutoProvPolicies, deleteAutoProvPolicy, multiDataRequest } from '../../../../services/modules/autoProvPolicy';
@@ -13,6 +13,7 @@ import { showApps } from '../../../../services/modules/app';
 import DataView from '../../../../container/DataView';
 import { HELP_POLICY_LIST } from "../../../../tutorial";
 import { perpetual } from '../../../../helper/constant';
+
 class AutoProvPolicy extends React.Component {
     constructor(props) {
         super(props);
