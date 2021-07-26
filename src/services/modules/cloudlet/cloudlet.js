@@ -120,6 +120,15 @@ export const getKey = (data, isCreate) => {
             cloudlet.kafka_password = data[fields.kafkaPassword]
         }
 
+        if (data[fields.gpuDriver]) {
+            cloudlet.gpu_config = {
+                driver: {
+                    organization: data[fields.gpuORG] === 'MobiledgeX' ? '' : data[fields.gpuORG],
+                    name: data[fields.gpuDriver]
+                }
+            }
+        }
+
         if (data[fields.fields]) {
             cloudlet.fields = data[fields.fields]
         }
@@ -330,4 +339,12 @@ export const fetchShowNode = async (self, data) => {
     }
 
     return await authSyncRequest(self, { method: endpoint.SHOW_NODE, data: requestData })
+}
+
+export const fetchGPUDrivers = async (self, data) => {
+    const keys = [
+        { field: fields.name, serverField: 'key#OS#name' },
+        { field: fields.operatorName, serverField: 'key#OS#organization' },
+    ]
+    return await showAuthSyncRequest(self, { method: endpoint.SHOW_GPU_DRIVER, data, keys })
 }

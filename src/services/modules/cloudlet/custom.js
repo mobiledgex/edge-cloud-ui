@@ -8,6 +8,13 @@ export const customize = (request, value) => {
     value[fields.infraApiAccess] = infraApiAccess(value[fields.infraApiAccess] ? value[fields.infraApiAccess] : 0)
     value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
     value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
+    value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
     value[fields.trusted] = value[fields.trustPolicyName] !== undefined
+    return value
+}
+
+export const gpuDriverCustomize = (request, value) => {
+    value[fields.gpuConfig] = `${value[fields.name]}${value[fields.operatorName] ? '' : '[MobiledgeX]'}`
+    value[fields.operatorName] = value[fields.operatorName] ? value[fields.operatorName] : 'MobiledgeX'
     return value
 }
