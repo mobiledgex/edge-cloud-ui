@@ -44,7 +44,7 @@ const MexSelect = (props) => {
                         {
                             valid =  dependentForm.value.includes(data[dependentForm.field])
                         }
-                        else if (data[dependentForm.field] === dependentForm.value) {
+                        else if (data[dependentForm.field] === dependentForm.value || dependentData[i].value === data[dependentForm.field]) {
                             valid = true
                         }
                         if(valid)

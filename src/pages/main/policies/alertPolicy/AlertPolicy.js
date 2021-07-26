@@ -7,8 +7,7 @@ import * as actions from '../../../../actions';
 
 import Reg from './Reg'
 import { deleteAlertPolicy, keys, showAlertPolicy } from '../../../../services/modules/alertPolicy';
-import { operatorRoles } from '../../../../constant';
-import { role, perpetual } from '../../../../helper/constant';
+import { perpetual } from '../../../../helper/constant';
 import { fields } from '../../../../services/model/format';
 import { uiFormatter } from '../../../../helper/formatter';
 
@@ -87,7 +86,7 @@ class AlertPolicy extends React.Component {
             sortBy: [fields.region, fields.alertPolicyName],
             keys: this.keys,
             selection: true,
-            onAdd: role.validateRole(operatorRoles, this.props.organizationInfo) ? this.onAdd : undefined,
+            onAdd: this.onAdd,
             formatData: this.dataFormatter,
             viewMode: undefined
         })

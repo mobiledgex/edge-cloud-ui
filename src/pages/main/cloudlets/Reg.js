@@ -23,6 +23,8 @@ import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
 import { service, updateFieldData } from '../../../services';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
+import { responseValid } from '../../../services/service';
+import { fetchGPUDrivers, showGPUDrivers } from '../../../services/modules/cloudlet/cloudlet';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const CloudletManifest = React.lazy(() => componentLoader(import('./CloudletManifest')));
@@ -57,6 +59,7 @@ class CloudletReg extends React.Component {
         this.expandAdvanceMenu = false;
         this.trustPolicyList = [];
         this.resourceQuotaList = [];
+        this.gpuDriverList = [];
     }
 
     updateState = (data) => {
@@ -120,7 +123,7 @@ class CloudletReg extends React.Component {
             }
             if (latitude && longitude) {
                 let cloudlet = {}
-                cloudlet.cloudletLocation = { latitude: latitude, longitude: longitude }
+                cloudlet.cloudletLocation = { latitude, longitude }
                 this.updateState({ mapData: [cloudlet] })
             }
             else {
@@ -131,7 +134,7 @@ class CloudletReg extends React.Component {
 
     getTrustPolicy = async (region, form, forms) => {
         if (!this.requestedRegionList.includes(region)) {
-            this.trustPolicyList = [...this.trustPolicyList, ...await getTrustPolicyList(this, { region: region })]
+            this.trustPolicyList = [...this.trustPolicyList, ...await getTrustPolicyList(this, { region })]
         }
         this.updateUI(form)
         this.updateState({ forms })
@@ -140,7 +143,7 @@ class CloudletReg extends React.Component {
     getCloudletResourceQuota = async (region, platformType) => {
         if (region && platformType) {
             let mc = await service.authSyncRequest(this, cloudletResourceQuota(this, { region, platformType }))
-            if (mc && mc.response && mc.response.status === 200) {
+            if (responseValid(mc)) {
                 if (mc.response.data.properties) {
                     this.resourceQuotaList = mc.response.data.properties
                     this.resourceQuotaList = this.resourceQuotaList.map(quota => {
@@ -149,6 +152,14 @@ class CloudletReg extends React.Component {
                 }
             }
         }
+    }
+
+    getGPUDrivers = async (region, form, forms) => {
+        if (!this.requestedRegionList.includes(region)) {
+            this.gpuDriverList = [...this.gpuDriverList, ...await fetchGPUDrivers(this, { region })]
+        }
+        this.updateUI(form)
+        this.updateState({ forms })
     }
 
     regionValueChange = async (currentForm, forms, isInit) => {
@@ -163,6 +174,11 @@ class CloudletReg extends React.Component {
                 }
                 else if (form.field === fields.platformType) {
                     await this.getCloudletResourceQuota(region, form.value)
+                }
+                else if (form.field === fields.gpuConfig) {
+                    if (isInit === undefined || isInit === false) {
+                        await this.getGPUDrivers(region, form, forms)
+                    }
                 }
             }
             this.requestedRegionList.push(region);
@@ -300,9 +316,20 @@ class CloudletReg extends React.Component {
             let forms = this.state.forms
             let envVars = undefined
             let resourceQuotas = []
+            let gpuDriver = undefined
+            let gpuORG = undefined
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
-                if (form.uuid) {
+                if (form.field === fields.gpuConfig && this.isUpdate) {
+                    for (const option of form.options) {
+                        if (option[fields.gpuConfig] === data[fields.gpuConfig]) {
+                            gpuDriver = option[fields.name]
+                            gpuORG = option[fields.operatorName]
+                            break;
+                        }
+                    }
+                }
+                else if (form.uuid) {
                     let uuid = form.uuid;
                     let multiFormData = data[uuid]
                     if (multiFormData) {
@@ -332,6 +359,10 @@ class CloudletReg extends React.Component {
 
             if (this.props.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
+                if (updateData[fields.gpuConfig]) {
+                    updateData[fields.gpuDriver] = gpuDriver
+                    updateData[fields.gpuORG] = gpuORG
+                }
                 if (updateData.fields.length > 0) {
                     this.props.handleLoadingSpinner(true)
                     updateCloudlet(this, updateData, this.onCreateResponse)
@@ -498,6 +529,9 @@ class CloudletReg extends React.Component {
                         case fields.trustPolicyName:
                             form.options = this.trustPolicyList
                             break;
+                        case fields.gpuConfig:
+                            form.options = this.gpuDriverList
+                            break;
                         case fields.resourceName:
                             form.options = this.resourceQuotaList
                             break;
@@ -519,6 +553,7 @@ class CloudletReg extends React.Component {
             this.updateState({ mapData: [data] })
 
             requestList.push(showTrustPolicies(this, { region: data[fields.region] }))
+            requestList.push(showGPUDrivers(this, { region: data[fields.region] }))
             requestList.push(cloudletResourceQuota(this, { region: data[fields.region], platformType: data[fields.platformType] }))
             let mcRequestList = await service.multiAuthSyncRequest(this, requestList)
 
@@ -530,6 +565,9 @@ class CloudletReg extends React.Component {
                         let request = mc.request;
                         if (request.method === endpoint.SHOW_TRUST_POLICY) {
                             this.trustPolicyList = responseData
+                        }
+                        if (request.method === endpoint.SHOW_GPU_DRIVER) {
+                            this.gpuDriverList = responseData
                         }
                         else if (request.method === endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
                             if (responseData.properties) {
@@ -662,6 +700,7 @@ class CloudletReg extends React.Component {
             { field: fields.resourceQuotas, label: 'Resource Quota', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Resource Quota', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getResoureQuotaForm }], visible: true, update: { id: ['39', '39.1', '39.2', '39.3'] }, tip: 'Alert Threshold:</b> Generate alert when more than threshold percentage of resource is used\nName:</b> Resource name on which to set quota\nValue:</b> Quota value of the resource' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
             { field: fields.trustPolicyName, label: 'Trust Policy', formType: SELECT, placeholder: 'Select Trust Policy', visible: true, update: { id: ['37'] }, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.operatorName }], advance: false },
+            { field: fields.gpuConfig, label: 'GPU Driver', formType: SELECT, placeholder: 'Select GPU Driver', visible: true, update: { id: ['45', '45.1', '45.1.1', '45.1.2'] }, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.operatorName, value: 'MobiledgeX' }], advance: false },
             { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version', advance: false },
             { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },
             { field: fields.maintenanceState, label: 'Maintenance State', formType: SELECT, placeholder: 'Select Maintenance State', rules: { required: false }, visible: this.isUpdate, update: { id: ['30'] }, tip: 'Maintenance allows for planned downtimes of Cloudlets. These states involve message exchanges between the Controller, the AutoProv service, and the CRM. Certain states are only set by certain actors', advance: false },

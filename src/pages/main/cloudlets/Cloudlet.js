@@ -179,7 +179,6 @@ class CloudletList extends React.Component {
     /**
     * Customized data block
     * ** */
-
     componentDidMount() {
         this._isMounted = true
     }
