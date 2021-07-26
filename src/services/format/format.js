@@ -27,6 +27,7 @@ import { customize as cloudletMetrics } from '../modules/cloudletMetrics/custom'
 import { customize as cloudletMetricUsage } from '../modules/cloudletMetricUsage/custom';
 import { customize as appInstUsage } from '../modules/appInstUsage/custom';
 import { customize as clusterInstUsage } from '../modules/clusterInstUsage/custom';
+import { gpuDriverCustomize as gpuDriver } from '../modules/cloudlet/custom';
 import { customize as alertPolicy } from '../modules/alertPolicy/custom';
 
 import { formatShowData } from './show';
@@ -57,6 +58,9 @@ export const formatData = (request, response) => {
         case endpoint.SHOW_CLOUDLET_INFO:
         case endpoint.SHOW_ORG_CLOUDLET_INFO:
             data = formatShowData(request, response, cloudletInfo, true)
+            break;
+        case endpoint.SHOW_GPU_DRIVER:
+            data = formatShowData(request, response, gpuDriver)
             break;
         case endpoint.SHOW_CLUSTER_INST:
             data = formatShowData(request, response, clusterInst, true)
