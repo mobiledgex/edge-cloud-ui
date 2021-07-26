@@ -32,7 +32,8 @@ export const keys = () => ([
     { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: constant.operatorRoles },
     { field: fields.vmImageVersion, serverField: 'vm_image_version', label: 'VM Image Version', roles: constant.operatorRoles },
     { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: perpetual.TYPE_JSON },
-    { field: fields.gpuConfig, serverField: 'gpu_config', label: 'GPU Config', dataType: perpetual.TYPE_JSON },
+    { field: fields.gpuDriver, serverField: 'gpu_config#OS#driver#OS#name', label: 'GPU Driver' },
+    { field: fields.gpuORG, serverField: 'gpu_config#OS#driver#OS#organization', label: 'GPU Organization' },
     { field: fields.envVars, serverField: 'env_var', label: 'Environment Variables', dataType: perpetual.TYPE_JSON },
     { field: fields.resourceQuotas, serverField: 'resource_quotas', label: 'Resource Quotas', dataType: perpetual.TYPE_JSON },
     { field: fields.defaultResourceAlertThreshold, serverField: 'default_resource_alert_threshold', label: 'Default Resource Alert Threshold' },
@@ -119,8 +120,7 @@ export const getKey = (data, isCreate) => {
         if (data[fields.kafkaPassword]) {
             cloudlet.kafka_password = data[fields.kafkaPassword]
         }
-
-        if (data[fields.gpuDriver]) {
+        if (data[fields.gpuConfig]) {
             cloudlet.gpu_config = {
                 driver: {
                     organization: data[fields.gpuORG] === 'MobiledgeX' ? '' : data[fields.gpuORG],
@@ -341,10 +341,14 @@ export const fetchShowNode = async (self, data) => {
     return await authSyncRequest(self, { method: endpoint.SHOW_NODE, data: requestData })
 }
 
-export const fetchGPUDrivers = async (self, data) => {
+export const showGPUDrivers = (self, data) => {
     const keys = [
         { field: fields.name, serverField: 'key#OS#name' },
         { field: fields.operatorName, serverField: 'key#OS#organization' },
     ]
-    return await showAuthSyncRequest(self, { method: endpoint.SHOW_GPU_DRIVER, data, keys })
+    return { method: endpoint.SHOW_GPU_DRIVER, data, keys }
+}
+
+export const fetchGPUDrivers = async (self, data) => {
+    return await showAuthSyncRequest(self, showGPUDrivers(self, data))
 }

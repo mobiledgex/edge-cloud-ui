@@ -24,7 +24,7 @@ import { endpoint, perpetual } from '../../../helper/constant';
 import { service, updateFieldData } from '../../../services';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 import { responseValid } from '../../../services/service';
-import { fetchGPUDrivers } from '../../../services/modules/cloudlet/cloudlet';
+import { fetchGPUDrivers, showGPUDrivers } from '../../../services/modules/cloudlet/cloudlet';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const CloudletManifest = React.lazy(() => componentLoader(import('./CloudletManifest')));
@@ -316,18 +316,20 @@ class CloudletReg extends React.Component {
             let forms = this.state.forms
             let envVars = undefined
             let resourceQuotas = []
+            let gpuDriver = undefined
+            let gpuORG = undefined
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
-                if (form.field === fields.gpuConfig) {
+                if (form.field === fields.gpuConfig && this.isUpdate) {
                     for (const option of form.options) {
                         if (option[fields.gpuConfig] === data[fields.gpuConfig]) {
-                            data[fields.gpuDriver] = option[fields.name]
-                            data[fields.gpuORG] = option[fields.operatorName]
+                            gpuDriver = option[fields.name]
+                            gpuORG = option[fields.operatorName]
                             break;
                         }
                     }
                 }
-                if (form.uuid) {
+                else if (form.uuid) {
                     let uuid = form.uuid;
                     let multiFormData = data[uuid]
                     if (multiFormData) {
@@ -357,6 +359,10 @@ class CloudletReg extends React.Component {
 
             if (this.props.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
+                if (updateData[fields.gpuConfig]) {
+                    updateData[fields.gpuDriver] = gpuDriver
+                    updateData[fields.gpuORG] = gpuORG
+                }
                 if (updateData.fields.length > 0) {
                     this.props.handleLoadingSpinner(true)
                     updateCloudlet(this, updateData, this.onCreateResponse)
@@ -547,6 +553,7 @@ class CloudletReg extends React.Component {
             this.updateState({ mapData: [data] })
 
             requestList.push(showTrustPolicies(this, { region: data[fields.region] }))
+            requestList.push(showGPUDrivers(this, { region: data[fields.region] }))
             requestList.push(cloudletResourceQuota(this, { region: data[fields.region], platformType: data[fields.platformType] }))
             let mcRequestList = await service.multiAuthSyncRequest(this, requestList)
 
@@ -558,6 +565,9 @@ class CloudletReg extends React.Component {
                         let request = mc.request;
                         if (request.method === endpoint.SHOW_TRUST_POLICY) {
                             this.trustPolicyList = responseData
+                        }
+                        if (request.method === endpoint.SHOW_GPU_DRIVER) {
+                            this.gpuDriverList = responseData
                         }
                         else if (request.method === endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
                             if (responseData.properties) {
