@@ -137,7 +137,6 @@ class Reg extends React.Component {
             let forms = this.state.forms
             if (this.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
-                console.log(updateData)
                 if (updateData.fields.length > 0) {
                     this.props.handleLoadingSpinner(true)
                     updateAlertPolicy(this, updateData, this.onUpdateResponse)
