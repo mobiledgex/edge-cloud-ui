@@ -9,7 +9,7 @@ import { fields } from '../../../../services/model/format';
 import { showBillingOrg, deleteBillingOrg, keys } from '../../../../services/modules/billingorg';
 
 import Invoices from '../invoices/Invoices';
-import Reg from './BillingOrgReg';
+import Reg from './Reg';
 import { perpetual } from '../../../../helper/constant';
 import { redux_org } from '../../../../helper/reduxData';
 class BillingOrg extends React.Component {

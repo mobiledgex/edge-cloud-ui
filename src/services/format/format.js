@@ -27,6 +27,7 @@ import { customize as cloudletMetrics } from '../modules/cloudletMetrics/custom'
 import { customize as cloudletMetricUsage } from '../modules/cloudletMetricUsage/custom';
 import { customize as appInstUsage } from '../modules/appInstUsage/custom';
 import { customize as clusterInstUsage } from '../modules/clusterInstUsage/custom';
+import { customize as alertPolicy } from '../modules/alertPolicy/custom';
 
 import { formatShowData } from './show';
 import { formatChargifyData } from './chargify';
@@ -137,6 +138,9 @@ export const formatData = (request, response) => {
             break;
         case endpoint.SHOW_REPORTER:
             data = formatShowData(request, response, reporter)
+            break;
+        case endpoint.SHOW_ALERT_POLICY:
+            data = formatShowData(request, response, alertPolicy)
             break;
         default:
             data = response && response.data ? response.data : [];
