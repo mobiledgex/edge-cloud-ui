@@ -154,6 +154,7 @@ export const fields = {
     upgrade: 'upgrade',
     refreshAppInst: 'refreshAppInst',
     restagmap: 'restagmap',
+    gpuConfig:'gpuConfig',
     powerState: 'powerState',
     tls: 'tls',
     edgeboxOnly: 'edgeboxOnly',

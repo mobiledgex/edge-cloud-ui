@@ -32,6 +32,7 @@ export const keys = () => ([
     { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: constant.operatorRoles },
     { field: fields.vmImageVersion, serverField: 'vm_image_version', label: 'VM Image Version', roles: constant.operatorRoles },
     { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: perpetual.TYPE_JSON },
+    { field: fields.gpuConfig, serverField: 'gpu_config', label: 'GPU Config', dataType: perpetual.TYPE_JSON },
     { field: fields.envVars, serverField: 'env_var', label: 'Environment Variables', dataType: perpetual.TYPE_JSON },
     { field: fields.resourceQuotas, serverField: 'resource_quotas', label: 'Resource Quotas', dataType: perpetual.TYPE_JSON },
     { field: fields.defaultResourceAlertThreshold, serverField: 'default_resource_alert_threshold', label: 'Default Resource Alert Threshold' },
