@@ -6,7 +6,7 @@ import { fields } from '../../../services/model/format';
 import { keys, showReporter, deleteReporter } from '../../../services/modules/reporter';
 import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
 import { Box } from '@material-ui/core';
-import Reg from './ReporterReg'
+import Reg from './Reg'
 import Generated from './Generated';
 import Generator from './Generator';
 import { lightGreen } from '@material-ui/core/colors';

@@ -270,7 +270,7 @@ class AppInstReg extends React.Component {
             }
         }
         if (isInit === undefined || isInit === false) {
-            this.updateState({ nForms })
+            this.updateState({ forms: nForms })
         }
     }
 

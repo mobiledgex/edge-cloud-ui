@@ -183,6 +183,7 @@ export const PAGE_ALERTS = 'AlertReceivers'
 export const PAGE_BILLING_ORG = 'BillingOrg'
 export const PAGE_INVOICES = 'Invoices'
 export const PAGE_REPORTER = 'Reporter'
+export const PAGE_ALERT_POLICY = 'AlertPolicy'
 
 export const VM_APP_OS_UNKNOWN = UNKNOWN
 export const VM_APP_OS_LINUX = 'Linux'
@@ -210,3 +211,8 @@ export const CON_VALUES = 'values'
 export const CON_TAGS = 'tags'
 export const CON_TOTAL = 'total'
 export const CON_CONNECTOR = 'connector'
+
+export const INFO = 'info'
+export const ERROR = 'error'
+export const WARNING = 'warning'
+export const NUMBER = 'number'

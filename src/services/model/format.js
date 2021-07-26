@@ -204,6 +204,11 @@ export const fields = {
     pagerDutyApiVersion: 'pagerDutyApiVersion',
     slackwebhook: 'slackwebhook',
     severity: 'severity',
+    triggerTime:'triggerTime',
+    cpuUtilizationLimit:'cpuUtilizationLimit',
+    memUtilizationLimit:'memUtilizationLimit',
+    diskUtilizationLimit:'diskUtilizationLimit',
+    activeConnectionLimit:'activeConnectionLimit',
     slack: 'slack',
     pagerDuty: 'pagerDuty',
     appCloudlet: 'appCloudlet',
@@ -231,5 +236,6 @@ export const fields = {
     color:'color',
     networkType:'networkType',
     deviceCarrier:'deviceCarrier',
-    isPrivate:'isPrivate'
+    isPrivate:'isPrivate',
+    alertPolicyName:'alertPolicyName'
 }

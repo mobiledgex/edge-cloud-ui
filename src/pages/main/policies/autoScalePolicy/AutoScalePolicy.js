@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 
-import AutoScalePolicyReg from './autoScalePolicyReg'
+import AutoScalePolicyReg from './Reg'
 import { keys, showAutoScalePolicies, deleteAutoScalePolicy } from '../../../../services/modules/autoScalePolicy';
 import {HELP_SCALE_POLICY} from "../../../../tutorial";
 import { perpetual } from '../../../../helper/constant';

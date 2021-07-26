@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData';
 import { keys, showFlavors, deleteFlavor } from '../../../services/modules/flavor';
-import FlavorReg from './flavorReg';
+import FlavorReg from './Reg';
 import { HELP_FLAVOR_LIST } from "../../../tutorial";
 import { perpetual } from '../../../helper/constant';
 

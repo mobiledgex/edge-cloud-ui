@@ -5,15 +5,14 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 
-import TrustPolicyReg from './trustPolicyReg'
-import { keys, showTrustPolicies, deleteTrustPolicy, multiDataRequest } from '../../../../services/modules/trustPolicy';
-import { showCloudlets } from '../../../../services/modules/cloudlet';
-import { HELP_TRUST_POLICY } from "../../../../tutorial";
+import Reg from './Reg'
+import { deleteAlertPolicy, keys, showAlertPolicy } from '../../../../services/modules/alertPolicy';
 import { operatorRoles } from '../../../../constant';
 import { role, perpetual } from '../../../../helper/constant';
 import { fields } from '../../../../services/model/format';
+import { uiFormatter } from '../../../../helper/formatter';
 
-class TrustPolicy extends React.Component {
+class AlertPolicy extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -38,11 +37,11 @@ class TrustPolicy extends React.Component {
     }
 
     onAdd = () => {
-        this.updateState({ currentView: <TrustPolicyReg onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <Reg onClose={this.onRegClose} /> });
     }
 
     onUpdate = (action, data) => {
-        this.updateState({ currentView: <TrustPolicyReg data={data} action='Update' onClose={this.onRegClose} /> })
+        this.updateState({ currentView: <Reg data={data} action='Update' onClose={this.onRegClose} /> })
     }
 
     onDelete = (data, success, errorInfo) => {
@@ -62,7 +61,7 @@ class TrustPolicy extends React.Component {
     actionMenu = () => {
         return [
             { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Edit' },
-            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteTrustPolicy, onFinish: this.onDelete, type: 'Edit' }
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteAlertPolicy, onFinish: this.onDelete, type: 'Edit' }
         ]
     }
 
@@ -72,18 +71,25 @@ class TrustPolicy extends React.Component {
         ]
     }
 
+    dataFormatter = (key, data, isDetail) => {
+        if (key.field === fields.severity) {
+            return uiFormatter.RenderSeverity(data, isDetail)
+        }
+    }
+
     requestInfo = () => {
         return ({
-            id: perpetual.PAGE_TRUST_POLICY,
-            headerLabel: 'Trust Policy',
-            requestType: [showTrustPolicies, showCloudlets],
+            id: perpetual.PAGE_ALERT_POLICY,
+            headerLabel: 'Alert Policy',
+            requestType: [showAlertPolicy],
             isRegion: true,
-            nameField: fields.trustPolicyName,
-            sortBy: [fields.region, fields.trustPolicyName],
+            nameField: fields.alertPolicyName,
+            sortBy: [fields.region, fields.alertPolicyName],
             keys: this.keys,
             selection: true,
             onAdd: role.validateRole(operatorRoles, this.props.organizationInfo) ? this.onAdd : undefined,
-            viewMode: HELP_TRUST_POLICY
+            formatData: this.dataFormatter,
+            viewMode: undefined
         })
     }
 
@@ -91,7 +97,7 @@ class TrustPolicy extends React.Component {
     render() {
         const { currentView } = this.state
         return (
-            <DataView id={perpetual.PAGE_TRUST_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_ALERT_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
     }
 
@@ -117,4 +123,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(TrustPolicy));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(AlertPolicy));

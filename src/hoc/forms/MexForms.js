@@ -10,6 +10,7 @@ import MexDualList from './MexDualList';
 import MexSwitch from './MexSwitch';
 import MexButton from './MexButton';
 import MexDate from './MexDate';
+import MexTimeCounter from './MexTimeCounter';
 import MexSelectTree from './selectTree/MexSelectTree';
 import MexSelectTreeGroup from './selectTree/MexSelectTreeGroup';
 import { Form, Grid, Divider } from 'semantic-ui-react';
@@ -42,6 +43,7 @@ export const MULTI_FORM = 'MultiForm'
 export const SELECT_RADIO_TREE = 'SelectRadioTree'
 export const SELECT_RADIO_TREE_GROUP = 'SelectRadioTreeGroup'
 export const DATE_PICKER = 'DatePicker'
+export const TIME_COUNTER = 'TimeCounter'
 
 /***
 * Map values from form to field
@@ -157,14 +159,12 @@ const MexForms = (props) => {
                                 errorBanner(form)
                             }
                         }
-                        else if(form.formType === SELECT_RADIO_TREE_GROUP)
-                        {
+                        else if (form.formType === SELECT_RADIO_TREE_GROUP) {
                             if ((form.value === undefined || Object.keys(form.options).length !== Object.keys(form.value).length)) {
                                 form.error = rules.requiredMsg ? rules.requiredMsg : `${form.label} is mandatory`
                                 errorBanner(form)
                                 valid = false;
-                            } else 
-                            {
+                            } else {
                                 form.error = undefined
                                 errorBanner(form)
                             }
@@ -347,9 +347,9 @@ const MexForms = (props) => {
                         <li key={i} style={{ fontSize: 13, marginTop: 5 }}>{temp.length === 2 ?
                             <React.Fragment>
                                 <b>{`${temp[0]} `}</b>
-                                <code style={{lineHeight:1.2}}>{temp[1]}</code>
-                            </React.Fragment> : <code style={{lineHeight:1.2}}>{info}</code>}
-                            <br/>
+                                <code style={{ lineHeight: 1.2 }}>{temp[1]}</code>
+                            </React.Fragment> : <code style={{ lineHeight: 1.2 }}>{info}</code>}
+                            <br />
                         </li>
                     )
                 })}</ul>
@@ -402,7 +402,9 @@ const MexForms = (props) => {
                                                     <MexSwitch form={form} onChange={onValueSelect} /> :
                                                     form.formType === DATE_PICKER ?
                                                         <MexDate form={form} onChange={onValueSelect} /> :
-                                                        null
+                                                        form.formType === TIME_COUNTER ?
+                                                            <MexTimeCounter form={form} onChange={onValueSelect} /> :
+                                                            null
                         }
                     </Grid.Column>
                     {

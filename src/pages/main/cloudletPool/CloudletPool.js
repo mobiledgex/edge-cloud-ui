@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData';
 import { keys, showCloudletPools, deleteCloudletPool, multiDataRequest } from '../../../services/modules/cloudletPool';
-import CloudletPoolReg from './cloudletPoolReg';
+import CloudletPoolReg from './Reg';
 import {HELP_CLOUDLET_POOL_LIST} from "../../../tutorial";
 import { showConfirmation, showInvitation } from '../../../services/modules/poolAccess';
 import { perpetual, role } from '../../../helper/constant';

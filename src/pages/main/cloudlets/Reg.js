@@ -25,7 +25,7 @@ import { service, updateFieldData } from '../../../services';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
-const CloudletManifest = React.lazy(() => componentLoader(import('./cloudletManifestForm')));
+const CloudletManifest = React.lazy(() => componentLoader(import('./CloudletManifest')));
 
 class CloudletReg extends React.Component {
     constructor(props) {

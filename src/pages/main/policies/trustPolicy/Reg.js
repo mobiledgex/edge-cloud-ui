@@ -149,32 +149,6 @@ class TrustPolicyReg extends React.Component {
         }
     }
 
-    /***
-     * Map values from form to field
-     * ***/
-    formattedData = () => {
-        let data = {};
-        let forms = this.state.forms;
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i];
-            if (form.field) {
-                if (form.forms) {
-                    data[form.uuid] = {};
-                    let subForms = form.forms
-                    for (let j = 0; j < subForms.length; j++) {
-                        let subForm = subForms[j];
-                        data[form.uuid][subForm.field] = subForm.value;
-                    }
-
-                }
-                else {
-                    data[form.field] = form.value;
-                }
-            }
-        }
-        return data
-    }
-
     onUpdateResponse = (mc) => {
         this.props.handleLoadingSpinner(false)
         if (mc) {
