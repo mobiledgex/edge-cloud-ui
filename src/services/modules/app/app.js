@@ -35,6 +35,7 @@ export const keys = () => ([
     { field: fields.officialFQDN, serverField: 'official_fqdn', label: 'Official FQDN' },
     { field: fields.androidPackageName, serverField: 'android_package_name', label: 'Android Package Name' },
     { field: fields.autoProvPolicies, serverField: 'auto_prov_policies', label: 'Auto Provisioning Policies', dataType: perpetual.TYPE_ARRAY },
+    { field: fields.alertPolicies, serverField: 'alert_policies', label: 'Alert Policies', dataType: perpetual.TYPE_ARRAY },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
     { field: fields.trusted, serverField: 'trusted', label: 'Trusted', visible: false, sortable: true, format: true },
     { field: fields.configs, serverField: 'configs', label: 'Configs', keys: configs() },
@@ -94,6 +95,9 @@ export const getKey = (data, isCreate) => {
         }
         if (data[fields.autoProvPolicies]) {
             app.auto_prov_policies = data[fields.autoProvPolicies]
+        }
+        if (data[fields.alertPolicies]) {
+            app.alert_policies = data[fields.alertPolicies]
         }
         if (data[fields.autoPolicyName]) {
             app.auto_prov_policy = data[fields.autoPolicyName]
