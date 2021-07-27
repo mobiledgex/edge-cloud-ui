@@ -6,9 +6,10 @@ const SECOND = 'sec'
 
 const CustomInput = (props) => {
     const { min, max, label, onChange, value } = props
+    //onKeyDown={(e) => { !(e.keyCode === 38 || e.keyCode === 40) && e.preventDefault(); }}
     return (
         <React.Fragment>
-            <input type='number' value={value} min={min} max={max} onChange={(e) => onChange(e.target.value, label)} style={{ verticalAlign: 'middle', width: 80, height: 35, marginRight: 5, backgroundColor: '#16181D', color: '#A5A5A6', border: '0.02em solid #44464A' }} onKeyDown={(e) => { !(e.keyCode === 38 || e.keyCode === 40) && e.preventDefault(); }} />
+            <input type='number' value={value} min={min} max={max} onChange={(e) => onChange(e.target.value, label)} style={{ verticalAlign: 'middle', width: 80, height: 35, marginRight: 5, backgroundColor: '#16181D', color: '#A5A5A6', border: '0.02em solid #44464A' }}/>
             <label style={{ fontWeight: 400, marginRight: 5, color:'#A5A5A6' }}>{label}</label>
         </React.Fragment>
     )
@@ -17,12 +18,12 @@ const CustomInput = (props) => {
 const fetchValue = (value, label, preLabel) => {
     const index = value.indexOf(label)
     const preIndex = preLabel ? (value.indexOf(preLabel) + 1) : 0
-    return index >= 0 ? value.substring(preIndex, index) : 0
+    return index >= 0 ? value.substring(preIndex, index) : ''
 }
 
 const MexDate = (props) => {
     let form = props.form;
-    const [time, setTime] = React.useState(form.value ? form.value : '0s');
+    const [time, setTime] = React.useState(form.value ? form.value : '30s');
 
 
     const onChange = (value, label)=>{
