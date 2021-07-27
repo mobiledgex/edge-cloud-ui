@@ -15,6 +15,7 @@ import { service, updateFieldData } from '../../../services'
 import { getOrganizationList } from '../../../services/modules/organization';
 import { getFlavorList, showFlavors } from '../../../services/modules/flavor/flavor';
 import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/modules/autoProvPolicy';
+import { getAlertPolicyList, showAlertPolicy } from '../../../services/modules/alertPolicy';
 import { createApp, updateApp } from '../../../services/modules/app';
 import { refreshAllAppInst, showAppInsts } from '../../../services/modules/appInst';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
@@ -42,6 +43,7 @@ class AppReg extends React.Component {
         if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
         this.flavorList = []
         this.autoProvPolicyList = []
+        this.alertPolicyList = []
         this.requestedRegionList = []
         this.appInstanceList = []
         this.configOptions = [perpetual.CONFIG_ENV_VAR, perpetual.CONFIG_HELM_CUST]
@@ -312,7 +314,7 @@ class AppReg extends React.Component {
 
     getFlavorInfo = async (region, form, forms) => {
         if (region && !this.requestedRegionList.includes(region)) {
-            let newList = await getFlavorList(this, { region: region })
+            let newList = await getFlavorList(this, { region })
             this.flavorList = [...this.flavorList, ...newList]
         }
         this.updateUI(form)
@@ -321,8 +323,17 @@ class AppReg extends React.Component {
 
     getAutoProvPolicy = async (region, form, forms) => {
         if (region && !this.requestedRegionList.includes(region)) {
-            let newList = await getAutoProvPolicyList(this, { region: region })
+            let newList = await getAutoProvPolicyList(this, { region })
             this.autoProvPolicyList = [...this.autoProvPolicyList, ...newList]
+        }
+        this.updateUI(form)
+        this.updateState({ forms })
+    }
+
+    getAlertPolicy = async (region, form, forms) => {
+        if (region && !this.requestedRegionList.includes(region)) {
+            let newList = await getAlertPolicyList(this, { region })
+            this.alertPolicyList = [...this.alertPolicyList, ...newList]
         }
         this.updateUI(form)
         this.updateState({ forms })
@@ -347,15 +358,16 @@ class AppReg extends React.Component {
     }
 
     regionDependentDataUpdate = (region, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            if (form.field === fields.autoProvPolicies) {
-                if (isInit === undefined || isInit === false) {
+        if (isInit === undefined || isInit === false) {
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i]
+                if (form.field === fields.autoProvPolicies) {
                     this.getAutoProvPolicy(region, form, forms)
                 }
-            }
-            else if (form.field === fields.flavorName) {
-                if (isInit === undefined || isInit === false) {
+                if (form.field === fields.alertPolicies) {
+                    this.getAlertPolicy(region, form, forms)
+                }
+                else if (form.field === fields.flavorName) {
                     this.getFlavorInfo(region, form, forms)
                 }
             }
@@ -540,24 +552,24 @@ class AppReg extends React.Component {
         this.reloadForms()
     }
 
-    onUpgradeResponse = (mcRequest) => {
+    onUpgradeResponse = (mc) => {
         this.props.handleLoadingSpinner(false)
-        if (mcRequest) {
+        if (mc) {
             let responseData = undefined;
-            let request = mcRequest.request;
-            if (mcRequest.response && mcRequest.response.data) {
-                responseData = mcRequest.response.data;
+            let request = mc.request;
+            if (mc.response && mc.response.data) {
+                responseData = mc.response.data;
             }
             let labels = [{ label: 'App', field: fields.appName }]
             this.updateState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
     }
 
-    onAddResponse = (mcRequestList) => {
-        if (mcRequestList && mcRequestList.length > 0) {
-            mcRequestList.map(mcRequest => {
-                if (mcRequest.response) {
-                    let data = mcRequest.request.data;
+    onAddResponse = (mcList) => {
+        if (mcList && mcList.length > 0) {
+            mcList.map(mc => {
+                if (mc.response) {
+                    let data = mc.request.data;
                     this.props.handleAlertInfo('success', `App ${data.app.key.name} added successfully`)
                     this.props.onClose(true)
                 }
@@ -676,8 +688,12 @@ class AppReg extends React.Component {
                     if (valid) {
                         if (this.isUpdate) {
                             let autoProvPolicies = data[fields.autoProvPolicies]
+                            let alertPolicies = data[fields.alertPolicies]
                             if (autoProvPolicies && autoProvPolicies.length > 0) {
                                 data[fields.autoProvPolicies] = data[fields.autoProvPolicies][0].value
+                            }
+                            if (alertPolicies && alertPolicies.length > 0) {
+                                data[fields.alertPolicies] = data[fields.alertPolicies][0].value
                             }
                             let updateData = updateFieldData(this, forms, data, this.originalData)
                             if (updateData[fields.trusted] !== undefined) {
@@ -687,8 +703,8 @@ class AppReg extends React.Component {
                                 }
                             }
                             if (updateData.fields.length > 0) {
-                                let mcRequest = await updateApp(this, updateData)
-                                if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+                                let mc = await updateApp(this, updateData)
+                                if (mc && mc.response && mc.response.status === 200) {
                                     this.props.handleAlertInfo('success', `App ${data[fields.appName]} updated successfully`)
                                     if (data[fields.refreshAppInst]) {
                                         serverData.sendWSRequest(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
@@ -723,6 +739,16 @@ class AppReg extends React.Component {
                                         let autoPolicy = data[fields.autoProvPolicies][i]
                                         if (autoPolicy && autoPolicy.parent.includes(region)) {
                                             requestData[fields.autoProvPolicies] = autoPolicy.value
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (data[fields.alertPolicies]) {
+                                    requestData[fields.alertPolicies] = undefined
+                                    for (let i = 0; i < data[fields.alertPolicies].length; i++) {
+                                        let alertPolicy = data[fields.alertPolicies][i]
+                                        if (alertPolicy && alertPolicy.parent.includes(region)) {
+                                            requestData[fields.alertPolicies] = alertPolicy.value
                                             break;
                                         }
                                     }
@@ -786,6 +812,9 @@ class AppReg extends React.Component {
                         case fields.autoProvPolicies:
                             form.options = this.autoProvPolicyList
                             break;
+                        case fields.alertPolicies:
+                            form.options = this.alertPolicyList
+                            break;
                         case fields.vmappostype:
                             form.options = [perpetual.VM_APP_OS_LINUX, perpetual.VM_APP_OS_WINDOWS_10, perpetual.VM_APP_OS_WINDOWS_2012, perpetual.VM_APP_OS_WINDOWS_2016, perpetual.VM_APP_OS_WINDOWS_2019]
                             break;
@@ -809,20 +838,24 @@ class AppReg extends React.Component {
             requestList.push(showAppInsts(this, { region: data[fields.region], appinst: { key: { app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] } } } }, true))
             requestList.push(showFlavors(this, { region: data[fields.region] }))
             requestList.push(showAutoProvPolicies(this, { region: data[fields.region] }))
+            requestList.push(showAlertPolicy(this, { region: data[fields.region] }))
 
-            let mcRequestList = await service.multiAuthSyncRequest(this, requestList)
-            if (mcRequestList && mcRequestList.length > 0) {
-                for (let i = 0; i < mcRequestList.length; i++) {
-                    let mcRequest = mcRequestList[i];
-                    let request = mcRequest.request;
-                    if (request.method === endpoint.SHOW_FLAVOR) {
-                        this.flavorList = mcRequest.response.data
+            let mcList = await service.multiAuthSyncRequest(this, requestList)
+            if (mcList && mcList.length > 0) {
+                for (const mc of mcList) {
+                    let method = mc.request.method;
+                    let responseData = mc.response.data
+                    if (method === endpoint.SHOW_FLAVOR) {
+                        this.flavorList = responseData
                     }
-                    else if (request.method === endpoint.SHOW_AUTO_PROV_POLICY) {
-                        this.autoProvPolicyList = mcRequest.response.data
+                    else if (method === endpoint.SHOW_AUTO_PROV_POLICY) {
+                        this.autoProvPolicyList = responseData
                     }
-                    else if (request.method === endpoint.SHOW_APP_INST) {
-                        this.appInstExist = mcRequest.response.data.length > 0
+                    else if (method === endpoint.SHOW_ALERT_POLICY) {
+                        this.alertPolicyList = responseData
+                    }
+                    else if (method === endpoint.SHOW_APP_INST) {
+                        this.appInstExist = responseData.length > 0
                     }
                 }
             }
@@ -965,6 +998,7 @@ class AppReg extends React.Component {
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
             { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: { id: ['12'] }, tip: 'public key used for authentication', advance: false },
             { field: fields.autoProvPolicies, showField: fields.autoPolicyName, label: 'Auto Provisioning Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policies', rules: { required: false }, visible: true, update: { id: ['32'] }, multiple: true, tip: 'Auto provisioning policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false },
+            { field: fields.alertPolicies, showField: fields.alertPolicyName, label: 'Alert Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Alert Policies', rules: { required: false }, visible: true, update: { id: ['42'] }, multiple: true, tip: 'Alert policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false },
             { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, update: { id: ['25'] }, tip: 'Official FQDN is the FQDN that the app uses to connect by default', advance: false },
             { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: { id: ['18'] }, tip: 'Android package name used to match the App name from the Android package', advance: false },
             { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: SWITCH, visible: false, value: false, update: { id: ['22'] }, advance: false, tip: 'Option to run App on all nodes of the cluster' },
