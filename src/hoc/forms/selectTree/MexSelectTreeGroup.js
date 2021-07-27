@@ -50,8 +50,6 @@ const renderOutput = (valuearray) => (
     ))
 )
 
-
-
 export default function MexSelectRadioTree(props) {
     let form = props.form;
     const filterOptions = () => {

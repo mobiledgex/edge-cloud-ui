@@ -220,6 +220,7 @@ export const fields = {
     port: 'port',
     appRevision: 'appRevision',
     autoProvPolicies: 'autoProvPolicies',
+    alertPolicies:'alertPolicies',
     title: 'title',
     description: 'description',
     trusted: 'trusted',

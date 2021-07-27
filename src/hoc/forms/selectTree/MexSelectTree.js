@@ -12,6 +12,18 @@ import { Icon } from 'semantic-ui-react';
 import { FixedSizeList } from 'react-window';
 import './mexSelectTree.css'
 
+const renderOutput = (values) => {
+    return (
+        values.map((item, i) => (
+            <p key={i}><b >{`${item.parent} --> `}</b>{
+                Array.isArray(item.value) ? item.value.map((item1, j) => {
+                    return <span key={`${i}_${j}`}>{`${j>0 ? ', ':''}${item1}`}</span>
+                }) : item.value}
+            </p>
+        ))
+    )
+}
+
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -128,7 +140,7 @@ export default function MexSelectRadioTree(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [value, setValue] = React.useState(form.value ? form.value : []);
-    const [output, setOutput] = React.useState(form.value ? form.value.map(item => { return item.parent + '>' + item.value + '  ' }) : form.placeholder);
+    const [output, setOutput] = React.useState(form.value ? renderOutput(form.value ) : form.placeholder);
     const [list, setList] = React.useState(filterOptions());
     const [expandGroups, setExpandGroups] = React.useState([])
     const anchorRef = React.useRef(null);
@@ -166,9 +178,7 @@ export default function MexSelectRadioTree(props) {
         let valuearray = form.value ? form.value : []
         valuearray[index] = { parent: parent.label, value: child.label }
         setValue(valuearray);
-        setOutput(valuearray.map(item => {
-            return item.parent + '>' + item.value + '  '
-        }))
+        setOutput(valuearray && renderOutput(valuearray))
         props.onChange(form, valuearray)
     };
 
@@ -189,9 +199,7 @@ export default function MexSelectRadioTree(props) {
         }
         valuearray[index] = { parent: parent.label, value }
         setValue(valuearray);
-        setOutput(valuearray.map(item => {
-            return item.parent + '>' + item.value + '  '
-        }))
+        setOutput(valuearray && renderOutput(valuearray))
         props.onChange(form, valuearray)
     }
 
@@ -249,7 +257,7 @@ export default function MexSelectRadioTree(props) {
                 }
             })
             if (valueArray.length > 0) {
-                setOutput(output)
+                setOutput(renderOutput(valueArray))
                 setValue(valueArray)
                 props.onChange(form, valueArray)
             }
@@ -295,7 +303,7 @@ export default function MexSelectRadioTree(props) {
                 onClick={handleToggle}
             >
                 <Box display="flex">
-                    <Box p={1} flexGrow={1} >
+                    <Box p={1} flexGrow={1} width={'75%'}>
                         <div className='select-tree-output'>{output}</div>
                     </Box>
                     {form.rules ? form.rules.copy ?
