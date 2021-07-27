@@ -106,13 +106,32 @@ class Reg extends React.Component {
         return true;
     }
 
+    validateTriggerTime = (currentForm) => {
+        if (currentForm.value && currentForm.value.length > 0) {
+            let value = currentForm.value
+            let indexS = value.indexOf('s')
+            let indexM = value.indexOf('m')
+            if(indexM < 0)
+            {
+                const time = value.substring(0, indexS)
+                if(time < 30)
+                {
+                  currentForm.error = 'Trigger time cannot be less than 30 sec' 
+                  return false; 
+                }
+            }
+        }
+        currentForm.error = undefined;
+        return true;
+    }
+
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Alert Policy`, formType: MAIN_HEADER, visible: true },
         { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', update: { key: true } },
         { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, update: { key: true }, tip: ' Name of the organization for the app that this alert can be applied to' },
         { field: fields.alertPolicyName, label: 'Alert Policy Name', formType: INPUT, placeholder: 'Enter Alert Policy Name', rules: { required: true }, visible: true, update: { key: true }, tip: 'Alert Policy name' },
-        { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true, firstCaps: true }, visible: true, tip: 'Alert severity level - one of "info", "warning", "error"' },
-        { field: fields.triggerTime, label: 'Trigger time', formType: TIME_COUNTER, placeholder: 'Enter Trigger Time', rules: { required: true, onBlur: true }, visible: true, update: { id: [fields.triggerTime] }, tip: 'Duration for which alert interval is active' },
+        { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true, firstCaps: true }, visible: true, update: { id: [fields.severity] }, tip: 'Alert severity level - one of "info", "warning", "error"' },
+        { field: fields.triggerTime, label: 'Trigger time', formType: TIME_COUNTER, placeholder: 'Enter Trigger Time', rules: { required: true, onBlur: true }, visible: true, update: { id: [fields.triggerTime] }, tip: 'Duration for which alert interval is active', dataValidateFunc: this.validateTriggerTime },
         { field: fields.cpuUtilizationLimit, label: 'CPU Utilization Limit', formType: INPUT, placeholder: 'Enter CPU Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [fields.cpuUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod CPU utilization rate(percentage) across all nodes. Valid values 1-100' },
         { field: fields.memUtilizationLimit, label: 'Memory Utilization Limit', formType: INPUT, placeholder: 'Enter Memory Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [fields.memUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod memory utilization rate(percentage) across all nodes. Valid values 1-100' },
         { field: fields.diskUtilizationLimit, label: 'Disk Utilization Limit', formType: INPUT, placeholder: 'Enter Disk Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [fields.diskUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod disk utilization rate(percentage) across all nodes. Valid values 1-100' },
@@ -133,22 +152,22 @@ class Reg extends React.Component {
     }
 
     onCreate = async (data) => {
+        let mc = undefined
         if (data) {
             let forms = this.state.forms
             if (this.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
                 if (updateData.fields.length > 0) {
-                    this.props.handleLoadingSpinner(true)
-                    updateAlertPolicy(this, updateData, this.onUpdateResponse)
+                    mc = await updateAlertPolicy(this, updateData, this.onUpdateResponse)
                 }
             }
             else {
-                let mc = await service.authSyncRequest(this, createAlertPolicy(data))
-                if (responseValid(mc)) {
-                    let policyName = mc.request.data.alertPolicy.key.name;
-                    this.props.handleAlertInfo('success', `Alert Policy ${policyName} created successfully`)
-                    this.props.onClose(true)
-                }
+                mc = await service.authSyncRequest(this, createAlertPolicy(data))
+            }
+            if (mc && responseValid(mc)) {
+                let policyName = mc.request.data.alertPolicy.key.name;
+                this.props.handleAlertInfo('success', `Alert Policy ${policyName} ${this.isUpdate ? 'updated' : 'created'} successfully`)
+                this.props.onClose(true)
             }
         }
     }
