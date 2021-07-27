@@ -2,24 +2,19 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import { SnackbarContent } from '@material-ui/core';
-
-export const INFO = 'info'
-export const ERROR = 'error'
-export const SUCCESS = 'success'
-export const WARNING = 'warning'
+import { perpetual } from '../../helper/constant';
 
 export default function ActionAlert(props) {
-
     let alertInfo = props.alertInfo
     const color = (type) => {
         switch (type) {
-            case 'success':
+            case perpetual.SUCCESS:
                 return '#FF9800'
-            case 'error':
+            case perpetual.ERROR:
                 return '#212121'
-            case 'warning':
+            case perpetual.WARNING:
                 return '#FF9800'
-            case 'info':
+            case perpetual.INFO:
                 return '#2196F3'
         }
     }

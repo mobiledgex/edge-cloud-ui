@@ -103,11 +103,12 @@ const selector = (data) => {
 }
 
 const getKey = (data, isDelete) => {
+    console.log(data)
     let alert = {}
     alert = {
         name: data[fields.alertname],
         type: data[fields.type].split(" ").join("").toLowerCase(),
-        severity: data[fields.severity] ? data[fields.severity] : 'info'
+        severity: data[fields.severity]
     }
 
     if (data[fields.region]) {
