@@ -175,17 +175,17 @@ export const RenderSeverity = (data, isDetailView) => {
     let label = 'Error'
     let icon = 'cancel'
     switch (id) {
-        case 'info':
+        case perpetual.INFO:
             label = 'Info'
             color = '#03A9F4'
             icon = 'info'
             break;
-        case 'error':
+        case perpetual.ERROR:
             label = 'Error'
             color = '#EF5350'
             icon = 'cancel'
             break;
-        case 'warning':
+        case perpetual.WARNING:
             label = 'Warning'
             color = '#ffa034'
             icon = 'report_problem'
