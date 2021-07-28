@@ -161,7 +161,7 @@ const MexToolbar = (props) => {
                             <MonitoringMenu order={3} data={parentType()} labelKey='label' onChange={onMetricParentTypeChange} default={props.filter.parent} />
                             <MonitoringMenu order={4} data={props.regions} default={props.filter.region} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onRegionChange} tip='Region' />
                             <MonitoringMenu order={5} data={constant.visibility(parentId)} default={props.filter.metricType} labelKey='header' multiple={true} field={'field'} type={'metricType'} icon={<VisibilityOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onMetricTypeChange} tip='Visibility' />
-                            {showSummary() ? <MonitoringMenu order={6} data={constant.summaryList} labelKey='label' onChange={onSummaryChange} /> : null}
+                            {showSummary() ? <MonitoringMenu order={6} data={constant.summaryList} labelKey='label' onChange={onSummaryChange} tip={'View aggregate utilization of resources between given start and end time'}/> : null}
                             {renderRefresh(7)}
                             {searchForm(8)}
                         </React.Fragment> : null}
