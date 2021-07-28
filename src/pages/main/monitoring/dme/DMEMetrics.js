@@ -32,7 +32,6 @@ import './style.css'
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
 import { PARENT_APP_INST } from '../helper/Constant';
 import { onlyNumeric } from '../../../../utils/string_utils';
-const tempFile = require('./dme_response.json')
 const buckets = [0, 5, 10, 25, 50, 100]
 class DMEMetrics extends React.Component {
     constructor(props) {
@@ -318,7 +317,6 @@ class DMEMetrics extends React.Component {
             ...commonRequest
         })
         let mc = await authSyncRequest(this, request)
-        mc.response.data = tempFile
         if (responseValid(mc)) {
             this.worker.postMessage({
                 selections: data,
