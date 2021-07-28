@@ -177,6 +177,9 @@ const trustPolicy = (org, type, isDoc) => {
                     return 'https://developers.mobiledgex.com/deployments/security#create'
             }
         }
+        else if (redux_org.isOperator(org)) {
+            return 'https://operators.mobiledgex.com/product-overview/operator-guides/cloudlet-deployment-guides/deploying-cloudlets#what-is-trust-policy'
+        }
     }
     else {
         switch (type) {
