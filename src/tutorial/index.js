@@ -452,6 +452,9 @@ const cloudletPool = (org, type, isDoc) => {
         if (redux_org.isOperator(org)) {
             return 'https://operators.mobiledgex.com/product-overview/operator-guides/cloudlet-deployment-guides/cloudlet-pools'
         }
+        else if (redux_org.isDeveloper(org)) {
+            return 'https://developers.mobiledgex.com/deployments/deployment-workflow/cloudlets#cloudlet-pools'
+        }
     }
     else {
         switch (type) {

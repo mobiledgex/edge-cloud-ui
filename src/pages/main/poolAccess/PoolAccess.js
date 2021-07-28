@@ -9,6 +9,7 @@ import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirm
 import { perpetual } from '../../../helper/constant';
 import { labelFormatter } from '../../../helper/formatter';
 import { service } from '../../../services';
+import { HELP_CLOUDLET_POOL_LIST } from '../../../tutorial';
 
 class PoolAccessList extends React.Component {
     constructor(props) {
@@ -74,7 +75,8 @@ class PoolAccessList extends React.Component {
             sortBy: [fields.poolName],
             isRegion: true,
             keys: this.keys,
-            formatData: this.dataFormatter
+            formatData: this.dataFormatter,
+            viewMode : HELP_CLOUDLET_POOL_LIST
         })
     }
 
