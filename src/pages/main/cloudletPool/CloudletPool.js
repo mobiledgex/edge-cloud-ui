@@ -11,6 +11,7 @@ import CloudletPoolReg from './Reg';
 import {HELP_CLOUDLET_POOL_LIST} from "../../../tutorial";
 import { showConfirmation, showInvitation } from '../../../services/modules/poolAccess';
 import { perpetual, role } from '../../../helper/constant';
+import { operatorRoles } from '../../../constant';
 class CloudletPoolList extends React.Component {
     constructor(props) {
         super(props);
@@ -88,7 +89,7 @@ class CloudletPoolList extends React.Component {
             sortBy: [fields.poolName],
             selection:true,
             keys: this.keys,
-            onAdd: role.validateRole(perpetual.operatorRoles, this.props.organizationInfo) ? this.onAdd : undefined,
+            onAdd: role.validateRole(operatorRoles, this.props.organizationInfo) ? this.onAdd : undefined,
             viewMode : HELP_CLOUDLET_POOL_LIST
         })
     }
