@@ -17,3 +17,19 @@ export const isPrivate = (self)=>{
     }
     return false
 }
+
+export const regions = (self)=>{
+    let info = getObject(self)
+    if (info) {
+        return info.regions
+    }
+    return false
+}
+
+export const isRegionValid = (self, region) => {
+    let info = getObject(self)
+    if (info) {
+        return info.isPrivate && info.regions.includes(region)
+    }
+    return false
+}

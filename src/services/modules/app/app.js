@@ -4,7 +4,6 @@ import { idFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
-import { primaryKeys as appInstKeys } from '../appInst';
 
 let fields = formatter.fields
 

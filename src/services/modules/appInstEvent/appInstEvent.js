@@ -1,5 +1,8 @@
 import * as dateUtil from '../../../utils/date_util'
 import { endpoint } from '../../../helper/constant'
+import { fields } from '../../model/format'
+import { AIK_CLOUDLET, primaryKeys as appInstKeys } from '../appInst/primary'
+import { redux_org } from '../../../helper/reduxData'
 
 export const appEventKeys = [
     { label: 'Starttime', serverField: 'time', visible: true, detailedView: false, format: dateUtil.FORMAT_FULL_DATE_TIME },
@@ -15,11 +18,21 @@ export const appEventKeys = [
     { label: 'Status', serverField: 'status', visible: true, detailedView: true }
 ]
 
-export const appInstEventLogs = (data, org) => {
-    data.appinst = {
-        app_key: {
-            organization: org
+export const appInstEventLogs = (self, data) => {
+    let requestData = {
+        region: data[fields.region],
+        starttime: data[fields.starttime],
+        endtime: data[fields.endtime]
+    }
+    if (redux_org.isOperator(self)) {
+        requestData.appinst = appInstKeys(data, AIK_CLOUDLET)
+    }
+    else {
+        requestData.appinst = {
+            app_key: {
+                organization: data[fields.organizationName]
+            }
         }
     }
-    return { method: endpoint.APP_INST_EVENT_LOG_ENDPOINT, data: data, keys: appEventKeys }
+    return { method: endpoint.APP_INST_EVENT_LOG_ENDPOINT, data: requestData, keys: appEventKeys }
 }

@@ -1,301 +1,279 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import * as actions from '../../../../actions';
+//redux
+import { Drawer } from '@material-ui/core';
+import { clusterEventLogs } from '../../../../services/modules/clusterInstEvent'
+import { appInstEventLogs } from '../../../../services/modules/appInstEvent'
+import { cloudletEventLogs } from '../../../../services/modules/cloudletEvent'
+import { sendAuthRequest } from '../../../../services/model/serverWorker'
+import { showOrganizations } from '../../../../services/modules/organization'
 
-import SearchFilter from '../../../../hoc/filter/SearchFilter'
-import { Paper, Tabs, Tab, IconButton, LinearProgress, Divider } from '@material-ui/core';
-
-import * as dateUtil from '../../../../utils/date_util'
-import uuid from 'uuid'
-import CloseIcon from '@material-ui/icons/Close';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import MexCalendar from '../../../../hoc/calendar/MexCalendar'
 import { fields } from '../../../../services/model/format';
-import { redux_org } from '../../../../helper/reduxData';
-import SelectMenu from '../../../../hoc/selectMenu/SelectMenu'
-import { FixedSizeList } from 'react-window';
-import Help from '../auditLog/Help'
-import { lightGreen } from '@material-ui/core/colors';
+import {redux_org, redux_private}  from '../../../../helper/reduxData'
+import clsx from 'clsx';
+import { withStyles } from '@material-ui/styles';
+import * as dateUtil from '../../../../utils/date_util'
+import cloneDeep from 'lodash/cloneDeep'
+import sortBy from 'lodash/sortBy';
+import { operators } from '../../../../helper/constant';
+import './style.css'
+import { componentLoader } from '../../../../hoc/loader/componentLoader';
+import { authRequest } from '../../../../services/service';
 
-const colorType = (value) => {
-    switch (value) {
-        case 'UP':
-        case 'HEALTH_CHECK_OK':
-            return '#66BB6A'
-        case 'RESERVED':
-            return '#66BB6A'
-        case 'UNRESERVED':
-            return '#FF7043'
-        case 'DOWN':
-        case 'HEALTH_CHECK_FAIL':
-        case 'DELETED':
-            return '#EF5350'
-        default:
-            return undefined
-    }
-}
+const RightDrawer = lazy(() => componentLoader(import('./RightDrawer')));
+const drawerWidth = 450
 
-const usageHelp = [
-    <code>Default view is day</code>,
-    <code>Click <RefreshIcon/> icon to reset the calendar to current date based on view</code>,
-    <code>Click on <i>Year, Month, Day or Hour</i> to change calendar view</code>,
-    <code>User can also click on displayed date mentioned next to the usagelog column to change the calendar view from hour to day to month to year and viceversa, where top row emulates hour to year and bottom row emulates year to hour </code>
-]   
-
-//format data whic is supported by react-calendar-timline
-const formatCalendarData = (dataList, columns) => {
-    if (dataList && dataList.length > 0) {
-        let formattedList = []
-        let time = columns[0]
-        let groupList = []
-        let colorSelector = '#9F6BD3'
-        for (let k = 0; k < columns.length; k++) {
-            let column = columns[k]
-            if (column && column.detailedView) {
-                groupList.push({ id: k, title: column.label, rightTitle: column.label, bgColor: "#FFF" })
-                
-                for (let i = dataList.length - 1; i >= 0; i--) {
-                    let data = dataList[i]
-                    let color = colorType(data[k])
-                    colorSelector = colorSelector === '#9F6BD3' ? '#B990E1' : '#9F6BD3'
-                    color = color ? color : colorSelector
-                    
-                    let calendar = {
-                        id: uuid(),
-                        group: k,
-                        title: data[k],
-                        className: "item-weekend",
-                        bgColor: color,
-                        selectedBgColor: "rgba(167, 116, 219, 1)",
-                        start: dateUtil.timeInMilli(data[0]),
-                        end: dateUtil.timeInMilli(data[0])
-                    }
-                    let j = i - 1
-                    for (; j >= 0; j--) {
-                        let nextData = dataList[j]
-                        if (data[k] !== nextData[k]) {
-                            break;
-                        }
-                    }
-                    i = j + 1
-                    calendar.end = dateUtil.timeInMilli(j < 0 ? dateUtil.currentTimeInMilli() : dataList[j][0])
-                    formattedList.push(calendar)
-                }
-            }
-
-        }
-        return { formattedList, groupList }
-    }
-    else {
-        return { formattedList: [], groupList: [] }
-    }
-}
-
-//search filter support
-const filterData = (filterText, dataList, tabValue) => {
-    let keys = Object.keys(dataList)
-    let eventType = keys[tabValue]
-    if (dataList[eventType]) {
-        let columns = dataList[eventType].columns
-        let dataFilterList = []
-        Object.keys(dataList[eventType].values).map(data => {
-            let eventFirstData = dataList[eventType].values[data][0]
-            let valid = false
-            columns.map((column, i) => {
-                if (column && column.filter && eventFirstData[i].includes(filterText)) {
-                    valid = true
-                }
-            })
-            if (valid) {
-                dataFilterList[data] = dataList[eventType].values[data]
-            }
-        })
-        let filteredTab = { columns: columns, values: dataFilterList }
-        let filterList = {}
-        keys.map(key => {
-            if (key !== eventType) {
-                filterList[key] = dataList[key]
-            }
-            else {
-                filterList[key] = filteredTab
-            }
-        })
-        let eventKey = Object.keys(dataFilterList)[0]
-        let formattedData = formatCalendarData(dataFilterList[eventKey], columns)
-        formattedData.filterList = filterList
-        return formattedData
-    }
-    else {
-        return { filterList: [], formattedList: [], groupList: [] }
-    }
-}
-
-class EventLog extends React.Component {
-
+const styles = theme => ({
+    root: {
+        display: 'flex',
+        width: '100%',
+        height: '100%'
+    },
+    grid_root: {
+        flexGrow: 1,
+    },
+    drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+    },
+    drawer_full: {
+        width: '100%',
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+    },
+    drawerOpen: {
+        backgroundColor: 'transparent',
+        width: drawerWidth,
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    },
+    drawerOpen_full: {
+        backgroundColor: 'transparent',
+        width: '100%',
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    },
+    drawerClose: {
+        backgroundColor: 'transparent',
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        overflowX: 'hidden',
+        [theme.breakpoints.up('sm')]: {
+            width: theme.spacing(7) + 1,
+        },
+    },
+})
+class GlobalUsageLog extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
+        this._isMounted = false;
         this.state = {
-            dataList: {},
-            filterList: {},
-            tabValue: 0,
-            activeIndex: 0,
-            calendarList: [],
-            groupList: [],
-            infiniteHeight: 200,
-            filterText: ''
+            isOpen: props.open,
+            liveData: {},
+            loading: false,
         }
-        this.searchfilter = React.createRef()
+        this.action = '';
+        this.data = {};
+        this.intervalId = undefined;
+        this.endRange = dateUtil.currentUTCTime()
+        this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
+        this.organizationList = []
     }
 
-    onFilter = (value) => {
-        if (value !== undefined && value.length >= 0) {
-            this.setState({ filterText: value.toLowerCase() })
-        }
-        else {
-            value = this.state.filterText
-        }
-        let data = filterData(value, this.state.dataList, this.state.tabValue)
-        this.setState({ filterList: data.filterList, calendarList: data.formattedList, groupList: data.groupList, activeIndex: 0 })
+    /*Action menu block*/
+
+    handleClose = () => {
+        this.props.close()
+        this.setState({ isOpen: false });
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.liveData !== state.dataList) {
-            let data = filterData(state.filterText, props.liveData, state.tabValue)
-            return { dataList: props.liveData, filterList: data.filterList, calendarList: data.formattedList, groupList: data.groupList }
+        if (props.open && !state.isOpen) {
+            return { isOpen: props.open }
         }
         return null
     }
 
-    onTabChange = (tabIndex, dataList) => {
-        let eventType = Object.keys(dataList)[tabIndex]
-        let eventData = dataList[eventType]
-        let values = eventData.values
-        let eventKey = Object.keys(values)[0]
-        let data = formatCalendarData(values[eventKey], eventData.columns)
-        if (this.searchfilter.current) {
-            this.searchfilter.current.onClear()
-        }
-        this.setState({ tabValue: tabIndex, calendarList: data.formattedList, groupList: data.groupList, filterText: '', filterList: dataList, activeIndex: 0 })
-    }
-
-    onRegionTabChange = (tabIndex, dataList) => {
-
-    }
-
-    onEventTimeLine = (eventInfo, columns, activeIndex) => {
-        let data = formatCalendarData(eventInfo, columns)
-        this.setState({ activeIndex: activeIndex, calendarList: data.formattedList, groupList: data.groupList })
-    }
-
-    formatDate = (format, value) => {
-        return dateUtil.time(format, value)
-    }
-
-    renderRow = (virtualProps) => {
-        const { data, index, style } = virtualProps;
-        let dataList = data.dataList
-        let keys = data.keys
-        let columns = data.columns
-        let latestData = dataList[keys[index]][0]
-        return (
-            <div key={index} style={style}>
-                <div style={{ pointer: 'cursor', borderRadius: 5, border: '1px solid #E0E0E1', margin: '0 10px 10px 10px', padding: 10, backgroundColor: this.state.activeIndex === index ? '#1E2123' : 'transparent' }} onClick={() => this.onEventTimeLine(dataList[keys[index]], columns, index)}>
-                    <div style={{ display: 'inline-block' }}>{columns.map((column, i) => {
-                        if (column) {
-                            let value = column.format ? this.formatDate(column.format, latestData[i]) : latestData[i]
-                            return column && column.visible ?
-                                <p style={{ fontSize: 12 }} key={i}><strong>{column.label}</strong>{`: ${value}`}</p> : false
-                        }
-                    })}
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    stepperView = (eventType, eventData, i) => {
-        let columns = eventData.columns
-        let eventList = eventData.values
-        let keys = Object.keys(eventList)
-        let itemSize = eventType === 'clusterinst' ? 243 : eventType === 'appinst' ? 330 : 186
-        return (
-            <FixedSizeList key={i} className={'no-scrollbars'} height={this.state.infiniteHeight} itemSize={itemSize} itemCount={keys.length} itemData={{ columns: columns, keys: keys, dataList: eventList }}>
-                {this.renderRow}
-            </FixedSizeList>
-        )
-    }
-
-    customRender = () => {
-        return (
-            redux_org.isAdmin(this) ? <div className='calendar-dropdown-select'>
-                <SelectMenu search={true} labelKey={fields.organizationName} dataList={this.props.organizationList} onChange={this.props.onOrgChange} placeholder='Select Organization' default={this.props.selectedOrg}/>
-            </div> : null)
-    }
-
     render() {
-        const { filterList, tabValue, calendarList, groupList, dataList } = this.state
-        const { endRange } = this.props
+        const { classes } = this.props;
+        const { isOpen, liveData, loading } = this.state
         return (
-            <div style={{ height: '100%' }} id='event_log'>
-                <div style={{ width: 450, display: 'inline-block', height: '100%', backgroundColor: '#292C33', verticalAlign: 'top', overflow: 'auto' }}>
-                    <Paper square>
-                        <Tabs
-                            TabIndicatorProps={{
-                                style: {
-                                    backgroundColor: lightGreen['A700']
-                                }
-                            }}
-                            value={tabValue}
-                            onChange={(e, value) => this.onTabChange(value, dataList)}
-                            variant="fullWidth">
-                            {Object.keys(filterList).map((eventType, i) => {
-                                return <Tab key={i} label={eventType} />
-                            })}
-                        </Tabs>
-                        <div style={{ position: 'absolute', right: 0, top: 2 }}>
-                            <Help data={usageHelp} style={{ color: lightGreen['A700'] }}/>
-                            <IconButton  onClick={this.props.close}>
-                                <CloseIcon style={{ color: lightGreen['A700'] }} />
-                            </IconButton>
-                        </div>
-                    </Paper>
-                    {this.props.loading ? <LinearProgress /> : null}
-                    <br />
-                    <div align={'center'}>
-                        <SearchFilter style={{ width: '93%' }} onFilter={this.onFilter} ref={this.searchfilter} />
-                    </div>
-                    <br />
-                    {Object.keys(filterList).map((eventType, i) => {
-                        let eventList = filterList[eventType]
-                        return tabValue === i ? this.stepperView(eventType, eventList, i) : null
-                    })}
-                    <br/>
-                    <Divider/>
-                    <div style={{ paddingLeft: 20, position:'absolute', bottom:20 }} align="left">
-                        <p style={{ fontSize: 14 }}><strong>Last Requested</strong>{`: ${dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, endRange)}`}</p>
-                    </div>
-                </div>
-                <div style={{ width: 'calc(100vw - 450px)', height: '100%', display: 'inline-block', backgroundColor: '#1E2123' }}>
-                    <MexCalendar dataList={calendarList} groupList={groupList} customRender={this.customRender} />
-                </div>
-            </div>
+            <React.Fragment>
+                <Drawer className={clsx(classes.drawer_full, {
+                    [classes.drawerOpen_full]: isOpen,
+                    [classes.drawerClose]: !isOpen,
+                })}
+                    classes={{
+                        paper: clsx({
+                            [classes.drawerOpen_full]: isOpen,
+                            [classes.drawerClose]: !isOpen,
+                        }),
+                    }} anchor={'right'} open={isOpen}>
+                    <Suspense fallback={<div>loading</div>}>
+                        <RightDrawer close={this.handleClose} liveData={liveData} loading={loading} endRange={this.endRange} organizationList={this.organizationList} onOrgChange={this.onOrganizationChange} selectedOrg={this.selectedOrg} />
+                    </Suspense>
+                </Drawer>
+            </React.Fragment>
         )
+    }
+
+    updateData = (eventData) => {
+        let liveData = cloneDeep(this.state.liveData)
+        Object.keys(eventData).map(key => {
+            if (liveData[key]) {
+                let values = eventData[key].values
+                Object.keys(values).map(dataKey => {
+                    let oldValues = liveData[key].values[dataKey]
+                    if (oldValues && oldValues.length > 0) {
+                        liveData[key].values[dataKey] = [...values[dataKey], ...oldValues]
+                    }
+                    else {
+                        liveData[key].values[dataKey] = values[dataKey]
+                    }
+                })
+            }
+            else {
+                liveData[key] = eventData[key]
+            }
+        })
+        if (this._isMounted) {
+            this.setState({ liveData })
+        }
+    }
+
+    serverResponse = (mcList) => {
+        if (mcList && mcList.length > 0) {
+            mcList.map(mc => {
+                if (mc && mc.response && mc.response.status === 200) {
+                    let data = mc.response.data
+                    if (data && data.length > 0) {
+                        if (Object.keys(data[0]).length > 0) {
+                            this.updateData(data[0])
+                        }
+                    }
+                }
+            })
+        }
+        if (this._isMounted) { this.setState({ loading: false }) }
+    }
+
+    onOrganizationChange = (orgList) => {
+        if (orgList.length > 0) {
+            let org = orgList[0]
+            if (this._isMounted) {
+                this.setState({ liveData: {} })
+            }
+            clearInterval(this.intervalId)
+            this.endRange = dateUtil.currentUTCTime()
+            this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
+            this.selectedOrg = org[fields.organizationName]
+            this.eventLogData(this.startRange, this.endRange, true)
+        }
+    }
+
+    eventLogData = async (starttime, endtime, isInit) => {
+        let regions = this.props.regions
+        let org = redux_org.nonAdminOrg(this) ? redux_org.nonAdminOrg(this) : this.selectedOrg
+        if (org) {
+            if (regions && regions.length > 0) {
+                regions.map(region => {
+                    let data = {}
+                    data[fields.region] = region
+                    data[fields.starttime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
+                    data[fields.endtime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
+                    data[fields.organizationName] = org
+                    if (redux_org.isAdmin(this) || redux_org.isOperator(this)) {
+                        authRequest(this, cloudletEventLogs(this, data), this.serverResponse)
+                    }
+                    if (redux_org.isAdmin(this) || redux_org.isDeveloper(this) || redux_private.isRegionValid(this, region)) {
+                        authRequest(this, clusterEventLogs(this, data), this.serverResponse)
+                        authRequest(this, appInstEventLogs(this, data), this.serverResponse)
+                    }
+                })
+                if (this._isMounted) { this.setState({ loading: true }) }
+
+                if (isInit) {
+                    if (this.intervalId) {
+                        clearInterval(this.intervalId)
+                    }
+                    this.intervalId = setInterval(() => {
+                        if (this._isMounted && this.state.isOpen) {
+                            this.startRange = cloneDeep(this.endRange)
+                            this.endRange = dateUtil.currentUTCTime()
+                            this.eventLogData(this.startRange, this.endRange)
+                        }
+                    }, 60 * 1000);
+            }}
+        }
+    }
+
+    componentDidUpdate(prePros, preState) {
+        if (this.props.organizationInfo && !operators.equal(this.props.organizationInfo, prePros.organizationInfo)) {
+            this.endRange = dateUtil.currentUTCTime()
+            this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
+            if (this._isMounted) {
+                this.setState({ liveData: {} })
+            }
+            this.eventLogData(this.startRange, this.endRange)
+        }
+
+        //enable interval only when usage log is visible
+        if (preState.isOpen !== this.state.isOpen) {
+            if (this._isMounted && this.state.isOpen) {
+                this.startRange = cloneDeep(this.endRange)
+                this.endRange = dateUtil.currentUTCTime()
+                this.eventLogData(this.startRange, this.endRange, true)
+            }
+            else {
+                clearInterval(this.intervalId)
+            }
+        }
+    }
+
+    orgResponse = (mc) => {
+        if (mc && mc.response && mc.response.status === 200) {
+            this.organizationList = sortBy(mc.response.data, [item => item[fields.organizationName]], ['asc']);
+            this.endRange = dateUtil.currentUTCTime()
+            this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
+            if (this._isMounted) {
+                this.setState({ liveData: {} })
+            }
+            this.eventLogData(this.startRange, this.endRange)
+        }
     }
 
     componentDidMount() {
-        this.setState({ infiniteHeight: document.getElementById('event_log').clientHeight - 190 })
-        if (Object.keys(this.state.dataList).length > 0) {
-            this.onTabChange(this.state.activeIndex, this.state.dataList)
+        this._isMounted = true;
+        if (redux_org.isAdmin(this)) {
+            sendAuthRequest(this, showOrganizations(), this.orgResponse)
+        }
+        else if (redux_org.nonAdminOrg(this)) {
+            this.eventLogData(this.startRange, this.endRange)
         }
     }
-}
 
-const mapStateToProps = (state) => {
-    return {
-        organizationInfo: state.organizationInfo.data
+    componentWillUnmount() {
+        this._isMounted = false;
+        clearInterval(this.intervalId);
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        regions: state.regionInfo.region,
+        organizationInfo: state.organizationInfo.data,
+        privateAccess: state.privateAccess.data,
+    }
+};
 
 const mapDispatchProps = (dispatch) => {
     return {
@@ -304,4 +282,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(EventLog));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(withStyles(styles)(GlobalUsageLog)));

@@ -1,5 +1,8 @@
 import * as dateUtil from '../../../utils/date_util'
 import { endpoint } from '../../../helper/constant'
+import { redux_org } from '../../../helper/reduxData'
+import { primaryKeys as cloudletKeys } from '../cloudlet'
+import { fields } from '../../model/format'
 
 export const clusterEventKeys = [
     { label: 'Starttime', serverField: 'time', visible: true, detailedView: false, format: dateUtil.FORMAT_FULL_DATE_TIME },
@@ -19,9 +22,21 @@ export const clusterEventKeys = [
     { label: 'Status', serverField: 'status', visible: true, detailedView: true }
 ]
 
-export const clusterEventLogs = (data, org) => {
-    data.clusterinst = {
-        organization: org
+export const clusterEventLogs = (self, data) => {
+    let requestData = {
+        region: data[fields.region],
+        starttime: data[fields.starttime],
+        endtime: data[fields.endtime]
     }
-    return { method: endpoint.CLUSTER_EVENT_LOG_ENDPOINT, data: data, keys: clusterEventKeys }
+    if (redux_org.isOperator(self)) {
+        requestData.clusterinst = {
+            cloudlet_key: cloudletKeys(data)
+        }
+    }
+    else {
+        requestData.clusterinst = {
+            organization: data[fields.organizationName]
+        }
+    }
+    return { method: endpoint.CLUSTER_EVENT_LOG_ENDPOINT, data: requestData, keys: clusterEventKeys }
 }
