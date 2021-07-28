@@ -28,6 +28,11 @@ export const keys = () => ([
   { field: fields.activeConnectionLimit, serverField: SF_ACL, label: 'Active Connection Limit', type: 'number' },
   { field: fields.labels, serverField: SF_LABELS, label: 'Labels', dataType: perpetual.TYPE_JSON },
   { field: fields.annotations, serverField: SF_ANNOTATIONS, label: 'Annotations', dataType: perpetual.TYPE_JSON },
+  {
+    field: fields.apps, label: 'Apps',
+    keys: [{ field: fields.appName, label: 'App Name' },
+    { field: fields.version, label: 'Version' }]
+  },
   { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: [perpetual.ADMIN_MANAGER, perpetual.ADMIN_CONTRIBUTOR, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_CONTRIBUTOR] }
 ])
 
@@ -80,4 +85,31 @@ export const createAlertPolicy = (data) => {
 export const deleteAlertPolicy = (self, data) => {
   let requestData = getKey(data)
   return { method: endpoint.DELETE_ALERT_POLICY, data: requestData, success: `Trust Policy ${data[fields.trustPolicyName]} deleted successfully` }
+}
+
+export const multiDataRequest = (keys, mcList, specific) => {
+  let alertPolicyList = [];
+  let appList = [];
+  for (const mc of mcList) {
+    let request = mc.request;
+    if (request.method === endpoint.SHOW_APP) {
+      appList = mc.response.data
+    }
+    else if (request.method === endpoint.SHOW_ALERT_POLICY) {
+      alertPolicyList = mc.response.data
+    }
+  }
+  alertPolicyList.forEach(alertPolicy => {
+    let policyName = alertPolicy[fields.alertPolicyName]
+    let apps = []
+    appList.forEach(app => {
+      if (app[fields.alertPolicies] && app[fields.alertPolicies].includes(policyName)) {
+        apps.push(app)
+      }
+    })
+    if (apps.length > 0) {
+      alertPolicy[fields.apps] = apps
+    }
+  })
+  return alertPolicyList
 }
