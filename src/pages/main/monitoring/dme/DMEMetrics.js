@@ -32,7 +32,6 @@ import './style.css'
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
 import { PARENT_APP_INST } from '../helper/Constant';
 import { onlyNumeric } from '../../../../utils/string_utils';
-
 const buckets = [0, 5, 10, 25, 50, 100]
 class DMEMetrics extends React.Component {
     constructor(props) {
@@ -138,7 +137,7 @@ class DMEMetrics extends React.Component {
                 }
                 {
                     connectorMerge.values.length > 0 && connectorMerge.values.map((connector, i) => (
-                        <MexCurve key={i} data={[connector]} option={{ color: connectorMerge.color[i], fill: false, dashArray: '10', weight: 0.6 }} />
+                        <MexCurve key={i} data={[connector]} option={{ color: connectorMerge.color[i], fill: false, dashArray: '10', weight: 1.5 }} />
                     ))
                 }
                 <MapLegend id={id} data={this.fetchLegendData(timeData, selectCloudlet, markerType)} onClick={(key, location) => { this.setHistogramData(true, key, timeData, location) }} />
