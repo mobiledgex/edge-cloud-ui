@@ -23,7 +23,7 @@ const Details = (props) => {
                             const location = values[key][perpetual.CON_TAGS][fields.location]
                             return (
                                 <tr key={i}>
-                                    <td><IconButton tooltip='View overall location tile latency' onClick={() => { props.onClick(key, values, [location.lat, location.lng]) }}><MyLocationOutlinedIcon style={{ color: generateColor(_avg(childTotal[markerType])) }} /></IconButton></td>
+                                    <td><IconButton tooltip='View aggregated location tile latency' onClick={() => { props.onClick(key, values, [location.lat, location.lng]) }}><MyLocationOutlinedIcon style={{ color: generateColor(_avg(childTotal[markerType])) }} /></IconButton></td>
                                     <td>{childTotal[fields._0s]}</td>
                                     <td>{childTotal[fields._5ms]}</td>
                                     <td>{childTotal[fields._10ms]}</td>

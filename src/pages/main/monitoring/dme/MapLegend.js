@@ -53,7 +53,7 @@ class Legend extends MapControl {
                 </td>`
                 }
                 gt = gt + `<td style='width:50px'>
-                <span mtooltip="View overall cloudlet latency" flow="right">
+                <span mtooltip="View aggregated cloudlet latency" flow="right">
                     <button onMouseOver="this.style.backgroundColor='rgb(57,58,63)';this.style.borderRadius='100px'" onMouseOut="this.style.backgroundColor='transparent'" style='background:transparent;border:none;width:40px;height:40px;'>
                         <span id='${i}' class='material-icons-outlined' style='cursor:pointer;color:${item['locationColor']}' onClick=''>gps_fixed</span>
                           
