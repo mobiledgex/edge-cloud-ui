@@ -19,7 +19,7 @@ export const AIK_APP_ALL = 6
 export const AIK_APP_ORG = 7
 
 export const primaryKeys = (data, include) => {
-  include = include ? include : AIK_APP_ORG
+  include = include ? include : AIK_APP_ALL
   let appKey = undefined
 
   if (include === AIK_APP_ORG || include === AIK_APP_ALL) {
