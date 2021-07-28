@@ -40,10 +40,17 @@ class FlavorList extends React.Component {
         this.updateState({ currentView: <FlavorReg onClose={this.onRegClose} /> });
     }
 
+    onPreDelete = (type, action, data) => {
+        if (type === perpetual.ACTION_DISABLE) {
+            let disable = redux_org.isAdmin(this)
+            return !disable
+        }
+    }
+
     /**Action menu block */
     actionMenu = () => {
         return [
-            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteFlavor, type: 'Edit' }
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteFlavor, disable: this.onPreDelete, type: 'Edit' }
         ]
     }
 
