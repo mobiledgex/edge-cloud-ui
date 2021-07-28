@@ -6,11 +6,10 @@ import MexAlert from '../../hoc/alert/AlertDialog';
 import Menu from './Menu'
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
-import { pages, validatePrivateAccess } from '../../constant';
+import { pages } from '../../constant';
 import { role } from '../../helper/constant';
 import { withRouter } from 'react-router-dom';
-import { operators, perpetual } from '../../helper/constant';
-import { redux_org } from '../../helper/reduxData';
+import { perpetual } from '../../helper/constant';
 
 class Main extends React.Component {
     constructor(props) {
@@ -79,18 +78,7 @@ class Main extends React.Component {
         }
     }
 
-    onOrgChange = async (orgInfo) => {
-        this.props.handlePrivateAccess(undefined)
-        if (redux_org.isOperator(this)) {
-            let privateAccess = await validatePrivateAccess(this, orgInfo)
-            this.props.handlePrivateAccess(privateAccess)
-        }
-    }
-
     componentDidUpdate(preProps, preState) {
-        if (!operators.equal(preProps.organizationInfo, this.props.organizationInfo)) {
-            this.onOrgChange(this.props.organizationInfo)
-        }
         this.redirectInvalidPath()
     }
 
@@ -106,7 +94,6 @@ const mapStateToProps = (state) => {
         viewMode: state.ViewMode ? state.ViewMode.mode : null,
         roles: state.roleInfo ? state.roleInfo.role : null,
         organizationInfo: state.organizationInfo.data,
-        privateAccess: state.privateAccess.data,
         loadMain: state.loadMain.data
     }
 };
@@ -114,8 +101,7 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 

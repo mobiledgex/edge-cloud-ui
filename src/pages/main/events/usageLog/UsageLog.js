@@ -182,6 +182,7 @@ class GlobalUsageLog extends React.Component {
 
     eventLogData = async (starttime, endtime, isInit) => {
         let regions = this.props.regions
+        const isOpen = this.state.isOpen
         let org = redux_org.nonAdminOrg(this) ? redux_org.nonAdminOrg(this) : this.selectedOrg
         if (org) {
             if (regions && regions.length > 0) {
@@ -195,8 +196,8 @@ class GlobalUsageLog extends React.Component {
                         authRequest(this, cloudletEventLogs(this, data), this.serverResponse)
                     }
                     if (redux_org.isAdmin(this) || redux_org.isDeveloper(this) || redux_private.isRegionValid(this, region)) {
-                        authRequest(this, clusterEventLogs(this, data), this.serverResponse)
-                        authRequest(this, appInstEventLogs(this, data), this.serverResponse)
+                        authRequest(this, { ...clusterEventLogs(this, data), showMessage: isOpen }, this.serverResponse)
+                        authRequest(this, { ...appInstEventLogs(this, data), showMessage: isOpen }, this.serverResponse)
                     }
                 })
                 if (this._isMounted) { this.setState({ loading: true }) }

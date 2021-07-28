@@ -4,8 +4,10 @@ import { IconButton, ListItem, ListItemText, Popover } from '@material-ui/core';
 import { fields } from '../../../services/model/format';
 import BusinessIcon from '@material-ui/icons/Business';
 import { FixedSizeList } from 'react-window';
-import { organizationInfo } from '../../../actions';
+import { organizationInfo, privateAccess, loadingSpinner } from '../../../actions';
 import { perpetual } from '../../../helper/constant';
+import { redux_org } from '../../../helper/reduxData';
+import { validatePrivateAccess } from '../../../constant';
 
 const Organization = (props) => {
     const orgInfo = useSelector(state => state.organizationInfo.data)
@@ -13,12 +15,18 @@ const Organization = (props) => {
     const [anchorEl, setAnchorEl] = React.useState(null)
     const dispatch = useDispatch();
 
-    const onSelect = (role) => {
-        dispatch(organizationInfo(role))
-        localStorage.setItem(perpetual.LS_ORGANIZATION_INFO,  JSON.stringify(role))
+    const onSelect = async (role) => {
         setAnchorEl(null)
+        dispatch(privateAccess(undefined))
+        if (redux_org.isOperator(role)) {
+            dispatch(loadingSpinner(true))
+            dispatch(privateAccess(await validatePrivateAccess(undefined, role)))
+            dispatch(loadingSpinner(false))
+        }
+        dispatch(organizationInfo(role))
+        localStorage.setItem(perpetual.LS_ORGANIZATION_INFO, JSON.stringify(role))
     }
-    
+
     const renderRow = (virtualProps) => {
         const { index, style } = virtualProps;
         return (
