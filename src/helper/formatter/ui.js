@@ -160,6 +160,16 @@ export const reporterStatus = (key, data, isDetail) => {
     }
 }
 
+export const renderYesNo = (key, data, isDetail) => {
+    if (isDetail) {
+        return data ? perpetual.YES : perpetual.NO
+    }
+    else
+    {
+        return <Icon name={data ? 'check' : 'close'} style={{ color: data ? perpetual.COLOR_GREEN : perpetual.COLOR_RED }} /> 
+    }
+}
+
 export const NoData = ()=>{
     return (
         <div align='center' style={{position:'relative', top:'50%', transform: 'translateY(-50%)'}}>
