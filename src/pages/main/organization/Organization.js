@@ -18,6 +18,7 @@ import { perpetual } from '../../../helper/constant';
 import { uiFormatter } from '../../../helper/formatter'
 import { lightGreen } from '@material-ui/core/colors';
 import { authSyncRequest, fetchToken } from '../../../services/service';
+import { validatePrivateAccess } from '../../../constant';
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
@@ -168,6 +169,14 @@ class OrganizationList extends React.Component {
         return organizationInfo
     }
 
+    updatePrivateAccess = async (orgInfo) => {
+        this.props.handlePrivateAccess(undefined)
+        if (redux_org.isOperator(orgInfo)) {
+            let privateAccess = await validatePrivateAccess(this, orgInfo)
+            this.props.handlePrivateAccess(privateAccess)
+        }
+    }
+
     onManage = async (key, data) => {
         if (this.props.roleInfo) {
             let roleInfoList = this.props.roleInfo;
@@ -175,6 +184,7 @@ class OrganizationList extends React.Component {
                 if (roleInfo[fields.organizationName] === data[fields.organizationName]) {
                     let organizationInfo = this.cacheOrgInfo(data, roleInfo)
                     this.props.handleOrganizationInfo(organizationInfo)
+                    this.updatePrivateAccess(organizationInfo)
                     localStorage.setItem(perpetual.LS_ORGANIZATION_INFO, JSON.stringify(organizationInfo))
                     break;
                 }
@@ -269,7 +279,8 @@ const mapDispatchProps = (dispatch) => {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
         handleShowAuditLog: (data) => { dispatch(actions.showAuditLog(data)) },
-        handleOrganizationInfo: (data) => { dispatch(actions.organizationInfo(data)) }
+        handleOrganizationInfo: (data) => { dispatch(actions.organizationInfo(data)) },
+        handlePrivateAccess: (data) => { dispatch(actions.privateAccess(data)) }
     };
 };
 
