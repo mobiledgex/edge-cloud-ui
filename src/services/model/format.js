@@ -155,6 +155,7 @@ export const fields = {
     refreshAppInst: 'refreshAppInst',
     restagmap: 'restagmap',
     gpuConfig: 'gpuConfig',
+    gpuExist:'gpuExist',
     gpuORG: 'gpuORG',
     powerState: 'powerState',
     tls: 'tls',

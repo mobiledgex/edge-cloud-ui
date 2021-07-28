@@ -16,7 +16,7 @@ import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 import { getCloudletManifest, revokeAccessKey, fetchShowNode } from '../../../services/modules/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
-import { labelFormatter, uiFormatter } from '../../../helper/formatter';
+import { uiFormatter } from '../../../helper/formatter';
 import { perpetual, role } from '../../../helper/constant';
 import { responseValid } from '../../../services/service';
 import ShowNode from './ShowNode'
@@ -139,7 +139,10 @@ class CloudletList extends React.Component {
             return this.showProgress(data, isDetail)
         }
         else if (key.field === fields.trusted) {
-            return labelFormatter.showYesNo(data[key.field])
+            return uiFormatter.renderYesNo(key, data[key.field], isDetail)
+        }
+        else if (key.field === fields.gpuExist) {
+            return uiFormatter.renderYesNo(key, data[key.field], isDetail)
         }
     }
 
