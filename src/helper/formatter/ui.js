@@ -130,7 +130,7 @@ export const lock = (key, data, isDetail, callback) => {
 
     useEffect(() => {
         setLocked(data[key.field])
-    }, []);
+    }, [data[key.field]]);
 
     const onAction = async (data) => {
         setLoading(true)
