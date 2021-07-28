@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { Menu, MenuItem, IconButton, ListItemText } from '@material-ui/core'
 import HeaderGlobalAudit from '../events/auditLog/headerGlobalAudit';
-import GlobalUsageLog from '../events/usageLog/GlobalUsageLog';
+import UsageLog from '../events/usageLog/UsageLog';
 import EventNoteIcon from '@material-ui/icons/EventNote';
 import TimelineOutlinedIcon from '@material-ui/icons/TimelineOutlined';
 import EventOutlinedIcon from '@material-ui/icons/EventOutlined';
@@ -75,7 +75,7 @@ const EventMenu = () => {
             </Menu>
             <HeaderGlobalAudit open={event} close={handleClose} type={'event'} />
             <HeaderGlobalAudit open={audit} close={handleClose} type={'audit'} />
-            <GlobalUsageLog open={usage} close={handleClose} />
+            <UsageLog open={usage} close={handleClose} />
         </div > : null
     )
 }

@@ -158,7 +158,6 @@ export const syncRequest = async (self, request) => {
     return await sendSyncRequest(self, request, false)
 }
 
-
 /**
  * Asynchronous request
  * @param {*} self: current class object
@@ -188,6 +187,10 @@ export const multiAuthRequest = (self, requestList, callback, format = true) => 
                 errorResponse(self, requestList[0], error, callback)
             })
     }
+}
+
+export const authRequest = (self, request, callback, format) => {
+    multiAuthRequest(self, [request], callback, format)
 }
 
 /**
