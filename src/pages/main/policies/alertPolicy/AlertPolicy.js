@@ -6,10 +6,11 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 
 import Reg from './Reg'
-import { deleteAlertPolicy, keys, showAlertPolicy } from '../../../../services/modules/alertPolicy';
+import { deleteAlertPolicy, keys, showAlertPolicy, multiDataRequest } from '../../../../services/modules/alertPolicy';
 import { perpetual } from '../../../../helper/constant';
 import { fields } from '../../../../services/model/format';
 import { uiFormatter } from '../../../../helper/formatter';
+import { showApps } from '../../../../services/modules/app';
 
 class AlertPolicy extends React.Component {
     constructor(props) {
@@ -80,7 +81,7 @@ class AlertPolicy extends React.Component {
         return ({
             id: perpetual.PAGE_ALERT_POLICY,
             headerLabel: 'Alert Policy',
-            requestType: [showAlertPolicy],
+            requestType: [showAlertPolicy, showApps],
             isRegion: true,
             nameField: fields.alertPolicyName,
             sortBy: [fields.region, fields.alertPolicyName],
@@ -96,7 +97,7 @@ class AlertPolicy extends React.Component {
     render() {
         const { currentView } = this.state
         return (
-            <DataView id={perpetual.PAGE_ALERT_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_ALERT_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} multiDataRequest={multiDataRequest} />
         )
     }
 

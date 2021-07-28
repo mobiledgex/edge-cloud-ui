@@ -1,5 +1,5 @@
 import { customize } from './custom'
-import {keys, fields, showAlertPolicy, updateAlertPolicy, createAlertPolicy, deleteAlertPolicy, getAlertPolicyList } from './alertPolicy'
+import {keys, fields, showAlertPolicy, updateAlertPolicy, createAlertPolicy, deleteAlertPolicy, getAlertPolicyList, multiDataRequest } from './alertPolicy'
 export {
     customize,
     keys, 
@@ -7,6 +7,7 @@ export {
     updateAlertPolicy, 
     createAlertPolicy, 
     deleteAlertPolicy,
-    getAlertPolicyList
+    getAlertPolicyList,
+    multiDataRequest
 }
 
