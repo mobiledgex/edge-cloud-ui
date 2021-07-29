@@ -8,7 +8,7 @@ const Details = (props) => {
     const values = data[perpetual.CON_VALUES]
     return (
         <React.Fragment>
-            <div style={{ marginBottom: 20 }} align='center'><h4><b>No of Samples</b></h4></div>
+            <div style={{ marginBottom: 20 }} align='center'><h4><b>Number of Samples</b></h4></div>
             <table className="details">
                 <thead>
                     <tr>
