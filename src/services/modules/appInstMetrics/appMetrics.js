@@ -3,6 +3,8 @@ import * as formatter from '../../model/format'
 import { UNIT_BYTES, UNIT_PERCENTAGE, UNIT_FLOOR } from '../../../pages/main/monitoring/helper/unitConvertor';
 import { labelFormatter } from '../../../helper/formatter';
 import { endpoint, perpetual } from '../../../helper/constant';
+import { developerRoles } from '../../../constant';
+import { ADMIN, DEVELOPER, DEVELOPER_VIEWER } from '../../../helper/constant/perpetual';
 
 let fields = formatter.fields;
 
@@ -68,8 +70,8 @@ export const appInstMetricTypeKeys = () => ([
 
 export const appInstActions = [
     { id: perpetual.ACTION_LATENCY_METRICS, label: 'Show Latency Metrics', group: true },
-    { id: perpetual.ACTION_REQUEST_LATENCY, label: 'Request Latency Metrics' },
-    { id: perpetual.ACTION_TRACK_DEVICES, label: 'Track Devices' }
+    { id: perpetual.ACTION_REQUEST_LATENCY, label: 'Request Latency Metrics', roles: [ADMIN, DEVELOPER] },
+    { id: perpetual.ACTION_TRACK_DEVICES, label: 'Track Devices', roles: [ADMIN, DEVELOPER] }
 ]
 
 export const fetchLocation = (avgValues, metricData, showList) => {
