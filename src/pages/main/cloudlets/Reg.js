@@ -316,15 +316,13 @@ class CloudletReg extends React.Component {
             let forms = this.state.forms
             let envVars = undefined
             let resourceQuotas = []
-            let gpuDriver = undefined
-            let gpuORG = undefined
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
-                if (form.field === fields.gpuConfig && this.isUpdate) {
+                if (form.field === fields.gpuConfig) {
                     for (const option of form.options) {
                         if (option[fields.gpuConfig] === data[fields.gpuConfig]) {
-                            gpuDriver = option[fields.name]
-                            gpuORG = option[fields.operatorName]
+                            data[fields.gpuDriver] = option[fields.name]
+                            data[fields.gpuORG] = option[fields.operatorName]
                             break;
                         }
                     }
@@ -360,8 +358,8 @@ class CloudletReg extends React.Component {
             if (this.props.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
                 if (updateData[fields.gpuConfig]) {
-                    updateData[fields.gpuDriver] = gpuDriver
-                    updateData[fields.gpuORG] = gpuORG
+                    updateData[fields.gpuDriver] = data[fields.gpuDriver]
+                    updateData[fields.gpuORG] = data[fields.gpuORG]
                 }
                 if (updateData.fields.length > 0) {
                     this.props.handleLoadingSpinner(true)
