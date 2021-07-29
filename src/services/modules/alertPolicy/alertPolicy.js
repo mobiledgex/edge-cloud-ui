@@ -4,6 +4,7 @@ import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
 import { generateUUID } from '../../format/shared';
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
+import { developerRoles } from '../../../constant';
 
 const fields = formatter.fields;
 
@@ -33,7 +34,7 @@ export const keys = () => ([
     keys: [{ field: fields.appName, label: 'App Name' },
     { field: fields.version, label: 'Version' }]
   },
-  { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: [perpetual.ADMIN_MANAGER, perpetual.ADMIN_CONTRIBUTOR, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_CONTRIBUTOR] }
+  { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: developerRoles }
 ])
 
 const getKey = (data, isCreate) => {

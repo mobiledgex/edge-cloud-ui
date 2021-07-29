@@ -1,23 +1,21 @@
 import React from 'react';
 import { useSelector } from "react-redux";
 import { ListItem, Dialog, DialogContent, IconButton, Table, TableBody, TableRow, TableCell, TableHead } from '@material-ui/core';
-import { ADMIN_MANAGER, DEVELOPER_CONTRIBUTOR, DEVELOPER_MANAGER, DEVELOPER_VIEWER, OPERATOR_CONTRIBUTOR, OPERATOR_MANAGER, OPERATOR_VIEWER } from '../../../helper/constant/perpetual';
+import { perpetual } from '../../../helper/constant';
 import CloseIcon from '@material-ui/icons/Close';
 import { redux_org } from '../../../helper/reduxData';
 import { legendRoles } from '../../../constant';
+import { splitByCaps } from '../../../utils/string_utils';
 
 const legends = [
-    { role: ADMIN_MANAGER, class: 'mark markA markS', mark: 'AM' },
-    { role: DEVELOPER_MANAGER, class: 'mark markD markM', mark: 'DM' },
-    { role: DEVELOPER_CONTRIBUTOR, class: 'mark markD markC', mark: 'DC' },
-    { role: DEVELOPER_VIEWER, class: 'mark markD markV', mark: 'DV' },
-    { role: OPERATOR_MANAGER, class: 'mark markO markM', mark: 'OM' },
-    { role: OPERATOR_CONTRIBUTOR, class: 'mark markO markC', mark: 'OC' },
-    { role: OPERATOR_VIEWER, class: 'mark markO markV', mark: 'OV' },
+    { role: perpetual.ADMIN_MANAGER, class: 'mark markA markS', mark: 'AM' },
+    { role: perpetual.DEVELOPER_MANAGER, class: 'mark markD markM', mark: 'DM' },
+    { role: perpetual.DEVELOPER_CONTRIBUTOR, class: 'mark markD markC', mark: 'DC' },
+    { role: perpetual.DEVELOPER_VIEWER, class: 'mark markD markV', mark: 'DV' },
+    { role: perpetual.OPERATOR_MANAGER, class: 'mark markO markM', mark: 'OM' },
+    { role: perpetual.OPERATOR_CONTRIBUTOR, class: 'mark markO markC', mark: 'OC' },
+    { role: perpetual.OPERATOR_VIEWER, class: 'mark markO markV', mark: 'OV' },
 ]
-
-const menuItem = ['Users & Roles', 'Cloudlets', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances', 'Policies', 'Monitoring', 'Audit Logs'];
-
 
 const LegendMark = (props) => {
     const orgInfo = useSelector(state => state.organizationInfo.data)
@@ -37,7 +35,7 @@ const LegendMark = (props) => {
                     <div style={{ display: 'inline' }}>
                         <strong style={{ color: '#BFC0C2', fontSize: 14, }}>
                             {
-                                orgInfo ? redux_org.role(orgInfo) :
+                                orgInfo ? splitByCaps(redux_org.role(orgInfo)) :
                                     <div>
                                         <p>No Organization selected</p>
                                         <p>Click Manage to view and</p>
@@ -53,13 +51,12 @@ const LegendMark = (props) => {
 
 const RoleLegend = (props) => {
     const [open, setOpen] = React.useState(false)
-    const length = menuItem.length - 1
     const orgInfo = useSelector(state => state.organizationInfo.data)
 
     const roleInfo = () => {
         return (
             <div style={{ marginTop: 10, marginBottom: -7 }} >
-                <ListItem button onClick={(e) => { setOpen(orgInfo) }}>
+                <ListItem button onClick={(e) => { setOpen(orgInfo !== undefined) }}>
                     <LegendMark open={props.drawerOpen} orgInfo={orgInfo} />
                 </ListItem>
             </div>
@@ -70,17 +67,9 @@ const RoleLegend = (props) => {
         setOpen(false)
     }
 
-    const renderUserRole = (type) => {
-        let role = redux_org.role(orgInfo)
-        return (role == ADMIN_MANAGER) ? (type !== 'Monitoring' && type !== 'Audit Logs' ? 'Manage' : 'View') :
-            (role == DEVELOPER_MANAGER) ? legendRoles.developer['Manager'][type] :
-                (role == DEVELOPER_CONTRIBUTOR) ? legendRoles.developer['Contributor'][type] :
-                    (role == DEVELOPER_VIEWER) ? legendRoles.developer['Viewer'][type] :
-                        (role == OPERATOR_MANAGER) ? legendRoles.operator['Manager'][type] :
-                            (role == OPERATOR_CONTRIBUTOR) ? legendRoles.operator['Contributor'][type] :
-                                (role === OPERATOR_VIEWER) ? legendRoles.operator['Viewer'][type] : ''
-    }
-
+    const roles = legendRoles[redux_org.role(orgInfo)]
+    const keys = roles && Object.keys(roles)
+    const length = keys && keys.length - 1
     return (
         <React.Fragment>
             {roleInfo()}
@@ -105,13 +94,14 @@ const RoleLegend = (props) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {menuItem.map((type, i) =>
-                                renderUserRole(type) !== 'disabled' ?
+                            {
+                                roles && keys.map((key, i) => (
                                     <TableRow key={i}>
-                                        <TableCell style={length === i ? { borderBottom: 'none', borderRight: '1px #515151 solid' } : { borderRight: '1px #515151 solid' }}>{type}</TableCell>
-                                        <TableCell style={length === i ? { borderBottom: 'none' } : null}>{renderUserRole(type)}</TableCell>
-                                    </TableRow> : null
-                            )}
+                                        <TableCell style={length === i ? { borderBottom: 'none', borderRight: '1px #515151 solid' } : { borderRight: '1px #515151 solid' }}><b style={{color:'#e5e5e5'}}>{key}</b></TableCell>
+                                        <TableCell style={length === i ? { borderBottom: 'none' } : null}><b style={{color:'#e5e5e5'}}>{roles[key]}</b></TableCell>
+                                    </TableRow>
+                                ))
+                            }
                         </TableBody>
                     </Table>
                 </DialogContent>

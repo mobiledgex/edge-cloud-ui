@@ -5,6 +5,7 @@ import omit from 'lodash/omit';
 import { labelFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
+import { operatorRoles } from '../../../constant';
 
 const fields = formatter.fields;
 
@@ -23,7 +24,7 @@ export const keys = () => ([
     },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
+    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: operatorRoles }
 ])
 
 export const getKey = (data) => {
