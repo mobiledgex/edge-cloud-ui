@@ -17,6 +17,8 @@ export const renderSVG = (key, cost) => {
 }
 
 export const renderColorSVG = (key, color, cost) => {
+    //key 0 not working shows default color green
+    key = key + 2
     let path = `<path filter="url(#inner${key})" d="M 19.35 10.04 C 18.67 6.59 15.64 4 12 4 C 9.11 4 6.6 5.64 5.35 8.04 C 2.34 8.36 0 10.91 0 14 c 0 3.31 2.69 6 6 6 h 13 c 2.76 0 5 -2.24 5 -5 c 0 -2.64 -2.05 -4.78 -4.65 -4.96 Z"></path>`
     let gradient = gradientFilter(key, color);
     if (cost && cost > 0) {
