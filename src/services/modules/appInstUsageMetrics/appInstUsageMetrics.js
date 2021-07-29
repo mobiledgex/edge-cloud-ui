@@ -2,13 +2,13 @@ import { endpoint } from '../../../helper/constant';
 import { fields } from '../../model/format';
 
 export const deviceKeys = [
-    { label: '0 - 5 ms', field: fields._0s },
-    { label: '5 - 10 ms', field: fields._5ms },
-    { label: '10 - 25 ms', field: fields._10ms },
-    { label: '25 - 50 ms', field: fields._25ms },
-    { label: '50 - 100 ms', field: fields._50ms },
-    { label: '> 100 ms', field: fields._100ms },
-    { label: 'Network', field: fields.networkType }
+    { label: '0 - 5 ms', field: fields._0s, default: 0 },
+    { label: '5 - 10 ms', field: fields._5ms, default: 0 },
+    { label: '10 - 25 ms', field: fields._10ms, default: 0 },
+    { label: '25 - 50 ms', field: fields._25ms, default: 0 },
+    { label: '50 - 100 ms', field: fields._50ms, default: 0 },
+    { label: '> 100 ms', field: fields._100ms, default: 0 },
+    { label: 'Network', field: fields.networkType, default: 'N/A' }
 ]
 
 const keys = () => (
