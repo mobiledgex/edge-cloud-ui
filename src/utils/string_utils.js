@@ -10,3 +10,7 @@ export const onlyNumeric = (data) => {
     }
 }
 
+export const splitByCaps = (data)=>{
+    return data.match(/[A-Z][a-z]+|[0-9]+/g).join(" ")
+}
+

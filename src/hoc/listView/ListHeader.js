@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
 const ListHead = (props) => {
     const classes = useStyles()
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+    const orgInfo = useSelector(state => state.organizationInfo.data)
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -43,7 +44,8 @@ const ListHead = (props) => {
                     />
                 </TableCell> : null}
                 {props.headCells.map((headCell) => {
-                    return <TableCell
+                    let visible = headCell.roles ? checkRole(orgInfo, headCell) : true
+                    return visible ? <TableCell
                         style={{ backgroundColor: '#292C33' }}
                         key={headCell.field}
                         align={headCell.numeric ? 'right' : 'left'}
@@ -63,7 +65,7 @@ const ListHead = (props) => {
                                     </span>
                                 ) : null}
                             </TableSortLabel> : headerLabel(headCell)}
-                    </TableCell>
+                    </TableCell> : null
                 })}
             </TableRow>
         </TableHead>
