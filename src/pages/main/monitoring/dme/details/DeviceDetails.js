@@ -1,5 +1,6 @@
 import React from 'react'
 import { perpetual } from '../../../../../helper/constant';
+import { fields } from '../../../../../services/model/format';
 import './style.css'
 
 const Details = (props) => {
@@ -23,7 +24,7 @@ const Details = (props) => {
                             return (
                                 <tr key={i}>
                                     {keys.map((item, i) => (
-                                        <td key={i}>{data[item.field] ? data[item.field] : 0}</td>
+                                        <td key={i}>{data[item.field] ? data[item.field] : item.default}</td>
                                     ))}
                                 </tr>
                             )
