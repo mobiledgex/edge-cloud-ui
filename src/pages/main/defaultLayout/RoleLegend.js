@@ -67,7 +67,8 @@ const RoleLegend = (props) => {
         setOpen(false)
     }
 
-    const roles = legendRoles[redux_org.role(orgInfo)]
+    const orgRole = redux_org.role(orgInfo)
+    const roles = orgRole && legendRoles[orgRole]
     const keys = roles && Object.keys(roles)
     const length = keys && keys.length - 1
     return (
