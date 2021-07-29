@@ -5,19 +5,16 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import { showAudits } from '../../../../services/modules/audit'
 import { Drawer } from '@material-ui/core';
-import HeaderAuditLog from "./HeaderAuditLog"
+import RightDrawer from "./RightDrawer"
 import * as dateUtil from '../../../../utils/date_util'
 import cloneDeep from 'lodash/cloneDeep'
 import { operators } from '../../../../helper/constant';
-import { redux_org } from '../../../../helper/reduxData';
-let _self = null;
 
 const CON_LIMIT = 25
-class headerGlobalAudit extends React.Component {
+class AuditLog extends React.Component {
     constructor(props) {
         super(props);
         this._isMounted = false
-        _self = this;
         this.state = {
             historyList: [],
             liveData: [],
@@ -27,7 +24,6 @@ class headerGlobalAudit extends React.Component {
             historyLoading: false,
             selectedDate: dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE)
         }
-        _self = this
         this.intervalId = undefined
         this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
         this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
@@ -35,7 +31,7 @@ class headerGlobalAudit extends React.Component {
     }
 
     getDataAuditOrg = async (orgName) => {
-        let mcRequest = await showAudits(_self, { match: { orgs: [orgName] }, type: 'audit' }, true, this.isPrivate)
+        let mcRequest = await showAudits(this, { match: { orgs: [orgName] }, type: 'audit' }, true, this.isPrivate)
         if (mcRequest && mcRequest.response) {
             if (mcRequest.response.data.length > 0) {
                 if (this._isMounted) {
@@ -76,7 +72,7 @@ class headerGlobalAudit extends React.Component {
         }
         limit = limit ? limit : CON_LIMIT
         let match = { tags }
-        let mcRequest = await showAudits(_self, { starttime, endtime, limit: parseInt(limit), type: this.type, match }, false, this.isPrivate)
+        let mcRequest = await showAudits(this, { starttime, endtime, limit: parseInt(limit), type: this.type, match }, false, this.isPrivate)
         if (this._isMounted) {
             this.setState({ historyLoading: false, loading: false, limit: 25 })
         }
@@ -133,7 +129,7 @@ class headerGlobalAudit extends React.Component {
         return (
             <React.Fragment>
                 <Drawer anchor={'right'} open={isOpen}>
-                    <HeaderAuditLog type={this.type} isOrg={isOrg} dataList={liveData} historyList={historyList} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} clearHistory={this.clearHistory} />
+                    <RightDrawer type={this.type} isOrg={isOrg} dataList={liveData} historyList={historyList} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} clearHistory={this.clearHistory} />
                 </Drawer>
             </React.Fragment>
         )
@@ -216,4 +212,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(headerGlobalAudit));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(AuditLog));
