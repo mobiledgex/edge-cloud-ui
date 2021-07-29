@@ -62,26 +62,28 @@ class AppMexMap extends React.Component {
             if (response.code === 200) {
                 let responseData = response.data
                 let location = responseData[fields.location]
-                let uniqueId = responseData.client_key.unique_id
-                let mapData = cloneDeep(this.state.mapData)
-                let polyline = cloneDeep(this.state.polyline)
-                let key = `${location.latitude}_${location.longitude}`
-                let data = []
-                if (mapData[key]) {
-                    data = mapData[key]
-                    data.devices = data.devices ? data.devices : []
-                    if (!data.devices.includes(uniqueId)) {
-                        data.devices.push(uniqueId)
-                        let label = parseInt(data.label) + 1
-                        data.label = label
+                if (location.latitude && location.longitude) {
+                    let uniqueId = responseData.client_key.unique_id
+                    let mapData = cloneDeep(this.state.mapData)
+                    let polyline = cloneDeep(this.state.polyline)
+                    let key = `${location.latitude}_${location.longitude}`
+                    let data = []
+                    if (mapData[key]) {
+                        data = mapData[key]
+                        data.devices = data.devices ? data.devices : []
+                        if (!data.devices.includes(uniqueId)) {
+                            data.devices.push(uniqueId)
+                            let label = parseInt(data.label) + 1
+                            data.label = label
+                        }
                     }
+                    else {
+                        polyline.push([location.latitude, location.longitude])
+                        data = { cloudletLocation: location, label: 1, devices: [uniqueId] }
+                    }
+                    mapData[key] = data
+                    this.setState({ mapData, polyline })
                 }
-                else {
-                    polyline.push([location.latitude, location.longitude])
-                    data = { cloudletLocation: location, label: 1, devices: [uniqueId] }
-                }
-                mapData[key] = data
-                this.setState({ mapData, polyline })
             }
         }
 
@@ -153,7 +155,7 @@ class AppMexMap extends React.Component {
                                 key === 'main' ?
                                     <Marker icon={mobileIcon} position={[lat, lon]}>
                                     </Marker> :
-                                    <MexCircleMarker coords={{ lat: lat, lng: lon }} label={mapData[key]['label']} popupData={mapData[key].devices} />
+                                    <MexCircleMarker coords={{ lat: lat, lng: lon }} label={mapData[key]['label']} /*popupData={mapData[key].devices}*/ />
                             }
                         </React.Fragment>
                     )

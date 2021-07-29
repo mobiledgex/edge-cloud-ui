@@ -13,7 +13,7 @@ const Details = (props) => {
     const tags = data[perpetual.CON_TAGS]
     return (
         <React.Fragment>
-            <div style={{ marginBottom: 20 }} align='center'><h4><b>No of Samples</b></h4></div>
+            <div style={{ marginBottom: 20 }} align='center'><h4><b>Number of Samples</b></h4></div>
             <table className="details">
                 <thead><tr><th>Location Tile</th><th>0 - 5 ms</th><th>5 - 10 ms</th><th>10 - 25 ms</th><th>25 - 50 ms</th><th>50 - 100 ms</th><th>&gt; 100 ms</th></tr></thead>
                 <tbody>
