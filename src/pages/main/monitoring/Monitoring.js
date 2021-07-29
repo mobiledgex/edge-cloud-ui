@@ -35,6 +35,7 @@ import { Skeleton } from '@material-ui/lab';
 import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../utils/sharedPreferences_util';
 import isEqual from 'lodash/isEqual';
 import { authSyncRequest, multiAuthSyncRequest } from '../../../services/service';
+import { LS_LINE_GRAPH_FULL_SCREEN } from '../../../helper/constant/perpetual';
 
 const defaultParent = (self) => {
     return constant.metricParentTypes()[redux_org.isOperator(self) ? 2 : 0]
@@ -399,6 +400,7 @@ class Monitoring extends React.Component {
 
     componentWillUnmount() {
         this._isMounted = false
+        localStorage.removeItem(LS_LINE_GRAPH_FULL_SCREEN)
     }
 }
 
