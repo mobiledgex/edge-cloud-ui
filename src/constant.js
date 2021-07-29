@@ -108,85 +108,84 @@ export const validatePhone = (form) => {
 }
 
 export const operatorRoles = [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_CONTRIBUTOR]
+export const developerRoles = [perpetual.ADMIN_MANAGER, perpetual.DEVELOPER_MANAGER, perpetual.DEVELOPER_CONTRIBUTOR]
 
 
 export const legendRoles =
 {
-    developer: {
-        Manager: {
-            'Users & Roles': 'Manage',
-            'Cloudlets': 'View',
-            'Cloudlet Pools': 'Manage',
-            'Flavors': 'View',
-            'Cluster Instances': 'Manage',
-            'Apps': 'Manage',
-            'App Instances': 'Manage',
-            'Policies': 'View',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        },
-        Contributor: {
-            'Users & Roles': 'View',
-            'Cloudlets': 'View',
-            'Cloudlet Pools': 'disabled',
-            'Flavors': 'View',
-            'Cluster Instances': 'Manage',
-            'Apps': 'Manage',
-            'App Instances': 'Manage',
-            'Policies': 'View',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        },
-        Viewer: {
-            'Users & Roles': 'View',
-            'Cloudlets': 'View',
-            'Cloudlet Pools': 'disabled',
-            'Flavors': 'View',
-            'Cluster Instances': 'View',
-            'Apps': 'View',
-            'App Instances': 'View',
-            'Policies': 'View',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        }
+    DeveloperManager: {
+        'Users & Roles': 'Manage',
+        'Cloudlets': 'View',
+        'Cloudlet Pools': 'Manage',
+        'Flavors': 'View',
+        'Cluster Instances': 'Manage',
+        'Apps': 'Manage',
+        'App Instances': 'Manage',
+        'Auto Provisioning Policy': 'Manage',
+        'Trust Policy': 'View',
+        'Auto Scale Policy': 'Manage',
+        'Alert Policy': 'Manage',
+        'Monitoring': 'View'
     },
-    operator: {
-        Manager: {
-            'Users & Roles': 'Manage',
-            'Cloudlets': 'Manage',
-            'Cloudlet Pools': 'Manage',
-            'Flavors': 'disabled',
-            'Cluster Instances': 'disabled',
-            'Apps': 'disabled',
-            'App Instances': 'disabled',
-            'Policies': 'disabled',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        },
-        Contributor: {
-            'Users & Roles': 'View',
-            'Cloudlets': 'Manage',
-            'Cloudlet Pools': 'Manage',
-            'Flavors': 'disabled',
-            'Cluster Instances': 'disabled',
-            'Apps': 'disabled',
-            'App Instances': 'disabled',
-            'Policies': 'disabled',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        },
-        Viewer: {
-            'Users & Roles': 'View',
-            'Cloudlets': 'View',
-            'Cloudlet Pools': 'disabled',
-            'Flavors': 'disabled',
-            'Cluster Instances': 'disabled',
-            'Apps': 'disabled',
-            'App Instances': 'disabled',
-            'Policies': 'disabled',
-            'Monitoring': 'View',
-            'Audit Logs': 'View'
-        },
+    DeveloperContributor: {
+        'Users & Roles': 'View',
+        'Cloudlets': 'View',
+        'Cloudlet Pools': 'disabled',
+        'Flavors': 'View',
+        'Cluster Instances': 'Manage',
+        'Apps': 'Manage',
+        'App Instances': 'Manage',
+        'Policies': 'View',
+        'Monitoring': 'View',
+        'Audit Logs': 'View'
+    },
+    DeveloperViewer: {
+        'Users & Roles': 'View',
+        'Cloudlets': 'View',
+        'Cloudlet Pools': 'disabled',
+        'Flavors': 'View',
+        'Cluster Instances': 'View',
+        'Apps': 'View',
+        'App Instances': 'View',
+        'Policies': 'View',
+        'Monitoring': 'View',
+        'Audit Logs': 'View'
+    },
+    OperatorManager: {
+        'Users & Roles': 'Manage',
+        'Cloudlets': 'Manage',
+        'Cloudlet Pools': 'Manage',
+        'Flavors': 'disabled',
+        'Cluster Instances': 'disabled',
+        'Apps': 'disabled',
+        'App Instances': 'disabled',
+        'Policies': 'disabled',
+        'Monitoring': 'View',
+        'Audit Logs': 'View'
+    },
+    OperatorContributor: {
+        'Users & Roles': 'View',
+        'Cloudlets': 'Manage',
+        'Cloudlet Pools': 'Manage',
+        'Flavors': 'disabled',
+        'Cluster Instances': 'disabled',
+        'Apps': 'disabled',
+        'App Instances': 'disabled',
+        'Policies': 'disabled',
+        'Monitoring': 'View',
+        'Audit Logs': 'View'
+    },
+    OperatorViewer: {
+        'Users & Roles': 'View',
+        'Cloudlets': 'View',
+        'Cloudlet Pools': 'disabled',
+        'Flavors': 'disabled',
+        'Cluster Instances': 'disabled',
+        'Apps': 'disabled',
+        'App Instances': 'disabled',
+        'Policies': 'disabled',
+        'Monitoring': 'View',
+        'Audit Logs': 'View'
     }
 }
 

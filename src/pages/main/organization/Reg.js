@@ -13,9 +13,9 @@ import { fields } from '../../../services/model/format';
 //model
 import { keys, createOrganization, updateOrganization } from '../../../services/modules/organization';
 import { addUser } from '../../../services/modules/users';
-import { HELP_ORG_REG_3, HELP_ORG_REG_2, HELP_ORG_REG_1, userRoles } from "../../../tutorial";
+import { HELP_ORG_REG_3, HELP_ORG_REG_2, HELP_ORG_REG_1 } from "../../../tutorial";
 import { Grid, List } from "@material-ui/core";
-import { toFirstUpperCase } from "../../../utils/string_utils";
+import { splitByCaps, toFirstUpperCase } from "../../../utils/string_utils";
 import { perpetual } from "../../../helper/constant";
 
 const stepData = [
@@ -32,42 +32,6 @@ const stepData = [
         description: "Review Organization"
     }
 ]
-
-const items = [
-    {
-        header: 'Manager',
-        description: `Leverage agile frameworks to provide a robust synopsis \n\r for high level overviews.`,
-        meta: 'ROI: 30%',
-        key: 'Manager'
-    },
-    {
-        header: 'Contributor',
-        description: 'Bring to the table win-win survival strategies to ensure proactive domination.',
-        meta: 'ROI: 34%',
-        key: 'Contributor'
-    },
-    {
-        header: 'Viewer',
-        description:
-            'Capitalise on low hanging fruit to identify a ballpark value added activity to beta test.',
-        meta: 'ROI: 27%',
-        key: 'Viewer'
-    },
-]
-
-const makeRoleList = (i, key, type) => {
-    let roles = constant.legendRoles[type][key]
-    return (
-        <List>
-            {
-                Object.keys(roles).map((key, j) => (
-                    <div key={`${i}_${j}`} style={{ color: 'rgba(255,255,255,.6)' }}>{key + " : " + (roles[key])}</div>
-                ))
-            }
-        </List>
-    )
-}
-
 class OrganizationReg extends React.Component {
     constructor(props) {
         super(props);
@@ -76,25 +40,34 @@ class OrganizationReg extends React.Component {
             forms: [],
         }
         this.isUpdate = this.props.isUpdate
-        this.type = null
+        this.type = undefined
+        this.roles = constant.legendRoles
         this.organizationInfo = null
     }
 
-    
 
-    makeCardContent = (i, item, type) => (
-        <Grid container key={i}>
-            <Card style={{ backgroundColor: '#18191E' }}>
-                <Card.Content>
-                    <h4 style={{ color: '#A3A3A5', border: 'none', fontWeight: 700 }}>{type} {item['header']}</h4>
-                    <Card.Description>
-                        {makeRoleList(i, item['key'], type)}
-                    </Card.Description>
-                </Card.Content>
-            </Card>
-            <br />
-        </Grid>
-    )
+
+    makeCardContent = (i, key, roles) => {
+        return (
+            <Grid container key={i}>
+                <Card style={{ backgroundColor: '#18191E' }}>
+                    <Card.Content>
+                        <h4 style={{ color: '#A3A3A5', border: 'none', fontWeight: 700 }}>{splitByCaps(key)}</h4>
+                        <Card.Description>
+                            <List>
+                                {
+                                    Object.keys(roles).map((key, j) => (
+                                        <div key={`${i}_${j}`} style={{ color: 'rgba(255,255,255,.6)' }}>{`${key} : ${roles[key]}`}</div>
+                                    ))
+                                }
+                            </List>
+                        </Card.Description>
+                    </Card.Content>
+                </Card>
+                <br />
+            </Grid>
+        )
+    }
 
     checkForms = (form, forms, isInit) => {
 
@@ -162,7 +135,7 @@ class OrganizationReg extends React.Component {
     onCreateOrganization = async (data) => {
         if (data) {
             this.organizationInfo = data
-            this.type = data[fields.type]
+            this.type = toFirstUpperCase(data[fields.type])
             data[fields.type] = data[fields.type]
             let mcRequest = this.isUpdate ? await updateOrganization(this, data) : await createOrganization(this, data)
             if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
@@ -224,13 +197,13 @@ class OrganizationReg extends React.Component {
                     {this.state.step === 2 ?
                         this.getStep3() :
                         <Grid container>
-                            <Grid item xs={this.state.step === 1 ? 10 : 12}>
+                            <Grid item xs={this.state.step === 1 ? 9 : 12}>
                                 <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                             </Grid>
                             {this.state.step === 1 ?
-                                <Grid item xs={2}>
-                                    {items.map((item, i) => (
-                                        this.makeCardContent(i, item, this.type)
+                                <Grid item xs={3}>
+                                    {Object.keys(this.roles).map((key, i) => (
+                                        key.includes(this.type) ? this.makeCardContent(i, key, this.roles[key]) : null
                                     ))}
                                 </Grid> : null}
                         </Grid>}
@@ -289,7 +262,7 @@ class OrganizationReg extends React.Component {
             { label: 'Add User', formType: MAIN_HEADER, visible: true },
             { field: fields.username, label: 'Username', formType: INPUT, placeholder: 'Select Username', rules: { required: true }, visible: true },
             { field: fields.organizationName, label: 'Organization', formType: INPUT, placeholder: 'Enter Organization Name', rules: { disabled: true }, visible: true, value: data[fields.organizationName] },
-            { field: fields.type, label: 'Type', formType: SELECT, placeholder: 'Enter Type', rules: { disabled: true, allCaps:true }, visible: true, value: data[fields.type] },
+            { field: fields.type, label: 'Type', formType: SELECT, placeholder: 'Enter Type', rules: { disabled: true, allCaps: true }, visible: true, value: data[fields.type] },
             { field: fields.role, label: 'Role', formType: SELECT, placeholder: 'Select Role', rules: { required: true }, visible: true },
         ]
     }
@@ -297,7 +270,7 @@ class OrganizationReg extends React.Component {
     step1 = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Organization`, formType: MAIN_HEADER, visible: true },
-            { field: fields.type, label: 'Type', formType: 'Select', placeholder: 'Select Type', rules: { required: true, disabled: this.props.type !== undefined, allCaps:true }, visible: true },
+            { field: fields.type, label: 'Type', formType: 'Select', placeholder: 'Select Type', rules: { required: true, disabled: this.props.type !== undefined, allCaps: true }, visible: true },
             { field: fields.organizationName, label: 'Organization', formType: INPUT, placeholder: 'Enter Organization Name', rules: { required: true }, visible: true, },
             { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, update: { edit: true } },
             { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, update: { edit: true }, dataValidateFunc: constant.validatePhone },
@@ -307,7 +280,6 @@ class OrganizationReg extends React.Component {
 
     loadDefaultData = async (data) => {
         data[fields.publicImages] = data[fields.publicImages] === perpetual.YES ? true : false
-        data[fields.type] = data[fields.type] === perpetual.DEVELOPER ? 'developer' : 'operator'
     }
 
     getFormData = (data) => {
@@ -316,7 +288,7 @@ class OrganizationReg extends React.Component {
                 this.loadDefaultData(data)
             }
             else {
-                this.type = data[fields.type] === perpetual.DEVELOPER ? 'developer' : 'operator'
+                this.type = toFirstUpperCase(data[fields.type])
                 this.organizationInfo = data
                 this.addUserForm(data)
                 this.setState({ step: 1 })
@@ -354,7 +326,9 @@ class OrganizationReg extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    return {}
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
 };
 
 
