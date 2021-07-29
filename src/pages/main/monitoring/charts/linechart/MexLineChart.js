@@ -7,6 +7,7 @@ import { Box, Dialog, IconButton } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CloseIcon from '@material-ui/icons/Close';
 import { convertUnit } from '../../helper/unitConvertor';
+import { LS_LINE_GRAPH_FULL_SCREEN } from '../../../../../helper/constant/perpetual';
 
 const formatData = (rawData, avgData, globalFilter, rowSelected, disableRowSelectedFilter) => {
     let datasets = []
@@ -106,7 +107,7 @@ class MexLineChart extends React.Component {
         super(props)
         this.state = {
             datasets: [],
-            fullscreen: false
+            fullscreen: this.props.id === localStorage.getItem(LS_LINE_GRAPH_FULL_SCREEN)
         }
         if (props.data) {
             this.metric = props.data.metric
@@ -130,19 +131,23 @@ class MexLineChart extends React.Component {
     }
 
     closeFullScreen = () => {
+        localStorage.removeItem(LS_LINE_GRAPH_FULL_SCREEN)
         this.setState({ fullscreen: false })
     }
 
     openFullScreen = () => {
+        localStorage.setItem(LS_LINE_GRAPH_FULL_SCREEN, this.props.id)
         this.setState({ fullscreen: true })
     }
 
-    renderFullScreen = (id, fullscreen, datasets) => {
+    renderFullScreen = () => {
+        const { fullscreen, datasets } = this.state
+        const { rowSelected, globalFilter, data, id } = this.props
         return (
             <Dialog fullScreen open={fullscreen} onClose={this.closeFullScreen} >
                 <div>
                     <div style={{ display: 'inline-block', float: 'left' }}>
-                        <h3 style={{ padding: 10 }}> {`${this.header} - ${this.props.data.region}`}</h3>
+                        <h3 style={{ padding: 10 }}> {`${this.header} - ${data.region}`}</h3>
                     </div>
                     <div style={{ display: 'inline-block', float: 'right' }}>
                         <IconButton onClick={this.closeFullScreen} style={{ padding: 10 }}>
@@ -150,9 +155,21 @@ class MexLineChart extends React.Component {
                         </IconButton>
                     </div>
                 </div>
-                <div style={{ padding: 20, height: '100vh' }}>
-                    <Line id={`${id}-fs`} datasetKeyProvider={() => (uuid())} options={optionsGenerator(this.header, this.unit, fullscreen, this.range)} data={{ datasets }} height={200} />
-                </div>
+                {
+                    datasets.length === 0 && (rowSelected === 0 && globalFilter.search.length === 0) ?
+                        <div align='center' style={{
+                            position: 'absolute',
+                            left: '50%',
+                            top: '50%',
+                            WebkitTransform: 'translate(-50%, -50%)',
+                            transform: 'translate(-50%, -50%)'
+                        }}>
+                            <CircularProgress size={100} thickness={3} />
+                        </div> :
+                        <div style={{ padding: 20, height: '100vh' }}>
+                            <Line id={`${id}-fs`} datasetKeyProvider={() => (uuid())} options={optionsGenerator(this.header, this.unit, fullscreen, this.range)} data={{ datasets }} height={200} />
+                        </div>
+                }
             </Dialog>
         )
     }
@@ -193,7 +210,7 @@ class MexLineChart extends React.Component {
                                 <Line id={id} datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets }} height={200} /> : null
                     }
                 </div>
-                {this.renderFullScreen(id, fullscreen, datasets)}
+                {this.renderFullScreen()}
             </div> : null
         )
     }

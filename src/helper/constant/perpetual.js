@@ -9,6 +9,7 @@ export const LOCAL_STRAGE_KEY = 'PROJECT_INIT'
 export const LS_ORGANIZATION_INFO = 'organizationInfo'
 export const LS_USER_META_DATA = 'usermetadata'
 export const LS_REGIONS = 'regions'
+export const LS_LINE_GRAPH_FULL_SCREEN = 'LineGraphFullScreen'
 
 export const ACTION_LABEL = 'ActionLabel'
 export const ACTION_WARNING = 'ActionWarning'
