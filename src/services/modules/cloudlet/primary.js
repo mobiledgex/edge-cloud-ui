@@ -15,7 +15,7 @@ const initialize = (parent, field, value) => {
 
 export const primaryKeys = (data, include) => {
   let cloudletKey = undefined
-  include = include ? include : CK_ORG_NAME
+  include = include !== undefined ? include : CK_ORG_NAME
   if (include === CK_ORG_NAME || include === CK_NAME) {
     cloudletKey = initialize(cloudletKey, 'name', data[fields.cloudletName])
   }

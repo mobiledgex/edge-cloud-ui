@@ -19,14 +19,14 @@ export const AIK_APP_ALL = 6
 export const AIK_APP_ORG = 7
 
 export const primaryKeys = (data, include) => {
-  include = include ? include : AIK_APP_ALL
+  include = include !== undefined ? include : AIK_APP_ALL
   let appKey = undefined
 
-  if (include === AIK_APP_ORG || include === AIK_APP_ALL) {
+  if (include === AIK_APP_ORG || include === AIK_APP_ALL || include === AIK_APP_CLOUDLET_CLUSTER) {
     appKey = initialize(appKey, 'organization', data[fields.organizationName])
   }
 
-  if (include === AIK_APP_ALL) {
+  if (include === AIK_APP_ALL || include === AIK_APP_CLOUDLET_CLUSTER) {
     appKey = initialize(appKey, 'name', data[fields.appName])
     appKey = initialize(appKey, 'version', data[fields.version])
   }
