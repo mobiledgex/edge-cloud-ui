@@ -64,7 +64,7 @@ class AlertLocal extends React.Component {
     header = (data) => {
         return (
             <div style={{ width: 500 }}>
-                <h4><b>{data[fields.title]}</b>{this.renderState(data)}</h4>
+                <h4><b>{data[fields.title] ? data[fields.title] : data[fields.alertname]}</b>{this.renderState(data)}</h4>
                 <h5 style={{ color: '#A9A9A9' }}>{data[fields.description]}</h5>
                 <div style={{ marginTop: 10 }}></div>
                 <Chip component="div" variant="outlined" size="small" label={`Region: ${data[fields.region]}`} style={{ marginBottom: 5, marginRight: 5 }} />
