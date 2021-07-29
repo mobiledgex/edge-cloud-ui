@@ -127,10 +127,10 @@ export const emailVerfied = (key, data, isDetail, callback) => {
 export const lock = (key, data, isDetail, callback) => {
     const [locked, setLocked] = React.useState(false)
     const [loading, setLoading] = React.useState(false)
-
+    let id = data[key.field]
     useEffect(() => {
-        setLocked(data[key.field])
-    }, [data[key.field]]);
+        setLocked(id)
+    }, [id]);
 
     const onAction = async (data) => {
         setLoading(true)
