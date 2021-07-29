@@ -83,10 +83,6 @@ const eventKeys = [
 const getKeys = (type) => {
     return type === 'audit' ? auditKeys : eventKeys
 }
-//{`App: ${mtags['app']} [${mtags['appver']}] -  ${mtags['apporg']}`}
-const Chip = (props) => (
-    <p variant="outlined" size="small" className='audit-log-label-chip'>{props.children}</p>
-)
 
 const Chip = (props) => (
     <p variant="outlined" size="small" className='audit-log-label-chip'>{props.children}</p>
