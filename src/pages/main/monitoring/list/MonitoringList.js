@@ -20,7 +20,7 @@ const Action = (props) => {
                   {
                     actionMenu.map((action, i) => {
                       const visible = group ? action.group : true
-                      return visible ? <MenuItem key={i} onClick={(e) => { onClick(e, action) }}>{action.label}</MenuItem> : null
+                      return visible ? <MenuItem key={i} onClick={(e) => { onClick(e, { ...action, group }) }}>{action.label}</MenuItem> : null
                     })
                   }
                 </MenuList>
