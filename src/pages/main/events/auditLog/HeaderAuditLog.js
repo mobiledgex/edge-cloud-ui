@@ -1,5 +1,5 @@
 import React from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, InputAdornment, Input, Divider, Chip } from '@material-ui/core';
+import { Accordion, AccordionSummary, AccordionDetails, InputAdornment, Input, Divider } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -12,6 +12,7 @@ import HistoryLog from './HistoryLog';
 import ViewDetails from './ViewDetails';
 import ClearAllOutlinedIcon from '@material-ui/icons/ClearAllOutlined';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import './style.css'
 
 const formatURL = (logName) => {
     let item = '';
@@ -82,6 +83,10 @@ const eventKeys = [
 const getKeys = (type) => {
     return type === 'audit' ? auditKeys : eventKeys
 }
+//{`App: ${mtags['app']} [${mtags['appver']}] -  ${mtags['apporg']}`}
+const Chip = (props) => (
+    <p variant="outlined" size="small" className='audit-log-label-chip'>{props.children}</p>
+)
 
 class HeaderAuditLog extends React.Component {
     constructor(props) {
@@ -121,10 +126,9 @@ class HeaderAuditLog extends React.Component {
             <div>
                 <h4><b>{data['name']}</b><span className='audit_timeline_traceID'>{dateUtil.time(dateUtil.FORMAT_FULL_TIME_12_A, data.timestamp)}</span></h4>
                 <div style={{ marginTop: 5 }}></div>
-                {mtags['appver'] ? <Chip variant="outlined" size="small" label={`App: ${mtags['app']} [${mtags['appver']}] -  ${mtags['apporg']}`} style={{ marginBottom: 5, marginRight: 5 }} /> : null}
-                {mtags['cluster'] ? <Chip variant="outlined" size="small" label={`Cluster: ${mtags['cluster']} - ${mtags['clusterorg']}`} style={{ marginBottom: 5, marginRight: 5 }} /> : null}
-                {mtags['cloudlet'] ? <Chip variant="outlined" size="small" label={`Cloudlet: ${mtags['cloudlet']} - ${mtags['cloudletorg']}`} style={{ marginBottom: 5, marginRight: 5 }} /> : null}
-                <br />
+                {mtags['appver'] ? <Chip>{`App: ${mtags['app']} [${mtags['appver']}] -  ${mtags['apporg']}`}</Chip> : null}
+                {mtags['cluster'] ? <Chip>{`Cluster: ${mtags['cluster']} - ${mtags['clusterorg']}`}</Chip> : null}
+                {mtags['cloudlet'] ? <Chip>{`Cloudlet: ${mtags['cloudlet']} - ${mtags['cloudletorg']}`}</Chip> : null}
                 <br />
             </div>
         )
