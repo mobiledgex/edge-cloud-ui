@@ -98,7 +98,7 @@ class AppMonitoring extends React.Component {
                         </GridListTile> : null}
                     <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
                 </GridList>
-                {listAction && listAction.id === ACTION_LATENCY_METRICS ? <DMEMetrics id={filter.parent.id} onClose={onActionClose} data={listAction.data} /> : null}
+                {listAction && listAction.id === ACTION_LATENCY_METRICS ? <DMEMetrics group={listAction.group} id={filter.parent.id} onClose={onActionClose} data={listAction.data} /> : null}
             </React.Fragment>
         )
     }

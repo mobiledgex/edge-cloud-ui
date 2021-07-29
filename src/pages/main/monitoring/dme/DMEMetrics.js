@@ -32,6 +32,8 @@ import './style.css'
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
 import { PARENT_APP_INST } from '../helper/Constant';
 import { onlyNumeric } from '../../../../utils/string_utils';
+import { redux_org } from '../../../../helper/reduxData';
+import { AIK_APP_ALL, AIK_APP_CLOUDLET_CLUSTER, AIK_CLOUDLET } from '../../../../services/modules/appInst/primary';
 const buckets = [0, 5, 10, 25, 50, 100]
 class DMEMetrics extends React.Component {
     constructor(props) {
@@ -301,7 +303,7 @@ class DMEMetrics extends React.Component {
 
     fetchData = async () => {
         this.setState({ data: {}, sliderMarks: undefined, selectedDate: undefined })
-        const { data, id } = this.props
+        const { data, id, group } = this.props
         const tempData = data[0]
         const commonRequest = {
             region: tempData[fields.region],
@@ -310,7 +312,7 @@ class DMEMetrics extends React.Component {
             endtime: this.range.to
         }
         const request = id === PARENT_APP_INST ? appInstUsageMetrics(this, {
-            appInst: appInstKeys(tempData),
+            appInst: appInstKeys(tempData, group ? AIK_APP_ALL : AIK_APP_CLOUDLET_CLUSTER),
             ...commonRequest
         }) : cloudletUsageMetrics(this, {
             cloudlet: cloudletKeys(tempData),
