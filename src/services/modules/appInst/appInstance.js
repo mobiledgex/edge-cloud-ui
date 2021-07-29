@@ -71,7 +71,7 @@ export const getKey = (data, isCreate) => {
   appinst.key = getAppInstanceKey(data)
 
   if (data[fields.forceupdate]) {
-    appinst[fields.forceupdate] = data[fields.forceupdate]
+    appinst.force_update = data[fields.forceupdate]
   }
 
   if (isCreate) {
