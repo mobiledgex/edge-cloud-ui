@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { useSelector } from "react-redux";
 import { Icon, Popup } from 'semantic-ui-react';
-import { Icon as MIcon } from '../../hoc/mexui';
+import { Icon as MIcon, IconButton } from '../../hoc/mexui';
 import { fields } from '../../services/model/format';
-import { IconButton, Tooltip, CircularProgress, Chip } from '@material-ui/core';
+import { Tooltip, CircularProgress, Chip } from '@material-ui/core';
 import { Button } from 'semantic-ui-react';
 import { labelFormatter } from '.';
 import { redux_org } from '../reduxData';
@@ -127,10 +127,10 @@ export const emailVerfied = (key, data, isDetail, callback) => {
 export const lock = (key, data, isDetail, callback) => {
     const [locked, setLocked] = React.useState(false)
     const [loading, setLoading] = React.useState(false)
-
+    let id = data[key.field]
     useEffect(() => {
-        setLocked(data[key.field])
-    }, [data[key.field]]);
+        setLocked(id)
+    }, [id]);
 
     const onAction = async (data) => {
         setLoading(true)
@@ -143,7 +143,7 @@ export const lock = (key, data, isDetail, callback) => {
     }
     else {
         return (
-            loading ? <div align='left' style={{ marginLeft: 13 }}><CircularProgress size={17} /></div> : <IconButton onClick={() => onAction(data)} >{locked === true ? <LockOutlinedIcon style={{ color: 'rgba(136,221,0,.9)' }} /> : <LockOpenOutlinedIcon style={{ color: '#6a6a6a' }} />}</IconButton>
+            loading ? <div align='left' style={{ marginLeft: 13 }}><CircularProgress size={17} /></div> : <IconButton onClick={() => onAction(data)} >{locked ? <LockOutlinedIcon style={{ color: 'rgba(136,221,0,.9)' }} /> : <LockOpenOutlinedIcon style={{ color: '#6a6a6a' }} />}</IconButton>
         )
     }
 }
