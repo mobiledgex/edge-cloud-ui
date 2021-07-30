@@ -62,11 +62,13 @@ class AppMexMap extends React.Component {
             if (response.code === 200) {
                 let responseData = response.data
                 let location = responseData[fields.location]
-                if (location.latitude && location.longitude) {
+                if (location) {
+                    let latitude = location.latitude ? location.latitude : 0
+                    let longitude = location.longitude ? location.longitude : 0
                     let uniqueId = responseData.client_key.unique_id
                     let mapData = cloneDeep(this.state.mapData)
                     let polyline = cloneDeep(this.state.polyline)
-                    let key = `${location.latitude}_${location.longitude}`
+                    let key = `${latitude}_${longitude}`
                     let data = []
                     if (mapData[key]) {
                         data = mapData[key]
@@ -78,8 +80,8 @@ class AppMexMap extends React.Component {
                         }
                     }
                     else {
-                        polyline.push([location.latitude, location.longitude])
-                        data = { cloudletLocation: location, label: 1, devices: [uniqueId] }
+                        polyline.push([latitude, longitude])
+                        data = { cloudletLocation: { latitude, longitude }, label: 1, devices: [uniqueId] }
                     }
                     mapData[key] = data
                     this.setState({ mapData, polyline })
@@ -153,9 +155,9 @@ class AppMexMap extends React.Component {
                         <React.Fragment key={key}>
                             {
                                 key === 'main' ?
-                                    <Marker icon={mobileIcon} position={[lat, lon]}>
+                                    <Marker icon={cloudGreenIcon()} position={[lat, lon]} interactive={false}>
                                     </Marker> :
-                                    <MexCircleMarker coords={{ lat: lat, lng: lon }} label={mapData[key]['label']} /*popupData={mapData[key].devices}*/ />
+                                    <MexCircleMarker coords={{ lat: lat, lng: lon }} label={mapData[key]['label']} /*popupData={mapData[key].devices}*/ interactive={false} />
                             }
                         </React.Fragment>
                     )
@@ -210,6 +212,10 @@ class AppMexMap extends React.Component {
         if (listAction && listAction.id === ACTION_TRACK_DEVICES && !equal(listAction, preProps.listAction)) {
             this.mapClick(listAction.data[0])
         }
+    }
+
+    componentWillUnmount(){
+        this.props.onActionClose()
     }
 }
 
