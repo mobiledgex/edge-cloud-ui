@@ -15,7 +15,7 @@ export const keys = () => ([
     { field: fields.nickName, serverField: 'Nickname', label: 'Nickname' },
     { field: fields.createdAt, serverField: 'CreatedAt', label: 'Created At' },
     { field: fields.updatedAt, serverField: 'UpdatedAt', label: 'Updated At' },
-    { field: fields.locked, serverField: 'Locked', label: 'Locked', sortable: true, visible: true, clickable: true, format: true },
+    { field: fields.locked, serverField: 'Locked', label: 'Locked', sortable: false, visible: true, clickable: true, format: true },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
 ])
 
