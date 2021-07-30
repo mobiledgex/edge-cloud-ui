@@ -6,7 +6,7 @@ table.details {
 
 table.details tbody {
     display: block;
-    max-height: 340px;
+    max-height: calc(27vh - 10px);
     overflow-y: auto;
     overflow-x: hidden;
 }
