@@ -293,7 +293,7 @@ class DMEMetrics extends React.Component {
                     <DMEToolbar onChange={this.onToolbar}></DMEToolbar>
                     {this.renderMap()}
                     {this.renderSlider()}
-                    <div style={{ position: 'absolute', top: 170, zIndex: 9999 }}>
+                    <div style={{ position: 'absolute', top: 170, zIndex: 9999, pointerEvents:'none' }}>
                         <Legend colors={colors} buckets={buckets} />
                     </div>
                 </Dialog>
