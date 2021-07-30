@@ -6,6 +6,16 @@ import {IconButton} from '../../../../../hoc/mexui'
 import './style.css'
 import { generateColor } from '../../../../../utils/heatmap_utils';
 import { _avg } from "../../../../../helper/constant/operators"
+
+export const keys = [
+    { label: '0 - 5 ms', field: fields._0s, default: 0 },
+    { label: '5 - 10 ms', field: fields._5ms, default: 0 },
+    { label: '10 - 25 ms', field: fields._10ms, default: 0 },
+    { label: '25 - 50 ms', field: fields._25ms, default: 0 },
+    { label: '50 - 100 ms', field: fields._50ms, default: 0 },
+    { label: '> 100 ms', field: fields._100ms, default: 0 }
+]
+
 const Details = (props) => {
     
     const {data, markerType} = props
@@ -15,7 +25,14 @@ const Details = (props) => {
         <React.Fragment>
             <div style={{ marginBottom: 20 }} align='center'><h4><b>Number of Samples</b></h4></div>
             <table className="details">
-                <thead><tr><th>Location Tile</th><th>0 - 5 ms</th><th>5 - 10 ms</th><th>10 - 25 ms</th><th>25 - 50 ms</th><th>50 - 100 ms</th><th>&gt; 100 ms</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>Location Tile</th>
+                        {keys.map((item, i) => (
+                            <th key={i}>{item.label}</th>
+                        ))}
+                    </tr>
+                </thead>
                 <tbody>
                     {
                         Object.keys(values).map((key, i) => {
@@ -24,12 +41,9 @@ const Details = (props) => {
                             return (
                                 <tr key={i}>
                                     <td><IconButton tooltip='View aggregated location tile latency' onClick={() => { props.onClick(key, values, [location.lat, location.lng]) }}><MyLocationOutlinedIcon style={{ color: generateColor(_avg(childTotal[markerType])) }} /></IconButton></td>
-                                    <td>{childTotal[fields._0s]}</td>
-                                    <td>{childTotal[fields._5ms]}</td>
-                                    <td>{childTotal[fields._10ms]}</td>
-                                    <td>{childTotal[fields._25ms]}</td>
-                                    <td>{childTotal[fields._50ms]}</td>
-                                    <td>{childTotal[fields._100ms]}</td>
+                                    {keys.map((item, j) => (
+                                        <td key={`${i}_${j}`}>{childTotal[item.field] ? childTotal[item.field] : item.default}</td>
+                                    ))}
                                 </tr>
                             )
                         })
