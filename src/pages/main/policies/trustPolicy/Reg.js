@@ -264,9 +264,11 @@ class TrustPolicyReg extends React.Component {
                     }
                 }
                 if (data) {
-
                     if (form.field === fields.fullIsolation) {
-                        form.value = data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0 ? false : true
+                        form.value = !(data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0)
+                    }
+                    else if (form.field === fields.outboundSecurityRules) {
+                        form.visible = data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0
                     }
                     else {
                         if (form.field === fields.organizationName) {
@@ -277,13 +279,6 @@ class TrustPolicyReg extends React.Component {
                         }
                     }
                     this.disableFields(form)
-                }
-            }
-            else if (form.label) {
-                if (data) {
-                    if (form.field === fields.outboundSecurityRules) {
-                        form.visible = data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0 ? true : false
-                    }
                 }
             }
         }
