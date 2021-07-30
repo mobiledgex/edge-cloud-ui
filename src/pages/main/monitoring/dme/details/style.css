@@ -5,7 +5,8 @@ table.details {
 }
 
 table.details tbody {
-    max-height: 250px;
+    display: block;
+    max-height: 340px;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -23,6 +24,8 @@ table.details thead th:last-child {
     width: 216px; /* 140px + 16px detailsbar width */
 }
 
-thead tr th { 
+thead, tbody tr {
+    display: table;
+    width: 100%;
     text-align: left;
 }
