@@ -331,7 +331,7 @@ class DMEMetrics extends React.Component {
                         this.setState({ data: event.data.data, sliderMarks: this.orgSliderMarks, selectedDate: event.data.starttime })
                     }
                     else {
-                        this.props.handleAlertInfo('error', 'Latency Info Not Found')
+                        this.props.handleAlertInfo('error', 'No latency samples were found for the selected time period')
                     }
                 }
             })
