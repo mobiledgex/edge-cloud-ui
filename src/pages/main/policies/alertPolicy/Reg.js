@@ -145,8 +145,7 @@ class Reg extends React.Component {
     labelsForm = () => ([
         { field: fields.key, label: 'Key', formType: INPUT, rules: { required: true }, update: { edit: true }, width: 6, visible: true },
         { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, update: { edit: true }, width: 6, visible: true },
-        this.isUpdate ? {} :
-            { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 4, onClick: this.removeMultiForm }
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 4, onClick: this.removeMultiForm }
     ])
 
     getLabelsForm = (form) => {
@@ -208,13 +207,8 @@ class Reg extends React.Component {
                     data[uuid] = undefined
                 }
             }
-            if (labels) {
-                data[fields.labels] = labels
-            }
-
-            if (annotations) {
-                data[fields.annotations] = annotations
-            }
+            data[fields.labels] = labels ? labels : {}
+            data[fields.annotations] = annotations ? annotations : {}
             if (this.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
                 if (updateData.fields.length > 0) {
@@ -272,27 +266,28 @@ class Reg extends React.Component {
         }
     }
 
-    addMultiKeyValueDataForm = (position, data, forms, field, multiFormCount, formBody, newForm) => {
+    addMultiKeyValueDataForm = (position, data, forms, field, formBody, newForm) => {
         let dataArray = data[field]
-        Object.keys(dataArray).forEach(key => {
-            let value = dataArray[key]
-            let newForms = formBody()
-            for (let form of newForms) {
-                if (form.field === fields.key) {
-                    form.value = key
+        if (dataArray) {
+            let multiFormCount = 0
+            Object.keys(dataArray).forEach(key => {
+                let value = dataArray[key]
+                let newForms = formBody()
+                for (let form of newForms) {
+                    if (form.field === fields.key) {
+                        form.value = key
+                    }
+                    else if (form.field === fields.value) {
+                        form.value = value
+                    }
                 }
-                else if (form.field === fields.value) {
-                    form.value = value
-                }
-            }
-            forms.splice(position + multiFormCount, 0, newForm(newForms))
-            multiFormCount += 1
-        })
-        return multiFormCount
+                forms.splice(position + multiFormCount, 0, newForm(newForms))
+                multiFormCount += 1
+            })
+        }
     }
 
     loadData(forms, data) {
-        let multiFormCount = 0
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field) {
@@ -327,6 +322,12 @@ class Reg extends React.Component {
                         form.visible = data[fields.activeConnectionLimit] === undefined
                         form.value = data[form.field]
                     }
+                    else if (form.field === fields.labels) {
+                        this.addMultiKeyValueDataForm(i + 1, data, forms, fields.labels, this.labelsForm, this.getLabelsForm)
+                    }
+                    else if (form.field === fields.annotations) {
+                        this.addMultiKeyValueDataForm(i + 1, data, forms, fields.annotations, this.labelsForm, this.getAnnotationForm)
+                    }
                     else {
                         form.value = data[form.field]
                     }
@@ -334,11 +335,6 @@ class Reg extends React.Component {
                 }
             }
         }
-
-
-        multiFormCount = this.addMultiKeyValueDataForm(11, data, forms, fields.labels, multiFormCount, this.labelsForm, this.getLabelsForm)
-        multiFormCount = this.addMultiKeyValueDataForm(12, data, forms, fields.annotations, multiFormCount, this.labelsForm, this.getAnnotationForm)
-
     }
 
     getFormData = async (data) => {
