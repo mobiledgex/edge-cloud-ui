@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import MexForms, { MAIN_HEADER, INPUT, SELECT, TIME_COUNTER } from '../../../../hoc/forms/MexForms';
+import MexForms, { MAIN_HEADER, INPUT, SELECT, TIME_COUNTER, TEXT_AREA, HEADER, ICON_BUTTON } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -14,9 +14,10 @@ import { service, updateFieldData } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';
 import { createAlertPolicy, updateAlertPolicy } from '../../../../services/modules/alertPolicy';
 import { responseValid } from '../../../../services/service';
+import uuid from 'uuid';
+import cloneDeep from 'lodash/cloneDeep';
 
 const ALERT_SEVERITY = [perpetual.INFO, perpetual.WARNING, perpetual.ERROR]
-
 class Reg extends React.Component {
     constructor(props) {
         super(props);
@@ -111,18 +112,49 @@ class Reg extends React.Component {
             let value = currentForm.value
             let indexS = value.indexOf('s')
             let indexM = value.indexOf('m')
-            if(indexM < 0)
-            {
+            if (indexM < 0) {
                 const time = value.substring(0, indexS)
-                if(time < 30)
-                {
-                  currentForm.error = 'Trigger time cannot be less than 30 sec' 
-                  return false; 
+                if (time < 30) {
+                    currentForm.error = 'Trigger time cannot be less than 30 sec'
+                    return false;
                 }
             }
         }
         currentForm.error = undefined;
         return true;
+    }
+
+    removeMultiForm = (e, form) => {
+        if (form.parent) {
+            let updateForms = Object.assign([], this.state.forms)
+            updateForms.splice(form.parent.id, 1);
+            this.updateState({
+                forms: updateForms
+            })
+        }
+    }
+
+    addMultiForm = (e, form) => {
+        let parent = form.parent;
+        let forms = this.state.forms;
+        forms.splice(parent.id + 1, 0, form.multiForm());
+        this.updateState({ forms })
+    }
+
+    /*Multi Form*/
+    labelsForm = () => ([
+        { field: fields.key, label: 'Key', formType: INPUT, rules: { required: true }, update: { edit: true }, width: 6, visible: true },
+        { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, update: { edit: true }, width: 6, visible: true },
+        this.isUpdate ? {} :
+            { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 4, onClick: this.removeMultiForm }
+    ])
+
+    getLabelsForm = (form) => {
+        return ({ uuid: uuid(), field: fields.labels, formType: 'MultiForm', forms: form ? form : this.labelsForm(), width: 3, visible: true })
+    }
+
+    getAnnotationForm = (form) => {
+        return ({ uuid: uuid(), field: fields.annotations, formType: 'MultiForm', forms: form ? form : this.labelsForm(), width: 3, visible: true })
     }
 
     getForms = () => ([
@@ -135,7 +167,9 @@ class Reg extends React.Component {
         { field: fields.cpuUtilizationLimit, label: 'CPU Utilization Limit', formType: INPUT, placeholder: 'Enter CPU Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [fields.cpuUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod CPU utilization rate(percentage) across all nodes. Valid values 1-100' },
         { field: fields.memUtilizationLimit, label: 'Memory Utilization Limit', formType: INPUT, placeholder: 'Enter Memory Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [fields.memUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod memory utilization rate(percentage) across all nodes. Valid values 1-100' },
         { field: fields.diskUtilizationLimit, label: 'Disk Utilization Limit', formType: INPUT, placeholder: 'Enter Disk Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [fields.diskUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod disk utilization rate(percentage) across all nodes. Valid values 1-100' },
-        { field: fields.activeConnectionLimit, label: 'Active Connection Limit', formType: INPUT, placeholder: 'Enter Number of Active Connections', rules: { type: 'number', onBlur: true }, visible: true, update: { id: [fields.activeConnectionLimit] }, dataValidateFunc: this.validateLimit, tip: 'Active Connections alert threshold. Valid values 1-4294967295' }
+        { field: fields.activeConnectionLimit, label: 'Active Connection Limit', formType: INPUT, placeholder: 'Enter Number of Active Connections', rules: { type: 'number', onBlur: true }, visible: true, update: { id: [fields.activeConnectionLimit] }, dataValidateFunc: this.validateLimit, tip: 'Active Connections alert threshold. Valid values 1-4294967295' },
+        { field: fields.labels, label: 'Labels', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Labels', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getLabelsForm }], visible: true, update: { id: [fields.labels] }, tip: 'Additional Labels, specify labels:empty=true to clear' },
+        { field: fields.annotations, label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Labels', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: true, update: { id: [fields.annotations] }, tip: 'Additional Annotations for extra information about the alert, specify annotations:empty=true to clear' }
     ])
 
     onUpdateResponse = (mc) => {
@@ -154,7 +188,33 @@ class Reg extends React.Component {
     onCreate = async (data) => {
         let mc = undefined
         if (data) {
+            let labels = undefined
+            let annotations = undefined
             let forms = this.state.forms
+            for (const form of forms) {
+                if (form.uuid) {
+                    let uuid = form.uuid;
+                    let multiFormData = data[uuid]
+                    if (multiFormData) {
+                        if (form.field === fields.labels) {
+                            labels = labels ? labels : {}
+                            labels[multiFormData[fields.key]] = multiFormData[fields.value]
+                        }
+                        else if (form.field === fields.annotations) {
+                            annotations = annotations ? annotations : {}
+                            annotations[multiFormData[fields.key]] = multiFormData[fields.value]
+                        }
+                    }
+                    data[uuid] = undefined
+                }
+            }
+            if (labels) {
+                data[fields.labels] = labels
+            }
+
+            if (annotations) {
+                data[fields.annotations] = annotations
+            }
             if (this.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
                 if (updateData.fields.length > 0) {
@@ -212,7 +272,27 @@ class Reg extends React.Component {
         }
     }
 
+    addMultiKeyValueDataForm = (position, data, forms, field, multiFormCount, formBody, newForm) => {
+        let dataArray = data[field]
+        Object.keys(dataArray).forEach(key => {
+            let value = dataArray[key]
+            let newForms = formBody()
+            for (let form of newForms) {
+                if (form.field === fields.key) {
+                    form.value = key
+                }
+                else if (form.field === fields.value) {
+                    form.value = value
+                }
+            }
+            forms.splice(position + multiFormCount, 0, newForm(newForms))
+            multiFormCount += 1
+        })
+        return multiFormCount
+    }
+
     loadData(forms, data) {
+        let multiFormCount = 0
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field) {
@@ -233,7 +313,10 @@ class Reg extends React.Component {
                 }
 
                 if (data) {
-                    if (form.field === fields.organizationName) {
+                    if (form.uuid) {
+                        continue;
+                    }
+                    else if (form.field === fields.organizationName) {
                         form.value = data[fields.organizationName]
                     }
                     else if (form.field === fields.activeConnectionLimit) {
@@ -251,6 +334,10 @@ class Reg extends React.Component {
                 }
             }
         }
+
+
+        multiFormCount = this.addMultiKeyValueDataForm(11, data, forms, fields.labels, multiFormCount, this.labelsForm, this.getLabelsForm)
+        multiFormCount = this.addMultiKeyValueDataForm(12, data, forms, fields.annotations, multiFormCount, this.labelsForm, this.getAnnotationForm)
 
     }
 
