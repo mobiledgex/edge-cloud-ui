@@ -553,11 +553,11 @@ class CloudletReg extends React.Component {
             requestList.push(showTrustPolicies(this, { region: data[fields.region] }))
             requestList.push(showGPUDrivers(this, { region: data[fields.region] }))
             requestList.push(cloudletResourceQuota(this, { region: data[fields.region], platformType: data[fields.platformType] }))
-            let mcRequestList = await service.multiAuthSyncRequest(this, requestList)
+            let mcList = await service.multiAuthSyncRequest(this, requestList)
 
-            if (mcRequestList && mcRequestList.length > 0) {
-                for (let i = 0; i < mcRequestList.length; i++) {
-                    let mc = mcRequestList[i];
+            if (mcList && mcList.length > 0) {
+                for (let i = 0; i < mcList.length; i++) {
+                    let mc = mcList[i];
                     if (mc && mc.response && mc.response.data) {
                         let responseData = mc.response.data
                         let request = mc.request;
