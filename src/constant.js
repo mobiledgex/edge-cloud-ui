@@ -183,6 +183,21 @@ export const legendRoles =
         'Policies': 'View',
         'Monitoring': 'View',
         'Alert Receivers': 'Manage'
+    },
+    AdminManager: {
+        'Organizations': 'Manage',
+        'Users & Roles': 'Manage',
+        'Accounts': 'Manage',
+        'Cloudlets': 'Manage',
+        'Cloudlet Pools': 'Manage',
+        'Flavors': 'Manage',
+        'Cluster Instances': 'Manage',
+        'Apps': 'Manage',
+        'App Instances': 'Manage',
+        'Policies': 'Manage',
+        'Monitoring': 'View',
+        'Alert Receivers': 'Manage',
+        'Reports': 'View'
     }
 }
 
