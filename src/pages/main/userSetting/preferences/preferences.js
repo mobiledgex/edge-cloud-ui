@@ -5,7 +5,7 @@ import * as actions from '../../../../actions';
 import moment from 'moment'
 import AppsIcon from '@material-ui/icons/Apps';
 import CloseIcon from '@material-ui/icons/Close';
-import { updateUser } from '../../../../services/modules/users'
+import { updateUser, updateUserMetaData } from '../../../../services/modules/users'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, IconButton, List, ListItem, ListItemText, MenuItem, Select, Switch } from '@material-ui/core'
 
@@ -92,10 +92,7 @@ class Preferences extends React.Component {
             let data = this.state.data
             let oldData = getUserMetaData()
             this.isTimezoneChanged = data[PREF_TIMEZONE] !== undefined && oldData[PREF_TIMEZONE] !== data[PREF_TIMEZONE]
-            data = JSON.stringify(data)
-            localStorage.setItem(perpetual.LS_USER_META_DATA, data)
-            let mc = await updateUser(this, { Metadata: data })
-            if (mc && mc.response && mc.response.status === 200) {
+            if (await updateUserMetaData(this, data)) {
                 if (this.isTimezoneChanged) {
                     this.onTimezoneChangeEvent()
                 }

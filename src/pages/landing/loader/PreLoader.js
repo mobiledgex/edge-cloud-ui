@@ -4,54 +4,55 @@ import * as actions from '../../../actions';
 import RoleWorker from '../../../services/worker/role.worker.js'
 import { showOrganizations } from '../../../services/modules/organization';
 import { validatePrivateAccess } from '../../../constant';
-import { organizationInfo } from '../../../helper/ls';
 import './style.css'
 import { withRouter } from 'react-router-dom';
 import { redux_org } from '../../../helper/reduxData';
 import { endpoint, perpetual } from '../../../helper/constant';
 import { fetchToken, multiAuthSyncRequest } from '../../../services/service';
+import { getUserMetaData } from '../../../helper/ls';
 
 class LogoLoader extends React.Component {
 
     constructor(props) {
         super(props)
         this.worker = new RoleWorker();
-        this.count = 0
     }
 
     loadMainPage = () => {
-        if (this.count === 3) {
-            this.props.handleLoadMain(true)
-            let currentPage = this.props.location.state ? this.props.location.state.currentPage : undefined
-            this.props.history.push(currentPage ? currentPage : `/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)
+        this.props.handleLoadMain(true)
+        let currentPage = this.props.location.state ? this.props.location.state.currentPage : undefined
+        this.props.history.push(currentPage ? currentPage : `/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)
+    }
+
+    fetchOrgInfo = (userInfo) => {
+        let data = userInfo && userInfo.Metadata
+        try {
+            data = JSON.parse(data)
         }
+        catch (e) {
+            data = undefined
+        }
+        return data && data.organizationInfo
     }
 
-    cacheOrgInfo = (data) => {
-        this.props.handleOrganizationInfo(data)
-        localStorage.setItem(perpetual.LS_ORGANIZATION_INFO, JSON.stringify(data))
-    }
-
-    validateAdmin = (dataList) => {
+    validateAdmin = (dataList, userInfo) => {
         this.worker.postMessage({ data: dataList, request: showOrganizations(), token: fetchToken(this) })
         this.worker.addEventListener('message', async (event) => {
             let roles = event.data.roles
             this.props.handleRoleInfo(roles)
             if (event.data.isAdmin) {
-                this.cacheOrgInfo(roles[0])
+                this.props.handleOrganizationInfo(roles[0])
             }
             else {
-                let orgInfo = organizationInfo()
-                if (redux_org.isAdmin(orgInfo)) {
-                    localStorage.removeItem(perpetual.LS_ORGANIZATION_INFO)
+                let orgInfo = this.fetchOrgInfo(userInfo)
+                if (orgInfo) {
+                    if (redux_org.isOperator(orgInfo)) {
+                        let privateAccess = await validatePrivateAccess(this, orgInfo)
+                        this.props.handlePrivateAccess(privateAccess)
+                    }
+                    this.props.handleOrganizationInfo(orgInfo)
                 }
-                else if (redux_org.isOperator(orgInfo)) {
-                    let privateAccess = await validatePrivateAccess(this, orgInfo)
-                    this.props.handlePrivateAccess(privateAccess)
-                }
-                this.props.handleOrganizationInfo(organizationInfo())
             }
-            this.count += 1
             this.loadMainPage()
         });
     }
@@ -62,31 +63,31 @@ class LogoLoader extends React.Component {
         requestList.push({ method: endpoint.SHOW_ROLE })
         requestList.push({ method: endpoint.CURRENT_USER })
         let mcList = await multiAuthSyncRequest(this, requestList)
+
+        let roles = undefined
+        let userInfo = undefined
         if (mcList && mcList.length > 0) {
             mcList.map(mc => {
                 if (mc.response && mc.response.status === 200) {
                     let request = mc.request
                     let data = mc.response.data
                     if (request.method === endpoint.SHOW_ROLE) {
-                        this.validateAdmin(data)
+                        roles = data
                     }
                     else if (request.method === endpoint.SHOW_CONTROLLER) {
                         let regions = data.map(item => { return item.Region })
                         localStorage.setItem(perpetual.LS_REGIONS, regions)
                         this.props.handleRegionInfo(regions)
-                        this.count += 1
                     }
                     else if (request.method === endpoint.CURRENT_USER) {
+                        userInfo = data
                         localStorage.setItem(perpetual.LS_USER_META_DATA, data.Metadata)
                         this.props.handleUserInfo(data)
-                        this.count += 1
                     }
                 }
-
             })
+            this.validateAdmin(roles, userInfo)
         }
-        this.loadMainPage()
-
     }
 
 

@@ -22,6 +22,7 @@ export const fields = {
     reservable: 'reservable',
     reservedBy: 'reservedBy',
     resources: 'resources',
+    organizationInfo:'organizationInfo',
     deployment: 'deployment',
     cloudletLocation: 'cloudletLocation',
     latitude: 'latitude',
