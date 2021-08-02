@@ -60,23 +60,16 @@ const processData = (worker) => {
     const { metric, dataList, parentId, region } = worker
     const metricList = metric.keys ? metric.keys : [metric]
     let chartData = []
-    dataList.forEach(metricData => {
-        let key = Object.keys(metricData)[0]
+    if (dataList.values && dataList.columns) {
         metricList.forEach(metric => {
-            let objectId = metric.serverHead ? metric.serverHead : `${parentId}-${metric.serverField}`
-            if (key === objectId) {
-                if (metricData[objectId]) {
-                    let newData = {}
-                    newData.region = region
-                    newData.metric = metric
-                    newData.values = metricData[objectId].values
-                    newData.columns = metricData[objectId].columns
-                    chartData.push(avgCalculator(parentId, newData, metric))
-                }
-            }
+            let newData = {}
+            newData.region = region
+            newData.metric = metric
+            newData.values = dataList.values
+            newData.columns = dataList.columns
+            chartData.push(avgCalculator(parentId, newData, metric))
         })
-
-    })
+    }
     processLineChartData(chartData, worker)
     self.postMessage({ status: 200, data: chartData })
 }
