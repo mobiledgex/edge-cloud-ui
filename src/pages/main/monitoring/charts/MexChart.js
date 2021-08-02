@@ -9,7 +9,7 @@ import { fields } from '../../../../services/model/format'
 import { redux_org, redux_private } from '../../../../helper/reduxData';
 import { processWorker } from '../../../../services/worker/interceptor'
 import MetricWorker from '../services/metric.worker.js'
-import { authSyncRequest } from '../../../../services/service'
+import { authSyncRequest, responseValid } from '../../../../services/service'
 import isEmpty from 'lodash/isEmpty'
 class MexChart extends React.Component {
     constructor(props) {
@@ -86,7 +86,7 @@ class MexChart extends React.Component {
             let org = redux_org.isAdmin(this) ? this.props.org : redux_org.nonAdminOrg(this)
             let request = metricRequest(metric.serverRequest, data, org, redux_private.isPrivate(this))
             let mc = await authSyncRequest(this, { ...request, format: false })
-            if (mc && mc.response && mc.response.status === 200) {
+            if (responseValid(mc)) {
                 let response = await processWorker(this.metricWorker, {
                     response: { data: mc.response.data },
                     request: request,
@@ -112,6 +112,10 @@ class MexChart extends React.Component {
                 else {
                     this.updateData(undefined)
                 }
+            }
+            else
+            {
+                this.updateData(undefined)
             }
         }
     }
