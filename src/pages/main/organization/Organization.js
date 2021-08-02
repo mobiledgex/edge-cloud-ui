@@ -17,8 +17,10 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { perpetual } from '../../../helper/constant';
 import { uiFormatter } from '../../../helper/formatter'
 import { lightGreen } from '@material-ui/core/colors';
-import { authSyncRequest, fetchToken } from '../../../services/service';
+import { authSyncRequest, fetchToken, responseValid } from '../../../services/service';
 import { validatePrivateAccess } from '../../../constant';
+import { getUserMetaData } from '../../../helper/ls';
+import { updateUserMetaData } from '../../../services/modules/users';
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
@@ -117,9 +119,13 @@ class OrganizationList extends React.Component {
         this.props.handleShowAuditLog({ type: 'audit', org: data[fields.organizationName] })
     }
 
-    onDelete = (data, success) => {
+    onDelete = async (data, success) => {
         if (success && data[fields.organizationName] === redux_org.orgName(this)) {
-            localStorage.removeItem(perpetual.LS_ORGANIZATION_INFO)
+            let data = getUserMetaData()
+            if (data && data[fields.organizationInfo]) {
+                data[fields.organizationInfo] = undefined
+                updateUserMetaData(this, data)
+            }
             if (this._isMounted) {
                 this.forceUpdate()
             }
@@ -185,7 +191,6 @@ class OrganizationList extends React.Component {
                     let organizationInfo = this.cacheOrgInfo(data, roleInfo)
                     this.props.handleOrganizationInfo(organizationInfo)
                     this.updatePrivateAccess(organizationInfo)
-                    localStorage.setItem(perpetual.LS_ORGANIZATION_INFO, JSON.stringify(organizationInfo))
                     break;
                 }
             }

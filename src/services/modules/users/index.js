@@ -1,5 +1,5 @@
 import { customize } from './custom'
-import {addUser, keys, showUsers, deleteUser, updateUser, updatePwd, resetPwd} from './users'
+import {addUser, keys, showUsers, deleteUser, updateUser, updatePwd, resetPwd, updateUserMetaData} from './users'
 export {
     customize,
     keys, 
@@ -8,6 +8,7 @@ export {
     deleteUser,
     updateUser,
     updatePwd, 
-    resetPwd
+    resetPwd,
+    updateUserMetaData
 }
 

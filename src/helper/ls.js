@@ -24,12 +24,3 @@ export const orgUserMetaDataLS = (self) => {
     }
     return data
 }
-
-export const organizationInfo = () => {
-    try {
-        return JSON.parse(localStorage.getItem(perpetual.LS_ORGANIZATION_INFO))
-    }
-    catch (e) {
-
-    }
-}
