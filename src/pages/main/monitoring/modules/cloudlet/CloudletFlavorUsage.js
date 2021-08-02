@@ -33,12 +33,12 @@ class CloudletFlavorUsage extends React.Component {
 
     render() {
         const { chartData } = this.state
-        const { filter, style, rowSelected } = this.props
+        const { filter, style, rowSelected, range } = this.props
         return (
             chartData && filter.metricType.includes(chartData.metric.field) ?
                 <GridListTile cols={1} style={style}>
                     <Card style={{ height: 300 }}>
-                        <LineChart id={'cloudlet-flavor-usage'} rowSelected={rowSelected} disableRowSelectedFilter={true} data={chartData} avgData={this.avgData} globalFilter={filter} range={this.props.range} />
+                        <LineChart id={'cloudlet-flavor-usage'} rowSelected={rowSelected} disableRowSelectedFilter={true} data={chartData} avgData={this.avgData} globalFilter={filter} range={range} />
                     </Card>
                 </GridListTile> : null
         )
