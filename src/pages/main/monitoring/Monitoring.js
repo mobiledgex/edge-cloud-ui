@@ -36,6 +36,8 @@ import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF
 import isEqual from 'lodash/isEqual';
 import { authSyncRequest, multiAuthSyncRequest } from '../../../services/service';
 import { LS_LINE_GRAPH_FULL_SCREEN } from '../../../helper/constant/perpetual';
+import isEmpty from 'lodash/isEmpty';
+import { NoData } from '../../../helper/formatter/ui';
 
 const defaultParent = (self) => {
     return constant.metricParentTypes()[redux_org.isOperator(self) ? 2 : 0]
@@ -261,22 +263,26 @@ class Monitoring extends React.Component {
                 </Card>
                 <React.Fragment>
                     {showLoaded ?
-                        <React.Fragment>
-                            <div className="outer" style={{height: 'calc(100vh - 106px)'}}>
-                                <div className="block block-1" ref={this.tableRef}>
-                                    <MonitoringList id={filter.parent.id} data={avgData} filter={filter} onCellClick={this.onCellClick} onActionClick={this.onActionClick} rowSelected={rowSelected} onToolbarClick={this.onListToolbarClick} />
-                                </div>
-                                <div style={{ position: 'relative', height:4 }}>
-                                    <DragButton height={maxHeight}/>
-                                </div>
-                                <div className="block block-2">
-                                    {this.renderMonitoringParent()}
-                                </div>
-                            </div>
-                        </React.Fragment> :
+                        <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
+                            {
+                                !isEmpty(avgData) ?
+                                    <React.Fragment>
+                                        <div className="block block-1" ref={this.tableRef}>
+                                            <MonitoringList id={filter.parent.id} data={avgData} filter={filter} onCellClick={this.onCellClick} onActionClick={this.onActionClick} rowSelected={rowSelected} onToolbarClick={this.onListToolbarClick} />
+                                        </div>
+                                        <div style={{ position: 'relative', height: 4 }}>
+                                            <DragButton height={maxHeight} />
+                                        </div>
+                                        <div className="block block-2">
+                                            {this.renderMonitoringParent()}
+                                        </div>
+                                    </React.Fragment> :
+                                    <NoData />
+                            }
+                        </div> :
                         <React.Fragment>
                             <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
-                                <Skeleton variant="rect"  height={'25%'} style={{marginBottom:3}}/>
+                                <Skeleton variant="rect" height={'25%'} style={{ marginBottom: 3 }} />
                                 <AppSkeleton filter={filter} />
                                 <ClusterSkeleton filter={filter} />
                                 <CloudletSkeleton filter={filter} />
@@ -326,6 +332,9 @@ class Monitoring extends React.Component {
                             })
                         }
                     }
+                }
+                else {
+                    this.updateState({ showLoaded: true, avgData: {} })
                 }
             })
         }
