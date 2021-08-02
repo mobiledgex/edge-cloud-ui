@@ -7,7 +7,6 @@ import { Card, GridListTile } from '@material-ui/core'
 import { timezonePref } from '../../../../../utils/sharedPreferences_util'
 import {redux_org} from '../../../../../helper/reduxData'
 import { authSyncRequest } from '../../../../../services/service'
-
 const metric = { field: 'count', serverField: 'count', serverHead: 'cloudlet-flavor-usage', header: 'Flavor Usage', position: 4, steppedLine:'after' }
 class CloudletFlavorUsage extends React.Component {
 
@@ -35,7 +34,7 @@ class CloudletFlavorUsage extends React.Component {
         const { chartData } = this.state
         const { filter, style, rowSelected, range } = this.props
         return (
-            chartData && filter.metricType.includes(chartData.metric.field) ?
+            chartData && chartData.datasets && filter.metricType.includes(chartData.metric.field) ?
                 <GridListTile cols={1} style={style}>
                     <Card style={{ height: 300 }}>
                         <LineChart id={'cloudlet-flavor-usage'} rowSelected={rowSelected} disableRowSelectedFilter={true} data={chartData} avgData={this.avgData} globalFilter={filter} range={range} />
