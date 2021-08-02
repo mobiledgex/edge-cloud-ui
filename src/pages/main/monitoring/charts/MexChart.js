@@ -10,6 +10,7 @@ import { redux_org, redux_private } from '../../../../helper/reduxData';
 import { processWorker } from '../../../../services/worker/interceptor'
 import MetricWorker from '../services/metric.worker.js'
 import { authSyncRequest } from '../../../../services/service'
+import isEmpty from 'lodash/isEmpty'
 class MexChart extends React.Component {
     constructor(props) {
         super()
@@ -97,8 +98,9 @@ class MexChart extends React.Component {
                 })
                 if (response && response.status === 200) {
                     let chartData = response.data
-                    chartData.map(data => {
+                    chartData = chartData.filter(data => {
                         this.props.updateAvgData(region, data.metric, data.avgData)
+                        return !isEmpty(data.datasets)
                     })
                     if (this.validateData(chartData[0], this.props.avgData[region])) {
                         this.updateData(chartData)

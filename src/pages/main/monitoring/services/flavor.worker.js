@@ -113,12 +113,11 @@ export const format = (worker) => {
     let avgData = worker.avgFlavorData
     let chartData = undefined
     const { response } = formatData(worker.request, worker.response)
-    let dataList = response.data
-    if (dataList.length > 0) {
-        let data = dataList[0]['cloudlet-flavor-usage']
+    let data = response.data
+    if (data.values && data.columns) {
         let calAvgData = worker.calAvgData
         if (calAvgData) {
-            avgData = avgFlavorData({...worker, data})
+            avgData = avgFlavorData({ ...worker, data })
         }
         chartData = processData({ ...worker, data })
         processLineChartData(chartData, avgData, worker)

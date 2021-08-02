@@ -13,32 +13,37 @@ export const generateDataset = (chartData, avgData, timezone, labelPosition) => 
             let dataList = values[key]
             if (dataList && dataList.length > 0) {
                 let color = avgData[key] ? avgData[key].color : '#FFF'
-                let formattedList = dataList.map(value => {
-                    return { x: moment.tz(value[0], timezone).valueOf(), y: value[chartData.metric.position] }
+                let formattedList = []
+                dataList.forEach(value => {
+                    if (value[chartData.metric.position] !== null) {
+                        formattedList.push({ x: moment.tz(value[0], timezone).valueOf(), y: value[chartData.metric.position] })
+                    }
                 })
-                let steppedLine = chartData.metric.steppedLine ? chartData.metric.steppedLine : false
-                datasets[key] = {
-                    label: dataList[0][labelPosition ? labelPosition : 2],
-                    fill: false,
-                    lineTension: 0.5,
-                    steppedLine,
-                    backgroundColor: color,
-                    borderColor: color,
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderWidth: 2,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: color,
-                    pointBackgroundColor: color,
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: color,
-                    pointHoverBorderColor: color,
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
-                    data: LTTB(formattedList, 50)
+                if (formattedList.length > 0) {
+                    let steppedLine = chartData.metric.steppedLine ? chartData.metric.steppedLine : false
+                    datasets[key] = {
+                        label: dataList[0][labelPosition ? labelPosition : 2],
+                        fill: false,
+                        lineTension: 0.5,
+                        steppedLine,
+                        backgroundColor: color,
+                        borderColor: color,
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderWidth: 2,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: color,
+                        pointBackgroundColor: color,
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: color,
+                        pointHoverBorderColor: color,
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: LTTB(formattedList, 50)
+                    }
                 }
             }
         }

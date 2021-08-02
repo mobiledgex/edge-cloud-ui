@@ -33,7 +33,7 @@ import { customize as alertPolicy } from '../modules/alertPolicy/custom';
 import { formatShowData } from './show';
 import { formatChargifyData } from './chargify';
 import { formatAlertData } from './alert';
-import { formatEventData } from './event';
+import { formatBillingData, formatMetricData } from './event';
 import { formatUsageData } from './usage';
 
 export const formatData = (request, response) => {
@@ -93,28 +93,28 @@ export const formatData = (request, response) => {
             data = formatShowData(request, response, cloudletPool, true)
             break;
         case endpoint.CLOUDLET_METRICS_ENDPOINT:
-            data = formatEventData(request, response, cloudletMetrics)
+            data = formatMetricData(request, response, cloudletMetrics)
             break;
         case endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT:
-            data = formatEventData(request, response, cloudletMetricUsage)
+            data = formatMetricData(request, response, cloudletMetricUsage)
             break;
         case endpoint.APP_INST_METRICS_ENDPOINT:
-            data = formatEventData(request, response, appInstMetrics)
+            data = formatMetricData(request, response, appInstMetrics)
             break;
         case endpoint.CLUSTER_METRICS_ENDPOINT:
-            data = formatEventData(request, response, clusterInstMetrics)
-            break;
-        case endpoint.CLUSTER_EVENT_LOG_ENDPOINT:
-            data = formatEventData(request, response, clusterInstEvent)
-            break;
-        case endpoint.APP_INST_EVENT_LOG_ENDPOINT:
-            data = formatEventData(request, response, appInstEvent)
-            break;
-        case endpoint.CLOUDLET_EVENT_LOG_ENDPOINT:
-            data = formatEventData(request, response, cloudletEvent)
+            data = formatMetricData(request, response, clusterInstMetrics)
             break;
         case endpoint.CLIENT_METRICS_ENDPOINT:
-            data = formatEventData(request, response, clientMetrics)
+            data = formatMetricData(request, response, clientMetrics)
+            break;
+        case endpoint.CLUSTER_EVENT_LOG_ENDPOINT:
+            data = formatBillingData(request, response, clusterInstEvent)
+            break;
+        case endpoint.APP_INST_EVENT_LOG_ENDPOINT:
+            data = formatBillingData(request, response, appInstEvent)
+            break;
+        case endpoint.CLOUDLET_EVENT_LOG_ENDPOINT:
+            data = formatBillingData(request, response, cloudletEvent)
             break;
         case endpoint.APP_INST_USAGE_ENDPOINT:
             data = formatUsageData(request, response, appInstUsage)
