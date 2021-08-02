@@ -1,6 +1,6 @@
 import { fields } from '../../model/format'
-import { endpoint } from '../../../helper/constant'
-import { authSyncRequest } from '../../service'
+import { endpoint, perpetual } from '../../../helper/constant'
+import { authSyncRequest, responseValid } from '../../service'
 import { developerRoles, operatorRoles } from '../../../constant'
 
 export const keys = () => ([
@@ -34,8 +34,18 @@ export const deleteUser = (self, data) => {
 }
 
 export const updateUser = async (self, data)=>{
-    let request = {method : endpoint.UPDATE_USER, data : data}
+    let request = {method : endpoint.UPDATE_USER, data}
     return await authSyncRequest(self, request)
+}
+
+export const updateUserMetaData = async (self, data) => {
+    data = JSON.stringify(data)
+    let mc = await updateUser(self, { Metadata: data })
+    let valid = responseValid(mc)
+    if (valid) {
+        localStorage.setItem(perpetual.LS_USER_META_DATA, data)
+    }
+    return valid
 }
 
 export const updatePwd = async (self, data) => {

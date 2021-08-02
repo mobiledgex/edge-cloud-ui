@@ -24,7 +24,6 @@ const Organization = (props) => {
             dispatch(loadingSpinner(false))
         }
         dispatch(organizationInfo(role))
-        localStorage.setItem(perpetual.LS_ORGANIZATION_INFO, JSON.stringify(role))
     }
 
     const renderRow = (virtualProps) => {

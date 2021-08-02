@@ -9,7 +9,11 @@ import '../../css/introjs-dark.css';
 import { pages } from '../../constant';
 import { role } from '../../helper/constant';
 import { withRouter } from 'react-router-dom';
-import { perpetual } from '../../helper/constant';
+import { perpetual, operators } from '../../helper/constant';
+import { fields } from '../../services/model/format';
+import { updateUserMetaData } from '../../services/modules/users';
+import { getUserMetaData } from '../../helper/ls';
+import { responseValid } from '../../services/service';
 
 class Main extends React.Component {
     constructor(props) {
@@ -78,7 +82,17 @@ class Main extends React.Component {
         }
     }
 
+    updateUserPref = (orgInfo) => {
+        let data = getUserMetaData()
+        data[fields.organizationInfo] = orgInfo
+        updateUserMetaData(this, data)
+    }
+
     componentDidUpdate(preProps, preState) {
+        const { organizationInfo } = this.props
+        if (!operators.equal(preProps.organizationInfo, organizationInfo)) {
+            this.updateUserPref(organizationInfo)
+        }
         this.redirectInvalidPath()
     }
 
