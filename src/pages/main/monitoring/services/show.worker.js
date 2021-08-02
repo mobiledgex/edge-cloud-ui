@@ -1,6 +1,6 @@
 /* eslint-disable */
 import sortBy from 'lodash/sortBy'
-import { SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET } from '../../../../helper/constant/endpoint'
+import { SHOW_APP, SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET } from '../../../../helper/constant/endpoint'
 import { formatData } from '../../../../services/format'
 import { fields } from '../../../../services/model/format'
 import {darkColors} from '../../../../utils/color_utils'
@@ -46,10 +46,46 @@ const processData = (worker) => {
     const { parentId, mcList, metricListKeys } = worker
     let formattedList = []
     if (mcList && mcList.length > 0) {
-        if (parentId === PARENT_APP_INST || parentId === PARENT_CLOUDLET) {
+        if (parentId === PARENT_CLOUDLET) {
             let mc = mcList[0]
             if (mc && mc.response && mc.response.status === 200)
                 formattedList = fetchAppInstData(parentId, mc.response.data, metricListKeys)
+        }
+        else if (parentId === PARENT_APP_INST) {
+            let appList = []
+            let appInstList = []
+            let cloudletList = []
+            mcList.map(mc => {
+                let request = mc.request
+                if (mc && mc.response && mc.response.status === 200) {
+                    if (request.method === SHOW_APP) {
+                        appList = mc.response.data
+                    }
+                    else if (request.method === SHOW_APP_INST) {
+                        appInstList = mc.response.data
+                    }
+                    else if (request.method === SHOW_ORG_CLOUDLET || request.method === SHOW_CLOUDLET) {
+                        cloudletList = mc.response.data
+                    }
+                }
+            })
+            if (appInstList && appInstList.length > 0) {
+                for (let appInst of appInstList) {
+                    for (const app of appList) {
+                        if (appInst[fields.appName] === app[fields.appName] && appInst[fields.version] === app[fields.version] && appInst[fields.organizationName] === app[fields.organizationName]) {
+                            appInst[fields.deployment] = app[fields.deployment]
+                            break;
+                        }
+                    }
+                    for (const cloudlet of cloudletList) {
+                        if (appInst[fields.cloudletName] === cloudlet[fields.cloudletName] && appInst[fields.operatorName] === cloudlet[fields.operatorName]) {
+                            appInst[fields.platformType] = cloudlet[fields.platformType]
+                            break;
+                        }
+                    }
+                }
+                formattedList = fetchAppInstData(parentId, appInstList, metricListKeys)
+            }
         }
         else if (parentId === PARENT_CLUSTER_INST) {
             let clusterList = []

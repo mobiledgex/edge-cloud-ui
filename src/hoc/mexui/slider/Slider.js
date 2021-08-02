@@ -55,18 +55,25 @@ const CustomSlider = withStyles(() => {
     })
 })(Slider);
 
+
 export default function MSlider(props) {
     const classes = useStyles();
-
+    const [size, setSize] = React.useState(window.innerWidth - 150)
     useEffect(() => {
         const ticks = document.getElementsByClassName('MuiSlider-mark')
-        props.marks.forEach((mark, i)=>{
+        props.marks.forEach((mark, i) => {
             ticks[i].style.backgroundColor = mark[`color_${props.markertype}`]
         })
     }, [props.markertype]);
 
+    useEffect(() => {
+        window.addEventListener("resize", function () {
+            setSize(window.innerWidth - 150)
+        })
+    }, []);
+
     return (
-        <div className={classes.root}>
+        <div className={classes.root} style={{ width: size }}>
             <CustomSlider aria-label="mslider"
                 {...props}
                 valueLabelDisplay="on" />

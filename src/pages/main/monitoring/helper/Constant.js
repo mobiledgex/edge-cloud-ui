@@ -1,5 +1,6 @@
 import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys, fetchLocation, customData as appCustomData, appInstActions } from '../../../../services/modules/appInstMetrics'
 import { showAppInsts } from '../../../../services/modules/appInst'
+import { showApps } from '../../../../services/modules/app'
 import { clusterMetrics, clusterMetricTypeKeys, clusterMetricsListKeys, customData as clusterCustomData } from '../../../../services/modules/clusterInstMetrics'
 import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys, customData as cloudletCustomData, cloudletUsageMetrics, cloudletActions } from '../../../../services/modules/cloudletMetrics'
 import { showCloudlets } from '../../../../services/modules/cloudlet'
@@ -80,7 +81,7 @@ export const summaryList = [
 ]
 
 export const metricParentTypes = () => ([
-    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showAppInsts], metricListKeys: appMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData, groupBy: { label: 'App', fields: [fields.appName, fields.version], action: true } },
+    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showAppInsts, showApps, showCloudlets], metricListKeys: appMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData, groupBy: { label: 'App', fields: [fields.appName, fields.version], action: true } },
     { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showCloudlets, showClusterInsts], metricListKeys: clusterMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER], customData: clusterCustomData, groupBy: { label: 'Region', fields: [fields.region] } },
     { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showCloudlets], metricListKeys: cloudletMetricsListKeys, role: [perpetual.ADMIN, perpetual.OPERATOR], customData: cloudletCustomData, groupBy: { label: 'Region', fields: [fields.region] } }
 ])

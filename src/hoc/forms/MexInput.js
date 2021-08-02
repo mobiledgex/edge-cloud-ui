@@ -3,7 +3,6 @@
  * **/
 import React from 'react'
 import { Icon, Popup, Input } from 'semantic-ui-react';
-import { perpetual } from '../../helper/constant';
 const MexInput = (props) => {
 
     let form = props.form
@@ -23,10 +22,6 @@ const MexInput = (props) => {
     const onBlurChange = (inp) => {
         if (rules && rules.onBlur && form.hasChanged) {
             let value = inp && new String(inp).trim().length > 0 ? inp : undefined
-            if (value) {
-                value = form.rules && form.rules.type === perpetual.NUMBER ? parseInt(value) : value
-                value = value < 0 ? 0 : value
-            }
             props.onChange(form, value)
         }
     }

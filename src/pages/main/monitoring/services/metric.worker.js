@@ -8,19 +8,34 @@ import cloneDeep from 'lodash/cloneDeep';
 import { convertUnit } from '../helper/unitConvertor';
 import { generateDataset } from './chart';
 import { formatData } from '../../../../services/format/format';
+import { fields } from '../../../../services/model/format';
+import { DEPLOYMENT_TYPE_VM, PLATFORM_TYPE_OPEN_STACK, PLATFORM_TYPE_VCD } from '../../../../helper/constant/perpetual';
 
-const processLineChartData = (chartDataList, worker) => {
+const processLineChartData = (chartDataList, worker, avgDataSkip) => {
     const { avgData, timezone } = worker
     chartDataList.forEach(chartData => {
-        chartData['datasets'] = generateDataset(chartData, avgData, timezone)
+        chartData['datasets'] = generateDataset(chartData, avgData, timezone, undefined, avgDataSkip)
     })
 }
 
-const avgCalculator = (parentId, data, metric) => {
+const avgCalculator = (parentId, data, metric, avgData, avgDataSkip) => {
     let chartData = {}
     chartData = cloneDeep(data)
     chartData['avgData'] = chartData['avgData'] ? chartData['avgData'] : {}
-    Object.keys(data.values).map(valueKey => {
+    const keys = Object.keys(data.values)
+    for (let valueKey of keys) {
+        if (parentId === 'appinst') {
+            let avgValue = avgData[valueKey]
+            let skip = metric.field === fields.disk || metric.field === fields.sent || metric.field === fields.received
+            if (skip && avgValue) {
+                skip = avgValue[fields.deployment] === DEPLOYMENT_TYPE_VM
+                skip = skip ? (avgValue[fields.platformType] === PLATFORM_TYPE_OPEN_STACK || avgValue[fields.platformType] === PLATFORM_TYPE_VCD) : skip
+            }
+            if (skip) {
+                avgDataSkip.push(valueKey)
+                continue;
+            }
+        }
         let value = data.values[valueKey]
         if (value) {
             if (parentId === 'appinst' || parentId === 'cluster') {
@@ -51,14 +66,15 @@ const avgCalculator = (parentId, data, metric) => {
                 chartData['avgData'][valueKey] = avgData
             }
         }
-    })
+    }
     return chartData
 }
 
 const processData = (worker) => {
 
-    const { metric, dataList, parentId, region } = worker
+    const { metric, dataList, parentId, region, avgData } = worker
     const metricList = metric.keys ? metric.keys : [metric]
+    let avgDataSkip = []
     let chartData = []
     if (dataList.values && dataList.columns) {
         metricList.forEach(metric => {
@@ -67,10 +83,10 @@ const processData = (worker) => {
             newData.metric = metric
             newData.values = dataList.values
             newData.columns = dataList.columns
-            chartData.push(avgCalculator(parentId, newData, metric))
+            chartData.push(avgCalculator(parentId, newData, metric, avgData, avgDataSkip))
         })
     }
-    processLineChartData(chartData, worker)
+    processLineChartData(chartData, worker, avgDataSkip)
     self.postMessage({ status: 200, data: chartData })
 }
 
