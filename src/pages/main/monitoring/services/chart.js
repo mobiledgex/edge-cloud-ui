@@ -5,11 +5,12 @@ import moment from 'moment'
 import momentTimezone from "moment-timezone";
 
 /*Generates line chart dataset for given data*/
-export const generateDataset = (chartData, avgData, timezone, labelPosition) => {
+export const generateDataset = (chartData, avgData, timezone, labelPosition, avgDataSkip) => {
     let datasets = {}
     const values = chartData ? chartData.values : {}
+    avgDataSkip = avgDataSkip ? avgDataSkip : []
     Object.keys(values).forEach(key => {
-        if (avgData[key] && (avgData[key].hidden === undefined || avgData[key].hidden === false)) {
+        if (avgDataSkip.includes(key) === false && avgData[key] && (avgData[key].hidden === undefined || avgData[key].hidden === false)) {
             let dataList = values[key]
             if (dataList && dataList.length > 0) {
                 let color = avgData[key] ? avgData[key].color : '#FFF'

@@ -43,6 +43,8 @@ export const appMetricsListKeys = [
     { field: fields.cloudletName, label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
     { field: fields.operatorName, label: 'Operator', sortable: true, visible: false, groupBy: true },
     { field: fields.cloudletLocation, label: 'Location', sortable: false, visible: false, groupBy: false },
+    { field: fields.deployment, label: 'Deployment'},
+    { field: fields.platformType, label: 'Platform Type'},
     { field: fields.healthCheck, label: 'Health Check', sortable: false, visible: true, groupBy: false, customData: true },
     { field: 'cpu', label: 'CPU', sortable: true, visible: true, isArray: true },
     { field: 'disk', label: 'Disk Usage', sortable: true, visible: true, isArray: true },
