@@ -5,15 +5,33 @@ import Popover from '@material-ui/core/Popover';
 import { Badge, IconButton } from '@material-ui/core';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import { showAlerts } from '../../../services/modules/alerts'
-import { redux_org} from '../../../helper/reduxData'
+import { redux_org } from '../../../helper/reduxData'
 import * as constant from '../../../constant'
 import Alerts from './alerts/Alerts'
+import sortBy from 'lodash/sortBy'
 import './style.css'
 
 import notificationWorker from './services/notifcation.worker.js';
 import { operators } from '../../../helper/constant';
 import { fetchToken } from '../../../services/service';
+import { fields } from '../../../services/model/format';
+import { LS_NOTIFICATION } from '../../../helper/constant/perpetual';
+import isEmpty from 'lodash/isEmpty';
 
+const alertStatus = () => {
+    try {
+        let item = localStorage.getItem(LS_NOTIFICATION)
+        item = item ? JSON.parse(item) : undefined
+        return item
+    }
+    catch (e) {
+        return undefined
+    }
+}
+
+const setAlertStatus = (data) => {
+    localStorage.setItem(LS_NOTIFICATION, data ? JSON.stringify(data) : undefined)
+}
 class AlertGlobal extends React.Component {
 
     constructor(props) {
@@ -21,7 +39,7 @@ class AlertGlobal extends React.Component {
         this.state = {
             anchorEl: null,
             dataList: {},
-            showDot: false
+            showDot: alertStatus() ? alertStatus().showDot : false
         }
         this._isMounted = false
         this.intervalId = undefined
@@ -36,7 +54,13 @@ class AlertGlobal extends React.Component {
     }
 
     handleClick = (event) => {
-        this.updateState({ anchorEl: event.currentTarget, showDot: false })
+        let storedStatus = alertStatus()
+        let showDot = false
+        if (storedStatus) {
+            storedStatus.showDot = showDot
+            setAlertStatus(storedStatus)
+        }
+        this.updateState({ anchorEl: event.currentTarget, showDot })
     };
 
     handleClose = () => {
@@ -78,19 +102,43 @@ class AlertGlobal extends React.Component {
         );
     }
 
+    processDot = (newDate) => {
+        let showDot = this.state.showDot
+        let storedStatus = alertStatus()
+        if (storedStatus === undefined || isEmpty(storedStatus)) {
+            if (newDate) {
+                showDot = true
+                setAlertStatus({ date: newDate, showDot })
+            }
+        }
+        else {
+            const date = storedStatus.date
+            showDot = storedStatus.showDot
+            if (date && newDate) {
+                showDot = date < newDate ? true : showDot
+                setAlertStatus({ date: newDate, showDot })
+            }
+        }
+        return showDot
+    }
+
     workerListener = () => {
         this.worker.addEventListener('message', (event) => {
             let response = event.data
             if (response.status === 200) {
-                let data = response.data
-                localStorage.setItem('LatestAlert', data.activeAt)
-                let showDot = data.showDot
-                if (this._isMounted) {
-                    this.setState(prevState => {
-                        let dataList = prevState.dataList
-                        dataList[data.region] = data.data
-                        return { dataList, showDot }
-                    })
+                let responseData = response.data.data
+                const region = response.data.region
+                if (responseData.length > 0) {
+                    let newDataList = sortBy(responseData, [fields.activeAt]).reverse()
+                    let newActiveDate = newDataList[0][fields.activeAt]
+                    const showDot = this.processDot(newActiveDate)
+                    if (this._isMounted) {
+                        this.setState(prevState => {
+                            let dataList = prevState.dataList
+                            dataList[region] = newDataList
+                            return { dataList, showDot }
+                        })
+                    }
                 }
             }
         })
@@ -109,7 +157,7 @@ class AlertGlobal extends React.Component {
             this.regions.map(region => {
                 this.sendRequest(region)
             })
-        }, 10 * 60 * 1000);
+        }, 3 * 10 * 1000);
     }
 
     componentDidMount() {

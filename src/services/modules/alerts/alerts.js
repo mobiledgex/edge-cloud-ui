@@ -181,7 +181,6 @@ export const showAlerts = (self, data) => {
         if (redux_org.isDeveloper(self)) {
             let labels = {}
             labels.apporg = orgName
-            labels.clusterorg = orgName
             data.alert = { labels }
         }
         else if (redux_org.isOperator(self)) {

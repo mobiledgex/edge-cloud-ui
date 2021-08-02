@@ -10,6 +10,7 @@ export const LS_ORGANIZATION_INFO = 'organizationInfo'
 export const LS_USER_META_DATA = 'usermetadata'
 export const LS_REGIONS = 'regions'
 export const LS_LINE_GRAPH_FULL_SCREEN = 'LineGraphFullScreen'
+export const LS_NOTIFICATION = 'Notification'
 
 export const ACTION_LABEL = 'ActionLabel'
 export const ACTION_WARNING = 'ActionWarning'
