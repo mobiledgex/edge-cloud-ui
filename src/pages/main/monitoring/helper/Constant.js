@@ -81,7 +81,7 @@ export const summaryList = [
 ]
 
 export const metricParentTypes = () => ([
-    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showAppInsts, showApps, showCloudlets], metricListKeys: appMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData, groupBy: { label: 'App', fields: [fields.appName, fields.version], action: true } },
+    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showAppInsts, showCloudlets], metricListKeys: appMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData, groupBy: { label: 'App', fields: [fields.appName, fields.version], action: true } },
     { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showCloudlets, showClusterInsts], metricListKeys: clusterMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER], customData: clusterCustomData, groupBy: { label: 'Region', fields: [fields.region] } },
     { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showCloudlets], metricListKeys: cloudletMetricsListKeys, role: [perpetual.ADMIN, perpetual.OPERATOR], customData: cloudletCustomData, groupBy: { label: 'Region', fields: [fields.region] } }
 ])
