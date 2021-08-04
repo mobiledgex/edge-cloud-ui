@@ -42,7 +42,6 @@ class CloudletMonitoring extends React.Component {
         this.state = {
             mapData: {}
         }
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -56,7 +55,7 @@ class CloudletMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { avgData, filter, rowSelected, range, selectedOrg, updateAvgData, listAction, onActionClose } = this.props
+        const { avgData, filter, rowSelected, range, selectedOrg, updateAvgData, listAction, onActionClose, regions } = this.props
         return (
             <React.Fragment>
                 <GridList cols={4} cellHeight={300}>
@@ -65,13 +64,13 @@ class CloudletMonitoring extends React.Component {
                     </GridListTile> : null}
                     {filter.metricType.includes('event') ? <GridListTile cols={1}>
                         <Card style={{ height: 300 }}>
-                            <CloudletEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} />
+                            <CloudletEvent regions={regions} filter={filter} range={range} org={selectedOrg} />
                         </Card>
                     </GridListTile> : null}
                     {filter.region.map((region, i) => (
                         <CloudletFlavorUsage key={`flavor_${region}_${i}`} range={range} filter={filter} avgData={avgData[region]} rowSelected={rowSelected} region={region} org={selectedOrg} />
                     ))}
-                    <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
+                    <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
                 </GridList>
                 {listAction && listAction.id === ACTION_LATENCY_METRICS ? <DMEMetrics id={filter.parent.id} onClose={onActionClose} data={listAction.data} /> : null}
             </React.Fragment>

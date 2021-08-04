@@ -1,6 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux';
-import * as actions from '../../../../../actions';
 import { Card, GridList, GridListTile } from '@material-ui/core'
 import { fields } from '../../../../../services/model/format'
 import AppClient from './AppClient'
@@ -67,7 +65,6 @@ class AppMonitoring extends React.Component {
             mapData: {},
             healthData: {}
         }
-        this.regions = props.regions
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -76,14 +73,14 @@ class AppMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { avgData, filter, range, rowSelected, selectedOrg, updateAvgData, onActionClose, listAction } = this.props
+        const { avgData, filter, range, rowSelected, selectedOrg, updateAvgData, onActionClose, listAction, regions } = this.props
         return (
             <React.Fragment>
                 <GridList cols={4} cellHeight={300}>
                     {/* {filter.metricType.includes('client') ?
                         <GridListTile cols={1}>
                             <Card style={{ height: 300, width: '100%' }}>
-                                <AppClient regions={this.regions} filter={filter} range={range} org={selectedOrg} />
+                                <AppClient regions={regions} filter={filter} range={range} org={selectedOrg} />
                             </Card>
                         </GridListTile> : null} */}
                     {filter.metricType.includes('map') ?
@@ -93,10 +90,10 @@ class AppMonitoring extends React.Component {
                     {filter.metricType.includes('event') ?
                         <GridListTile cols={1}>
                             <Card style={{ height: 300 }}>
-                                <AppEvent regions={this.regions} filter={filter} range={range} org={selectedOrg} avgData={avgData} />
+                                <AppEvent regions={regions} filter={filter} range={range} org={selectedOrg} avgData={avgData} />
                             </Card>
                         </GridListTile> : null}
-                    <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={this.regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
+                    <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
                 </GridList>
                 {listAction && listAction.id === ACTION_LATENCY_METRICS ? <DMEMetrics group={listAction.group} id={filter.parent.id} onClose={onActionClose} data={listAction.data} /> : null}
             </React.Fragment>
@@ -107,7 +104,13 @@ class AppMonitoring extends React.Component {
         const { data } = listAction
         if (data && data.length > 0) {
             let mc = await requestAppInstLatency(this, data[0])
-            responseValid(mc) && this.props.handleAlertInfo('success', mc.response.data.message)
+            if (responseValid(mc)) {
+                responseValid(mc) && this.props.showAlert('success', mc.response.data.message)
+            }
+            else{
+                if(mc.error && mc.error.response && mc.error.response.data && mc.error.response.data.message)
+                this.props.showAlert('error', mc.error.response.data.message)
+            }
         }
         this.props.onActionClose()
     }
@@ -122,10 +125,4 @@ class AppMonitoring extends React.Component {
     }
 }
 
-const mapDispatchProps = (dispatch) => {
-    return {
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
-    };
-};
-
-export default connect(null, mapDispatchProps)(AppMonitoring);
+export default AppMonitoring;

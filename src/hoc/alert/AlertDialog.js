@@ -1,6 +1,7 @@
 import React from 'react';
 import { Snackbar} from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
+import { toFirstUpperCase } from '../../utils/string_utils';
 
 const Alert = (props) => {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -22,7 +23,7 @@ const MexAlert = (props) => {
             autoHideDuration={20000}
         >
             <Alert onClose={handleClose} severity={props.data.mode}>
-                {props.data.msg}
+                {toFirstUpperCase(props.data.msg)}
             </Alert>
         </Snackbar>
     )
