@@ -47,7 +47,7 @@ export const formatBillingData = (request, response) => {
                         let formatted = {}
                         let formattingData = {}
                         let key = data.name
-                        if (key === 'clusterinst-checkpoints') {
+                        if (key === 'clusterinst-checkpoints' || key === 'appinst-checkpoints') {
                             continue
                         }
                         formattingData.columns = formatColumns(data.columns, keys)

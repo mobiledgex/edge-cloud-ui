@@ -3,7 +3,7 @@ import sortBy from 'lodash/sortBy'
 import { SHOW_APP, SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET } from '../../../../helper/constant/endpoint'
 import { formatData } from '../../../../services/format'
 import { fields } from '../../../../services/model/format'
-import {darkColors} from '../../../../utils/color_utils'
+import { darkColors } from '../../../../utils/color_utils'
 
 const PARENT_APP_INST = 'appinst'
 const PARENT_CLOUDLET = 'cloudlet'
@@ -52,16 +52,12 @@ const processData = (worker) => {
                 formattedList = fetchAppInstData(parentId, mc.response.data, metricListKeys)
         }
         else if (parentId === PARENT_APP_INST) {
-            let appList = []
             let appInstList = []
             let cloudletList = []
             mcList.map(mc => {
                 let request = mc.request
                 if (mc && mc.response && mc.response.status === 200) {
-                    if (request.method === SHOW_APP) {
-                        appList = mc.response.data
-                    }
-                    else if (request.method === SHOW_APP_INST) {
+                    if (request.method === SHOW_APP_INST) {
                         appInstList = mc.response.data
                     }
                     else if (request.method === SHOW_ORG_CLOUDLET || request.method === SHOW_CLOUDLET) {
@@ -71,12 +67,6 @@ const processData = (worker) => {
             })
             if (appInstList && appInstList.length > 0) {
                 for (let appInst of appInstList) {
-                    for (const app of appList) {
-                        if (appInst[fields.appName] === app[fields.appName] && appInst[fields.version] === app[fields.version] && appInst[fields.organizationName] === app[fields.organizationName]) {
-                            appInst[fields.deployment] = app[fields.deployment]
-                            break;
-                        }
-                    }
                     for (const cloudlet of cloudletList) {
                         if (appInst[fields.cloudletName] === cloudlet[fields.cloudletName] && appInst[fields.operatorName] === cloudlet[fields.operatorName]) {
                             appInst[fields.platformType] = cloudlet[fields.platformType]
