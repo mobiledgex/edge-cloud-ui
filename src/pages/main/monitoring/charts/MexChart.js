@@ -54,7 +54,7 @@ class MexChart extends React.Component {
         const { dataList } = this.state
         const { region, avgData, filter, rowSelected, style, range } = this.props
         return (
-            dataList && dataList.length > 0 ?
+            filter.region.includes(region) && dataList && dataList.length > 0 ?
                 dataList.map(data => {
                     let key = this.metricKeyGenerator(filter, region, data.metric)
                     return (
