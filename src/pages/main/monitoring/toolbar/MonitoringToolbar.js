@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect, useSelector } from 'react-redux';
-import { Toolbar, Input, InputAdornment, makeStyles, Box, IconButton, Tooltip, Grid, Divider } from '@material-ui/core'
-import SearchIcon from '@material-ui/icons/Search';
+import { Toolbar, makeStyles, Box, IconButton, Tooltip, Grid, Divider } from '@material-ui/core'
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
 import * as constant from '../helper/Constant';
 import MexTimer from '../helper/MexTimer'
@@ -12,6 +11,7 @@ import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 import { fields } from '../../../../services/model/format';
 import {redux_org, redux_private} from '../../../../helper/reduxData'
 import { lightGreen } from '@material-ui/core/colors';
+import SearchFilter from '../../../../hoc/filter/SearchFilter'
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
@@ -49,29 +49,13 @@ const MexToolbar = (props) => {
         props.onChange(constant.ACTION_SEARCH, value)
     }
 
+    const onSearch = (value)=>{
+        props.onChange(constant.ACTION_SEARCH, value)
+    }
+
     const searchForm = (order) => (
         <Box order={order} style={{ marginTop: `${focused ? '0px' : '7px'}`, marginLeft: 10 }}>
-            <Input
-                onFocus={() => {
-                    setFocused(true)
-                }}
-                onBlur={() => {
-                    setFocused(false)
-                }}
-                size="small"
-                disableUnderline={!focused}
-                classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                }}
-                onChange={handleSearch}
-                startAdornment={
-                    <InputAdornment className={classes.searchAdorment} position="start" >
-                        <SearchIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />
-                    </InputAdornment>
-                }
-                value={search}
-                placeholder={'Search'} />
+            <SearchFilter onFilter={onSearch} style={{ marginBottom: 10 }} compact={true} insensitive={true} />
         </Box>
     )
     /*Search Block*/

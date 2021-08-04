@@ -66,7 +66,7 @@ const defaultRegion = (self, regions) => {
 class Monitoring extends React.Component {
     constructor(props) {
         super(props)
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        this.regions = this.props.regions
         let parent = defaultParent(this)
         this.state = {
             maxHeight: 0,
@@ -240,17 +240,21 @@ class Monitoring extends React.Component {
         }
     }
 
+    showAlert = (type, message) => {
+        this.props.handleAlertInfo(type, message)
+    }
+
     renderMonitoringParent = () => {
         const { filter, range, avgData, rowSelected, selectedOrg, listAction } = this.state
         let parentId = filter.parent.id
         if (parentId === constant.PARENT_APP_INST) {
-            return <AppInstMonitoring key={JSON.stringify(filter)} showAlert={this.showAlert} avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} listAction={listAction} onActionClose={this.onActionClose} />
+            return <AppInstMonitoring showAlert={this.showAlert} avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} listAction={listAction} onActionClose={this.onActionClose} />
         }
         else if (parentId === constant.PARENT_CLUSTER_INST) {
             return <ClusterMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} />
         }
         else if (parentId === constant.PARENT_CLOUDLET) {
-            return <CloudletMonitoring avgData={avgData} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} listAction={listAction}  onActionClose={this.onActionClose} />
+            return <CloudletMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} listAction={listAction}  onActionClose={this.onActionClose} />
         }
     }
 
@@ -416,7 +420,8 @@ class Monitoring extends React.Component {
 const mapStateToProps = (state) => {
     return {
         privateAccess: state.privateAccess.data,
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 };
 
