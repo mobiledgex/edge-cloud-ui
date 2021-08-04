@@ -23,16 +23,17 @@ export const relativeTimeRanges = [
     { label: 'Last 12 hours', duration: 720 },
 ]
 
-const rangeLabel = (from, to) => {
+const rangeLabel = (range) => {
+    const timeRange = timeRangeInMin(range.duration)
     return <div>
         <div>
-            {dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, from)}
+            {dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, timeRange.from)}
         </div>
         <div style={{ marginTop: 10, marginBottom: 10 }} align="center">
             to
         </div>
         <div>
-            {dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, to)}
+            {dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, timeRange.to)}
         </div>
     </div>
 }
@@ -90,7 +91,7 @@ const MexTimer = (props) => {
 
     return (
         <React.Fragment>
-            <Tooltip title={<strong style={{ fontSize: 13 }}>{rangeLabel(from, to)}</strong>} arrow>
+            <Tooltip title={<strong style={{ fontSize: 13 }}>{rangeLabel(relativeRange)}</strong>} arrow>
                 <button size='small' aria-controls="mex-timer" aria-haspopup="true" onClick={handleClick} style={{ backgroundColor: 'transparent', border: '1px solid rgba(118, 255, 3, 0.7)', borderRadius: 5, cursor: 'pointer', padding: 5 }}>
                     <Icon name='clock outline' style={{ color: 'rgba(118, 255, 3, 0.7)' }} /><strong style={{ marginLeft: 5, color: 'rgba(118, 255, 3, 0.7)' }}>{relativeRange.label}</strong><Icon name='chevron down' style={{ marginLeft: 5, color: 'rgba(118, 255, 3, 0.7)' }} />
                 </button>
