@@ -179,7 +179,7 @@ class Reg extends React.Component {
             if (mc.response && mc.response.data) {
                 responseData = mc.response.data;
             }
-            let labels = [{ label: 'Alert Policy', field: fields.trustPolicyName }]
+            let labels = [{ label: 'Alert Policy', field: fields.alertPolicyName }]
             this.updateState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
     }
