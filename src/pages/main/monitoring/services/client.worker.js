@@ -1,32 +1,50 @@
 /* eslint-disable */
-import { formatData } from "../../../../services/format/format"
 
-const processData = (worker) => {
-    const { dataList, region } = worker
-    let data = []
-    dataList.map(clientData => {
-        let dataObject = clientData['dme-api'].values
-        Object.keys(dataObject).map(key => {
-            let findCloudlet = 0
-            let registerClient = 0
-            let verifyLocation = 0
-            dataObject[key].map(data => {
-                findCloudlet += data.includes('FindCloudlet') ? 1 : 0
-                registerClient += data.includes('RegisterClient') ? 1 : 0
-                verifyLocation += data.includes('VerifyLocation') ? 1 : 0
-            })
-            data.push({ key: `${region} -  ${dataObject[key][0][3]} [${dataObject[key][0][4]}]`, findCloudlet, registerClient, verifyLocation })
-        })
-    })
-    self.postMessage({ data })
+const processData = (request, response) => {
+    let formattedData = {}
+    const keys = request.keys
+    try {
+        if (response && response.data && response.data.data) {
+            let dataList = response.data.data;
+            if (dataList && dataList.length > 0) {
+                const keys = request.keys
+                const requestData = request.data
+                let series = dataList[0].Series
+                let messages = dataList[0].messages
+                if (series && series.length > 0) {
+                    for (const data of series) {
+                        let tags = data.tags
+                        let values = data.values
+                        let key = request.data.region
+                        keys.forEach((item, i) => {
+                            if (item.groupBy) {
+                                key = i > 0 ? key + '_' : key
+                                key = key + tags[item.serverField]
+                            }
+                        })
+                        key = key.toLowerCase()
+                        formattedData[key] = formattedData[key] ? formattedData[key] : { skip: true }
+                        if (formattedData[key]['tags'] === undefined) {
+                            formattedData[key]['tags'] = tags
+                        }
+                        let value = values[0][1]
+                        if (formattedData[key].skip) {
+                            formattedData[key].skip = value <= 0
+                        }
+                        formattedData[key][tags['method']] = value ? value : 0
+                    }
+                }
+            }
+        }
+    }
+    catch (e) {
+        //alert(e)
+    }
+    self.postMessage({ data: formattedData })
 }
 
 export const format = (worker) => {
-    const { response } = formatData(worker.request, worker.response)
-    let dataList = response.data
-    if (dataList.length > 0) {
-        processData({ ...worker, dataList })
-    }
+    processData(worker.request, worker.response)
 }
 
 self.addEventListener("message", (event) => {

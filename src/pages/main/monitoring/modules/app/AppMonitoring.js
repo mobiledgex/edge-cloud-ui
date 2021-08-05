@@ -73,24 +73,24 @@ class AppMonitoring extends React.Component {
 
     render() {
         const { mapData } = this.state
-        const { avgData, filter, range, rowSelected, selectedOrg, updateAvgData, onActionClose, listAction, regions } = this.props
+        const { avgData, filter, range, rowSelected, selectedOrg, updateAvgData, onActionClose, listAction, regions, privateAccess, orgInfo } = this.props
         return (
             <React.Fragment>
                 <GridList cols={4} cellHeight={300}>
-                    {/* {filter.metricType.includes('client') ?
+                    {filter.metricType.includes('client') ?
                         <GridListTile cols={1}>
                             <Card style={{ height: 300, width: '100%' }}>
-                                <AppClient regions={regions} filter={filter} range={range} org={selectedOrg} />
+                                <AppClient regions={regions} filter={filter} range={range} org={selectedOrg} privateAccess={privateAccess}  orgInfo={orgInfo}/>
                             </Card>
-                        </GridListTile> : null} */}
+                        </GridListTile> : null}
                     {filter.metricType.includes('map') ?
-                        <GridListTile cols={3}>
+                        <GridListTile cols={2}>
                             <AppMexMap data={mapData} region={filter.region} listAction={listAction} avgData={avgData} onActionClose={onActionClose} />
                         </GridListTile> : null}
                     {filter.metricType.includes('event') ?
                         <GridListTile cols={1}>
                             <Card style={{ height: 300 }}>
-                                <AppEvent regions={regions} filter={filter} range={range} org={selectedOrg} avgData={avgData} />
+                                <AppEvent regions={regions} filter={filter} range={range} org={selectedOrg} avgData={avgData} orgInfo={orgInfo}/>
                             </Card>
                         </GridListTile> : null}
                     <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
@@ -107,9 +107,9 @@ class AppMonitoring extends React.Component {
             if (responseValid(mc)) {
                 responseValid(mc) && this.props.showAlert('success', mc.response.data.message)
             }
-            else{
-                if(mc.error && mc.error.response && mc.error.response.data && mc.error.response.data.message)
-                this.props.showAlert('error', mc.error.response.data.message)
+            else {
+                if (mc.error && mc.error.response && mc.error.response.data && mc.error.response.data.message)
+                    this.props.showAlert('error', mc.error.response.data.message)
             }
         }
         this.props.onActionClose()

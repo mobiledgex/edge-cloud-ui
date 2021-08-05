@@ -1,5 +1,4 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom'
 import MexChart from '../charts/MexChart'
 import { metricType } from '../helper/Constant'
 
@@ -26,4 +25,4 @@ class MexMetric extends React.Component {
     }
 }
 
-export default withRouter(MexMetric);
+export default MexMetric;
