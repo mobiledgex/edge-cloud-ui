@@ -63,8 +63,12 @@ export const generateReport = async(self, data)=>{
     return await authSyncRequest(self, request)
 }
 
-export const showReporter = (data) => {
-    return { method: endpoint.SHOW_REPORTER, data: undefined, keys: keys() }
+export const showReporter = (self, data) => {
+    let requestData = {}
+    if (redux_org.nonAdminOrg(self)) {
+        requestData.org = redux_org.orgName(self)
+    }
+    return { method: endpoint.SHOW_REPORTER, data: requestData, keys: keys() }
 }
 
 export const createReporter = async (self, data) => {
