@@ -85,7 +85,7 @@ export const createAlertPolicy = (data) => {
 
 export const deleteAlertPolicy = (self, data) => {
   let requestData = getKey(data)
-  return { method: endpoint.DELETE_ALERT_POLICY, data: requestData, success: `Trust Policy ${data[fields.trustPolicyName]} deleted successfully` }
+  return { method: endpoint.DELETE_ALERT_POLICY, data: requestData, success: `Alert Policy ${data[fields.trustPolicyName]} deleted successfully` }
 }
 
 export const multiDataRequest = (keys, mcList, specific) => {
