@@ -16,7 +16,8 @@ class Generator extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            loading: false
+            loading: false,
+            org:undefined
         }
         this.data = {}
     }
@@ -33,6 +34,7 @@ class Generator extends React.Component {
     }
 
     onOrgChange = (value) => {
+        this.setState({ org: value })
         this.data.org = value
     }
 
@@ -63,7 +65,7 @@ class Generator extends React.Component {
     }
 
     render() {
-        const { loading } = this.state
+        const { loading, org } = this.state
         const { orgList } = this.props
         const gridLength = redux_org.isAdmin(this) ? 2 : 3
         return (
@@ -86,7 +88,7 @@ class Generator extends React.Component {
                             </Grid> : null
                     }
                     <Grid item xs={2}>
-                        <Button onClick={this.onFetch} loading={loading}>Generate</Button>
+                        <Button onClick={this.onFetch} loading={loading} disabled={org === undefined}>Generate</Button>
                     </Grid>
                 </Grid>
             </Card>
