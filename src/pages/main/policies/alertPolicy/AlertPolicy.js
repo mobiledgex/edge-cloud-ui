@@ -67,7 +67,7 @@ class AlertPolicy extends React.Component {
 
     groupActionMenu = () => {
         return [
-            { label: 'Delete', onClick: deleteTrustPolicy, icon: 'delete', warning: 'delete all the selected policies', type: 'Edit' },
+            { label: 'Delete', onClick: deleteAlertPolicy, icon: 'delete', warning: 'delete all the selected policies', type: 'Edit' },
         ]
     }
 

@@ -61,8 +61,8 @@ const getKey = (data, isCreate) => {
 }
 
 export const showAlertPolicy = (self, data) => {
-  if (redux_org.isOperator(self)) {
-    data.trustpolicy = { key: { organization: redux_org.nonAdminOrg(self) } }
+  if (redux_org.isDeveloper(self)) {
+    data.alertPolicy = { key: { organization: redux_org.nonAdminOrg(self) } }
   }
   return { method: endpoint.SHOW_ALERT_POLICY, data: data, keys: keys() }
 }
@@ -85,7 +85,7 @@ export const createAlertPolicy = (data) => {
 
 export const deleteAlertPolicy = (self, data) => {
   let requestData = getKey(data)
-  return { method: endpoint.DELETE_ALERT_POLICY, data: requestData, success: `Alert Policy ${data[fields.trustPolicyName]} deleted successfully` }
+  return { method: endpoint.DELETE_ALERT_POLICY, data: requestData, success: `Alert Policy ${data[fields.alertPolicyName]} deleted successfully` }
 }
 
 export const multiDataRequest = (keys, mcList, specific) => {
