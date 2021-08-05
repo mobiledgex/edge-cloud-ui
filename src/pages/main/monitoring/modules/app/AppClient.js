@@ -3,24 +3,24 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import HorizontalBar from '../../charts/horizontalBar/MexHorizontalBar'
 import { clientMetrics } from '../../../../../services/modules/clientMetrics'
-import {redux_org, redux_private} from '../../../../../helper/reduxData'
+import { redux_org, redux_private } from '../../../../../helper/reduxData'
 import MexWorker from '../../services/client.worker.js'
-import { authSyncRequest } from '../../../../../services/service'
+import { authSyncRequest, responseValid } from '../../../../../services/service'
 
 class MexAppClient extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            stackedData: {}
+            stackedData: {},
+            loading: true
         }
         this._isMounted = false
-        this.regions = props.regions
     }
 
     validatData = (data) => {
         let valid = false
-        this.regions.map(region => {
+        this.props.regions.map(region => {
             if (!valid && data[region]) {
                 [
                     valid = data[region].length > 0
@@ -31,9 +31,9 @@ class MexAppClient extends React.Component {
     }
 
     render() {
-        const { stackedData } = this.state
-        const { filter } = this.props
-        return this.validatData(stackedData) ? <HorizontalBar header='Client API Usage Count' chartData={stackedData} filter={filter} /> :
+        const { stackedData, loading } = this.state
+        const { filter, regions } = this.props
+        return stackedData ? <HorizontalBar loading={loading} header='Client API Usage Count' chartData={stackedData} filter={filter} regions={regions} /> :
             <div className="event-list-main" align="center" style={{ textAlign: 'center', verticalAlign: 'middle' }}>
                 <div align="left" className="event-list-header">
                     <h3 className='chart-header'>Client API Usage Count</h3>
@@ -43,15 +43,18 @@ class MexAppClient extends React.Component {
     }
 
     fetchData = async (region, range) => {
+        this.setState({ loading: true })
+        const {orgInfo, privateAccess} = this.props
         const requestData = clientMetrics({
             region: region,
             selector: "api",
+            numsamples: 1,
             starttime: range.starttime,
             endtime: range.endtime
-        }, redux_org.isAdmin(this) ? this.props.org : redux_org.nonAdminOrg(this), redux_private.isPrivate(this))
+        }, redux_org.isAdmin(orgInfo) ? this.props.org : redux_org.nonAdminOrg(orgInfo), redux_private.isPrivate(privateAccess))
 
         let mc = await authSyncRequest(this, { ...requestData, format: false })
-        if (mc && mc.response && mc.response.status === 200) {
+        if (responseValid(mc)) {
             let worker = new MexWorker();
             worker.postMessage({
                 response: mc.response,
@@ -63,7 +66,7 @@ class MexAppClient extends React.Component {
                     this.setState(prevState => {
                         let stackedData = prevState.stackedData
                         stackedData[region] = event.data.data
-                        return { stackedData }
+                        return { stackedData, loading: false }
                     })
                 }
                 worker.terminate()
@@ -72,7 +75,8 @@ class MexAppClient extends React.Component {
     }
 
     client = (range) => {
-        this.regions.map(region => {
+        this.setState({ stackedData: {} })
+        this.props.regions.map(region => {
             this.fetchData(region, range)
         })
     }
@@ -90,7 +94,7 @@ class MexAppClient extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
-        if (!redux_org.isAdmin(this) || this.props.org) {
+        if (!redux_org.isAdmin(this.props.orgInfo) || this.props.org) {
             this.client(this.props.range)
         }
     }
@@ -100,11 +104,4 @@ class MexAppClient extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        organizationInfo: state.organizationInfo.data,
-        privateAccess: state.privateAccess.data,
-    }
-};
-
-export default withRouter(connect(mapStateToProps, null)(MexAppClient));
+export default MexAppClient
