@@ -246,9 +246,10 @@ class Monitoring extends React.Component {
 
     renderMonitoringParent = () => {
         const { filter, range, avgData, rowSelected, selectedOrg, listAction } = this.state
+        const { organizationInfo, privateAccess } = this.props
         let parentId = filter.parent.id
         if (parentId === constant.PARENT_APP_INST) {
-            return <AppInstMonitoring showAlert={this.showAlert} avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} listAction={listAction} onActionClose={this.onActionClose} />
+            return <AppInstMonitoring orgInfo={organizationInfo} privateAccess={privateAccess} showAlert={this.showAlert} avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} listAction={listAction} onActionClose={this.onActionClose} />
         }
         else if (parentId === constant.PARENT_CLUSTER_INST) {
             return <ClusterMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} />

@@ -121,23 +121,25 @@ class MexChart extends React.Component {
     }
 
     defaultContainer = () => {
-        let metric = this.props.metric
-        let dataList = []
-        if (metric.serverRequest) {
-            if (metric.keys) {
-                metric.keys.map(child => {
-                    dataList.push({ region: this.props.region, metric: child })
+        setTimeout(() => {
+            let metric = this.props.metric
+            let dataList = []
+            if (metric.serverRequest) {
+                if (metric.keys) {
+                    metric.keys.map(child => {
+                        dataList.push({ region: this.props.region, metric: child })
+                    })
+                }
+                else {
+                    dataList.push({ region: this.props.region, metric })
+                }
+            }
+            if (this._isMounted) {
+                this.setState({ dataList }, () => {
+                    this.fetchMetricData()
                 })
             }
-            else {
-                dataList.push({ region: this.props.region, metric })
-            }
-        }
-        if (this._isMounted) {
-            this.setState({ dataList }, () => {
-                this.fetchMetricData()
-            })
-        }
+        }, 1100)
     }
 
     componentDidUpdate(prevProps, prevState) {

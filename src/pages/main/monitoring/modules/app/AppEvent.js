@@ -1,6 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import EventList from '../../list/EventList'
 import { orgEvents } from '../../../../../services/modules/audit'
 import {redux_org} from '../../../../../helper/reduxData'
@@ -98,10 +96,11 @@ class MexAppEvent extends React.Component {
 
     event = async (range, more) => {
         if (this._isMounted) {
+            const {orgInfo} = this.props
             this.updateState({ loading: true })
             const requestData = orgEvents({
                 match: {
-                    orgs: [redux_org.isAdmin(this) ? this.props.org : redux_org.nonAdminOrg(this)],
+                    orgs: [redux_org.isAdmin(orgInfo) ? this.props.org : redux_org.nonAdminOrg(orgInfo)],
                     types: ["event"],
                     tags: { app: "*" }
                 },
@@ -142,7 +141,7 @@ class MexAppEvent extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
-        if (!redux_org.isAdmin(this) || this.props.org) {
+        if (!redux_org.isAdmin(this.props.orgInfo) || this.props.org) {
             this.event(this.props.range)
         }
     }
@@ -152,10 +151,4 @@ class MexAppEvent extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        organizationInfo: state.organizationInfo.data
-    }
-};
-
-export default withRouter(connect(mapStateToProps, null)(MexAppEvent));
+export default MexAppEvent;

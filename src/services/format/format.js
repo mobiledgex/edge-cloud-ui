@@ -20,7 +20,6 @@ import { customize as reporter } from '../modules/reporter/custom';
 import { customize as cloudletEvent } from '../modules/cloudletEvent/custom';
 import { customize as clusterInstEvent } from '../modules/clusterInstEvent/custom';
 import { customize as appInstEvent } from '../modules/appInstEvent/custom';
-import { customize as clientMetrics } from '../modules/clientMetrics/custom';
 import { customize as clusterInstMetrics } from '../modules/clusterInstMetrics/custom';
 import { customize as appInstMetrics } from '../modules/appInstMetrics/custom';
 import { customize as cloudletMetrics } from '../modules/cloudletMetrics/custom';
@@ -103,9 +102,6 @@ export const formatData = (request, response) => {
             break;
         case endpoint.CLUSTER_METRICS_ENDPOINT:
             data = formatMetricData(request, response, clusterInstMetrics)
-            break;
-        case endpoint.CLIENT_METRICS_ENDPOINT:
-            data = formatMetricData(request, response, clientMetrics)
             break;
         case endpoint.CLUSTER_EVENT_LOG_ENDPOINT:
             data = formatBillingData(request, response, clusterInstEvent)

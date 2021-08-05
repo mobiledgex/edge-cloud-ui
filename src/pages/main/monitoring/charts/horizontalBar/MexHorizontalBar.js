@@ -1,12 +1,13 @@
 import React from 'react'
 import { HorizontalBar } from 'react-chartjs-2'
 import { Icon } from 'semantic-ui-react';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import './style.css'
 
 const keys = [
-    { color: '#80C684', label: 'Find Cloudlet', id: 'findCloudlet', order: 0 },
-    { color: '#4693BC', label: 'Register Client', id: 'registerClient', order: 1 },
-    { color: '#FD8D3C', label: 'Verify Location', id: 'verifyLocation', order: 2 }
+    { color: '#80C684', label: 'Find Cloudlet', id: 'FindCloudlet', order: 0 },
+    { color: '#4693BC', label: 'Register Client', id: 'RegisterClient', order: 1 },
+    { color: '#FD8D3C', label: 'Verify Location', id: 'VerifyLocation', order: 2 }
 ]
 
 const showDataLabel = (e) => {
@@ -68,7 +69,7 @@ const optionsGenerator = (maxValue) => {
             text: ' '
         },
         scales: {
-            xAxes: [{ stacked: false, display: false, gridLines: false, ticks: { max: maxValue + 150 } }],
+            xAxes: [{ stacked: false, display: false, gridLines: false, ticks: { max: maxValue + 200 } }],
             yAxes: [
                 {
                     stacked: false,
@@ -84,6 +85,41 @@ const optionsGenerator = (maxValue) => {
     }
 }
 
+const processData = (regions, chartData, filter) => {
+    let datasets = []
+    let labels = []
+    let max = 0
+    regions.forEach(region => {
+        if (filter.region.includes(region)) {
+            let dataObject = chartData[region]
+            if (dataObject) {
+                let dataKeys = Object.keys(dataObject)
+                dataKeys.forEach(datakey => {
+                    if (datakey.includes(filter.search)) {
+                        const data = dataObject[datakey]
+                        if (data.skip === false) {
+                            const tags = data.tags
+                            labels.push(`${region} - ${tags['app']} [${tags['ver']}]`)
+                            keys.forEach(key => {
+                                let order = key.order
+                                let count = data[key.id] ? data[key.id] : 0
+                                if (datasets[order]) {
+                                    datasets[order]['data'].push(count)
+                                }
+                                else {
+                                    datasets[order] = { backgroundColor: key.color, label: key.label, data: [count] }
+                                }
+                                max = max < count ? count : max
+                            })
+                        }
+                    }
+                })
+            }
+        }
+    })
+    return { datasets, labels, max }
+}
+
 class MexHorizontalBar extends React.Component {
 
     constructor(props) {
@@ -94,63 +130,47 @@ class MexHorizontalBar extends React.Component {
         this.maxValue = 0
     }
 
-    processData = (chartData, filter) => {
-        let datasets = []
-        let labels = []
-        Object.keys(chartData).map(region => {
-            if (filter.region.includes(region)) {
-                let chartDataRegion = chartData[region]
-                chartDataRegion.map(data => {
-                    if (data.key.includes(filter.search)) {
-                        labels.push(data.key)
-                        keys.map(key => {
-                            let id = key.order
-                            if (datasets[id]) {
-                                datasets[id]['data'].push(data[key.id])
-                            }
-                            else {
-                                datasets[id] = { backgroundColor: key.color, label: key.label, data: [data[key.id]] }
-                            }
-                            this.maxValue = data[key.id] > this.maxValue ? data[key.id] : this.maxValue
-                        })
-                    }
-                })
-            }
-        })
-        return { datasets, labels }
-    }
+    
 
-    chartHeight = (processedData) => {
-        let labels = processedData.labels
+    chartHeight = (labels) => {
         let length = labels.length
         if (length === 1) {
-            processedData.labels.push('')
+            labels.push('')
         }
         return labels.length * 95
     }
 
     render() {
-        const { chartData, header, filter } = this.props
-        const processedData = this.processData(chartData, filter)
-
+        const { chartData, header, filter, regions, loading } = this.props
+        const {datasets, labels, max} = processData(regions, chartData, filter)
         return (
             <div mex-test="component-pie-chart" className='horizontal-main' >
-                <div align="left" style={{ marginBottom: 10 }}>
+                <div align="left" style={{ marginBottom: 10, display: 'inline-block' }}>
                     <h3 className='chart-header'>{header}</h3>
                 </div>
-                <div style={{ height: 230, overflow: 'auto', width: '23vw' }}>
-                    <div style={{ height: this.chartHeight(processedData) }}>
-                        <HorizontalBar data={processedData} options={optionsGenerator(this.maxValue)} plugins={plugins} redraw />
-                    </div>
-                </div>
-                <div align="center" className="horizontal-legend">
-                    {keys.map((key, i) => {
-                        return <span key={i} style={{ marginRight: 10, display: 'inline', fontSize: 12 }}><Icon name='circle' style={{ color: key.color }} /> {key.label}</span>
-                    })}
-                </div>
+                {loading ? <div align="right" style={{ display: 'inline-block', float: 'right', marginRight: 10 }}>
+                    <CircularProgress size={20} thickness={3} />
+                </div> : null}
+                {
+                    loading ? null :
+                        <React.Fragment>
+                            <div style={{ height: 230, overflow: 'auto', width: '23vw' }}>
+                                <div style={{ height: this.chartHeight(labels), width: '20vw' }}>
+                                    <HorizontalBar data={{datasets, labels}} options={optionsGenerator(max)} plugins={plugins} redraw />
+                                </div>
+                            </div>
+                            <div align="center" className="horizontal-legend">
+                                {keys.map((key, i) => {
+                                    return <span key={i} style={{ marginRight: 10, display: 'inline', fontSize: 12 }}><Icon name='circle' style={{ color: key.color }} /> {key.label}</span>
+                                })}
+                            </div>
+                        </React.Fragment>
+                }
+
             </div>
         )
     }
+    
 }
 
 export default MexHorizontalBar
