@@ -111,7 +111,7 @@ class Reporter extends React.Component {
     }
 
     fetchOrgs = async () => {
-        let mc = await service.authSyncRequest(this, showOrganizations())
+        let mc = await service.authSyncRequest(this, showOrganizations(this, { type: perpetual.OPERATOR }))
         if (service.responseValid(mc)) {
             const dataList = mc.response.data
             const orgList = dataList.map(data => (data[fields.organizationName]))
