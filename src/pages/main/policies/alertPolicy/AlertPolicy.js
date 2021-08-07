@@ -11,6 +11,7 @@ import { perpetual } from '../../../../helper/constant';
 import { fields } from '../../../../services/model/format';
 import { uiFormatter } from '../../../../helper/formatter';
 import { showApps } from '../../../../services/modules/app';
+import { redux_org } from '../../../../helper/reduxData';
 
 class AlertPolicy extends React.Component {
     constructor(props) {
@@ -87,7 +88,7 @@ class AlertPolicy extends React.Component {
             sortBy: [fields.region, fields.alertPolicyName],
             keys: this.keys,
             selection: true,
-            onAdd: this.onAdd,
+            onAdd: redux_org.isViewer(this) ? null : this.onAdd,
             formatData: this.dataFormatter,
             viewMode: undefined
         })
