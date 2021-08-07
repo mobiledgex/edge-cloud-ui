@@ -1,6 +1,5 @@
 /* eslint-disable */
-import sortBy from 'lodash/sortBy'
-import { SHOW_APP, SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET } from '../../../../helper/constant/endpoint'
+import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET } from '../../../../helper/constant/endpoint'
 import { formatData } from '../../../../services/format'
 import { fields } from '../../../../services/model/format'
 import { darkColors } from '../../../../utils/color_utils'
@@ -106,11 +105,7 @@ const processData = (worker) => {
             }
         }
     }
-    let sortedList = {}
-    sortBy(Object.keys(formattedList)).forEach(sorted => {
-        sortedList[sorted] = formattedList[sorted]
-    })
-    self.postMessage({ status: 200, data: sortedList })
+    self.postMessage({ status: 200, data: formattedList })
 }
 
 const format = (worker) => {
