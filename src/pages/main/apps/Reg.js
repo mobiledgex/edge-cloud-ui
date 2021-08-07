@@ -300,7 +300,9 @@ class AppReg extends React.Component {
                 }
             }
             else if (form.field === fields.vmappostype) {
-                form.visible = currentForm.value === perpetual.DEPLOYMENT_TYPE_VM
+                const deployTypeVM = currentForm.value === perpetual.DEPLOYMENT_TYPE_VM
+                form.visible = deployTypeVM
+                form.value = deployTypeVM ? form.value : undefined
                 return form
             }
             else {
