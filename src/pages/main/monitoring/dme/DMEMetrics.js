@@ -75,7 +75,7 @@ class DMEMetrics extends React.Component {
             update = true
         }
         else {
-            this.props.handleAlertInfo('error', 'Please select cloudlet')
+            this.props.handleAlertInfo('error', 'Please select a cloudlet before selecting a location tile')
         }
         if (update) {
             this.setState({ histogramData, mapcenter, ...data })
