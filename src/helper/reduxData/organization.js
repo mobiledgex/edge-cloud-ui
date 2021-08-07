@@ -19,6 +19,14 @@ export const isAdmin = (self) => {
     return false
 }
 
+export const isManager = (self) => {
+    let info = getObject(self)
+    if (info) {
+        return info.role === perpetual.ADMIN_MANAGER || info.role === perpetual.DEVELOPER_MANAGER || info.role === perpetual.OPERATOR_MANAGER
+    }
+    return false
+}
+
 export const isDeveloperManager = (self) => {
     let info = getObject(self)
     if (info) {

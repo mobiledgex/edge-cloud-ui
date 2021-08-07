@@ -155,13 +155,17 @@ class OrganizationList extends React.Component {
         return redux_org.isAdmin(this)
     }
 
+    managerVisibility = (type, action, data) => {
+        return redux_org.isManager(this)
+    }
+
     actionMenu = () => {
         return [
             { label: 'Audit', onClick: this.onAudit },
-            { label: 'Add User', onClick: this.onAddUser, type: 'Edit', visibility: this.adminVisibility },
+            { label: 'Add User', onClick: this.onAddUser, type: 'Edit', visibility: this.managerVisibility },
             { id: perpetual.ACTION_EDGE_BOX_ENABLE, label: this.onPreEdgebox, visibility: this.adminVisibility, type: 'Edit', warning: this.onPreEdgebox, disable: this.onPreEdgebox, onClick: this.onEdgebox },
-            { id: perpetual.ACTION_UPDATE, label: 'Update', visibility: this.adminVisibility, onClick: this.onUpdate, type: 'Edit' },
-            { id: perpetual.ACTION_DELETE, label: 'Delete', visibility: this.adminVisibility, onClick: deleteOrganization, onFinish: this.onDelete, type: 'Edit' }
+            { id: perpetual.ACTION_UPDATE, label: 'Update', visibility: this.managerVisibility, onClick: this.onUpdate, type: 'Edit' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', visibility: this.managerVisibility, onClick: deleteOrganization, onFinish: this.onDelete, type: 'Edit' }
         ]
     }
 
