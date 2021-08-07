@@ -109,34 +109,36 @@ const MTableHead = (props) => {
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
-
   return (
     <TableHead>
       <TableRow>
         <TableCell style={{ backgroundColor: '#292c33' }}></TableCell>
         {headCells.map((headCell) => (
-          headCell.visible ? <TableCell
-            key={headCell.field}
-            style={{ backgroundColor: '#292c33' }}
-            align={headCell.numeric ? "right" : "left"}
-            padding={headCell.disablePadding ? "none" : "default"}
-            sortDirection={orderBy === headCell.field ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.field}
-              direction={orderBy === headCell.field ? order : "asc"}
-              onClick={createSortHandler(headCell.field)}
+          headCell.visible ?
+            <TableCell
+              key={headCell.field}
+              style={{ backgroundColor: '#292c33', cursor: 'default' }}
+              align={headCell.numeric ? "right" : "left"}
+              padding={headCell.disablePadding ? "none" : "default"}
+              sortDirection={orderBy === headCell.field ? order : false}
             >
-              {headCell.label}
-              {orderBy === headCell.field ? (
-                <span className={classes.visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </span>
-              ) : null}
-            </TableSortLabel>
-          </TableCell> : null
+              {
+                headCell.sortable ? <TableSortLabel
+                  active={orderBy === headCell.field}
+                  direction={orderBy === headCell.field ? order : "asc"}
+                  onClick={createSortHandler(headCell.field)}
+                >
+                  {headCell.label}
+                  {orderBy === headCell.field ? (
+                    <span className={classes.visuallyHidden}>
+                      {order === "desc" ? "sorted descending" : "sorted ascending"}
+                    </span>
+                  ) : null}
+                </TableSortLabel> : headCell.label
+              }
+            </TableCell> : null
         ))}
-        {actionMenu && actionMenu.length > 0 ? <TableCell style={{ backgroundColor: '#292c33' }}>Actions</TableCell> : null}
+        {actionMenu && actionMenu.length > 0 ? <TableCell style={{ backgroundColor: '#292c33', cursor: 'default' }}>Actions</TableCell> : null}
       </TableRow>
     </TableHead>
   )
