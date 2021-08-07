@@ -32,8 +32,8 @@ import './style.css'
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
 import { PARENT_APP_INST } from '../helper/Constant';
 import { onlyNumeric } from '../../../../utils/string_utils';
-import { redux_org } from '../../../../helper/reduxData';
-import { AIK_APP_ALL, AIK_APP_CLOUDLET_CLUSTER, AIK_CLOUDLET } from '../../../../services/modules/appInst/primary';
+import { AIK_APP_ALL, AIK_APP_CLOUDLET_CLUSTER } from '../../../../services/modules/appInst/primary';
+
 const buckets = [0, 5, 10, 25, 50, 100]
 class DMEMetrics extends React.Component {
     constructor(props) {
@@ -75,7 +75,7 @@ class DMEMetrics extends React.Component {
             update = true
         }
         else {
-            this.props.handleAlertInfo('error', 'Please select cloudlet')
+            this.props.handleAlertInfo('error', 'Please select a cloudlet before selecting a location tile')
         }
         if (update) {
             this.setState({ histogramData, mapcenter, ...data })
@@ -93,7 +93,7 @@ class DMEMetrics extends React.Component {
                 connectorMerge.push([location.lat, location.lng])
                 return (
                     <React.Fragment key={key}>
-                        <MexCircleMarker coords={location} color={this.generateColor(geoValues, markerType)} onClick={() => { this.setHistogramData(false, key, deviceGeoObject, [location.lat, location.lng]) }} radius={3} />
+                        <MexCircleMarker coords={location} color={this.generateColor(geoValues, markerType)} onClick={() => { this.setHistogramData(false, key, deviceGeoObject, [location.lat, location.lng]) }} radius={4} />
                     </React.Fragment>
                 )
             }
