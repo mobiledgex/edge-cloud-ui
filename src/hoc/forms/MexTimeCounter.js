@@ -23,7 +23,7 @@ const fetchValue = (value, label, preLabel) => {
 
 const MexDate = (props) => {
     let form = props.form;
-    const [time, setTime] = React.useState(form.value ? form.value : '30s');
+    const [time, setTime] = React.useState(form.value ? form.value : form.default);
 
 
     const onChange = (value, label)=>{

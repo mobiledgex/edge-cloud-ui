@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import MexForms, { MAIN_HEADER, INPUT, SELECT, TIME_COUNTER, TEXT_AREA, HEADER, ICON_BUTTON } from '../../../../hoc/forms/MexForms';
+import MexForms, { MAIN_HEADER, INPUT, SELECT, TIME_COUNTER, HEADER, ICON_BUTTON } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -15,7 +15,6 @@ import { perpetual } from '../../../../helper/constant';
 import { createAlertPolicy, updateAlertPolicy } from '../../../../services/modules/alertPolicy';
 import { responseValid } from '../../../../services/service';
 import uuid from 'uuid';
-import cloneDeep from 'lodash/cloneDeep';
 
 const ALERT_SEVERITY = [perpetual.INFO, perpetual.WARNING, perpetual.ERROR]
 class Reg extends React.Component {
@@ -107,23 +106,6 @@ class Reg extends React.Component {
         return true;
     }
 
-    validateTriggerTime = (currentForm) => {
-        if (currentForm.value && currentForm.value.length > 0) {
-            let value = currentForm.value
-            let indexS = value.indexOf('s')
-            let indexM = value.indexOf('m')
-            if (indexM < 0) {
-                const time = value.substring(0, indexS)
-                if (time < 30) {
-                    currentForm.error = 'Trigger time cannot be less than 30 sec'
-                    return false;
-                }
-            }
-        }
-        currentForm.error = undefined;
-        return true;
-    }
-
     removeMultiForm = (e, form) => {
         if (form.parent) {
             let updateForms = Object.assign([], this.state.forms)
@@ -162,7 +144,7 @@ class Reg extends React.Component {
         { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, update: { key: true }, tip: ' Name of the organization for the app that this alert can be applied to' },
         { field: fields.alertPolicyName, label: 'Alert Policy Name', formType: INPUT, placeholder: 'Enter Alert Policy Name', rules: { required: true }, visible: true, update: { key: true }, tip: 'Alert Policy name' },
         { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true, firstCaps: true }, visible: true, update: { id: [fields.severity] }, tip: 'Alert severity level - one of "info", "warning", "error"' },
-        { field: fields.triggerTime, label: 'Trigger time', formType: TIME_COUNTER, placeholder: 'Enter Trigger Time', rules: { required: true, onBlur: true }, visible: true, update: { id: [fields.triggerTime] }, tip: 'Duration for which alert interval is active', dataValidateFunc: this.validateTriggerTime },
+        { field: fields.triggerTime, label: 'Trigger time', formType: TIME_COUNTER, placeholder: 'Enter Trigger Time', rules: { required: true, onBlur: true }, visible: true, update: { id: [fields.triggerTime] }, tip: 'Duration for which alert interval is active', default:'30s' },
         { field: fields.cpuUtilizationLimit, label: 'CPU Utilization Limit', formType: INPUT, placeholder: 'Enter CPU Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [fields.cpuUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod CPU utilization rate(percentage) across all nodes. Valid values 1-100' },
         { field: fields.memUtilizationLimit, label: 'Memory Utilization Limit', formType: INPUT, placeholder: 'Enter Memory Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [fields.memUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod memory utilization rate(percentage) across all nodes. Valid values 1-100' },
         { field: fields.diskUtilizationLimit, label: 'Disk Utilization Limit', formType: INPUT, placeholder: 'Enter Disk Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [fields.diskUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod disk utilization rate(percentage) across all nodes. Valid values 1-100' },
