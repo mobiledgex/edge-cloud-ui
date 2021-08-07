@@ -45,13 +45,13 @@ export const appMetricsListKeys = [
     { field: fields.cloudletLocation, label: 'Location', sortable: false, visible: false, groupBy: false },
     { field: fields.deployment, label: 'Deployment'},
     { field: fields.platformType, label: 'Platform Type'},
-    { field: fields.healthCheck, label: 'Health Check', sortable: false, visible: true, groupBy: false, customData: true },
-    { field: 'cpu', label: 'CPU', sortable: true, visible: true, isArray: true },
-    { field: 'disk', label: 'Disk Usage', sortable: true, visible: true, isArray: true },
-    { field: 'memory', label: 'Memory', sortable: true, visible: true, isArray: true },
-    { field: 'sent', label: 'Network Sent', sortable: true, visible: true, isArray: true },
-    { field: 'received', label: 'Network Received', sortable: true, visible: true, isArray: true },
-    { field: 'connections', label: 'Active Connections', sortable: true, visible: true, isArray: true },
+    { field: fields.healthCheck, label: 'Health Check', sortable: true, visible: true, groupBy: false, customData: true },
+    { field: 'cpu', label: 'CPU', sortable: false, visible: true, isArray: true },
+    { field: 'disk', label: 'Disk Usage', sortable: false, visible: true, isArray: true },
+    { field: 'memory', label: 'Memory', sortable: false, visible: true, isArray: true },
+    { field: 'sent', label: 'Network Sent', sortable: false, visible: true, isArray: true },
+    { field: 'received', label: 'Network Received', sortable: false, visible: true, isArray: true },
+    { field: 'connections', label: 'Active Connections', sortable: false, visible: true, isArray: true },
 ]
 
 export const networkMetricType = [

@@ -1,10 +1,26 @@
 import React from 'react';
-import { TableContainer, Table, TableHead, TableBody, TableCell, TableRow, Paper, Grow, Popper, ClickAwayListener, MenuList, MenuItem } from '@material-ui/core'
+import { TableContainer, Table, TableHead, TableBody, TableCell, TableRow, Paper, Grow, Popper, ClickAwayListener, MenuList, MenuItem, TableSortLabel, makeStyles } from '@material-ui/core'
 import { Icon } from '../../../../hoc/mexui';
 import { lightGreen } from '@material-ui/core/colors';
 import { monitoringActions, validateRole } from '../helper/Constant';
 import { useSelector } from 'react-redux';
 import { redux_org } from '../../../../helper/reduxData';
+import { fields } from '../../../../services/model/format';
+import { getComparator, stableSort } from '../../../../hoc/listView/ListConstant';
+
+const useStyles = makeStyles((theme) => ({
+  visuallyHidden: {
+    border: 0,
+    clip: "rect(0 0 0 0)",
+    height: 1,
+    margin: -1,
+    overflow: "hidden",
+    padding: 0,
+    position: "absolute",
+    top: 20,
+    width: 1
+  }
+}));
 
 const Action = (props) => {
   const { anchorEl, onClose, actionMenu, onClick, group } = props
@@ -86,11 +102,54 @@ const rowValue = (filter, row, value) => {
     return data ? row.customData ? customData(row.field, value) : data : '-'
   }
 }
+
+const MTableHead = (props) => {
+  const { orderBy, order, headCells, actionMenu, onRequestSort } = props
+  const classes = useStyles()
+  const createSortHandler = (property) => (event) => {
+    onRequestSort(event, property);
+  };
+  return (
+    <TableHead>
+      <TableRow>
+        <TableCell style={{ backgroundColor: '#292c33' }}></TableCell>
+        {headCells.map((headCell) => (
+          headCell.visible ?
+            <TableCell
+              key={headCell.field}
+              style={{ backgroundColor: '#292c33', cursor: 'default' }}
+              align={headCell.numeric ? "right" : "left"}
+              padding={headCell.disablePadding ? "none" : "default"}
+              sortDirection={orderBy === headCell.field ? order : false}
+            >
+              {
+                headCell.sortable ? <TableSortLabel
+                  active={orderBy === headCell.field}
+                  direction={orderBy === headCell.field ? order : "asc"}
+                  onClick={createSortHandler(headCell.field)}
+                >
+                  {headCell.label}
+                  {orderBy === headCell.field ? (
+                    <span className={classes.visuallyHidden}>
+                      {order === "desc" ? "sorted descending" : "sorted ascending"}
+                    </span>
+                  ) : null}
+                </TableSortLabel> : headCell.label
+              }
+            </TableCell> : null
+        ))}
+        {actionMenu && actionMenu.length > 0 ? <TableCell style={{ backgroundColor: '#292c33', cursor: 'default' }}>Actions</TableCell> : null}
+      </TableRow>
+    </TableHead>
+  )
+}
 class MonitoringList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      anchorEl: null
+      anchorEl: null,
+      order: 'asc',
+      orderBy: 'appName',
     }
     const filter = props.filter
     this.rows = filter.parent.metricListKeys
@@ -128,51 +187,52 @@ class MonitoringList extends React.Component {
     return `${label}: ${format}`
   }
 
+  handleRequestSort = (event, property) => {
+    const { orderBy, order } = this.state
+    const isAsc = orderBy === property && order === 'asc';
+    this.setState({ order: isAsc ? 'desc' : 'asc', orderBy: property }, () => {
+    })
+  };
+
   render() {
-    const { anchorEl } = this.state
-    const { filter, onCellClick, data } = this.props
+    const { anchorEl, order, orderBy } = this.state
+    const { filter, onCellClick, data, classes } = this.props
     const dataList = getGroupedData(filter.region, data, this.groupBy)
     return (
       <React.Fragment>
         <TableContainer component={Paper}>
           <Table aria-label="mex chart list" stickyHeader size={'small'}>
-            <TableHead>
-              <TableRow>
-                <TableCell style={{ backgroundColor: '#292c33' }}></TableCell>
-                {this.rows.map((row, i) => {
-                  return row.visible ? <TableCell key={i} style={{ backgroundColor: '#292c33' }}>{row.label}</TableCell> : null
-                })}
-                {this.actionMenu && this.actionMenu.length > 0 ? <TableCell style={{ backgroundColor: '#292c33' }}>Actions</TableCell> : null}
-              </TableRow>
-            </TableHead>
+            <MTableHead headCells={this.rows} order={order} orderBy={orderBy} actionMenu={this.actionMenu} onRequestSort={this.handleRequestSort} />
             <TableBody>
-              {Object.keys(dataList).map(key => {
-                let values = dataList[key]
-                return (
-                  <React.Fragment key={key}>
-                    {this.groupBy && values[0].key.includes(filter.search) ? <TableRow style={{ backgroundColor: '#1d1d26' }} >
-                      <TableCell colSpan={this.colLen}><b>{this.groupByFormat(values[0], this.groupBy)}</b></TableCell>
-                      {this.groupBy.action ? <ActionButton actionMenu={this.actionMenu} onClick={(e) => { this.actionMenuClick(e, values, true) }} /> : null}
-                    </TableRow> : null}
-                    {
-                      values.map((value, i) => {
-                        let visible = value.hidden ? false : true
-                        if (visible) {
-                          return (value.key.includes(filter.search) ?
-                            <TableRow key={i} style={{ backgroundColor: value.selected ? `${value.color}1A` : `transparent` }}>
-                              <TableCell onClick={(e) => onCellClick(value)}><Icon style={{ color: value.color }}>{`${value.selected ? 'check_box' : 'check_box_outline_blank'}`}</Icon></TableCell>
-                              {this.rows.map((row, j) => (
-                                row.visible ? <TableCell key={j} onClick={(e) => onCellClick(value)}>{rowValue(filter, row, value)}</TableCell> : null
-                              ))
-                              }
-                              <ActionButton actionMenu={this.actionMenu} onClick={(e) => { this.actionMenuClick(e, [value], false) }} />
-                            </TableRow> : null)
-                        }
-                      })
-                    }
-                  </React.Fragment>
-                )
-              })}
+              {
+                Object.keys(dataList).map(key => {
+                  let values = dataList[key]
+                  return (
+                    <React.Fragment key={key}>
+                      {this.groupBy && values[0].key.includes(filter.search) ? <TableRow style={{ backgroundColor: '#1d1d26' }} >
+                        <TableCell colSpan={this.colLen}><b>{this.groupByFormat(values[0], this.groupBy)}</b></TableCell>
+                        {this.groupBy.action ? <ActionButton actionMenu={this.actionMenu} onClick={(e) => { this.actionMenuClick(e, values, true) }} /> : null}
+                      </TableRow> : null}
+                      {
+                        stableSort(values, getComparator(order, orderBy)).map((value, i) => {
+                          let visible = value.hidden ? false : true
+                          if (visible) {
+                            return (value.key.includes(filter.search) ?
+                              <TableRow key={i} style={{ backgroundColor: value.selected ? `${value.color}1A` : `transparent` }}>
+                                <TableCell onClick={(e) => onCellClick(value)}><Icon style={{ color: value.color }}>{`${value.selected ? 'check_box' : 'check_box_outline_blank'}`}</Icon></TableCell>
+                                {this.rows.map((row, j) => (
+                                  row.visible ? <TableCell key={j} onClick={(e) => onCellClick(value)}>{rowValue(filter, row, value)}</TableCell> : null
+                                ))
+                                }
+                                <ActionButton actionMenu={this.actionMenu} onClick={(e) => { this.actionMenuClick(e, [value], false) }} />
+                              </TableRow> : null)
+                          }
+                        })
+                      }
+                    </React.Fragment>
+                  )
+                })
+              }
             </TableBody>
           </Table>
         </TableContainer>
@@ -181,4 +241,4 @@ class MonitoringList extends React.Component {
     )
   }
 }
-export default MonitoringList
+export default MonitoringList;
