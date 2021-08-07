@@ -1481,14 +1481,6 @@ body, button, input, textarea, optgroup, select, textarea,
     color: #E74C3C !important;
 }
 
-/*input num 스크롤 삭제*/
-
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
 /* tooltip */
 .customToolTip {
     color: rgba(255,255,255,.8) !important;
