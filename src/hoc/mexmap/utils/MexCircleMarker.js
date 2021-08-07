@@ -26,10 +26,6 @@ const MexCircleMarker = props => {
     const center = latLng(coords.lat, coords.lng)
     const [rad, setRadius] = React.useState(radius ? radius : 13)
 
-    const onClickd = ()=>{
-        setRadius(13)
-    }
-
     return (
         <CircleMarker radius={rad} center={center} color={color ? color : '#3288FF'} onClick={onClick} onMouseOver={()=>{setRadius(13)}} onMouseOut={()=>{setRadius(radius)}} interactive={interactive ? interactive : true}>
             {label ? <Tooltip permanent={true} direction={'center'} className='text'>
