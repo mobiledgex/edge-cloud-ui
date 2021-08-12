@@ -28,12 +28,12 @@ export default function IconButton(props) {
     return (
         <div className={classes.root}>
             <div className={classes.wrapper}>
-                <Tooltip title={tooltip ? tooltip : ''}>
+                <Tooltip title={tooltip ? <strong style={{fontSize:13}}>{tooltip}</strong> : ''}>
                     <span>
                         <IB
                             onClick={onClick}
                             disabled={disabled ? disabled : loading}
-                            style={style ? style : {}}
+                            style={style}
                         >
                             {children}
                         </IB>

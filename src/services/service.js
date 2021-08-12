@@ -166,7 +166,7 @@ export const syncRequest = async (self, request) => {
  * @param {*} format: if not using worker then format the data
  * @returns list of request, response object
  */
-export const multiAuthRequest = (self, requestList, callback, format = true) => {
+export const multiAuthRequest = (self, requestList, callback, format = true, single = false) => {
     if (requestList && requestList.length > 0) {
         let promise = [];
         requestList.forEach((request) => {
@@ -180,7 +180,7 @@ export const multiAuthRequest = (self, requestList, callback, format = true) => 
                     responseList.push(formatter(requestList[i], response, format));
                 })
                 showProgress(self)
-                callback(responseList);
+                single ? callback(responseList && responseList.length > 0 && responseList[0]) : callback(responseList);
 
             }).catch(error => {
                 showProgress(self)
@@ -190,7 +190,7 @@ export const multiAuthRequest = (self, requestList, callback, format = true) => 
 }
 
 export const authRequest = (self, request, callback, format) => {
-    multiAuthRequest(self, [request], callback, format)
+    multiAuthRequest(self, [request], callback, format, true)
 }
 
 /**

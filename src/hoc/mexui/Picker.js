@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Popover, Grid, Button, Divider, Box, Tooltip } from '@material-ui/core';
+import { Popover, Grid, Button, Divider, Tooltip } from '@material-ui/core';
 import * as moment from 'moment'
 import { Icon } from 'semantic-ui-react';
 
@@ -12,6 +12,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { alertInfo } from '../../actions';
 import * as dateUtil from '../../utils/date_util';
+import { range } from 'lodash-es';
 
 export const relativeTimeRanges = [
     { label: 'Last 5 minutes', duration: 5 },
@@ -21,6 +22,10 @@ export const relativeTimeRanges = [
     { label: 'Last 3 hours', duration: 180 },
     { label: 'Last 6 hours', duration: 360 },
     { label: 'Last 12 hours', duration: 720 },
+    { label: 'Last 24 hours', duration: 1440 },
+    { label: 'Last 2 Days', duration: 2880 },
+    { label: 'Last 7 Days', duration: 10080 },
+    { label: 'Last 30 Days', duration: 43200 },
 ]
 
 const rangeLabel = (range) => {
@@ -38,23 +43,32 @@ const rangeLabel = (range) => {
     </div>
 }
 
-export const timeRangeInMin = (range) => {
-    range = range ? range : relativeTimeRanges[3].duration
+const defaultRange = (duration) => {
+    for(const range of relativeTimeRanges)
+    {
+        if(range.duration === duration)
+        {
+            return range
+        }
+    }
+}
+
+export const timeRangeInMin = (duration) => {
+    duration = duration ? duration : relativeTimeRanges[3].duration
     let endtime = dateUtil.currentUTCTime()
-    let starttime = dateUtil.subtractMins(range, endtime).valueOf()
+    let starttime = dateUtil.subtractMins(duration, endtime).valueOf()
     starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
     endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
-    return { from : starttime, to: endtime }
+    return { from: starttime, to: endtime, duration }
 }
 
 const MexTimer = (props) => {
+    const { onChange, defaultDuration, relativemax } = props
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [from, setFrom] = React.useState(dateUtil.currentDate());
     const [to, setTo] = React.useState(dateUtil.currentDate());
-    const [relativeRange, setRelativeRange] = React.useState(relativeTimeRanges[3]);
+    const [relativeRange, setRelativeRange] = React.useState(defaultDuration ? defaultRange(defaultDuration) : relativeTimeRanges[3]);
     const dispatch = useDispatch();
-
-    const { onChange } = props
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -76,7 +90,7 @@ const MexTimer = (props) => {
             setAnchorEl(null)
             let utcFrom = dateUtil.utcTime(dateUtil.FORMAT_FULL_T, from) + '+00:00'
             let utcTo = dateUtil.utcTime(dateUtil.FORMAT_FULL_T, to) + '+00:00'
-            onChange({ from: utcFrom, to: utcTo })
+            onChange({ from: utcFrom, to: utcTo, duration: relativeRange.duration })
         }
     }
 
@@ -148,13 +162,17 @@ const MexTimer = (props) => {
                         <Grid item xs={5}>
                             <div>
                                 <h4 style={{ marginBottom: 20 }}><b> Relative Time Ranges</b></h4>
-                                {relativeTimeRanges.map((relativeTimeRange, i) => {
-                                    return (
-                                        <div key={i}>
-                                            <Button onClick={() => { applyRelativeTimeRange(relativeTimeRange) }}>{relativeTimeRange.label}</Button>
-                                        </div>
-                                    )
-                                })}
+                                <div style={{ maxHeight: 300, overflow: 'auto' }}>
+                                    {relativeTimeRanges.map((relativeTimeRange, i) => {
+                                        const visible = relativemax ? i <= relativemax : true
+                                        const highlight = relativeTimeRange.duration === relativeRange.duration
+                                        return (
+                                            visible ? <div key={i}>
+                                                <Button style={{ backgroundColor: highlight ? 'rgba(118, 255, 3, 0.5)' : 'default' }} onClick={() => { applyRelativeTimeRange(relativeTimeRange) }}>{relativeTimeRange.label}</Button>
+                                            </div> : null
+                                        )
+                                    })}
+                                </div>
                             </div>
                         </Grid>
                     </Grid>

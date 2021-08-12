@@ -1,83 +1,140 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { Menu, MenuItem, IconButton, ListItemText } from '@material-ui/core'
-import AuditLog from '../events/auditLog/AuditLog';
+import React from 'react';
+import clsx from 'clsx';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+import { Icon } from '../../../hoc/mexui';
+import { Fab, Tooltip, Dialog } from '@material-ui/core';
+import { lightGreen } from '@material-ui/core/colors';
 import UsageLog from '../events/usageLog/UsageLog';
-import EventNoteIcon from '@material-ui/icons/EventNote';
-import TimelineOutlinedIcon from '@material-ui/icons/TimelineOutlined';
-import EventOutlinedIcon from '@material-ui/icons/EventOutlined';
-import BallotOutlinedIcon from '@material-ui/icons/BallotOutlined';
-import {redux_org} from '../../../helper/reduxData'
 
-const EventMenu = () => {
-    const orgInfo = useSelector(state => state.organizationInfo.data)
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const [audit, setAudit] = React.useState(false);
-    const [event, setEvent] = React.useState(false);
-    const [usage, setUsage] = React.useState(false);
+const AUDIT_LOG = 1
+const EVENT_LOG = 2
+const USAGE_LOG = 3
 
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+const drawerWidth = 20
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        display: 'flex',
+    },
+    drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+    },
+    drawerOpen: {
+        width: drawerWidth,
+        border: 'none',
+        overflow: 'hidden',
+        backgroundColor: 'transparent',
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    },
+    drawerClose: {
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        overflow: 'hidden',
+        backgroundColor: 'transparent',
+        border: 'none',
+        width: 0
+    },
+    fab: {
+        position: 'absolute',
+        top: theme.spacing(0.7),
+        right: theme.spacing(0),
+        borderRadius: '30px 0px 0px 30px',
+        zIndex: 9999,
+        width: 30,
+        backgroundColor: lightGreen['600'],
+        boxShadow: 'default'
+    },
+    tip: {
+        fontSize: 13
+    },
+    content: {
+        marginTop: '35vh',
+    },
+    verticalbtn: {
+        fontWeight: 900,
+        padding: '10px 2px',
+        backgroundColor: lightGreen['600'],
+        writingMode: 'vertical-lr',
+        cursor: 'pointer',
+        marginBottom: 10,
+        width: 20,
+        borderRadius: '5px 0px 0px 5px',
+    }
+}));
+
+const menuOptions = [
+    { id: AUDIT_LOG, label: 'Audit Logs' },
+    { id: EVENT_LOG, label: 'Event Logs' },
+    { id: USAGE_LOG, label: 'Usage Logs' }
+]
+
+const EventMenu = (props) => {
+    const [open, setOpen] = React.useState(false);
+    const [pageId, setPageId] = React.useState(undefined);
+    const classes = useStyles();
 
     const handleClose = () => {
-        setAnchorEl(null);
-        setAudit(false)
-        setEvent(false)
-        setUsage(false)
-    };
-
-    const auditClick = () => {
-        setAnchorEl(null);
-        setAudit(true)
-    };
-
-    const eventClick = () => {
-        setAnchorEl(null);
-        setEvent(true)
-    };
-
-    const usageClick = () => {
-        setAnchorEl(null);
-        setUsage(true)
-    };
-
-
-    const visible = () => {
-        return redux_org.role(orgInfo) !== undefined
+        setPageId(undefined)
     }
 
-    const menuOptions = [
-        { label: 'Audit Log', icon: <BallotOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />, onClick: auditClick, visible: true },
-        { label: 'Event Log', icon: <EventOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />, onClick: eventClick, visible: true },
-        { label: 'Usage Log', icon: <TimelineOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />, onClick: usageClick, visible: true },
-    ]
+    const handleClick = () => {
+        setOpen(!open);
+        handleClose()
+    }
+
+    const onMenuClick = (id) => {
+        setPageId(id)
+    };
+
+    const renderPage = () => {
+        switch (pageId) {
+            case USAGE_LOG:
+                return <UsageLog close={handleClose} />
+        }
+    }
 
     return (
-        visible() ? <div style={{ marginTop: '0.4em' }}>
-            <IconButton aria-label="event-menu" aria-haspopup="true" onClick={handleClick}>
-                <EventNoteIcon />
-            </IconButton>
-            <Menu
-                id="event-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-            >
-                {menuOptions.map((option, i) => (
-                    option && option.visible ? <MenuItem key={i} onClick={option.onClick}>
-                        {option.icon}
-                        <ListItemText primary={option.label} />
-                    </MenuItem> : null
-                ))}
-
-            </Menu>
-            <AuditLog open={event} close={handleClose} type={'event'} />
-            <AuditLog open={audit} close={handleClose} type={'audit'} />
-            <UsageLog open={usage} close={handleClose} />
-        </div > : null
-    )
+        <React.Fragment>
+            <div className={classes.root}>
+                {pageId ? null : <Tooltip title={<strong className={classes.tip}>Events</strong>}>
+                    <Fab className={classes.fab} size="small" aria-label="add" onClick={handleClick}>
+                        <Icon style={{ color: 'white', marginLeft: 5 }}>{open ? 'chevron_right' : 'event_note'}</Icon>
+                    </Fab>
+                </Tooltip>}
+                <Drawer
+                    anchor={'right'}
+                    variant="permanent"
+                    className={clsx(classes.drawer, {
+                        [classes.drawerOpen]: open,
+                        [classes.drawerClose]: !open,
+                    })}
+                    classes={{
+                        paper: clsx({
+                            [classes.drawerOpen]: open,
+                            [classes.drawerClose]: !open,
+                        }),
+                    }}
+                >
+                    <div className={classes.content}>
+                        {menuOptions.map(option => (
+                            <div key={option.id} className={classes.verticalbtn} onClick={() => { onMenuClick(option.id) }}>{option.label}</div>
+                        ))}
+                    </div>
+                </Drawer>
+            </div>
+            <Dialog open={pageId !== undefined} fullScreen>
+                {renderPage()}
+            </Dialog>
+        </React.Fragment>
+    );
 }
 
 export default EventMenu

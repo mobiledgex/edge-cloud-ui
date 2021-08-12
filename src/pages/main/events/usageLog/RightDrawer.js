@@ -1,21 +1,18 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-
-import SearchFilter from '../../../../hoc/filter/SearchFilter'
-import { Paper, Tabs, Tab, IconButton, LinearProgress, Divider } from '@material-ui/core';
-
+import { LinearProgress, Divider, Grid, Tooltip } from '@material-ui/core';
 import * as dateUtil from '../../../../utils/date_util'
 import uuid from 'uuid'
-import CloseIcon from '@material-ui/icons/Close';
-import RefreshIcon from '@material-ui/icons/Refresh';
 import MexCalendar from '../../../../hoc/calendar/MexCalendar'
 import { fields } from '../../../../services/model/format';
 import { redux_org } from '../../../../helper/reduxData';
 import SelectMenu from '../../../../hoc/selectMenu/SelectMenu'
 import { FixedSizeList } from 'react-window';
-import Help from '../auditLog/Help'
-import { lightGreen } from '@material-ui/core/colors';
+import { Icon } from '../../../../hoc/mexui';
+import Toolbar, { ACION_SEARCH, ACTION_CLOSE, ACTION_PICKER, ACTION_REFRESH, ACTION_TAB } from './Toolbar';
+import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
+import { DEFAULT_DURATION_MINUTES } from './constant';
 
 const colorType = (value) => {
     switch (value) {
@@ -35,13 +32,6 @@ const colorType = (value) => {
     }
 }
 
-const usageHelp = [
-    <code>Default view is day</code>,
-    <code>Click <RefreshIcon/> icon to reset the calendar to current date based on view</code>,
-    <code>Click on <i>Year, Month, Day or Hour</i> to change calendar view</code>,
-    <code>User can also click on displayed date mentioned next to the usagelog column to change the calendar view from hour to day to month to year and viceversa, where top row emulates hour to year and bottom row emulates year to hour </code>
-]   
-
 //format data whic is supported by react-calendar-timline
 const formatCalendarData = (dataList, columns) => {
     if (dataList && dataList.length > 0) {
@@ -53,13 +43,13 @@ const formatCalendarData = (dataList, columns) => {
             let column = columns[k]
             if (column && column.detailedView) {
                 groupList.push({ id: k, title: column.label, rightTitle: column.label, bgColor: "#FFF" })
-                
+
                 for (let i = dataList.length - 1; i >= 0; i--) {
                     let data = dataList[i]
                     let color = colorType(data[k])
                     colorSelector = colorSelector === '#9F6BD3' ? '#B990E1' : '#9F6BD3'
                     color = color ? color : colorSelector
-                    
+
                     let calendar = {
                         id: uuid(),
                         group: k,
@@ -99,14 +89,7 @@ const filterData = (filterText, dataList, tabValue) => {
         let columns = dataList[eventType].columns
         let dataFilterList = []
         Object.keys(dataList[eventType].values).map(data => {
-            let eventFirstData = dataList[eventType].values[data][0]
-            let valid = false
-            columns.map((column, i) => {
-                if (column && column.filter && eventFirstData[i].includes(filterText)) {
-                    valid = true
-                }
-            })
-            if (valid) {
+            if (data.includes(filterText)) {
                 dataFilterList[data] = dataList[eventType].values[data]
             }
         })
@@ -144,37 +127,23 @@ class EventLog extends React.Component {
             infiniteHeight: 200,
             filterText: ''
         }
-        this.searchfilter = React.createRef()
+        this.range = timeRangeInMin(DEFAULT_DURATION_MINUTES)
     }
 
     onFilter = (value) => {
-        if (value !== undefined && value.length >= 0) {
-            this.setState({ filterText: value.toLowerCase() })
-        }
-        else {
-            value = this.state.filterText
-        }
+        value = value ? value.toLowerCase() : ''
+        this.setState({ filterText: value })
         let data = filterData(value, this.state.dataList, this.state.tabValue)
         this.setState({ filterList: data.filterList, calendarList: data.formattedList, groupList: data.groupList, activeIndex: 0 })
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if (props.liveData !== state.dataList) {
-            let data = filterData(state.filterText, props.liveData, state.tabValue)
-            return { dataList: props.liveData, filterList: data.filterList, calendarList: data.formattedList, groupList: data.groupList }
-        }
-        return null
-    }
-
-    onTabChange = (tabIndex, dataList) => {
+    onTabChange = (tabIndex) => {
+        let dataList = this.state.dataList
         let eventType = Object.keys(dataList)[tabIndex]
         let eventData = dataList[eventType]
         let values = eventData.values
         let eventKey = Object.keys(values)[0]
         let data = formatCalendarData(values[eventKey], eventData.columns)
-        if (this.searchfilter.current) {
-            this.searchfilter.current.onClear()
-        }
         this.setState({ tabValue: tabIndex, calendarList: data.formattedList, groupList: data.groupList, filterText: '', filterList: dataList, activeIndex: 0 })
     }
 
@@ -183,106 +152,153 @@ class EventLog extends React.Component {
         this.setState({ activeIndex: activeIndex, calendarList: data.formattedList, groupList: data.groupList })
     }
 
-    formatDate = (format, value) => {
-        return dateUtil.time(format, value)
+    formatData = (field, data, index) => {
+        switch (field) {
+            case fields.time:
+                return dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, data[index])
+            case fields.appName:
+                return `${data[index]} [${data[index + 1]}]`
+            case fields.clusterName:
+                return `${data[index]} [${data[index + 1]}]`
+            case fields.cloudletName:
+                return `${data[index]} [${data[index + 1]}]`
+        }
     }
 
     renderRow = (virtualProps) => {
         const { data, index, style } = virtualProps;
+        const { height } = style
         let dataList = data.dataList
         let keys = data.keys
         let columns = data.columns
         let latestData = dataList[keys[index]][0]
         return (
             <div key={index} style={style}>
-                <div style={{ pointer: 'cursor', borderRadius: 5, border: '1px solid #E0E0E1', margin: '0 10px 10px 10px', padding: 10, backgroundColor: this.state.activeIndex === index ? '#1E2123' : 'transparent' }} onClick={() => this.onEventTimeLine(dataList[keys[index]], columns, index)}>
-                    <div style={{ display: 'inline-block' }}>{columns.map((column, i) => {
-                        if (column) {
-                            let value = column.format ? this.formatDate(column.format, latestData[i]) : latestData[i]
-                            return column && column.visible ?
-                                <p style={{ fontSize: 12 }} key={i}><strong>{column.label}</strong>{`: ${value}`}</p> : false
+                <Grid container style={{ cursor: 'pointer', borderRadius: 5, padding: 10, backgroundColor: this.state.activeIndex === index ? '#1E2123' : 'transparent' }} onClick={() => this.onEventTimeLine(dataList[keys[index]], columns, index)}>
+                    <Grid item xs={11}>
+                        {
+                            columns.map((column, i) => {
+                                if (column) {
+                                    let value = column.format ? this.formatData(column.field, latestData, i) : latestData[i]
+                                    return column && column.visible ?
+                                        <React.Fragment key={i}>
+                                            <div style={{ fontSize: 13, marginBottom: 8, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                                                <strong>{`${column.detailedView && column.visible ? 'Current' : ''} ${column.label}`}</strong>
+                                                <Tooltip title={<strong style={{ fontSize: 13 }}>{value}</strong>}>
+                                                    <span style={{ fontWeight: 500 }}>{`: ${value}`}</span>
+                                                </Tooltip>
+                                            </div>
+                                        </React.Fragment> : null
+                                }
+                            })
                         }
-                    })}
-                    </div>
-                </div>
+                    </Grid>
+                    <Grid item xs={1}>
+                        {this.state.activeIndex === index ? <div style={{ position: 'absolute', top: height / 2.4, right: 10 }} align='right'>
+                            <Icon>arrow_forward_ios</Icon>
+                        </div> : null}
+                    </Grid>
+                </Grid>
+                <Divider />
             </div>
         );
     }
 
-    stepperView = (eventType, eventData, i) => {
-        let columns = eventData.columns
-        let eventList = eventData.values
-        let keys = Object.keys(eventList)
-        let itemSize = eventType === 'clusterinst' ? 243 : eventType === 'appinst' ? 330 : 186
-        return (
-            <FixedSizeList key={i} className={'no-scrollbars'} height={this.state.infiniteHeight} itemSize={itemSize} itemCount={keys.length} itemData={{ columns: columns, keys: keys, dataList: eventList }}>
-                {this.renderRow}
-            </FixedSizeList>
-        )
+    dataView = (eventType, eventData) => {
+        if (eventData) {
+            let columns = eventData.columns
+            let eventList = eventData.values
+            let keys = Object.keys(eventList)
+            let itemSize = eventType === 'clusterinst' ? 178 : eventType === 'appinst' ? 203 : 177
+            return (
+                <FixedSizeList className={'no-scrollbars'} height={this.state.infiniteHeight} itemSize={itemSize} itemCount={keys.length} itemData={{ columns: columns, keys: keys, dataList: eventList }}>
+                    {this.renderRow}
+                </FixedSizeList>
+            )
+        }
     }
 
     customRender = () => {
         return (
             redux_org.isAdmin(this) ? <div className='calendar-dropdown-select'>
-                <SelectMenu search={true} labelKey={fields.organizationName} dataList={this.props.organizationList} onChange={this.props.onOrgChange} placeholder='Select Organization' default={this.props.selectedOrg}/>
+                <SelectMenu search={true} labelKey={fields.organizationName} dataList={this.props.organizationList} onChange={this.props.onOrgChange} placeholder='Select Organization' default={this.props.selectedOrg} />
             </div> : null)
     }
 
+    onToolbarChange = (action, value) => {
+        switch (action) {
+            case ACION_SEARCH:
+                this.onFilter(value)
+                break;
+            case ACTION_PICKER:
+                this.range = value
+                this.props.fetchData(value)
+                break;
+            case ACTION_REFRESH:
+                this.props.fetchData(timeRangeInMin(this.range.duration))
+                break;
+            case ACTION_CLOSE:
+                this.props.close()
+                break;
+            case ACTION_TAB:
+                this.onTabChange(value)
+                break; 
+        }
+    }
+
     render() {
-        const { filterList, tabValue, calendarList, groupList, dataList } = this.state
-        const { endRange } = this.props
+        const { filterList, tabValue, calendarList, groupList } = this.state
+        const { endRange} = this.props
+        const keys = Object.keys(filterList)
         return (
-            <div style={{ height: '100%' }} id='event_log'>
-                <div style={{ width: 450, display: 'inline-block', height: '100%', backgroundColor: '#292C33', verticalAlign: 'top', overflow: 'auto' }}>
-                    <Paper square>
-                        <Tabs
-                            TabIndicatorProps={{
-                                style: {
-                                    backgroundColor: lightGreen['A700']
-                                }
-                            }}
-                            value={tabValue}
-                            onChange={(e, value) => this.onTabChange(value, dataList)}
-                            variant="fullWidth">
-                            {Object.keys(filterList).map((eventType, i) => {
-                                return <Tab key={i} label={eventType} />
-                            })}
-                        </Tabs>
-                        <div style={{ position: 'absolute', right: 0, top: 2 }}>
-                            <Help data={usageHelp} style={{ color: lightGreen['A700'] }}/>
-                            <IconButton  onClick={this.props.close}>
-                                <CloseIcon style={{ color: lightGreen['A700'] }} />
-                            </IconButton>
-                        </div>
-                    </Paper>
+            <Grid container style={{ height: '100%' }} id='event_log'>
+                <Grid item xs={3} style={{ display: 'inline-block', height: '100%', backgroundColor: '#292C33', verticalAlign: 'top', overflow: 'auto' }}>
                     {this.props.loading ? <LinearProgress /> : null}
-                    <br />
-                    <div align={'center'}>
-                        <SearchFilter style={{ width: '93%' }} onFilter={this.onFilter} ref={this.searchfilter} />
-                    </div>
-                    <br />
-                    {Object.keys(filterList).map((eventType, i) => {
-                        let eventList = filterList[eventType]
-                        return tabValue === i ? this.stepperView(eventType, eventList, i) : null
-                    })}
-                    <br/>
-                    <Divider/>
-                    <div style={{ paddingLeft: 20, position:'absolute', bottom:20 }} align="left">
-                        <p style={{ fontSize: 14 }}><strong>Last Requested</strong>{`: ${dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, endRange)}`}</p>
-                    </div>
-                </div>
-                <div style={{ width: 'calc(100vw - 450px)', height: '100%', display: 'inline-block', backgroundColor: '#1E2123' }}>
+                    <Toolbar data={keys} onChange={this.onTabChange} onChange={this.onToolbarChange}>
+                        {this.dataView(keys[tabValue], filterList[keys[tabValue]])}
+                        <div style={{ paddingLeft: 20, position: 'absolute', bottom: 5 }} align="left">
+                            <p style={{ fontSize: 14 }}><strong>Last Requested</strong>{`: ${dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, endRange)}`}</p>
+                        </div>
+                    </Toolbar>
+                </Grid>
+                <Grid item xs={9} style={{ height: '100%', display: 'inline-block', backgroundColor: '#1E2123', paddingLeft: 20 }}>
                     <MexCalendar dataList={calendarList} groupList={groupList} customRender={this.customRender} />
-                </div>
-            </div>
+                </Grid>
+            </Grid>
         )
     }
 
+    updateHeight = () => {
+        let element = document.getElementById('event_log')
+        if (element) {
+            this.setState({ infiniteHeight: document.getElementById('event_log').clientHeight - 140 })
+        }
+    }
+
+    componentDidUpdate(preProps, preState) {
+        const { toggle, liveData } = this.props
+        if (toggle !== preProps.toggle && liveData.length > 0) {
+            let dataObject = {}
+            liveData.forEach(item => {
+                let key = Object.keys(item)[0]
+                if (dataObject[key]) {
+                    dataObject[key].values = { ...dataObject[key].values, ...item[key].values }
+                }
+                else {
+                    dataObject[key] = item[key]
+                }
+            })
+            let data = filterData(this.state.filterText, dataObject, this.state.tabValue)
+            this.setState({ dataList: dataObject, filterList: data.filterList, calendarList: data.formattedList, groupList: data.groupList })
+        }
+    }
+
     componentDidMount() {
-        this.setState({ infiniteHeight: document.getElementById('event_log').clientHeight - 190 })
         if (Object.keys(this.state.dataList).length > 0) {
             this.onTabChange(this.state.activeIndex, this.state.dataList)
         }
+        this.updateHeight()
+        window.addEventListener("resize", this.updateHeight)
     }
 }
 
