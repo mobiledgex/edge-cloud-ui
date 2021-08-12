@@ -176,7 +176,7 @@ class ListViewer extends React.Component {
 
     render() {
         const {grouping, groupingAction, selection} = this.requestInfo
-        const { style, dataList, dropList, selected, groupActionMenu, setSelected } = this.props
+        const { dataList, dropList, selected, groupActionMenu, setSelected } = this.props
         const { expandedGroups, page, rowsPerPage, order, orderBy } = this.state
         let groupedData = grouping ? this.getGroupedData(dataList) : [];
         let isGrouping = grouping && dropList.length > 0
@@ -188,7 +188,7 @@ class ListViewer extends React.Component {
                         numSelected={selected.length}
                         groupActionMenu={groupActionMenu}
                         groupActionClose={this.groupActionClose} />
-                    <TableContainer style={style ? style : { height: `${getHeight(this.props)}`, overflow: 'auto', marginTop: `${selected.length > 0 ? '0px' : '-40px'}` }}>
+                    <TableContainer style={{ height: `${getHeight(this.props)}`, marginTop: `${selected.length > 0 ? '0px' : '-40px'}` }} className='list-view-table-container'>
                         <Table
                             stickyHeader
                             size={'small'}>

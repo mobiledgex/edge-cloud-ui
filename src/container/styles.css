@@ -582,4 +582,12 @@ ui.form .disabled.field, .ui.form .disabled.fields .field, .ui.form .field :disa
     border-radius: 4px;
 }
 
+.list-view-table-container {
+    overflow: hidden;
+}
+
+.list-view-table-container:hover {
+    overflow: auto;
+}
+
 

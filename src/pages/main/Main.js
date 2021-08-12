@@ -13,7 +13,6 @@ import { perpetual, operators } from '../../helper/constant';
 import { fields } from '../../services/model/format';
 import { updateUserMetaData } from '../../services/modules/users';
 import { getUserMetaData } from '../../helper/ls';
-import { responseValid } from '../../services/service';
 
 class Main extends React.Component {
     constructor(props) {

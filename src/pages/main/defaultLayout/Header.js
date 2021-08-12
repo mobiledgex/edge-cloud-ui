@@ -12,10 +12,12 @@ const useStyles = makeStyles(theme => ({
         flexGrow: 1,
     },
     sectionDesktop: {
+        
         display: 'none',
         [theme.breakpoints.up('md')]: {
             display: 'flex',
-        },
+        }, 
+        marginRight:5
     },
 }));
 
@@ -25,9 +27,9 @@ const Header = (props) => {
         <React.Fragment>
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
+                <EventMenu />
                 <MexTimezone />
                 <Organization />
-                <EventMenu />
                 <HelpMenu />
                 <Notifications />
                 <UserMenu />
