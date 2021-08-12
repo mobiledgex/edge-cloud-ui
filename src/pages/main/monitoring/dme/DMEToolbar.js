@@ -41,7 +41,7 @@ const MPicker = (props) => {
     const { order } = props
     return (
         <Box order={order} style={{ marginLeft: 15, marginRight: 10 }} m={1.2}>
-            <Picker onChange={(value) => { props.onChange(ACTION_PICKER, value) }}/>
+            <Picker onChange={(value) => { props.onChange(ACTION_PICKER, value) }} relativemax={6}/>
         </Box>
     )
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Popover, Grid, Button, Divider, Tooltip } from '@material-ui/core';
 import * as moment from 'moment'
 import { Icon } from 'semantic-ui-react';
