@@ -1,16 +1,15 @@
 import React from 'react';
-import { IconButton, Tooltip } from '@material-ui/core';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import { Icon, IconButton } from '../../../../hoc/mexui';
 
 const Help = (props) => {
+    const { style, className } = props
 
-    
     const renderHelp = () => {
         return (
             <div>
                 <ul style={{ fontSize: 13 }}>
                     {props.data.map((help, i) => (
-                        <li key={i} style={{marginBottom:5}}>
+                        <li key={i} style={{ marginBottom: 5 }}>
                             {help}
                         </li>
                     ))}
@@ -21,11 +20,9 @@ const Help = (props) => {
 
     return (
         <React.Fragment>
-            <Tooltip title={renderHelp()}>
-                <IconButton>
-                    <InfoOutlinedIcon fontSize={'small'} style={props.style}/>
-                </IconButton>
-            </Tooltip>
+            <IconButton tooltip={renderHelp()}>
+                <Icon outlined={true} style={style} className={className}>info_out</Icon>
+            </IconButton>
         </React.Fragment>
     )
 }

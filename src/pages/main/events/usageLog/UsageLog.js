@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 //redux
-import { Drawer } from '@material-ui/core';
 import { clusterEventLogs } from '../../../../services/modules/clusterInstEvent'
 import { appInstEventLogs } from '../../../../services/modules/appInstEvent'
 import { cloudletEventLogs } from '../../../../services/modules/cloudletEvent'
@@ -11,19 +10,19 @@ import { sendAuthRequest } from '../../../../services/model/serverWorker'
 import { showOrganizations } from '../../../../services/modules/organization'
 
 import { fields } from '../../../../services/model/format';
-import {redux_org, redux_private}  from '../../../../helper/reduxData'
-import clsx from 'clsx';
+import { redux_org, redux_private } from '../../../../helper/reduxData'
 import { withStyles } from '@material-ui/styles';
 import * as dateUtil from '../../../../utils/date_util'
-import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy';
-import { operators } from '../../../../helper/constant';
-import './style.css'
 import { componentLoader } from '../../../../hoc/loader/componentLoader';
-import { authRequest } from '../../../../services/service';
+import { authRequest, responseValid } from '../../../../services/service';
+import EventWorker from '../../../../services/worker/event.worker';
+import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
+
+import './style.css'
+import { DEFAULT_DURATION_MINUTES } from './constant';
 
 const RightDrawer = lazy(() => componentLoader(import('./RightDrawer')));
-const drawerWidth = 450
 
 const styles = theme => ({
     root: {
@@ -33,59 +32,28 @@ const styles = theme => ({
     },
     grid_root: {
         flexGrow: 1,
-    },
-    drawer: {
-        width: drawerWidth,
-        flexShrink: 0,
-        whiteSpace: 'nowrap',
-    },
-    drawer_full: {
-        width: '100%',
-        flexShrink: 0,
-        whiteSpace: 'nowrap',
-    },
-    drawerOpen: {
-        backgroundColor: 'transparent',
-        width: drawerWidth,
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    },
-    drawerOpen_full: {
-        backgroundColor: 'transparent',
-        width: '100%',
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    },
-    drawerClose: {
-        backgroundColor: 'transparent',
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-        overflowX: 'hidden',
-        [theme.breakpoints.up('sm')]: {
-            width: theme.spacing(7) + 1,
-        },
-    },
+    }
 })
-class GlobalUsageLog extends React.Component {
+
+const defaultRange = (self) => {
+    const range = timeRangeInMin(DEFAULT_DURATION_MINUTES)
+    self.startRange = range.from
+    self.endRange = range.to
+}
+
+class UsageLog extends React.Component {
     constructor(props) {
         super(props);
         this._isMounted = false;
         this.state = {
-            isOpen: props.open,
-            liveData: {},
+            liveData: [],
+            toggle: false,
             loading: false,
         }
+        this.newRequest = false
         this.action = '';
         this.data = {};
-        this.intervalId = undefined;
-        this.endRange = dateUtil.currentUTCTime()
-        this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
+        defaultRange(this)
         this.organizationList = []
     }
 
@@ -93,96 +61,32 @@ class GlobalUsageLog extends React.Component {
 
     handleClose = () => {
         this.props.close()
-        this.setState({ isOpen: false });
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if (props.open && !state.isOpen) {
-            return { isOpen: props.open }
+    serverResponse = (mc) => {
+        if (this.newRequest) {
+            this.newRequest = false
+            this.setState({ liveData: [] })
         }
-        return null
-    }
-
-    render() {
-        const { classes } = this.props;
-        const { isOpen, liveData, loading } = this.state
-        return (
-            <React.Fragment>
-                <Drawer className={clsx(classes.drawer_full, {
-                    [classes.drawerOpen_full]: isOpen,
-                    [classes.drawerClose]: !isOpen,
-                })}
-                    classes={{
-                        paper: clsx({
-                            [classes.drawerOpen_full]: isOpen,
-                            [classes.drawerClose]: !isOpen,
-                        }),
-                    }} anchor={'right'} open={isOpen}>
-                    <Suspense fallback={<div>loading</div>}>
-                        <RightDrawer close={this.handleClose} liveData={liveData} loading={loading} endRange={this.endRange} organizationList={this.organizationList} onOrgChange={this.onOrganizationChange} selectedOrg={this.selectedOrg} />
-                    </Suspense>
-                </Drawer>
-            </React.Fragment>
-        )
-    }
-
-    updateData = (eventData) => {
-        let liveData = cloneDeep(this.state.liveData)
-        Object.keys(eventData).map(key => {
-            if (liveData[key]) {
-                let values = eventData[key].values
-                Object.keys(values).map(dataKey => {
-                    let oldValues = liveData[key].values[dataKey]
-                    if (oldValues && oldValues.length > 0) {
-                        liveData[key].values[dataKey] = [...values[dataKey], ...oldValues]
-                    }
-                    else {
-                        liveData[key].values[dataKey] = values[dataKey]
-                    }
-                })
-            }
-            else {
-                liveData[key] = eventData[key]
-            }
-        })
-        if (this._isMounted) {
-            this.setState({ liveData })
-        }
-    }
-
-    serverResponse = (mcList) => {
-        if (mcList && mcList.length > 0) {
-            mcList.map(mc => {
-                if (mc && mc.response && mc.response.status === 200) {
-                    let data = mc.response.data
-                    if (data && data.length > 0) {
-                        if (Object.keys(data[0]).length > 0) {
-                            this.updateData(data[0])
-                        }
+        if (responseValid(mc)) {
+            let worker = new EventWorker()
+            worker.postMessage({ ...mc })
+            worker.addEventListener('message', async (event) => {
+                let data = event.data
+                if (data && data.length > 0) {
+                    if (Object.keys(data[0]).length > 0) {
+                        this.updateData(data[0])
                     }
                 }
+                worker.terminate()
             })
         }
         if (this._isMounted) { this.setState({ loading: false }) }
     }
 
-    onOrganizationChange = (orgList) => {
-        if (orgList.length > 0) {
-            let org = orgList[0]
-            if (this._isMounted) {
-                this.setState({ liveData: {} })
-            }
-            clearInterval(this.intervalId)
-            this.endRange = dateUtil.currentUTCTime()
-            this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
-            this.selectedOrg = org[fields.organizationName]
-            this.eventLogData(this.startRange, this.endRange, true)
-        }
-    }
-
-    eventLogData = async (starttime, endtime, isInit) => {
+    eventLogData = async (starttime, endtime) => {
+        this.newRequest = true
         let regions = this.props.regions
-        const isOpen = this.state.isOpen
         let org = redux_org.nonAdminOrg(this) ? redux_org.nonAdminOrg(this) : this.selectedOrg
         if (org) {
             if (regions && regions.length > 0) {
@@ -193,58 +97,59 @@ class GlobalUsageLog extends React.Component {
                     data[fields.endtime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
                     data[fields.organizationName] = org
                     if (redux_org.isAdmin(this) || redux_org.isOperator(this)) {
-                        authRequest(this, cloudletEventLogs(this, data), this.serverResponse)
+                        authRequest(this, { ...cloudletEventLogs(this, data), showMessage: false }, this.serverResponse, false)
                     }
                     if (redux_org.isAdmin(this) || redux_org.isDeveloper(this) || redux_private.isRegionValid(this, region)) {
-                        authRequest(this, { ...clusterEventLogs(this, data), showMessage: isOpen }, this.serverResponse)
-                        authRequest(this, { ...appInstEventLogs(this, data), showMessage: isOpen }, this.serverResponse)
+                        authRequest(this, { ...clusterEventLogs(this, data), showMessage: false }, this.serverResponse, false)
+                        authRequest(this, { ...appInstEventLogs(this, data), showMessage: false }, this.serverResponse, false)
                     }
                 })
                 if (this._isMounted) { this.setState({ loading: true }) }
-
-                if (isInit) {
-                    if (this.intervalId) {
-                        clearInterval(this.intervalId)
-                    }
-                    this.intervalId = setInterval(() => {
-                        if (this._isMounted && this.state.isOpen) {
-                            this.startRange = cloneDeep(this.endRange)
-                            this.endRange = dateUtil.currentUTCTime()
-                            this.eventLogData(this.startRange, this.endRange)
-                        }
-                    }, 60 * 1000);
-            }}
+            }
         }
     }
 
-    componentDidUpdate(prePros, preState) {
-        if (this.props.organizationInfo && !operators.equal(this.props.organizationInfo, prePros.organizationInfo)) {
-            this.endRange = dateUtil.currentUTCTime()
-            this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
+    onFetchData = (range) => {
+        this.startRange = range.from
+        this.endRange = range.to
+        this.eventLogData(this.startRange, this.endRange)
+    }
+
+    render() {
+        const { liveData, loading, toggle } = this.state
+        return (
+            <Suspense fallback={<div>loading</div>}>
+                <RightDrawer close={this.handleClose} fetchData={this.onFetchData} endRange={this.endRange} toggle={toggle} liveData={liveData} loading={loading} f organizationList={this.organizationList} onOrgChange={this.onOrganizationChange} selectedOrg={this.selectedOrg} />
+            </Suspense>
+        )
+    }
+
+    updateData = (eventData) => {
+        if (this._isMounted) {
+            this.setState(prevState => {
+                let liveData = prevState.liveData
+                liveData.push(eventData)
+                return { liveData, toggle: !prevState.toggle }
+            })
+        }
+    }
+
+    onOrganizationChange = (orgList) => {
+        if (orgList.length > 0) {
+            let org = orgList[0]
             if (this._isMounted) {
                 this.setState({ liveData: {} })
             }
+            defaultRange(this)
+            this.selectedOrg = org[fields.organizationName]
             this.eventLogData(this.startRange, this.endRange)
-        }
-
-        //enable interval only when usage log is visible
-        if (preState.isOpen !== this.state.isOpen) {
-            if (this._isMounted && this.state.isOpen) {
-                this.startRange = cloneDeep(this.endRange)
-                this.endRange = dateUtil.currentUTCTime()
-                this.eventLogData(this.startRange, this.endRange, true)
-            }
-            else {
-                clearInterval(this.intervalId)
-            }
         }
     }
 
     orgResponse = (mc) => {
-        if (mc && mc.response && mc.response.status === 200) {
+        if (responseValid(mc)) {
             this.organizationList = sortBy(mc.response.data, [item => item[fields.organizationName]], ['asc']);
-            this.endRange = dateUtil.currentUTCTime()
-            this.startRange = dateUtil.subtractDays(30, dateUtil.startOfDay()).valueOf()
+            defaultRange(this)
             if (this._isMounted) {
                 this.setState({ liveData: {} })
             }
@@ -264,7 +169,6 @@ class GlobalUsageLog extends React.Component {
 
     componentWillUnmount() {
         this._isMounted = false;
-        clearInterval(this.intervalId);
     }
 };
 
@@ -283,4 +187,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(withStyles(styles)(GlobalUsageLog)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(withStyles(styles)(UsageLog)));

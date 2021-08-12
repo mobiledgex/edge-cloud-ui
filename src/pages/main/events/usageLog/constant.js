@@ -1,0 +1,1 @@
+export const DEFAULT_DURATION_MINUTES = 720

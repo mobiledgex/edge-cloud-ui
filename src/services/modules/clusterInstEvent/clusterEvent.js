@@ -1,16 +1,15 @@
-import * as dateUtil from '../../../utils/date_util'
 import { endpoint } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData'
 import { primaryKeys as cloudletKeys } from '../cloudlet'
 import { fields } from '../../model/format'
 
 export const clusterEventKeys = [
-    { label: 'Starttime', serverField: 'time', visible: true, detailedView: false, format: dateUtil.FORMAT_FULL_DATE_TIME },
+    { field: fields.time, label: 'Starttime', serverField: 'time', visible: true, detailedView: false, format: true },
     { label: 'Region', serverField: 'region', visible: true, detailedView: false, groupBy: true, filter: true },
-    { label: 'Cluster', serverField: 'cluster', visible: true, detailedView: false, groupBy: true, filter: true },
-    { label: 'Cluster Developer', serverField: 'clusterorg', visible: true, detailedView: false, groupBy: false },
-    { label: 'Cloudlet', serverField: 'cloudlet', visible: true, detailedView: false, groupBy: true },
-    { label: 'Operator', serverField: 'cloudletorg', visible: true, detailedView: false, groupBy: true },
+    { field: fields.clusterName, label: 'Cluster', serverField: 'cluster', visible: true, detailedView: false, groupBy: true, filter: true},
+    { label: 'Cluster Developer', serverField: 'clusterorg', visible: false, detailedView: false, groupBy: false },
+    { field: fields.cloudletName, label: 'Cloudlet', serverField: 'cloudlet', visible: true, detailedView: false, groupBy: true, format: true },
+    { label: 'Operator', serverField: 'cloudletorg', visible: false, detailedView: false, groupBy: true },
     { label: 'Reserved By', serverField: 'reservedBy', visible: false, detailedView: false, groupBy: false },
     { label: 'Flavor', serverField: 'flavor', visible: false, detailedView: true },
     { label: 'vCPU', serverField: 'vcpu', visible: false, detailedView: true },

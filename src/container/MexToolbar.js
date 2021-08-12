@@ -207,7 +207,7 @@ const MexToolbar = (props) => {
         return (
             requestInfo.picker ?
                 <Box order={order} style={{marginLeft:15, marginRight:10}} m={0.7}>
-                    <Picker onChange={(value) => { props.onAction(ACTION_PICKER, value) }}/>
+                    <Picker onChange={(value) => { props.onAction(ACTION_PICKER, value) }} relativemax={6}/>
                 </Box> : null
         )
     }
