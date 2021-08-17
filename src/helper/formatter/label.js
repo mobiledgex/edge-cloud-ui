@@ -163,6 +163,8 @@ export const healthCheck = (id) => {
             return perpetual.HEALTH_CHECK_FAIL_SERVER_FAIL
         case 3:
             return perpetual.HEALTH_CHECK_OK
+        case 4:
+            return perpetual.HEALTH_CLOUDLET_OFFLINE
         default:
             return id
     }
