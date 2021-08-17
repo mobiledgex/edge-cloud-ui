@@ -11,13 +11,13 @@ const SelectMenu = (props) => {
     const [filterText, setFilterText] = React.useState('')
 
     const Label = (props) => {
-        const { tip, icon, placeholder, header } = props
+        const { tip, icon, placeholder, header, color } = props
         return (
             icon ? icon :
-                <div className='select-menu-label'>
+                <div className='select-menu-label' style={{color}}>
                     {header ? <strong>{header}:</strong> : null}
                     <Tooltip title={value ? value : ''}><Typography style={{ maxWidth: 150, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display:'inline-flex', marginRight:5, marginLeft:5 }}>{value ? value : placeholder}</Typography></Tooltip>
-                    <Icon name='chevron down' className='select-menu-label-icon' />
+                    <Icon name='chevron down' className='select-menu-label-icon'  style={{color}}/>
                 </div>
 
         )

@@ -58,7 +58,7 @@ class Reporter extends React.Component {
     customToolbar = () => {
         const { orgList } = this.state
         return (
-            <Generator orgList={orgList}/>
+            <Generator orgList={orgList} />
         )
     }
 
@@ -92,9 +92,9 @@ class Reporter extends React.Component {
         })
     }
 
-    skel = ()=>{
+    skel = () => {
         <React.Fragment>
-        <Skeleton animation="wave" variant="rect" />
+            <Skeleton animation="wave" variant="rect" />
         </React.Fragment>
     }
 
@@ -106,7 +106,7 @@ class Reporter extends React.Component {
                 <React.Fragment>
                     <DataView id={perpetual.PAGE_REPORTER} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} toolbarAction={this.toolbarAction} customToolbar={this.customToolbar} tableHeight={300} />
                     <Generated open={open} orgList={orgList} close={() => { this.updateState({ open: false }) }} />
-                </React.Fragment> : <LogoSpinner/>
+                </React.Fragment> : <LogoSpinner />
         )
     }
 
