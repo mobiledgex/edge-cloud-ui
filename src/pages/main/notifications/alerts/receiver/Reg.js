@@ -30,7 +30,7 @@ const selector = (self) => {
         selector.push({ selector: 'App Instance', key: 'appname' })
         selector.push({ selector: 'Cluster', key: 'cluster' })
     }
-    else if (redux_org.isAdmin(self) || redux_org.isOperator(self)) {
+    if (redux_org.isAdmin(self) || redux_org.isOperator(self)) {
         selector.push({ selector: 'Cloudlet', key: 'cloudlet' })
     }
     return selector
