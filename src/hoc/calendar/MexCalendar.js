@@ -148,7 +148,7 @@ class MexCalendar extends React.Component {
         const { dataList, groupList } = this.props
         const { calendarDates } = this.state
         return (
-            dataList.length > 0 ? <div style={{ height: 'calc(100% - 0px)', overflow: 'auto', backgroundColor: '#1E2123', paddingTop: 10, paddingRight:15 }}>
+            <div style={{ height: '100%', overflow: 'auto', paddingTop: 10, paddingRight: 15 }}>
                 <div style={{ border: '1px solid #BBBBBB', borderBottom: 'none', width: 450, borderRadius: 5, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
                     <Tooltip title={<strong style={{ fontSize: 13 }}>Previous</strong>}>
                         <IconButton onClick={this.onPrevClick}>
@@ -174,7 +174,6 @@ class MexCalendar extends React.Component {
                             ))}
                         </ButtonGroup>
                     </div>
-                    {this.props.customRender()}
                 </div>
                 <Timeline
                     scrollRef={el => (this.scrollRef = el)}
@@ -207,10 +206,7 @@ class MexCalendar extends React.Component {
                         <DateHeader />
                     </TimelineHeaders>
                 </Timeline>
-            </div> :
-                <div align="center" style={{ marginTop: '20%' }}>
-                    <h3>No Data</h3>
-                </div>
+            </div>
         )
     }
 }

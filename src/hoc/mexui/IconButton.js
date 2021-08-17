@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { lightGreen } from '@material-ui/core/colors';
 import { IconButton as IB, Tooltip } from '@material-ui/core';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -20,13 +21,16 @@ const useStyles = makeStyles((theme) => ({
         marginTop: -16,
         marginLeft: -16,
     },
+    inline:{
+        display:'inline-block'
+    }
 }));
 
 export default function IconButton(props) {
     const classes = useStyles();
-    const { tooltip, disabled, style, loading, onClick, children } = props
+    const { tooltip, disabled, style, loading, onClick, children, inline } = props
     return (
-        <div className={classes.root}>
+        <div className={clsx(classes.root, inline ? classes.inline : {})}>
             <div className={classes.wrapper}>
                 <Tooltip title={tooltip ? <strong style={{fontSize:13}}>{tooltip}</strong> : ''}>
                     <span>
