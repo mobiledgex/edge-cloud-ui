@@ -50,7 +50,7 @@ const LeftView = (props) => {
                         {
                             redux_org.isAdmin(orgInfo) && orgList ?
                                 <div className='calendar-dropdown-select'>
-                                    <SelectMenu search={true} labelKey={fields.organizationName} dataList={orgList} placeholder='Select Organization' onChange={(value) => onChange(ACTION_ORG, value)} />
+                                    <SelectMenu color='rgba(118, 255, 3, 0.7)' search={true} labelKey={fields.organizationName} dataList={orgList} placeholder='Select Organization' onChange={(value) => onChange(ACTION_ORG, value)} />
                                 </div> : null
                         }
                     </Box>
