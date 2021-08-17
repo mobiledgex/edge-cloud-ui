@@ -6,8 +6,11 @@ import { Box, Divider, Grid, Input, Typography } from '@material-ui/core';
 import uuid from 'uuid'
 import Tags from './Tags'
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
-import { time, FORMAT_FULL_DATE_TIME } from '../../../../utils/date_util';
 import { DEFAULT_DURATION_MINUTES } from '../helper/constant';
+import { useSelector } from 'react-redux';
+import { redux_org } from '../../../../helper/reduxData';
+import { fields } from '../../../../services/model/format';
+import SelectMenu from '../../../../hoc/selectMenu/SelectMenu';
 
 export const ACTION_FILTER = 101
 
@@ -30,8 +33,10 @@ const useStyles = makeStyles({
 
 const Filter = (props) => {
     const classes = useStyles();
+    const orgInfo = useSelector(state => state.organizationInfo.data)
     const [state, setState] = React.useState(false);
     const [limit, setLimit] = React.useState(25);
+    const [org, setOrg] = React.useState(undefined);
     const [renderTags, setRenderTags] = React.useState([]);
     const [range, setRange] = React.useState(timeRangeInMin(DEFAULT_DURATION_MINUTES));
     const [tags, setTags] = React.useState({})
@@ -52,6 +57,11 @@ const Filter = (props) => {
         setLimit(limit);
     };
 
+    const handleOrg = (value) => {
+        if (value.length > 0) {
+            setOrg(value[0][fields.organizationName])
+        }
+    }
 
     const setTagForms = () => {
         setRenderTags(x => [...x, uuid()])
@@ -85,7 +95,7 @@ const Filter = (props) => {
     }
 
     const onSubmit = () => {
-        let filter = { range, limit }
+        let filter = { range, limit, org }
         let tagIdList = Object.keys(tags)
         if (tagIdList.length > 0) {
             let customTags = {}
@@ -100,18 +110,18 @@ const Filter = (props) => {
         setState(false)
     }
 
-    const renderTooltip=()=>{
-        return (
-            <div style={{maxHeight:300, overflow:'auto'}}>
-                <p>{time(FORMAT_FULL_DATE_TIME, range.from)} to {time(FORMAT_FULL_DATE_TIME, range.to)}</p>
-                <p>Limit: {limit}</p>
-            </div>
-        )
-    }
+    // const renderTooltip=()=>{
+    //     return (
+    //         <div style={{maxHeight:300, overflow:'auto'}}>
+    //             <p>{time(FORMAT_FULL_DATE_TIME, range.from)} to {time(FORMAT_FULL_DATE_TIME, range.to)}</p>
+    //             <p>Limit: {limit}</p>
+    //         </div>
+    //     )
+    // }
 
     return (
         <React.Fragment>
-            <IconButton tooltip={renderTooltip()} onClick={toggleDrawer(true)} style={{ marginRight: -20, marginTop: -1 }}><Icon style={{ color: 'rgba(118, 255, 3, 0.7)', fontSize: 24 }}>filter_list</Icon></IconButton>
+            <IconButton tooltip={'Filter data by date, org, tags and limit'} onClick={toggleDrawer(true)} style={{ marginRight: -20, marginTop: -1 }}><Icon style={{ color: 'rgba(118, 255, 3, 0.7)', fontSize: 24 }}>filter_list</Icon></IconButton>
             <Drawer anchor={'right'} open={state} onClose={toggleDrawer(false)}>
                 <React.Fragment>
                     <div className={classes.list}>
@@ -147,6 +157,12 @@ const Filter = (props) => {
                                 </Grid>
                             </Grid>
                         </div>
+                        {
+                            redux_org.isAdmin(orgInfo) && props.orgList ?
+                            <div style={{padding: 5, border: '1px solid white', borderRadius: 5, margin:14 }}>
+                            <SelectMenu search={true} clear={true} labelKey={fields.organizationName} labelWidth={300} dataList={props.orgList} placeholder='Select Organization' onChange={handleOrg} />
+                        </div> : null
+                        }
                         <div>
                             <Box display="flex" p={1}>
                                 <Box p={1} flexGrow={1}>

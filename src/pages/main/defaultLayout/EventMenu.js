@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
         width: drawerWidth,
         border: 'none',
         overflow: 'hidden',
-        backgroundColor: 'transparent',
+        backgroundColor:'#292C33',
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -79,7 +79,7 @@ const menuOptions = [
 ]
 
 const EventMenu = (props) => {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(true);
     const [pageId, setPageId] = React.useState(undefined);
     const classes = useStyles();
 

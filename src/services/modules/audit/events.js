@@ -11,12 +11,11 @@ export const showEvents = async (self, data, showSpinner) => {
     return mcRequest
 }
 
-export const showAudits = async (self, data, showSpinner, isPrivate) => {
+export const showAudits = async (self, data, org, showSpinner) => {
     let match = data.match ? data.match : {}
     match.types = [data.type]
-    if(!isPrivate)
-    {
-        match.orgs = redux_org.nonAdminOrg(self) ? [redux_org.nonAdminOrg(self)] : undefined
+    if (!redux_org.isAdmin(self) || org) {
+        match.orgs = redux_org.nonAdminOrg(self) ? [redux_org.nonAdminOrg(self)] : [org]
     }
     data.match = match
     let mcRequest = await authSyncRequest(self, { method: endpoint.EVENTS_SHOW, data: data, showSpinner: showSpinner })
