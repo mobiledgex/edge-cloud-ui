@@ -1,16 +1,11 @@
 import React from 'react';
 import clsx from 'clsx';
-<<<<<<< HEAD
 import { makeStyles } from '@material-ui/core/styles';
-=======
-import { makeStyles, useTheme } from '@material-ui/core/styles';
->>>>>>> 59e3b0f29441f45ed8d9ba7d17f3da5025094b0a
 import Drawer from '@material-ui/core/Drawer';
 import { Icon } from '../../../hoc/mexui';
 import { Fab, Tooltip, Dialog } from '@material-ui/core';
 import { lightGreen } from '@material-ui/core/colors';
 import UsageLog from '../events/usageLog/UsageLog';
-<<<<<<< HEAD
 import AuditLog from '../events/auditLog/AuditLog';
 import { AUDIT, EVENT } from '../../../helper/constant/perpetual';
 
@@ -18,13 +13,6 @@ const AUDIT_LOG = 1
 const EVENT_LOG = 2
 const USAGE_LOG = 3
 
-=======
-
-const AUDIT_LOG = 1
-const EVENT_LOG = 2
-const USAGE_LOG = 3
-
->>>>>>> 59e3b0f29441f45ed8d9ba7d17f3da5025094b0a
 const drawerWidth = 20
 
 const useStyles = makeStyles((theme) => ({
@@ -112,24 +100,17 @@ const EventMenu = (props) => {
         switch (pageId) {
             case USAGE_LOG:
                 return <UsageLog close={handleClose} />
-<<<<<<< HEAD
             case AUDIT_LOG:
                 return <AuditLog type={AUDIT} close={handleClose} />
             case EVENT_LOG:
                 return <AuditLog type={EVENT} close={handleClose} />
-=======
->>>>>>> 59e3b0f29441f45ed8d9ba7d17f3da5025094b0a
         }
     }
 
     return (
         <React.Fragment>
             <div className={classes.root}>
-<<<<<<< HEAD
                 {pageId ? null : <Tooltip title={<strong className={classes.tip}>Logs</strong>}>
-=======
-                {pageId ? null : <Tooltip title={<strong className={classes.tip}>Events</strong>}>
->>>>>>> 59e3b0f29441f45ed8d9ba7d17f3da5025094b0a
                     <Fab className={classes.fab} size="small" aria-label="add" onClick={handleClick}>
                         <Icon style={{ color: 'white', marginLeft: 5 }}>{open ? 'chevron_right' : 'event_note'}</Icon>
                     </Fab>
