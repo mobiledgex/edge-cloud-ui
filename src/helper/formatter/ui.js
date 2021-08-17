@@ -150,13 +150,12 @@ export const lock = (key, data, isDetail, callback) => {
 
 
 export const reporterStatus = (key, data, isDetail) => {
-    let success = data[key.field] === 'success' 
+    let success = data[key.field] === 'success'
     if (isDetail) {
         return toFirstUpperCase(data[key.field])
     }
-    else
-    {
-        return <Icon name={success ? 'check' : 'close'} style={{ color: success ? perpetual.COLOR_GREEN : perpetual.COLOR_RED }} /> 
+    else {
+        return <Icon name={success ? 'check' : 'close'} style={{ color: success ? perpetual.COLOR_GREEN : perpetual.COLOR_RED }} />
     }
 }
 
@@ -164,17 +163,16 @@ export const renderYesNo = (key, data, isDetail) => {
     if (isDetail) {
         return data ? perpetual.YES : perpetual.NO
     }
-    else
-    {
-        return <Icon name={data ? 'check' : 'close'} style={{ color: data ? perpetual.COLOR_GREEN : perpetual.COLOR_RED }} /> 
+    else {
+        return <Icon name={data ? 'check' : 'close'} style={{ color: data ? perpetual.COLOR_GREEN : perpetual.COLOR_RED }} />
     }
 }
 
-export const NoData = ()=>{
+export const NoData = () => {
     return (
-        <div align='center' style={{position:'relative', top:'50%', transform: 'translateY(-50%)'}}>
-            <img src={`assets/icons/inbox_empty.svg`}/>
-            <h4 style={{ color:'grey'}}><b>No Data</b></h4>
+        <div align='center' style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
+            <img src={`assets/icons/inbox_empty.svg`} />
+            <h4 style={{ color: 'grey' }}><b>No Data</b></h4>
         </div>
     )
 }
@@ -211,5 +209,15 @@ export const RenderSeverity = (data, isDetailView) => {
                 style={{ color, width: 90, backgroundColor: 'transparent', border: `2px solid ${color}` }}
             />
     )
+}
+
+export const flavorGPU = (key, data, isDetail) => {
+    let value = data[key.field]
+    if (isDetail) {
+        return value
+    }
+    else {
+        return <Icon name={value ? 'check' : 'close'} style={{ color: value ? perpetual.COLOR_GREEN : perpetual.COLOR_RED }} />
+    }
 }
 
