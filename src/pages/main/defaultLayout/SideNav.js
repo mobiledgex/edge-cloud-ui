@@ -26,6 +26,7 @@ import { role } from '../../../helper/constant';
 
 //Header
 import Header from './Header'
+import EventMenu from './EventMenu';
 
 const drawerWidth = 250;
 
@@ -87,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
     },
     content: {
         flexGrow: 1,
-        padding: 3,
+        padding: 2,
         marginTop: 51,
         overflow: 'auto'
     },
@@ -252,6 +253,7 @@ const SideNav = (props) => {
             <main className={classes.content}>
                 {props.children}
             </main>
+            <EventMenu />
         </div>
     );
 }

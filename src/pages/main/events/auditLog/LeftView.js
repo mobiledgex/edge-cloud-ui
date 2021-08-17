@@ -3,7 +3,7 @@ import { Box, Divider, Grid, Tooltip } from '@material-ui/core';
 import * as dateUtil from '../../../../utils/date_util'
 import { FixedSizeList, VariableSizeList } from 'react-window';
 import { Icon } from '../../../../hoc/mexui';
-import Toolbar, { ACION_SEARCH, ACTION_CLOSE, ACTION_ORG, ACTION_REFRESH } from '../helper/toolbar/Toolbar';
+import Toolbar, { ACION_SEARCH, ACTION_CLOSE, ACTION_ORG, ACTION_PICKER, ACTION_REFRESH } from '../helper/toolbar/Toolbar';
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
 import { auditKeys, DEFAULT_DURATION_MINUTES, eventKeys } from '../helper/constant';
 import { NoData } from '../../../../helper/formatter/ui';
@@ -17,9 +17,8 @@ import { toFirstUpperCase } from '../../../../utils/string_utils';
 import uuid from 'uuid'
 
 const tip = [
-    <p>By default audit/event log provides current logs with default limit of 25 which is refreshed at a fixed interval</p>,
-    <p>Click on <FilterListRoundedIcon style={{ verticalAlign: -6 }} />  icon to fetch specific data</p>,
-    <p>Maximum 24 hours data can be fetched</p>
+    <p>By default audit/event log provides current logs with default limit of 25</p>,
+    <p>Click on <FilterListRoundedIcon style={{ verticalAlign: -6 }} />  icon to apply additional filters</p>
 ]
 
 const formatURL = (logName) => {
@@ -72,7 +71,7 @@ class AuditLogView extends React.Component {
 
     onFilter = (filterText) => {
         const keys = this.isAudit ? auditKeys : eventKeys
-        filterText = filterText ? filterText : this.state.filterText
+        filterText = filterText ? filterText.toLowerCase() : this.state.filterText
         let dataList = this.props.dataList.filter(data => {
             let valid = false
             let filterCount = 0
@@ -203,8 +202,9 @@ class AuditLogView extends React.Component {
             case ACTION_CLOSE:
                 this.props.close()
                 break;
-            case ACTION_ORG:
-                this.props.onOrgChange(value)
+            case ACTION_PICKER:
+                this.filter.range = value
+                this.props.fetchData({ range: value })
                 break;
             case ACTION_FILTER:
                 this.filter = value
@@ -216,12 +216,12 @@ class AuditLogView extends React.Component {
 
     render() {
         const { activeIndex, dataList } = this.state
-        const { endtime, organizationList, loading, type } = this.props
+        const { endtime, loading, type, orgList } = this.props
         return (
             <React.Fragment>
-                <Toolbar header={`${toFirstUpperCase(type)} Logs`} tip={tip} onChange={this.onToolbarChange} orgList={organizationList} loading={loading} picker={false}>
+                <Toolbar header={`${toFirstUpperCase(type)} Logs`} tip={tip} onChange={this.onToolbarChange} loading={loading}>
                     <Box>
-                        <ServerFilter onChange={this.onToolbarChange} />
+                        <ServerFilter onChange={this.onToolbarChange} orgList={orgList} />
                     </Box>
                 </Toolbar>
                 <div style={{ height: 'calc(100vh - 50px)' }} id='event_log'>

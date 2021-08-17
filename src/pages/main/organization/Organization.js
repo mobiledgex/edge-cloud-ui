@@ -161,7 +161,7 @@ class OrganizationList extends React.Component {
 
     actionMenu = () => {
         return [
-            { label: 'Audit', onClick: this.onAudit },
+            // { label: 'Audit', onClick: this.onAudit },
             { label: 'Add User', onClick: this.onAddUser, type: 'Edit', visibility: this.managerVisibility },
             { id: perpetual.ACTION_EDGE_BOX_ENABLE, label: this.onPreEdgebox, visibility: this.adminVisibility, type: 'Edit', warning: this.onPreEdgebox, disable: this.onPreEdgebox, onClick: this.onEdgebox },
             { id: perpetual.ACTION_UPDATE, label: 'Update', visibility: this.managerVisibility, onClick: this.onUpdate, type: 'Edit' },

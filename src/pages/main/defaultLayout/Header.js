@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import MexTimezone from './timezone/MexTimezone'
 import HelpMenu from './help/HelpMenu'
-import EventMenu from './EventMenu'
 import Notifications from '../notifications/Notifications'
 import UserMenu from '../userSetting/UserMenu';
 import Organization from './Organization'
@@ -27,7 +26,6 @@ const Header = (props) => {
         <React.Fragment>
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
-                <EventMenu />
                 <MexTimezone />
                 <Organization />
                 <HelpMenu />
