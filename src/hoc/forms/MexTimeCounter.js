@@ -51,9 +51,9 @@ const MexDate = (props) => {
 
     const getForms = () => (
         <div style={{ display: 'inline-block' }}>
-            <CustomInput value={fetchValue(time, 'h')} min={0} max={24} label={HOUR} onChange={onChange} />
-            <CustomInput value={fetchValue(time, 'm', 'h')} min={0} max={60} label={MINUTE} onChange={onChange} />
-            <CustomInput value={fetchValue(time, 's', 'm')} min={0} max={60} label={SECOND} onChange={onChange} />
+            <CustomInput value={fetchValue(time, 'h')} min={0} label={HOUR} onChange={onChange} />
+            <CustomInput value={fetchValue(time, 'm', 'h')} min={0} label={MINUTE} onChange={onChange} />
+            <CustomInput value={fetchValue(time, 's', 'm')} min={0} label={SECOND} onChange={onChange} />
         </div>
     )
 
