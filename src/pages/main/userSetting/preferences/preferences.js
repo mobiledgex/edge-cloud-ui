@@ -17,7 +17,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { redux_org } from '../../../../helper/reduxData';
 import { getUserMetaData } from '../../../../helper/ls';
 import { timezonePref } from '../../../../utils/sharedPreferences_util';
-import Help from '../../events/auditLog/Help'
+import Help from '../../events/helper/Help'
 import { HEADER } from '../../../../hoc/forms/MexForms';
 import { perpetual } from '../../../../helper/constant';
 

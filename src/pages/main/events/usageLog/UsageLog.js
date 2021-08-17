@@ -17,10 +17,8 @@ import sortBy from 'lodash/sortBy';
 import { componentLoader } from '../../../../hoc/loader/componentLoader';
 import { authRequest, responseValid } from '../../../../services/service';
 import EventWorker from '../../../../services/worker/event.worker';
-import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
-
-import './style.css'
-import { DEFAULT_DURATION_MINUTES } from './constant';
+import { defaultRange } from '../helper/constant';
+import '../style.css'
 
 const RightDrawer = lazy(() => componentLoader(import('./RightDrawer')));
 
@@ -34,12 +32,6 @@ const styles = theme => ({
         flexGrow: 1,
     }
 })
-
-const defaultRange = (self) => {
-    const range = timeRangeInMin(DEFAULT_DURATION_MINUTES)
-    self.startRange = range.from
-    self.endRange = range.to
-}
 
 class UsageLog extends React.Component {
     constructor(props) {
@@ -110,16 +102,16 @@ class UsageLog extends React.Component {
     }
 
     onFetchData = (range) => {
-        this.startRange = range.from
-        this.endRange = range.to
-        this.eventLogData(this.startRange, this.endRange)
+        this.starttime = range.from
+        this.endtime = range.to
+        this.eventLogData(this.starttime, this.endtime)
     }
 
     render() {
         const { liveData, loading, toggle } = this.state
         return (
             <Suspense fallback={<div>loading</div>}>
-                <RightDrawer close={this.handleClose} fetchData={this.onFetchData} endRange={this.endRange} toggle={toggle} liveData={liveData} loading={loading} f organizationList={this.organizationList} onOrgChange={this.onOrganizationChange} selectedOrg={this.selectedOrg} />
+                <RightDrawer close={this.handleClose} fetchData={this.onFetchData} endtime={this.endtime} toggle={toggle} liveData={liveData} loading={loading} organizationList={this.organizationList} onOrgChange={this.onOrganizationChange} selectedOrg={this.selectedOrg} />
             </Suspense>
         )
     }
@@ -142,7 +134,7 @@ class UsageLog extends React.Component {
             }
             defaultRange(this)
             this.selectedOrg = org[fields.organizationName]
-            this.eventLogData(this.startRange, this.endRange)
+            this.eventLogData(this.starttime, this.endtime)
         }
     }
 
@@ -153,7 +145,7 @@ class UsageLog extends React.Component {
             if (this._isMounted) {
                 this.setState({ liveData: {} })
             }
-            this.eventLogData(this.startRange, this.endRange)
+            this.eventLogData(this.starttime, this.endtime)
         }
     }
 
@@ -163,7 +155,7 @@ class UsageLog extends React.Component {
             sendAuthRequest(this, showOrganizations(), this.orgResponse)
         }
         else if (redux_org.nonAdminOrg(this)) {
-            this.eventLogData(this.startRange, this.endRange)
+            this.eventLogData(this.starttime, this.endtime)
         }
     }
 

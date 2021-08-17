@@ -1,11 +1,13 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import { Icon } from '../../../hoc/mexui';
 import { Fab, Tooltip, Dialog } from '@material-ui/core';
 import { lightGreen } from '@material-ui/core/colors';
 import UsageLog from '../events/usageLog/UsageLog';
+import AuditLog from '../events/auditLog/AuditLog';
+import { AUDIT, EVENT } from '../../../helper/constant/perpetual';
 
 const AUDIT_LOG = 1
 const EVENT_LOG = 2
@@ -98,13 +100,17 @@ const EventMenu = (props) => {
         switch (pageId) {
             case USAGE_LOG:
                 return <UsageLog close={handleClose} />
+            case AUDIT_LOG:
+                return <AuditLog type={AUDIT} close={handleClose} />
+            case EVENT_LOG:
+                return <AuditLog type={EVENT} close={handleClose} />
         }
     }
 
     return (
         <React.Fragment>
             <div className={classes.root}>
-                {pageId ? null : <Tooltip title={<strong className={classes.tip}>Events</strong>}>
+                {pageId ? null : <Tooltip title={<strong className={classes.tip}>Logs</strong>}>
                     <Fab className={classes.fab} size="small" aria-label="add" onClick={handleClick}>
                         <Icon style={{ color: 'white', marginLeft: 5 }}>{open ? 'chevron_right' : 'event_note'}</Icon>
                     </Fab>
