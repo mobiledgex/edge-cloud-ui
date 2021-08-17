@@ -9,6 +9,11 @@ import * as dateUtil from '../../../../utils/date_util'
 import { responseValid } from '../../../../services/service';
 import { defaultRange } from '../helper/constant';
 import '../style.css'
+import { redux_org } from '../../../../helper/reduxData';
+import { sendAuthRequest } from '../../../../services/model/serverWorker';
+import sortBy from 'lodash/sortBy';
+import { fields } from '../../../../services/model/format';
+import { showOrganizations } from '../../../../services/modules/organization';
 class AuditLog extends React.Component {
     constructor(props) {
         super(props);
@@ -18,7 +23,8 @@ class AuditLog extends React.Component {
             isOrg: false,
             loading: false,
             toggle:false,
-            selectedDate: dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE)
+            selectedDate: dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE),
+            orgList:undefined
         }
         defaultRange(this)
         this.type = this.props.type
@@ -35,12 +41,12 @@ class AuditLog extends React.Component {
         this.setState({ selectedDate: date ? date : dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE) })
     }
 
-    getDataAudit = async (starttime, endtime, limit = 25, tags = {}) => {
+    getDataAudit = async (starttime, endtime, limit = 25, tags = {}, org = undefined) => {
         if (this._isMounted) {
             this.setState({ loading: true, dataList: [] })
         }
         let match = { tags }
-        let mc = await showAudits(this, { starttime, endtime, limit: parseInt(limit), type: this.type, match }, false, this.isPrivate)
+        let mc = await showAudits(this, { starttime, endtime, limit: parseInt(limit), type: this.type, match }, org, false)
         if (this._isMounted) {
             this.setState({ loading: false, limit: 25 })
         }
@@ -55,17 +61,17 @@ class AuditLog extends React.Component {
     }
 
     onFetchData = (filter) => {
-        const { range, tags, limit } = filter
+        const { range, tags, limit, org } = filter
         this.starttime = range.from
         this.endtime = range.to
-        this.getDataAudit(this.starttime, this.endtime, limit, tags)
+        this.getDataAudit(this.starttime, this.endtime, limit, tags, org)
     }
 
     render() {
-        const { selectedDate, dataList, loading, isOrg, toggle } = this.state
+        const { selectedDate, dataList, loading, isOrg, toggle, orgList} = this.state
         return (
             <React.Fragment>
-                <LeftView type={this.type} isOrg={isOrg} toggle={toggle} dataList={dataList} fetchData={this.onFetchData} close={this.handleClose} loading={loading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} />
+                <LeftView type={this.type} isOrg={isOrg} toggle={toggle} dataList={dataList} orgList={orgList} fetchData={this.onFetchData} close={this.handleClose} loading={loading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} />
             </React.Fragment>
         )
     }
@@ -74,27 +80,33 @@ class AuditLog extends React.Component {
         if (this._isMounted) {
             this.setState({ dataList: [] }, () => {
                 defaultRange(this)
-                this.initAudit(this.starttime, this.endtime, false)
+                this.getDataAudit(this.starttime, this.endtime);
             })
         }
     }
 
     componentDidUpdate(prevProps, prevState) {
-        this.isPrivate = this.props.privateAccess
+        // this.isPrivate = this.props.privateAccess
         // if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg) {
         //     if (this.type === this.props.showAuditLogWithOrg.type && this.type === 'audit') {
-        //         this.getDataAuditOrg(this.props.showAuditLogWithOrg.org)
+        //         this.getDataAudit(this.starttime, this.endtime, 25, {}, this.props.showAuditLogWithOrg.org)
         //     }
         //     this.props.handleShowAuditLog(null)
         // }
     }
 
-    initAudit = (starttime, endtime) => {
-        this.getDataAudit(starttime, endtime);
+    orgResponse = (mc) => {
+        if (responseValid(mc)) {
+            const organizationList = sortBy(mc.response.data, [item => item[fields.organizationName]], ['asc']);
+            this.setState({ orgList: organizationList })
+        }
     }
 
     componentDidMount() {
-        this._isMounted = true
+        this._isMounted = true;
+        if (redux_org.isAdmin(this)) {
+            sendAuthRequest(this, showOrganizations(), this.orgResponse)
+        }
         this.fetchDefaultData()
     }
 
@@ -106,7 +118,6 @@ class AuditLog extends React.Component {
 function mapStateToProps(state) {
     return {
         showAuditLogWithOrg: state.showAuditLog.audit,
-        privateAccess: state.privateAccess.data,
         organizationInfo: state.organizationInfo.data
     }
 }
