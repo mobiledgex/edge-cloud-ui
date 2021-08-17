@@ -4,44 +4,24 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import { showAudits } from '../../../../services/modules/audit'
-import { Drawer } from '@material-ui/core';
-import RightDrawer from "./RightDrawer"
+import LeftView from "./LeftView"
 import * as dateUtil from '../../../../utils/date_util'
-import cloneDeep from 'lodash/cloneDeep'
-import { operators } from '../../../../helper/constant';
-
-const CON_LIMIT = 25
+import { responseValid } from '../../../../services/service';
+import { defaultRange } from '../helper/constant';
+import '../style.css'
 class AuditLog extends React.Component {
     constructor(props) {
         super(props);
         this._isMounted = false
         this.state = {
-            historyList: [],
-            liveData: [],
+            dataList: [],
             isOrg: false,
-            isOpen: false,
             loading: false,
-            historyLoading: false,
+            toggle:false,
             selectedDate: dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE)
         }
-        this.intervalId = undefined
-        this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
-        this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
+        defaultRange(this)
         this.type = this.props.type
-    }
-
-    getDataAuditOrg = async (orgName) => {
-        let mcRequest = await showAudits(this, { match: { orgs: [orgName] }, type: 'audit' }, true, this.isPrivate)
-        if (mcRequest && mcRequest.response) {
-            if (mcRequest.response.data.length > 0) {
-                if (this._isMounted) {
-                    this.setState({ isOpen: true, historyList: mcRequest.response.data, isOrg: true })
-                }
-            }
-            else {
-                this.props.handleAlertInfo('error', 'No logs found')
-            }
-        }
     }
 
     updateStatus = (data) => {
@@ -55,133 +35,62 @@ class AuditLog extends React.Component {
         this.setState({ selectedDate: date ? date : dateUtil.currentTime(dateUtil.FORMAT_FULL_DATE) })
     }
 
-    clearHistory = () => {
-        this.setState({ historyList: [] })
-    }
-
-    loadMore = () => {
-        let dataList = this.state.liveData
-        let time = dateUtil.utcTime(dataList[dataList.length - 1].starttime)
-        let endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, time)
-        this.getDataAudit(this.starttime, endtime)
-    }
-
-    getDataAudit = async (starttime, endtime, limit, tags, isLive, orgTime) => {
+    getDataAudit = async (starttime, endtime, limit = 25, tags = {}) => {
         if (this._isMounted) {
-            isLive ? this.setState({ loading: true }) : this.setState({ historyLoading: true })
+            this.setState({ loading: true, dataList: [] })
         }
-        limit = limit ? limit : CON_LIMIT
         let match = { tags }
-        let mcRequest = await showAudits(this, { starttime, endtime, limit: parseInt(limit), type: this.type, match }, false, this.isPrivate)
+        let mc = await showAudits(this, { starttime, endtime, limit: parseInt(limit), type: this.type, match }, false, this.isPrivate)
         if (this._isMounted) {
-            this.setState({ historyLoading: false, loading: false, limit: 25 })
+            this.setState({ loading: false, limit: 25 })
         }
-        if (mcRequest && mcRequest.response) {
-            if (mcRequest.response.data.length > 0) {
-                let response = mcRequest.response;
-                let dataList = response.data
-                dataList = dataList.filter((data, index) => {
-                    this.updateStatus(data)
-                    return orgTime ? data.timestamp > orgTime : true
-                })
-                if (isLive) {
-                    let newDataList = [...dataList, ...this.state.liveData]
-                    if (newDataList && newDataList.length > 250) {
-                        newDataList.splice(251, newDataList.length - 251);
-                    }
-                    if (this._isMounted) {
-                        this.setState({ liveData: newDataList })
-                    }
-                }
-                else {
-                    if (this._isMounted) {
-                        this.setState({ historyList: dataList })
-                    }
-                }
-            }
-            else {
-                if (!isLive && this._isMounted) {
-                    this.setState({ historyList: [] })
-                }
-            }
+        if (responseValid(mc)) {
+            let dataList = mc.response.data
+            this.setState({ dataList, toggle: !this.state.toggle })
         }
     }
 
     handleClose = () => {
         this.props.close()
-        this.setState({ isOpen: false });
     }
 
-    loadData = (starttime, endtime, limit, tags) => {
-        this.setState({ historyList: [] })
-        this.getDataAudit(starttime, endtime, limit, tags)
-    }
-
-    static getDerivedStateFromProps(props, state) {
-        if (props.open) {
-            return { isOpen: props.open, isOrg: false }
-        }
-        return null
+    onFetchData = (filter) => {
+        const { range, tags, limit } = filter
+        this.starttime = range.from
+        this.endtime = range.to
+        this.getDataAudit(this.starttime, this.endtime, limit, tags)
     }
 
     render() {
-        const { selectedDate, historyList, liveData, isOpen, loading, historyLoading, isOrg } = this.state
+        const { selectedDate, dataList, loading, isOrg, toggle } = this.state
         return (
             <React.Fragment>
-                <Drawer anchor={'right'} open={isOpen}>
-                    <RightDrawer type={this.type} isOrg={isOrg} dataList={liveData} historyList={historyList} close={this.handleClose} onLoadData={this.loadData} loading={loading} historyLoading={historyLoading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} clearHistory={this.clearHistory} />
-                </Drawer>
+                <LeftView type={this.type} isOrg={isOrg} toggle={toggle} dataList={dataList} fetchData={this.onFetchData} close={this.handleClose} loading={loading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} />
             </React.Fragment>
         )
     }
 
-    fetchDefaultData = ()=>{
-        this.starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, dateUtil.startOfDay())
-        this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
+    fetchDefaultData = () => {
         if (this._isMounted) {
-            this.setState({ liveData: [] })
+            this.setState({ dataList: [] }, () => {
+                defaultRange(this)
+                this.initAudit(this.starttime, this.endtime, false)
+            })
         }
-        this.initAudit(this.starttime, this.endtime, false)
     }
 
     componentDidUpdate(prevProps, prevState) {
         this.isPrivate = this.props.privateAccess
-        if (this.props.organizationInfo && !operators.equal(this.props.organizationInfo, prevProps.organizationInfo)) {
-            this.fetchDefaultData()
-        }
-
-        if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg) {
-            if (this.type === this.props.showAuditLogWithOrg.type && this.type === 'audit') {
-                this.getDataAuditOrg(this.props.showAuditLogWithOrg.org)
-            }
-            else if (this.type === this.props.showAuditLogWithOrg.type && this.type === 'event') {
-                this.setState({ isOpen: true })
-            }
-            this.props.handleShowAuditLog(null)
-        }
-        if (prevState.isOpen !== this.state.isOpen) {
-            if (this.state.isOpen) {
-                this.starttime = cloneDeep(this.endtime)
-                this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
-                this.initAudit(this.starttime, this.endtime, true)
-            }
-            else {
-                clearInterval(this.intervalId)
-            }
-        }
+        // if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg) {
+        //     if (this.type === this.props.showAuditLogWithOrg.type && this.type === 'audit') {
+        //         this.getDataAuditOrg(this.props.showAuditLogWithOrg.org)
+        //     }
+        //     this.props.handleShowAuditLog(null)
+        // }
     }
 
-    initAudit = (starttime, endtime, enableInterval) => {
-        this.getDataAudit(starttime, endtime, CON_LIMIT, {}, true);
-        if (enableInterval) {
-            this.intervalId = setInterval(() => {
-                let dataList = this.state.liveData
-                let orgTime = dataList.length > 0 ? dataList[0].starttime : undefined
-                this.starttime = cloneDeep(this.endtime)
-                this.endtime = dateUtil.currentUTCTime(dateUtil.FORMAT_FULL_T_Z)
-                this.getDataAudit(this.starttime, this.endtime, CON_LIMIT, {}, true, orgTime)
-            }, 10 * 2000);
-        }
+    initAudit = (starttime, endtime) => {
+        this.getDataAudit(starttime, endtime);
     }
 
     componentDidMount() {
@@ -191,9 +100,6 @@ class AuditLog extends React.Component {
 
     componentWillUnmount = () => {
         this._isMounted = false
-        if (this.intervalId) {
-            clearInterval(this.intervalId);
-        }
     }
 }
 

@@ -88,7 +88,7 @@ class Generator extends React.Component {
                             </Grid> : null
                     }
                     <Grid item xs={2}>
-                        <Button onClick={this.onFetch} loading={loading} disabled={org === undefined}>Generate</Button>
+                        <Button onClick={this.onFetch} loading={loading} disabled={org === undefined && redux_org.isAdmin(this)}>Generate</Button>
                     </Grid>
                 </Grid>
             </Card>

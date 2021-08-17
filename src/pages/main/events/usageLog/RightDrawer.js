@@ -1,18 +1,24 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { LinearProgress, Divider, Grid, Tooltip } from '@material-ui/core';
+import { Divider, Grid, Tooltip, Tabs, Tab, Paper } from '@material-ui/core';
 import * as dateUtil from '../../../../utils/date_util'
 import uuid from 'uuid'
 import MexCalendar from '../../../../hoc/calendar/MexCalendar'
 import { fields } from '../../../../services/model/format';
-import { redux_org } from '../../../../helper/reduxData';
-import SelectMenu from '../../../../hoc/selectMenu/SelectMenu'
 import { FixedSizeList } from 'react-window';
 import { Icon } from '../../../../hoc/mexui';
-import Toolbar, { ACION_SEARCH, ACTION_CLOSE, ACTION_PICKER, ACTION_REFRESH, ACTION_TAB } from './Toolbar';
+import Toolbar, { ACION_SEARCH, ACTION_CLOSE, ACTION_ORG, ACTION_PICKER, ACTION_REFRESH } from '../helper/toolbar/Toolbar';
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
-import { DEFAULT_DURATION_MINUTES } from './constant';
+import { DEFAULT_DURATION_MINUTES } from '../helper/constant';
+import { withStyles } from '@material-ui/styles';
+import { NoData } from '../../../../helper/formatter/ui';
+import RefreshIcon from '@material-ui/icons/Refresh';
+
+const tip = [
+    <code>Default view is day</code>,
+    <code>Click <RefreshIcon /> icon to reset the calendar to current date based on view</code>,
+    <code>Click on <i>Year, Month, Day or Hour</i> to change calendar view</code>,
+    <code>User can also click on displayed date mentioned next to the usagelog column to change the calendar view from hour to day to month to year and viceversa, where top row emulates hour to year and bottom row emulates year to hour </code>
+]
 
 const colorType = (value) => {
     switch (value) {
@@ -31,6 +37,10 @@ const colorType = (value) => {
             return undefined
     }
 }
+
+const styles = theme => ({
+    tabIndicator: { backgroundColor: '#FFF' }
+})
 
 //format data whic is supported by react-calendar-timline
 const formatCalendarData = (dataList, columns) => {
@@ -218,13 +228,6 @@ class EventLog extends React.Component {
         }
     }
 
-    customRender = () => {
-        return (
-            redux_org.isAdmin(this) ? <div className='calendar-dropdown-select'>
-                <SelectMenu search={true} labelKey={fields.organizationName} dataList={this.props.organizationList} onChange={this.props.onOrgChange} placeholder='Select Organization' default={this.props.selectedOrg} />
-            </div> : null)
-    }
-
     onToolbarChange = (action, value) => {
         switch (action) {
             case ACION_SEARCH:
@@ -240,38 +243,53 @@ class EventLog extends React.Component {
             case ACTION_CLOSE:
                 this.props.close()
                 break;
-            case ACTION_TAB:
-                this.onTabChange(value)
-                break; 
+            case ACTION_ORG:
+                this.props.onOrgChange(value)
         }
     }
 
     render() {
         const { filterList, tabValue, calendarList, groupList } = this.state
-        const { endRange} = this.props
+        const { endtime, organizationList, classes, loading } = this.props
         const keys = Object.keys(filterList)
         return (
-            <Grid container style={{ height: '100%' }} id='event_log'>
-                <Grid item xs={3} style={{ display: 'inline-block', height: '100%', backgroundColor: '#292C33', verticalAlign: 'top', overflow: 'auto' }}>
-                    {this.props.loading ? <LinearProgress /> : null}
-                    <Toolbar data={keys} onChange={this.onTabChange} onChange={this.onToolbarChange}>
-                        {this.dataView(keys[tabValue], filterList[keys[tabValue]])}
-                        <div style={{ paddingLeft: 20, position: 'absolute', bottom: 5 }} align="left">
-                            <p style={{ fontSize: 14 }}><strong>Last Requested</strong>{`: ${dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, endRange)}`}</p>
-                        </div>
-                    </Toolbar>
-                </Grid>
-                <Grid item xs={9} style={{ height: '100%', display: 'inline-block', backgroundColor: '#1E2123', paddingLeft: 20 }}>
-                    <MexCalendar dataList={calendarList} groupList={groupList} customRender={this.customRender} />
-                </Grid>
-            </Grid>
+            <React.Fragment>
+                <Toolbar header={'Usage Logs'} tip={tip} onChange={this.onToolbarChange} orgList={organizationList} loading={loading} />
+                <div style={{ height: 'calc(100vh - 50px)' }} id='event_log'>
+                    {calendarList.length > 0 ? <Grid container>
+                        <Grid item xs={3} style={{ display: 'inline-block', height: '100%', backgroundColor: '#292C33', verticalAlign: 'top', overflow: 'auto' }}>
+                            <Paper square>
+                                <Tabs
+                                    TabIndicatorProps={{
+                                        className: classes.tabIndicator
+                                    }}
+                                    value={tabValue}
+                                    onChange={(e, value) => this.onTabChange(value)}
+                                    variant="fullWidth">
+                                    {keys.map((label) => {
+                                        return <Tab key={label} label={label} />
+                                    })}
+                                </Tabs>
+                            </Paper>
+                            {this.dataView(keys[tabValue], filterList[keys[tabValue]])}
+                            <div style={{ paddingLeft: 20, position: 'absolute', bottom: 5 }} align="left">
+                                <p style={{ fontSize: 14 }}><strong>Last Requested</strong>{`: ${dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, endtime)}`}</p>
+                            </div>
+                        </Grid>
+                        <Grid item xs={9} style={{ height: 'calc(100vh - 50px)', display: 'inline-block', backgroundColor: '#1E2123', paddingLeft: 20 }}>
+                            <MexCalendar dataList={calendarList} groupList={groupList} />
+                        </Grid>
+                    </Grid> : <NoData />
+                    }
+                </div>
+            </React.Fragment>
         )
     }
 
     updateHeight = () => {
         let element = document.getElementById('event_log')
         if (element) {
-            this.setState({ infiniteHeight: document.getElementById('event_log').clientHeight - 140 })
+            this.setState({ infiniteHeight: document.getElementById('event_log').clientHeight - 90 })
         }
     }
 
@@ -302,18 +320,4 @@ class EventLog extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        organizationInfo: state.organizationInfo.data
-    }
-};
-
-
-const mapDispatchProps = (dispatch) => {
-    return {
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-    };
-};
-
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(EventLog));
+export default withStyles(styles)(EventLog);

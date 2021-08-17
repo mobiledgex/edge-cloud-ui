@@ -42,7 +42,7 @@ const SelectMenu = (props) => {
     }
 
     return (
-        <Box>
+        <React.Fragment>
             <Tooltip title={props.tip ? <strong style={{ fontSize: 13 }}>{props.tip}</strong> : ''} arrow>
                 <div style={{ display: 'inline', cursor: 'pointer'}} aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorEl(e.currentTarget) }}>
                     <Label {...props} />
@@ -70,7 +70,7 @@ const SelectMenu = (props) => {
                     }
                 </div >
             </Menu>
-        </Box>
+        </React.Fragment>
     )
 }
 

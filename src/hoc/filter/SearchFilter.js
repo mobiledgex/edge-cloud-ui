@@ -54,12 +54,13 @@ class SearchFilter extends React.Component {
 
     render() {
         const { focused } = this.state
-        const { classes, compact } = this.props;
+        const { classes, compact, style } = this.props;
+        const inputStyle = focused ? { ...style, marginTop: 0 } : style
         return (
             <Input
                 size="small"
                 fullWidth
-                style={this.props.style}
+                style={inputStyle}
                 value={this.state.filterText}
                 onFocus={() => {
                     this.setState({ focused: true })
@@ -74,7 +75,7 @@ class SearchFilter extends React.Component {
                 } : { root: classes.inputRoot }}
                 startAdornment={
                     <InputAdornment className={classes.searchAdorment} style={{ fontSize: 17 }} position="start">
-                        <SearchIcon style={{ color: focused || compact ? 'rgba(118, 255, 3, 0.7)' : 'white' }} />
+                        <SearchIcon style={{color: focused || compact ? 'rgba(118, 255, 3, 0.7)' : 'white' }} />
                     </InputAdornment>
                 }
                 endAdornment={
