@@ -62,9 +62,11 @@ const useStyles = makeStyles((theme) => ({
     },
     drawerOpen: {
         width: drawerWidth,
+        height:'calc(100vh - 2px)',
+        overflowX: 'hidden',
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
+            duration: theme.transitions.duration.enteringScreen
         }),
     },
     drawerClose: {
@@ -72,6 +74,7 @@ const useStyles = makeStyles((theme) => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
+        height:'calc(100vh - 2px)',
         overflowX: 'hidden',
         width: theme.spacing(7) + 1,
         [theme.breakpoints.up('sm')]: {

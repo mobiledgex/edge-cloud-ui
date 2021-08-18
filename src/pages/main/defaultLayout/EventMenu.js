@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
     drawerOpen: {
         width: drawerWidth,
         border: 'none',
+        height:'calc(100vh - 2px)',
         overflow: 'hidden',
         backgroundColor:'#292C33',
         transition: theme.transitions.create('width', {
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
             duration: theme.transitions.duration.leavingScreen,
         }),
         overflow: 'hidden',
-        backgroundColor: 'transparent',
+        backgroundColor:'#292C33',
         border: 'none',
         width: 0
     },
