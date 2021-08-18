@@ -204,9 +204,9 @@ export const RenderSeverity = (data, isDetailView) => {
         isDetailView ? label :
             <Chip
                 size="small"
-                icon={<MIcon outlined={true} style={{ color }}>{icon}</MIcon>}
+                icon={<MIcon outlined={true} style={{ color, fontSize:17 }}>{icon}</MIcon>}
                 label={label}
-                style={{ color, width: 90, backgroundColor: 'transparent', border: `2px solid ${color}` }}
+                style={{ color, width: 90, backgroundColor: 'transparent', border: `1.5px solid ${color}` }}
             />
     )
 }

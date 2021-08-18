@@ -1,5 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import uuid from 'uuid'
 //Mex
 import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, MAIN_HEADER } from '../../../../../hoc/forms/MexForms';
 //redux
@@ -15,7 +16,6 @@ import { showOrganizations } from '../../../../../services/modules/organization'
 import { showCloudlets } from '../../../../../services/modules/cloudlet';
 import { showAppInsts } from '../../../../../services/modules/appInst';
 import { showClusterInsts } from '../../../../../services/modules/clusterInst';
-import uuid from 'uuid'
 import cloneDeep from 'lodash/cloneDeep';
 import { Grid, LinearProgress } from '@material-ui/core'
 import { resetFormValue } from '../../../../../hoc/forms/helper/constant';
@@ -78,7 +78,7 @@ class FlavorReg extends React.Component {
             { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true, type: 'search' }, visible: false, tip: 'Email address receiving the alert (by default email associated with the account)' },
             { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true, firstCaps:true }, visible: true, tip: 'Alert severity level - one of "info", "warning", "error"' },
             { field: fields.selector, label: 'Selector', formType: SELECT, placeholder: 'Select Selector', rules: { required: true, disabled: true }, visible: true, tip: 'Selector for which you want to receive alerts' },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: false }, visible: true },
+            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: false }, visible: false },
             { field: fields.organizationName, label: 'Developer', formType: SELECT, placeholder: 'Select Developer', rules: { required: false, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: false, tip: 'Cluster or App Developer' },
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.region, strictDependency: false }] },
             { field: fields.cloudletName, label: 'Cloudlet', formType: SELECT, placeholder: 'Select Cloudlet', rules: { required: false }, visible: false, dependentData: [{ index: 9, field: fields.operatorName }], strictDependency: false },
@@ -190,31 +190,37 @@ class FlavorReg extends React.Component {
     }
 
     selectorValueChange = (currentForm, forms, isInit) => {
+        const isCloudlet = currentForm.value === 'Cloudlet'
+        const isAppInst = currentForm.value === 'App Instance'
+        const isCluster = currentForm.value === 'Cluster'
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             switch (form.field) {
                 case fields.organizationName:
-                    let valid = currentForm.value === 'App Instance' || currentForm.value === 'Cluster'
+                    let valid = isAppInst || isCluster
                     form.rules.required = valid
                     form.visible = valid
                     break;
+                case fields.region:
+                    form.visible = isCloudlet || isAppInst || isCluster
+                    break;
                 case fields.appName:
-                    form.visible = currentForm.value === 'App Instance'
+                    form.visible = isAppInst
                     break;
                 case fields.version:
-                    form.visible = currentForm.value === 'App Instance'
+                    form.visible = isAppInst
                     break;
                 case fields.clusterName:
-                    form.visible = currentForm.value === 'App Instance' || currentForm.value === 'Cluster'
+                    form.visible = isAppInst || isCluster
                     break;
                 case fields.cloudletName:
-                    form.visible = currentForm.value === 'Cloudlet' || currentForm.value === 'App Instance' || currentForm.value === 'Cluster'
+                    form.visible = isCloudlet || isAppInst || isCluster
                     break;
                 case fields.operatorName:
-                    form.rules.required = currentForm.value === 'Cloudlet'
-                    form.visible = currentForm.value === 'Cloudlet' || currentForm.value === 'App Instance' || currentForm.value === 'Cluster'
-                    form.value = currentForm.value === 'Cloudlet' ? redux_org.nonAdminOrg(this) : undefined
-                    form.rules.disabled = currentForm.value === 'Cloudlet' && redux_org.nonAdminOrg(this) !== undefined
+                    form.rules.required = isCloudlet
+                    form.visible = isCloudlet || isAppInst || isCluster
+                    form.value = isCloudlet ? redux_org.nonAdminOrg(this) : undefined
+                    form.rules.disabled = isCloudlet && !redux_org.isAdmin(this)
                     break;
             }
         }   
