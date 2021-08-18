@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
         right: theme.spacing(0),
         borderRadius: '30px 0px 0px 30px',
         zIndex: 9999,
-        width: 30,
+        width: 23,
         backgroundColor: lightGreen['600'],
         boxShadow: 'default'
     },
