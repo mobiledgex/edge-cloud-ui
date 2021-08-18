@@ -39,7 +39,7 @@ const canEdit = (self, viewerEdit, action) => {
 const getHeight = (props) => {
     let tableHeight = props.tableHeight
     let selectedLength = props.selected.length
-    let height = props.isMap ? 574 : 174
+    let height = props.isMap ? 575 : 174
     height = selectedLength > 0 ? height + 40 : height
     return `calc(100vh - ${tableHeight ? tableHeight : height}px)`
 }

@@ -435,7 +435,7 @@ class MexListView extends React.Component {
         const { resetStream, deleteMultiple, showMap } = this.state
         const { regions, toolbarAction } = this.props
         return (
-            <Card style={{ width: '100%', height: '100%', backgroundColor: '#292c33', color: 'white', paddingTop: 10 }}>
+            <Card style={{ width: '100%', height: 'calc(100vh - 55px)', backgroundColor: '#292c33', color: 'white', paddingTop: 10 }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.specificDataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
