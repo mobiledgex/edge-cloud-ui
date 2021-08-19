@@ -64,7 +64,7 @@ const Tags = (props) => {
                         <InputLabel shrink id="tags">
                             Key
                         </InputLabel>
-                        <Select style={{ width: 80 }} onChange={onKeyChange} value={key} MenuProps={{ classes: { paper: classes.menuPaper } }}>
+                        <Select style={{ width: 97 }} onChange={onKeyChange} value={key} MenuProps={{ classes: { paper: classes.menuPaper } }}>
                             {tagList.map(tag => (
                                 <MenuItem key={tag} value={tag}>{tag}</MenuItem>
                             ))}
