@@ -121,7 +121,7 @@ const Filter = (props) => {
 
     return (
         <React.Fragment>
-            <IconButton tooltip={'Filter data by date, org, tags and limit'} onClick={toggleDrawer(true)} style={{ marginRight: -20, marginTop: -1 }}><Icon style={{ color: 'rgba(118, 255, 3, 0.7)', fontSize: 24 }}>filter_list</Icon></IconButton>
+            <IconButton tooltip={'Filter by date, tags and limit'} onClick={toggleDrawer(true)} style={{ marginRight: -20, marginTop: -1 }}><Icon style={{ color: 'rgba(118, 255, 3, 0.7)', fontSize: 24 }}>filter_list</Icon></IconButton>
             <Drawer anchor={'right'} open={state} onClose={toggleDrawer(false)}>
                 <React.Fragment>
                     <div className={classes.list}>
