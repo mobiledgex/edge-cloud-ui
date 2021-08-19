@@ -13,7 +13,7 @@ const AUDIT_LOG = 1
 const EVENT_LOG = 2
 const USAGE_LOG = 3
 
-const drawerWidth = 20
+const drawerWidth = 25
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -68,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
         writingMode: 'vertical-lr',
         cursor: 'pointer',
         marginBottom: 10,
+        float:'right',
         width: 20,
         borderRadius: '5px 0px 0px 5px',
     }
