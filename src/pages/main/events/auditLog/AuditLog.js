@@ -8,12 +8,12 @@ import LeftView from "./LeftView"
 import * as dateUtil from '../../../../utils/date_util'
 import { responseValid } from '../../../../services/service';
 import { defaultRange } from '../helper/constant';
-import '../style.css'
 import { redux_org } from '../../../../helper/reduxData';
 import { sendAuthRequest } from '../../../../services/model/serverWorker';
 import sortBy from 'lodash/sortBy';
 import { fields } from '../../../../services/model/format';
 import { showOrganizations } from '../../../../services/modules/organization';
+import '../style.css'
 class AuditLog extends React.Component {
     constructor(props) {
         super(props);
