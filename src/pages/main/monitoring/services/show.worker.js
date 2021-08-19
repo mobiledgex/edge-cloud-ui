@@ -32,7 +32,7 @@ const fetchAppInstData = (parentId, showList, keys) => {
                 }
             }
         })
-        dataKey = dataKey.replace('.', '')
+        dataKey = dataKey.replaceAll('.', '')
         dataKey = dataKey.toLowerCase().slice(0, -1)
         data['selected'] = false
         data['color'] = colors[i]

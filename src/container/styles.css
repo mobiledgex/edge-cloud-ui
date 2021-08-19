@@ -583,11 +583,6 @@ ui.form .disabled.field, .ui.form .disabled.fields .field, .ui.form .field :disa
 }
 
 .list-view-table-container {
-    overflow: hidden;
-}
-
-.list-view-table-container:hover {
     overflow: auto;
 }
-
 
