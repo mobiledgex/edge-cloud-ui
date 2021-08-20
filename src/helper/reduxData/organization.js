@@ -87,5 +87,5 @@ export const edgeboxOnly = (self) => {
 }
 
 export const nonAdminOrg = (self) => {
-    return !isAdmin(self) && orgName(self)
+    return !isAdmin(self) ? orgName(self) : undefined
 }
