@@ -20,6 +20,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import { Grid, LinearProgress } from '@material-ui/core'
 import { resetFormValue } from '../../../../../hoc/forms/helper/constant';
 import { endpoint, perpetual } from '../../../../../helper/constant';
+import { responseValid } from '../../../../../services/service';
 
 const RECEIVER_TYPE = [perpetual.RECEIVER_TYPE_EMAIL, perpetual.RECEIVER_TYPE_SLACK, perpetual.RECEIVER_TYPE_PAGER_DUTY]
 const RECEIVER_SEVERITY = [perpetual.INFO, perpetual.WARNING, perpetual.ERROR]
@@ -436,7 +437,7 @@ class FlavorReg extends React.Component {
     serverResponse = (mcList) => {
         if (mcList && mcList.length > 0) {
             mcList.map(mc => {
-                if (mc && mc.response && mc.response.status === 200) {
+                if (responseValid(mc)) {
                     let request = mc.request
                     let data = mc.response.data
                     if (request.method === endpoint.SHOW_CLOUDLET || request.method === endpoint.SHOW_ORG_CLOUDLET) {
@@ -473,7 +474,7 @@ class FlavorReg extends React.Component {
 
     fetchData = () => {
         let requestList = []
-        requestList.push(showOrganizations())
+        requestList.push(showOrganizations(this, { type: perpetual.DEVELOPER }))
         this.regions.map(region => {
             requestList.push(showCloudlets(this, { region }))
             if (redux_org.isAdmin(this) || redux_org.isDeveloper(this)) {
