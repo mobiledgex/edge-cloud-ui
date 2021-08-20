@@ -16,11 +16,13 @@ const SF_LABELS = 'labels'
 const SF_ANNOTATIONS = 'annotations'
 const SF_SEVERITY = 'severity'
 const SF_TRIGGER_TIME = 'trigger_time'
+const SF_DESCRIPTION = 'description'
 
 export const keys = () => ([
   { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
   { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization', sortable: true, visible: true, filter: true, key: true },
   { field: fields.alertPolicyName, serverField: 'key#OS#name', label: 'Alert Policy Name', sortable: true, visible: true, filter: true, key: true },
+  { field: fields.description, serverField: SF_DESCRIPTION, label: 'Description' },
   { field: fields.severity, serverField: SF_SEVERITY, label: 'Severity', sortable: true, visible: true, filter: true, format: true },
   { field: fields.triggerTime, serverField: SF_TRIGGER_TIME, label: 'Trigger Time', sortable: true, visible: true, filter: true },
   { field: fields.cpuUtilizationLimit, serverField: SF_CUL, label: 'CPU Utilization Limit', type: 'number' },
