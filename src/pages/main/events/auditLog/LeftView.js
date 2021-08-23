@@ -3,7 +3,7 @@ import { Box, Divider, Grid, Tooltip } from '@material-ui/core';
 import * as dateUtil from '../../../../utils/date_util'
 import { FixedSizeList, VariableSizeList } from 'react-window';
 import { Icon } from '../../../../hoc/mexui';
-import Toolbar, { ACION_SEARCH, ACTION_CLOSE, ACTION_ORG, ACTION_PICKER, ACTION_REFRESH } from '../helper/toolbar/Toolbar';
+import Toolbar, { ACION_SEARCH, ACTION_CLOSE, ACTION_PICKER, ACTION_REFRESH } from '../helper/toolbar/Toolbar';
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
 import { auditKeys, DEFAULT_DURATION_MINUTES, eventKeys } from '../helper/constant';
 import { NoData } from '../../../../helper/formatter/ui';
@@ -15,6 +15,7 @@ import EventView from './EventView';
 import ServerFilter, { ACTION_FILTER } from './ServerFilter';
 import { toFirstUpperCase } from '../../../../utils/string_utils';
 import uuid from 'uuid'
+import { removeObject } from '../../../../helper/ls';
 
 const tip = [
     <p>By default audit/event log provides current logs with default limit of 25</p>,
@@ -48,7 +49,6 @@ const formatURL = (logName) => {
 }
 
 class AuditLogView extends React.Component {
-
     constructor(props) {
         super(props)
         this.state = {
@@ -56,7 +56,8 @@ class AuditLogView extends React.Component {
             activeIndex: 0,
             infiniteHeight: 200,
             filterText: '',
-            reactWindowId: uuid()
+            reactWindowId: uuid(),
+            refreshToolbar:false
         }
         this._isMounted = false
         this.isAudit = props.type === AUDIT
@@ -192,12 +193,15 @@ class AuditLogView extends React.Component {
     }
 
     onToolbarChange = (action, value) => {
+        const { refreshToolbar } = this.state
         switch (action) {
             case ACION_SEARCH:
                 this.onFilter(value)
                 break;
             case ACTION_REFRESH:
-                this.props.fetchData({ ...this.filter, range: timeRangeInMin(this.filter.range.duration) })
+                this.filter.range = timeRangeInMin(this.filter.range.duration)
+                this.props.fetchData({ range: this.filter.range  })
+                this.setState({ refreshToolbar: !refreshToolbar })
                 break;
             case ACTION_CLOSE:
                 this.props.close()
@@ -205,10 +209,12 @@ class AuditLogView extends React.Component {
             case ACTION_PICKER:
                 this.filter.range = value
                 this.props.fetchData({ range: value })
+                this.setState({ refreshToolbar: !refreshToolbar })
                 break;
             case ACTION_FILTER:
                 this.filter = value
                 this.props.fetchData(value)
+                this.setState({ refreshToolbar: !refreshToolbar })
                 break;
 
         }
@@ -219,9 +225,9 @@ class AuditLogView extends React.Component {
         const { endtime, loading, type, orgList } = this.props
         return (
             <React.Fragment>
-                <Toolbar header={`${toFirstUpperCase(type)} Logs`} tip={tip} onChange={this.onToolbarChange} loading={loading}>
+                <Toolbar type={type} header={`${toFirstUpperCase(type)} Logs`} tip={tip} onChange={this.onToolbarChange} loading={loading} filter={this.filter}>
                     <Box>
-                        <ServerFilter onChange={this.onToolbarChange} orgList={orgList} />
+                        <ServerFilter type={type} onChange={this.onToolbarChange} orgList={orgList} filter={this.filter}/>
                     </Box>
                 </Toolbar>
                 <div style={{ height: 'calc(100vh - 50px)' }} id='event_log'>
@@ -263,6 +269,7 @@ class AuditLogView extends React.Component {
     }
 
     componentWillUnmount() {
+        removeObject(`${this.props.type}_logs`)
         this._isMounted = false
     }
 }

@@ -126,12 +126,12 @@ class Generated extends React.Component {
                             </Box>
                             {
                                 redux_org.isAdmin(this) ? <Box>
-                                    <div style={{ marginTop: 5 }}>
+                                    <div>
                                         <Select list={orgList} onChange={this.onOrgChange} search={true} placeholder={'Select Organization'} underline={true} />
                                     </div>
                                 </Box> : null
                             }
-                            <Box>
+                            <Box p={1}>
                                 <IconButton style={{ marginTop: -16 }} tooltip='Close' onClick={close} disabled={loading || pdfLoading !== undefined}><CloseOutlinedIcon style={{ color: lightGreen['A700'] }} /></IconButton>
                             </Box>
                         </Box>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Popover, Grid, Button, Divider, Tooltip } from '@material-ui/core';
 import * as moment from 'moment'
 import { Icon } from 'semantic-ui-react';
@@ -12,7 +12,6 @@ import {
 import { useDispatch } from 'react-redux';
 import { alertInfo } from '../../actions';
 import * as dateUtil from '../../utils/date_util';
-import { range } from 'lodash-es';
 
 export const relativeTimeRanges = [
     { label: 'Last 5 minutes', duration: 5 },
@@ -28,8 +27,8 @@ export const relativeTimeRanges = [
     { label: 'Last 30 Days', duration: 43200 },
 ]
 
-const rangeLabel = (range) => {
-    const timeRange = timeRangeInMin(range.duration)
+const rangeLabel = (defaultTime, range) => {
+    const timeRange = defaultTime ? defaultTime : timeRangeInMin(range.duration)
     return <div>
         <div>
             {dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, timeRange.from)}
@@ -63,13 +62,19 @@ export const timeRangeInMin = (duration) => {
 }
 
 const MexTimer = (props) => {
-    const { onChange, defaultDuration, relativemax, color } = props
+    const { onChange, defaultDuration, relativemax, color, value } = props
+    const duration = value ? value.duration : defaultDuration
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [from, setFrom] = React.useState(dateUtil.currentDate());
     const [to, setTo] = React.useState(dateUtil.currentDate());
-    const [relativeRange, setRelativeRange] = React.useState(defaultDuration ? defaultRange(defaultDuration) : relativeTimeRanges[3]);
+    const [relativeRange, setRelativeRange] = React.useState(relativeTimeRanges[3]);
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        setRelativeRange(duration ? defaultRange(duration) : relativeTimeRanges[3])
+    }, [value]);
+
+    
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -105,7 +110,7 @@ const MexTimer = (props) => {
 
     return (
         <React.Fragment>
-            <Tooltip title={<strong style={{ fontSize: 13 }}>{rangeLabel(relativeRange)}</strong>} arrow>
+            <Tooltip title={<strong style={{ fontSize: 13 }}>{rangeLabel(value, relativeRange)}</strong>} arrow>
                 <button size='small' aria-controls="mex-timer" aria-haspopup="true" onClick={handleClick} style={{ backgroundColor: 'transparent', border: `1px solid ${color ? color : 'rgba(118, 255, 3, 0.7)'}`, borderRadius: 5, cursor: 'pointer', padding: 5 }}>
                     <Icon name='clock outline' style={{ color: color ? color : 'rgba(118, 255, 3, 0.7)' }} /><strong style={{ marginLeft: 5, color: color ? color : 'rgba(118, 255, 3, 0.7)' }}>{relativeRange.label}</strong><Icon name='chevron down' style={{ marginLeft: 5, color: color ? color : 'rgba(118, 255, 3, 0.7)' }} />
                 </button>
