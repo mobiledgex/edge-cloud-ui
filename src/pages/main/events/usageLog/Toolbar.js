@@ -32,6 +32,7 @@ const LeftView = (props) => {
     const classes = useStyles()
     const { data, onChange, children } = props
     const [value, setValue] = React.useState(0)
+    const [range, setRange] = React.useState(undefined)
 
     const searchfilter = React.useRef(null)
 
@@ -44,6 +45,7 @@ const LeftView = (props) => {
     }
 
     const onPickerChange = (range) => {
+        setRange(range)
         props.onChange(ACTION_PICKER, range)
     }
 
@@ -65,7 +67,7 @@ const LeftView = (props) => {
                     <Box display="flex">
                         <Box flexGrow={1}></Box>
                         <Box p={1.1}>
-                            <Picker onChange={onPickerChange} defaultDuration={DEFAULT_DURATION_MINUTES} />
+                            <Picker onChange={onPickerChange} defaultDuration={DEFAULT_DURATION_MINUTES} value={range}/>
                         </Box>
                         <Box>
                             <IconButton tooltip={'Refresh data'} onClick={() => { onChange(ACTION_REFRESH) }}>

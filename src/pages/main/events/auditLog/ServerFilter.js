@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import { Button, Icon, IconButton, Picker } from '../../../../hoc/mexui';
@@ -11,6 +11,8 @@ import { useSelector } from 'react-redux';
 import { redux_org } from '../../../../helper/reduxData';
 import { fields } from '../../../../services/model/format';
 import SelectMenu from '../../../../hoc/selectMenu/SelectMenu';
+import { fetchObject, storeObject } from '../../../../helper/ls';
+import { filterData } from '../../../../constant';
 
 export const ACTION_FILTER = 101
 
@@ -31,7 +33,9 @@ const useStyles = makeStyles({
     }
 });
 
+
 const Filter = (props) => {
+    const { type, filter } = props
     const classes = useStyles();
     const orgInfo = useSelector(state => state.organizationInfo.data)
     const [state, setState] = React.useState(false);
@@ -40,6 +44,18 @@ const Filter = (props) => {
     const [renderTags, setRenderTags] = React.useState([]);
     const [range, setRange] = React.useState(timeRangeInMin(DEFAULT_DURATION_MINUTES));
     const [tags, setTags] = React.useState({})
+
+    useEffect(() => {
+        if (state) {
+            let filter = fetchObject(`${type}_logs`)
+            if (filter) {
+                setLimit(filter.limit ? filter.limit : 25)
+                setOrg(filter.org)
+                setTags(filter.tags ? filter.tags : [])
+                setRange(filter.range ? filter.range : timeRangeInMin(DEFAULT_DURATION_MINUTES))
+            }
+        }
+    }, [state]);
 
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -54,7 +70,7 @@ const Filter = (props) => {
 
     const handleLimit = (e) => {
         let limit = e.target.value.trim()
-        setLimit(limit);
+        setLimit(parseInt(limit));
     };
 
     const handleOrg = (value) => {
@@ -106,6 +122,7 @@ const Filter = (props) => {
             })
             filter['tags'] = customTags
         }
+        storeObject(`${type}_logs`, { ...filter, tags })
         props.onChange(ACTION_FILTER, filter)
         setState(false)
     }
@@ -145,7 +162,7 @@ const Filter = (props) => {
                             <Grid container>
                                 <Grid item xs={6}>
                                     <div style={{ marginTop: 7 }}></div>
-                                    <Picker color='#CECECE' onChange={onPickerChange} defaultDuration={DEFAULT_DURATION_MINUTES} />
+                                    <Picker color='#CECECE' onChange={onPickerChange} defaultDuration={DEFAULT_DURATION_MINUTES} value={filter.range} />
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Input
@@ -160,7 +177,7 @@ const Filter = (props) => {
                         {
                             redux_org.isAdmin(orgInfo) && props.orgList ?
                             <div style={{padding: 5, border: '1px solid white', borderRadius: 5, margin:14 }}>
-                            <SelectMenu search={true} clear={true} labelKey={fields.organizationName} labelWidth={300} dataList={props.orgList} placeholder='Select Organization' onChange={handleOrg} />
+                            <SelectMenu search={true} clear={true} labelKey={fields.organizationName} labelWidth={300} dataList={props.orgList} placeholder='Select Organization' onChange={handleOrg} default={org}/>
                         </div> : null
                         }
                         <div>

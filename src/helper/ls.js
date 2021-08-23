@@ -24,3 +24,22 @@ export const orgUserMetaDataLS = (self) => {
     }
     return data
 }
+
+export const storeObject = (key, value) => {
+    localStorage.setItem(key, JSON.stringify(value))
+}
+
+export const fetchObject = (key) => {
+    let data = undefined
+    try {
+        data = JSON.parse(localStorage.getItem(key))
+    }
+    catch (e) {
+        data = undefined
+    }
+    return data
+}
+
+export const removeObject = (key) => {
+    localStorage.removeItem(key)
+}
