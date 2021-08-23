@@ -199,7 +199,9 @@ class AuditLogView extends React.Component {
                 this.onFilter(value)
                 break;
             case ACTION_REFRESH:
-                this.props.fetchData({ range: timeRangeInMin(this.filter.range.duration) })
+                this.filter.range = timeRangeInMin(this.filter.range.duration)
+                this.props.fetchData({ range: this.filter.range  })
+                this.setState({ refreshToolbar: !refreshToolbar })
                 break;
             case ACTION_CLOSE:
                 this.props.close()

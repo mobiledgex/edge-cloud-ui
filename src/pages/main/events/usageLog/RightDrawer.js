@@ -238,7 +238,8 @@ class EventLog extends React.Component {
                 this.props.fetchData(value)
                 break;
             case ACTION_REFRESH:
-                this.props.fetchData(timeRangeInMin(this.range.duration))
+                this.range = timeRangeInMin(this.range.duration)
+                this.props.fetchData(this.range)
                 break;
             case ACTION_CLOSE:
                 this.props.close()
