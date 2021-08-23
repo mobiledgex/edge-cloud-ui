@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router-dom'
 import * as actions from '../../../../actions';
 import { fields } from '../../../../services/model/format'
 import { primaryKeys as appInstKeys } from '../../../../services/modules/appInst'

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useLayoutEffect } from 'react'
 import { Box, Typography, Card, LinearProgress } from '@material-ui/core';
 import Help from '../Help'
 import { lightGreen } from '@material-ui/core/colors';
@@ -26,14 +26,19 @@ const useStyles = makeStyles((theme) => ({
 
 const LeftView = (props) => {
     const classes = useStyles()
-    const { onChange, loading, orgList, header, tip, children, picker=true } = props
-    const picker1 = picker !== undefined ? picker : true
+    const { onChange, loading, orgList, header, tip, children, filter } = props
     const orgInfo = useSelector(state => state.organizationInfo.data)
     const searchfilter = React.useRef(null)
+    const [range, setRange] = React.useState(filter && filter.range ? filter.range : undefined)
 
     const onPickerChange = (range) => {
+        setRange(range)
         props.onChange(ACTION_PICKER, range)
     }
+
+    useEffect(() => {
+        setRange(filter && filter.range ? filter.range : undefined)
+    }, [filter]);
 
     return (
         <React.Fragment>
@@ -54,11 +59,9 @@ const LeftView = (props) => {
                                 </div> : null
                         }
                     </Box>
-                    {
-                        picker1 ? <Box p={1.1}>
-                            <Picker onChange={onPickerChange} defaultDuration={DEFAULT_DURATION_MINUTES} />
-                        </Box> : null
-                    }
+                    <Box p={1.1}>
+                        <Picker onChange={onPickerChange} defaultDuration={DEFAULT_DURATION_MINUTES} value={range}/>
+                    </Box>
                     <Box>
                         <SearchFilter onFilter={(value) => { onChange(ACION_SEARCH, value) }} ref={searchfilter} compact={true} style={{ marginTop: 7, marginLeft: 8 }} />
                     </Box>
@@ -79,6 +82,7 @@ const LeftView = (props) => {
             </Card>
         </React.Fragment >
     )
+      
 }
 
 export default LeftView

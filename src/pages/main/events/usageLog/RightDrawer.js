@@ -238,7 +238,8 @@ class EventLog extends React.Component {
                 this.props.fetchData(value)
                 break;
             case ACTION_REFRESH:
-                this.props.fetchData(timeRangeInMin(this.range.duration))
+                this.range = timeRangeInMin(this.range.duration)
+                this.props.fetchData(this.range)
                 break;
             case ACTION_CLOSE:
                 this.props.close()
@@ -254,7 +255,7 @@ class EventLog extends React.Component {
         const keys = Object.keys(filterList)
         return (
             <React.Fragment>
-                <Toolbar header={'Usage Logs'} tip={tip} onChange={this.onToolbarChange} orgList={organizationList} loading={loading} />
+                <Toolbar header={'Usage Logs'} tip={tip} onChange={this.onToolbarChange} orgList={organizationList} loading={loading} filter={{ range: this.range }} />
                 <div style={{ height: 'calc(100vh - 50px)' }} id='event_log'>
                     {calendarList.length > 0 ? <Grid container>
                         <Grid item xs={3} style={{ display: 'inline-block', height: '100%', backgroundColor: '#292C33', verticalAlign: 'top', overflow: 'auto' }}>
