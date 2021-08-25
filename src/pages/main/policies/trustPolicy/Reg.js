@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import MexForms, { MAIN_HEADER, HEADER, SWITCH, INPUT, SELECT } from '../../../../hoc/forms/MexForms';
+import MexForms, { MAIN_HEADER, HEADER, SWITCH, INPUT, SELECT, MULTI_FORM } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -123,15 +123,15 @@ class TrustPolicyReg extends React.Component {
     }
 
     getOutBoundRules = (protocol, portRangeMin, portRangeMax, remoteCIDR) => ([
-        { field: fields.protocol, label: 'Protocol', formType: 'Select', rules: { required: true, type: 'number', allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp', 'icmp'], serverField: 'protocol', update: { edit: true }, value: protocol },
-        { field: fields.portRangeMin, label: 'Port Range Min', formType: 'Input', rules: { required: true, type: 'number' }, width: 3, visible: true, serverField: 'port_range_min', dataValidateFunc: this.validatePortRange, update: { edit: true }, value: portRangeMin },
-        { field: fields.portRangeMax, label: 'Port Range Max', formType: 'Input', rules: { required: true, type: 'number' }, width: 3, visible: true, serverField: 'port_range_max', dataValidateFunc: this.validatePortRange, update: { edit: true }, value: portRangeMax },
-        { field: fields.remoteCIDR, label: 'Remote CIDR', formType: 'Input', rules: { required: true }, width: 3, visible: true, serverField: 'remote_cidr', dataValidateFunc: this.validateRemoteCIDR, update: { edit: true }, value: remoteCIDR },
+        { field: fields.protocol, label: 'Protocol', formType: SELECT, rules: { required: true, type: 'number', allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp', 'icmp'], serverField: 'protocol', update: { edit: true }, value: protocol },
+        { field: fields.portRangeMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, serverField: 'port_range_min', dataValidateFunc: this.validatePortRange, update: { edit: true }, value: portRangeMin },
+        { field: fields.portRangeMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, serverField: 'port_range_max', dataValidateFunc: this.validatePortRange, update: { edit: true }, value: portRangeMax },
+        { field: fields.remoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true }, width: 3, visible: true, serverField: 'remote_cidr', dataValidateFunc: this.validateRemoteCIDR, update: { edit: true }, value: remoteCIDR },
         { icon: 'delete', formType: 'IconButton', visible: true, style: { color: 'white', top: 15 }, width: 1, onClick: this.removeRulesForm }
     ])
 
     getOutboundSecurityForm = (outBoundRules) => (
-        { uuid: uuid(), field: fields.outboundSecurityRuleMulti, formType: 'MultiForm', forms: outBoundRules, width: 3, visible: true }
+        { uuid: uuid(), field: fields.outboundSecurityRuleMulti, formType: MULTI_FORM, forms: outBoundRules, width: 3, visible: true }
     )
 
     getForms = () => ([

@@ -34,6 +34,7 @@ import { formatChargifyData } from './chargify';
 import { formatAlertData } from './alert';
 import { formatBillingData, formatMetricData } from './event';
 import { formatUsageData } from './usage';
+import { formatCloudletPropsData } from './cloudletProps';
 
 export const formatData = (request, response) => {
     let data = undefined
@@ -57,6 +58,9 @@ export const formatData = (request, response) => {
         case endpoint.SHOW_CLOUDLET_INFO:
         case endpoint.SHOW_ORG_CLOUDLET_INFO:
             data = formatShowData(request, response, cloudletInfo, true)
+            break;
+        case endpoint.GET_CLOUDLET_PROPS:
+            data = formatCloudletPropsData(request, response)
             break;
         case endpoint.SHOW_GPU_DRIVER:
             data = formatShowData(request, response, gpuDriver)

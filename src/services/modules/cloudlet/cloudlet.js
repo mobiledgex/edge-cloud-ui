@@ -329,6 +329,18 @@ export const cloudletResourceQuota = (self, data) => {
     return { method: endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS, data: requestData }
 }
 
+export const cloudletProps = (self, data) => {
+    let cloudletProps = { platform_type: idFormatter.platformType(data[fields.platformType]) }
+    if (redux_org.nonAdminOrg(self)) {
+        cloudletProps['organization'] = redux_org.nonAdminOrg(self)
+    }
+    let requestData = {
+        cloudletProps,
+        region: data[fields.region]
+    }
+    return { method: endpoint.GET_CLOUDLET_PROPS, data: requestData }
+}
+
 export const fetchShowNode = async (self, data) => {
     let requestData = {
         node: {

@@ -26,6 +26,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddToPhotosOutlinedIcon from '@material-ui/icons/AddToPhotosOutlined';
 import { useSelector } from 'react-redux';
 import { redux_org } from '../../helper/reduxData';
+import './style.css'
 
 export const MAIN_HEADER = 'MainHeader'
 export const HEADER = 'Header'
