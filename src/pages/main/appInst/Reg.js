@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { withRouter } from 'react-router-dom';
 import uuid from 'uuid';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, SWITCH, ICON_BUTTON, TEXT_AREA, MAIN_HEADER, HEADER, SELECT_RADIO_TREE_GROUP } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, SWITCH, ICON_BUTTON, TEXT_AREA, MAIN_HEADER, HEADER, SELECT_RADIO_TREE_GROUP, MULTI_FORM } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -352,7 +352,7 @@ class AppInstReg extends React.Component {
     ])
 
     getConfigForm = (form) => (
-        { uuid: uuid(), field: fields.configmulti, formType: 'MultiForm', forms: form, width: 3, visible: true }
+        { uuid: uuid(), field: fields.configmulti, formType: MULTI_FORM, forms: form, width: 3, visible: true }
     )
 
     addConfigs = () => {

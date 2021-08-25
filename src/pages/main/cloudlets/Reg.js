@@ -1,33 +1,39 @@
 import React, { Suspense } from 'react';
-import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
-//Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA, ICON_BUTTON, formattedData, MAIN_HEADER, HEADER } from '../../../hoc/forms/MexForms';
-import MexTab from '../../../hoc/forms/tab/MexTab';
-//redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { fields } from '../../../services/model/format';
-//model
-import { getOrganizationList } from '../../../services/modules/organization';
-import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota } from '../../../services/modules/cloudlet';
-//Map
+import uuid from 'uuid';
+//Mex
+import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA, ICON_BUTTON, formattedData, MAIN_HEADER, HEADER, MULTI_FORM } from '../../../hoc/forms/MexForms';
 import ListMexMap from '../../../container/map/ListMexMap'
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
-import { HELP_CLOUDLET_REG } from "../../../tutorial";
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
-import { getTrustPolicyList, showTrustPolicies } from '../../../services/modules/trustPolicy';
+import MexTab from '../../../hoc/forms/tab/MexTab';
+import { redux_org } from '../../../helper/reduxData'
+//model
+import { service, updateFieldData, fields } from '../../../services';
+import { getOrganizationList } from '../../../services/modules/organization';
+import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota, cloudletProps, showGPUDrivers } from '../../../services/modules/cloudlet';
+import { showTrustPolicies } from '../../../services/modules/trustPolicy';
+import { HELP_CLOUDLET_REG } from "../../../tutorial";
 
 import { Grid } from '@material-ui/core';
-import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
-import { service, updateFieldData } from '../../../services';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
-import { responseValid } from '../../../services/service';
-import { fetchGPUDrivers, showGPUDrivers } from '../../../services/modules/cloudlet/cloudlet';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const CloudletManifest = React.lazy(() => componentLoader(import('./CloudletManifest')));
+
+const fetchFormValue = (forms, field) => {
+    let value = undefined
+    for (const form of forms) {
+        if (form.field === field) {
+            value = form.value
+            break;
+        }
+    }
+    return value
+}
 
 class CloudletReg extends React.Component {
     constructor(props) {
@@ -59,6 +65,7 @@ class CloudletReg extends React.Component {
         this.expandAdvanceMenu = false;
         this.trustPolicyList = [];
         this.resourceQuotaList = [];
+        this.cloudletPropsList = [];
         this.gpuDriverList = [];
     }
 
@@ -68,18 +75,60 @@ class CloudletReg extends React.Component {
         }
     }
 
-    platformTypeValueChange = async (currentForm, forms, isInit) => {
-        await this.getCloudletResourceQuota(this.state.region, currentForm.value)
-        for (let form of forms) {
-            if (form.forms) {
-                for (let childForm of form.forms) {
-                    if (childForm.field === fields.resourceName) {
-                        if (!this.isUpdate) {
-                            this.updateUI(childForm)
-                            this.updateState({ forms })
+    fetchRegionDependentData = async (region, platformType) => {
+        let requestList = []
+        if (!this.requestedRegionList.includes(region)) {
+            requestList.push(showTrustPolicies(this, { region }))
+            requestList.push(showGPUDrivers(this, { region }))
+        }
+
+        if (region && platformType) {
+            requestList.push(cloudletResourceQuota(this, { region, platformType }))
+            requestList.push(cloudletProps(this, { region, platformType }))
+        }
+
+        if (requestList.length > 0) {
+            let mcList = await service.multiAuthSyncRequest(this, requestList)
+            if (mcList && mcList.length > 0) {
+                mcList.forEach(mc => {
+                    if (service.responseValid(mc)) {
+                        let method = mc.request.method
+                        let data = mc.response.data
+                        if (data) {
+                            if (data.length > 0) {
+                                if (method === endpoint.SHOW_TRUST_POLICY) {
+                                    this.trustPolicyList = [...this.trustPolicyList, ...data]
+                                }
+                                else if (method === endpoint.SHOW_GPU_DRIVER) {
+                                    this.gpuDriverList = [...this.gpuDriverList, ...data]
+                                }
+                                else if (method === endpoint.GET_CLOUDLET_PROPS) {
+                                    this.cloudletPropsList = data
+                                }
+                            }
+                            else if (method === endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
+                                if (data.properties) {
+                                    this.resourceQuotaList = data.properties
+                                    this.resourceQuotaList = this.resourceQuotaList.map(quota => {
+                                        return quota.name
+                                    })
+                                }
+                            }
                         }
                     }
-                }
+                })
+            }
+        }
+    }
+
+    platformTypeValueChange = async (currentForm, forms, isInit) => {
+        if (currentForm.value !== undefined) {
+            await this.fetchRegionDependentData(this.state.region, currentForm.value)
+        }
+        let nforms = forms.filter(form => {
+            let valid = true
+            if (form.field === fields.envVar || form.field === fields.resourceQuota) {
+                valid = false
             }
             else if (form.field === fields.openRCData || form.field === fields.caCertdata) {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
@@ -88,9 +137,10 @@ class CloudletReg extends React.Component {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_VMPOOL
                 form.rules.required = currentForm.value === perpetual.PLATFORM_TYPE_VMPOOL
             }
-        }
+            return valid
+        })
         if (isInit === undefined || isInit === false) {
-            this.updateState({ forms })
+            this.updateState({ forms: nforms })
         }
     }
 
@@ -132,54 +182,24 @@ class CloudletReg extends React.Component {
         }
     }
 
-    getTrustPolicy = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.trustPolicyList = [...this.trustPolicyList, ...await getTrustPolicyList(this, { region })]
-        }
-        this.updateUI(form)
-        this.updateState({ forms })
-    }
-
-    getCloudletResourceQuota = async (region, platformType) => {
-        if (region && platformType) {
-            let mc = await service.authSyncRequest(this, cloudletResourceQuota(this, { region, platformType }))
-            if (responseValid(mc)) {
-                if (mc.response.data.properties) {
-                    this.resourceQuotaList = mc.response.data.properties
-                    this.resourceQuotaList = this.resourceQuotaList.map(quota => {
-                        return quota.name
-                    })
-                }
-            }
-        }
-    }
-
-    getGPUDrivers = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.gpuDriverList = [...this.gpuDriverList, ...await fetchGPUDrivers(this, { region })]
-        }
-        this.updateUI(form)
-        this.updateState({ forms })
-    }
-
     regionValueChange = async (currentForm, forms, isInit) => {
         let region = currentForm.value;
         this.updateState({ region })
         if (region) {
-            for (let form of forms) {
-                if (form.field === fields.trustPolicyName) {
-                    if (isInit === undefined || isInit === false) {
-                        this.getTrustPolicy(region, form, forms)
-                    }
+            await this.fetchRegionDependentData(region, fetchFormValue(forms, fields.platformType))
+            let nforms = forms.filter(form => {
+                let valid = true
+                if (form.field === fields.trustPolicyName || form.field === fields.gpuConfig) {
+                    this.updateUI(form)
                 }
-                else if (form.field === fields.platformType) {
-                    await this.getCloudletResourceQuota(region, form.value)
+                else if (form.field === fields.envVar || form.field === fields.resourceQuota) {
+                    valid = false
                 }
-                else if (form.field === fields.gpuConfig) {
-                    if (isInit === undefined || isInit === false) {
-                        await this.getGPUDrivers(region, form, forms)
-                    }
-                }
+                return valid
+            })
+
+            if (isInit === undefined || isInit === false) {
+                this.updateState({ forms: nforms })
             }
             this.requestedRegionList.push(region);
         }
@@ -213,6 +233,32 @@ class CloudletReg extends React.Component {
         this.updateState({ forms })
     }
 
+    onCloudletPropsKeyChange = (currentForm, forms, isInit) => {
+        let keyData = undefined
+        for (const item of this.cloudletPropsList) {
+            if (item[currentForm.field] === currentForm.value) {
+                keyData = item
+                break;
+            }
+        }
+
+        if (keyData) {
+            let parentForm = currentForm.parent.form
+            for (let form of forms) {
+                if (form.uuid === parentForm.uuid) {
+                    for (let childForm of form.forms) {
+                        if (childForm.field === fields.value) {
+                            childForm.value = keyData.value
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            this.updateState({ forms })
+        }
+    }
+
     checkForms = (form, forms, isInit, data) => {
         let flowDataList = []
         if (form.field === fields.region) {
@@ -234,6 +280,9 @@ class CloudletReg extends React.Component {
         }
         else if (form.field === fields.kafkaCluster || form.field === fields.kafkaUser || form.field === fields.kafkaPassword) {
             this.kafkaChange(form, forms, isInit)
+        }
+        else if (form.field === fields.key) {
+            this.onCloudletPropsKeyChange(form, forms, isInit)
         }
 
         if (flowDataList.length > 0) {
@@ -465,22 +514,23 @@ class CloudletReg extends React.Component {
     }
 
     render() {
+        const { forms, showCloudletManifest, cloudletManifest, stepsArray, activeIndex } = this.state
         return (
             <div>
-                {this.state.showCloudletManifest ?
-                    this.state.cloudletManifest ? this.cloudletManifestForm() : null :
+                {showCloudletManifest ?
+                    cloudletManifest ? this.cloudletManifestForm() : null :
                     <Grid container>
                         <Grid item xs={6}>
                             <div className="round_panel">
-                                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                                <MexForms forms={forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                             </div>
                         </Grid>
                         <Grid item xs={6} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
-                            <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
+                            <MexTab form={{ panes: this.getPanes() }} activeIndex={activeIndex} />
                         </Grid>
                     </Grid>
                 }
-                <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
+                <MexMultiStepper multiStepsArray={stepsArray} onClose={this.stepperClose} />
             </div>
         )
     }
@@ -515,7 +565,7 @@ class CloudletReg extends React.Component {
                             form.options = [perpetual.IP_SUPPORT_DYNAMIC];
                             break;
                         case fields.platformType:
-                            form.options = [perpetual.PLATFORM_TYPE_OPEN_STACK, perpetual.PLATFORM_TYPE_VMPOOL, perpetual.PLATFORM_TYPE_VSPHERE, perpetual.PLATFORM_TYPE_VCD];
+                            form.options = [perpetual.PLATFORM_TYPE_OPEN_STACK, perpetual.PLATFORM_TYPE_VMPOOL, perpetual.PLATFORM_TYPE_VSPHERE, perpetual.PLATFORM_TYPE_VCD, perpetual.PLATFORM_TYPE_K8S_BARE_METAL];
                             break;
                         case fields.maintenanceState:
                             form.options = [perpetual.MAINTENANCE_STATE_NORMAL_OPERATION, perpetual.MAINTENANCE_STATE_MAINTENANCE_START, perpetual.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER];
@@ -532,6 +582,9 @@ class CloudletReg extends React.Component {
                             break;
                         case fields.resourceName:
                             form.options = this.resourceQuotaList
+                            break;
+                        case fields.key:
+                            form.options = this.cloudletPropsList
                             break;
                         default:
                             form.options = undefined;
@@ -638,7 +691,7 @@ class CloudletReg extends React.Component {
 
     /*Multi Form*/
     envForm = () => ([
-        { field: fields.key, label: 'Key', formType: INPUT, rules: { required: true }, width: 6, visible: true },
+        { field: fields.key, label: 'Key', formType: SELECT, placeholder: 'Select Key', rules: { required: true }, width: 6, visible: true, options: this.cloudletPropsList },
         { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 6, visible: true },
         this.isUpdate ? {} :
             { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 4, onClick: this.removeMultiForm }
@@ -646,18 +699,18 @@ class CloudletReg extends React.Component {
 
     resourceQuotaForm = () => ([
         { field: fields.resourceName, label: 'Name', formType: SELECT, placeholder: 'Select Name', rules: { required: true }, width: 5, visible: true, options: this.resourceQuotaList, update: { edit: true } },
-        { field: fields.alertThreshold, label: 'Alert Threshold', formType: INPUT, unit:'%', rules: { required: true }, width: 4, visible: true, update: { edit: true }, value: this.isUpdate ? this.props.data[fields.defaultResourceAlertThreshold] : undefined },
+        { field: fields.alertThreshold, label: 'Alert Threshold', formType: INPUT, unit: '%', rules: { required: true }, width: 4, visible: true, update: { edit: true }, value: this.isUpdate ? this.props.data[fields.defaultResourceAlertThreshold] : undefined },
         { field: fields.resourceValue, label: 'Value', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
 
     ])
 
     getEnvForm = (form) => {
-        return ({ uuid: uuid(), field: fields.annotations, formType: 'MultiForm', forms: form ? form : this.envForm(), width: 3, visible: true })
+        return ({ uuid: uuid(), field: fields.envVar, formType: MULTI_FORM, forms: form ? form : this.envForm(), width: 3, visible: true })
     }
 
     getResoureQuotaForm = (form) => {
-        return ({ uuid: uuid(), field: fields.annotations, formType: 'MultiForm', forms: form ? form : this.resourceQuotaForm(), width: 3, visible: true })
+        return ({ uuid: uuid(), field: fields.resourceQuota, formType: MULTI_FORM, forms: form ? form : this.resourceQuotaForm(), width: 3, visible: true })
     }
 
     removeMultiForm = (e, form) => {
@@ -717,7 +770,7 @@ class CloudletReg extends React.Component {
                 if (form.field === fields.envVars && data[fields.envVars] === undefined) {
                     form.visible = false;
                 }
-                else if (form.forms && form.formType !== HEADER && form.formType !== 'MultiForm') {
+                else if (form.forms && form.formType !== HEADER && form.formType !== MULTI_FORM) {
                     this.updateFormData(form.forms, data)
                 }
                 else if (form.field === fields.openRCData || form.field === fields.caCertdata) {

@@ -26,6 +26,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddToPhotosOutlinedIcon from '@material-ui/icons/AddToPhotosOutlined';
 import { useSelector } from 'react-redux';
 import { redux_org } from '../../helper/reduxData';
+import './style.css'
 
 export const MAIN_HEADER = 'MainHeader'
 export const HEADER = 'Header'
@@ -448,7 +449,7 @@ const MexForms = (props) => {
                                                     loadHeader(i, form) :
                                                     form.formType === MULTI_FORM ?
                                                         form.forms ?
-                                                            <Grid.Row key={i} id={form.field} style={{ width: '100%' }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
+                                                            <Grid.Row key={i} id={form.field} style={{ width: '100%', marginLeft:20 }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
                                                             : null :
                                                         loadForms(i, form) :
                                             null
