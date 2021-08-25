@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import MexForms, { MAIN_HEADER, INPUT, SELECT, TIME_COUNTER, HEADER, ICON_BUTTON } from '../../../../hoc/forms/MexForms';
+import MexForms, { MAIN_HEADER, INPUT, SELECT, TIME_COUNTER, HEADER, ICON_BUTTON, MULTI_FORM } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -131,11 +131,11 @@ class Reg extends React.Component {
     ])
 
     getLabelsForm = (form) => {
-        return ({ uuid: uuid(), field: fields.labels, formType: 'MultiForm', forms: form ? form : this.labelsForm(), width: 3, visible: true })
+        return ({ uuid: uuid(), field: fields.labels, formType: MULTI_FORM, forms: form ? form : this.labelsForm(), width: 3, visible: true })
     }
 
     getAnnotationForm = (form) => {
-        return ({ uuid: uuid(), field: fields.annotations, formType: 'MultiForm', forms: form ? form : this.labelsForm(), width: 3, visible: true })
+        return ({ uuid: uuid(), field: fields.annotations, formType: MULTI_FORM, forms: form ? form : this.labelsForm(), width: 3, visible: true })
     }
 
     getForms = () => ([

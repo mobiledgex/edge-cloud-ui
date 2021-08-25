@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { Image, Label } from 'semantic-ui-react';
 import * as style from '../hoc/terminal/TerminalStyle';
 import { Paper, Box } from '@material-ui/core';
-import MexForms, { SWITCH } from '../hoc/forms/MexForms';
+import MexForms, { INPUT, MULTI_FORM, SELECT, SWITCH } from '../hoc/forms/MexForms';
 import { fields } from '../services/model/format'
 import { redux_org } from '../helper/reduxData';
 import { service } from '../services'
@@ -200,8 +200,8 @@ class MexTerminal extends Component {
 
     getLogOptions = () => (
         [
-            { field: 'Since', label: 'Since', formType: 'Input', visible: true, labelStyle: style.label, style: style.logs },
-            { field: 'Tail', label: 'Tail', formType: 'Input', rules: { type: 'number' }, visible: true, labelStyle: style.label, style: style.logs },
+            { field: 'Since', label: 'Since', formType: INPUT, visible: true, labelStyle: style.label, style: style.logs },
+            { field: 'Tail', label: 'Tail', formType: INPUT, rules: { type: 'number' }, visible: true, labelStyle: style.label, style: style.logs },
             { field: 'Timestamps', label: 'Timestamps', formType: SWITCH, visible: true, labelStyle: style.label, style: { color: 'green' } },
             { field: 'Follow', label: 'Follow', formType: SWITCH, visible: true, labelStyle: style.label, style: { color: 'green' } }
         ]
@@ -209,10 +209,10 @@ class MexTerminal extends Component {
 
     getForms = (containerIds) => (
         [
-            { field: 'Request', label: 'Request', formType: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(redux_org.role(this) === perpetual.DEVELOPER_VIEWER ? [perpetual.SHOW_LOGS] : [perpetual.RUN_COMMAND, perpetual.SHOW_LOGS]), value: this.request },
-            { field: 'Container', label: 'Container', formType: 'Select', rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(containerIds), value: containerIds[0] },
-            { field: 'Command', label: 'Command', formType: 'Input', rules: { required: true }, visible: this.request === perpetual.RUN_COMMAND ? true : false, labelStyle: style.label, style: style.cmdLine },
-            { uuid: 'ShowLogs', field: 'LogOptions', formType: 'MultiForm', visible: this.request === perpetual.SHOW_LOGS ? true : false, forms: this.getLogOptions(), width: 4 },
+            { field: 'Request', label: 'Request', formType: SELECT, rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(redux_org.role(this) === perpetual.DEVELOPER_VIEWER ? [perpetual.SHOW_LOGS] : [perpetual.RUN_COMMAND, perpetual.SHOW_LOGS]), value: this.request },
+            { field: 'Container', label: 'Container', formType: SELECT, rules: { required: true }, visible: true, labelStyle: style.label, style: style.cmdLine, options: this.getOptions(containerIds), value: containerIds[0] },
+            { field: 'Command', label: 'Command', formType: INPUT, rules: { required: true }, visible: this.request === perpetual.RUN_COMMAND ? true : false, labelStyle: style.label, style: style.cmdLine },
+            { uuid: 'ShowLogs', field: 'LogOptions', formType: MULTI_FORM, visible: this.request === perpetual.SHOW_LOGS ? true : false, forms: this.getLogOptions(), width: 4 },
             { label: 'Connect', formType: 'Button', style: style.button, onClick: this.onConnect, validate: true }
         ])
 
