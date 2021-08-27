@@ -7,3 +7,7 @@
 .mex-select .ui.fluid.dropdown>.dropdown.icon  {
     padding:10px  !important;
 }
+
+.mex-select .ui.dropdown .menu>.message:not(.ui) {
+    color:#CECECE !important;
+}
