@@ -20,13 +20,15 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import About from './About'
 import RoleLegend from './RoleLegend'
 
-import { Collapse, Icon, LinearProgress, Tooltip } from '@material-ui/core';
+import { Collapse, LinearProgress, Tooltip } from '@material-ui/core';
+import { Icon } from '../../../hoc/mexui';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { role } from '../../../helper/constant';
 
 //Header
 import Header from './Header'
 import EventMenu from './EventMenu';
+import { lightGreen } from '@material-ui/core/colors';
 
 const drawerWidth = 250;
 
@@ -115,7 +117,33 @@ const useStyles = makeStyles((theme) => ({
             display: 'flex',
         },
     },
+    fab: {
+        position: 'absolute',
+        top: theme.spacing(0.7),
+        right: -20,
+        borderRadius: '200px 0px 0px 200px',
+        border:'none',
+        height:40,
+        width: 25,
+        backgroundColor: lightGreen['600'],
+        boxShadow: 'default',
+        cursor:'pointer'
+    }
 }));
+
+const LogsButton = (props) => {
+    const classes = useStyles()
+    const { open } = props
+
+    return (
+        <Tooltip title={<strong>Logs</strong>}>
+            <button className={classes.fab} size="small" aria-label="add" onClick={props.onClick}>
+                <Icon style={{ color: 'white' }}>{open ? 'chevron_right' : 'event_note'}</Icon>
+            </button>
+        </Tooltip>
+    )
+}
+
 
 const Options = (props) => {
     const { options, sub, drawerOpen } = props
@@ -142,7 +170,7 @@ const Options = (props) => {
     const renderItem = (item) => (
         <ListItem button onClick={() => { optionClick(item) }}>
             <ListItemIcon>
-                <Icon className='material-icons-outlined'>{item.icon}</Icon>
+                <Icon outlined={true}>{item.icon}</Icon>
             </ListItemIcon>
             <ListItemText primary={item.label} />
             {item.sub ? pageId === item.id ? <ExpandLess /> : <ExpandMore /> : null}
@@ -192,6 +220,7 @@ const SideNav = (props) => {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(true);
+    const [openLogs, setOpenLogs] = React.useState(true);
     const orgInfo = useSelector(state => state.organizationInfo.data)
     const loading = useSelector(state => state.loadingSpinner.loading)
 
@@ -228,6 +257,7 @@ const SideNav = (props) => {
                         <MenuIcon />
                     </IconButton>
                     <Header />
+                    <LogsButton onClick={()=>{setOpenLogs(!openLogs)}} open={openLogs}/>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -256,7 +286,7 @@ const SideNav = (props) => {
             <main className={classes.content}>
                 {props.children}
             </main>
-            <EventMenu />
+            <EventMenu open={openLogs}/>
         </div>
     );
 }
