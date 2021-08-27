@@ -30,6 +30,7 @@ const MexDualList = (props) => {
             selected = {selected}
             options={form.options ? form.options : []}
             onChange = {onSelected}
+            preserveSelectOrder
         />
     )
 }
