@@ -138,7 +138,7 @@ const LogsButton = (props) => {
     return (
         <Tooltip title={<strong>Logs</strong>}>
             <button className={classes.fab} size="small" aria-label="add" onClick={props.onClick}>
-                <Icon style={{ color: 'white' }}>{open ? 'chevron_right' : 'event_note'}</Icon>
+                <Icon style={{ color: 'white', marginTop:4 }}>{open ? 'chevron_right' : 'event_note'}</Icon>
             </button>
         </Tooltip>
     )
