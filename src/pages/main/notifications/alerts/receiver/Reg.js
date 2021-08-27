@@ -403,33 +403,15 @@ class FlavorReg extends React.Component {
         )
     }
 
-    checkOrgExist = () => {
-        let org  = redux_org.orgName(this)
-        if (redux_org.isOperator(this) && org) {
-            let exist = false
-            for (let i = 0; i < this.cloudletList.length; i++) {
-                let cloudlet = this.cloudletList[i]
-                if (cloudlet[fields.operatorName] === org) {
-                    exist = true
-                    break;
-                }
-            }
-            if (!exist) {
+    onListEmpty = () => {
+        if (redux_org.isOperator(this)) {
+            if (this.cloudletList.length === 0) {
                 this.regions.map(region => {
                     let cloudlet = {}
-                    cloudlet[fields.operatorName] = org
+                    cloudlet[fields.operatorName] = redux_org.nonAdminOrg(this)
                     cloudlet[fields.region] = region
                     this.cloudletList.push(cloudlet)
                 })
-                let forms = cloneDeep(this.state.forms)
-                for (let i = 0; i < forms.length; i++) {
-                    let form = forms[i]
-                    if (form.field === fields.cloudletName) {
-                        form.rules.disabled = true
-                        break;
-                    }
-                }
-                this.setState({ forms })
             }
         }
     }
@@ -442,7 +424,6 @@ class FlavorReg extends React.Component {
                     let data = mc.response.data
                     if (request.method === endpoint.SHOW_CLOUDLET || request.method === endpoint.SHOW_ORG_CLOUDLET) {
                         this.cloudletList = [...this.cloudletList, ...data]
-                        this.checkOrgExist()
                     }
                     else if (request.method === endpoint.SHOW_APP_INST) {
                         this.appInstList = [...this.appInstList, ...data]
@@ -456,15 +437,14 @@ class FlavorReg extends React.Component {
                 }
             })
 
+            this.onListEmpty()
             let forms = cloneDeep(this.state.forms)
-            for (let i = 0; i < forms.length; i++) {
-                let form = forms[i]
+            for (const form of forms) {
                 if (form.field === fields.selector) {
                     form.rules.disabled = false
                 }
                 this.updateUI(form)
             }
-
             this.setState({
                 forms: forms,
                 loading: false
