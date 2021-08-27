@@ -122,7 +122,8 @@ class CloudletReg extends React.Component {
     }
 
     platformTypeValueChange = async (currentForm, forms, isInit) => {
-        if (currentForm.value !== undefined) {
+        const valid = isInit === undefined || isInit === false
+        if (currentForm.value !== undefined && valid) {
             await this.fetchRegionDependentData(this.state.region, currentForm.value)
         }
         let nforms = forms.filter(form => {
@@ -139,7 +140,7 @@ class CloudletReg extends React.Component {
             }
             return valid
         })
-        if (isInit === undefined || isInit === false) {
+        if (valid) {
             this.updateState({ forms: nforms })
         }
     }
@@ -185,7 +186,7 @@ class CloudletReg extends React.Component {
     regionValueChange = async (currentForm, forms, isInit) => {
         let region = currentForm.value;
         this.updateState({ region })
-        if (region) {
+        if (region && ((isInit === undefined || isInit === false))) {
             await this.fetchRegionDependentData(region, fetchFormValue(forms, fields.platformType))
             let nforms = forms.filter(form => {
                 let valid = true
@@ -197,10 +198,7 @@ class CloudletReg extends React.Component {
                 }
                 return valid
             })
-
-            if (isInit === undefined || isInit === false) {
-                this.updateState({ forms: nforms })
-            }
+            this.updateState({ forms: nforms })
             this.requestedRegionList.push(region);
         }
     }
