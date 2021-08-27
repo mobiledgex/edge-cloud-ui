@@ -2,8 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import { Icon } from '../../../hoc/mexui';
-import { Fab, Tooltip, Dialog } from '@material-ui/core';
+import { Dialog } from '@material-ui/core';
 import { lightGreen } from '@material-ui/core/colors';
 import UsageLog from '../events/usageLog/UsageLog';
 import AuditLog from '../events/auditLog/AuditLog';
@@ -45,16 +44,6 @@ const useStyles = makeStyles((theme) => ({
         border: 'none',
         width: 0
     },
-    fab: {
-        position: 'absolute',
-        top: theme.spacing(0.7),
-        right: theme.spacing(0),
-        borderRadius: '30px 0px 0px 30px',
-        zIndex: 9999,
-        width: 23,
-        backgroundColor: lightGreen['600'],
-        boxShadow: 'default'
-    },
     tip: {
         fontSize: 13
     },
@@ -81,17 +70,12 @@ const menuOptions = [
 ]
 
 const EventMenu = (props) => {
-    const [open, setOpen] = React.useState(true);
+    const { open, onClose } = props
     const [pageId, setPageId] = React.useState(undefined);
     const classes = useStyles();
 
     const handleClose = () => {
         setPageId(undefined)
-    }
-
-    const handleClick = () => {
-        setOpen(!open);
-        handleClose()
     }
 
     const onMenuClick = (id) => {
@@ -112,11 +96,6 @@ const EventMenu = (props) => {
     return (
         <React.Fragment>
             <div className={classes.root}>
-                {pageId ? null : <Tooltip title={<strong className={classes.tip}>Logs</strong>}>
-                    <Fab className={classes.fab} size="small" aria-label="add" onClick={handleClick}>
-                        <Icon style={{ color: 'white', marginLeft: 5 }}>{open ? 'chevron_right' : 'event_note'}</Icon>
-                    </Fab>
-                </Tooltip>}
                 <Drawer
                     anchor={'right'}
                     variant="permanent"
