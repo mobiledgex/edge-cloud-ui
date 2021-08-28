@@ -5,30 +5,30 @@
 
 }
 
-table.scroll {
+.legend table.scroll {
     font-size:12px;
     border-spacing: 1em 0.2em;
 }
 
-table.scroll tbody,
-table.scroll thead tr { display: block; }
+.legend table.scroll tbody,
+.legend table.scroll thead tr { display: block; }
 
-table.scroll tbody {
+.legend table.scroll tbody {
     max-height: 300px;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
-table.scroll tbody td,
-table.scroll thead th {
+.legend table.scroll tbody td,
+.legend table.scroll thead th {
     width: 200px;
 }
 
-table.scroll thead th:last-child {
+.legend table.scroll thead th:last-child {
     width: 216px; /* 140px + 16px scrollbar width */
 }
 
-thead tr th { 
+.legend thead tr th { 
     text-align: left;
 }
 

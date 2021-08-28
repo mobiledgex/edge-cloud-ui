@@ -72,7 +72,7 @@ class Legend extends MapControl {
             if (id === PARENT_APP_INST) {
                 main = main + `<div align='center' style='margin-bottom:10px;'><code style='margin-left:30px;font-weight:700;font-size:17px;'>${appName} [${version}]</code></div>`
             }
-            main = main + `<div>${gt}</div></div>`
+            main = main + `<div class='legend'>${gt}</div></div>`
             div.innerHTML = main
             div.addEventListener('click', this.onChange);
             return div;
