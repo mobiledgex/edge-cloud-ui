@@ -15,8 +15,8 @@ export const edgeFlowList = [
 export const defaultFlow = () => (
     {
         id: 100, dataList: [
-            { type: 'nodes', data: { id: 100, shape: SHAPE_ROUND_RECTANGLE, label: 'External Network', width: 10, height: 200, bg: '#363F53', tr: -1.5708, tmx: -15, zi: 1 }, position: { x: 100, y: 185 } },
-            { type: 'nodes', data: { id: 101, shape: SHAPE_ROUND_RECTANGLE, label: 'Internal Network', width: 600, height: 10, bg: '#363F53', tmy: 15, zi: 1 }, position: { x: 460, y: 300 } },
+            { type: 'nodes', data: { id: 100, shape: SHAPE_ROUND_RECTANGLE, label: 'External Network', width: 10, height: 200, bg: '#363F53', tr: -1.5708, tmx: -15, zi: 1 }, position: { x: 50, y: 185 } },
+            { type: 'nodes', data: { id: 101, shape: SHAPE_ROUND_RECTANGLE, label: 'Internal Network', width: 600, height: 10, bg: '#363F53', tmy: 15, zi: 1 }, position: { x: 450, y: 300 } },
             { type: 'nodes', data: { id: 102, shape: SHAPE_ROUND_RECTANGLE, label: '', width: 1, height: 1, bg: '#FFF' }, position: { x: 500, y: 300 } },
             { type: 'nodes', data: { id: 103, shape: SHAPE_ROUND_RECTANGLE, label: '', width: 1, height: 1, bg: '#FFF' }, position: { x: 300, y: 300 } },
             { type: 'nodes', data: { id: 104, shape: SHAPE_ROUND_RECTANGLE, label: '', width: 1, height: 1, bg: '#FFF' }, position: { x: 600, y: 300 } }

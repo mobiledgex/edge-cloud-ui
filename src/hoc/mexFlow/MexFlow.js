@@ -37,11 +37,13 @@ class MexFlow extends React.Component {
           padding: 5
         }
       });
-    this.cy.userZoomingEnabled(false)
+    this.cy.userZoomingEnabled(true)
     this.cy.zoom({
-      level: (window.screen.width) / 2600,
+      level: (window.innerWidth) / 2600,
       renderedPosition: { x: 0, y: 50 }
     });
+    this.cy.minZoom(0.3)
+    this.cy.maxZoom((window.innerWidth) / 2600)
     this.cy.autolock(true)
   }
 

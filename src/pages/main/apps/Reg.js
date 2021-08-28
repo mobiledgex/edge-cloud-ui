@@ -1087,19 +1087,21 @@ class AppReg extends React.Component {
 
     render() {
         return (
-            <div className="round_panel">
+            <React.Fragment>
                 <Grid container>
-                    <Grid item xs={this.state.showGraph ? 7 : 12}>
-                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                    <Grid item xs={this.state.showGraph ? 8 : 12}>
+                        <div className="round_panel">
+                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                        </div>
                     </Grid>
-                    {this.state.showGraph ? <Grid item xs={5} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
+                    {this.state.showGraph ? <Grid item xs={4} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
                         <Suspense fallback={<div></div>}>
                             <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow} />
                         </Suspense>
                     </Grid> : null}
                 </Grid>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
-            </div>
+            </React.Fragment>
         )
     }
 
