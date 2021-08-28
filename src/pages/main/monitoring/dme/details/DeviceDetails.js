@@ -1,6 +1,5 @@
 import React from 'react'
 import { perpetual } from '../../../../../helper/constant';
-import { fields } from '../../../../../services/model/format';
 import './style.css'
 
 const Details = (props) => {
@@ -9,29 +8,31 @@ const Details = (props) => {
     const values = data[perpetual.CON_VALUES]
     return (
         <React.Fragment>
-            <div style={{ marginBottom: 20 }} align='center'><h4><b>Number of Samples</b></h4></div>
-            <table className="details">
-                <thead>
-                    <tr>
-                        {keys.map((item, i) => (
-                            <th key={i}>{item.label}</th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        values.map((data, i) => {
-                            return (
-                                <tr key={i}>
-                                    {keys.map((item, i) => (
-                                        <td key={i}>{data[item.field] ? data[item.field] : item.default}</td>
-                                    ))}
-                                </tr>
-                            )
-                        })
-                    }
-                </tbody>
-            </table>
+            <div className='details-main' align='center'>
+                <div className='details-header'><h4><b>Number of Samples</b></h4></div>
+                <table className="details">
+                    <thead>
+                        <tr>
+                            {keys.map((item, i) => (
+                                <th key={i}>{item.label}</th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            values.map((data, i) => {
+                                return (
+                                    <tr key={i}>
+                                        {keys.map((item, i) => (
+                                            <td key={i}>{data[item.field] ? data[item.field] : item.default}</td>
+                                        ))}
+                                    </tr>
+                                )
+                            })
+                        }
+                    </tbody>
+                </table>
+            </div>
         </React.Fragment>
     )
 }
