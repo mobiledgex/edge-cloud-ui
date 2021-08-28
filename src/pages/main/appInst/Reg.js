@@ -702,13 +702,13 @@ class AppInstReg extends React.Component {
         return (
             <div>
                 <Grid container>
-                    <Grid item xs={this.state.showGraph ? 6 : 12}>
+                    <Grid item xs={this.state.showGraph ? 8 : 12}>
                         <div className="round_panel">
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </div>
                     </Grid>
                     {this.state.showGraph ?
-                        <Grid item xs={6} >
+                        <Grid item xs={4} >
                             <Suspense fallback={<div></div>}>
                                 <MexFlow flowDataList={this.state.flowDataList} flowObject={appFlow} />
                             </Suspense>
