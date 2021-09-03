@@ -64,11 +64,12 @@ class MexListView extends React.Component {
     }
 
     detailView = (data) => {
+        const { detailAction } = this.props
         let additionalDetail = this.requestInfo.additionalDetail
         this.props.handleViewMode(null)
         return (
             <Card style={{ height: 'calc(100vh - 116px)', backgroundColor: '#292c33', borderRadius: 5, overflowY: 'auto' }}>
-                <MexDetailViewer detailData={data} keys={this.keys} formatData={this.requestInfo.formatData} />
+                <MexDetailViewer detailData={data} keys={this.keys} formatData={this.requestInfo.formatData} detailAction={detailAction}/>
                 {additionalDetail ? additionalDetail(data) : null}
             </Card>
         )

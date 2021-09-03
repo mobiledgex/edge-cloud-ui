@@ -22,7 +22,7 @@ const SelectMenu = (props) => {
                 <div className='select-menu-label' style={{ color }}>
                     {header ? <strong>{header}:</strong> : null}
                     <Tooltip title={value ? value : ''}><Typography style={{ maxWidth: labelWidth ? labelWidth : 150, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'inline-flex', marginRight: 5, marginLeft: 5 }}>{value ? value : placeholder}</Typography></Tooltip>
-                    <Icon name='chevron down' className='select-menu-label-icon' style={{ float: 'right', color }} />
+                    <Icon name='chevron down' className='select-menu-label-icon' style={{ float: 'right', color, marginTop:2 }} />
                     {clear ? <Icon onClick={onClear} name='close' className='select-menu-label-icon' style={{ float: 'right', color }} /> : null }
                 </div>
 

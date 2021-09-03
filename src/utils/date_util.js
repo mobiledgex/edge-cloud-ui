@@ -123,3 +123,24 @@ export const startOf = (type, value) => {
 export const endOf = (type, value) => {
     return value ? moment(value).endOf(type) : moment().endOf(type)
 }
+
+export const parseDuration = (str) => {
+    var days = str.match(/(\d+)\s*d/);
+    var hours = str.match(/(\d+)\s*h/);
+    var minutes = str.match(/(\d+)\s*m/);
+    var seconds = str.match(/(\d+)\s*s/);
+    let parsedStr = []
+    if (days && days[1] > 0) {
+        parsedStr.push(`${days[1]} day`)
+    }
+    if (hours && hours[1] > 0) {
+        parsedStr.push(`${hours[1]} hour`)
+    }
+    if (minutes && minutes[1] > 0) {
+        parsedStr.push(`${minutes[1]} mins`)
+    }
+    if (seconds && seconds[1] > 0) {
+        parsedStr.push(`${seconds[1]} sec`)
+    }
+    return parsedStr.join(' ')
+}

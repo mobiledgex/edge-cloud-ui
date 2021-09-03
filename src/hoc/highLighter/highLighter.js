@@ -20,10 +20,12 @@ export const syntaxHighLighter = (language, data) => (
 )
 
 export const codeHighLighter = (data) => (
-    <Box component="div" display="inline">
-        <code style={{ backgroundColor: '#2B2B2B', padding: 10 }}>{data}</code>
-        <Tooltip title={'copy'} aria-label="copy">
-            <IconButton onClick={(e) => copyData(data)}><FileCopyOutlinedIcon fontSize='small' /></IconButton>
-        </Tooltip>
-    </Box>
+    <div style={{ backgroundColor: '#2B2B2B', borderRadius: 5, display: "inline-flex", padding: '12px 0 0 5px', }}>
+        <code style={{ wordBreak: 'break-all', overflowY: 'auto', maxHeight: 250 }}>{data}</code>
+        <div>
+            <Tooltip title={'copy'} aria-label="copy" style={{marginTop:-10}}>
+                <IconButton onClick={(e) => copyData(data)}><FileCopyOutlinedIcon fontSize='small' /></IconButton>
+            </Tooltip>
+        </div>
+    </div>
 )
