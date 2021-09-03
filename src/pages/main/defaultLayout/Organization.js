@@ -38,7 +38,7 @@ const Organization = (props) => {
         <React.Fragment>
             {
                 <IconButton disabled={orgInfo && orgInfo[fields.isAdmin]} style={{ marginTop: 4 }} onClick={(e) => { setAnchorEl(e.currentTarget) }}>
-                    <BusinessIcon fontSize='default' />&nbsp;
+                    <BusinessIcon fontSize='medium' />&nbsp;
                         <h5>
                         {orgInfo ? orgInfo[fields.organizationName] : 'Select Organization'}
                     </h5>

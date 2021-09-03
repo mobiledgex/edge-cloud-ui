@@ -12,6 +12,7 @@ export const pages = [
     { label: 'Cloudlet Pools', icon: 'cloud_circle', id: perpetual.PAGE_CLOUDLET_POOLS, path: 'cloudlet-pools', roles: [perpetual.ADMIN, perpetual.OPERATOR], visible: true },
     { label: 'Cloudlet Pools', icon: 'cloud_circle', id: perpetual.PAGE_POOL_ACCESS, path: 'pool-access', roles: [perpetual.DEVELOPER_MANAGER], visible: true },
     { label: 'Flavors', icon: 'free_breakfast', id: perpetual.PAGE_FLAVORS, path: 'flavors', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
+    { label: 'GPU Drivers', icon: 'gpu.svg', id: perpetual.PAGE_GPU_DRIVER, path: 'gpu-driver', visible: true },
     { label: 'Cluster Instances', icon: 'storage', id: perpetual.PAGE_CLUSTER_INSTANCES, path: 'cluster-insts', roles: [perpetual.ADMIN, perpetual.DEVELOPER, perpetual.OPERATOR], visible: true },
     { label: 'Apps', icon: 'apps', id: perpetual.PAGE_APPS, path: 'apps', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
     { label: 'App Instances', icon: 'games', id: perpetual.PAGE_APP_INSTANCES, path: 'app-insts', roles: [perpetual.ADMIN, perpetual.DEVELOPER, perpetual.OPERATOR], visible: true },

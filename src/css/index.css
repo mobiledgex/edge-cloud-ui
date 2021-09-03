@@ -14,7 +14,7 @@ body {
 body, button, input, textarea, optgroup, select, textarea,
 .header, .menu,
 .legendtext {
-    font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif !important;
+    font-family: 'Helvetica, 'Helvetica Neue', Arial', sans-serif !important;
 }
 
 
@@ -1102,7 +1102,7 @@ body, button, input, textarea, optgroup, select, textarea,
 
 .content_title_label{
     display:flex;
-    margin-top: 2px;
+    margin-top: 12px;
     align-items: center;
     font-size:25px;
     white-space: nowrap;

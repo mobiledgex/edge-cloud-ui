@@ -818,7 +818,7 @@ class AppReg extends React.Component {
                             form.options = this.alertPolicyList
                             break;
                         case fields.vmappostype:
-                            form.options = [perpetual.VM_APP_OS_LINUX, perpetual.VM_APP_OS_WINDOWS_10, perpetual.VM_APP_OS_WINDOWS_2012, perpetual.VM_APP_OS_WINDOWS_2016, perpetual.VM_APP_OS_WINDOWS_2019]
+                            form.options = [perpetual.OS_LINUX, perpetual.OS_WINDOWS_10, perpetual.OS_WINDOWS_2012, perpetual.OS_WINDOWS_2016, perpetual.OS_WINDOWS_2019]
                             break;
                         case fields.deployment:
                             form.options = [perpetual.DEPLOYMENT_TYPE_DOCKER, perpetual.DEPLOYMENT_TYPE_KUBERNETES, perpetual.DEPLOYMENT_TYPE_VM, perpetual.DEPLOYMENT_TYPE_HELM]

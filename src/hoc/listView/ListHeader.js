@@ -49,7 +49,7 @@ const ListHead = (props) => {
                         style={{ backgroundColor: '#292C33' }}
                         key={headCell.field}
                         align={headCell.numeric ? 'right' : 'left'}
-                        padding={headCell.disablePadding ? 'none' : 'default'}
+                        padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.field ? order : false}
                     >
                         {headCell.sortable ?

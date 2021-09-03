@@ -219,10 +219,10 @@ const MexForms = (props) => {
 
     }
 
-    const loadInputForms = (form, required, disabled) => {
+    const loadInputForms = (form, required, disabled, tip = false) => {
         return (
             form.formType === INPUT ?
-                <MexInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
+                <MexInput form={form} required={required} disabled={disabled} onChange={onValueSelect} tip={tip} /> :
                 form.formType === POPUP_INPUT ?
                     <MexPopupInput form={form} required={required} disabled={disabled} onChange={onValueSelect} /> :
                     form.formType === TEXT_AREA ?
@@ -318,13 +318,17 @@ const MexForms = (props) => {
                         {
                             form.label ?
                                 <div style={{ marginBottom: 5 }}>
-                                    <label style={form.labelStyle}>{form.label}{required ? ' *' : ''}</label>
+                                    <Tooltip title={`${form.label} ${required ? ' *' : ''}`}>
+                                        <label style={{ ...form.labelStyle, color: '#CECECE', display: 'flex' }}>
+                                            <p style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', marginRight:3 }}>{form.label}</p>{required ? '*' : ''}
+                                        </label>
+                                    </Tooltip>
                                 </div> :
                                 null
                         }
                         {
                             form.formType === INPUT || form.formType === TEXT_AREA || form.formType === POPUP_INPUT ?
-                                loadInputForms(form, required, disabled) :
+                                loadInputForms(form, required, disabled, true) :
                                 form.formType === SELECT ?
                                     loadDropDownForms(form, required, disabled) :
                                     form.formType === SWITCH ?
@@ -385,7 +389,7 @@ const MexForms = (props) => {
                     <Grid.Column width={4} className='detail_item'>
                         {form.labelIcon ?
                             <IconButton disabled={true}>{form.labelIcon}<sup style={{ color: requiredColor }}>{required ? ' *' : ''}</sup></IconButton> :
-                            <div style={form.labelStyle ? form.labelStyle : { marginTop: 8 }}>{form.label}<sup style={{ color: requiredColor }}>{required ? ' *' : ''}</sup></div>}
+                            <div style={form.labelStyle ? form.labelStyle : { marginTop: 8, color:'#CECECE' }}>{form.label}<sup style={{ color: requiredColor }}>{required ? ' *' : ''}</sup></div>}
                     </Grid.Column>
                     <Grid.Column width={11}>
                         {
