@@ -1,6 +1,7 @@
 import React from 'react';
 import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
+import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
@@ -38,7 +39,7 @@ const DetailAction = (props) => {
         </div>
     )
 }
-class FlavorList extends React.Component {
+class GPUDrivers extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -172,10 +173,16 @@ class FlavorList extends React.Component {
     }
 };
 
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+    };
+};
+
 const mapStateToProps = (state) => {
     return {
         organizationInfo: state.organizationInfo.data
     }
 };
 
-export default withRouter(connect(mapStateToProps, null)(FlavorList));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(GPUDrivers));
