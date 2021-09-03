@@ -41,7 +41,6 @@ export const REVOKE_ACCESS_KEY = 'auth/ctrl/RevokeAccessKey';
 export const GET_CLOUDLET_RESOURCE_QUOTA_PROPS = 'auth/ctrl/GetCloudletResourceQuotaProps';
 export const GET_CLOUDLET_PROPS = 'auth/ctrl/GetCloudletProps';
 export const SHOW_NODE = 'auth/ctrl/ShowNode'
-export const SHOW_GPU_DRIVER = 'auth/ctrl/ShowGPUDriver'
 //Cloudlet Info
 export const SHOW_CLOUDLET_INFO = 'auth/ctrl/ShowCloudletInfo';
 export const SHOW_ORG_CLOUDLET_INFO = 'auth/orgcloudletinfo/show';
@@ -78,6 +77,14 @@ export const SHOW_FLAVOR = 'auth/ctrl/ShowFlavor';
 export const CREATE_FLAVOR = 'auth/ctrl/CreateFlavor';
 export const DELETE_FLAVOR = 'auth/ctrl/DeleteFlavor';
 export const SHOW_FLAVORS_FOR_CLOUDLET = 'auth/ctrl/ShowFlavorsForCloudlet';
+//GPU Driver
+export const SHOW_GPU_DRIVER = 'auth/ctrl/ShowGPUDriver';
+export const CREATE_GPU_DRIVER = 'auth/ctrl/CreateGPUDriver';
+export const UPDATE_GPU_DRIVER = 'auth/ctrl/UpdateGPUDriver';
+export const DELETE_GPU_DRIVER = 'auth/ctrl/DeleteGPUDriver'
+export const GET_GPU_DRIVER_BUILD_URL = 'auth/ctrl/GetGPUDriverBuildURL';
+export const ADD_GPU_DRIVER_BUILD = 'auth/ctrl/AddGPUDriverBuild';
+export const REMOVE_GPU_DRIVER_BUILD = 'auth/ctrl/RemoveGPUDriverBuild';
 //CloudletPool
 export const SHOW_CLOUDLET_POOL = 'auth/ctrl/ShowCloudletPool';
 export const CREATE_CLOUDLET_POOL = 'auth/ctrl/CreateCloudletPool';

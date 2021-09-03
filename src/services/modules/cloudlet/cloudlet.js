@@ -353,15 +353,3 @@ export const fetchShowNode = async (self, data) => {
 
     return await authSyncRequest(self, { method: endpoint.SHOW_NODE, data: requestData })
 }
-
-export const showGPUDrivers = (self, data) => {
-    const keys = [
-        { field: fields.name, serverField: 'key#OS#name' },
-        { field: fields.operatorName, serverField: 'key#OS#organization' },
-    ]
-    return { method: endpoint.SHOW_GPU_DRIVER, data, keys }
-}
-
-export const fetchGPUDrivers = async (self, data) => {
-    return await showAuthSyncRequest(self, showGPUDrivers(self, data))
-}

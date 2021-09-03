@@ -271,8 +271,8 @@ class ListViewer extends React.Component {
                         count={expandedGroups  ? groupedData[expandedGroups] && groupedData[expandedGroups].length : (isGrouping ? Object.keys(groupedData).length : dataList.length)}
                         rowsPerPage={rowsPerPage}
                         page={page}
-                        onChangePage={this.handleChangePage}
-                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                        onPageChange={this.handleChangePage}
+                        onRowsPerPageChange={this.handleChangeRowsPerPage}
                     />
                 </Paper>
                 {this.actionMenuView()}

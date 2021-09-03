@@ -26,7 +26,7 @@ import { customize as cloudletMetrics } from '../modules/cloudletMetrics/custom'
 import { customize as cloudletMetricUsage } from '../modules/cloudletMetricUsage/custom';
 import { customize as appInstUsage } from '../modules/appInstUsage/custom';
 import { customize as clusterInstUsage } from '../modules/clusterInstUsage/custom';
-import { gpuDriverCustomize as gpuDriver } from '../modules/cloudlet/custom';
+import { customize as gpuDriver } from '../modules/gpudriver/custom';
 import { customize as alertPolicy } from '../modules/alertPolicy/custom';
 
 import { formatShowData } from './show';

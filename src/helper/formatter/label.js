@@ -203,16 +203,16 @@ export const reporterInterval = (id) => {
 export const vmAppOS = (label) => {
     switch (label) {
         case 0:
-            return perpetual.VM_APP_OS_UNKNOWN
+            return perpetual.OS_UNKNOWN
         case 1:
-            return perpetual.VM_APP_OS_LINUX
+            return perpetual.OS_LINUX
         case 2:
-            return perpetual.VM_APP_OS_WINDOWS_10
+            return perpetual.OS_WINDOWS_10
         case 3:
-            return perpetual.VM_APP_OS_WINDOWS_2012
+            return perpetual.OS_WINDOWS_2012
         case 4:
-            return perpetual.VM_APP_OS_WINDOWS_2016
+            return perpetual.OS_WINDOWS_2016
         case 5:
-            return perpetual.VM_APP_OS_WINDOWS_2019
+            return perpetual.OS_WINDOWS_2019
     }
 }

@@ -13,13 +13,14 @@ import { redux_org } from '../../../helper/reduxData'
 //model
 import { service, updateFieldData, fields } from '../../../services';
 import { getOrganizationList } from '../../../services/modules/organization';
-import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota, cloudletProps, showGPUDrivers } from '../../../services/modules/cloudlet';
+import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota, cloudletProps } from '../../../services/modules/cloudlet';
 import { showTrustPolicies } from '../../../services/modules/trustPolicy';
 import { HELP_CLOUDLET_REG } from "../../../tutorial";
 
 import { Grid } from '@material-ui/core';
 import { endpoint, perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
+import { showGPUDrivers } from '../../../services/modules/gpudriver';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const CloudletManifest = React.lazy(() => componentLoader(import('./CloudletManifest')));

@@ -23,6 +23,7 @@ import AlertReceiver from './notifications/alerts/receiver/AlertReceiver';
 import BillingOrg from './billing/billingOrg/BillingOrg';
 import Invoices from './billing/invoices/Invoices';
 import Reporter from './reporter/Reporter';
+import GPUDriver from './gpudriver/GPUDriver';
 import * as constant from '../../constant';
 import { perpetual, role } from '../../helper/constant';
 
@@ -66,6 +67,8 @@ const renderPage = (id) => {
             return Invoices
         case perpetual.PAGE_REPORTER:
             return Reporter
+        case perpetual.PAGE_GPU_DRIVER:
+            return GPUDriver
     }
 }
 

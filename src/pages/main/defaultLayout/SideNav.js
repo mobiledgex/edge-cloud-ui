@@ -11,7 +11,6 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -45,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     },
     appBarShift: {
         marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
+        width: `calc(100% - ${drawerWidth + 2}px)`,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -85,11 +84,10 @@ const useStyles = makeStyles((theme) => ({
     },
     toolbar: {
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'right',
         justifyContent: 'flex-end',
-        padding: theme.spacing(0, 1),
-        // necessary for content to be below app bar
-        ...theme.mixins.toolbar,
+        padding: theme.spacing(0.7, 0, 0, 1),
+        boxShadow:'0px 1px 5px #000'
     },
     content: {
         flexGrow: 1,
@@ -128,6 +126,14 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: lightGreen['600'],
         boxShadow: 'default',
         cursor:'pointer'
+    },
+    sub: {
+        backgroundColor: props => props.sub ? '#1E2123' : 'default',
+        boxShadow: props => props.sub ? '0px 2px 8px #1E2123' : 'none',
+        borderRadius: props => props.sub ? '0 0 5px 5px' : 0,
+        "&:hover": {
+            backgroundColor: 'default'
+        }
     }
 }));
 
@@ -147,6 +153,7 @@ const LogsButton = (props) => {
 
 const Options = (props) => {
     const { options, sub, drawerOpen } = props
+    const classes = useStyles({ sub });
     const orgInfo = useSelector(state => state.organizationInfo.data)
     const [pageId, setPageId] = React.useState(0)
     const childRef = React.createRef(null)
@@ -167,28 +174,31 @@ const Options = (props) => {
         }
     }
 
-    const renderItem = (item) => (
-        <ListItem button onClick={() => { optionClick(item) }}>
-            <ListItemIcon>
-                <Icon outlined={true}>{item.icon}</Icon>
-            </ListItemIcon>
-            <ListItemText primary={item.label} />
-            {item.sub ? pageId === item.id ? <ExpandLess /> : <ExpandMore /> : null}
-        </ListItem>
-    )
+    const renderItem = (item) => {
+        const isSVG = item.icon.includes('.svg')
+        return (
+            <ListItem button onClick={() => { optionClick(item) }} className={classes.sub}>
+                <ListItemIcon>
+                    {isSVG ? <img src='/assets/icons/gpu.svg' width={24}/> : <Icon outlined={true}>{item.icon}</Icon>}
+                </ListItemIcon>
+                <ListItemText primary={item.label} />
+                {item.sub ? pageId === item.id ? <ExpandLess /> : <ExpandMore /> : null}
+            </ListItem>
+        )
+    }
 
     const renderPopover = (item) => {
-        if (!drawerOpen && item.sub) {
-            return (
-                <List component='div' disablePadding>
-                    {item.options.map(option => (
-                        <React.Fragment key={option.id}>
-                            {renderItem(option)}
-                        </React.Fragment>
-                    ))}
-                </List>
-            )
-        }
+        // if (!drawerOpen && item.sub) {
+        //     return (
+        //         <List component='div' disablePadding>
+        //             {item.options.map(option => (
+        //                 <React.Fragment key={option.id}>
+        //                     {renderItem(option)}
+        //                 </React.Fragment>
+        //             ))}
+        //         </List>
+        //     )
+        // }
         return drawerOpen ? '' : item.label
     }
 
@@ -220,17 +230,27 @@ const SideNav = (props) => {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(true);
+    const [hardOpen, setHardOpen] = React.useState(true);
     const [openLogs, setOpenLogs] = React.useState(true);
     const orgInfo = useSelector(state => state.organizationInfo.data)
     const loading = useSelector(state => state.loadingSpinner.loading)
 
     const handleDrawerOpen = () => {
+        setHardOpen(true)
         setOpen(true);
     };
 
     const handleDrawerClose = () => {
+        setHardOpen(false)
         setOpen(false);
     };
+
+    const onHoverDrawer = (flag) => {
+        if(hardOpen === false)
+        {
+            setOpen(flag)
+        }
+    }
 
     return (
         <div className={classes.root}>
@@ -241,7 +261,6 @@ const SideNav = (props) => {
                     [classes.appBarShift]: open,
                 })}
             >
-
                 {loading ? <LinearProgress style={{ postion: 'absolute', width: '100%' }} /> : null}
                 <Toolbar style={{ backgroundColor: '#3B3F47' }}>
                     <About className={clsx(classes.xLogo, { [classes.hide]: open, })} src='/assets/brand/X_Logo_green.svg' />
@@ -272,11 +291,13 @@ const SideNav = (props) => {
                         [classes.drawerClose]: !open,
                     }),
                 }}
+                onMouseEnter={()=>{onHoverDrawer(true)}}
+                onMouseLeave={()=>{onHoverDrawer(false)}}
             >
                 <div className={classes.toolbar}>
                     <About className={classes.logo} src='/assets/brand/logo_mex.svg' />
                     <IconButton onClick={handleDrawerClose} aria-label='drawer-control'>
-                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                        <ChevronLeftIcon />
                     </IconButton>
                 </div>
                 {open ? <Divider /> : null}

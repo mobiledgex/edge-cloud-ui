@@ -1,16 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { Toolbar, Input, InputAdornment, IconButton, Switch, makeStyles, Box, Menu, ListItem, ListItemText, Tooltip } from '@material-ui/core'
+import { Toolbar, Input, InputAdornment, Switch, makeStyles, Box, Menu, ListItem, ListItemText, Tooltip, Divider, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles';
-import SearchIcon from '@material-ui/icons/Search';
-import CloseIcon from '@material-ui/icons/Close';
-import AddIcon from '@material-ui/icons/Add';
-import RefreshIcon from '@material-ui/icons/Refresh';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import SelectMenu from '../hoc/selectMenu/SelectMenu'
 import { redux_org } from '../helper/reduxData'
 import Picker from '../hoc/mexui/Picker'
 import { lightGreen } from '@material-ui/core/colors';
+import { Icon, IconButton } from '../hoc/mexui';
 
 export const REGION_ALL = 1;
 export const ACTION_REGION = 1
@@ -52,9 +49,26 @@ const CustomSwitch = withStyles({
             backgroundColor: '#388E3C',
         },
     },
+    root: {
+        marginTop: -2,
+        marginLeft: 4
+    },
     checked: {},
     track: {},
 })(Switch);
+
+const MBox = (props) => {
+    let style = props.style ? props.style : {}
+    style = { ...style, display: 'flex', alignItems: 'center' }
+    return (
+        <React.Fragment>
+            {/* <Box order={props.order}><Divider orientation='vertical' style={{ height: 25, marginTop:7 }} /></Box> */}
+            <Box order={props.order} style={style} p={props.p}>
+                {props.children}
+            </Box>
+        </React.Fragment>
+    )
+}
 
 const MexToolbar = (props) => {
     const classes = useStyles();
@@ -72,8 +86,8 @@ const MexToolbar = (props) => {
         props.onAction(ACTION_SEARCH, e ? e.target.value : '')
     }
 
-    const searchForm = () => (
-        <Box order={3} style={{ marginTop: `${focused ? '0px' : '4px'}` }}>
+    const searchForm = (order) => (
+        <MBox order={order} style={{ marginTop: `${focused ? '-10px' : '-3px'}`, paddingLeft:10 }}>
             <Input
                 onFocus={() => {
                     setFocused(true)
@@ -90,23 +104,23 @@ const MexToolbar = (props) => {
                 onChange={handleSearch}
                 startAdornment={
                     <InputAdornment style={{ fontSize: 17, pointerEvents: "none", cursor: 'pointer' }} position="start" >
-                        <SearchIcon style={{ color: iconColor }} />
+                        <Icon style={{ color: iconColor }}>search</Icon>
                     </InputAdornment>
                 }
                 value={search}
                 placeholder={'Search'} />
-        </Box>
+        </MBox>
     )
     /*Search Block*/
 
     /*Add Block*/
-    const addForm = () => (
+    const addForm = (order) => (
         requestInfo.onAdd && (!redux_org.isViewer(this) || requestInfo.viewerEdit) ?
-            <Box order={5} >
-                <IconButton aria-label="new" style={{ marginTop: -3 }} className='buttonCreate' onClick={(e) => { props.onAction(ACTION_NEW) }}>
-                    <AddIcon style={{ color: iconColor }} />
+            <MBox order={order} style={{ marginTop: -5 }}>
+                <IconButton aria-label="new" onClick={(e) => { props.onAction(ACTION_NEW) }}>
+                    <Icon style={{ color: iconColor }} >add</Icon>
                 </IconButton>
-            </Box> : null
+            </MBox> : null
     )
     /*Add Block*/
 
@@ -130,11 +144,11 @@ const MexToolbar = (props) => {
         setAnchorRegionEL(null)
     }
 
-    const regionForm = () => (
+    const regionForm = (order) => (
         requestInfo.isRegion ?
-            <Box order={2} p={1} style={{ marginTop: 4, marginRight: 12 }}>
+            <MBox order={order} p={1}>
                 <SelectMenu header='Region' labelKey='text' dataList={getRegions()} onChange={onRegionChange} default={'ALL'} />
-            </Box> : null
+            </MBox> : null
     )
     /*Region Block*/
 
@@ -144,57 +158,56 @@ const MexToolbar = (props) => {
         props.onAction(ACTION_MAP, e.target.checked)
     }
 
-    const mapForm = () => (
+    const mapForm = (order) => (
         requestInfo.isMap ?
-            <Box order={4} p={1}>
+            <MBox order={order} p={1} style={{marginTop:1}}>
                 <strong>Map:</strong>
-                <CustomSwitch size="small" color="primary" checked={map}
-                    onChange={onMapChange} />
-            </Box> :
+                <CustomSwitch size="small" color="primary" checked={map} onChange={onMapChange} />
+            </MBox> :
             null
     )
     /*Map Block*/
 
     /*Refresh Block*/
-    const refreshForm = () => (
-        <Box order={6} >
-            <IconButton aria-label="refresh" style={{ marginTop: -3 }} onClick={(e) => { props.onAction(ACTION_REFRESH) }}>
-                <RefreshIcon style={{ color: iconColor }} />
+    const refreshForm = (order) => (
+        <MBox order={order}  style={{ marginTop: -5 }}>
+            <IconButton aria-label="refresh" onClick={(e) => { props.onAction(ACTION_REFRESH) }}>
+                <Icon style={{ color: iconColor }}>refresh</Icon>
             </IconButton>
-        </Box>
+        </MBox>
     )
     /*Refresh Block*/
 
     const getDetailView = (props) => (
         <div style={{ right: 0, position: 'absolute' }}>
-            <IconButton aria-label="refresh" onClick={(e) => { props.onAction(ACTION_CLOSE) }}>
-                <CloseIcon style={{ color: iconColor }} />
+            <IconButton aria-label="detail-view" onClick={(e) => { props.onAction(ACTION_CLOSE) }}>
+                <Icon style={{ color: iconColor }}>close</Icon>
             </IconButton>
         </div>
     )
 
     const renderBack = () => (
         props.requestInfo.back ?
-            <Box>
+            <MBox order={order}>
                 <Tooltip title={<strong style={{ fontSize: 13 }}>Back</strong>}>
                     <IconButton aria-label="back" style={{ marginTop: -3, marginLeft: -20 }} onClick={(e) => { props.requestInfo.back() }}>
                         <ArrowBackIosIcon style={{ color: iconColor }} />
                     </IconButton>
                 </Tooltip>
-            </Box> : null
+            </MBox> : null
     )
 
     const onGroupChange = (data) => {
         props.onAction(ACTION_GROUP, data)
     }
 
-    const renderGroup = () => {
+    const renderGroup = (order) => {
         const { requestInfo } = props
         let dataList = [{ label: 'None' }, ...requestInfo.keys.filter(key => (key.group))]
         return (
-            requestInfo.grouping ? <Box order={1} p={1} style={{ marginTop: 4, marginRight: 12 }}>
+            requestInfo.grouping ? <MBox order={order} p={1}>
                 <SelectMenu header='Group By' labelKey='label' dataList={dataList} onChange={onGroupChange} default={'None'} />
-            </Box> : null
+            </MBox> : null
         )
     }
 
@@ -206,8 +219,8 @@ const MexToolbar = (props) => {
         const { requestInfo } = props
         return (
             requestInfo.picker ?
-                <Box order={order} style={{marginLeft:15, marginRight:10}} m={0.7}>
-                    <Picker onChange={(value) => { props.onAction(ACTION_PICKER, value) }} relativemax={6}/>
+                <Box order={order} style={{ marginLeft: 15, marginRight: 10 }} m={0.7}>
+                    <Picker onChange={(value) => { props.onAction(ACTION_PICKER, value) }} relativemax={6} />
                 </Box> : null
         )
     }
@@ -215,12 +228,12 @@ const MexToolbar = (props) => {
     return (
         <Toolbar>
             <div style={{ width: '100%' }}>
-                <Box display="flex" p={1} flexWrap="wrap">
+                <Box display="flex" flexWrap="wrap">
                     <Box flexGrow={1}>
                         <Box display="flex">
                             {renderBack()}
                             <Box>
-                                <label className='content_title_label'>{requestInfo.headerLabel}</label>
+                                <Typography component='h4' variant='h5' style={{marginTop:8}}>{requestInfo.headerLabel}</Typography>
                             </Box>
                         </Box>
                     </Box>
@@ -231,13 +244,13 @@ const MexToolbar = (props) => {
                             </div> :
                             <React.Fragment>
                                 {customAction()}
-                                {searchForm()}
-                                {regionForm()}
-                                {mapForm()}
-                                {addForm()}
-                                {refreshForm()}
-                                {renderGroup()}
-                                {picker(5)}
+                                {renderGroup(1)}
+                                {regionForm(2)}
+                                {mapForm(3)}
+                                {searchForm(4)}
+                                {addForm(5)}
+                                {picker(6)}
+                                {refreshForm(7)}
                             </React.Fragment>
                     }
                 </Box></div>
