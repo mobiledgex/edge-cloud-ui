@@ -1,10 +1,38 @@
 import React from 'react'
-import { TableCell, Checkbox, Tooltip, IconButton, makeStyles } from '@material-ui/core';
+import { Checkbox, Tooltip, IconButton, makeStyles } from '@material-ui/core';
 import { fields } from '../../services/model/format';
 import ListIcon from '@material-ui/icons/List';
 import { StyledTableCell, StyledTableRow, stableSort, getComparator, checkRole } from './ListConstant';
 import { lightGreen } from '@material-ui/core/colors';
 import { useSelector } from 'react-redux';
+
+const ColumnCheckBox = (props) => {
+    const { row, onClick, selection, isItemSelected } = props
+    return (
+        selection ? <StyledTableCell padding="checkbox"
+            onClick={(e) => onClick(e, row)}>
+            <Checkbox
+                checked={isItemSelected}
+                inputProps={{ 'aria-label': 'row-check-box' }}
+            />
+        </StyledTableCell> : null
+    )
+}
+
+const ColumnIcon = (props) => {
+    const { row, iconKeys } = props
+    return (
+        iconKeys ? <StyledTableCell style={{ width: 70 }}>
+            {iconKeys.map((key, j) => {
+                return (
+                    <React.Fragment key={j}>
+                        {row[key.field] ? <Tooltip title={key.label}><img src={`/assets/icons/${key.icon}`} width={24} style={{marginTop:5}}/></Tooltip> : null}
+                    </React.Fragment>
+                )
+            })}
+        </StyledTableCell> : null
+    )
+}
 
 const useStyles = makeStyles((theme) => ({
     tip: {
@@ -18,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
 const ListBody = (props) => {
     const classes = useStyles()
     const orgInfo = useSelector(state => state.organizationInfo.data)
+    const { requestInfo, iconKeys } = props
+    const { selection, formatData } = requestInfo
+
     const cellClick = (header, row) => {
         props.selectedRow(header, row)
     }
@@ -49,43 +80,43 @@ const ListBody = (props) => {
 
     const getRowData = (row, index) => {
         const isItemSelected = isSelected(row.uuid);
+        let rowVisible = true
+        iconKeys && iconKeys.forEach(icon => {
+            if (rowVisible && icon.clicked) {
+                rowVisible = row[icon.field]
+            }
+        })
         return (
-            <StyledTableRow
+            rowVisible ? <StyledTableRow
                 key={index}
                 hover
                 role="checkbox"
                 aria-checked={isItemSelected}
                 tabIndex={-1}
             >
-                {props.requestInfo.selection ?
-                    <TableCell style={{ borderBottom: "none" }} padding="checkbox"
-                        onClick={(event) => handleClick(event, row)}>
-                        <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ 'aria-label': 'select all' }}
-                        />
-                    </TableCell> : null}
-
-                {props.keys.map((header, j) => {
-                    let field = header.field;
-                    let visible = header.roles ? checkRole(orgInfo, header) : true
-                    return (
-                        visible ? <StyledTableCell key={j} onClick={(event) => cellClick(header, row)}>
-                            {field.indexOf('Name') !== -1 ?
-                                <Tooltip title={header.format ? props.requestInfo.formatData(header, row) : row[field] ? row[field] : ''} arrow>
-                                    <div className={classes.tip}>
-                                        {header.format ? props.requestInfo.formatData(header, row) : row[field]}
-                                    </div>
-                                </Tooltip>
-                                :
-                                field === fields.actions ? actionView(row) :
-                                    header.format ? props.requestInfo.formatData(header, row) : row[field]
-                            }
-                        </StyledTableCell> : null
-                    )
-                })
+                <ColumnCheckBox row={row} selection={selection} isItemSelected={isItemSelected} onClick={handleClick} />
+                <ColumnIcon row={row} iconKeys={iconKeys}/>
+                {
+                    props.keys.map((header, j) => {
+                        let field = header.field;
+                        let visible = header.roles ? checkRole(orgInfo, header) : true
+                        return (
+                            visible ? <StyledTableCell key={j} onClick={(event) => cellClick(header, row)}>
+                                {field.indexOf('Name') !== -1 ?
+                                    <Tooltip title={header.format ? formatData(header, row) : row[field] ? row[field] : ''} arrow>
+                                        <div className={classes.tip}>
+                                            {header.format ? formatData(header, row) : row[field]}
+                                        </div>
+                                    </Tooltip>
+                                    :
+                                    field === fields.actions ? actionView(row) :
+                                        header.format ? formatData(header, row) : row[field]
+                                }
+                            </StyledTableCell> : null
+                        )
+                    })
                 }
-            </StyledTableRow>)
+            </StyledTableRow> : null)
     }
 
     const { page, rowsPerPage, order, orderBy } = props

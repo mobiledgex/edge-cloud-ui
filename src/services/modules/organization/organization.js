@@ -10,7 +10,7 @@ export const keys = () => ([
     { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true, filter: true, group: true },
     { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: true },
     { field: fields.address, serverField: 'Address', label: 'Address', sortable: true, visible: true },
-    { field: fields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', visible: true, roles: [perpetual.ADMIN_MANAGER], format: true },
+    { field: fields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', roles: [perpetual.ADMIN_MANAGER], format: true },
     { field: fields.publicImages, serverField: 'PublicImages', label: 'Public Image', sortable: true, visible: true },
     {
         field: fields.userList, label: 'User List', sortable: true, visible: false,
@@ -18,6 +18,10 @@ export const keys = () => ([
     },
     { field: fields.manage, label: 'Manage', visible: true, clickable: true, format: true },
     { field: fields.actions, label: 'Actions', visible: true, clickable: true }
+])
+
+export const iconKeys = () => ([
+    { field: fields.edgeboxOnly, label: 'Edgebox Only', icon: 'edgeboxonly.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER] },
 ])
 
 export const getKey = (data, isCreate) => {

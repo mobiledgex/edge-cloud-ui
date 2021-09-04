@@ -5,7 +5,7 @@ import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
-import { keys, showGPUDrivers, deleteGPUDriver } from '../../../services/modules/gpudriver';
+import { keys, iconKeys, showGPUDrivers, deleteGPUDriver } from '../../../services/modules/gpudriver';
 import GPUDriverReg from './reg/Reg';
 import BuildReg from './reg/BuildReg';
 import { perpetual, role } from '../../../helper/constant';
@@ -106,6 +106,7 @@ class GPUDrivers extends React.Component {
             sortBy: [fields.region, fields.gpuDriverName],
             selection: true,
             keys: this.keys,
+            iconKeys: iconKeys(),
             onAdd: role.validateRole(operatorRoles, this.props.organizationInfo) ? this.onAdd : undefined,
             formatData: this.dataFormatter
         })
