@@ -26,7 +26,7 @@ const ColumnIcon = (props) => {
             {iconKeys.map((key, j) => {
                 return (
                     <React.Fragment key={j}>
-                        {row[key.field] ? <Tooltip title={key.label}><img src={`/assets/icons/${key.icon}`} /></Tooltip> : null}
+                        {row[key.field] ? <Tooltip title={key.label}><img src={`/assets/icons/${key.icon}`} width={24} style={{marginTop:5}}/></Tooltip> : null}
                     </React.Fragment>
                 )
             })}

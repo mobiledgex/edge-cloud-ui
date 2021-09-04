@@ -13,7 +13,6 @@ const useStyles = makeStyles((theme) => ({
         textAlign:'center',
         padding: 5,
         borderRadius: 5,
-        width:80,
         marginTop: 5,
         '&:hover': {
             backgroundColor: 'rgba(56, 142, 60, 0.2)',
@@ -37,8 +36,8 @@ const IconBar = (props) => {
     return (
         keys ? keys.map((key, i) => (
             <div className={clsx(classes.root, key.clicked ? classes.clicked : {})} key={i} onClick={() => { onChange(i, key) }}>
-                <img src={`/assets/icons/${key.icon}`} />
-                <strong style={{ marginLeft: 4 }}>{`${key.label}`}</strong>
+                <img src={`/assets/icons/${key.icon}`} width={24}/>
+                <strong style={{ marginLeft: 6 }}>{`${key.label}`}</strong>
             </div>
         )) : null
     )

@@ -12,8 +12,12 @@ export const keys = () => ([
     { field: fields.ram, serverField: 'ram', label: 'RAM Size(MB)', sortable: true, visible: true },
     { field: fields.vCPUs, serverField: 'vcpus', label: 'Number of vCPUs', sortable: true, visible: true },
     { field: fields.disk, serverField: 'disk', label: 'Disk Space(GB)', sortable: true, visible: true },
-    { field: fields.gpu, serverField: 'opt_res_map#OS#gpu', label: 'GPU', sortable: true, visible: true, format: true, dataType: perpetual.TYPE_JSON },
+    { field: fields.gpu, serverField: 'opt_res_map#OS#gpu', label: 'GPU', visible: false, format: true, dataType: perpetual.TYPE_JSON },
     { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: [perpetual.ADMIN_MANAGER] }
+])
+
+export const iconKeys = () => ([
+    { field: fields.gpu, label: 'GPU', icon: 'gpu_green.svg', clicked: false, count: 0 },
 ])
 
 export const getKey = (data, isCreate) => {

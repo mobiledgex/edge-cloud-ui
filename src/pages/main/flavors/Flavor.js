@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData';
-import { keys, showFlavors, deleteFlavor } from '../../../services/modules/flavor';
+import { keys, iconKeys, showFlavors, deleteFlavor } from '../../../services/modules/flavor';
 import FlavorReg from './Reg';
 import { HELP_FLAVOR_LIST } from "../../../tutorial";
 import { perpetual } from '../../../helper/constant';
@@ -79,6 +79,7 @@ class FlavorList extends React.Component {
             sortBy: [fields.region, fields.flavorName],
             selection: true,
             keys: this.keys,
+            iconKeys : iconKeys(),
             onAdd: redux_org.isAdmin(this) ? this.onAdd : undefined,
             formatData: this.dataFormatter,
             viewMode: HELP_FLAVOR_LIST

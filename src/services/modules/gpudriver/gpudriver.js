@@ -27,9 +27,13 @@ export const keys = () => ([
         keys: buildKeys
     },
     { field: fields.buildCount, label: 'Number of Builds', visible: true, detailView: false },
-    { field: fields.licenseConfig, serverField: 'license_config', label: 'License Configuration', visible: true, format: true },
+    { field: fields.licenseConfig, serverField: 'license_config', label: 'License Configuration', format: true },
     { field: fields.properties, serverField: 'properties', label: 'Properties', format: true, dataType: TYPE_JSON },
     { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: operatorRoles }
+])
+
+export const iconKeys = () => ([
+    { field: fields.licenseConfig, label: 'License Configuration', icon: 'certificate.svg' },
 ])
 
 export const getKey = (data, isCreate) => {

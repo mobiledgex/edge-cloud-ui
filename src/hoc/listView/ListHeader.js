@@ -20,9 +20,9 @@ const useStyles = makeStyles((theme) => ({
 
 const ListHead = (props) => {
     const classes = useStyles()
-    
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, requestInfo } = props;
-    const { iconKeys, selection} = requestInfo
+
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, iconKeys } = props;
+    const { selection } = props.requestInfo
 
     const orgInfo = useSelector(state => state.organizationInfo.data)
     const createSortHandler = (property) => (event) => {

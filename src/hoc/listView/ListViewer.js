@@ -37,10 +37,10 @@ const canEdit = (self, viewerEdit, action) => {
     return valid || viewerEdit
 }
 
-const getHeight = (props) => {
-    const { tableHeight, selected, isMap, requestInfo } = props
-    const { iconKeys } = requestInfo
-    let height = isMap ? 575 : 161
+const getHeight = (self) => {
+    const { tableHeight, selected, isMap } = self.props
+    const { iconKeys } = self.state
+    let height = isMap ? 562 : 161
     height = selected.length > 0 ? height + 48 : height
     height = iconKeys ? height + 39 : height
     return `calc(100vh - ${tableHeight ? tableHeight : height}px)`
@@ -58,7 +58,7 @@ class ListViewer extends React.Component {
             actionEl: null,
             selectedRow: {},
             groupAction: undefined,
-            iconKeys: props.requestInfo.iconKeys
+            iconKeys: undefined
         }
         this.actionMenu = props.actionMenu ? props.actionMenu.filter(action => { return canEdit(this, props.viewerEdit, action) }) : []
         this.keys = filterColumns(props.keys, props.organizationInfo, this.actionMenu.length)
@@ -198,8 +198,8 @@ class ListViewer extends React.Component {
                         groupActionMenu={groupActionMenu}
                         groupActionClose={this.groupActionClose} /> : null}
 
-                    <IconBar keys={iconKeys} onClick={this.onIconClick}/>
-                    <TableContainer style={{ height: `${getHeight(this.props)}`, }} className='list-view-table-container'>
+                    <IconBar keys={iconKeys} onClick={this.onIconClick} />
+                    <TableContainer style={{ height: `${getHeight(this)}`, }} className='list-view-table-container'>
                         <Table
                             stickyHeader
                             size={'small'}>
@@ -212,6 +212,7 @@ class ListViewer extends React.Component {
                                 headCells={this.keys}
                                 rowCount={dataList.length}
                                 requestInfo={this.requestInfo}
+                                iconKeys = {iconKeys}
                                 actionMenuLength={this.actionMenu.length}
                                 isDropped={this.isDropped}
                             />
@@ -293,7 +294,19 @@ class ListViewer extends React.Component {
     }
 
     componentDidMount() {
-
+        const { iconKeys } = this.props.requestInfo
+        if (iconKeys) {
+            let keys = iconKeys.filter(icon => {
+                let valid = true
+                valid = icon.roles ? icon.roles.includes(redux_org.role(this)) : valid
+                return valid
+            })
+            if (keys.length > 0) {
+                this.setState({
+                    iconKeys: keys
+                })
+            }
+        }
     }
 }
 

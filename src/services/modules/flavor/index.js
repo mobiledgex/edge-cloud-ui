@@ -1,8 +1,9 @@
 import { customize } from './custom'
-import { keys, showFlavors, createFlavor, deleteFlavor, getFlavorList, fetchCloudletFlavors } from './flavor'
+import { keys, iconKeys, showFlavors, createFlavor, deleteFlavor, getFlavorList, fetchCloudletFlavors } from './flavor'
 export {
     customize,
     keys, 
+    iconKeys,
     showFlavors, 
     createFlavor, 
     deleteFlavor,
