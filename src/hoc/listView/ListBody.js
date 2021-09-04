@@ -20,13 +20,13 @@ const ColumnCheckBox = (props) => {
 }
 
 const ColumnIcon = (props) => {
-    const { row, iconKeys } = props
+    const { row, iconKeys, onClick } = props
     return (
-        iconKeys ? <StyledTableCell style={{ width: 70 }}>
+        iconKeys ? <StyledTableCell style={{ width: 70 }} onClick={(event) => onClick({ field: 'icon' }, row)}>
             {iconKeys.map((key, j) => {
                 return (
                     <React.Fragment key={j}>
-                        {row[key.field] ? <Tooltip title={key.label}><img src={`/assets/icons/${key.icon}`} width={24} style={{marginTop:5}}/></Tooltip> : null}
+                        {row[key.field] ? <Tooltip title={key.label}><img src={`/assets/icons/${key.icon}`} width={24} style={{ marginTop: 5 }} /></Tooltip> : null}
                     </React.Fragment>
                 )
             })}
@@ -95,7 +95,7 @@ const ListBody = (props) => {
                 tabIndex={-1}
             >
                 <ColumnCheckBox row={row} selection={selection} isItemSelected={isItemSelected} onClick={handleClick} />
-                <ColumnIcon row={row} iconKeys={iconKeys}/>
+                <ColumnIcon row={row} iconKeys={iconKeys} onClick={cellClick} />
                 {
                     props.keys.map((header, j) => {
                         let field = header.field;
