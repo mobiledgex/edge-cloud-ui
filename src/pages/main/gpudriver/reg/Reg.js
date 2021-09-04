@@ -28,6 +28,7 @@ class GPUDriverReg extends React.Component {
         }
         this._isMounted = false
         this.canCloseStepper = false;
+        this.organizationList = [];
         this.isUpdate = Boolean(this.props.id === ACTION_UPDATE)
     }
 
@@ -271,7 +272,10 @@ class GPUDriverReg extends React.Component {
         if (data) {
         }
         else {
-            this.organizationList = await getOrganizationList(this, { type: perpetual.OPERATOR })
+            if (redux_org.isAdmin(this)) {
+                this.organizationList.push({ organizationName: perpetual.MOBILEDGEX })
+            }
+            this.organizationList = [...this.organizationList, ...await getOrganizationList(this, { type: perpetual.OPERATOR })]
         }
     }
 

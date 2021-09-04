@@ -1,7 +1,7 @@
 
 import * as formatter from '../../model/format'
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
-import { endpoint } from '../../../helper/constant'
+import { endpoint, perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData';
 import { sendWSRequest } from '../../model/serverData';
 import { ADMIN, TYPE_JSON } from '../../../helper/constant/perpetual';
@@ -38,7 +38,8 @@ export const iconKeys = () => ([
 
 export const getKey = (data, isCreate) => {
     let gpuDriver = {}
-    gpuDriver.key = { name: data[fields.gpuDriverName], organization: data[fields.organizationName] }
+    const organization = data[fields.organizationName] === perpetual.MOBILEDGEX ? '' : data[fields.organizationName]
+    gpuDriver.key = { name: data[fields.gpuDriverName], organization }
 
     if (isCreate) {
         gpuDriver.builds = data[fields.builds]
@@ -77,10 +78,11 @@ export const deleteGPUDriver = (self, data) => {
 }
 
 export const getGPUDriverBuildURL = async (self, data) => {
+    let organization = data[fields.organizationName] === perpetual.MOBILEDGEX ? '' : data[fields.organizationName]
     let requestData = {
         gpuDriverBuildMember: {
             build: { name: data[fields.buildName] },
-            key: { name: data[fields.gpuDriverName], organization: data[fields.organizationName] }
+            key: { name: data[fields.gpuDriverName], organization }
         },
         region: data[fields.region]
     }
