@@ -5,7 +5,34 @@ import ListIcon from '@material-ui/icons/List';
 import { StyledTableCell, StyledTableRow, stableSort, getComparator, checkRole } from './ListConstant';
 import { lightGreen } from '@material-ui/core/colors';
 import { useSelector } from 'react-redux';
-import Icon from '../mexui/Icon'
+
+const ColumnCheckBox = (props) => {
+    const { row, onClick, selection, isItemSelected } = props
+    return (
+        selection ? <StyledTableCell padding="checkbox"
+            onClick={(e) => onClick(e, row)}>
+            <Checkbox
+                checked={isItemSelected}
+                inputProps={{ 'aria-label': 'row-check-box' }}
+            />
+        </StyledTableCell> : null
+    )
+}
+
+const ColumnIcon = (props) => {
+    const { row, iconKeys } = props
+    return (
+        iconKeys ? <StyledTableCell style={{ width: 70 }}>
+            {iconKeys.map((key, j) => {
+                return (
+                    <React.Fragment key={j}>
+                        {row[key.field] ? <Tooltip title={key.label}><img src={`/assets/icons/${key.icon}`} /></Tooltip> : null}
+                    </React.Fragment>
+                )
+            })}
+        </StyledTableCell> : null
+    )
+}
 
 const useStyles = makeStyles((theme) => ({
     tip: {
@@ -19,9 +46,9 @@ const useStyles = makeStyles((theme) => ({
 const ListBody = (props) => {
     const classes = useStyles()
     const orgInfo = useSelector(state => state.organizationInfo.data)
-    const { requestInfo } = props
-    const {iconKeys, selection, formatData} = requestInfo
-    
+    const { requestInfo, iconKeys } = props
+    const { selection, formatData } = requestInfo
+
     const cellClick = (header, row) => {
         props.selectedRow(header, row)
     }
@@ -53,33 +80,22 @@ const ListBody = (props) => {
 
     const getRowData = (row, index) => {
         const isItemSelected = isSelected(row.uuid);
+        let rowVisible = true
+        iconKeys && iconKeys.forEach(icon => {
+            if (rowVisible && icon.clicked) {
+                rowVisible = row[icon.field]
+            }
+        })
         return (
-            <StyledTableRow
+            rowVisible ? <StyledTableRow
                 key={index}
                 hover
                 role="checkbox"
                 aria-checked={isItemSelected}
                 tabIndex={-1}
             >
-                {selection ?
-                    <TableCell style={{ borderBottom: "none" }} padding="checkbox"
-                        onClick={(event) => handleClick(event, row)}>
-                        <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ 'aria-label': 'select all' }}
-                        />
-                    </TableCell> : null}
-                    {iconKeys ? <StyledTableCell style={{width:70}}>
-                    {iconKeys.map((header, j) => {
-                        return (
-                            <React.Fragment key={j}>
-                                    {row[header.field] ? <Tooltip title={header.label}><img src={`/assets/icons/${header.icon}`} /></Tooltip> : null}
-                            </React.Fragment>
-                        )
-                    })}
-
-                </StyledTableCell> : null}
-
+                <ColumnCheckBox row={row} selection={selection} isItemSelected={isItemSelected} onClick={handleClick} />
+                <ColumnIcon row={row} iconKeys={iconKeys}/>
                 {
                     props.keys.map((header, j) => {
                         let field = header.field;
@@ -100,10 +116,7 @@ const ListBody = (props) => {
                         )
                     })
                 }
-                
-
-
-            </StyledTableRow>)
+            </StyledTableRow> : null)
     }
 
     const { page, rowsPerPage, order, orderBy } = props

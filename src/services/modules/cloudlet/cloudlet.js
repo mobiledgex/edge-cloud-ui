@@ -46,14 +46,14 @@ export const keys = () => ([
     { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: perpetual.TYPE_YAML },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.trusted, label: 'Trusted', icon:'trusted.svg' },
+    { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg' },
     { field: fields.gpuExist, label: 'GPU', detailView: false },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: constant.operatorRoles }
 ])
 
-export const iconKeys = ()=>([
-    { field: fields.gpuExist, label: 'GPU', icon:'gpu_green.svg'},
-    { field: fields.trusted, label: 'Trusted', icon:'trusted.svg'}
+export const iconKeys = () => ([
+    { field: fields.gpuExist, label: 'GPU', icon: 'gpu_green.svg', clicked: false, count: 0 },
+    { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', clicked: false, count: 0 }
 ])
 
 export const getCloudletKey = (data) => {

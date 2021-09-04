@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Table, TableBody, IconButton, TableContainer, Paper, TablePagination, ClickAwayListener, MenuList, Grow, Popper, MenuItem, Toolbar, TableRow, TableCell } from '@material-ui/core'
+import { Table, TableBody, IconButton, TableContainer, Paper, TablePagination, ClickAwayListener, MenuList, Grow, Popper, MenuItem } from '@material-ui/core'
 import ListToolbar from './ListToolbar'
 import ListHeader from './ListHeader'
 import ListBody from './ListBody'
@@ -57,7 +57,8 @@ class ListViewer extends React.Component {
             rowsPerPage: 25,
             actionEl: null,
             selectedRow: {},
-            groupAction:undefined
+            groupAction: undefined,
+            iconKeys: props.requestInfo.iconKeys
         }
         this.actionMenu = props.actionMenu ? props.actionMenu.filter(action => { return canEdit(this, props.viewerEdit, action) }) : []
         this.keys = filterColumns(props.keys, props.organizationInfo, this.actionMenu.length)
@@ -89,10 +90,10 @@ class ListViewer extends React.Component {
     };
 
     expandRow = key => {
-        this.setState(prevState=>{
+        this.setState(prevState => {
             let expandedGroups = prevState.expandedGroups
             expandedGroups = expandedGroups === key ? undefined : key
-            return {expandedGroups}
+            return { expandedGroups }
         })
     };
 
@@ -140,12 +141,12 @@ class ListViewer extends React.Component {
     }
 
     handleActionView = (e, group) => {
-        this.setState({ actionEl: e.currentTarget, groupAction: group})
+        this.setState({ actionEl: e.currentTarget, groupAction: group })
     }
 
     actionClose = (action, groupAction) => {
         this.props.actionClose(action, groupAction)
-        this.setState({ actionEl: null, groupAction:undefined })
+        this.setState({ actionEl: null, groupAction: undefined })
     }
 
     handleSelectAllClick = (e) => {
@@ -175,15 +176,20 @@ class ListViewer extends React.Component {
         this.props.isDropped(item)
     }
 
+    //IconKeys
+    onIconClick = (iconKeys) => {
+        this.setState({ iconKeys })
+    }
+    //IconKeys
+
 
     render() {
-        const {grouping, groupingAction, selection} = this.requestInfo
+        const { grouping, groupingAction, selection } = this.requestInfo
         const { dataList, dropList, selected, groupActionMenu, setSelected } = this.props
-        const { expandedGroups, page, rowsPerPage, order, orderBy } = this.state
+        const { expandedGroups, page, rowsPerPage, order, orderBy, iconKeys } = this.state
         let groupedData = grouping ? this.getGroupedData(dataList) : [];
         let isGrouping = grouping && dropList.length > 0
         const columnLength = this.keys.length + (selection ? 1 : 0)
-        const { iconKeys } = this.requestInfo
         return (
             <div style={{ width: '100%' }}>
                 <Paper style={{ backgroundColor: '#292C33' }}>
@@ -192,7 +198,7 @@ class ListViewer extends React.Component {
                         groupActionMenu={groupActionMenu}
                         groupActionClose={this.groupActionClose} /> : null}
 
-                    <IconBar keys={iconKeys}/>
+                    <IconBar keys={iconKeys} onClick={this.onIconClick}/>
                     <TableContainer style={{ height: `${getHeight(this.props)}`, }} className='list-view-table-container'>
                         <Table
                             stickyHeader
@@ -216,23 +222,23 @@ class ListViewer extends React.Component {
                                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((key, j) => {
                                                 return (
                                                     <React.Fragment key={j}>
-                                                            <StyledTableRow>
-                                                                <StyledTableCell
-                                                                    colSpan={columnLength - (groupingAction ? 1 : 0)}
-                                                                    style={{ fontWeight: "bold", cursor: "pointer" }}
-                                                                    onClick={this.expandRow.bind(null, key)}>
-                                                                    <IconButton>
-                                                                        <Icon>{expandedGroups === key ? 'expand_more' : 'chevron_right'}</Icon>
-                                                                    </IconButton>
-                                                                    <span style={{ display: 'inline', marginRight: 5 }}>{key}</span>
-                                                                    <div style={{ display: 'inline' }}>{`(${groupedData[key].length})`}</div>
-                                                                </StyledTableCell>
-                                                                {groupingAction ? <StyledTableCell>
-                                                                    <IconButton aria-label="Action" onClick={(e)=>{this.handleActionView(e, groupedData[key])}}>
-                                                                        <Icon style={{ color: lightGreen['A700'] }}>list</Icon>
-                                                                    </IconButton>
-                                                                </StyledTableCell> : null}
-                                                            </StyledTableRow>
+                                                        <StyledTableRow>
+                                                            <StyledTableCell
+                                                                colSpan={columnLength - (groupingAction ? 1 : 0)}
+                                                                style={{ fontWeight: "bold", cursor: "pointer" }}
+                                                                onClick={this.expandRow.bind(null, key)}>
+                                                                <IconButton>
+                                                                    <Icon>{expandedGroups === key ? 'expand_more' : 'chevron_right'}</Icon>
+                                                                </IconButton>
+                                                                <span style={{ display: 'inline', marginRight: 5 }}>{key}</span>
+                                                                <div style={{ display: 'inline' }}>{`(${groupedData[key].length})`}</div>
+                                                            </StyledTableCell>
+                                                            {groupingAction ? <StyledTableCell>
+                                                                <IconButton aria-label="Action" onClick={(e) => { this.handleActionView(e, groupedData[key]) }}>
+                                                                    <Icon style={{ color: lightGreen['A700'] }}>list</Icon>
+                                                                </IconButton>
+                                                            </StyledTableCell> : null}
+                                                        </StyledTableRow>
                                                         {expandedGroups === key ?
                                                             <ListBody
                                                                 colSpan={columnLength}
@@ -259,6 +265,7 @@ class ListViewer extends React.Component {
                                                                 keys={this.keys}
                                                                 requestInfo={this.requestInfo}
                                                                 selected={selected}
+                                                                iconKeys={iconKeys}
                                                                 setSelected={setSelected}
                                                                 selectedRow={this.setSelectedRow}
                                                                 handleActionView={this.handleActionView} />
@@ -273,7 +280,7 @@ class ListViewer extends React.Component {
                     <TablePagination
                         rowsPerPageOptions={[25, 50, 75]}
                         component="div"
-                        count={expandedGroups  ? groupedData[expandedGroups] && groupedData[expandedGroups].length : (isGrouping ? Object.keys(groupedData).length : dataList.length)}
+                        count={expandedGroups ? groupedData[expandedGroups] && groupedData[expandedGroups].length : (isGrouping ? Object.keys(groupedData).length : dataList.length)}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={this.handleChangePage}
@@ -286,7 +293,7 @@ class ListViewer extends React.Component {
     }
 
     componentDidMount() {
-      
+
     }
 }
 
