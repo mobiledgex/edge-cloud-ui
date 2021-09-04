@@ -40,10 +40,11 @@ const canEdit = (self, viewerEdit, action) => {
 const getHeight = (self) => {
     const { tableHeight, selected, isMap } = self.props
     const { iconKeys } = self.state
-    let height = isMap ? 562 : 161
+    let height = isMap ? 562 : 162
     height = selected.length > 0 ? height + 48 : height
+    height = tableHeight ? tableHeight : height
     height = iconKeys ? height + 39 : height
-    return `calc(100vh - ${tableHeight ? tableHeight : height}px)`
+    return `calc(100vh - ${height}px)`
 }
 class ListViewer extends React.Component {
     constructor(props) {
