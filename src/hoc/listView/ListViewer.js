@@ -250,6 +250,7 @@ class ListViewer extends React.Component {
                                                                 order={order}
                                                                 orderBy={orderBy}
                                                                 requestInfo={this.requestInfo}
+                                                                iconKeys={iconKeys}
                                                                 selected={selected}
                                                                 setSelected={setSelected}
                                                                 selectedRow={this.setSelectedRow}

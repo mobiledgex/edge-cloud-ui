@@ -1,5 +1,5 @@
 import React from 'react'
-import { TableCell, Checkbox, Tooltip, IconButton, makeStyles } from '@material-ui/core';
+import { Checkbox, Tooltip, IconButton, makeStyles } from '@material-ui/core';
 import { fields } from '../../services/model/format';
 import ListIcon from '@material-ui/icons/List';
 import { StyledTableCell, StyledTableRow, stableSort, getComparator, checkRole } from './ListConstant';
