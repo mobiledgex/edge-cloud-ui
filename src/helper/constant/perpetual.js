@@ -1,4 +1,5 @@
 
+export const MOBILEDGEX = 'MobiledgeX'
 export const STATUS_READY = 2
 export const STATUS_UNDER_MAINTAINANCE = 999
 
