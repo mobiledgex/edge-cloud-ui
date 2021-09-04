@@ -78,7 +78,7 @@ class GPUDrivers extends React.Component {
     actionMenu = () => {
         return [
             { id: perpetual.UPDATE_BUILD, label: 'Update Builds', onClick: this.onBuild, type: 'Edit' },
-            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: this.onAdd, type: 'Edit' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteGPUDriver, type: 'Edit' },
         ]
     }
 
