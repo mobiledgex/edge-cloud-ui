@@ -31,7 +31,7 @@ const ListHead = (props) => {
 
     const headerLabel = (headCell) => {
         return (
-            headCell.label
+            <strong style={{color:'#CECECE', fontWeight:900, fontSize:13}}>{headCell.label}</strong>
         )
     }
 

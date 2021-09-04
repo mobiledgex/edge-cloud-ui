@@ -2,7 +2,7 @@
 import { makeStyles } from '@material-ui/core';
 import cloneDeep from 'lodash/cloneDeep';
 import clsx from 'clsx';
-import React, { useEffect } from 'react'
+import React from 'react'
 
 const useStyles = makeStyles((theme) => ({
     root: {
