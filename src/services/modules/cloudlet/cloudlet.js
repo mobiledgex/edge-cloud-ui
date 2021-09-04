@@ -46,9 +46,14 @@ export const keys = () => ([
     { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: perpetual.TYPE_YAML },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.trusted, label: 'Trusted', visible: true, sortable: true, format: true },
-    { field: fields.gpuExist, label: 'GPU', visible: true, format: true, sortable: true, detailView: false },
+    { field: fields.trusted, label: 'Trusted', icon:'trusted.svg' },
+    { field: fields.gpuExist, label: 'GPU', detailView: false },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: constant.operatorRoles }
+])
+
+export const iconKeys = ()=>([
+    { field: fields.gpuExist, label: 'GPU', icon:'gpu_green.svg'},
+    { field: fields.trusted, label: 'Trusted', icon:'trusted.svg'}
 ])
 
 export const getCloudletKey = (data) => {
@@ -185,18 +190,18 @@ export const cloudletWithInfo = (mcList) => {
     return cloudletList
 }
 
-export const multiDataRequest = (keys, mcRequestList, specific) => {
+export const multiDataRequest = (keys, mcList, specific) => {
     if (specific) {
-        let newList = mcRequestList.new
-        let oldData = mcRequestList.old
+        let newList = mcList.new
+        let oldData = mcList.old
         if (newList && newList.length > 0) {
             let cloudlet = {};
             let cloudletInfo = {};
             for (let i = 0; i < newList.length; i++) {
-                let mcRequest = newList[i];
-                let request = mcRequest.request;
+                let mc = newList[i];
+                let request = mc.request;
                 if (request.method === endpoint.SHOW_CLOUDLET || request.method === endpoint.SHOW_ORG_CLOUDLET) {
-                    let dataList = mcRequest.response.data
+                    let dataList = mc.response.data
                     if (dataList && dataList.length > 0) {
                         cloudlet = dataList[0]
                     }
@@ -205,7 +210,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
                     }
                 }
                 else if (request.method === endpoint.SHOW_CLOUDLET_INFO || request.method === endpoint.SHOW_ORG_CLOUDLET_INFO) {
-                    let dataList = mcRequest.response.data
+                    let dataList = mc.response.data
                     if (dataList && dataList.length > 0) {
                         cloudletInfo = dataList[0]
                     }
@@ -221,14 +226,14 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
     else {
         let cloudletList = [];
         let cloudletInfoList = [];
-        for (let i = 0; i < mcRequestList.length; i++) {
-            let mcRequest = mcRequestList[i];
-            let request = mcRequest.request;
+        for (let i = 0; i < mcList.length; i++) {
+            let mc = mcList[i];
+            let request = mc.request;
             if (request.method === endpoint.SHOW_CLOUDLET || request.method === endpoint.SHOW_ORG_CLOUDLET) {
-                cloudletList = mcRequest.response.data
+                cloudletList = mc.response.data
             }
             else if (request.method === endpoint.SHOW_CLOUDLET_INFO || request.method === endpoint.SHOW_ORG_CLOUDLET_INFO) {
-                cloudletInfoList = mcRequest.response.data
+                cloudletInfoList = mc.response.data
             }
         }
         if (cloudletList && cloudletList.length > 0) {
@@ -270,7 +275,7 @@ export const showCloudlets = (self, data, specific) => {
             }
         }
     }
-    return { method, data: requestData, keys: keys() }
+    return { method, data: requestData, keys: keys(), iconKeys: iconKeys() }
 }
 
 export const fetchCloudletData = async (self, data) => {

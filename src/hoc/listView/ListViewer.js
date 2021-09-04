@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Table, TableBody, IconButton, TableContainer, Paper, TablePagination, ClickAwayListener, MenuList, Grow, Popper, MenuItem, Avatar, TableRow, TableCell } from '@material-ui/core'
+import { Table, TableBody, IconButton, TableContainer, Paper, TablePagination, ClickAwayListener, MenuList, Grow, Popper, MenuItem, Toolbar, TableRow, TableCell } from '@material-ui/core'
 import ListToolbar from './ListToolbar'
 import ListHeader from './ListHeader'
 import ListBody from './ListBody'
@@ -10,6 +10,7 @@ import { perpetual } from '../../helper/constant'
 import { NoData } from '../../helper/formatter/ui'
 import Icon from '../mexui/Icon'
 import { lightGreen } from '@material-ui/core/colors'
+import IconBar from './ListIconBar'
 
 const filterColumns = (keys, organizationInfo, actionMenuLength) => {
     let filteredKeys = []
@@ -37,10 +38,11 @@ const canEdit = (self, viewerEdit, action) => {
 }
 
 const getHeight = (props) => {
-    let tableHeight = props.tableHeight
-    let selectedLength = props.selected.length
-    let height = props.isMap ? 575 : 174
-    height = selectedLength > 0 ? height + 40 : height
+    const { tableHeight, selected, isMap, requestInfo } = props
+    const { iconKeys } = requestInfo
+    let height = isMap ? 575 : 161
+    height = selected.length > 0 ? height + 48 : height
+    height = iconKeys ? height + 39 : height
     return `calc(100vh - ${tableHeight ? tableHeight : height}px)`
 }
 class ListViewer extends React.Component {
@@ -181,14 +183,17 @@ class ListViewer extends React.Component {
         let groupedData = grouping ? this.getGroupedData(dataList) : [];
         let isGrouping = grouping && dropList.length > 0
         const columnLength = this.keys.length + (selection ? 1 : 0)
+        const { iconKeys } = this.requestInfo
         return (
             <div style={{ width: '100%' }}>
                 <Paper style={{ backgroundColor: '#292C33' }}>
-                    <ListToolbar
+                    {selected.length > 0 ? < ListToolbar
                         numSelected={selected.length}
                         groupActionMenu={groupActionMenu}
-                        groupActionClose={this.groupActionClose} />
-                    <TableContainer style={{ height: `${getHeight(this.props)}`, marginTop: `${selected.length > 0 ? '0px' : '-40px'}` }} className='list-view-table-container'>
+                        groupActionClose={this.groupActionClose} /> : null}
+
+                    <IconBar keys={iconKeys}/>
+                    <TableContainer style={{ height: `${getHeight(this.props)}`, }} className='list-view-table-container'>
                         <Table
                             stickyHeader
                             size={'small'}>
