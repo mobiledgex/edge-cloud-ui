@@ -20,7 +20,10 @@ const useStyles = makeStyles((theme) => ({
 
 const ListHead = (props) => {
     const classes = useStyles()
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, iconKeys } = props;
+    const { selection } = props.requestInfo
+
     const orgInfo = useSelector(state => state.organizationInfo.data)
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
@@ -28,14 +31,14 @@ const ListHead = (props) => {
 
     const headerLabel = (headCell) => {
         return (
-            headCell.label
+            <strong style={{color:'#CECECE', fontWeight:900, fontSize:13}}>{headCell.label}</strong>
         )
     }
 
     return (
         <TableHead>
             <TableRow style={{ height: 50 }}>
-                {props.requestInfo.selection ? <TableCell padding="checkbox" style={{ backgroundColor: '#292C33' }}>
+                {selection ? <TableCell padding="checkbox" style={{ backgroundColor: '#292C33' }}>
                     <Checkbox
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={rowCount > 0 && numSelected === rowCount}
@@ -43,6 +46,7 @@ const ListHead = (props) => {
                         inputProps={{ 'aria-label': 'select all' }}
                     />
                 </TableCell> : null}
+                {iconKeys ? <TableCell style={{ backgroundColor: '#292C33' }}></TableCell> : null}
                 {props.headCells.map((headCell) => {
                     let visible = headCell.roles ? checkRole(orgInfo, headCell) : true
                     return visible ? <TableCell

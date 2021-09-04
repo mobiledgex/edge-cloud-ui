@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react'
 import { useSelector } from "react-redux";
 import { Icon, Popup } from 'semantic-ui-react';
-import { Icon as MIcon } from '../../hoc/mexui';
 import { fields } from '../../services/model/format';
-import { IconButton, Tooltip, CircularProgress, Chip } from '@material-ui/core';
-import { Button } from 'semantic-ui-react';
+import { IconButton, Tooltip, CircularProgress, makeStyles } from '@material-ui/core';
 import { labelFormatter } from '.';
 import { redux_org } from '../reduxData';
 
@@ -13,6 +11,38 @@ import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import { perpetual } from '../constant';
 import { toFirstUpperCase } from '../../utils/string_utils';
 
+const COLOR_ERROR = '198, 40, 40'
+const COLOR_SUCCESS = '56, 142, 60'
+const COLOR_WARNING = '255, 160, 0'
+const COLOR_INFO = '24, 118, 210'
+
+const useStyles = makeStyles((theme) => ({
+    text_icon: {
+        cursor: props => `${props.clickable ? 'pointer' : 'default'}`,
+        backgroundColor: props => `rgba(${props.color}, ${props.inverse ? 0.7 : 0.1})`,
+        borderRadius: 5,
+        width: 80,
+        color: props => props.inverse ? '#FFF' : `rgb(${props.color})`,
+        textAlign: 'center',
+        padding: '3px 0 3px 0px',
+        '&:hover': {
+            backgroundColor: props => props.clickable ? `rgba(${props.color})` : 'default',
+            color: props => props.clickable ? '#FFF' : 'default'
+        }
+    }
+}));
+
+const TextIcon = (props) => {
+    const { color, value, onClick, clickable, inverse } = props
+    const click = clickable || onClick
+    const classes = useStyles({ clickable: click, color, inverse })
+    return (
+        <div className={classes.text_icon} onClick={onClick} align='center'>
+            <strong>{value}</strong>
+        </div>
+    )
+}
+
 export const trusted = (key, data, isDetail) => {
     return labelFormatter.showYesNo(data[key.field])
 }
@@ -20,10 +50,9 @@ export const trusted = (key, data, isDetail) => {
 export const Manage = (props) => {
     const orgInfo = useSelector(state => state.organizationInfo.data)
     const { data } = props
-    const orgName = data[fields.organizationName]
     let active = redux_org.orgName(orgInfo) === data[fields.organizationName]
     return (
-        <Button basic size='mini' compact color={orgInfo && orgInfo[fields.organizationName] === orgName ? 'green' : 'grey'} className='row-button'>{active ? 'ACTIVE' : 'MANAGE'}</Button>
+        <TextIcon value={active ? 'ACTIVE' : 'MANAGE'} color={COLOR_SUCCESS} clickable={!active} inverse={active}/>
     )
 }
 
@@ -34,14 +63,14 @@ export const edgeboxOnly = (key, data, isDetail) => {
         return labelFormatter.showYesNo(edgeboxOnly)
     }
     else {
-        return <Icon name={edgeboxOnly ? 'check' : 'close'} style={{ color: isOperator ? edgeboxOnly ? perpetual.COLOR_GREEN : perpetual.COLOR_RED : '#9E9E9E' }} />
+        return <Icon name={edgeboxOnly ? 'check' : 'close'} style={{ color: isOperator ? edgeboxOnly ? perpetual.COLOR_SUCCESS : perpetual.COLOR_ERROR : '#9E9E9E' }} />
     }
 }
 
 export const cloudletInfoState = (key, data, isDetail) => {
     let id = data[key.field]
     let state = 'Not Present';
-    let color = 'red'
+    let color = COLOR_ERROR
     switch (id) {
         case 0:
             state = perpetual.UNKNOWN
@@ -51,7 +80,7 @@ export const cloudletInfoState = (key, data, isDetail) => {
             break;
         case 2:
             state = perpetual.ONLINE
-            color = 'green'
+            color = COLOR_SUCCESS
             break;
         case 3:
             state = perpetual.OFFLINE
@@ -67,7 +96,7 @@ export const cloudletInfoState = (key, data, isDetail) => {
             break;
         case 999:
             state = perpetual.MAINTENANCE_STATE_UNDER_MAINTENANCE
-            color = 'yellow'
+            color = COLOR_WARNING
             break;
         default:
             state = 'Not Present'
@@ -75,10 +104,7 @@ export const cloudletInfoState = (key, data, isDetail) => {
     }
 
     return (
-        isDetail ? state :
-            <Button disabled={true} basic size='mini' color={color} compact style={{ width: 90 }}>
-                <label>{state}</label>
-            </Button>
+        isDetail ? state : <TextIcon value={state} color={color} />
     )
 }
 
@@ -119,7 +145,8 @@ export const emailVerfied = (key, data, isDetail, callback) => {
     }
     else {
         return (
-            <Button basic size='mini' compact disabled={id} color={id ? 'green' : 'yellow'} className='row-button' onClick={callback}>{id ? 'VERIFIED' : 'VERIFY'}</Button>
+            <TextIcon color={id ? COLOR_SUCCESS : COLOR_WARNING} value={id ? 'VERIFIED' : 'VERIFY'} onClick={callback} />
+            // <Button basic size='mini' compact disabled={id} color={id ? 'green' : 'yellow'} className='row-button' onClick={callback}>{id ? 'VERIFIED' : 'VERIFY'}</Button>
         )
     }
 }
@@ -155,16 +182,13 @@ export const reporterStatus = (key, data, isDetail) => {
         return toFirstUpperCase(data[key.field])
     }
     else {
-        return <Icon name={success ? 'check' : 'close'} style={{ color: success ? perpetual.COLOR_GREEN : perpetual.COLOR_RED }} />
+        return <Icon name={success ? 'check' : 'close'} style={{ color: success ? perpetual.COLOR_SUCCESS : perpetual.COLOR_ERROR }} />
     }
 }
 
 export const renderYesNo = (key, data, isDetail) => {
     if (isDetail) {
         return data ? perpetual.YES : perpetual.NO
-    }
-    else {
-        return <Icon name={data ? 'check' : 'close'} style={{ color: data ? perpetual.COLOR_GREEN : perpetual.COLOR_RED }} />
     }
 }
 
@@ -179,45 +203,29 @@ export const NoData = () => {
 
 export const RenderSeverity = (data, isDetailView) => {
     let id = data[fields.severity]
-    let color = '#ff4444'
+    let color = COLOR_ERROR
     let label = 'Error'
     let icon = 'cancel'
     switch (id) {
         case perpetual.INFO:
             label = 'Info'
-            color = '#03A9F4'
+            color = COLOR_INFO
             icon = 'info'
             break;
         case perpetual.ERROR:
             label = 'Error'
-            color = '#EF5350'
+            color = COLOR_ERROR
             icon = 'cancel'
             break;
         case perpetual.WARNING:
             label = 'Warning'
-            color = '#ffa034'
+            color = COLOR_WARNING
             icon = 'report_problem'
             break;
     }
 
     return (
-        isDetailView ? label :
-            <Chip
-                size="small"
-                icon={<MIcon outlined={true} style={{ color, fontSize:17 }}>{icon}</MIcon>}
-                label={label}
-                style={{ color, width: 90, backgroundColor: 'transparent', border: `1.5px solid ${color}` }}
-            />
+        isDetailView ? label : <TextIcon color={color} value={label} />
     )
-}
-
-export const flavorGPU = (key, data, isDetail) => {
-    let value = data[key.field]
-    if (isDetail) {
-        return value
-    }
-    else {
-        return <Icon name={value ? 'check' : 'close'} style={{ color: value ? perpetual.COLOR_GREEN : perpetual.COLOR_RED }} />
-    }
 }
 

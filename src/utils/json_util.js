@@ -15,3 +15,7 @@ export const toJson = (data) => {
     }
     return toJson
 }
+
+export const isEmpty = (obj) => {
+    return Object.keys(obj).length === 0;
+}

@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData';
-import { keys, showOrganizations, deleteOrganization, edgeboxOnlyAPI } from '../../../services/modules/organization';
+import { keys, iconKeys, showOrganizations, deleteOrganization, edgeboxOnlyAPI } from '../../../services/modules/organization';
 import OrganizationReg from './Reg';
 import * as serverData from '../../../services/model/serverData'
 import * as shared from '../../../services/model/shared';
@@ -26,7 +26,7 @@ class OrganizationList extends React.Component {
         super(props);
         this.state = {
             currentView: null,
-            tableHeight: redux_org.isViewer(this) ? undefined : 280
+            tableHeight: redux_org.isViewer(this) ? undefined : 271
         }
         this._isMounted = false
         this.action = '';
@@ -194,12 +194,12 @@ class OrganizationList extends React.Component {
                 if (roleInfo[fields.organizationName] === data[fields.organizationName]) {
                     let organizationInfo = this.cacheOrgInfo(data, roleInfo)
                     this.props.handleOrganizationInfo(organizationInfo)
+                    this.updateState({ tableHeight: redux_org.isViewer(organizationInfo) ? undefined : 271 })
                     this.updatePrivateAccess(organizationInfo)
                     break;
                 }
             }
         }
-        this.updateState({ tableHeight: redux_org.isViewer(this) ? undefined : 280 })
     }
 
     onListViewClick = (key, data) => {
@@ -226,6 +226,7 @@ class OrganizationList extends React.Component {
             requestType: [showOrganizations],
             sortBy: [fields.organizationName],
             keys: this.keys,
+            iconKeys:iconKeys(),
             additionalDetail: shared.additionalDetail,
             viewMode: HELP_ORG_LIST,
             grouping: true,

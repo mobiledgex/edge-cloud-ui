@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Table, TableBody, IconButton, TableContainer, Paper, TablePagination, ClickAwayListener, MenuList, Grow, Popper, MenuItem, Avatar, TableRow, TableCell } from '@material-ui/core'
+import { Table, TableBody, IconButton, TableContainer, Paper, TablePagination, ClickAwayListener, MenuList, Grow, Popper, MenuItem } from '@material-ui/core'
 import ListToolbar from './ListToolbar'
 import ListHeader from './ListHeader'
 import ListBody from './ListBody'
@@ -10,6 +10,7 @@ import { perpetual } from '../../helper/constant'
 import { NoData } from '../../helper/formatter/ui'
 import Icon from '../mexui/Icon'
 import { lightGreen } from '@material-ui/core/colors'
+import IconBar from './ListIconBar'
 
 const filterColumns = (keys, organizationInfo, actionMenuLength) => {
     let filteredKeys = []
@@ -36,12 +37,14 @@ const canEdit = (self, viewerEdit, action) => {
     return valid || viewerEdit
 }
 
-const getHeight = (props) => {
-    let tableHeight = props.tableHeight
-    let selectedLength = props.selected.length
-    let height = props.isMap ? 575 : 174
-    height = selectedLength > 0 ? height + 40 : height
-    return `calc(100vh - ${tableHeight ? tableHeight : height}px)`
+const getHeight = (self) => {
+    const { tableHeight, selected, isMap } = self.props
+    const { iconKeys } = self.state
+    let height = isMap ? 562 : 162
+    height = selected.length > 0 ? height + 48 : height
+    height = tableHeight ? tableHeight : height
+    height = iconKeys ? height + 39 : height
+    return `calc(100vh - ${height}px)`
 }
 class ListViewer extends React.Component {
     constructor(props) {
@@ -55,7 +58,8 @@ class ListViewer extends React.Component {
             rowsPerPage: 25,
             actionEl: null,
             selectedRow: {},
-            groupAction:undefined
+            groupAction: undefined,
+            iconKeys: undefined
         }
         this.actionMenu = props.actionMenu ? props.actionMenu.filter(action => { return canEdit(this, props.viewerEdit, action) }) : []
         this.keys = filterColumns(props.keys, props.organizationInfo, this.actionMenu.length)
@@ -87,10 +91,10 @@ class ListViewer extends React.Component {
     };
 
     expandRow = key => {
-        this.setState(prevState=>{
+        this.setState(prevState => {
             let expandedGroups = prevState.expandedGroups
             expandedGroups = expandedGroups === key ? undefined : key
-            return {expandedGroups}
+            return { expandedGroups }
         })
     };
 
@@ -138,12 +142,12 @@ class ListViewer extends React.Component {
     }
 
     handleActionView = (e, group) => {
-        this.setState({ actionEl: e.currentTarget, groupAction: group})
+        this.setState({ actionEl: e.currentTarget, groupAction: group })
     }
 
     actionClose = (action, groupAction) => {
         this.props.actionClose(action, groupAction)
-        this.setState({ actionEl: null, groupAction:undefined })
+        this.setState({ actionEl: null, groupAction: undefined })
     }
 
     handleSelectAllClick = (e) => {
@@ -173,22 +177,30 @@ class ListViewer extends React.Component {
         this.props.isDropped(item)
     }
 
+    //IconKeys
+    onIconClick = (iconKeys) => {
+        this.setState({ iconKeys })
+    }
+    //IconKeys
+
 
     render() {
-        const {grouping, groupingAction, selection} = this.requestInfo
+        const { grouping, groupingAction, selection } = this.requestInfo
         const { dataList, dropList, selected, groupActionMenu, setSelected } = this.props
-        const { expandedGroups, page, rowsPerPage, order, orderBy } = this.state
+        const { expandedGroups, page, rowsPerPage, order, orderBy, iconKeys } = this.state
         let groupedData = grouping ? this.getGroupedData(dataList) : [];
         let isGrouping = grouping && dropList.length > 0
         const columnLength = this.keys.length + (selection ? 1 : 0)
         return (
             <div style={{ width: '100%' }}>
                 <Paper style={{ backgroundColor: '#292C33' }}>
-                    <ListToolbar
+                    {selected.length > 0 ? < ListToolbar
                         numSelected={selected.length}
                         groupActionMenu={groupActionMenu}
-                        groupActionClose={this.groupActionClose} />
-                    <TableContainer style={{ height: `${getHeight(this.props)}`, marginTop: `${selected.length > 0 ? '0px' : '-40px'}` }} className='list-view-table-container'>
+                        groupActionClose={this.groupActionClose} /> : null}
+
+                    <IconBar keys={iconKeys} onClick={this.onIconClick} />
+                    <TableContainer style={{ height: `${getHeight(this)}`, }} className='list-view-table-container'>
                         <Table
                             stickyHeader
                             size={'small'}>
@@ -201,6 +213,7 @@ class ListViewer extends React.Component {
                                 headCells={this.keys}
                                 rowCount={dataList.length}
                                 requestInfo={this.requestInfo}
+                                iconKeys = {iconKeys}
                                 actionMenuLength={this.actionMenu.length}
                                 isDropped={this.isDropped}
                             />
@@ -211,23 +224,23 @@ class ListViewer extends React.Component {
                                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((key, j) => {
                                                 return (
                                                     <React.Fragment key={j}>
-                                                            <StyledTableRow>
-                                                                <StyledTableCell
-                                                                    colSpan={columnLength - (groupingAction ? 1 : 0)}
-                                                                    style={{ fontWeight: "bold", cursor: "pointer" }}
-                                                                    onClick={this.expandRow.bind(null, key)}>
-                                                                    <IconButton>
-                                                                        <Icon>{expandedGroups === key ? 'expand_more' : 'chevron_right'}</Icon>
-                                                                    </IconButton>
-                                                                    <span style={{ display: 'inline', marginRight: 5 }}>{key}</span>
-                                                                    <div style={{ display: 'inline' }}>{`(${groupedData[key].length})`}</div>
-                                                                </StyledTableCell>
-                                                                {groupingAction ? <StyledTableCell>
-                                                                    <IconButton aria-label="Action" onClick={(e)=>{this.handleActionView(e, groupedData[key])}}>
-                                                                        <Icon style={{ color: lightGreen['A700'] }}>list</Icon>
-                                                                    </IconButton>
-                                                                </StyledTableCell> : null}
-                                                            </StyledTableRow>
+                                                        <StyledTableRow>
+                                                            <StyledTableCell
+                                                                colSpan={columnLength - (groupingAction ? 1 : 0)}
+                                                                style={{ fontWeight: "bold", cursor: "pointer" }}
+                                                                onClick={this.expandRow.bind(null, key)}>
+                                                                <IconButton>
+                                                                    <Icon>{expandedGroups === key ? 'expand_more' : 'chevron_right'}</Icon>
+                                                                </IconButton>
+                                                                <span style={{ display: 'inline', marginRight: 5 }}>{key}</span>
+                                                                <div style={{ display: 'inline' }}>{`(${groupedData[key].length})`}</div>
+                                                            </StyledTableCell>
+                                                            {groupingAction ? <StyledTableCell>
+                                                                <IconButton aria-label="Action" onClick={(e) => { this.handleActionView(e, groupedData[key]) }}>
+                                                                    <Icon style={{ color: lightGreen['A700'] }}>list</Icon>
+                                                                </IconButton>
+                                                            </StyledTableCell> : null}
+                                                        </StyledTableRow>
                                                         {expandedGroups === key ?
                                                             <ListBody
                                                                 colSpan={columnLength}
@@ -238,6 +251,7 @@ class ListViewer extends React.Component {
                                                                 order={order}
                                                                 orderBy={orderBy}
                                                                 requestInfo={this.requestInfo}
+                                                                iconKeys={iconKeys}
                                                                 selected={selected}
                                                                 setSelected={setSelected}
                                                                 selectedRow={this.setSelectedRow}
@@ -254,6 +268,7 @@ class ListViewer extends React.Component {
                                                                 keys={this.keys}
                                                                 requestInfo={this.requestInfo}
                                                                 selected={selected}
+                                                                iconKeys={iconKeys}
                                                                 setSelected={setSelected}
                                                                 selectedRow={this.setSelectedRow}
                                                                 handleActionView={this.handleActionView} />
@@ -268,7 +283,7 @@ class ListViewer extends React.Component {
                     <TablePagination
                         rowsPerPageOptions={[25, 50, 75]}
                         component="div"
-                        count={expandedGroups  ? groupedData[expandedGroups] && groupedData[expandedGroups].length : (isGrouping ? Object.keys(groupedData).length : dataList.length)}
+                        count={expandedGroups ? groupedData[expandedGroups] && groupedData[expandedGroups].length : (isGrouping ? Object.keys(groupedData).length : dataList.length)}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={this.handleChangePage}
@@ -281,7 +296,19 @@ class ListViewer extends React.Component {
     }
 
     componentDidMount() {
-      
+        const { iconKeys } = this.props.requestInfo
+        if (iconKeys) {
+            let keys = iconKeys.filter(icon => {
+                let valid = true
+                valid = icon.roles ? icon.roles.includes(redux_org.role(this)) : valid
+                return valid
+            })
+            if (keys.length > 0) {
+                this.setState({
+                    iconKeys: keys
+                })
+            }
+        }
     }
 }
 

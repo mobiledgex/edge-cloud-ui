@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { redux_org } from '../../../helper/reduxData'
 
 import { fields } from '../../../services/model/format';
-import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest } from '../../../services/modules/cloudlet';
+import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest, iconKeys } from '../../../services/modules/cloudlet';
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import CloudletReg from './Reg';
 import { operatorRoles } from '../../../constant'
@@ -162,6 +162,7 @@ class CloudletList extends React.Component {
             onAdd: this.canAdd(),
             viewMode: HELP_CLOUDLET_LIST,
             grouping: true,
+            iconKeys:iconKeys(),
             formatData: this.dataFormatter
         })
     }
