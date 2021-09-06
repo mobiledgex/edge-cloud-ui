@@ -369,7 +369,7 @@ class CloudletReg extends React.Component {
                 if (form.field === fields.gpuConfig) {
                     for (const option of form.options) {
                         if (option[fields.gpuConfig] === data[fields.gpuConfig]) {
-                            data[fields.gpuDriver] = option[fields.name]
+                            data[fields.gpuDriver] = option[fields.gpuDriverName]
                             data[fields.gpuORG] = option[fields.operatorName]
                             break;
                         }
