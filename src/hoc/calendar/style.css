@@ -27,7 +27,7 @@
     border-right: none !important;
 }
 
-.rct-outer{
+.react-calendar-timeline .rct-outer{
     border-left: 1px solid #BBBBBB !important;
     border-right: 1px solid #BBBBBB !important;
     border-bottom-left-radius: 2px;
