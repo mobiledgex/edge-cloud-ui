@@ -1,7 +1,8 @@
 .mex-select .dropdown .text {
     width: 93% !important;
     text-overflow: ellipsis;
-    overflow: hidden;
+    height: 15px;
+    overflow-x: hidden;
 }
 
 .mex-select .ui.fluid.dropdown>.dropdown.icon  {

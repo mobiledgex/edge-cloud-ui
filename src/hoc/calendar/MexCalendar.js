@@ -127,7 +127,7 @@ class MexCalendar extends React.Component {
     };
 
     onCustomClick = (index, type) => {
-        let time = this.state.visibleTimeStart
+        let time = dateUtil.currentTimeInMilli()
         this.setState(prevState => {
             let calendarDates = prevState.calendarDates
             calendarDates.map((calendarDate, i) => {
@@ -149,7 +149,7 @@ class MexCalendar extends React.Component {
         const { calendarDates } = this.state
         return (
             <div style={{ height: '100%', overflow: 'auto', paddingTop: 10, paddingRight: 15 }}>
-                <div style={{ border: '1px solid #BBBBBB', borderBottom: 'none', width: 450, borderRadius: 5, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
+                <div style={{ border: '1px solid #BBBBBB', borderRadius: 5, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
                     <Tooltip title={<strong style={{ fontSize: 13 }}>Previous</strong>}>
                         <IconButton onClick={this.onPrevClick}>
                             <ArrowBackIosIcon fontSize='small' style={{ color: lightGreen['A700'] }} />

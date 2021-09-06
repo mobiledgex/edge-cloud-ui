@@ -129,7 +129,7 @@ export const getKey = (data, isCreate) => {
         if (data[fields.gpuConfig]) {
             cloudlet.gpu_config = {
                 driver: {
-                    organization: data[fields.gpuORG] === 'MobiledgeX' ? '' : data[fields.gpuORG],
+                    organization: data[fields.gpuORG] === perpetual.MOBILEDGEX ? '' : data[fields.gpuORG],
                     name: data[fields.gpuDriver]
                 }
             }
