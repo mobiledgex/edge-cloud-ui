@@ -68,6 +68,7 @@ class CloudletReg extends React.Component {
         this.resourceQuotaList = [];
         this.cloudletPropsList = [];
         this.gpuDriverList = [];
+        this.kafkaRequired = true;
     }
 
     updateState = (data) => {
@@ -226,7 +227,7 @@ class CloudletReg extends React.Component {
         }
         for (let form of forms) {
             if (form.field === fields.kafkaCluster || form.field === fields.kafkaUser || form.field === fields.kafkaPassword) {
-                form.rules.required = inputValid
+                form.rules.required = inputValid && this.kafkaRequired
             }
         }
         this.updateState({ forms })
@@ -524,7 +525,7 @@ class CloudletReg extends React.Component {
                                 <MexForms forms={forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                             </div>
                         </Grid>
-                        <Grid item xs={5} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
+                        <Grid item xs={5} style={{ backgroundColor: '#2A2C34', padding:5 }}>
                             <MexTab form={{ panes: this.getPanes() }} activeIndex={activeIndex} />
                         </Grid>
                     </Grid>
@@ -774,6 +775,11 @@ class CloudletReg extends React.Component {
                 }
                 else if (form.field === fields.openRCData || form.field === fields.caCertdata) {
                     form.visible = false
+                }
+                else if(form.field === fields.kafkaCluster)
+                {
+                    this.kafkaRequired = data[fields.kafkaCluster] === undefined
+                    form.value = data[fields.kafkaCluster]
                 }
                 else {
                     form.value = data[form.field]
