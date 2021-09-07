@@ -386,7 +386,7 @@ class ClusterInstReg extends React.Component {
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </div>
                     </Grid>
-                    <Grid item xs={4} style={{ borderRadius: 5, backgroundColor: 'transparent' }}>
+                    <Grid item xs={4} style={{ backgroundColor: '#2A2C34', padding:5 }}>
                         <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
                     </Grid>
                 </Grid>
