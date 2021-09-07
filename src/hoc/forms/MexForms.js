@@ -425,9 +425,9 @@ const MexForms = (props) => {
 
     return (
         forms ?
-            <div style={props.style ? {} : { paddingTop: `${error ? 60 : 10}px`, backgroundColor: '#292c33' }}>
+            <div style={props.style ? {} : { paddingTop: `${error ? 60 : 10}px`, backgroundColor: '#292c33', position: 'relative', }}>
                 {error ?
-                    <div style={props.style ? props.style : { position: 'absolute', zIndex: 999, left: 270, right: 30, top: 60 }}>
+                    <div style={props.style ? props.style : { position: 'absolute', zIndex: 999, left: 0, right: 0, top: 0 }}>
                         <Alert severity="error">{error}</Alert>
                         {props.style ? null : <div><br /><br /></div>}
                     </div> : null}
