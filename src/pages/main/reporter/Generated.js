@@ -1,14 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Box, Card, CardContent, Dialog, Divider, Grid, List, Typography, CircularProgress } from '@material-ui/core';
-import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
+import { Card, CardContent, Dialog, Divider, Grid, List, Typography, CircularProgress, Tooltip } from '@material-ui/core';
 import { showGeneratedReports, downloadReport } from '../../../services/modules/reporter';
 import CloudDownloadOutlinedIcon from '@material-ui/icons/CloudDownloadOutlined';
 import PictureAsPdfOutlinedIcon from '@material-ui/icons/PictureAsPdfOutlined';
 import { withStyles } from '@material-ui/styles';
 import { lightGreen } from '@material-ui/core/colors';
 import { redux_org } from '../../../helper/reduxData';
-import { Select, IconButton } from '../../../hoc/mexui'
+import { Select, IconButton, DialogTitle } from '../../../hoc/mexui'
 import { NoData } from '../../../helper/formatter/ui'
 import { FORMAT_FULL_DATE, time } from '../../../utils/date_util';
 
@@ -106,7 +105,7 @@ class Generated extends React.Component {
         return (
             <Grid container>
                 {details.map((detail, i) => (
-                    <Grid item xs={2} key={i}>{detail}</Grid>
+                    <Grid item xs={i > 1 ? 2 : 4} key={i}><Tooltip title={<strong style={{ fontSize: 13 }}>{detail}</strong>}><p style={{ textOverflow: 'ellipsis', overflow: 'hidden', width: '90%', whiteSpace: 'nowrap' }}>{detail}</p></Tooltip></Grid>
                 ))}
             </Grid>
         )
@@ -117,26 +116,13 @@ class Generated extends React.Component {
         return (
             <Dialog open={open}>
                 <Card style={{ width: 600 }}>
-                    <div style={{ padding: '10px 5px 0px 10px' }}>
-                        <Box display="flex" >
-                            <Box flexGrow={1}>
-                                <Typography gutterBottom variant="h5" component="h4" style={{ color: lightGreen['A700'], alignItems: 'center' }}>
-                                    History
-                                </Typography>
-                            </Box>
-                            {
-                                redux_org.isAdmin(this) ? <Box>
-                                    <div>
-                                        <Select list={orgList} onChange={this.onOrgChange} search={true} placeholder={'Select Organization'} underline={true} />
-                                    </div>
-                                </Box> : null
-                            }
-                            <Box p={1}>
-                                <IconButton style={{ marginTop: -16 }} tooltip='Close' onClick={close} disabled={loading || pdfLoading !== undefined}><CloseOutlinedIcon style={{ color: lightGreen['A700'] }} /></IconButton>
-                            </Box>
-                        </Box>
-                    </div>
-                    <Divider />
+                    <DialogTitle onClose={close} disabled={loading || pdfLoading !== undefined} label={'History'}>
+                        {
+                            redux_org.isAdmin(this) ?
+                                <Select list={orgList} onChange={this.onOrgChange} search={true} placeholder={'Select Organization'} width={150} underline={true} />
+                                : null
+                        }
+                    </DialogTitle>
                     {loading ?
                         <div align='center' style={{ padding: '70px 0', textAlign: 'center' }}>
                             <CircularProgress size={100} thickness={1} />
@@ -150,7 +136,7 @@ class Generated extends React.Component {
                                             <Grid item xs={10}>
                                                 <Grid container>
                                                     {keys.map((key, i) => (
-                                                        <Grid item xs={2} key={i}><b>{key.label}</b></Grid>
+                                                        <Grid item xs={i > 1 ? 2 : 4} key={i}><b>{key.label}</b></Grid>
                                                     ))}
                                                 </Grid>
                                             </Grid>

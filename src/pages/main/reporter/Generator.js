@@ -67,27 +67,32 @@ class Generator extends React.Component {
     render() {
         const { loading, org } = this.state
         const { orgList } = this.props
-        const gridLength = redux_org.isAdmin(this) ? 2 : 3
+        const gridLength = redux_org.isAdmin(this) ? 1 : 2
+        const xl = gridLength + (redux_org.isAdmin(this) ? 1 : 0)
+        const lg = gridLength + 1
+        const md = gridLength + 1
+        const sm = gridLength + 1
+        const xs = gridLength
         return (
             <Card style={{ height: 110, paddingLeft: 20, paddingTop: 5, marginRight: 5, marginLeft: 5, backgroundColor: '#1E2123', borderRadius: 5 }}>
                 <Typography style={{ marginBottom: 15 }}><b>Custom Report</b></Typography>
-                <Grid container style={{ width: '60vw', marginLeft: 50 }}>
-                    <Grid item xs={gridLength}>
-                        <DateTimePicker label='From' onChange={this.fromDate} value={`${time(FORMAT_FULL_DATE, subtractDays(7, currentDate()))} 00:00:00`} />
+                <Grid container style={{ marginLeft: 30 }} spacing={2}>
+                    <Grid item xs={xs} sm={sm} md={md} lg={lg} xl={xl}>
+                        <DateTimePicker label='From' onChange={this.fromDate} value={`${time(FORMAT_FULL_DATE, subtractDays(7, currentDate()))} 00:00:00`} style={{ width: '90%' }} />
                     </Grid>
-                    <Grid item xs={gridLength}>
-                        <DateTimePicker label='To' onChange={this.toDate} end={true} value={currentDate()} />
+                    <Grid item xs={xs} sm={sm}  md={md}  lg={lg} xl={xl}>
+                        <DateTimePicker label='To' onChange={this.toDate} end={true} value={currentDate()} style={{ width: '90%' }} />
                     </Grid>
-                    <Grid item xs={gridLength}>
-                        <Select list={timezones()} search={true} label={'Timezone'} onChange={this.timezone} value={timezonePref()} underline={true} width={210}/>
+                    <Grid item xs={xs} sm={sm}  md={md}  lg={lg} xl={xl}>
+                        <Select list={timezones()} search={true} label={'Timezone'} onChange={this.timezone} value={timezonePref()} underline={true} width='90%' />
                     </Grid>
                     {
                         redux_org.isAdmin(this) ?
-                            <Grid item xs={gridLength}>
-                                <Select list={orgList} search={true} label={'Organization'} onChange={this.onOrgChange} placeholder={'Select Organization'} underline={true} width={210}/>
+                            <Grid item xs={xs} sm={sm}  md={md}  lg={lg} xl={xl}>
+                                <Select list={orgList} search={true} label={'Organization'} onChange={this.onOrgChange} placeholder={'Select Organization'} underline={true} width='90%' />
                             </Grid> : null
                     }
-                    <Grid item xs={2}>
+                    <Grid item xs={xs} sm={sm}  md={md}  lg={lg} xl={xl}>
                         <Button onClick={this.onFetch} loading={loading} disabled={org === undefined && redux_org.isAdmin(this)}>Generate</Button>
                     </Grid>
                 </Grid>

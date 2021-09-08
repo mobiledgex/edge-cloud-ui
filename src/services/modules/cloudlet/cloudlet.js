@@ -32,7 +32,7 @@ export const keys = () => ([
     { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: constant.operatorRoles },
     { field: fields.vmImageVersion, serverField: 'vm_image_version', label: 'VM Image Version', roles: constant.operatorRoles },
     { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: perpetual.TYPE_JSON },
-    { field: fields.gpuDriver, serverField: 'gpu_config#OS#driver#OS#name', label: 'GPU Driver' },
+    { field: fields.gpuDriverName, serverField: 'gpu_config#OS#driver#OS#name', label: 'GPU Driver' },
     { field: fields.gpuORG, serverField: 'gpu_config#OS#driver#OS#organization', label: 'GPU Organization' },
     { field: fields.envVars, serverField: 'env_var', label: 'Environment Variables', dataType: perpetual.TYPE_JSON },
     { field: fields.resourceQuotas, serverField: 'resource_quotas', label: 'Resource Quotas', dataType: perpetual.TYPE_JSON },
@@ -130,7 +130,7 @@ export const getKey = (data, isCreate) => {
             cloudlet.gpu_config = {
                 driver: {
                     organization: data[fields.gpuORG] === perpetual.MOBILEDGEX ? '' : data[fields.gpuORG],
-                    name: data[fields.gpuDriver]
+                    name: data[fields.gpuDriverName]
                 }
             }
         }
