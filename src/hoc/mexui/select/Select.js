@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { FormControl, MenuItem, InputLabel, Menu, Typography } from '@material-ui/core';
+import { FormControl, MenuItem, InputLabel, Menu, Typography, Tooltip } from '@material-ui/core';
 import SearchFilter from '../../filter/SearchFilter'
 import KeyboardArrowDownOutlinedIcon from '@material-ui/icons/KeyboardArrowDownOutlined';
 import { FixedSizeList } from 'react-window';
@@ -25,20 +25,21 @@ import { toFirstUpperCase } from '../../../utils/string_utils';
 
 const useStyles = makeStyles((theme) => ({
     formControl: props => ({
-        maxWidth: 250,
-        minWidth: props.width ? props.width : 100
+        width: props.width ? props.width : 100,
     }),
     selectEmpty: {
         marginTop: theme.spacing(1),
     },
     icon: {
-        float: 'right',
-        marginRight: 2,
-        marginLeft: 5
+        position: 'absolute',
+        right: 0
     },
     wrapIcon: {
-        verticalAlign: 'middle',
-        display: 'inline-flex',
+        width: '90%',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        fontSize:13,
+        fontWeight:900
     }
 }));
 
@@ -80,9 +81,9 @@ export default function Select(props) {
         return value ? toUpper(value) : placeholder ? placeholder : ''
     }
 
-    const color = { color: props.color ? props.color : 'white' }
+    const color = { color: props.color ? props.color : '#CECECE' }
     const border = { border: props.border ? `1px solid ${color.color}` : 'none', borderRadius: 5, paddingLeft: 5, paddingRight: 5, height: 25 }
-    
+
     return (
         <div>
             <FormControl className={classes.formControl}>
@@ -90,10 +91,12 @@ export default function Select(props) {
                     {props.label}
                 </InputLabel> : null}
                 <div style={{ display: 'inline', cursor: 'pointer', marginTop: props.label ? 21 : 0, ...color, ...border }} aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorEl(e.currentTarget) }}>
-                    <Typography aria-controls="chart" aria-haspopup="true" className={classes.wrapIcon}>
-                        {props.border ? <strong style={{ fontSize: 13, marginTop:2 }}>{selectLabel()}</strong> : selectLabel()}
+                    <Typography display='inline' noWrap style={{ display: 'flex', position: 'relative' }}>
+                        <Tooltip title={selectLabel()}>
+                            {props.border ? <div className={classes.wrapIcon} style={{marginTop:1}}>{selectLabel()}</div> : <div className={classes.wrapIcon}>{selectLabel()}</div>}
+                        </Tooltip>
+                        <KeyboardArrowDownOutlinedIcon className={classes.icon} style={{ ...color }} />
                     </Typography>
-                    <KeyboardArrowDownOutlinedIcon className={classes.icon} style={{ ...color }} />
                     <div style={{ borderBottom: props.underline ? '0.1em solid #BFC0C2' : '', marginTop: 3 }}></div>
                 </div>
                 <Menu

@@ -18,24 +18,27 @@ const styles = (theme) => ({
 });
 
 const DialogTitle = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
+  const { children, classes, onClose, disabled, color, label, ...other } = props;
   return (
     <div>
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Box display='flex'>
-        <Box flexGrow={1}>
-          <Typography variant="h6" display='inline'>{children}</Typography>
+      <MuiDialogTitle disableTypography className={classes.root} {...other}>
+        <Box display='flex'>
+          <Box flexGrow={1}>
+            <Typography variant="h5" component="h4" display='inline' style={{ color: color ? color : '#CECECE' }}>{label}</Typography>
+          </Box>
+          <Box>
+            {children}
+          </Box>
+          <Box>
+            {onClose ? (
+              <IconButton tooltip='Close' aria-label="close" className={classes.closeButton} onClick={onClose} disabled={disabled} style={{ color: color ? color : '#CECECE' }}>
+                <Icon>close</Icon>
+              </IconButton>
+            ) : null}
+          </Box>
         </Box>
-        <Box>
-          {onClose ? (
-            <IconButton tooltip='close' aria-label="close" className={classes.closeButton} onClick={onClose}>
-              <Icon>close</Icon>
-            </IconButton>
-          ) : null}
-        </Box>
-      </Box>
-    </MuiDialogTitle>
-    <Divider/>
+      </MuiDialogTitle>
+      <Divider />
     </div>
   );
 });
