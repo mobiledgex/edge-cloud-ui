@@ -8,6 +8,7 @@ import {
 import { currentDate, FORMAT_FULL_DATE, FORMAT_FULL_DATE_TIME, time } from '../../utils/date_util';
 
 export default function DateTimePicker(props) {
+    const {className, style} = props
     const [date, setDate] = React.useState(props.value ? props.value : `${time(FORMAT_FULL_DATE, currentDate())} 00:00:00`)
 
     useEffect(() => {
@@ -27,6 +28,8 @@ export default function DateTimePicker(props) {
                 onChange={onChange}
                 label={props.label ? props.label : ''}
                 format='yyyy/MM/dd HH:mm'
+                className={className}
+                style={style}
             />
         </MuiPickersUtilsProvider>
     );

@@ -99,12 +99,12 @@ class GPUDriverReg extends React.Component {
                 break;
             }
         }
-        if (isInit === false || isInit === undefined) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
 
-    checkForms = (form, forms, isInit) => {
+    checkForms = (form, forms, isInit = false) => {
         if (form.field === fields.operatingSystem) {
             this.onOperatingSystemChange(form, forms, isInit)
         }

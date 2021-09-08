@@ -8,15 +8,15 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
-import { redux_org} from '../../../helper/reduxData'
+import { redux_org } from '../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../services/modules/organization';
-import { cloudletWithInfo } from '../../../services/modules/cloudlet';
+import { cloudletWithInfo, showCloudlets } from '../../../services/modules/cloudlet';
 import { sendRequests } from '../../../services/model/serverWorker'
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import { getClusterInstList, showClusterInsts } from '../../../services/modules/clusterInst';
 import { fetchCloudletFlavors } from '../../../services/modules/flavor/flavor';
-import { showAppCloudlets, getAppList } from '../../../services/modules/app';
+import { getAppList } from '../../../services/modules/app';
 import { createAppInst, updateAppInst } from '../../../services/modules/appInst';
 
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
@@ -61,11 +61,9 @@ class AppInstReg extends React.Component {
         }
     }
 
-    getCloudletInfo = async (app, form, forms) => {
+    getCloudletInfo = async (form, forms) => {
         let region = undefined;
         let organizationName = undefined;
-        let appName = undefined;
-        let version = undefined;
         for (let i = 0; i < forms.length; i++) {
             let tempForm = forms[i]
             if (tempForm.field === fields.region) {
@@ -74,17 +72,12 @@ class AppInstReg extends React.Component {
             else if (tempForm.field === fields.organizationName) {
                 organizationName = tempForm.value
             }
-            else if (tempForm.field === fields.appName) {
-                appName = tempForm.value
-            }
-            else if (tempForm.field === fields.version) {
-                version = tempForm.value
-            }
         }
-        if (region && organizationName && appName && version) {
+        if (region && organizationName) {
             let requestList = []
-            requestList.push(showAppCloudlets(this, app))
-            requestList.push(showCloudletInfoData(this, { region: region, org: organizationName, type: perpetual.DEVELOPER }))
+            let requestData = { region: region, org: organizationName, type: perpetual.DEVELOPER }
+            requestList.push(showCloudlets(this, requestData))
+            requestList.push(showCloudletInfoData(this, requestData))
             this.props.handleLoadingSpinner(true)
             sendRequests(this, requestList).addEventListener('message', event => {
                 let mcList = event.data
@@ -138,8 +131,7 @@ class AppInstReg extends React.Component {
                         this.flavorOrgList[key] = flavorList
                     }
                 }
-                if( this.flavorOrgList[key])
-                {
+                if (this.flavorOrgList[key]) {
                     this.flavorList[key] = this.flavorOrgList[key]
                 }
             }))
@@ -153,12 +145,12 @@ class AppInstReg extends React.Component {
             let form = forms[i]
             if (form.field === fields.cloudletName) {
                 this.updateUI(form)
-                if (isInit === undefined || isInit === false) {
+                if (!isInit) {
                     this.updateState({ forms })
                 }
             }
             else if (form.field === fields.flavorName) {
-                if (isInit === undefined || isInit === false) {
+                if (!isInit) {
                     this.flavorList = {}
                     this.updateUI(form)
                 }
@@ -174,7 +166,7 @@ class AppInstReg extends React.Component {
                 form.error = currentForm.value ? undefined : form.error
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
@@ -188,7 +180,7 @@ class AppInstReg extends React.Component {
                 this.versionValueChange(form, forms, isInit)
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
@@ -231,8 +223,11 @@ class AppInstReg extends React.Component {
                         }
                     }
                     else if (form.field === fields.operatorName) {
-                        if (isInit === undefined || isInit === false) {
-                            this.getCloudletInfo(app, form, forms)
+                        if (!app[fields.trusted]) {
+                            this.cloudletList = this.cloudletList.filter(cloudlet => {
+                                return cloudlet[fields.trustPolicyName] === undefined
+                            })
+                            this.updateUI(form)
                         }
                         return form
                     }
@@ -269,7 +264,7 @@ class AppInstReg extends React.Component {
                 })
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms: nForms })
         }
     }
@@ -282,14 +277,17 @@ class AppInstReg extends React.Component {
                 let form = forms[i]
                 if (form.field === fields.operatorName) {
                     this.operatorValueChange(form, forms, isInit)
+                    if (!isInit) {
+                        this.getCloudletInfo(form, forms)
+                    }
                 }
                 else if (form.field === fields.clusterName) {
-                    if (isInit === undefined || isInit === false) {
+                    if (!isInit) {
                         this.getClusterInstInfo(region, form, forms)
                     }
                 }
                 else if (form.field === fields.appName) {
-                    if (isInit === undefined || isInit === false) {
+                    if (!isInit) {
                         this.getAppInfo(region, form, forms)
                     }
                 }
@@ -303,13 +301,16 @@ class AppInstReg extends React.Component {
             let form = forms[i]
             if (form.field === fields.operatorName) {
                 this.operatorValueChange(form, forms, isInit)
+                if (!isInit) {
+                    this.getCloudletInfo(form, forms)
+                }
             }
             else if (form.field === fields.appName) {
                 this.updateUI(form)
                 this.appNameValueChange(form, forms, true)
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
@@ -324,13 +325,13 @@ class AppInstReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.flavorName) {
-                if (isInit === undefined || isInit === false) {
+                if (!isInit) {
                     this.getFlavorInfo(form, forms)
                 }
                 break;
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
@@ -377,7 +378,7 @@ class AppInstReg extends React.Component {
         ]
     }
 
-    checkForms = (form, forms, isInit, data) => {
+    checkForms = (form, forms, isInit = false, data) => {
         let flowDataList = []
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
@@ -573,7 +574,7 @@ class AppInstReg extends React.Component {
             this.organizationList = [organization]
             if (this.props.isLaunch) {
                 let requestData = { region: data[fields.region], org: data[fields.organizationName], type: perpetual.DEVELOPER }
-                requestList.push(showAppCloudlets(this, data))
+                requestList.push(showCloudlets(this, requestData))
                 requestList.push(showCloudletInfoData(this, requestData))
                 requestList.push(showClusterInsts(this, requestData))
                 let disabledFields = [fields.region, fields.organizationName, fields.appName, fields.version]
@@ -667,14 +668,13 @@ class AppInstReg extends React.Component {
             { label: 'Cancel', formType: BUTTON, onClick: this.onAddCancel })
 
 
-            
+
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             form.tip = constant.getTip(form.field)
             this.updateUI(form, data)
             if (data) {
-                if(!this.isUpdate && form.field === fields.flavorName)
-                {
+                if (!this.isUpdate && form.field === fields.flavorName) {
                     continue;
                 }
                 form.value = data[form.field] ? data[form.field] : form.value

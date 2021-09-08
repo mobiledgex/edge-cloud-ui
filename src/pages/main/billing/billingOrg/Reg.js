@@ -53,7 +53,7 @@ class BillingOrgReg extends React.Component {
     }
 
     updateForm = (forms, isInit) => {
-        if (this._isMounted && isInit === undefined || isInit === false) {
+        if (this._isMounted && !isInit) {
             this.setState({ forms })
         }
     }
@@ -71,7 +71,7 @@ class BillingOrgReg extends React.Component {
         this.updateForm(forms, isInit)
     }
 
-    checkForms = (form, forms, isInit) => {
+    checkForms = (form, forms, isInit = false) => {
         if (form.field === fields.type) {
             this.onTypeChange(form, forms, isInit)
         }

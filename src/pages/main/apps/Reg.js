@@ -309,7 +309,7 @@ class AppReg extends React.Component {
                 return form
             }
         })
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
@@ -354,13 +354,13 @@ class AppReg extends React.Component {
                 form.visible = currentForm.value === 'tcp'
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
 
     regionDependentDataUpdate = (region, forms, isInit) => {
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i]
                 if (form.field === fields.autoProvPolicies) {
@@ -401,7 +401,7 @@ class AppReg extends React.Component {
                 this.updateImagePath(forms, form)
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
@@ -413,7 +413,7 @@ class AppReg extends React.Component {
                 this.updateImagePath(forms, form)
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
@@ -436,7 +436,7 @@ class AppReg extends React.Component {
                 break;
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
@@ -456,7 +456,7 @@ class AppReg extends React.Component {
                 return form
             }
         })
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
@@ -475,12 +475,12 @@ class AppReg extends React.Component {
                 break;
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
 
-    checkForms = (form, forms, isInit, data) => {
+    checkForms = (form, forms, isInit = false, data) => {
         let flowDataList = []
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)

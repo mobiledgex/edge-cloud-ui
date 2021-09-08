@@ -35,7 +35,7 @@ class Reg extends React.Component {
     }
 
     updateForms = (forms, isInit) => {
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
@@ -75,7 +75,7 @@ class Reg extends React.Component {
         this.updateForms(forms, isInit)
     }
 
-    checkForms = (form, forms, isInit, data) => {
+    checkForms = (form, forms, isInit = false, data) => {
         if (form.field === fields.cpuUtilizationLimit || form.field === fields.memUtilizationLimit || form.field === fields.diskUtilizationLimit) {
             this.onCPUMemDiskChange(form, forms, isInit)
         }
@@ -145,7 +145,7 @@ class Reg extends React.Component {
         { field: fields.alertPolicyName, label: 'Alert Policy Name', formType: INPUT, placeholder: 'Enter Alert Policy Name', rules: { required: true }, visible: true, update: { key: true }, tip: 'Alert Policy name' },
         { field: fields.description, label: 'Description', formType: INPUT, placeholder: 'Enter Description', rules: { required: false }, visible: true, update: { id: [fields.description] }, tip: 'Description' },
         { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true, firstCaps: true }, visible: true, update: { id: [fields.severity] }, tip: 'Alert severity level - one of "info", "warning", "error"' },
-        { field: fields.triggerTime, label: 'Trigger time', formType: TIME_COUNTER, placeholder: 'Enter Trigger Time', rules: { required: true, onBlur: true }, visible: true, update: { id: [fields.triggerTime] }, tip: 'Alert threshold time needed to trigger alerts', default:'30s' },
+        { field: fields.triggerTime, label: 'Trigger time', formType: TIME_COUNTER, placeholder: 'Enter Trigger Time', rules: { required: true, onBlur: true }, visible: true, update: { id: [fields.triggerTime] }, tip: 'Alert threshold time needed to trigger alerts', default: '30s' },
         { field: fields.cpuUtilizationLimit, label: 'CPU Utilization Limit', formType: INPUT, placeholder: 'Enter CPU Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [fields.cpuUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod CPU utilization rate(percentage) across all nodes. Valid values 1-100' },
         { field: fields.memUtilizationLimit, label: 'Memory Utilization Limit', formType: INPUT, placeholder: 'Enter Memory Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [fields.memUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod memory utilization rate(percentage) across all nodes. Valid values 1-100' },
         { field: fields.diskUtilizationLimit, label: 'Disk Utilization Limit', formType: INPUT, placeholder: 'Enter Disk Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [fields.diskUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod disk utilization rate(percentage) across all nodes. Valid values 1-100' },

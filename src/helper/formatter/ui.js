@@ -8,13 +8,8 @@ import { redux_org } from '../reduxData';
 
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
-import { perpetual } from '../constant';
+import { colors, perpetual } from '../constant';
 import { toFirstUpperCase } from '../../utils/string_utils';
-
-const COLOR_ERROR = '198, 40, 40'
-const COLOR_SUCCESS = '56, 142, 60'
-const COLOR_WARNING = '255, 160, 0'
-const COLOR_INFO = '24, 118, 210'
 
 const useStyles = makeStyles((theme) => ({
     text_icon: {
@@ -52,7 +47,7 @@ export const Manage = (props) => {
     const { data } = props
     let active = redux_org.orgName(orgInfo) === data[fields.organizationName]
     return (
-        <TextIcon value={active ? 'ACTIVE' : 'MANAGE'} color={COLOR_SUCCESS} clickable={!active} inverse={active}/>
+        <TextIcon value={active ? 'ACTIVE' : 'MANAGE'} color={colors.COLOR_RGB_SUCCESS} clickable={!active} inverse={active}/>
     )
 }
 
@@ -62,15 +57,12 @@ export const edgeboxOnly = (key, data, isDetail) => {
     if (isDetail) {
         return labelFormatter.showYesNo(edgeboxOnly)
     }
-    else {
-        return <Icon name={edgeboxOnly ? 'check' : 'close'} style={{ color: isOperator ? edgeboxOnly ? perpetual.COLOR_SUCCESS : perpetual.COLOR_ERROR : '#9E9E9E' }} />
-    }
 }
 
 export const cloudletInfoState = (key, data, isDetail) => {
     let id = data[key.field]
     let state = 'Not Present';
-    let color = COLOR_ERROR
+    let color = colors.COLOR_RGB_INFO
     switch (id) {
         case 0:
             state = perpetual.UNKNOWN
@@ -80,7 +72,7 @@ export const cloudletInfoState = (key, data, isDetail) => {
             break;
         case 2:
             state = perpetual.ONLINE
-            color = COLOR_SUCCESS
+            color = colors.COLOR_RGB_SUCCESS
             break;
         case 3:
             state = perpetual.OFFLINE
@@ -96,7 +88,7 @@ export const cloudletInfoState = (key, data, isDetail) => {
             break;
         case 999:
             state = perpetual.MAINTENANCE_STATE_UNDER_MAINTENANCE
-            color = COLOR_WARNING
+            color = colors.COLOR_RGB_WARNING
             break;
         default:
             state = 'Not Present'
@@ -145,8 +137,7 @@ export const emailVerfied = (key, data, isDetail, callback) => {
     }
     else {
         return (
-            <TextIcon color={id ? COLOR_SUCCESS : COLOR_WARNING} value={id ? 'VERIFIED' : 'VERIFY'} onClick={callback} />
-            // <Button basic size='mini' compact disabled={id} color={id ? 'green' : 'yellow'} className='row-button' onClick={callback}>{id ? 'VERIFIED' : 'VERIFY'}</Button>
+            <TextIcon color={id ? colors.COLOR_RGB_SUCCESS : colors.COLOR_RGB_WARNING} value={id ? 'VERIFIED' : 'VERIFY'} onClick={callback} />
         )
     }
 }
@@ -182,7 +173,7 @@ export const reporterStatus = (key, data, isDetail) => {
         return toFirstUpperCase(data[key.field])
     }
     else {
-        return <Icon name={success ? 'check' : 'close'} style={{ color: success ? perpetual.COLOR_SUCCESS : perpetual.COLOR_ERROR }} />
+        return <Icon name={success ? 'check' : 'close'} style={{ color: `rgb(${success ? colors.COLOR_RGB_SUCCESS : colors.colors.COLOR_RGB_INFO})` }} />
     }
 }
 
@@ -203,23 +194,23 @@ export const NoData = () => {
 
 export const RenderSeverity = (data, isDetailView) => {
     let id = data[fields.severity]
-    let color = COLOR_ERROR
+    let color = colors.COLOR_RGB_INFO
     let label = 'Error'
     let icon = 'cancel'
     switch (id) {
         case perpetual.INFO:
             label = 'Info'
-            color = COLOR_INFO
+            color = colors.COLOR_RGB_INFO
             icon = 'info'
             break;
         case perpetual.ERROR:
             label = 'Error'
-            color = COLOR_ERROR
+            color = colors.COLOR_RGB_INFO
             icon = 'cancel'
             break;
         case perpetual.WARNING:
             label = 'Warning'
-            color = COLOR_WARNING
+            color = colors.COLOR_RGB_WARNING
             icon = 'report_problem'
             break;
     }

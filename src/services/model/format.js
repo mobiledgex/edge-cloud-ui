@@ -245,7 +245,6 @@ export const fields = {
     title: 'title',
     description: 'description',
     trusted: 'trusted',
-    gpuDriver: 'gpuDriver',
     compatibilityVersion: 'compatibilityVersion',
     kafkaCluster: 'kafkaCluster',
     kafkaUser: 'kafkaUser',
