@@ -124,7 +124,7 @@ class CloudletReg extends React.Component {
     }
 
     platformTypeValueChange = async (currentForm, forms, isInit) => {
-        const valid = isInit === undefined || isInit === false
+        const valid = !isInit
         if (currentForm.value !== undefined && valid) {
             await this.fetchRegionDependentData(this.state.region, currentForm.value)
         }
@@ -154,13 +154,13 @@ class CloudletReg extends React.Component {
                 form.rules.required = currentForm.value === perpetual.INFRA_API_ACCESS_RESTRICTED
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
 
     locationChange = (currentForm, forms, isInit) => {
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             let parentForm = currentForm.parent.form
             let childForms = parentForm.forms
             let latitude = undefined
@@ -188,7 +188,7 @@ class CloudletReg extends React.Component {
     regionValueChange = async (currentForm, forms, isInit) => {
         let region = currentForm.value;
         this.updateState({ region })
-        if (region && ((isInit === undefined || isInit === false))) {
+        if (region && ((!isInit))) {
             await this.fetchRegionDependentData(region, fetchFormValue(forms, fields.platformType))
             let nforms = forms.filter(form => {
                 let valid = true
@@ -259,7 +259,7 @@ class CloudletReg extends React.Component {
         }
     }
 
-    checkForms = (form, forms, isInit, data) => {
+    checkForms = (form, forms, isInit = false, data) => {
         let flowDataList = []
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
@@ -528,7 +528,7 @@ class CloudletReg extends React.Component {
                                 <MexForms forms={forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                             </div>
                         </Grid>
-                        <Grid item xs={5} style={{ backgroundColor: '#2A2C34', padding:5 }}>
+                        <Grid item xs={5} style={{ backgroundColor: '#2A2C34', padding: 5 }}>
                             <MexTab form={{ panes: this.getPanes() }} activeIndex={activeIndex} />
                         </Grid>
                     </Grid>
@@ -779,8 +779,7 @@ class CloudletReg extends React.Component {
                 else if (form.field === fields.openRCData || form.field === fields.caCertdata) {
                     form.visible = false
                 }
-                else if(form.field === fields.kafkaCluster)
-                {
+                else if (form.field === fields.kafkaCluster) {
                     this.kafkaRequired = data[fields.kafkaCluster] === undefined
                     form.value = data[fields.kafkaCluster]
                 }

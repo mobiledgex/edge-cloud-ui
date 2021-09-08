@@ -142,12 +142,12 @@ class ClusterInstReg extends React.Component {
                 let form = forms[i]
                 if (form.field === fields.operatorName) {
                     this.operatorValueChange(form, forms, isInit)
-                    if (isInit === undefined || isInit === false) {
+                    if (!isInit) {
                         this.getCloudletInfo(form, forms)
                     }
                 }
                 else if (form.field === fields.autoScalePolicyName) {
-                    if (isInit === undefined || isInit === false) {
+                    if (!isInit) {
                         this.getAutoScalePolicy(region, form, forms)
                     }
                 }
@@ -161,7 +161,7 @@ class ClusterInstReg extends React.Component {
             let form = forms[i]
             if (form.field === fields.operatorName) {
                 this.operatorValueChange(form, forms, isInit)
-                if (isInit === undefined || isInit === false) {
+                if (!isInit) {
                     this.getCloudletInfo(form, forms)
                 }
             }
@@ -177,12 +177,12 @@ class ClusterInstReg extends React.Component {
             let form = forms[i]
             if (form.field === fields.cloudletName) {
                 this.updateUI(form)
-                if (isInit === undefined || isInit === false) {
+                if (!isInit) {
                     this.updateState({ forms, mapData: [] })
                 }
             }
             else if (form.field === fields.flavorName) {
-                if (isInit === undefined || isInit === false) {
+                if (!isInit) {
                     this.flavorList = {}
                     this.updateUI(form)
                 }
@@ -205,7 +205,7 @@ class ClusterInstReg extends React.Component {
                 form.visible = currentForm.value !== perpetual.DEPLOYMENT_TYPE_DOCKER
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
@@ -222,7 +222,7 @@ class ClusterInstReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.flavorName) {
-                if (isInit === undefined || isInit === false) {
+                if (!isInit) {
                     this.getFlavorInfo(form, forms)
                 }
                 break;
@@ -241,12 +241,12 @@ class ClusterInstReg extends React.Component {
                 form.rules.disabled = currentForm.value
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
 
-    checkForms = (form, forms, isInit, data) => {
+    checkForms = (form, forms, isInit = false, data) => {
         let flowDataList = []
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)

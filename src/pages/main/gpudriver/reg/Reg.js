@@ -103,7 +103,7 @@ class GPUDriverReg extends React.Component {
         { icon: 'browse', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.addLicenseConfig },
         { icon: 'clear', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
     ])
-    
+
     formKeys = () => {
         return [
             { label: 'Create GPU Driver', formType: MAIN_HEADER, visible: true },
@@ -129,12 +129,12 @@ class GPUDriverReg extends React.Component {
                 break;
             }
         }
-        if (isInit === false || isInit === undefined) {
+        if (!isInit) {
             this.updateState({ forms })
         }
     }
 
-    checkForms = (form, forms, isInit) => {
+    checkForms = (form, forms, isInit = false) => {
         if (form.field === fields.operatingSystem) {
             this.onOperatingSystemChange(form, forms, isInit)
         }

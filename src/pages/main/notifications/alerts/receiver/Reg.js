@@ -103,7 +103,7 @@ class FlavorReg extends React.Component {
                 form.visible = currentForm.value === perpetual.RECEIVER_TYPE_PAGER_DUTY
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.setState({ forms: forms })
         }
     }
@@ -116,7 +116,7 @@ class FlavorReg extends React.Component {
                 this.updateUI(form)
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.setState({ forms: forms })
         }
     }
@@ -133,7 +133,7 @@ class FlavorReg extends React.Component {
                 this.updateUI(form)
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.setState({ forms: forms })
         }
     }
@@ -146,7 +146,7 @@ class FlavorReg extends React.Component {
                 this.updateUI(form)
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.setState({ forms: forms })
         }
     }
@@ -159,7 +159,7 @@ class FlavorReg extends React.Component {
                 this.updateUI(form)
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.setState({ forms: forms })
         }
     }
@@ -172,7 +172,7 @@ class FlavorReg extends React.Component {
                 this.updateUI(form)
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.setState({ forms: forms })
         }
     }
@@ -185,7 +185,7 @@ class FlavorReg extends React.Component {
                 this.updateUI(form)
             }
         }
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.setState({ forms: forms })
         }
     }
@@ -225,14 +225,14 @@ class FlavorReg extends React.Component {
                     break;
             }
         }   
-        if (isInit === undefined || isInit === false) {
+        if (!isInit) {
             this.setState({ forms: forms })
         }
     }
 
 
 
-    checkForms = (form, forms, isInit) => {
+    checkForms = (form, forms, isInit = false) => {
         if (form.field === fields.type) {
             this.typeChange(form, forms, isInit)
         }
