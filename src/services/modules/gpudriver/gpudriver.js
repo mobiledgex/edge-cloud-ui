@@ -48,13 +48,13 @@ export const getKey = (data, isCreate) => {
     }
     return ({
         region: data[fields.region],
-        gpuDriver: gpuDriver
+        gpuDriver
     })
 }
 
-export const showGPUDrivers = (self, data) => {
-    let organization = redux_org.isOperator(self) ? redux_org.nonAdminOrg(self) : data[fields.organizationName]
-    if (organization) {
+export const showGPUDrivers = (self, data, ignoreOrg = false) => {
+    let organization = redux_org.nonAdminOrg(self)
+    if (organization && redux_org.isOperator(self) && !ignoreOrg) {
         data.gpuDriver = { key: { organization } }
     }
     return { method: endpoint.SHOW_GPU_DRIVER, data: data, keys: keys() }

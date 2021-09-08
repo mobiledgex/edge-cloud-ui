@@ -369,9 +369,9 @@ class CloudletReg extends React.Component {
                 let form = forms[i];
                 if (form.field === fields.gpuConfig) {
                     for (const option of form.options) {
-                        if (option[fields.gpuConfig] === data[fields.gpuConfig]) {
-                            data[fields.gpuDriver] = option[fields.gpuDriverName]
-                            data[fields.gpuORG] = option[fields.operatorName]
+                        if (option[fields.gpuConfig] === data[fields.gpuConfig] && data[fields.operatorName] === option[fields.organizationName] || option[fields.organizationName] === perpetual.MOBILEDGEX) {
+                            data[fields.gpuDriverName] = option[fields.gpuDriverName]
+                            data[fields.gpuORG] = option[fields.organizationName]
                             break;
                         }
                     }
@@ -407,7 +407,7 @@ class CloudletReg extends React.Component {
             if (this.props.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
                 if (updateData[fields.gpuConfig]) {
-                    updateData[fields.gpuDriver] = data[fields.gpuDriver]
+                    updateData[fields.gpuDriverName] = data[fields.gpuDriverName]
                     updateData[fields.gpuORG] = data[fields.gpuORG]
                 }
                 if (updateData.fields.length > 0) {
@@ -604,7 +604,7 @@ class CloudletReg extends React.Component {
             this.updateState({ mapData: [data] })
 
             requestList.push(showTrustPolicies(this, { region: data[fields.region] }))
-            requestList.push(showGPUDrivers(this, { region: data[fields.region], organizationName: data[fields.operatorName] }))
+            requestList.push(showGPUDrivers(this, { region: data[fields.region] }, true))
             requestList.push(cloudletResourceQuota(this, { region: data[fields.region], platformType: data[fields.platformType] }))
             let mcList = await service.multiAuthSyncRequest(this, requestList)
 
