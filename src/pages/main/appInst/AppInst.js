@@ -18,6 +18,7 @@ import * as serverData from '../../../services/model/serverData'
 import { idFormatter, labelFormatter, uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
 import { developerRoles } from '../../../constant';
+import { DEPLOYMENT_TYPE_VM } from '../../../helper/constant/perpetual';
 
 class AppInstList extends React.Component {
     constructor(props) {
@@ -139,11 +140,15 @@ class AppInstList extends React.Component {
         return 'Note: This will restart all the containers'
     }
 
+    onRefreshAction = (type, action, data)=>{
+        return data[fields.deployment] !== perpetual.DEPLOYMENT_TYPE_VM
+    }
+
     actionMenu = () => {
         return [
             { id: perpetual.ACTION_UPDATE, label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Edit' },
             { id: perpetual.ACTION_UPGRADE, label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, type: 'Edit', warning: 'upgrade' },
-            { id: perpetual.ACTION_REFRESH, label: 'Refresh', onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, warning: 'refresh', dialogNote: this.refreshNote },
+            { id: perpetual.ACTION_REFRESH, label: 'Refresh', onClick: refreshAppInst, visibility: this.onRefreshAction, multiStepperHeader: this.multiStepperHeader, warning: 'refresh', dialogNote: this.refreshNote },
             { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader, type: 'Edit', dialogNote: this.getDialogNote },
             { id: perpetual.ACTION_TERMINAL, label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
             { id: perpetual.ACTION_POWER_ON, label: 'Power On', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power on' },
