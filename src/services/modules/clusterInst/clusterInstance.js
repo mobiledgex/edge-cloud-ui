@@ -7,6 +7,7 @@ import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
 import { customize } from '../../modules/clusterInst';
 import { generateUUID } from '../../format/shared';
+import { developerRoles } from '../../../constant';
 
 let fields = formatter.fields;
 
@@ -16,7 +17,7 @@ export const keys = () => ([
     { field: fields.clusterName, serverField: 'key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster', visible: true, filter: true, key: true, key: true },
     { field: fields.operatorName, serverField: 'key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: false, filter: true, group: true, key: true },
     { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: false, filter: true, group: true, key: true },
-    { field: fields.cloudlet_name_operator, sortable: true, label: 'Cloudlet [Operator]', visible: true, filter: false, detailView:false},
+    { field: fields.cloudlet_name_operator, sortable: true, label: 'Cloudlet [Operator]', visible: true, filter: false, detailView: false },
     { field: fields.flavorName, serverField: 'flavor#OS#name', sortable: true, label: 'Flavor', visible: true, filter: true, group: true },
     { field: fields.ipAccess, serverField: 'ip_access', label: 'IP Access', sortable: true, visible: false, filter: true },
     { field: fields.autoScalePolicyName, serverField: 'auto_scale_policy', label: 'Auto Scale Policy' },
@@ -33,7 +34,7 @@ export const keys = () => ([
     { field: fields.resources, serverField: 'resources', label: 'Resources', dataType: perpetual.TYPE_JSON },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles:[perpetual.ADMIN, perpetual.DEVELOPER] }
+    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: developerRoles }
 ])
 
 export const multiDataRequest = (keys, mcRequestList, specific) => {
@@ -123,7 +124,7 @@ export const showClusterInsts = (self, data, specific) => {
             if (redux_org.isDeveloper(self) || data.type === perpetual.DEVELOPER) {
                 requestData.clusterinst = { key: { organization } }
             }
-            else if (redux_org.isOperator(self)  || data.type === perpetual.OPERATOR) {
+            else if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
                 requestData.clusterinst = {
                     key: { cloudlet_key: { organization } }
                 }

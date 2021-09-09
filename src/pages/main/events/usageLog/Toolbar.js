@@ -75,7 +75,7 @@ const LeftView = (props) => {
                             </IconButton>
                         </Box>
                         <Box>
-                            <Help data={tip} className={classes.icon_color} />
+                            <Help data={tip} color={lightGreen['A700']} />
                         </Box>
                         <Box>
                             <IconButton tooltip={'Close'} onClick={() => { onChange(ACTION_CLOSE) }}>
