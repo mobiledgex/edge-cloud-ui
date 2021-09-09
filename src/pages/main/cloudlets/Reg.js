@@ -410,8 +410,9 @@ class CloudletReg extends React.Component {
                     updateData[fields.gpuDriverName] = data[fields.gpuDriverName]
                     updateData[fields.gpuORG] = data[fields.gpuORG]
                 }
-                if (updateData[fields.kafkaUser] || updateData[fields.kafkaPassword]) {
+                if ((updateData[fields.kafkaUser] || updateData[fields.kafkaPassword]) && !updateData[fields.kafkaCluster]) {
                     updateData[fields.kafkaCluster] = data[fields.kafkaCluster]
+                    updateData.fields.push('42')
                 }
                 if (updateData.fields.length > 0) {
                     this.props.handleLoadingSpinner(true)
