@@ -12,7 +12,8 @@ import { showApps } from '../../../../services/modules/app';
 //list
 import DataView from '../../../../container/DataView';
 import { HELP_POLICY_LIST } from "../../../../tutorial";
-import { perpetual } from '../../../../helper/constant';
+import { perpetual, role } from '../../../../helper/constant';
+import { developerRoles } from '../../../../constant';
 
 class AutoProvPolicy extends React.Component {
     constructor(props) {
@@ -98,7 +99,7 @@ class AutoProvPolicy extends React.Component {
             sortBy: [fields.region, fields.autoPolicyName],
             selection: true,
             keys: this.keys,
-            onAdd: this.onAdd,
+            onAdd: role.validateRole(developerRoles, this.props.organizationInfo) ? this.onAdd : undefined,
             viewMode: HELP_POLICY_LIST
         })
     }

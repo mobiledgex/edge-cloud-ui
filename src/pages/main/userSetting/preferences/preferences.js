@@ -7,7 +7,7 @@ import AppsIcon from '@material-ui/icons/Apps';
 import CloseIcon from '@material-ui/icons/Close';
 import { updateUser, updateUserMetaData } from '../../../../services/modules/users'
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, IconButton, List, ListItem, ListItemText, MenuItem, Select, Switch } from '@material-ui/core'
+import { Button, Dialog, DialogActions, DialogContent, Divider, Grid, IconButton, List, ListItem, ListItemText, MenuItem, Select, Switch } from '@material-ui/core'
 
 import DatatablePref from './datatablePref'
 import TimezonePref from './timezonePref'
@@ -20,6 +20,7 @@ import { timezonePref } from '../../../../utils/sharedPreferences_util';
 import Help from '../../events/helper/Help'
 import { HEADER } from '../../../../hoc/forms/MexForms';
 import { perpetual } from '../../../../helper/constant';
+import { DialogTitle } from '../../../../hoc/mexui';
 
 export const PREF_DATATABLE = 'Datatable'
 export const PREF_MONITORING = 'Monitoring'
@@ -145,16 +146,8 @@ class Preferences extends React.Component {
                 </MenuItem>
                 <Dialog open={open} onClose={this.handleClose} aria-labelledby="profile" disableEscapeKeyDown={true} disableBackdropClick={true} maxWidth={'lg'}>
                     {loading ? <LinearProgress /> : null}
-                    <DialogTitle id="profile">
-                        <div style={{ float: "left", display: 'inline-block' }}>
-                            <h3 style={{ fontWeight: 700 }}>Preferences</h3>
-                        </div>
-                        <div style={{ float: "right", display: 'inline-block', marginTop: -8 }}>
-                            <Help data={prefHelp} />
-                            <IconButton onClick={this.handleClose}>
-                                <CloseIcon />
-                            </IconButton>
-                        </div>
+                    <DialogTitle label="Preferences" onClose={this.handleClose}>
+                        <Help data={prefHelp} style={{marginTop:-9}}/>
                     </DialogTitle>
                     <Divider />
                     <DialogContent style={{ width: 700 }}>
