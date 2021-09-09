@@ -14,9 +14,10 @@ import DataView from '../../../container/DataView';
 //reg
 import ClusterInstReg from './Reg';
 import { HELP_CLUSTER_INST_LIST } from "../../../tutorial";
-import { perpetual } from '../../../helper/constant';
+import { perpetual, role } from '../../../helper/constant';
 import { labelFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
+import { developerRoles } from '../../../constant';
 
 class ClusterInstView extends React.Component {
     constructor(props) {
@@ -94,7 +95,7 @@ class ClusterInstView extends React.Component {
             selection: !redux_org.isOperator(this),
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
-            onAdd: redux_org.isOperator(this) ? null : this.onAdd,
+            onAdd:  role.validateRole(developerRoles, this.props.organizationInfo) ? this.onAdd : undefined,
             viewMode: HELP_CLUSTER_INST_LIST,
             grouping: true,
             formatData: this.dataFormatter
