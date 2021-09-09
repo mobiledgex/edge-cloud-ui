@@ -4,6 +4,7 @@ import { idFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
+import { developerRoles } from '../../../constant';
 
 let fields = formatter.fields
 
@@ -44,7 +45,7 @@ export const keys = () => ([
     { field: fields.revision, serverField: 'revision', label: 'Revision' },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
+    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: developerRoles }
 ])
 
 export const getKey = (data, isCreate) => {
@@ -135,7 +136,7 @@ export const showApps = (self, data) => {
             data.app = { key: { organization } }
         }
     }
-    return { method: endpoint.SHOW_APP, data: data, keys:keys() }
+    return { method: endpoint.SHOW_APP, data: data, keys: keys() }
 }
 
 export const getAppList = async (self, data) => {

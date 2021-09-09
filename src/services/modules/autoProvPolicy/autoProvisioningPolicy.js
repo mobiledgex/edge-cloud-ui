@@ -3,6 +3,7 @@ import { getCloudletKey } from '../../modules/cloudlet'
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant'
 import { fields } from '../../model/format';
+import { developerRoles } from '../../../constant';
 
 export const keys = () => ([
   { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key:true },
@@ -21,7 +22,7 @@ export const keys = () => ([
     { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator' },
     { field: fields.cloudletLocation, serverField: 'loc', label: 'Location', dataType: perpetual.TYPE_JSON }]
   },
-  { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true }
+  { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: developerRoles }
 ])
 
 const getKey = (data) => {

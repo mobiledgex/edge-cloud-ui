@@ -8,8 +8,9 @@ import * as actions from '../../../../actions';
 import AutoScalePolicyReg from './Reg'
 import { keys, showAutoScalePolicies, deleteAutoScalePolicy } from '../../../../services/modules/autoScalePolicy';
 import {HELP_SCALE_POLICY} from "../../../../tutorial";
-import { perpetual } from '../../../../helper/constant';
+import { perpetual, role } from '../../../../helper/constant';
 import { fields } from '../../../../services/model/format';
+import { developerRoles } from '../../../../constant';
 class AutoScalePolicy extends React.Component {
     constructor(props) {
         super(props);
@@ -65,7 +66,7 @@ class AutoScalePolicy extends React.Component {
             nameField: fields.autoScalePolicyName,
             sortBy: [fields.region, fields.autoScalePolicyName],
             keys: this.keys,
-            onAdd: this.onAdd,
+            onAdd: role.validateRole(developerRoles, this.props.organizationInfo) ? this.onAdd : undefined,
             selection:true,
             viewMode : HELP_SCALE_POLICY
         })

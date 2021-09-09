@@ -62,7 +62,7 @@ export const edgeboxOnly = (key, data, isDetail) => {
 export const cloudletInfoState = (key, data, isDetail) => {
     let id = data[key.field]
     let state = 'Not Present';
-    let color = colors.COLOR_RGB_INFO
+    let color = colors.COLOR_RGB_ERROR
     switch (id) {
         case 0:
             state = perpetual.UNKNOWN
@@ -173,7 +173,7 @@ export const reporterStatus = (key, data, isDetail) => {
         return toFirstUpperCase(data[key.field])
     }
     else {
-        return <Icon name={success ? 'check' : 'close'} style={{ color: `rgb(${success ? colors.COLOR_RGB_SUCCESS : colors.colors.COLOR_RGB_INFO})` }} />
+        return <Icon name={success ? 'check' : 'close'} style={{ color: `rgb(${success ? colors.COLOR_RGB_SUCCESS : colors.COLOR_RGB_ERROR})` }} />
     }
 }
 
@@ -194,7 +194,7 @@ export const NoData = () => {
 
 export const RenderSeverity = (data, isDetailView) => {
     let id = data[fields.severity]
-    let color = colors.COLOR_RGB_INFO
+    let color = colors.COLOR_RGB_ERROR
     let label = 'Error'
     let icon = 'cancel'
     switch (id) {
@@ -205,7 +205,7 @@ export const RenderSeverity = (data, isDetailView) => {
             break;
         case perpetual.ERROR:
             label = 'Error'
-            color = colors.COLOR_RGB_INFO
+            color = colors.COLOR_RGB_ERROR
             icon = 'cancel'
             break;
         case perpetual.WARNING:
