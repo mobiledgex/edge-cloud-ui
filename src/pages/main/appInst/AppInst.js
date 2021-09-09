@@ -13,10 +13,11 @@ import * as shared from '../../../services/model/shared';
 import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog } from '@material-ui/core';
 import { HELP_APP_INST_LIST } from "../../../tutorial";
-import { perpetual } from '../../../helper/constant';
+import { perpetual, role } from '../../../helper/constant';
 import * as serverData from '../../../services/model/serverData'
 import { idFormatter, labelFormatter, uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
+import { developerRoles } from '../../../constant';
 
 class AppInstList extends React.Component {
     constructor(props) {
@@ -195,7 +196,7 @@ class AppInstList extends React.Component {
             selection: !redux_org.isOperator(this),
             sortBy: [fields.region, fields.appName],
             keys: this.keys,
-            onAdd:  redux_org.isOperator(this) ?  null : this.onAdd,
+            onAdd:  role.validateRole(developerRoles, this.props.organizationInfo) ? this.onAdd : undefined,
             viewMode: HELP_APP_INST_LIST,
             grouping: true,
             groupingAction:true,

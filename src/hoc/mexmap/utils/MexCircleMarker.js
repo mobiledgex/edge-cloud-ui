@@ -19,15 +19,19 @@ const renderPopup = (dataList) => {
     )
 }
 
-
-
 const MexCircleMarker = props => {
-    const {radius, coords, popupData, label, popup, color, onClick, interactive} = props
+    const { radius, coords, popupData, label, popup, color, onClick, interactive } = props
     const center = latLng(coords.lat, coords.lng)
     const [rad, setRadius] = React.useState(radius ? radius : 13)
 
+    const updateRadius = (value) => {
+        if (radius && radius < 13) {
+            setRadius(value)
+        }
+    }
+
     return (
-        <CircleMarker radius={rad} center={center} color={color ? color : '#3288FF'} onClick={onClick} onMouseOver={()=>{setRadius(13)}} onMouseOut={()=>{setRadius(radius)}} interactive={interactive ? interactive : true}>
+        <CircleMarker radius={rad} center={center} color={color ? color : '#3288FF'} onClick={onClick} onMouseOver={() => { updateRadius(13) }} onMouseOut={() => { updateRadius(radius) }} interactive={interactive ? interactive : true}>
             {label ? <Tooltip permanent={true} direction={'center'} className='text'>
                 {label}
             </Tooltip> : null}
