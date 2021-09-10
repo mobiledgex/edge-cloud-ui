@@ -80,10 +80,10 @@ class OrganizationList extends React.Component {
                     }
                     title={
                         <Typography>
-                            Create Organization to Run Apps on Telco Edge (Developers)
+                            Create Organization to Run Apps on Operator Edge (Developers)
                         </Typography>
                     }
-                    // subheader="Dynamically scale and deploy applications on Telco Edge geographically close to your end-users. Deploying to MobiledgeX's cloudlets provides applications the advantage of low latency, which can be extremely useful for real-time applications such as Augmented Reality, Mobile Gaming, Self-Driving Cars, Drones, etc."
+                    // subheader="Dynamically scale and deploy applications on Operator Edge geographically close to your end-users. Deploying to MobiledgeX's cloudlets provides applications the advantage of low latency, which can be extremely useful for real-time applications such as Augmented Reality, Mobile Gaming, Self-Driving Cars, Drones, etc."
                     action={
                         <IconButton aria-label="developer" onClick={() => { this.onAdd(perpetual.DEVELOPER) }}>
                             <ArrowForwardIosIcon style={{ fontSize: 20, color: lightGreen['A700'] }} />
@@ -100,7 +100,7 @@ class OrganizationList extends React.Component {
                     }
                     title={
                         <Typography>
-                            Create Organization to Host Telco Edge (Operators)
+                            Create Organization to Host Operator Edge (Operators)
                         </Typography>
                     }
                     // subheader='Register your cloudlet by providing MobiledgeX with a pool of compute resources and access to the OpenStack API endpoint by specifying a few required parameters, such as dynamic IP addresses, cloudlet names, location of cloudlets, certs, and more, using the Edge-Cloud Console. MobiledgeX relies on this information to remotely access the cloudlets to determine resource requirements as well as dynamically track usage.'
