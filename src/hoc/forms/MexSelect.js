@@ -120,7 +120,7 @@ const MexSelect = (props) => {
                 <Dropdown
                     id={form.field}
                     ref={refSelect}
-                    clearable={form.clear !== undefined ? form.clear : true}
+                    clearable={props.disabled ? false : Boolean(form.clear) ? form.clear : true}
                     fluid
                     search
                     icon={getIcon()}
