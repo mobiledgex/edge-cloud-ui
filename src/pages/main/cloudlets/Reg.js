@@ -123,6 +123,32 @@ class CloudletReg extends React.Component {
         }
     }
 
+    loadEnvMandatoryForms = (forms) => {
+        let count = 0
+        this.cloudletPropsList.forEach((item, i) => {
+            if (item.mandatory) {
+                let envForms = this.envForm()
+                let key = item.key
+                let value = item.value
+                for (let envForm of envForms) {
+                    if (envForm.field === fields.key) {
+                        envForm.value = key
+                        envForm.rules.disabled = true
+                    }
+                    else if (envForm.field === fields.value) {
+                        envForm.value = value
+                    }
+                    else {
+                        envForm.visible = false
+                    }
+                }
+                forms.splice(16 + count, 0, this.getEnvForm(envForms))
+                count++
+            }
+        })
+        this.setState({ forms })
+    }
+
     platformTypeValueChange = async (currentForm, forms, isInit) => {
         const valid = !isInit
         if (currentForm.value !== undefined && valid) {
@@ -143,7 +169,12 @@ class CloudletReg extends React.Component {
             return valid
         })
         if (valid) {
-            this.updateState({ forms: nforms })
+            if (currentForm.value !== undefined && this.state.region) {
+                this.loadEnvMandatoryForms(nforms)
+            }
+            else {
+                this.updateState({ forms: nforms })
+            }
         }
     }
 
@@ -188,8 +219,9 @@ class CloudletReg extends React.Component {
     regionValueChange = async (currentForm, forms, isInit) => {
         let region = currentForm.value;
         this.updateState({ region })
-        if (region && ((!isInit))) {
-            await this.fetchRegionDependentData(region, fetchFormValue(forms, fields.platformType))
+        if (region && !isInit) {
+            const platformType = fetchFormValue(forms, fields.platformType)
+            await this.fetchRegionDependentData(region, platformType)
             let nforms = forms.filter(form => {
                 let valid = true
                 if (form.field === fields.trustPolicyName || form.field === fields.gpuConfig) {
@@ -200,7 +232,12 @@ class CloudletReg extends React.Component {
                 }
                 return valid
             })
-            this.updateState({ forms: nforms })
+            if (platformType && region) {
+                this.loadEnvMandatoryForms(nforms)
+            }
+            else {
+                this.updateState({ forms: nforms })
+            }
             this.requestedRegionList.push(region);
         }
     }
@@ -698,14 +735,14 @@ class CloudletReg extends React.Component {
         { field: fields.key, label: 'Key', formType: SELECT, placeholder: 'Select Key', rules: { required: true }, width: 6, visible: true, options: this.cloudletPropsList },
         { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 6, visible: true },
         this.isUpdate ? {} :
-            { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 4, onClick: this.removeMultiForm }
+            { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 4, onClick: this.removeMultiForm }
     ])
 
     resourceQuotaForm = () => ([
         { field: fields.resourceName, label: 'Name', formType: SELECT, placeholder: 'Select Name', rules: { required: true }, width: 5, visible: true, options: this.resourceQuotaList, update: { edit: true } },
         { field: fields.alertThreshold, label: 'Alert Threshold', formType: INPUT, unit: '%', rules: { required: true }, width: 4, visible: true, update: { edit: true }, value: this.isUpdate ? this.props.data[fields.defaultResourceAlertThreshold] : undefined },
         { field: fields.resourceValue, label: 'Value', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true } },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
 
     ])
 
