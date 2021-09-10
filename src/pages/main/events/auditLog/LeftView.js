@@ -81,7 +81,7 @@ class AuditLogView extends React.Component {
                     const value = key.mtags ? data.mtags[key.field] : data[key.field]
                     filterCount++
                     if (value) {
-                        valid = value.includes(filterText)
+                        valid = value.toLowerCase().includes(filterText)
                     }
                     if (valid) {
                         break;
@@ -181,7 +181,7 @@ class AuditLogView extends React.Component {
                     }
                 })
                 return (
-                    length * 24
+                    length * 24.5
                 )
             };
             return (
