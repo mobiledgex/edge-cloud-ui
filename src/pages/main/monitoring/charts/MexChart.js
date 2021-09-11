@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import LineChart from './linechart/MexLineChart'
 import { metricRequest } from '../helper/Constant'
-import { Card, GridListTile } from '@material-ui/core'
+import { Card, ImageListItem } from '@material-ui/core'
 import { timezonePref } from '../../../../utils/sharedPreferences_util'
 //services
 import { fields } from '../../../../services/model/format'
@@ -59,11 +59,11 @@ class MexChart extends React.Component {
                     let key = this.metricKeyGenerator(filter, region, data.metric)
                     return (
                         filter.metricType.includes(data.metric.field) ?
-                            <GridListTile key={key} cols={1} style={style}>
+                            <ImageListItem key={key} cols={1} style={style}>
                                 <Card style={{ height: 300 }}>
                                     <LineChart id={key} rowSelected={rowSelected} data={data} avgData={avgData[region]} globalFilter={filter} range={range} />
                                 </Card>
-                            </GridListTile> : null
+                            </ImageListItem> : null
                     )
                 }) : null
         )

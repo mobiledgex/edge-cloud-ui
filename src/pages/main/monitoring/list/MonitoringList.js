@@ -119,7 +119,7 @@ const MTableHead = (props) => {
               key={headCell.field}
               style={{ backgroundColor: '#292c33', cursor: 'default' }}
               align={headCell.numeric ? "right" : "left"}
-              padding={headCell.disablePadding ? "none" : "default"}
+              padding={headCell.disablePadding ? "none" : "normal"}
               sortDirection={orderBy === headCell.field ? order : false}
             >
               {

@@ -236,6 +236,12 @@ class UpdatePassword extends React.Component {
         <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
     )
 
+    onDialogClose = (event, reason) => {
+        if (reason !== 'backdropClick') {
+            this.handleClose()
+        }
+    }
+
     render() {
         const { loading, open } = this.state
         const { dialog } = this.props
@@ -246,7 +252,7 @@ class UpdatePassword extends React.Component {
                         <LockOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                         <ListItemText primary="Change Password" />
                     </MenuItem>
-                        <Dialog open={open} onClose={this.handleClose} aria-labelledby="update_password" disableEscapeKeyDown={true} disableBackdropClick={true}>
+                        <Dialog open={open} onClose={this.onDialogClose} aria-labelledby="update_password" disableEscapeKeyDown={true}>
                             {loading ? <LinearProgress /> : null}
                             <DialogTitle id="update_password">
                                 <div style={{ float: "left", display: 'inline-block' }}>

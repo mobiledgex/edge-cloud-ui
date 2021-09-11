@@ -209,12 +209,18 @@ class AppInstList extends React.Component {
         })
     }
 
+    onDialogClose = (event, reason) => {
+        if (reason !== 'backdropClick') {
+            this.updateState({ openTerminal: false })
+        }
+    }
+
     render() {
         const { currentView } = this.state
         return (
             <React.Fragment>
                 <DataView id={perpetual.PAGE_APP_INSTANCES} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
-                <Dialog disableBackdropClick={true} disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={() => { this.updateState({ openTerminal: false }) }}>
+                <Dialog disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={this.onDialogClose}>
                     <TerminalViewer data={this.state.terminalData} onClose={() => {
                         this.updateState({ openTerminal: false })
                     }} />

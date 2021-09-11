@@ -82,6 +82,12 @@ class Billing extends React.Component {
         </Tooltip>
     )
 
+    onDialogClose = (event, reason) => {
+        if (reason !== 'backdropClick') {
+            this.handleClose()
+        }
+    }
+
     render() {
         const { open, loading, billingOrg } = this.state
         return (
@@ -90,7 +96,7 @@ class Billing extends React.Component {
                     <PaymentOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                     <ListItemText primary="Billing" />
                 </MenuItem>
-                {billingOrg ? <Dialog open={open} onClose={this.handleClose} aria-labelledby="billing" disableEscapeKeyDown={true} disableBackdropClick={true}>
+                {billingOrg ? <Dialog open={open} onClose={this.onDialogClose} aria-labelledby="billing" disableEscapeKeyDown={true}>
                     {loading ? <LinearProgress /> : null}
                     <DialogTitle id="billing">
                         <div style={{ float: "left", display: 'inline-block' }}>
