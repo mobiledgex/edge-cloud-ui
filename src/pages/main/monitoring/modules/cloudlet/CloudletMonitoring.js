@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, GridList, GridListTile } from '@material-ui/core'
+import { Card, ImageList, ImageListItem } from '@material-ui/core'
 import { fields } from '../../../../../services/model/format'
 import CloudletMexMap from './CloudletMexMap'
 import CloudletEvent from './CloudletEvent'
@@ -58,20 +58,20 @@ class CloudletMonitoring extends React.Component {
         const { avgData, filter, rowSelected, range, selectedOrg, updateAvgData, listAction, onActionClose, regions } = this.props
         return (
             <React.Fragment>
-                <GridList cols={4} cellHeight={300}>
-                    {filter.metricType.includes('map') ? <GridListTile cols={3}>
+                <ImageList cols={4} rowHeight={300}>
+                    {filter.metricType.includes('map') ? <ImageListItem cols={3}>
                         <CloudletMexMap data={mapData} region={filter.region} />
-                    </GridListTile> : null}
-                    {filter.metricType.includes('event') ? <GridListTile cols={1}>
+                    </ImageListItem> : null}
+                    {filter.metricType.includes('event') ? <ImageListItem cols={1}>
                         <Card style={{ height: 300 }}>
                             <CloudletEvent regions={regions} filter={filter} range={range} org={selectedOrg} />
                         </Card>
-                    </GridListTile> : null}
+                    </ImageListItem> : null}
                     {filter.region.map((region, i) => (
                         <CloudletFlavorUsage key={`flavor_${region}_${i}`} range={range} filter={filter} avgData={avgData[region]} rowSelected={rowSelected} region={region} org={selectedOrg} />
                     ))}
                     <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
-                </GridList>
+                </ImageList>
                 {listAction && listAction.id === ACTION_LATENCY_METRICS ? <DMEMetrics id={filter.parent.id} onClose={onActionClose} data={listAction.data} /> : null}
             </React.Fragment>
         )

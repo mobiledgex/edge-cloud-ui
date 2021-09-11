@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { cloudletFlavorUsageMetrics } from '../../../../../services/modules/cloudletMetrics'
 import LineChart from '../../charts/linechart/MexLineChart'
 import MexWorker from '../../services/flavor.worker.js'
-import { Card, GridListTile } from '@material-ui/core'
+import { Card, ImageListItem } from '@material-ui/core'
 import { timezonePref } from '../../../../../utils/sharedPreferences_util'
 import {redux_org} from '../../../../../helper/reduxData'
 import { authSyncRequest } from '../../../../../services/service'
@@ -35,11 +35,11 @@ class CloudletFlavorUsage extends React.Component {
         const { filter, style, rowSelected, range } = this.props
         return (
             chartData && chartData.datasets && filter.metricType.includes(chartData.metric.field) ?
-                <GridListTile cols={1} style={style}>
+                <ImageListItem cols={1} style={style}>
                     <Card style={{ height: 300 }}>
                         <LineChart id={'cloudlet-flavor-usage'} rowSelected={rowSelected} disableRowSelectedFilter={true} data={chartData} avgData={this.avgData} globalFilter={filter} range={range} />
                     </Card>
-                </GridListTile> : null
+                </ImageListItem> : null
         )
     }
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, GridList, GridListTile } from '@material-ui/core'
+import { Card, ImageList, ImageListItem } from '@material-ui/core'
 import { fields } from '../../../../../services/model/format'
 import AppClient from './AppClient'
 import AppEvent from './AppEvent'
@@ -76,25 +76,25 @@ class AppMonitoring extends React.Component {
         const { avgData, filter, range, rowSelected, selectedOrg, updateAvgData, onActionClose, listAction, regions, privateAccess, orgInfo } = this.props
         return (
             <React.Fragment>
-                <GridList cols={4} cellHeight={300}>
+                <ImageList cols={4} rowHeight={300}>
                     {filter.metricType.includes('client') ?
-                        <GridListTile cols={1}>
+                        <ImageListItem cols={1}>
                             <Card style={{ height: 300, width: '100%' }}>
                                 <AppClient regions={regions} filter={filter} range={range} org={selectedOrg} privateAccess={privateAccess}  orgInfo={orgInfo}/>
                             </Card>
-                        </GridListTile> : null}
+                        </ImageListItem> : null}
                     {filter.metricType.includes('map') ?
-                        <GridListTile cols={2}>
+                        <ImageListItem cols={2}>
                             <AppMexMap data={mapData} region={filter.region} listAction={listAction} avgData={avgData} onActionClose={onActionClose} />
-                        </GridListTile> : null}
+                        </ImageListItem> : null}
                     {filter.metricType.includes('event') ?
-                        <GridListTile cols={1}>
+                        <ImageListItem cols={1}>
                             <Card style={{ height: 300 }}>
                                 <AppEvent regions={regions} filter={filter} range={range} org={selectedOrg} avgData={avgData} orgInfo={orgInfo}/>
                             </Card>
-                        </GridListTile> : null}
+                        </ImageListItem> : null}
                     <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
-                </GridList>
+                </ImageList>
                 {listAction && listAction.id === ACTION_LATENCY_METRICS ? <DMEMetrics group={listAction.group} id={filter.parent.id} onClose={onActionClose} data={listAction.data} /> : null}
             </React.Fragment>
         )

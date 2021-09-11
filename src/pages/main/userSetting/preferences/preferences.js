@@ -136,6 +136,12 @@ class Preferences extends React.Component {
         }
     }
 
+    onDialogClose = (event, reason) => {
+        if (reason !== 'backdropClick') {
+            this.handleClose()
+        }
+    }
+
     render() {
         const { open, data, header, loading } = this.state
         return (
@@ -144,7 +150,7 @@ class Preferences extends React.Component {
                     <AppsIcon fontSize="small" style={{ marginRight: 15 }} />
                     <ListItemText primary="Preferences" />
                 </MenuItem>
-                <Dialog open={open} onClose={this.handleClose} aria-labelledby="profile" disableEscapeKeyDown={true} disableBackdropClick={true} maxWidth={'lg'}>
+                <Dialog open={open} onClose={this.onDialogClose} aria-labelledby="profile" disableEscapeKeyDown={true} maxWidth={'lg'}>
                     {loading ? <LinearProgress /> : null}
                     <DialogTitle label="Preferences" onClose={this.handleClose}>
                         <Help data={prefHelp} style={{marginTop:-9}}/>

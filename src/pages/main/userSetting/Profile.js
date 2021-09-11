@@ -146,6 +146,12 @@ class Profile extends React.Component {
         }
     }
 
+    onClose = (event, reason) => {
+        if (reason !== 'backdropClick') {
+            this.handleClose()
+        }
+    }
+
     render() {
         const { userInfo } = this.props
         const { open, isOTP, OTPData, loading } = this.state
@@ -155,7 +161,7 @@ class Profile extends React.Component {
                     <PersonOutlineOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
                     <ListItemText primary="Profile" />
                 </MenuItem>
-                <Dialog open={open} onClose={this.handleClose} aria-labelledby="profile" disableEscapeKeyDown={true} disableBackdropClick={true}>
+                <Dialog open={open} onClose={this.onClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
                     {loading ? <LinearProgress /> : null}
                     <DialogTitle id="profile">
                         <div style={{ float: "left", display: 'inline-block' }}>
