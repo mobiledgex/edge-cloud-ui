@@ -241,8 +241,7 @@ class AppReg extends React.Component {
         let version = undefined
         let deployment = undefined
         let appName = undefined
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i];
+        for (let form of forms) {
             if (form.field === fields.organizationName) {
                 organizationName = form.value
             }
@@ -257,11 +256,22 @@ class AppReg extends React.Component {
             }
         }
         if (deployment && organizationName && appName && version) {
-            form.value = deployment === perpetual.DEPLOYMENT_TYPE_VM ?
-                `https://artifactory.mobiledgex.net/artifactory/repo-${organizationName}` :
-                deployment === perpetual.DEPLOYMENT_TYPE_HELM ?
-                    `https://chart.registry.com/charts:${organizationName}/${appName}` :
-                    `docker.mobiledgex.net/${organizationName.toLowerCase()}/images/${appName.toLowerCase()}:${version.toLowerCase()}`
+            if (deployment === perpetual.DEPLOYMENT_TYPE_VM) {
+                form.value = `https://artifactory.mobiledgex.net/artifactory/repo-${organizationName}`
+            }
+            else if (deployment === perpetual.DEPLOYMENT_TYPE_HELM) {
+                form.value = `https://chart.registry.com/charts:${organizationName}/${appName}`
+            }
+            else {
+                let domain = window.location.host
+                if (domain && domain.startsWith('https://console') || domain.startsWith('console')) {
+                    domain = domain.replace('console', 'docker')
+                }
+                else {
+                    domain = 'docker.mobiledgex.net'
+                }
+                form.value = `${domain}/${organizationName.toLowerCase()}/images/${appName.toLowerCase()}:${version.toLowerCase()}`
+            }
         }
     }
 

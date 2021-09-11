@@ -32,14 +32,22 @@ const DialogTitle = withStyles(styles)((props) => {
     );
 });
 
+const onClose = (event, reason) => {
+    if (reason !== 'backdropClick') {
+        props.close()
+    }
+}
+
 const MexMessageMultiNorm = (props) => {
-    const {data} = props
+    const { data } = props
     return (
-        <Dialog onClose={props.close} aria-labelledby="simple-dialog-title" open={data.length > 0} disableEscapeKeyDown={true} disableBackdropClick={true} PaperProps={{style:{
-            minWidth:250
-        }}}>
+        <Dialog onClose={onClose} aria-labelledby="message-multi-normal" open={data.length > 0} disableEscapeKeyDown={true} PaperProps={{
+            style: {
+                minWidth: 250
+            }
+        }}>
             <DialogTitle id="title" onClose={props.close}>Delete</DialogTitle>
-            <List style={{maringTop:-20}}>
+            <List style={{ maringTop: -20 }}>
                 {data.map((mul, i) => {
                     return (
                         <ListItem key={i}>

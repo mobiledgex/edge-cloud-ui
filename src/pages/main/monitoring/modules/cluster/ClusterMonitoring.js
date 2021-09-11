@@ -1,4 +1,4 @@
-import { GridList, GridListTile } from '@material-ui/core'
+import { ImageList, ImageListItem } from '@material-ui/core'
 import React from 'react'
 import { fields } from '../../../../../services/model/format'
 import ClusterMexMap from './ClusterMexMap'
@@ -50,13 +50,13 @@ class ClusterMonitoring extends React.Component {
         const { avgData, filter, rowSelected, range, selectedOrg, updateAvgData, regions } = this.props
         return (
             <React.Fragment>
-                <GridList cols={4} cellHeight={300}>
+                <ImageList cols={4} rowHeight={300}>
                     {filter.metricType.includes('map') ?
-                        <GridListTile cols={4}>
+                        <ImageListItem cols={4}>
                             <ClusterMexMap data={mapData} region={filter.region} />
-                        </GridListTile> : null}
+                        </ImageListItem> : null}
                     <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
-                </GridList>
+                </ImageList>
             </React.Fragment>
         )
     }
