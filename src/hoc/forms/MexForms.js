@@ -14,7 +14,7 @@ import MexTimeCounter from './MexTimeCounter';
 import MexSelectTree from './selectTree/MexSelectTree';
 import MexSelectTreeGroup from './selectTree/MexSelectTreeGroup';
 import { Form, Grid, Divider } from 'semantic-ui-react';
-import { IconButton, Tooltip } from '@material-ui/core';
+import { IconButton, Tooltip, Box } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
@@ -254,7 +254,8 @@ const MexForms = (props) => {
                         form={form}
                         key={index}
                         onClick={(e) => { form.onClick(e, form) }} /> :
-                    null)
+                    null
+        )
     }
 
     const loadMainHeader = (index, form) => {
@@ -271,9 +272,9 @@ const MexForms = (props) => {
         form.id = { id: index }
         let subForms = form.forms
         return (
-            <Grid style={{ width: '100%' }} key={index}>
-                <Grid.Row className={'formHeader-' + index} columns={2} key={uuid() + '' + index} style={{ height: 50 }}>
-                    <Grid.Column width={15} className='detail_item'>
+            <React.Fragment key={uuid() + '' + index}>
+                <Grid.Row className={'formHeader-' + index} columns={2} style={{ height: 40 }}>
+                    <Grid.Column width={15}>
                         <h3 style={{ color: "white", display: 'inline' }}>{form.label}
                             {
                                 subForms ? subForms.map((subForm, i) => {
@@ -287,13 +288,13 @@ const MexForms = (props) => {
                         form.tip ?
                             <Grid.Column key={index} width={1}>
                                 {/* @todo temp solution needs to be fixed */}
-                                &nbsp;&nbsp;&nbsp;&nbsp;{showTip(form)}
+                                {showTip(form)}
                             </Grid.Column> :
                             null
                     }
                 </Grid.Row>
                 <Divider />
-            </Grid>
+            </React.Fragment>
         )
     }
 
@@ -334,7 +335,7 @@ const MexForms = (props) => {
                                     form.formType === SWITCH ?
                                         <div style={{ marginTop: 5 }}><MexSwitch horizontal={true} form={form} onChange={onValueSelect} /></div> :
                                         form.formType === ICON_BUTTON || form.formType === BUTTON ?
-                                            loadButton(form, i) :
+                                            <div key={i} style={{display:'flex', alignItems:'center', textAlign:'center', verticalAlign:'middle', height:55}}>{loadButton(form, i)}</div> :
                                             null
                         }
                     </Grid.Column> : null
@@ -358,7 +359,7 @@ const MexForms = (props) => {
                         </li>
                     )
                 })}</ul>
-            } aria-label="tip" style={{ marginTop: 7 }}>
+            } aria-label="tip" style={{ marginTop: 9 }}>
                 {getIcon('help')}
             </Tooltip>
         )
