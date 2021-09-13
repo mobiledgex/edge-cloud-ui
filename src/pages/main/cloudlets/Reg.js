@@ -712,7 +712,7 @@ class CloudletReg extends React.Component {
                             resourceQuotaForm.value = item['alert_threshold'] ? item['alert_threshold'] : data[fields.defaultResourceAlertThreshold]
                         }
                     }
-                    forms.splice(16 + multiFormCount, 0, this.getResoureQuotaForm(resourceQuotaForms))
+                    forms.splice(17 + multiFormCount, 0, this.getResoureQuotaForm(resourceQuotaForms))
                     multiFormCount += 1
                 })
             }
