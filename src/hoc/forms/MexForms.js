@@ -14,7 +14,7 @@ import MexTimeCounter from './MexTimeCounter';
 import MexSelectTree from './selectTree/MexSelectTree';
 import MexSelectTreeGroup from './selectTree/MexSelectTreeGroup';
 import { Form, Grid, Divider } from 'semantic-ui-react';
-import { IconButton, Tooltip, Box } from '@material-ui/core';
+import { IconButton, Tooltip } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
