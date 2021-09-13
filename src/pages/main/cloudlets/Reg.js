@@ -690,7 +690,7 @@ class CloudletReg extends React.Component {
                             envForm.value = value
                         }
                     }
-                    forms.splice(15 + multiFormCount, 0, this.getEnvForm(envForms))
+                    forms.splice(16 + multiFormCount, 0, this.getEnvForm(envForms))
                     multiFormCount += 1
                 })
             }
@@ -732,18 +732,17 @@ class CloudletReg extends React.Component {
 
     /*Multi Form*/
     envForm = () => ([
-        { field: fields.key, label: 'Key', formType: SELECT, placeholder: 'Select Key', rules: { required: true }, width: 6, visible: true, options: this.cloudletPropsList },
-        { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 6, visible: true },
+        { field: fields.key, label: 'Key', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Key', rules: { required: true }, width: 7, visible: true, options: this.cloudletPropsList },
+        { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 7, visible: true },
         this.isUpdate ? {} :
-            { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 4, onClick: this.removeMultiForm }
+            { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     resourceQuotaForm = () => ([
         { field: fields.resourceName, label: 'Name', formType: SELECT, placeholder: 'Select Name', rules: { required: true }, width: 5, visible: true, options: this.resourceQuotaList, update: { edit: true } },
         { field: fields.alertThreshold, label: 'Alert Threshold', formType: INPUT, unit: '%', rules: { required: true }, width: 4, visible: true, update: { edit: true }, value: this.isUpdate ? this.props.data[fields.defaultResourceAlertThreshold] : undefined },
-        { field: fields.resourceValue, label: 'Value', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true } },
-        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
-
+        { field: fields.resourceValue, label: 'Value', formType: INPUT, rules: { required: true }, width: 5, visible: true, update: { edit: true } },
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     getEnvForm = (form) => {
