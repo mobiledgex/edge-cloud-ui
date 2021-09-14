@@ -15,6 +15,7 @@ const fetchArray = (props) => {
 }
 
 const MonitoringMenu = (props) => {
+    console.log(props,"props")
     const [anchorEl, setAnchorEl] = React.useState(null)
     const [filterText, setFilterText] = React.useState('')
     const [value, setValue] = React.useState([])
@@ -71,11 +72,14 @@ const MonitoringMenu = (props) => {
     }
 
     const fetchList = (dataList) => {
+        console.log(dataList,"dataList")
         return dataList.map((item, i) => {
             let itemData = props.labelKey ? item[props.labelKey] : item
+            console.log(itemData.toLowerCase().includes(filterText),itemData,"itemData")
             if (itemData.toLowerCase().includes(filterText)) {
                 let valid = item.role ? validateRole(item.role, redux_org.roleType(orgInfo)) : true
                 let selectedValue = props.value ? props.value : value
+                console.log(valid,selectedValue,itemData)
                 return valid ?
                     <ListItem key={i} role={undefined} dense button onClick={() => { onChange(props.field ? item[props.field] : item) }}>
                         {props.multiple ?
@@ -93,6 +97,7 @@ const MonitoringMenu = (props) => {
             }
         })
     }
+    console.log(fetchList(props.data))
     return (
         <Box order={props.order}>
             {props.tip ? <Tooltip title={<strong style={{ fontSize: 13 }}>{props.tip}</strong>} arrow>

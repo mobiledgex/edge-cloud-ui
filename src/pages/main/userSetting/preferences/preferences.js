@@ -126,6 +126,7 @@ class Preferences extends React.Component {
 
     prefView = (id) => {
         let data = cloneDeep(this.state.data)
+        console.log(data,"data")
         switch (id) {
             case PREF_DATATABLE:
                 return <DatatablePref data={data} update={this.updateData} />
@@ -144,6 +145,7 @@ class Preferences extends React.Component {
 
     render() {
         const { open, data, header, loading } = this.state
+        console.log(preferencesList,"preferencesList")
         return (
             <React.Fragment>
                 <MenuItem onClick={this.handleOpen}>
@@ -166,9 +168,9 @@ class Preferences extends React.Component {
                                                 <strong style={{ color: '#888888', marginBottom: 10 }}><b>{parent.label}</b></strong>
                                             </div> : null
                                             :
-                                            <ListItem key={i} button onClick={() => { this.setState({ header: i }) }} style={{ backgroundColor: header === i ? '#388E3C' : 'transparent', borderRadius: 5, marginTop: 2 }}>
+                                           (<ListItem key={i} button onClick={() => { this.setState({ header: i }) }} style={{ backgroundColor: header === i ? '#388E3C' : 'transparent', borderRadius: 5, marginTop: 2 }}>
                                                 <ListItemText primary={parent.label} />
-                                            </ListItem>
+                                            </ListItem>)
                                     ))}
                                 </List>
                             </Grid>

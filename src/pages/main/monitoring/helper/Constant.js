@@ -87,6 +87,7 @@ export const metricParentTypes = () => ([
 ])
 
 export const validateRole = (roles, selectedRole) => {
+    console.log(roles, selectedRole,"roles, selectedRole")
     let valid = false
     if (selectedRole) {
         for (let i = 0; i < roles.length; i++) {
