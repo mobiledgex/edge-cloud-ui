@@ -93,7 +93,7 @@ export default function Select(props) {
                 <div style={{ display: 'inline', cursor: 'pointer', marginTop: props.label ? 21 : 0, ...color, ...border }} aria-controls="chart" aria-haspopup="true" onClick={(e) => { setAnchorEl(e.currentTarget) }}>
                     <Typography display='inline' noWrap style={{ display: 'flex', position: 'relative' }}>
                         <Tooltip title={selectLabel()}>
-                            {props.border ? <div className={classes.wrapIcon} style={{marginTop:1}}>{selectLabel()}</div> : <div className={classes.wrapIcon}>{selectLabel()}</div>}
+                            {props.border ? <Typography component={'span'} variant={'body2'} className={classes.wrapIcon} style={{marginTop:2}}>{selectLabel()}</Typography> : <Typography component={'span'} variant={'body2'} className={classes.wrapIcon}>{selectLabel()}</Typography>}
                         </Tooltip>
                         <KeyboardArrowDownOutlinedIcon className={classes.icon} style={{ ...color }} />
                     </Typography>
