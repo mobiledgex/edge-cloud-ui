@@ -40,7 +40,7 @@ const showMessage = (self, request, message) => {
  * @param {*} auth 
  * @returns 
  */
-export const fetchToken = (self=null) => {
+export const fetchToken = (self) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     if (store) {
         return store.userToken
