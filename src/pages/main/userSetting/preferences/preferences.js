@@ -126,7 +126,6 @@ class Preferences extends React.Component {
 
     prefView = (id) => {
         let data = cloneDeep(this.state.data)
-        console.log(data,"data")
         switch (id) {
             case PREF_DATATABLE:
                 return <DatatablePref data={data} update={this.updateData} />
@@ -145,7 +144,6 @@ class Preferences extends React.Component {
 
     render() {
         const { open, data, header, loading } = this.state
-        console.log(preferencesList,"preferencesList")
         return (
             <React.Fragment>
                 <MenuItem onClick={this.handleOpen}>

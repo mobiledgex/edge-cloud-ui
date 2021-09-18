@@ -89,7 +89,6 @@ class MonitoringPreferences extends React.Component {
 
     render() {
         const { forms } = this.state
-        console.log(forms,"forms",redux_org)
         return (
             <div>
                 {forms.map((form, i) => (
@@ -140,7 +139,6 @@ class MonitoringPreferences extends React.Component {
     componentDidMount() {
         let forms = this.forms()
         let data = this.props.data ? this.props.data[PREF_MONITORING] : undefined
-        console.log(data,"data for monitoring")
         this.loadDefaultData(forms, data)
         this.setState({ forms })
     }

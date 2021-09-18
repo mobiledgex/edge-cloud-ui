@@ -4,12 +4,10 @@ import { perpetual } from "../constant"
 
 const getObject = (self) => {
     if (self && self.props && self.props.organizationInfo) {
-    console.log(self.props.organizationInfo)
         return self.props.organizationInfo
     }
     else if(self && self[fields.organizationName])
     {
-        console.log(self,"11")
         return self
     }
 }
@@ -41,7 +39,6 @@ export const isDeveloperManager = (self) => {
 export const isOperator = (self) => {
     let info = getObject(self)
     if (info) {
-        console.log(info.type===perpetual.OPERATOR)
         return info.type === perpetual.OPERATOR
     }
     return false
