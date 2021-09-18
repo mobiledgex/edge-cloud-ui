@@ -80,8 +80,6 @@ class Monitoring extends React.Component {
             showLoaded: false,
             listAction: undefined
         }
-        console.log(parent,"parent", constant.summaryList[0])
-
         this._isMounted = false
         this.tableRef = React.createRef()
         this.selectedRow = undefined
@@ -263,7 +261,6 @@ class Monitoring extends React.Component {
 
     render() {
         const { filter, range, duration, organizations, avgData, rowSelected, showLoaded, selectedOrg, maxHeight } = this.state
-        console.log(filter,'filter')
         return (
             <div mex-test="component-monitoring" style={{position:'relative'}}>
                 <Card style={{height:50, marginBottom:2}}>

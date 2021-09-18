@@ -35,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const MexToolbar = (props) => {
-    console.log(props,'props for mextoolbar')
     const classes = useStyles();
     const orgInfo = useSelector(state=>state.organizationInfo.data)
     const privateAccess = useSelector(state=>state.privateAccess.data)
@@ -135,7 +134,6 @@ const MexToolbar = (props) => {
         return constant.metricParentTypes()
     }
     return (
-        // console.log(parentType(),"parentType")
         <Toolbar>
             <label className='monitoring-header'>Monitoring</label>
             {

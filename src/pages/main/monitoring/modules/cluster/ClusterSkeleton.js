@@ -11,7 +11,6 @@ class AppSkeleton extends React.Component {
 
     render() {
         const { filter } = this.props
-        console.log()
         return (
             filter.parent.id === PARENT_CLUSTER_INST ?
                 <React.Fragment>
