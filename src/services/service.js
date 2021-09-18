@@ -45,7 +45,7 @@ export const fetchToken = (self) => {
     if (store) {
         return store.userToken
     }
-    if (self && self.props && self.props.history.location.pathname !=='/passwordreset') {
+    if (self && self.props && self.props.history) {
         self.props.history.push('/logout');
     }
 }
@@ -56,7 +56,7 @@ export const fetchToken = (self) => {
  * @returns headers
  */
 export const fetchHeader = (self, request, auth) => {
-    const token = fetchToken(self)
+    const token = auth && fetchToken(self)
     let headers = {};
     if (token && auth) {
         headers = {
@@ -100,7 +100,7 @@ const responseStatus = (self, status) => {
     return valid
 }
 
-const errorResponse = (self, request, error, callback) => {
+const errorResponse = (self, request, error, callback, auth=true) => {
     if (error && error.response) {
         const response = error.response
         const code = response.status
@@ -117,7 +117,7 @@ const errorResponse = (self, request, error, callback) => {
                 message = data.message ? data.message : message
             }
         }
-        if (validateExpiry(self, message)) {
+        if (!auth || validateExpiry(self, message)) {
             showMessage(self, request, message)
             if (callback) {
                 callback({ request, error: { code, message } })
@@ -143,7 +143,7 @@ const sendSyncRequest = async (self, request, auth = true) => {
         mc = formatter(request, response)
     }
     catch (error) {
-        errorResponse(self, request, error)
+        errorResponse(self, request, error, undefined, auth)
         mc = { request, error }
     }
     showProgress(self)
