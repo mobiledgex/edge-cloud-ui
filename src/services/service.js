@@ -40,12 +40,12 @@ const showMessage = (self, request, message) => {
  * @param {*} auth 
  * @returns 
  */
-export const fetchToken = (self) => {
+export const fetchToken = (self=null) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     if (store) {
         return store.userToken
     }
-    if (self && self.props && self.props.history) {
+    if (self && self.props && self.props.history.location.pathname !=='/passwordreset') {
         self.props.history.push('/logout');
     }
 }
