@@ -79,46 +79,47 @@ class CloudletReg extends React.Component {
 
     fetchRegionDependentData = async (region, platformType) => {
         let requestList = []
-        if (!this.requestedRegionList.includes(region)) {
-            requestList.push(showTrustPolicies(this, { region }))
-            requestList.push(showGPUDrivers(this, { region }))
-        }
+        if (region) {
+            if (!this.requestedRegionList.includes(region)) {
+                requestList.push(showTrustPolicies(this, { region }))
+                requestList.push(showGPUDrivers(this, { region }))
+            }
+            if (platformType) {
+                requestList.push(cloudletResourceQuota(this, { region, platformType }))
+                requestList.push(cloudletProps(this, { region, platformType }))
+            }
 
-        if (region && platformType) {
-            requestList.push(cloudletResourceQuota(this, { region, platformType }))
-            requestList.push(cloudletProps(this, { region, platformType }))
-        }
-
-        if (requestList.length > 0) {
-            let mcList = await service.multiAuthSyncRequest(this, requestList)
-            if (mcList && mcList.length > 0) {
-                mcList.forEach(mc => {
-                    if (service.responseValid(mc)) {
-                        let method = mc.request.method
-                        let data = mc.response.data
-                        if (data) {
-                            if (data.length > 0) {
-                                if (method === endpoint.SHOW_TRUST_POLICY) {
-                                    this.trustPolicyList = [...this.trustPolicyList, ...data]
+            if (requestList.length > 0) {
+                let mcList = await service.multiAuthSyncRequest(this, requestList)
+                if (mcList && mcList.length > 0) {
+                    mcList.forEach(mc => {
+                        if (service.responseValid(mc)) {
+                            let method = mc.request.method
+                            let data = mc.response.data
+                            if (data) {
+                                if (data.length > 0) {
+                                    if (method === endpoint.SHOW_TRUST_POLICY) {
+                                        this.trustPolicyList = [...this.trustPolicyList, ...data]
+                                    }
+                                    else if (method === endpoint.SHOW_GPU_DRIVER) {
+                                        this.gpuDriverList = [...this.gpuDriverList, ...data]
+                                    }
+                                    else if (method === endpoint.GET_CLOUDLET_PROPS) {
+                                        this.cloudletPropsList = data
+                                    }
                                 }
-                                else if (method === endpoint.SHOW_GPU_DRIVER) {
-                                    this.gpuDriverList = [...this.gpuDriverList, ...data]
-                                }
-                                else if (method === endpoint.GET_CLOUDLET_PROPS) {
-                                    this.cloudletPropsList = data
-                                }
-                            }
-                            else if (method === endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
-                                if (data.properties) {
-                                    this.resourceQuotaList = data.properties
-                                    this.resourceQuotaList = this.resourceQuotaList.map(quota => {
-                                        return quota.name
-                                    })
+                                else if (method === endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
+                                    if (data.properties) {
+                                        this.resourceQuotaList = data.properties
+                                        this.resourceQuotaList = this.resourceQuotaList.map(quota => {
+                                            return quota.name
+                                        })
+                                    }
                                 }
                             }
                         }
-                    }
-                })
+                    })
+                }
             }
         }
     }
