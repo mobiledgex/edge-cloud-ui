@@ -79,11 +79,10 @@ class CloudletReg extends React.Component {
 
     fetchRegionDependentData = async (region, platformType) => {
         let requestList = []
-        if (!this.requestedRegionList.includes(region)) {
+        if (region && !this.requestedRegionList.includes(region)) {
             requestList.push(showTrustPolicies(this, { region }))
             requestList.push(showGPUDrivers(this, { region }))
         }
-
         if (region && platformType) {
             requestList.push(cloudletResourceQuota(this, { region, platformType }))
             requestList.push(cloudletProps(this, { region, platformType }))
