@@ -39,7 +39,7 @@ const canEdit = (self, viewerEdit, action) => {
 
 const getHeight = (self) => {
     const { tableHeight, selected, isMap } = self.props
-    const { iconKeys } = self.state
+    const { iconKeys } = self.props
     let height = isMap ? 562 : 162
     height = selected.length > 0 ? height + 48 : height
     height = tableHeight ? tableHeight : height
@@ -58,8 +58,7 @@ class ListViewer extends React.Component {
             rowsPerPage: 25,
             actionEl: null,
             selectedRow: {},
-            groupAction: undefined,
-            iconKeys: undefined
+            groupAction: undefined
         }
         this.actionMenu = props.actionMenu ? props.actionMenu.filter(action => { return canEdit(this, props.viewerEdit, action) }) : []
         this.keys = filterColumns(props.keys, props.organizationInfo, this.actionMenu.length)
@@ -179,15 +178,15 @@ class ListViewer extends React.Component {
 
     //IconKeys
     onIconClick = (iconKeys) => {
-        this.setState({ iconKeys })
+        this.props.onIconFilter(iconKeys)
     }
     //IconKeys
 
 
     render() {
         const { grouping, groupingAction, selection } = this.requestInfo
-        const { dataList, dropList, selected, groupActionMenu, setSelected } = this.props
-        const { expandedGroups, page, rowsPerPage, order, orderBy, iconKeys } = this.state
+        const { dataList, dropList, selected, groupActionMenu, setSelected, iconKeys } = this.props
+        const { expandedGroups, page, rowsPerPage, order, orderBy } = this.state
         let groupedData = grouping ? this.getGroupedData(dataList) : [];
         let isGrouping = grouping && dropList.length > 0
         const columnLength = this.keys.length + (selection ? 1 : 0)
@@ -304,9 +303,7 @@ class ListViewer extends React.Component {
                 return valid
             })
             if (keys.length > 0) {
-                this.setState({
-                    iconKeys: keys
-                })
+                this.props.onIconFilter(keys)
             }
         }
     }

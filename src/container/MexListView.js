@@ -40,7 +40,8 @@ class MexListView extends React.Component {
             uuid: 0,
             dropList: [],
             resetStream: false,
-            deleteMultiple: []
+            deleteMultiple: [], 
+            iconKeys:undefined
         };
         this._isMounted = false
         this.filterText = prefixSearchPref()
@@ -300,6 +301,12 @@ class MexListView extends React.Component {
         this.onWarning(action, action.warning, true, dataList)
     }
 
+    onIconFilter = (iconKeys) => {
+        this.setState({ iconKeys }, ()=>{
+            this.onFilterValue()
+        })
+    }
+
     /*Action Block*/
     listView = () => {
         let isMap = this.requestInfo.isMap && this.state.showMap
@@ -320,6 +327,8 @@ class MexListView extends React.Component {
                     groupActionMenu={this.props.groupActionMenu}
                     groupActionClose={this.groupActionClose}
                     dropList={this.state.dropList}
+                    iconKeys={this.state.iconKeys}
+                    onIconFilter={this.onIconFilter}
                     viewerEdit={this.requestInfo.viewerEdit}
                     tableHeight={this.props.tableHeight} />
             </div>)
@@ -357,8 +366,8 @@ class MexListView extends React.Component {
 
         let dataList = cloneDeep(this.state.dataList)
         let filterCount = 0
-        let filterList = this.filterText.length > 0 ? dataList.filter(data => {
-            let valid = this.keys.map(key => {
+        let filterList = dataList.filter(data => {
+            let valid = this.filterText.length > 0 ? this.keys.map(key => {
                 if (key.filter) {
                     filterCount = + 1
                     let tempData = data[key.field] ? data[key.field] : ''
@@ -366,12 +375,20 @@ class MexListView extends React.Component {
                         return tempData.toLowerCase().includes(this.filterText)
                     }
                 }
-            })
-            return filterCount === 0 || valid.includes(true)
-        }) : dataList
-        if (value !== undefined) {
-            this.updateState({ filterList })
-        }
+            }) : [true]
+            valid = filterCount === 0 || valid.includes(true)
+            if (valid) {
+                 this.state.iconKeys && this.state.iconKeys.forEach(icon => {
+                    if (valid && icon.clicked) {
+                        valid = Boolean(data[icon.field])
+                     }
+                 })
+            }
+            return valid
+        })
+
+        this.updateState({ filterList })
+
         return filterList
     }
 
