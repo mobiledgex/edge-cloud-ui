@@ -13,7 +13,7 @@ import { load } from "../../../helper/zxcvbn";
 import { withRouter } from 'react-router-dom';
 import { endpoint } from "../../../helper/constant";
 import { resetPwd, updatePwd } from "../../../services/modules/users";
-import { syncRequest } from "../../../services/service";
+import { responseValid, syncRequest } from "../../../services/service";
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
 
@@ -120,7 +120,7 @@ class UpdatePassword extends React.Component {
         if (this.props.dialog) {
             this.updateState({ loading: true })
             let mc = await updatePwd(this, { password: data.password })
-            if (mc && mc.response && mc.response.status === 200) {
+            if (responseValid(mc)) {
                 this.updateState({ open: false })
                 this.props.handleAlertInfo('success', 'Password updated successfully')
             }
@@ -134,12 +134,9 @@ class UpdatePassword extends React.Component {
             let token = this.props.location.search
             token = token.substring(token.indexOf('token=') + 6)
             let mc = await resetPwd(this, { token, password: data.password })
-            if (mc && mc.response && mc.response.status === 200) {
+            if (responseValid(mc)) {
                 this.props.handleAlertInfo('success', mc.response.data.message)
                 this.props.onReset()
-            }
-            else {
-                this.props.handleAlertInfo('error', mc.message)
             }
             this.props.handleLoadingSpinner(false)
         }

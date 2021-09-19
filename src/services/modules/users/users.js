@@ -1,6 +1,6 @@
 import { fields } from '../../model/format'
 import { endpoint, perpetual } from '../../../helper/constant'
-import { authSyncRequest, responseValid } from '../../service'
+import { authSyncRequest, responseValid, syncRequest } from '../../service'
 import { developerRoles, operatorRoles } from '../../../constant'
 
 export const keys = () => ([
@@ -55,5 +55,5 @@ export const updatePwd = async (self, data) => {
 
 export const resetPwd = async (self, data) => {
     let request = { method: endpoint.RESET_PASSWORD, data: data }
-    return await authSyncRequest(self, request)
+    return await syncRequest(self, request)
 }
