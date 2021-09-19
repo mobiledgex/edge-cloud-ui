@@ -136,8 +136,8 @@ class UpdatePassword extends React.Component {
             let mc = await resetPwd(this, { token, password: data.password })
             if (responseValid(mc)) {
                 this.props.handleAlertInfo('success', mc.response.data.message)
+                this.props.onReset()
             }
-            this.props.onReset()
             this.props.handleLoadingSpinner(false)
         }
     }
