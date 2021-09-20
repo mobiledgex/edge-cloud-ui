@@ -80,14 +80,8 @@ const ListBody = (props) => {
 
     const getRowData = (row, index) => {
         const isItemSelected = isSelected(row.uuid);
-        let rowVisible = true
-        iconKeys && iconKeys.forEach(icon => {
-            if (rowVisible && icon.clicked) {
-                rowVisible = row[icon.field]
-            }
-        })
         return (
-            rowVisible ? <StyledTableRow
+            <StyledTableRow
                 key={index}
                 hover
                 role="checkbox"
@@ -116,7 +110,7 @@ const ListBody = (props) => {
                         )
                     })
                 }
-            </StyledTableRow> : null)
+            </StyledTableRow>)
     }
 
     const { page, rowsPerPage, order, orderBy } = props

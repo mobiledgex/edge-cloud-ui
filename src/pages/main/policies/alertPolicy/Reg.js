@@ -125,9 +125,9 @@ class Reg extends React.Component {
 
     /*Multi Form*/
     labelsForm = () => ([
-        { field: fields.key, label: 'Key', formType: INPUT, rules: { required: true }, update: { edit: true }, width: 6, visible: true },
-        { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, update: { edit: true }, width: 6, visible: true },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 4, onClick: this.removeMultiForm }
+        { field: fields.key, label: 'Key', formType: INPUT, rules: { required: true }, update: { edit: true }, width: 7, visible: true },
+        { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, update: { edit: true }, width: 7, visible: true },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     getLabelsForm = (form) => {

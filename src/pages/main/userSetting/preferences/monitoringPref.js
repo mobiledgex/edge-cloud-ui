@@ -55,10 +55,11 @@ class MonitoringPreferences extends React.Component {
 
     forms = () => ([
         { field: PREF_M_REGION, label: 'Region', formType: CHECKBOX_ARRAY, value: this.regions, expanded: true, options: this.regions, visible: true },
-        { label: 'Cloudlet', forms: this.cloudletForms(), visible: redux_org.isAdmin(this) || redux_org.isOperator(this)},
-        { label: 'Cluster', forms: this.clusterForms(), visible: redux_org.isAdmin(this) || redux_org.isDeveloper(this)},
-        { label: 'App Instances', forms: this.appInstForms(), visible: redux_org.isAdmin(this) || redux_org.isDeveloper(this)}
+        { label: 'Cloudlet', forms: this.cloudletForms(), visible:  redux_org.isAdmin(this) || redux_org.isOperator(this)},
+        { label: 'Cluster', forms: this.clusterForms(), visible:  redux_org.isAdmin(this) || redux_org.isDeveloper(this) || redux_org.isOperator(this)},
+        { label: 'App Instances', forms: this.appInstForms(), visible: redux_org.isAdmin(this) ||  redux_org.isDeveloper(this) ||  redux_org.isOperator(this)}
     ])
+
 
     onValueChange = (index, form, option) => {
         if (form.value.includes(option)) {
@@ -91,7 +92,7 @@ class MonitoringPreferences extends React.Component {
         return (
             <div>
                 {forms.map((form, i) => (
-                    form.visible ?
+                      form.visible ?                   
                         form.forms ?
                             <Accordion key={i}>
                                 <AccordionSummary
@@ -99,7 +100,7 @@ class MonitoringPreferences extends React.Component {
                                     aria-controls={i}
                                     id={i}
                                 >
-                                    <Typography >{form.label}</Typography>
+                                   <Typography>{form.label}</Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     {form.forms.map((childForm, j) => {
@@ -116,7 +117,7 @@ class MonitoringPreferences extends React.Component {
                                 <div style={{ padding: 15, marginTop: 10 }}>
                                     <CheckBoxArray postion={i} form={form} onChange={this.onValueChange} />
                                 </div>
-                            </React.Fragment> : null
+                            </React.Fragment> :null
                 ))}
             </div>
         )

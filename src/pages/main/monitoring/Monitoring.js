@@ -284,7 +284,7 @@ class Monitoring extends React.Component {
                                     </React.Fragment> :
                                     <NoData />
                             }
-                        </div> :
+                        </div> : 
                         <React.Fragment>
                             <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
                                 <Skeleton variant="rect" height={'25%'} style={{ marginBottom: 3 }} />

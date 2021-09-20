@@ -171,9 +171,9 @@ class Preferences extends React.Component {
                                                 <strong style={{ color: '#888888', marginBottom: 10 }}><b>{parent.label}</b></strong>
                                             </div> : null
                                             :
-                                            <ListItem key={i} button onClick={() => { this.setState({ header: i }) }} style={{ backgroundColor: header === i ? '#388E3C' : 'transparent', borderRadius: 5, marginTop: 2 }}>
+                                           (<ListItem key={i} button onClick={() => { this.setState({ header: i }) }} style={{ backgroundColor: header === i ? '#388E3C' : 'transparent', borderRadius: 5, marginTop: 2 }}>
                                                 <ListItemText primary={parent.label} />
-                                            </ListItem>
+                                            </ListItem>)
                                     ))}
                                 </List>
                             </Grid>
