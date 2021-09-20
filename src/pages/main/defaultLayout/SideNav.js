@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, Fragment, createRef } from 'react';
 import { useSelector } from "react-redux";
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -18,6 +18,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import About from './About'
 import RoleLegend from './RoleLegend'
+import { showLogsPref } from '../../../utils/sharedPreferences_util';
 
 import { Collapse, LinearProgress, Tooltip } from '@material-ui/core';
 import { Icon } from '../../../hoc/mexui';
@@ -155,8 +156,8 @@ const Options = (props) => {
     const { options, sub, drawerOpen } = props
     const classes = useStyles({ sub });
     const orgInfo = useSelector(state => state.organizationInfo.data)
-    const [pageId, setPageId] = React.useState(0)
-    const childRef = React.createRef(null)
+    const [pageId, setPageId] = useState(0)
+    const childRef = createRef(null)
     let { url } = useRouteMatch();
     const history = useHistory()
     useEffect(() => {
@@ -205,11 +206,11 @@ const Options = (props) => {
     return (
         <List component={sub ? 'div' : 'nav'} disablePadding={sub}>
             {options.map((item, i) => (
-                item.visible ? <React.Fragment key={i}>
+                item.visible ? <Fragment key={i}>
                     {
                         item.divider ?
                             <Divider /> :
-                            role.validateRole(item.roles, orgInfo) ? <React.Fragment>
+                            role.validateRole(item.roles, orgInfo) ? <Fragment>
                                 <Tooltip title={renderPopover(item)} interactive placement="right" arrow>
                                     {renderItem(item)}
                                 </Tooltip>
@@ -217,9 +218,9 @@ const Options = (props) => {
                                     <Collapse in={pageId === item.id} timeout="auto" unmountOnExit ref={childRef}>
                                         <Options options={item.options} sub={true} drawerOpen={drawerOpen} />
                                     </Collapse> : null}
-                            </React.Fragment> : null
+                            </Fragment> : null
                     }
-                </React.Fragment> : null
+                </Fragment> : null
             ))
             }
         </List >
@@ -229,9 +230,9 @@ const Options = (props) => {
 const SideNav = (props) => {
     const classes = useStyles();
     const theme = useTheme();
-    const [open, setOpen] = React.useState(true);
-    const [hardOpen, setHardOpen] = React.useState(true);
-    const [openLogs, setOpenLogs] = React.useState(true);
+    const [open, setOpen] = useState(true);
+    const [hardOpen, setHardOpen] = useState(true);
+    const [openLogs, setOpenLogs] = useState(showLogsPref());
     const orgInfo = useSelector(state => state.organizationInfo.data)
     const loading = useSelector(state => state.loadingSpinner.loading)
 
