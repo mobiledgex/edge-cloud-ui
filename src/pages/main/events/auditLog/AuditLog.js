@@ -71,7 +71,7 @@ class AuditLog extends React.Component {
         const { selectedDate, dataList, loading, isOrg, toggle, orgList} = this.state
         return (
             <React.Fragment>
-                <LeftView type={this.type} isOrg={isOrg} toggle={toggle} dataList={dataList} orgList={orgList} fetchData={this.onFetchData} close={this.handleClose} loading={loading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} />
+                <LeftView type={this.type} isOrg={isOrg} toggle={toggle} dataList={dataList} orgList={orgList} fetchData={this.onFetchData} close={this.handleClose} loading={loading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} handleError={this.props.handleAlertInfo} />
             </React.Fragment>
         )
     }

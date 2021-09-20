@@ -222,12 +222,12 @@ class AuditLogView extends React.Component {
 
     render() {
         const { activeIndex, dataList } = this.state
-        const { endtime, loading, type, orgList } = this.props
+        const { endtime, loading, type, orgList, handleError } = this.props
         return (
             <React.Fragment>
                 <Toolbar type={type} header={`${toFirstUpperCase(type)} Logs`} tip={tip} onChange={this.onToolbarChange} loading={loading} filter={this.filter}>
                     <Box>
-                        <ServerFilter type={type} onChange={this.onToolbarChange} orgList={orgList} filter={this.filter}/>
+                        <ServerFilter type={type} onChange={this.onToolbarChange} orgList={orgList} filter={this.filter} error={handleError} />
                     </Box>
                 </Toolbar>
                 <div style={{ height: 'calc(100vh - 50px)' }} id='event_log'>
