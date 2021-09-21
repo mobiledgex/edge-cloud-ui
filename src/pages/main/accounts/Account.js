@@ -10,6 +10,7 @@ import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import * as serverData from '../../../services/model/serverData';
 import { perpetual } from '../../../helper/constant';
 import { uiFormatter } from '../../../helper/formatter';
+import { redux_org } from '../../../helper/reduxData'
 
 class AccountList extends React.Component {
     constructor(props) {
@@ -30,10 +31,9 @@ class AccountList extends React.Component {
             this.setState({ ...data })
         }
     }
-
     /**Action menu block */
-    deleteVisible = (data) => {
-        return data[fields.username] !== 'mexadmin'
+    deleteVisible = () => {
+        return redux_org.role(this.props.organizationInfo) !== perpetual.ADMIN_MANAGER
     }
 
     actionMenu = () => {
