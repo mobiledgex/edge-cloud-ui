@@ -90,10 +90,10 @@ class Preferences extends React.Component {
 
     onSave = () => {
         this.setState({ loading: true }, async () => {
-            let data = this.state.data
-            let oldData = getUserMetaData()
-            this.isTimezoneChanged = data[PREF_TIMEZONE] !== undefined && oldData[PREF_TIMEZONE] !== data[PREF_TIMEZONE]
-            if (await updateUserMetaData(this, data)) {
+            let oldData = this.state.data
+            let currentData = getUserMetaData()
+            this.isTimezoneChanged = oldData[PREF_TIMEZONE] !== undefined && currentData[PREF_TIMEZONE] !== oldData[PREF_TIMEZONE]
+            if (await updateUserMetaData(this, currentData)) {
                 if (this.isTimezoneChanged) {
                     this.onTimezoneChangeEvent()
                 }
