@@ -178,6 +178,7 @@ class ListViewer extends React.Component {
 
     //IconKeys
     onIconClick = (iconKeys) => {
+        this.setState({page:0})
         this.props.onIconFilter(iconKeys)
     }
     //IconKeys
