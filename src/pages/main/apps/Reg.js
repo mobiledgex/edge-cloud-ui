@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, Component, lazy } from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
@@ -26,9 +26,9 @@ import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from '@material-ui/core';
 import { endpoint, perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
-const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
+const MexFlow = lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 
-class AppReg extends React.Component {
+class AppReg extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -1000,6 +1000,7 @@ class AppReg extends React.Component {
             { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Image Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
             { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: { id: ['4'] }, tip: 'URI of where image resides' },
             { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, update: { id: ['9.1'] }, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.autoProvPolicies, showField: fields.autoPolicyName, label: 'Auto Provisioning Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policies', rules: { required: false }, visible: true, update: { id: ['32'] }, multiple: true, tip: 'Auto provisioning policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: { id: ['16'] }, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
             { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: SWITCH, visible: this.isUpdate, value: false, update: { edit: true }, tip: 'Upgrade App Instances running in the cloudlets' },
             { field: fields.trusted, label: 'Trusted', formType: SWITCH, visible: true, value: false, update: { id: ['37'] }, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
@@ -1097,7 +1098,7 @@ class AppReg extends React.Component {
 
     render() {
         return (
-            <React.Fragment>
+            <>
                 <Grid container>
                     <Grid item xs={this.state.showGraph ? 8 : 12}>
                         <div className="round_panel">
@@ -1111,7 +1112,7 @@ class AppReg extends React.Component {
                     </Grid> : null}
                 </Grid>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
-            </React.Fragment>
+            </>
         )
     }
 
