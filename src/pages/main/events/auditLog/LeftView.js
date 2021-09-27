@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment, Component } from 'react'
 import { Box, Divider, Grid, Tooltip } from '@material-ui/core';
 import * as dateUtil from '../../../../utils/date_util'
 import { FixedSizeList, VariableSizeList } from 'react-window';
@@ -48,7 +48,7 @@ const formatURL = (logName) => {
     return item
 }
 
-class AuditLogView extends React.Component {
+class AuditLogView extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -133,14 +133,14 @@ class AuditLogView extends React.Component {
                                 if (key && key.visible) {
                                     const value = this.formatData(key, values, mtags)
                                     return (
-                                        value ? <React.Fragment key={i}>
+                                        value ? <Fragment key={i}>
                                             <div style={{ fontSize: 14, height: 25, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
                                                 <strong>{`${key.detailedView && key.visible ? 'Current' : ''} ${key.label}`}</strong>
                                                 <Tooltip title={<strong style={{ fontSize: 13 }}>{value}</strong>}>
                                                     <span style={{ fontWeight: 500 }}>{`: ${value}`}</span>
                                                 </Tooltip>
                                             </div>
-                                        </React.Fragment> : null)
+                                        </Fragment> : null)
                                 }
                             })
                         }
@@ -222,12 +222,12 @@ class AuditLogView extends React.Component {
 
     render() {
         const { activeIndex, dataList } = this.state
-        const { endtime, loading, type, orgList } = this.props
+        const { endtime, loading, type, orgList, handleError } = this.props
         return (
-            <React.Fragment>
+            <>
                 <Toolbar type={type} header={`${toFirstUpperCase(type)} Logs`} tip={tip} onChange={this.onToolbarChange} loading={loading} filter={this.filter}>
                     <Box>
-                        <ServerFilter type={type} onChange={this.onToolbarChange} orgList={orgList} filter={this.filter}/>
+                        <ServerFilter type={type} onChange={this.onToolbarChange} orgList={orgList} filter={this.filter} error={handleError} />
                     </Box>
                 </Toolbar>
                 <div style={{ height: 'calc(100vh - 50px)' }} id='event_log'>
@@ -244,7 +244,7 @@ class AuditLogView extends React.Component {
                     </Grid> : <NoData />
                     }
                 </div>
-            </React.Fragment>
+            </>
         )
     }
 
