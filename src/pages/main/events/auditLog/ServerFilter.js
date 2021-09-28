@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import { Button, Icon, IconButton, Picker } from '../../../../hoc/mexui';
@@ -13,8 +13,12 @@ import { fields } from '../../../../services/model/format';
 import SelectMenu from '../../../../hoc/selectMenu/SelectMenu';
 import { fetchObject, storeObject } from '../../../../helper/ls';
 import { filterData } from '../../../../constant';
+import { alertInfo } from '../../../../actions';
+import { useDispatch } from 'react-redux';
 
 export const ACTION_FILTER = 101
+
+const FIXED_LIMIT = 5000
 
 const useStyles = makeStyles({
     list: {
@@ -38,12 +42,13 @@ const Filter = (props) => {
     const { type, filter } = props
     const classes = useStyles();
     const orgInfo = useSelector(state => state.organizationInfo.data)
-    const [state, setState] = React.useState(false);
-    const [limit, setLimit] = React.useState(25);
-    const [org, setOrg] = React.useState(undefined);
-    const [renderTags, setRenderTags] = React.useState([]);
-    const [range, setRange] = React.useState(timeRangeInMin(DEFAULT_DURATION_MINUTES));
-    const [tags, setTags] = React.useState({})
+    const [state, setState] = useState(false);
+    const [limit, setLimit] = useState(25);
+    const [org, setOrg] = useState(undefined);
+    const [renderTags, setRenderTags] = useState([]);
+    const [range, setRange] = useState(timeRangeInMin(DEFAULT_DURATION_MINUTES));
+    const [tags, setTags] = useState({})
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (state) {
@@ -123,6 +128,9 @@ const Filter = (props) => {
             filter['tags'] = customTags
         }
         storeObject(`${type}_logs`, { ...filter, tags })
+        if (limit > FIXED_LIMIT) {
+            return dispatch(alertInfo('error', `limit must not exceed ${FIXED_LIMIT} !`))
+        }
         props.onChange(ACTION_FILTER, filter)
         setState(false)
     }
@@ -137,10 +145,10 @@ const Filter = (props) => {
     // }
 
     return (
-        <React.Fragment>
+        <Fragment>
             <IconButton tooltip={'Filter by date, tags and limit'} onClick={toggleDrawer(true)} style={{ marginRight: -20, marginTop: -1 }}><Icon style={{ color: 'rgba(118, 255, 3, 0.7)', fontSize: 24 }}>filter_list</Icon></IconButton>
             <Drawer anchor={'right'} open={state} onClose={toggleDrawer(false)}>
-                <React.Fragment>
+                <Fragment>
                     <div className={classes.list}>
                         <Box display='flex'>
                             <Box flexGrow={1} p={1}>
@@ -192,7 +200,7 @@ const Filter = (props) => {
                                 </Box>
                             </Box>
                             <Divider style={{ marginTop: -15, marginLeft: 15, marginRight: 15 }} />
-                            <Grid container justify="space-around" style={{ padding: 15 }}>
+                            <Grid container justifyContent="space-around" style={{ padding: 15 }}>
                                 {renderTags.map((id) => {
                                     return (
                                         <Tags key={id} onChange={onTagsChange} uuid={id} onDelete={onDelete} data={tags[id]} />
@@ -205,9 +213,9 @@ const Filter = (props) => {
                             </div>
                         </div>
                     </div>
-                </React.Fragment>
+                </Fragment>
             </Drawer>
-        </React.Fragment>
+        </Fragment>
     );
 }
 

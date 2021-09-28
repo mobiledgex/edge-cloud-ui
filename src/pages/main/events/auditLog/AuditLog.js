@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -14,7 +14,7 @@ import sortBy from 'lodash/sortBy';
 import { fields } from '../../../../services/model/format';
 import { showOrganizations } from '../../../../services/modules/organization';
 import '../style.css'
-class AuditLog extends React.Component {
+class AuditLog extends Component {
     constructor(props) {
         super(props);
         this._isMounted = false
@@ -70,9 +70,9 @@ class AuditLog extends React.Component {
     render() {
         const { selectedDate, dataList, loading, isOrg, toggle, orgList} = this.state
         return (
-            <React.Fragment>
+            <Fragment>
                 <LeftView type={this.type} isOrg={isOrg} toggle={toggle} dataList={dataList} orgList={orgList} fetchData={this.onFetchData} close={this.handleClose} loading={loading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} />
-            </React.Fragment>
+            </Fragment>
         )
     }
 
