@@ -38,8 +38,10 @@ class AppReg extends Component {
             flowDataList: []
         }
         this._isMounted = false
-        this.isUpdate = this.props.isUpdate
-        this.regions = cloneDeep(localStorage.regions ? localStorage.regions.split(",") : [])
+        this.isUpdate = this.props.id === perpetual.ACTION_UPDATE
+        this.isClone = this.props.id === perpetual.ACTION_CLONE
+        this.isAdd = this.props.id === undefined
+        this.regions = cloneDeep(props.regions)
         if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
         this.flavorList = []
         this.autoProvPolicyList = []
@@ -237,40 +239,42 @@ class AppReg extends Component {
     }
 
     updateImagePath = (forms, form) => {
-        let organizationName = undefined;
-        let version = undefined
-        let deployment = undefined
-        let appName = undefined
-        for (let form of forms) {
-            if (form.field === fields.organizationName) {
-                organizationName = form.value
+        if (this.isAdd) {
+            let organizationName = undefined;
+            let version = undefined
+            let deployment = undefined
+            let appName = undefined
+            for (let form of forms) {
+                if (form.field === fields.organizationName) {
+                    organizationName = form.value
+                }
+                else if (form.field === fields.version) {
+                    version = form.value
+                }
+                else if (form.field === fields.deployment) {
+                    deployment = form.value
+                }
+                else if (form.field === fields.appName) {
+                    appName = form.value
+                }
             }
-            else if (form.field === fields.version) {
-                version = form.value
-            }
-            else if (form.field === fields.deployment) {
-                deployment = form.value
-            }
-            else if (form.field === fields.appName) {
-                appName = form.value
-            }
-        }
-        if (deployment && organizationName && appName && version) {
-            if (deployment === perpetual.DEPLOYMENT_TYPE_VM) {
-                form.value = `https://artifactory.mobiledgex.net/artifactory/repo-${organizationName}`
-            }
-            else if (deployment === perpetual.DEPLOYMENT_TYPE_HELM) {
-                form.value = `https://chart.registry.com/charts:${organizationName}/${appName}`
-            }
-            else {
-                let domain = window.location.host
-                if (domain && domain.startsWith('https://console') || domain.startsWith('console')) {
-                    domain = domain.replace('console', 'docker')
+            if (deployment && organizationName && appName && version) {
+                if (deployment === perpetual.DEPLOYMENT_TYPE_VM) {
+                    form.value = `https://artifactory.mobiledgex.net/artifactory/repo-${organizationName}`
+                }
+                else if (deployment === perpetual.DEPLOYMENT_TYPE_HELM) {
+                    form.value = `https://chart.registry.com/charts:${organizationName}/${appName}`
                 }
                 else {
-                    domain = 'docker.mobiledgex.net'
+                    let domain = window.location.host
+                    if (domain && domain.startsWith('https://console') || domain.startsWith('console')) {
+                        domain = domain.replace('console', 'docker')
+                    }
+                    else {
+                        domain = 'docker.mobiledgex.net'
+                    }
+                    form.value = `${domain}/${organizationName.toLowerCase()}/images/${appName.toLowerCase()}:${version.toLowerCase()}`
                 }
-                form.value = `${domain}/${organizationName.toLowerCase()}/images/${appName.toLowerCase()}:${version.toLowerCase()}`
             }
         }
     }
@@ -388,11 +392,11 @@ class AppReg extends Component {
 
     regionValueChange = (currentForm, forms, isInit) => {
         let regions = currentForm.value;
-        if (regions.includes('All')) {
+        if (regions && regions.includes('All')) {
             regions = cloneDeep(this.regions)
             regions.splice(0, 1)
         }
-        if (!this.isUpdate && regions.length > 0) {
+        if (!this.isUpdate && regions && regions.length > 0) {
             regions.map(region => {
                 this.regionDependentDataUpdate(region, forms, isInit)
                 this.requestedRegionList.push(region)
@@ -841,16 +845,52 @@ class AppReg extends Component {
         }
     }
 
+    formKeys = () => {
+        return [
+            { label: `${this.isUpdate ? 'Update' : 'Create'} Apps`, formType: MAIN_HEADER, visible: true },
+            { field: fields.region, label: 'Region', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers', update: { key: true } },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Organization or Company Name that a Developer is part of', update: { key: true } },
+            { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name', dataValidateFunc: this.validateAppName, update: { key: true } },
+            { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version', update: { key: true } },
+            { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
+            { field: fields.vmappostype, label: 'VM App OS Type', formType: SELECT, placeholder: 'Select OS Type', rules: { required: false }, visible: false, update: { id: ['41'] }, tip: 'OS Type for VM Apps, one of Linux, Windows 10, Windows 2012, Windows 2016, Windows 2019' },
+            { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Image Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
+            { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: { id: ['4'] }, tip: 'URI of where image resides' },
+            { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, update: { id: ['9.1'] }, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
+            { field: fields.autoProvPolicies, showField: fields.autoPolicyName, label: 'Auto Provisioning Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policies', rules: { required: false }, visible: true, update: { id: ['32'] }, multiple: true, tip: 'Auto provisioning policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false },
+            { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: { id: ['16'] }, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
+            { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: SWITCH, visible: this.isUpdate, value: false, update: { edit: true }, tip: 'Upgrade App Instances running in the cloudlets' },
+            { field: fields.trusted, label: 'Trusted', formType: SWITCH, visible: true, value: false, update: { id: ['37'] }, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
+            { field: fields.accessPorts, label: 'Ports', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], update: { id: ['7'], ignoreCase: true }, visible: true, tip: 'Ports:</b>Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443\nHealth Check:</b> Periodically tests the health of applications as TCP packets are generated from the load balancer to the application and its associated port. This information is useful for Developers to manage and mitigate issues.' },
+            { field: fields.annotations, label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
+            { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, update: { id: ['21', '21.1', '21.2'] }, tip: 'Customization files passed through to implementing services' },
+            { field: fields.requiredOutboundConnections, label: 'Required Outbound Connections', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Connections', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getOutboundConnectionsForm }], visible: false, update: { id: ['38', '38.1', '38.2', '38.4'] }, tip: 'Connections this app require to determine if the app is compatible with a trust policy' },
+            { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
+            { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: { id: ['12'] }, tip: 'public key used for authentication', advance: false },
+            { field: fields.alertPolicies, showField: fields.alertPolicyName, label: 'Alert Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Alert Policies', rules: { required: false }, visible: true, update: { id: ['42'] }, multiple: true, tip: 'Alert policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false },
+            { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, update: { id: ['25'] }, tip: 'Official FQDN is the FQDN that the app uses to connect by default', advance: false },
+            { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: { id: ['18'] }, tip: 'Android package name used to match the App name from the Android package', advance: false },
+            { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: SWITCH, visible: false, value: false, update: { id: ['22'] }, advance: false, tip: 'Option to run App on all nodes of the cluster' },
+            { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: { id: ['13'] }, tip: 'Command that the container runs to start service', advance: false },
+            { field: fields.templateDelimiter, label: 'Template Delimeter', formType: INPUT, placeholder: 'Enter Template Delimeter', rules: { required: false }, visible: true, update: { id: ['33'] }, tip: 'Delimiter to be used for template parsing, defaults to [[ ]]', advance: false },
+            { field: fields.skipHCPorts, update: { id: ['34'], ignoreCase: true } },
+        ]
+    }
+
     loadDefaultData = async (forms, data) => {
         if (data) {
             let requestList = []
             let organization = {}
+            let region = data[fields.region]
             organization[fields.organizationName] = data[fields.organizationName];
             this.organizationList = [organization]
-            requestList.push(showAppInsts(this, { region: data[fields.region], appinst: { key: { app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] } } } }, true))
-            requestList.push(showFlavors(this, { region: data[fields.region] }))
-            requestList.push(showAutoProvPolicies(this, { region: data[fields.region] }))
-            requestList.push(showAlertPolicy(this, { region: data[fields.region] }))
+
+            if (region) {
+                requestList.push(showAppInsts(this, { region: region, appinst: { key: { app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] } } } }, true))
+                requestList.push(showFlavors(this, { region: region }))
+                requestList.push(showAutoProvPolicies(this, { region: region }))
+                requestList.push(showAlertPolicy(this, { region: region }))
+            }
 
             let mcList = await service.multiAuthSyncRequest(this, requestList)
             if (mcList && mcList.length > 0) {
@@ -988,38 +1028,6 @@ class AppReg extends Component {
         }
     }
 
-    formKeys = () => {
-        return [
-            { label: `${this.isUpdate ? 'Update' : 'Create'} Apps`, formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers', update: { key: true } },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Organization or Company Name that a Developer is part of', update: { key: true } },
-            { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name', dataValidateFunc: this.validateAppName, update: { key: true } },
-            { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version', update: { key: true } },
-            { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
-            { field: fields.vmappostype, label: 'VM App OS Type', formType: SELECT, placeholder: 'Select OS Type', rules: { required: false }, visible: false, update: { id: ['41'] }, tip: 'OS Type for VM Apps, one of Linux, Windows 10, Windows 2012, Windows 2016, Windows 2019' },
-            { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Image Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
-            { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: { id: ['4'] }, tip: 'URI of where image resides' },
-            { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, update: { id: ['9.1'] }, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.autoProvPolicies, showField: fields.autoPolicyName, label: 'Auto Provisioning Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policies', rules: { required: false }, visible: true, update: { id: ['32'] }, multiple: true, tip: 'Auto provisioning policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
-            { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: { id: ['16'] }, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
-            { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: SWITCH, visible: this.isUpdate, value: false, update: { edit: true }, tip: 'Upgrade App Instances running in the cloudlets' },
-            { field: fields.trusted, label: 'Trusted', formType: SWITCH, visible: true, value: false, update: { id: ['37'] }, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
-            { field: fields.accessPorts, label: 'Ports', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], update: { id: ['7'], ignoreCase: true }, visible: true, tip: 'Ports:</b>Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443\nHealth Check:</b> Periodically tests the health of applications as TCP packets are generated from the load balancer to the application and its associated port. This information is useful for Developers to manage and mitigate issues.' },
-            { field: fields.annotations, label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
-            { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, update: { id: ['21', '21.1', '21.2'] }, tip: 'Customization files passed through to implementing services' },
-            { field: fields.requiredOutboundConnections, label: 'Required Outbound Connections', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Connections', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getOutboundConnectionsForm }], visible: false, update: { id: ['38', '38.1', '38.2', '38.4'] }, tip: 'Connections this app require to determine if the app is compatible with a trust policy' },
-            { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
-            { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: { id: ['12'] }, tip: 'public key used for authentication', advance: false },
-            { field: fields.alertPolicies, showField: fields.alertPolicyName, label: 'Alert Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Alert Policies', rules: { required: false }, visible: true, update: { id: ['42'] }, multiple: true, tip: 'Alert policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false },
-            { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, update: { id: ['25'] }, tip: 'Official FQDN is the FQDN that the app uses to connect by default', advance: false },
-            { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: { id: ['18'] }, tip: 'Android package name used to match the App name from the Android package', advance: false },
-            { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: SWITCH, visible: false, value: false, update: { id: ['22'] }, advance: false, tip: 'Option to run App on all nodes of the cluster' },
-            { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: { id: ['13'] }, tip: 'Command that the container runs to start service', advance: false },
-            { field: fields.templateDelimiter, label: 'Template Delimeter', formType: INPUT, placeholder: 'Enter Template Delimeter', rules: { required: false }, visible: true, update: { id: ['33'] }, tip: 'Delimiter to be used for template parsing, defaults to [[ ]]', advance: false },
-            { field: fields.skipHCPorts, update: { id: ['34'], ignoreCase: true } },
-        ]
-    }
-
     updateFormData = (forms, data) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
@@ -1065,6 +1073,11 @@ class AppReg extends Component {
             this.updateFlowDataList.push(appFlow.portFlow(this.tlsCount))
             this.originalData = cloneDeep(data)
             await this.loadDefaultData(forms, data)
+            if(this.isClone)
+            {
+                this.requestedRegionList.push(data[fields.region])
+                data[fields.region] = [data[fields.region]]
+            }
         }
         else {
             this.organizationList = await getOrganizationList(this, { type: perpetual.DEVELOPER })
@@ -1117,7 +1130,7 @@ class AppReg extends Component {
 
     componentDidMount() {
         this._isMounted = true
-        this.getFormData(this.props.data)
+        this.getFormData(cloneDeep(this.props.data))
         this.props.handleViewMode(HELP_APP_REG)
     }
 
@@ -1129,6 +1142,7 @@ class AppReg extends Component {
 
 const mapStateToProps = (state) => {
     return {
+        regions: state.regionInfo.region,
         organizationInfo: state.organizationInfo.data
     }
 };
