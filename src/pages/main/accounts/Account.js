@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
@@ -34,7 +34,7 @@ class AccountList extends Component {
 
     /**Action menu block */
     deleteVisible = () => {
-        return redux_org.role(this.props.organizationInfo) !== perpetual.ADMIN_MANAGER
+        return !redux_org.isManager(this)
     }
 
     actionMenu = () => {
@@ -125,10 +125,10 @@ class AccountList extends Component {
 
     render() {
         return (
-            <>
+            <Fragment>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <DataView id={perpetual.PAGE_ACCOUNTS} actionMenu={this.actionMenu} requestInfo={this.requestInfo} refreshToggle={this.state.refreshViewToggle} groupActionMenu={this.groupActionMenu} />
-            </>
+            </Fragment>
         )
     }
 
