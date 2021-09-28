@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -70,9 +70,9 @@ class AuditLog extends Component {
     render() {
         const { selectedDate, dataList, loading, isOrg, toggle, orgList} = this.state
         return (
-            <>
-                <LeftView type={this.type} isOrg={isOrg} toggle={toggle} dataList={dataList} orgList={orgList} fetchData={this.onFetchData} close={this.handleClose} loading={loading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} handleError={this.props.handleAlertInfo} />
-            </>
+            <Fragment>
+                <LeftView type={this.type} isOrg={isOrg} toggle={toggle} dataList={dataList} orgList={orgList} fetchData={this.onFetchData} close={this.handleClose} loading={loading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} />
+            </Fragment>
         )
     }
 
