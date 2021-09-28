@@ -21,7 +21,7 @@ import Help from '../../events/helper/Help'
 import { HEADER } from '../../../../hoc/forms/MexForms';
 import { perpetual } from '../../../../helper/constant';
 import { DialogTitle } from '../../../../hoc/mexui';
-import LogsPref from './logsPref'
+import LogsPref from './LogsPref'
 
 export const PREF_DATATABLE = 'Datatable'
 export const PREF_MONITORING = 'Monitoring'

@@ -24,7 +24,7 @@ const LogsPref = (props) => {
   }
   const getforms = () => (
     [
-      { field: PREF_LOGS, label: 'Logs', value: true, formType: SWITCH, visible: true, tip: 'Show Logs by default' },
+      { field: PREF_LOGS, label: 'Show Logs', value: true, formType: SWITCH, visible: true, tip: 'Enable to show/hide' },
     ]
   )
   return (
