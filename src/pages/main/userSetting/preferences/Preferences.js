@@ -202,7 +202,7 @@ class Preferences extends React.Component {
                 let org = redux_org.nonAdminOrg(this)
                 data[org] = data[org] ? data[org] : {}
             }
-            this.setState({ data: data })
+            this.setState({ data })
         }
     }
 }
