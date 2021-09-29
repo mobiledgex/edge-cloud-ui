@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, Fragment } from 'react';
 import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
@@ -10,8 +10,9 @@ import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import * as serverData from '../../../services/model/serverData';
 import { perpetual } from '../../../helper/constant';
 import { uiFormatter } from '../../../helper/formatter';
+import { redux_org } from '../../../helper/reduxData'
 
-class AccountList extends React.Component {
+class AccountList extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -32,8 +33,8 @@ class AccountList extends React.Component {
     }
 
     /**Action menu block */
-    deleteVisible = (data) => {
-        return data[fields.username] !== 'mexadmin'
+    deleteVisible = () => {
+        return !redux_org.isAdminManager(this)
     }
 
     actionMenu = () => {
@@ -124,10 +125,10 @@ class AccountList extends React.Component {
 
     render() {
         return (
-            <React.Fragment>
+            <Fragment>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <DataView id={perpetual.PAGE_ACCOUNTS} actionMenu={this.actionMenu} requestInfo={this.requestInfo} refreshToggle={this.state.refreshViewToggle} groupActionMenu={this.groupActionMenu} />
-            </React.Fragment>
+            </Fragment>
         )
     }
 
