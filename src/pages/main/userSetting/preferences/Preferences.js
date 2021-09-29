@@ -4,14 +4,14 @@ import { withRouter } from 'react-router-dom';
 import * as actions from '../../../../actions';
 import moment from 'moment'
 import AppsIcon from '@material-ui/icons/Apps';
-import CloseIcon from '@material-ui/icons/Close';
-import { updateUser, updateUserMetaData } from '../../../../services/modules/users'
+import { updateUserMetaData } from '../../../../services/modules/users'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Button, Dialog, DialogActions, DialogContent, Divider, Grid, IconButton, List, ListItem, ListItemText, MenuItem, Select, Switch } from '@material-ui/core'
 
-import DatatablePref from './datatablePref'
-import TimezonePref from './timezonePref'
-import MonitoringPref from './monitoringPref'
+import DatatablePref from './DatatablePref'
+import TimezonePref from './TimezonePref'
+import MonitoringPref from './MonitoringPref'
+import LogsPref from './LogsPref'
 
 import cloneDeep from 'lodash/cloneDeep'
 import { redux_org } from '../../../../helper/reduxData';
@@ -25,11 +25,13 @@ import { DialogTitle } from '../../../../hoc/mexui';
 export const PREF_DATATABLE = 'Datatable'
 export const PREF_MONITORING = 'Monitoring'
 export const PREF_TIMEZONE = 'Timezone'
+export const PREF_LOGS = 'Logs'
 
 const preferencesList = [
     { id: HEADER, label: 'General' },
     { id: PREF_DATATABLE, label: 'Data Table' },
     { id: PREF_TIMEZONE, label: 'Date & Time' },
+    { id: PREF_LOGS, label: 'Logs' },
     { id: HEADER, label: 'Organization' },
     { id: PREF_MONITORING, label: 'Monitoring' },
 ]
@@ -133,6 +135,8 @@ class Preferences extends React.Component {
                 return <TimezonePref data={data} update={this.updateData} />
             case PREF_MONITORING:
                 return <MonitoringPref data={redux_org.isAdmin(this) ? data : this.getOrgData(data)} update={redux_org.isAdmin(this) ? this.updateData : this.updateOrgData} />
+            case PREF_LOGS:
+                return <LogsPref data={data} update={this.updateData} />
         }
     }
 
