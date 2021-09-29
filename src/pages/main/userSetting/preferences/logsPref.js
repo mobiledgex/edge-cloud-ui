@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import MexForms, { SWITCH } from '../../../../hoc/forms/MexForms'
+import { Icon } from '../../../../hoc/mexui'
 import { PREF_LOGS } from '../../../../utils/sharedPreferences_util'
 
 const LogsPref = (props) => {
@@ -24,7 +25,7 @@ const LogsPref = (props) => {
   }
   const getforms = () => (
     [
-      { field: PREF_LOGS, label: 'Logs', value: true, formType: SWITCH, visible: true, tip: 'Show Logs by default' },
+      { field: PREF_LOGS, label: 'Show Logs', value: true, formType: SWITCH, visible: true, tip: `Option to show/hide logs menu by default` },
     ]
   )
   return (

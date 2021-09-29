@@ -9,9 +9,9 @@ import { updateUser, updateUserMetaData } from '../../../../services/modules/use
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Button, Dialog, DialogActions, DialogContent, Divider, Grid, IconButton, List, ListItem, ListItemText, MenuItem, Select, Switch } from '@material-ui/core'
 
-import DatatablePref from './datatablePref'
-import TimezonePref from './timezonePref'
-import MonitoringPref from './monitoringPref'
+import DatatablePref from './DatatablePref'
+import TimezonePref from './TimezonePref'
+import MonitoringPref from './MonitoringPref'
 
 import cloneDeep from 'lodash/cloneDeep'
 import { redux_org } from '../../../../helper/reduxData';
@@ -21,7 +21,7 @@ import Help from '../../events/helper/Help'
 import { HEADER } from '../../../../hoc/forms/MexForms';
 import { perpetual } from '../../../../helper/constant';
 import { DialogTitle } from '../../../../hoc/mexui';
-import LogsPref from './logsPref'
+import LogsPref from './LogsPref'
 
 export const PREF_DATATABLE = 'Datatable'
 export const PREF_MONITORING = 'Monitoring'

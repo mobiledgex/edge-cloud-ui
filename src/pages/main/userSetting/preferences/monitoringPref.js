@@ -5,7 +5,7 @@ import { Accordion as MuiAccordion, AccordionDetails, AccordionSummary, Typograp
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { CHECKBOX_ARRAY } from '../../../../hoc/forms/MexForms'
 import { withStyles } from '@material-ui/styles';
-import { PREF_MONITORING } from './preferences';
+import { PREF_MONITORING } from './Preferencess';
 import CheckBoxArray from '../../../../hoc/forms/CheckBoxArray'
 import { PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../../utils/sharedPreferences_util';
 import { redux_org } from '../../../../helper/reduxData';
