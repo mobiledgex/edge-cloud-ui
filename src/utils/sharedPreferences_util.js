@@ -1,6 +1,6 @@
 import {timezoneName } from './date_util'
 import { getUserMetaData, orgUserMetaDataLS } from '../helper/ls'
-import { PREF_MONITORING } from '../pages/main/userSetting/preferences/Preferencess'
+import { PREF_MONITORING } from '../pages/main/userSetting/preferences/Preferences'
 
 export const PREF_TIMEZONE = 'Timezone'
 export const PREF_MAP = 'Map'
