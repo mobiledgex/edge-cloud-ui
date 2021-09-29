@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../../actions';
@@ -90,10 +90,10 @@ class Preferences extends React.Component {
 
     onSave = () => {
         this.setState({ loading: true }, async () => {
-            let oldData = this.state.data
-            let currentData = getUserMetaData()
-            this.isTimezoneChanged = oldData[PREF_TIMEZONE] !== undefined && currentData[PREF_TIMEZONE] !== oldData[PREF_TIMEZONE]
-            if (await updateUserMetaData(this, currentData)) {
+            let data = this.state.data
+            let oldData = getUserMetaData()
+            this.isTimezoneChanged = data[PREF_TIMEZONE] !== undefined && oldData[PREF_TIMEZONE] !== data[PREF_TIMEZONE]
+            if (await updateUserMetaData(this, data)) {
                 if (this.isTimezoneChanged) {
                     this.onTimezoneChangeEvent()
                 }
@@ -145,7 +145,7 @@ class Preferences extends React.Component {
     render() {
         const { open, data, header, loading } = this.state
         return (
-            <React.Fragment>
+            <Fragment>
                 <MenuItem onClick={this.handleOpen}>
                     <AppsIcon fontSize="small" style={{ marginRight: 15 }} />
                     <ListItemText primary="Preferences" />
@@ -181,23 +181,25 @@ class Preferences extends React.Component {
                         <Button onClick={this.onSave}>Save</Button>
                     </DialogActions>
                 </Dialog>
-            </React.Fragment>
+            </Fragment>
         )
     }
 
-    componentDidMount() {
-        let data = localStorage.getItem(perpetual.LS_USER_META_DATA)
-        try {
-            data = data ? JSON.parse(data) : {}
+    componentDidUpdate(preProps, preState) {
+        if (preState.open !== this.state.open && this.state.open) {
+            let data = localStorage.getItem(perpetual.LS_USER_META_DATA)
+            try {
+                data = data ? JSON.parse(data) : {}
+            }
+            catch (e) {
+                data = {}
+            }
+            if (!redux_org.isAdmin(this)) {
+                let org = redux_org.nonAdminOrg(this)
+                data[org] = data[org] ? data[org] : {}
+            }
+            this.setState({ data: data })
         }
-        catch (e) {
-            data = {}
-        }
-        if (!redux_org.isAdmin(this)) {
-            let org = redux_org.nonAdminOrg(this)
-            data[org] = data[org] ? data[org] : {}
-        }
-        this.setState({ data: data })
     }
 }
 
