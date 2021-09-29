@@ -4,8 +4,7 @@ import { withRouter } from 'react-router-dom';
 import * as actions from '../../../../actions';
 import moment from 'moment'
 import AppsIcon from '@material-ui/icons/Apps';
-import CloseIcon from '@material-ui/icons/Close';
-import { updateUser, updateUserMetaData } from '../../../../services/modules/users'
+import { updateUserMetaData } from '../../../../services/modules/users'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Button, Dialog, DialogActions, DialogContent, Divider, Grid, IconButton, List, ListItem, ListItemText, MenuItem, Select, Switch } from '@material-ui/core'
 
