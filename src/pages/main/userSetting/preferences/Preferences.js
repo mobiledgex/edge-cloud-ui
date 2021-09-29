@@ -12,6 +12,7 @@ import { Button, Dialog, DialogActions, DialogContent, Divider, Grid, IconButton
 import DatatablePref from './DatatablePref'
 import TimezonePref from './TimezonePref'
 import MonitoringPref from './MonitoringPref'
+import LogsPref from './LogsPref'
 
 import cloneDeep from 'lodash/cloneDeep'
 import { redux_org } from '../../../../helper/reduxData';
@@ -21,7 +22,6 @@ import Help from '../../events/helper/Help'
 import { HEADER } from '../../../../hoc/forms/MexForms';
 import { perpetual } from '../../../../helper/constant';
 import { DialogTitle } from '../../../../hoc/mexui';
-import LogsPref from './LogsPrefs'
 
 export const PREF_DATATABLE = 'Datatable'
 export const PREF_MONITORING = 'Monitoring'
