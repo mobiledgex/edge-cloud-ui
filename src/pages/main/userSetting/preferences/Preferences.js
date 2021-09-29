@@ -213,7 +213,6 @@ const mapStateToProps = (state) => {
     }
 };
 
-
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
