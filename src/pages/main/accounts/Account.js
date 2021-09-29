@@ -34,7 +34,7 @@ class AccountList extends Component {
 
     /**Action menu block */
     deleteVisible = () => {
-        return !redux_org.isAdmin(this)
+        return !redux_org.isAdminManager(this)
     }
 
     actionMenu = () => {
