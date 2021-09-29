@@ -5,7 +5,7 @@ import * as actions from '../../../actions';
 import Profile from './Profile';
 import Billing from './Billing';
 import UpdatePassword from './UpdatePassword';
-import Preferences from './preferences/preferences';
+import Preferences from './preferences/Preferences';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import { IconButton, ListItemText, Menu, MenuItem } from '@material-ui/core';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';

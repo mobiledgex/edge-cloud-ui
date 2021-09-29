@@ -1,6 +1,6 @@
 import React from 'react'
 import { Paper, Tabs, Tab, Box } from '@material-ui/core';
-import Help from '../auditLog/Help'
+import Help from '../helper/Help'
 import { lightGreen } from '@material-ui/core/colors';
 import CloseIcon from '@material-ui/icons/Close';
 import RefreshIcon from '@material-ui/icons/Refresh';

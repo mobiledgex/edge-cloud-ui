@@ -89,3 +89,11 @@ export const edgeboxOnly = (self) => {
 export const nonAdminOrg = (self) => {
     return !isAdmin(self) ? orgName(self) : undefined
 }
+
+export const isAdminManager = (self) => {
+    let info = getObject(self)
+    if (info) {
+        return info.role === perpetual.ADMIN_MANAGER
+    }
+    return false
+}
