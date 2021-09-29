@@ -38,7 +38,8 @@ class AppList extends React.Component {
     }
 
     onAdd = (action, data) => {
-        this.updateState({ currentView: <AppReg isUpdate={action ? true : false} data={data} onClose={this.onRegClose} /> });
+        let id = action ? action.id : undefined
+        this.updateState({ currentView: <AppReg id={id} data={data} onClose={this.onRegClose} /> });
     }
 
     /***Action Block */
@@ -50,6 +51,7 @@ class AppList extends React.Component {
 
     actionMenu = () => {
         return [
+            { id: perpetual.ACTION_CLONE, label: 'Clone', onClick: this.onAdd, type: 'Edit' },
             { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onAdd, type: 'Edit' },
             { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteApp, type: 'Edit' },
             { label: 'Create Instance', onClick: this.onLaunch, type: 'Edit' }
