@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Box, Typography, Card, LinearProgress } from '@material-ui/core';
 import Help from '../Help'
 import { lightGreen } from '@material-ui/core/colors';

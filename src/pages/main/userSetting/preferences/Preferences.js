@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../../actions';
@@ -149,7 +149,7 @@ class Preferences extends React.Component {
     render() {
         const { open, data, header, loading } = this.state
         return (
-            <React.Fragment>
+            <Fragment>
                 <MenuItem onClick={this.handleOpen}>
                     <AppsIcon fontSize="small" style={{ marginRight: 15 }} />
                     <ListItemText primary="Preferences" />
@@ -185,23 +185,25 @@ class Preferences extends React.Component {
                         <Button onClick={this.onSave}>Save</Button>
                     </DialogActions>
                 </Dialog>
-            </React.Fragment>
+            </Fragment>
         )
     }
 
-    componentDidMount() {
-        let data = localStorage.getItem(perpetual.LS_USER_META_DATA)
-        try {
-            data = data ? JSON.parse(data) : {}
+    componentDidUpdate(preProps, preState) {
+        if (preState.open !== this.state.open && this.state.open) {
+            let data = localStorage.getItem(perpetual.LS_USER_META_DATA)
+            try {
+                data = data ? JSON.parse(data) : {}
+            }
+            catch (e) {
+                data = {}
+            }
+            if (!redux_org.isAdmin(this)) {
+                let org = redux_org.nonAdminOrg(this)
+                data[org] = data[org] ? data[org] : {}
+            }
+            this.setState({ data })
         }
-        catch (e) {
-            data = {}
-        }
-        if (!redux_org.isAdmin(this)) {
-            let org = redux_org.nonAdminOrg(this)
-            data[org] = data[org] ? data[org] : {}
-        }
-        this.setState({ data: data })
     }
 }
 
@@ -210,7 +212,6 @@ const mapStateToProps = (state) => {
         organizationInfo: state.organizationInfo.data
     }
 };
-
 
 const mapDispatchProps = (dispatch) => {
     return {
