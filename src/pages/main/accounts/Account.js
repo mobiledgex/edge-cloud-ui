@@ -33,13 +33,13 @@ class AccountList extends Component {
     }
 
     /**Action menu block */
-    disableDelete = (type, action, data) => {
+    deleteAction = (type, action, data) => {
         return redux_org.isAdminManager(this)
     }
 
     actionMenu = () => {
         return [
-            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteAccount, type: 'Edit', disable: this.disableDelete }
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteAccount, type: 'Edit', disable: this.deleteAction }
         ]
     }
 
