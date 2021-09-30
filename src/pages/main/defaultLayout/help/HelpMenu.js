@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from "react-redux"
-import { Menu, MenuItem, IconButton, ListItemText } from '@material-ui/core'
+import { Menu, MenuItem, IconButton, ListItemText, Tooltip } from '@material-ui/core'
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import NewReleasesIcon from '@material-ui/icons/NewReleases';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
@@ -39,9 +39,11 @@ const HelpMenu = (props) => {
 
     return (
         <div style={{ marginTop: '0.4em' }}>
+            <Tooltip title={<strong style={{ fontSize: 13 }}>Documentation</strong>}>
             <IconButton aria-label="help-menu" aria-haspopup="true" onClick={handleClick}>
                 <HelpOutlineOutlinedIcon />
             </IconButton>
+            </Tooltip>
             <Menu
                 id="event-menu"
                 anchorEl={anchorEl}
