@@ -50,7 +50,6 @@ class AccountList extends Component {
         ]
     }
 
-
     groupActionMenu = () => {
         return [
             { label: 'Delete', onClick: deleteAccount, icon: 'delete', warning: 'delete all the selected user\'s account', type: 'Edit' },
