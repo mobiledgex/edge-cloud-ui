@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import MexForms, { INPUT, MAIN_HEADER, SELECT } from '../../../../hoc/forms/MexForms';
+import MexForms, { INPUT, MAIN_HEADER, SELECT, MULTI_SELECT, SELECT_RADIO_TREE } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -13,6 +13,7 @@ import { HELP_SCALE_POLICY_REG } from "../../../../tutorial";
 import { Grid } from '@material-ui/core';
 import { service, updateFieldData } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';
+import cloneDeep from 'lodash/cloneDeep';
 
 class AutoScalePolicyReg extends React.Component {
     constructor(props) {
@@ -23,7 +24,9 @@ class AutoScalePolicyReg extends React.Component {
         this._isMounted = false
         this.isUpdate = this.props.action === 'Update'
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
-        this.organizationList = []
+        if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
+        this.organizationList = [],
+            this.requestedRegionList = []
     }
 
     updateState = (data) => {
@@ -70,9 +73,37 @@ class AutoScalePolicyReg extends React.Component {
         return true
     }
 
+    checkForms = (form, forms, isInit = false, data) => {
+        if (form.field === fields.region) {
+            this.regionValueChange(form, forms, isInit)
+        }
+    }
 
-    checkForms = (form, forms, isInit) => {
-
+    regionValueChange = (currentForm, forms, isInit) => {
+        let regions = currentForm.value;
+        if (regions && regions.includes('All')) {
+            regions = cloneDeep(this.regions)
+            regions.splice(0, 1)
+        }
+        if (!this.isUpdate && regions && regions.length > 0) {
+            regions.map(region => {
+                this.regionDependentDataUpdate(region, forms, isInit)
+                this.requestedRegionList.push(region)
+            })
+        }
+        else {
+            let region = this.isUpdate ? currentForm.value : undefined
+            this.regionDependentDataUpdate(region, forms, isInit)
+        }
+    }
+    regionDependentDataUpdate = (region, forms, isInit) => {
+        if (!isInit) {
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i]
+                this.updateUI(form)
+                this.updateState({ forms })
+            }
+        }
     }
 
     onValueChange = (form) => {
@@ -80,10 +111,25 @@ class AutoScalePolicyReg extends React.Component {
         this.checkForms(form, forms)
     }
 
+    updateUI(form) {
+        if (form) {
+            if (form.field) {
+                if (form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === SELECT_RADIO_TREE) {
+                    switch (form.field) {
+                        case fields.region:
+                            form.options = this.regions;
+                            break;
+                        default:
+                            form.options = undefined;
+                    }
+                }
+            }
+        }
+    }
 
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Auto Scale Policy`, formType: MAIN_HEADER, visible: true },
-        { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', tip: 'Select region where you want to create policy', update: { key: true } },
+        { field: fields.region, label: 'Region', formType: MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', tip: 'Select region where you want to create policy', update: { key: true } },
         { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Name of the Organization that this policy belongs to', update: { key: true } },
         { field: fields.autoScalePolicyName, label: 'Auto Scale Policy Name', formType: INPUT, placeholder: 'Enter Auto Scale Policy Name', rules: { required: true }, visible: true, tip: 'Policy name', update: { key: true } },
         { field: fields.minimumNodes, label: 'Minimum Nodes', formType: INPUT, placeholder: 'Enter Minimum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['3'] }, dataValidateFunc: this.validateNodes, tip: 'Minimum number of cluster nodes' },
@@ -139,8 +185,6 @@ class AutoScalePolicyReg extends React.Component {
         this.props.onClose(false)
     }
 
-
-
     disableFields = (form) => {
         let rules = form.rules ? form.rules : {}
         let field = form.field
@@ -152,6 +196,7 @@ class AutoScalePolicyReg extends React.Component {
     loadData(forms, data) {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
+            this.updateUI(form)
             if (form.field) {
                 if (form.formType === SELECT) {
                     switch (form.field) {
@@ -198,7 +243,6 @@ class AutoScalePolicyReg extends React.Component {
             this.organizationList = await getOrganizationList(this, { type: perpetual.DEVELOPER })
             this.loadData(forms)
         }
-
         this.updateState({ forms })
 
     }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import MexForms, { MAIN_HEADER, HEADER, SWITCH, INPUT, SELECT, MULTI_FORM } from '../../../../hoc/forms/MexForms';
+import MexForms, { MAIN_HEADER, HEADER, SWITCH, INPUT, SELECT, MULTI_FORM, MULTI_SELECT, SELECT_RADIO_TREE } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -15,6 +15,7 @@ import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/mexMessa
 import { Grid } from '@material-ui/core';
 import { service, updateFieldData } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';
+import cloneDeep from 'lodash/cloneDeep';
 
 class TrustPolicyReg extends React.Component {
     constructor(props) {
@@ -28,6 +29,8 @@ class TrustPolicyReg extends React.Component {
         this.organizationList = []
         this.cloudletList = []
         this.isUpdate = this.props.action === 'Update'
+        if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
+        this.requestedRegionList = []
     }
 
     updateState = (data) => {
@@ -136,7 +139,7 @@ class TrustPolicyReg extends React.Component {
 
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Trust Policy`, formType: MAIN_HEADER, visible: true },
-        { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', update: { key: true } },
+        { field: fields.region, label: 'Region', formType: MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', update: { key: true } },
         { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, update: { key: true } },
         { field: fields.trustPolicyName, label: 'Trust Policy Name', formType: INPUT, placeholder: 'Enter Trust Policy Name', rules: { required: true }, visible: true, update: { key: true } },
         { field: fields.fullIsolation, label: 'Full Isolation', formType: SWITCH, visible: true, value: false, update: { edit: true } },
@@ -218,7 +221,55 @@ class TrustPolicyReg extends React.Component {
         })
         this.props.onClose(true)
     }
+    checkForms = (form, forms, isInit = false, data) => {
+        if (form.field === fields.region) {
+            this.regionValueChange(form, forms, isInit)
+        }
 
+    }
+
+    regionValueChange = (currentForm, forms, isInit) => {
+        let regions = currentForm.value;
+        if (regions && regions.includes('All')) {
+            regions = cloneDeep(this.regions)
+            regions.splice(0, 1)
+        }
+        if (!this.isUpdate && regions && regions.length > 0) {
+            regions.map(region => {
+                this.regionDependentDataUpdate(region, forms, isInit)
+                this.requestedRegionList.push(region)
+            })
+        }
+        else {
+            let region = this.isUpdate ? currentForm.value : undefined
+            this.regionDependentDataUpdate(region, forms, isInit)
+        }
+    }
+
+    regionDependentDataUpdate = (region, forms, isInit) => {
+        if (!isInit) {
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i]
+                this.updateUI(form)
+                this.updateState({ forms })
+            }
+        }
+    }
+    updateUI(form) {
+        if (form) {
+            if (form.field) {
+                if (form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === SELECT_RADIO_TREE) {
+                    switch (form.field) {
+                        case fields.region:
+                            form.options = this.regions;
+                            break;
+                        default:
+                            form.options = undefined;
+                    }
+                }
+            }
+        }
+    }
 
     render() {
         return (
@@ -250,6 +301,7 @@ class TrustPolicyReg extends React.Component {
     loadData(forms, data) {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
+            this.updateUI(form)
             if (form.field) {
                 if (form.formType === 'Select') {
                     switch (form.field) {
