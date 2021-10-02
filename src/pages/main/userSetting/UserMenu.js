@@ -7,7 +7,8 @@ import Billing from './Billing';
 import UpdatePassword from './UpdatePassword';
 import Preferences from './preferences/Preferences';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
-import { IconButton, ListItemText, Menu, MenuItem } from '@material-ui/core';
+import { ListItemText, Menu, MenuItem } from '@material-ui/core';
+import {IconButton} from '../../../hoc/mexui'
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 import { redux_org } from '../../../helper/reduxData';
 
@@ -49,7 +50,7 @@ class UserMenu extends React.Component {
         const {userInfo} = this.props
         return (
             <div style={{ marginTop: '0.4em' }}>
-                <IconButton aria-label="user-menu" aria-haspopup="true" onClick={this.handleClick}>
+                <IconButton tooltip='User Settings' onClick={this.handleClick}>
                     <AccountCircleOutlinedIcon />
                 </IconButton>
                 <Menu
