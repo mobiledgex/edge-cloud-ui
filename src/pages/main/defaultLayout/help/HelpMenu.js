@@ -1,10 +1,11 @@
 import React from 'react'
 import { useSelector } from "react-redux"
-import { Menu, MenuItem, IconButton, ListItemText, Tooltip } from '@material-ui/core'
+import { Menu, MenuItem, ListItemText } from '@material-ui/core'
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import NewReleasesIcon from '@material-ui/icons/NewReleases';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import WhatsNew from './whatsnew'
+import {IconButton} from '../../../../hoc/mexui'
 import { tutor } from '../../../../tutorial'
 import './style.css'
 import { redux_org } from '../../../../helper/reduxData';
@@ -39,11 +40,7 @@ const HelpMenu = (props) => {
 
     return (
         <div style={{ marginTop: '0.4em' }}>
-            <Tooltip title={<strong style={{ fontSize: 13 }}>Documentation</strong>}>
-            <IconButton aria-label="help-menu" aria-haspopup="true" onClick={handleClick}>
-                <HelpOutlineOutlinedIcon />
-            </IconButton>
-            </Tooltip>
+            <IconButton tooltip='Documentation' onClick={handleClick}><HelpOutlineOutlinedIcon /></IconButton>
             <Menu
                 id="event-menu"
                 anchorEl={anchorEl}
@@ -51,7 +48,7 @@ const HelpMenu = (props) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                {redux_org.isAdmin(orgInfo) ? null :<MenuItem onClick={docClick} disabled={!(viewMode && tutor(orgInfo, viewMode, true))}>
+                {redux_org.isAdmin(orgInfo) ? null : <MenuItem onClick={docClick} disabled={!(viewMode && tutor(orgInfo, viewMode, true))}>
                     <DescriptionOutlinedIcon fontSize="small" color={viewMode && tutor(orgInfo, viewMode, true) ? 'inherit' : 'disabled'} style={{ marginRight: 15 }} />
                     <ListItemText primary="Guide" />
                 </MenuItem>}
@@ -60,7 +57,7 @@ const HelpMenu = (props) => {
                     <ListItemText primary="What's new" />
                 </MenuItem>
             </Menu>
-            <WhatsNew open={openNew} close={()=>{setOpenNew(false)}}/>
+            <WhatsNew open={openNew} close={() => { setOpenNew(false) }} />
         </div >
     )
 }
