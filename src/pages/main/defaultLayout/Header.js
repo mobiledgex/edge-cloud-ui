@@ -5,11 +5,6 @@ import HelpMenu from './help/HelpMenu'
 import Notifications from '../notifications/Notifications'
 import UserMenu from '../userSetting/UserMenu';
 import Organization from './Organization'
-import { Tooltip } from '@material-ui/core';
-import { Icon } from '../../../hoc/mexui';
-import { lightGreen } from '@material-ui/core/colors';
-
-
 
 const useStyles = makeStyles(theme => ({
     grow: {
@@ -24,10 +19,6 @@ const useStyles = makeStyles(theme => ({
         marginRight: 5
     }
 }));
-
-
-
-
 
 const Header = (props) => {
     const classes = useStyles();

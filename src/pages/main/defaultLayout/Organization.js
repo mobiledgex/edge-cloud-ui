@@ -1,11 +1,10 @@
 import React from 'react';
 import { useSelector, useDispatch } from "react-redux";
-import { IconButton, ListItem, ListItemText, Popover } from '@material-ui/core';
+import { ListItem, ListItemText, Popover, Button, Tooltip } from '@material-ui/core';
 import { fields } from '../../../services/model/format';
 import BusinessIcon from '@material-ui/icons/Business';
 import { FixedSizeList } from 'react-window';
 import { organizationInfo, privateAccess, loadingSpinner } from '../../../actions';
-import { perpetual } from '../../../helper/constant';
 import { redux_org } from '../../../helper/reduxData';
 import { validatePrivateAccess } from '../../../constant';
 
@@ -37,12 +36,14 @@ const Organization = (props) => {
     return (
         <React.Fragment>
             {
-                <IconButton disabled={orgInfo && orgInfo[fields.isAdmin]} style={{ marginTop: 4 }} onClick={(e) => { setAnchorEl(e.currentTarget) }}>
-                    <BusinessIcon fontSize='medium' />&nbsp;
+                <Tooltip title={<strong style={{fontSize:13}}>Organization</strong>}>
+                    <Button disabled={orgInfo && orgInfo[fields.isAdmin]} style={{ marginTop: 4, textTransform: 'none', height: 30, marginTop: 12 }} onClick={(e) => { setAnchorEl(e.currentTarget) }} tooltip='Organization'>
+                        <BusinessIcon fontSize='medium' />&nbsp;
                         <h5>
-                        {orgInfo ? orgInfo[fields.organizationName] : 'Select Organization'}
-                    </h5>
-                </IconButton>
+                            {orgInfo ? orgInfo[fields.organizationName] : 'Select Organization'}
+                        </h5>
+                    </Button>
+                </Tooltip>
             }
             <Popover
                 id="event-menu"

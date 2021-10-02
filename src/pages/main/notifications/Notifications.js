@@ -2,7 +2,8 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Popover from '@material-ui/core/Popover';
-import { Badge, IconButton } from '@material-ui/core';
+import { Badge } from '@material-ui/core';
+import {IconButton} from '../../../hoc/mexui'
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import { showAlerts } from '../../../services/modules/alerts'
 import { redux_org } from '../../../helper/reduxData'
@@ -71,7 +72,7 @@ class AlertGlobal extends React.Component {
         const { anchorEl, dataList, showDot } = this.state
         return (
             <div style={{ marginTop: 5 }}>
-                <IconButton onClick={this.handleClick} aria-label="alert-menu" aria-haspopup="true">
+                <IconButton onClick={this.handleClick} tooltip='Notifications'>
                     {
                         showDot ?
                             <Badge color="secondary" variant="dot">

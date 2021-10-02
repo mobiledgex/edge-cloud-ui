@@ -141,11 +141,10 @@ const useStyles = makeStyles((theme) => ({
 const LogsButton = (props) => {
     const classes = useStyles()
     const { open } = props
-
     return (
-        <Tooltip title={<strong>Logs</strong>}>
+        <Tooltip title={<strong style={{ fontSize: 13 }}>Logs</strong>}>
             <button className={classes.fab} size="small" aria-label="add" onClick={props.onClick}>
-                <Icon style={{ color: 'white', marginTop:4 }}>{open ? 'chevron_right' : 'event_note'}</Icon>
+                <Icon style={{ color: 'white', marginTop: 4 }}>{open ? 'chevron_right' : 'event_note'}</Icon>
             </button>
         </Tooltip>
     )
