@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import MexForms, { INPUT, MAIN_HEADER, SELECT } from '../../../../hoc/forms/MexForms';
+import MexForms, { INPUT, MAIN_HEADER, SELECT, MULTI_SELECT } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -13,6 +13,7 @@ import { HELP_SCALE_POLICY_REG } from "../../../../tutorial";
 import { Grid } from '@material-ui/core';
 import { service, updateFieldData } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';
+import cloneDeep from 'lodash/cloneDeep';
 
 class AutoScalePolicyReg extends React.Component {
     constructor(props) {
@@ -23,6 +24,7 @@ class AutoScalePolicyReg extends React.Component {
         this._isMounted = false
         this.isUpdate = this.props.action === 'Update'
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
         this.organizationList = []
     }
 
@@ -105,13 +107,35 @@ class AutoScalePolicyReg extends React.Component {
                 }
             }
             else {
-                mc = await service.authSyncRequest(this, createAutoScalePolicy(data))
+                let regions = data[fields.region]
+                let requestList = []
+                if (regions.includes('All')) {
+                    regions = cloneDeep(this.regions)
+                    regions.splice(0, 1)
+                }
+                regions.map(region => {
+                    let requestData = JSON.parse(JSON.stringify(data))
+                    requestData[fields.region] = region
+                    requestList.push(createAutoScalePolicy(requestData))
+                })
+
+                if (requestList && requestList.length > 0) {
+                    service.multiAuthRequest(this, requestList, this.onAddResponse)
+                }
             }
-            if (mc && mc.response && mc.response.status === 200) {
-                let msg = this.isUpdate ? 'updated' : 'created'
-                this.props.handleAlertInfo('success', `Auto Scale Policy ${data[fields.autoScalePolicyName]} ${msg} successfully`)
-                this.props.onClose(true)
-            }
+        }
+    }
+
+    onAddResponse = (mcList) => {
+        if (mcList && mcList.length > 0) {
+            mcList.map(mc => {
+                if (mc.response) {
+                    let data = mc.request.data;
+                    let msg = this.isUpdate ? 'updated' : 'created'
+                    this.props.handleAlertInfo('success', `Auto Scale Policy ${data[fields.autoScalePolicyName]} ${msg} successfully`)
+                    this.props.onClose(true)
+                }
+            })
         }
     }
 
@@ -153,7 +177,7 @@ class AutoScalePolicyReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field) {
-                if (form.formType === SELECT) {
+                if (form.formType === SELECT || MULTI_SELECT) {
                     switch (form.field) {
                         case fields.organizationName:
                             form.options = this.organizationList
@@ -186,7 +210,6 @@ class AutoScalePolicyReg extends React.Component {
         forms.push(
             { label: `${this.isUpdate ? 'Update' : 'Create'} Policy`, formType: 'Button', onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
-
         if (data) {
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName]

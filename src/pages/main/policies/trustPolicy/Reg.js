@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import MexForms, { MAIN_HEADER, HEADER, SWITCH, INPUT, SELECT, MULTI_FORM } from '../../../../hoc/forms/MexForms';
+import MexForms, { MAIN_HEADER, HEADER, SWITCH, INPUT, SELECT, MULTI_FORM, MULTI_SELECT } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -15,6 +15,7 @@ import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/mexMessa
 import { Grid } from '@material-ui/core';
 import { service, updateFieldData } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';
+import cloneDeep from 'lodash/cloneDeep';
 
 class TrustPolicyReg extends React.Component {
     constructor(props) {
@@ -25,6 +26,7 @@ class TrustPolicyReg extends React.Component {
         }
         this._isMounted = false
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
         this.organizationList = []
         this.cloudletList = []
         this.isUpdate = this.props.action === 'Update'
@@ -201,7 +203,33 @@ class TrustPolicyReg extends React.Component {
                     this.props.handleAlertInfo('success', `Trust Policy ${policyName} created successfully`)
                     this.props.onClose(true)
                 }
+                let regions = data[fields.region]
+                let requestList = []
+                if (regions.includes('All')) {
+                    regions = cloneDeep(this.regions)
+                    regions.splice(0, 1)
+                }
+                regions.map(region => {
+                    let requestData = JSON.parse(JSON.stringify(data))
+                    requestData[fields.region] = region
+                    requestList.push(createTrustPolicy(requestData))
+                })
+                if (requestList && requestList.length > 0) {
+                    service.multiAuthRequest(this, requestList, this.onAddResponse)
+                }
             }
+        }
+    }
+    onAddResponse = (mcList) => {
+        if (mcList && mcList.length > 0) {
+            mcList.map(mc => {
+                if (mc.response) {
+                    let data = mc.request.data;
+                    let msg = this.isUpdate ? 'updated' : 'created'
+                    this.props.handleAlertInfo('success', `Trust Policy ${data[policyName]} created successfully`)
+                    this.props.onClose(true)
+                }
+            })
         }
     }
 
@@ -251,7 +279,7 @@ class TrustPolicyReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field) {
-                if (form.formType === 'Select') {
+                if (form.formType === SELECT || MULTI_SELECT) {
                     switch (form.field) {
                         case fields.organizationName:
                             form.options = this.organizationList
