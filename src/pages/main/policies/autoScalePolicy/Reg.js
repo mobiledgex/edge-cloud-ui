@@ -85,7 +85,7 @@ class AutoScalePolicyReg extends React.Component {
 
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Auto Scale Policy`, formType: MAIN_HEADER, visible: true },
-        { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', tip: 'Select region where you want to create policy', update: { key: true } },
+        { field: fields.region, label: 'Region', formType: MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', tip: 'Select region where you want to create policy', update: { key: true } },
         { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Name of the Organization that this policy belongs to', update: { key: true } },
         { field: fields.autoScalePolicyName, label: 'Auto Scale Policy Name', formType: INPUT, placeholder: 'Enter Auto Scale Policy Name', rules: { required: true }, visible: true, tip: 'Policy name', update: { key: true } },
         { field: fields.minimumNodes, label: 'Minimum Nodes', formType: INPUT, placeholder: 'Enter Minimum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['3'] }, dataValidateFunc: this.validateNodes, tip: 'Minimum number of cluster nodes' },
@@ -103,7 +103,11 @@ class AutoScalePolicyReg extends React.Component {
             if (this.isUpdate) {
                 let updateData = updateFieldData(this, this.state.forms, data, this.props.data)
                 if (updateData.fields.length > 0) {
-                    mc = await service.authSyncRequest(this, updateAutoScalePolicy(updateData))
+                    let mc = await updateAutoScalePolicy(updateData)
+                    if (mc && mc.response && mc.response.status === 200) {
+                        this.props.handleAlertInfo('success', `Auto Scale Policy ${data[fields.autoScalePolicyName]} updated successfully`)
+                        this.props.onClose(true)
+                    }
                 }
             }
             else {
@@ -125,14 +129,12 @@ class AutoScalePolicyReg extends React.Component {
             }
         }
     }
-
     onAddResponse = (mcList) => {
         if (mcList && mcList.length > 0) {
             mcList.map(mc => {
                 if (mc.response) {
-                    let data = mc.request.data;
-                    let msg = this.isUpdate ? 'updated' : 'created'
-                    this.props.handleAlertInfo('success', `Auto Scale Policy ${data[fields.autoScalePolicyName]} ${msg} successfully`)
+                    let policyName = mc.request.data.autoscalepolicy.key.name;
+                    this.props.handleAlertInfo('success', `Auto Scale Policy ${policyName} created successfully`)
                     this.props.onClose(true)
                 }
             })

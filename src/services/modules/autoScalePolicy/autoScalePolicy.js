@@ -1,5 +1,5 @@
 import * as formatter from '../../model/format'
-import { showAuthSyncRequest } from '../../service';
+import { showAuthSyncRequest, authSyncRequest } from '../../service';
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint } from '../../../helper/constant';
 import { developerRoles } from '../../../constant';
@@ -69,9 +69,10 @@ export const getAutoScalePolicyList = async (self, data) => {
   return await showAuthSyncRequest(self, showAutoScalePolicies(self, data))
 }
 
-export const updateAutoScalePolicy = (data) => {
+export const updateAutoScalePolicy = async (data) => {
   let requestData = getKey(data, true)
-  return { method: endpoint.UPDATE_AUTO_SCALE_POLICY, data: requestData }
+  let request = { method: endpoint.UPDATE_AUTO_SCALE_POLICY, data: requestData }
+  return await authSyncRequest(self, request)
 }
 
 

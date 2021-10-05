@@ -26,10 +26,10 @@ class TrustPolicyReg extends React.Component {
         }
         this._isMounted = false
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        this.isUpdate = this.props.action === 'Update'
         if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
         this.organizationList = []
         this.cloudletList = []
-        this.isUpdate = this.props.action === 'Update'
     }
 
     updateState = (data) => {
@@ -138,7 +138,7 @@ class TrustPolicyReg extends React.Component {
 
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Trust Policy`, formType: MAIN_HEADER, visible: true },
-        { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', update: { key: true } },
+        { field: fields.region, label: 'Region', formType: MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', update: { key: true } },
         { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, update: { key: true } },
         { field: fields.trustPolicyName, label: 'Trust Policy Name', formType: INPUT, placeholder: 'Enter Trust Policy Name', rules: { required: true }, visible: true, update: { key: true } },
         { field: fields.fullIsolation, label: 'Full Isolation', formType: SWITCH, visible: true, value: false, update: { edit: true } },
@@ -197,12 +197,6 @@ class TrustPolicyReg extends React.Component {
                 }
             }
             else {
-                let mc = await service.authSyncRequest(this, createTrustPolicy(data))
-                if (mc && mc.response && mc.response.status === 200) {
-                    let policyName = mc.request.data.trustpolicy.key.name;
-                    this.props.handleAlertInfo('success', `Trust Policy ${policyName} created successfully`)
-                    this.props.onClose(true)
-                }
                 let regions = data[fields.region]
                 let requestList = []
                 if (regions.includes('All')) {
@@ -220,13 +214,13 @@ class TrustPolicyReg extends React.Component {
             }
         }
     }
+
     onAddResponse = (mcList) => {
         if (mcList && mcList.length > 0) {
             mcList.map(mc => {
-                if (mc.response) {
-                    let data = mc.request.data;
-                    let msg = this.isUpdate ? 'updated' : 'created'
-                    this.props.handleAlertInfo('success', `Trust Policy ${data[policyName]} created successfully`)
+                if (mc && mc.response && mc.response.status === 200) {
+                    let policyName = mc.request.data.trustpolicy.key.name;
+                    this.props.handleAlertInfo('success', `Trust Policy ${policyName} created successfully`)
                     this.props.onClose(true)
                 }
             })
