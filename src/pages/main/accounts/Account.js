@@ -5,12 +5,14 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
-import { keys, showAccounts, deleteAccount } from '../../../services/modules/accounts';
+import { keys, showAccounts, deleteAccount, multiDataRequest } from '../../../services/modules/accounts';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import * as serverData from '../../../services/model/serverData';
 import { perpetual } from '../../../helper/constant';
 import { uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData'
+import { showUsers } from '../../../services/modules/users';
+import { ADMIN_MANAGER } from '../../../helper/constant/perpetual';
 
 class AccountList extends Component {
     constructor(props) {
@@ -34,7 +36,7 @@ class AccountList extends Component {
 
     /**Action menu block */
     deleteAction = (type, action, data) => {
-        return redux_org.isAdminManager(this)
+        return data.role === ADMIN_MANAGER
     }
 
     actionMenu = () => {
@@ -115,8 +117,9 @@ class AccountList extends Component {
             headerLabel: 'Accounts',
             nameField: fields.username,
             selection: true,
-            requestType: [showAccounts],
+            requestType: [showAccounts, showUsers],
             sortBy: [fields.username],
+            filter: { role: ADMIN_MANAGER },
             keys: this.keys,
             viewMode: null,
             formatData: this.dataFormatter
@@ -127,7 +130,7 @@ class AccountList extends Component {
         return (
             <Fragment>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
-                <DataView id={perpetual.PAGE_ACCOUNTS} actionMenu={this.actionMenu} requestInfo={this.requestInfo} refreshToggle={this.state.refreshViewToggle} groupActionMenu={this.groupActionMenu} />
+                <DataView id={perpetual.PAGE_ACCOUNTS} actionMenu={this.actionMenu} requestInfo={this.requestInfo} refreshToggle={this.state.refreshViewToggle} groupActionMenu={this.groupActionMenu} multiDataRequest={multiDataRequest} />
             </Fragment>
         )
     }
