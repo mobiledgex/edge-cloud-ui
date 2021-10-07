@@ -488,7 +488,6 @@ class MexListView extends React.Component {
                 this.props.handleViewMode(this.requestInfo.viewMode)
                 break;
             case ACTION_SEARCH:
-                this.filterText = value
                 this.onFilterValue(value)
                 break;
             case ACTION_GROUP:
