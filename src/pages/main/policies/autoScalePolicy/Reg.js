@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import MexForms, { INPUT, MAIN_HEADER, SELECT } from '../../../../hoc/forms/MexForms';
+import MexForms, { INPUT, MAIN_HEADER, SELECT, MULTI_SELECT } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -13,6 +13,7 @@ import { HELP_SCALE_POLICY_REG } from "../../../../tutorial";
 import { Grid } from '@material-ui/core';
 import { service, updateFieldData } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';
+import cloneDeep from 'lodash/cloneDeep';
 
 class AutoScalePolicyReg extends React.Component {
     constructor(props) {
@@ -22,7 +23,8 @@ class AutoScalePolicyReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.action === 'Update'
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        this.regions = cloneDeep(this.props.regions)
+        if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
         this.organizationList = []
     }
 
@@ -83,7 +85,7 @@ class AutoScalePolicyReg extends React.Component {
 
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Auto Scale Policy`, formType: MAIN_HEADER, visible: true },
-        { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', tip: 'Select region where you want to create policy', update: { key: true } },
+        { field: fields.region, label: 'Region', formType: MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', tip: 'Select region where you want to create policy', update: { key: true } },
         { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Name of the Organization that this policy belongs to', update: { key: true } },
         { field: fields.autoScalePolicyName, label: 'Auto Scale Policy Name', formType: INPUT, placeholder: 'Enter Auto Scale Policy Name', rules: { required: true }, visible: true, tip: 'Policy name', update: { key: true } },
         { field: fields.minimumNodes, label: 'Minimum Nodes', formType: INPUT, placeholder: 'Enter Minimum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['3'] }, dataValidateFunc: this.validateNodes, tip: 'Minimum number of cluster nodes' },
@@ -101,17 +103,42 @@ class AutoScalePolicyReg extends React.Component {
             if (this.isUpdate) {
                 let updateData = updateFieldData(this, this.state.forms, data, this.props.data)
                 if (updateData.fields.length > 0) {
-                    mc = await service.authSyncRequest(this, updateAutoScalePolicy(updateData))
+                    mc = await updateAutoScalePolicy(this, updateData)
+                    if (service.responseValid(mc)) {
+                        let autoscalepolicy = mc.request.data.autoscalepolicy.key.name;
+                        this.props.handleAlertInfo('success', `Auto Scale Policy ${autoscalepolicy} updated successfully`)
+                        this.props.onClose(true)
+                    }
                 }
             }
             else {
-                mc = await service.authSyncRequest(this, createAutoScalePolicy(data))
+                let regions = data[fields.region]
+                let requestList = []
+                if (regions.includes('All')) {
+                    regions = cloneDeep(this.regions)
+                    regions.splice(0, 1)
+                }
+                regions.map(region => {
+                    let requestData = cloneDeep(data)
+                    requestData[fields.region] = region
+                    requestList.push(createAutoScalePolicy(requestData))
+                })
+
+                if (requestList && requestList.length > 0) {
+                    service.multiAuthRequest(this, requestList, this.onAddResponse)
+                }
             }
-            if (mc && mc.response && mc.response.status === 200) {
-                let msg = this.isUpdate ? 'updated' : 'created'
-                this.props.handleAlertInfo('success', `Auto Scale Policy ${data[fields.autoScalePolicyName]} ${msg} successfully`)
-                this.props.onClose(true)
-            }
+        }
+    }
+    onAddResponse = (mcList) => {
+        if (mcList && mcList.length > 0) {
+            mcList.forEach(mc => {
+                if (mc.response) {
+                    let policyName = mc.request.data.autoscalepolicy.key.name;
+                    this.props.handleAlertInfo('success', `Auto Scale Policy ${policyName} created successfully`)
+                    this.props.onClose(true)
+                }
+            })
         }
     }
 
@@ -153,7 +180,7 @@ class AutoScalePolicyReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field) {
-                if (form.formType === SELECT) {
+                if (form.formType === SELECT || form.formType === MULTI_SELECT) {
                     switch (form.field) {
                         case fields.organizationName:
                             form.options = this.organizationList
@@ -186,7 +213,6 @@ class AutoScalePolicyReg extends React.Component {
         forms.push(
             { label: `${this.isUpdate ? 'Update' : 'Create'} Policy`, formType: 'Button', onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
-
         if (data) {
             let organization = {}
             organization[fields.organizationName] = data[fields.organizationName]
@@ -216,7 +242,8 @@ class AutoScalePolicyReg extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 };
 

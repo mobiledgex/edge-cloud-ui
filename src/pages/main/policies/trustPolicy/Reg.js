@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import MexForms, { MAIN_HEADER, HEADER, SWITCH, INPUT, SELECT, MULTI_FORM } from '../../../../hoc/forms/MexForms';
+import MexForms, { MAIN_HEADER, HEADER, SWITCH, INPUT, SELECT, MULTI_FORM, MULTI_SELECT } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -15,6 +15,7 @@ import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/mexMessa
 import { Grid } from '@material-ui/core';
 import { service, updateFieldData } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';
+import cloneDeep from 'lodash/cloneDeep';
 
 class TrustPolicyReg extends React.Component {
     constructor(props) {
@@ -24,10 +25,11 @@ class TrustPolicyReg extends React.Component {
             stepsArray: [],
         }
         this._isMounted = false
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        this.regions = cloneDeep(this.props.regions)
+        this.isUpdate = this.props.action === 'Update'
+        if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
         this.organizationList = []
         this.cloudletList = []
-        this.isUpdate = this.props.action === 'Update'
     }
 
     updateState = (data) => {
@@ -136,7 +138,7 @@ class TrustPolicyReg extends React.Component {
 
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Trust Policy`, formType: MAIN_HEADER, visible: true },
-        { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', update: { key: true } },
+        { field: fields.region, label: 'Region', formType: MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', update: { key: true } },
         { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, update: { key: true } },
         { field: fields.trustPolicyName, label: 'Trust Policy Name', formType: INPUT, placeholder: 'Enter Trust Policy Name', rules: { required: true }, visible: true, update: { key: true } },
         { field: fields.fullIsolation, label: 'Full Isolation', formType: SWITCH, visible: true, value: false, update: { edit: true } },
@@ -195,13 +197,33 @@ class TrustPolicyReg extends React.Component {
                 }
             }
             else {
-                let mc = await service.authSyncRequest(this, createTrustPolicy(data))
-                if (mc && mc.response && mc.response.status === 200) {
+                let regions = data[fields.region]
+                let requestList = []
+                if (regions.includes('All')) {
+                    regions = cloneDeep(this.regions)
+                    regions.splice(0, 1)
+                }
+                regions.map(region => {
+                    let requestData = JSON.parse(JSON.stringify(data))
+                    requestData[fields.region] = region
+                    requestList.push(createTrustPolicy(requestData))
+                })
+                if (requestList && requestList.length > 0) {
+                    service.multiAuthRequest(this, requestList, this.onAddResponse)
+                }
+            }
+        }
+    }
+
+    onAddResponse = (mcList) => {
+        if (mcList && mcList.length > 0) {
+            mcList.map(mc => {
+                if (service.responseValid(mc)) {
                     let policyName = mc.request.data.trustpolicy.key.name;
                     this.props.handleAlertInfo('success', `Trust Policy ${policyName} created successfully`)
                     this.props.onClose(true)
                 }
-            }
+            })
         }
     }
 
@@ -237,8 +259,6 @@ class TrustPolicyReg extends React.Component {
         this.props.onClose(false)
     }
 
-
-
     disableFields = (form) => {
         let rules = form.rules ? form.rules : {}
         let field = form.field
@@ -251,7 +271,7 @@ class TrustPolicyReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field) {
-                if (form.formType === 'Select') {
+                if (form.formType === SELECT || form.formType === MULTI_SELECT) {
                     switch (form.field) {
                         case fields.organizationName:
                             form.options = this.organizationList
@@ -339,7 +359,8 @@ class TrustPolicyReg extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 };
 
