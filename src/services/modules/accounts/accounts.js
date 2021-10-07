@@ -34,25 +34,25 @@ export const deleteAccount = (self, data) => {
     return { method: endpoint.DELETE_ACCOUNT, data: requestData, success: `Account ${data[fields.username]} deleted successfully` }
 }
 
-export const multiDataRequest = (keys, mcRequestList, specific) => {
+export const multiDataRequest = (keys, mcList, specific) => {
     let accountDataList = [];
     let userDataList = [];
-    for (let i = 0; i < mcRequestList.length; i++) {
-        let mcRequest = mcRequestList[i];
-        if (mcRequest.response) {
-            let method = mcRequest.request.method
+    for (let i = 0; i < mcList.length; i++) {
+        let mc = mcList[i];
+        if (mc.response) {
+            let method = mc.request.method
             if (method === endpoint.SHOW_USERS) {
-                userDataList = mcRequest.response.data;
+                userDataList = mc.response.data;
             }
             if (method === endpoint.SHOW_ACCOUNTS) {
-                accountDataList = mcRequest.response.data;
+                accountDataList = mc.response.data;
             }
         }
     }
     let dataList = accountDataList.map(account => {
-        let user = userDataList.find(user => user.username === account.username);
+        let user = userDataList.find(user => user[fields.username] === account[fields.username]);
         if (user) {
-            account["role"] = user.role;
+            account[fields.role] = user[fields.role];
         }
         return account
     });

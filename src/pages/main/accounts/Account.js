@@ -36,7 +36,7 @@ class AccountList extends Component {
 
     /**Action menu block */
     deleteAction = (type, action, data) => {
-        return data.role === ADMIN_MANAGER
+        return data[fields.role] === ADMIN_MANAGER
     }
 
     actionMenu = () => {
