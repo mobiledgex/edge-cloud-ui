@@ -8,9 +8,15 @@
 }
 
 .details-main table.details tbody {
+    display: block;
     max-height: calc(27vh - 10px);
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.details-main table.details tbody tr, .details-main table.details thead{
+    display: table;
+    width: 100%;
+    table-layout: fixed;
 }
 
 .details-main table.details tbody td,

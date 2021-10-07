@@ -9,7 +9,7 @@ import { appInstUsageMetrics, deviceKeys as appDeviceKeys } from '../../../../se
 import { cloudletUsageMetrics, deviceKeys as cloudletDeviceKeys } from '../../../../services/modules/cloudletMetricUsage/cloudletUsageMetrics'
 import { authSyncRequest, responseValid } from '../../../../services/service'
 import MexWorker from '../services/metricUsage.worker.js'
-import { Dialog, Grid } from '@material-ui/core'
+import { Dialog, Grid, LinearProgress } from '@material-ui/core'
 import { Marker } from "react-leaflet";
 import MexMap from '../../../../hoc/mexmap/MexMap'
 import { cloudIcon } from '../../../../hoc/mexmap/MapProperties'
@@ -48,7 +48,8 @@ class DMEMetrics extends React.Component {
             selectCloudlet: undefined,
             selectDevice: undefined,
             mapcenter: undefined,
-            latencyRange: 0
+            latencyRange: 0,
+            loading:false
         }
         this._isMounted = false
         this.worker = new MexWorker()
@@ -287,13 +288,15 @@ class DMEMetrics extends React.Component {
     }
 
     render() {
+        const {loading} = this.state
         return (
             <React.Fragment>
                 <Dialog fullScreen open={true}>
+                    {loading ? <LinearProgress /> : null}
                     <DMEToolbar onChange={this.onToolbar}></DMEToolbar>
                     {this.renderMap()}
                     {this.renderSlider()}
-                    <div style={{ position: 'absolute', top: 170, zIndex: 9999, pointerEvents:'none' }}>
+                    <div style={{ position: 'absolute', top: 170, zIndex: 9999, pointerEvents: 'none' }}>
                         <Legend colors={colors} buckets={buckets} />
                     </div>
                 </Dialog>
@@ -302,7 +305,7 @@ class DMEMetrics extends React.Component {
     }
 
     fetchData = async () => {
-        this.setState({ data: {}, sliderMarks: undefined, selectedDate: undefined })
+        this.setState({ data: {}, sliderMarks: undefined, selectedDate: undefined, loading:true })
         const { data, id, group } = this.props
         const tempData = data[0]
         const commonRequest = {
@@ -336,6 +339,7 @@ class DMEMetrics extends React.Component {
                 }
             })
         }
+        this.setState({loading:false})
     }
 
     componentDidMount() {
