@@ -156,7 +156,7 @@ class CloudletList extends React.Component {
             customStream: this.customStream,
             isRegion: true,
             isMap: true,
-            selection: true,
+            selection: !redux_org.isDeveloper(this),
             sortBy: [fields.region, fields.cloudletName],
             keys: this.keys,
             onAdd: this.canAdd(),

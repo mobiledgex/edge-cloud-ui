@@ -12,6 +12,7 @@ import { HELP_TRUST_POLICY } from "../../../../tutorial";
 import { operatorRoles } from '../../../../constant';
 import { role, perpetual } from '../../../../helper/constant';
 import { fields } from '../../../../services/model/format';
+import { redux_org } from '../../../../helper/reduxData';
 
 class TrustPolicy extends React.Component {
     constructor(props) {
@@ -81,7 +82,7 @@ class TrustPolicy extends React.Component {
             nameField: fields.trustPolicyName,
             sortBy: [fields.region, fields.trustPolicyName],
             keys: this.keys,
-            selection: true,
+            selection: !redux_org.isDeveloper(this),
             onAdd: role.validateRole(operatorRoles, this.props.organizationInfo) ? this.onAdd : undefined,
             viewMode: HELP_TRUST_POLICY
         })
