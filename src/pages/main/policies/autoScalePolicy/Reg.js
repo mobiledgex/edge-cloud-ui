@@ -103,9 +103,10 @@ class AutoScalePolicyReg extends React.Component {
             if (this.isUpdate) {
                 let updateData = updateFieldData(this, this.state.forms, data, this.props.data)
                 if (updateData.fields.length > 0) {
-                    mc = await updateAutoScalePolicy(updateData)
+                    mc = await updateAutoScalePolicy(this, updateData)
                     if (service.responseValid(mc)) {
-                        this.props.handleAlertInfo('success', `Auto Scale Policy ${data[fields.autoScalePolicyName]} updated successfully`)
+                        let autoscalepolicy = mc.request.data.autoscalepolicy.key.name;
+                        this.props.handleAlertInfo('success', `Auto Scale Policy ${autoscalepolicy} updated successfully`)
                         this.props.onClose(true)
                     }
                 }
