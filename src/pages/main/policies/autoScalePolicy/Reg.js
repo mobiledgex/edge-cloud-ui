@@ -179,7 +179,7 @@ class AutoScalePolicyReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
             if (form.field) {
-                if (form.formType === SELECT || MULTI_SELECT) {
+                if (form.formType === SELECT || form.formType === MULTI_SELECT) {
                     switch (form.field) {
                         case fields.organizationName:
                             form.options = this.organizationList
