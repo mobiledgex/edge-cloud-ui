@@ -10,6 +10,7 @@ import FlavorReg from './Reg';
 import { HELP_FLAVOR_LIST } from "../../../tutorial";
 import { perpetual } from '../../../helper/constant';
 import { uiFormatter } from '../../../helper/formatter';
+import { developerRoles } from '../../../constant';
 
 class FlavorList extends React.Component {
     constructor(props) {
@@ -77,7 +78,7 @@ class FlavorList extends React.Component {
             isRegion: true,
             requestType: [showFlavors],
             sortBy: [fields.region, fields.flavorName],
-            selection: true,
+            selection: !redux_org.isDeveloper(this),
             keys: this.keys,
             iconKeys : iconKeys(),
             onAdd: redux_org.isAdmin(this) ? this.onAdd : undefined,
