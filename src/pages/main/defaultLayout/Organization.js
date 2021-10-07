@@ -36,13 +36,15 @@ const Organization = (props) => {
     return (
         <React.Fragment>
             {
-                <Tooltip title={<strong style={{fontSize:13}}>Organization</strong>}>
-                    <Button disabled={orgInfo && orgInfo[fields.isAdmin]} style={{ marginTop: 4, textTransform: 'none', height: 30, marginTop: 12 }} onClick={(e) => { setAnchorEl(e.currentTarget) }} tooltip='Organization'>
-                        <BusinessIcon fontSize='medium' />&nbsp;
-                        <h5>
-                            {orgInfo ? orgInfo[fields.organizationName] : 'Select Organization'}
-                        </h5>
-                    </Button>
+                <Tooltip title={<strong style={{ fontSize: 13 }}>Organization</strong>}>
+                    <span>
+                        <Button disabled={orgInfo && orgInfo[fields.isAdmin]} style={{ marginTop: 4, textTransform: 'none', height: 30, marginTop: 12 }} onClick={(e) => { setAnchorEl(e.currentTarget) }} tooltip='Organization'>
+                            <BusinessIcon fontSize='medium' />&nbsp;
+                            <h5>
+                                {orgInfo ? orgInfo[fields.organizationName] : 'Select Organization'}
+                            </h5>
+                        </Button>
+                    </span>
                 </Tooltip>
             }
             <Popover
