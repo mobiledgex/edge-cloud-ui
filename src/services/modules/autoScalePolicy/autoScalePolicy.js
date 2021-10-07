@@ -69,7 +69,7 @@ export const getAutoScalePolicyList = async (self, data) => {
   return await showAuthSyncRequest(self, showAutoScalePolicies(self, data))
 }
 
-export const updateAutoScalePolicy = async (data) => {
+export const updateAutoScalePolicy = async (self, data) => {
   let requestData = getKey(data, true)
   let request = { method: endpoint.UPDATE_AUTO_SCALE_POLICY, data: requestData }
   return await authSyncRequest(self, request)
