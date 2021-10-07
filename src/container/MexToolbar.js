@@ -74,8 +74,7 @@ const MBox = (props) => {
 const MexToolbar = (props) => {
     const classes = useStyles();
     let requestInfo = props.requestInfo
-    const searchInput = prefixSearchPref()
-    const [search, setSearch] = React.useState(searchInput)
+    const [search, setSearch] = React.useState(prefixSearchPref())
     const [region, setRegion] = React.useState('ALL')
     const [map, setMap] = React.useState(props.showMap)
     const [focused, setFocused] = React.useState(false)
