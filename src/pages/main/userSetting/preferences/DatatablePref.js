@@ -13,7 +13,7 @@ class DatatablePreferences extends React.Component {
     forms = () => (
         [
             { field: PREF_MAP, label: 'Map', value: true, formType: SWITCH, visible: true, tip: 'Show map by default' },
-            { field: PREF_PREFIX_SEARCH, label: 'Prefix Search', formType: INPUT, visible: true, rules: { onBlur: true }, placeholder: 'Prefix search with default value', tip: 'Default prefix added to the search' }
+            { field: PREF_PREFIX_SEARCH, label: 'Search Prefix', formType: INPUT, visible: true, rules: { onBlur: true }, placeholder: 'Search prefix with default value', tip: 'Default prefix added to the search' }
         ]
     )
 
