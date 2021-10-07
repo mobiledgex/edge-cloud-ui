@@ -41,7 +41,7 @@ class MexListView extends React.Component {
             dropList: [],
             resetStream: false,
             deleteMultiple: [], 
-            iconKeys: undefined,
+            iconKeys: undefined
         };
         this._isMounted = false
         this.filterText = prefixSearchPref()
