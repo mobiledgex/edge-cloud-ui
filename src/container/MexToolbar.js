@@ -8,6 +8,7 @@ import { redux_org } from '../helper/reduxData'
 import Picker from '../hoc/mexui/Picker'
 import { lightGreen } from '@material-ui/core/colors';
 import { Icon, IconButton } from '../hoc/mexui';
+import { prefixSearchPref } from '../utils/sharedPreferences_util';
 
 export const REGION_ALL = 1;
 export const ACTION_REGION = 1
@@ -73,8 +74,8 @@ const MBox = (props) => {
 const MexToolbar = (props) => {
     const classes = useStyles();
     let requestInfo = props.requestInfo
-
-    const [search, setSearch] = React.useState('')
+    const searchInput = prefixSearchPref()
+    const [search, setSearch] = React.useState(searchInput)
     const [region, setRegion] = React.useState('ALL')
     const [map, setMap] = React.useState(props.showMap)
     const [focused, setFocused] = React.useState(false)

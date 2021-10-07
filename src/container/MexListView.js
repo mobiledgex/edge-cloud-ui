@@ -41,7 +41,7 @@ class MexListView extends React.Component {
             dropList: [],
             resetStream: false,
             deleteMultiple: [], 
-            iconKeys:undefined
+            iconKeys: undefined,
         };
         this._isMounted = false
         this.filterText = prefixSearchPref()
@@ -52,6 +52,7 @@ class MexListView extends React.Component {
         this.sorting = false;
         this.selectedRegion = REGION_ALL
         this.range = timeRangeInMin()
+        this.searchFilter = prefixSearchPref()
     }
 
     updateState = (data) => {
@@ -330,7 +331,9 @@ class MexListView extends React.Component {
                     iconKeys={this.state.iconKeys}
                     onIconFilter={this.onIconFilter}
                     viewerEdit={this.requestInfo.viewerEdit}
-                    tableHeight={this.props.tableHeight} />
+                    tableHeight={this.props.tableHeight}
+                    searchValue={this.searchFilter}
+                />
             </div>)
     }
 
@@ -361,7 +364,7 @@ class MexListView extends React.Component {
 
     onFilterValue = (value) => {
         if (value !== undefined && value.length >= 0) {
-            this.filterText = prefixSearchPref() + value.toLowerCase()
+            this.filterText = value.toLowerCase()
         }
 
         let dataList = cloneDeep(this.state.dataList)
@@ -486,6 +489,7 @@ class MexListView extends React.Component {
                 this.props.handleViewMode(this.requestInfo.viewMode)
                 break;
             case ACTION_SEARCH:
+                this.searchFilter = value
                 this.onFilterValue(value)
                 break;
             case ACTION_GROUP:
