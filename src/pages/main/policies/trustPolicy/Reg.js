@@ -25,7 +25,7 @@ class TrustPolicyReg extends React.Component {
             stepsArray: [],
         }
         this._isMounted = false
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        this.regions = cloneDeep(this.props.regions)
         this.isUpdate = this.props.action === 'Update'
         if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
         this.organizationList = []
@@ -218,7 +218,7 @@ class TrustPolicyReg extends React.Component {
     onAddResponse = (mcList) => {
         if (mcList && mcList.length > 0) {
             mcList.map(mc => {
-                if (mc && mc.response && mc.response.status === 200) {
+                if (service.responseValid(mc)) {
                     let policyName = mc.request.data.trustpolicy.key.name;
                     this.props.handleAlertInfo('success', `Trust Policy ${policyName} created successfully`)
                     this.props.onClose(true)
@@ -258,8 +258,6 @@ class TrustPolicyReg extends React.Component {
     onAddCancel = () => {
         this.props.onClose(false)
     }
-
-
 
     disableFields = (form) => {
         let rules = form.rules ? form.rules : {}
@@ -361,7 +359,8 @@ class TrustPolicyReg extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 };
 

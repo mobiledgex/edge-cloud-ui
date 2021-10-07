@@ -23,7 +23,7 @@ class AutoScalePolicyReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.action === 'Update'
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        this.regions = cloneDeep(this.props.regions)
         if (!this.isUpdate) { this.regions.splice(0, 0, 'All') }
         this.organizationList = []
     }
@@ -104,7 +104,7 @@ class AutoScalePolicyReg extends React.Component {
                 let updateData = updateFieldData(this, this.state.forms, data, this.props.data)
                 if (updateData.fields.length > 0) {
                     let mc = await updateAutoScalePolicy(updateData)
-                    if (mc && mc.response && mc.response.status === 200) {
+                    if (service.responseValid(mc)) {
                         this.props.handleAlertInfo('success', `Auto Scale Policy ${data[fields.autoScalePolicyName]} updated successfully`)
                         this.props.onClose(true)
                     }
@@ -118,7 +118,7 @@ class AutoScalePolicyReg extends React.Component {
                     regions.splice(0, 1)
                 }
                 regions.map(region => {
-                    let requestData = JSON.parse(JSON.stringify(data))
+                    let requestData = cloneDeep(data)
                     requestData[fields.region] = region
                     requestList.push(createAutoScalePolicy(requestData))
                 })
@@ -131,7 +131,7 @@ class AutoScalePolicyReg extends React.Component {
     }
     onAddResponse = (mcList) => {
         if (mcList && mcList.length > 0) {
-            mcList.map(mc => {
+            mcList.forEach(mc => {
                 if (mc.response) {
                     let policyName = mc.request.data.autoscalepolicy.key.name;
                     this.props.handleAlertInfo('success', `Auto Scale Policy ${policyName} created successfully`)
@@ -241,7 +241,8 @@ class AutoScalePolicyReg extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 };
 
