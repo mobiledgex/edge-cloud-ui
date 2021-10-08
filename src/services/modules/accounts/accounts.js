@@ -1,6 +1,5 @@
 import * as formatter from '../../model/format'
 import { endpoint } from '../../../helper/constant'
-import { ADMIN_MANAGER } from '../../../helper/constant/perpetual'
 
 let fields = formatter.fields
 
