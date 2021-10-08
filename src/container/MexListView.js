@@ -23,7 +23,6 @@ import { operators, shared, perpetual } from '../helper/constant';
 import { fetchDataFromServer } from './service';
 import { service } from '../services';
 import { timeRangeInMin } from '../hoc/mexui/Picker';
-import { ADMIN_MANAGER } from '../helper/constant/perpetual';
 class MexListView extends React.Component {
     constructor(props) {
         super(props);
@@ -382,7 +381,7 @@ class MexListView extends React.Component {
             if (valid) {
                 this.state.iconKeys && this.state.iconKeys.forEach(icon => {
                     if (valid && icon.clicked) {
-                        valid = (icon.field === fields.adminManager) ? (data[fields.role] === ADMIN_MANAGER) : Boolean(data[icon.field])
+                        valid = Boolean(data[icon.field])
                     }
                 })
             }
