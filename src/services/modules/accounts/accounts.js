@@ -1,5 +1,6 @@
 import * as formatter from '../../model/format'
 import { endpoint } from '../../../helper/constant'
+import { ADMIN_MANAGER } from '../../../helper/constant/perpetual'
 
 let fields = formatter.fields
 
@@ -16,7 +17,12 @@ export const keys = () => ([
     { field: fields.createdAt, serverField: 'CreatedAt', label: 'Created At' },
     { field: fields.updatedAt, serverField: 'UpdatedAt', label: 'Updated At' },
     { field: fields.locked, serverField: 'Locked', label: 'Locked', sortable: false, visible: true, clickable: true, format: true },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
+    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true },
+    { field: fields.role, label: 'Admin Manager', icon: 'admin_manager.svg', detailView: false }
+])
+
+export const iconKeys = () => ([
+    { field: fields.role, label: 'Admin Manager', icon: 'admin_manager.svg', clicked: false }
 ])
 
 export const getKey = (data) => {
@@ -26,7 +32,7 @@ export const getKey = (data) => {
 }
 
 export const showAccounts = () => {
-    return { method: endpoint.SHOW_ACCOUNTS, keys:keys() }
+    return { method: endpoint.SHOW_ACCOUNTS, keys: keys(), iconKeys: iconKeys() }
 }
 
 export const deleteAccount = (self, data) => {
@@ -51,7 +57,7 @@ export const multiDataRequest = (keys, mcList, specific) => {
     }
     let dataList = accountDataList.map(account => {
         let user = userDataList.find(user => user[fields.username] === account[fields.username]);
-        if (user) {
+        if (user && user[fields.role] === ADMIN_MANAGER) {
             account[fields.role] = user[fields.role];
         }
         return account
