@@ -1,5 +1,6 @@
 import * as formatter from '../../model/format'
 import { endpoint } from '../../../helper/constant'
+import { ADMIN_MANAGER } from '../../../helper/constant/perpetual'
 
 let fields = formatter.fields
 
@@ -17,11 +18,11 @@ export const keys = () => ([
     { field: fields.updatedAt, serverField: 'UpdatedAt', label: 'Updated At' },
     { field: fields.locked, serverField: 'Locked', label: 'Locked', sortable: false, visible: true, clickable: true, format: true },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true },
-    { field: fields.adminManager, label: 'Admin Manager', icon: 'admin_manager.svg'}
+    { field: fields.role, label: 'Admin Manager', icon: 'admin_manager.svg', detailView: false }
 ])
 
 export const iconKeys = () => ([
-    { field: fields.adminManager, label: 'Admin Manager', icon: 'admin_manager.svg', clicked: false }
+    { field: fields.role, label: 'Admin Manager', icon: 'admin_manager.svg', clicked: false }
 ])
 
 export const getKey = (data) => {
@@ -56,7 +57,7 @@ export const multiDataRequest = (keys, mcList, specific) => {
     }
     let dataList = accountDataList.map(account => {
         let user = userDataList.find(user => user[fields.username] === account[fields.username]);
-        if (user) {
+        if (user && user[fields.role] === ADMIN_MANAGER) {
             account[fields.role] = user[fields.role];
         }
         return account
