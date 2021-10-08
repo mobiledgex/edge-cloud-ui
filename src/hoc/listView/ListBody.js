@@ -5,6 +5,7 @@ import ListIcon from '@material-ui/icons/List';
 import { StyledTableCell, StyledTableRow, stableSort, getComparator, checkRole } from './ListConstant';
 import { lightGreen } from '@material-ui/core/colors';
 import { useSelector } from 'react-redux';
+import { ADMIN_MANAGER } from '../../helper/constant/perpetual';
 
 const ColumnCheckBox = (props) => {
     const { row, onClick, selection, isItemSelected } = props
@@ -25,9 +26,13 @@ const ColumnIcon = (props) => {
         iconKeys ? <StyledTableCell style={{ width: 70 }} onClick={(event) => onClick({ field: 'icon' }, row)}>
             {iconKeys.map((key, j) => {
                 return (
-                    <React.Fragment key={j}>
+                    row.role === ADMIN_MANAGER ?
+                        <React.Fragment key={j}>
+                            <Tooltip title={key.label}><img src={`/assets/icons/${key.icon}`} width={30} style={{ marginTop: 5 }} /></Tooltip>
+                        </React.Fragment> :
+                        (<React.Fragment key={j}>
                         {row[key.field] ? <Tooltip title={key.label}><img src={`/assets/icons/${key.icon}`} width={24} style={{ marginTop: 5 }} /></Tooltip> : null}
-                    </React.Fragment>
+                        </React.Fragment>)
                 )
             })}
         </StyledTableCell> : null
