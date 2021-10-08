@@ -5,7 +5,6 @@ import ListIcon from '@material-ui/icons/List';
 import { StyledTableCell, StyledTableRow, stableSort, getComparator, checkRole } from './ListConstant';
 import { lightGreen } from '@material-ui/core/colors';
 import { useSelector } from 'react-redux';
-import { ADMIN_MANAGER } from '../../helper/constant/perpetual';
 
 const ColumnCheckBox = (props) => {
     const { row, onClick, selection, isItemSelected } = props
