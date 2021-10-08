@@ -5,6 +5,7 @@ export {
     keys,
     showAccounts,
     deleteAccount,
-    multiDataRequest, iconKeys
+    multiDataRequest, 
+    iconKeys
 }
 
