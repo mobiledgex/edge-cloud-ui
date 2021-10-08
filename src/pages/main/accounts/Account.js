@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
-import { keys, showAccounts, deleteAccount, multiDataRequest } from '../../../services/modules/accounts';
+import { keys, showAccounts, deleteAccount, multiDataRequest, iconKeys } from '../../../services/modules/accounts';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import * as serverData from '../../../services/model/serverData';
 import { perpetual } from '../../../helper/constant';
@@ -122,7 +122,8 @@ class AccountList extends Component {
             filter: { role: ADMIN_MANAGER },
             keys: this.keys,
             viewMode: null,
-            formatData: this.dataFormatter
+            formatData: this.dataFormatter,
+            iconKeys: iconKeys()
         })
     }
 
