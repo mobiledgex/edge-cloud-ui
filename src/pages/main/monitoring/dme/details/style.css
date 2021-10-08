@@ -10,7 +10,7 @@
 .details-main table.details tbody {
     display: block;
     max-height: calc(27vh - 10px);
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .details-main table.details tbody tr, .details-main table.details thead{
