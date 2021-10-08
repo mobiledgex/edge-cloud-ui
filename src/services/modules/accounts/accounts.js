@@ -17,7 +17,7 @@ export const keys = () => ([
     { field: fields.updatedAt, serverField: 'UpdatedAt', label: 'Updated At' },
     { field: fields.locked, serverField: 'Locked', label: 'Locked', sortable: false, visible: true, clickable: true, format: true },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true },
-    { field: fields.adminManager, label: 'Admin Manager', icon: 'adminManger.svg', clicked: true }
+    { field: fields.adminManager, label: 'Admin Manager', icon: 'admin_manager.svg'}
 ])
 
 export const getKey = (data) => {
