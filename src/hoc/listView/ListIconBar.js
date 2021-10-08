@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core';
 import cloneDeep from 'lodash/cloneDeep';
 import clsx from 'clsx';
 import React from 'react'
-import { fields } from '../../services/model/format';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -33,10 +32,11 @@ const IconBar = (props) => {
         temp[index].clicked = !key.clicked
         onClick(temp)
     }
+
     return (
         keys ? keys.map((key, i) => (
             <div className={clsx(classes.root, key.clicked ? classes.clicked : {})} key={i} onClick={() => { onChange(i, key) }}>
-                <img src={`/assets/icons/${key.icon}`} width={24} />
+                <img src={`/assets/icons/${key.icon}`} width={24}/>
                 <strong style={{ marginLeft: 6 }}>{`${key.label}`}</strong>
             </div>
         )) : null
