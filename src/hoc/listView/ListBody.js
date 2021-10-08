@@ -26,13 +26,9 @@ const ColumnIcon = (props) => {
         iconKeys ? <StyledTableCell style={{ width: 70 }} onClick={(event) => onClick({ field: 'icon' }, row)}>
             {iconKeys.map((key, j) => {
                 return (
-                    row.role === ADMIN_MANAGER ?
-                        <React.Fragment key={j}>
-                            <Tooltip title={key.label}><img src={`/assets/icons/${key.icon}`} width={30} style={{ marginTop: 5 }} /></Tooltip>
-                        </React.Fragment> :
-                        (<React.Fragment key={j}>
+                    <React.Fragment key={j}>
                         {row[key.field] ? <Tooltip title={key.label}><img src={`/assets/icons/${key.icon}`} width={24} style={{ marginTop: 5 }} /></Tooltip> : null}
-                        </React.Fragment>)
+                    </React.Fragment>
                 )
             })}
         </StyledTableCell> : null
