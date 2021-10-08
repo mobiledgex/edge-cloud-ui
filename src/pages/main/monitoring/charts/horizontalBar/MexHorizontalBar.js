@@ -69,7 +69,7 @@ const optionsGenerator = (maxValue) => {
             text: ' '
         },
         scales: {
-            xAxes: [{ stacked: false, display: false, gridLines: false, ticks: { max: maxValue + 200 } }],
+            xAxes: [{ stacked: false, display: false, gridLines: false, ticks: { max: maxValue } }],
             yAxes: [
                 {
                     stacked: false,
@@ -81,6 +81,11 @@ const optionsGenerator = (maxValue) => {
             duration: 0,
             // onComplete: showDataLabel,
             // onProgress: showDataLabel
+        },
+        layout: {
+            padding: {
+                right: 50
+            }
         }
     }
 }

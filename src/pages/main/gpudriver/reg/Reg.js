@@ -56,13 +56,13 @@ class GPUDriverReg extends React.Component {
     }
 
     buildForm = () => ([
-        { field: fields.buildName, label: 'Name', formType: INPUT, placeholder: 'Enter Build Name', rules: { required: true }, width: 2, visible: true, update: { edit: true } },
-        { field: fields.driverPath, label: 'Driver Path', formType: INPUT, placeholder: 'Enter Driver Path', rules: { required: true }, width: 2, visible: true, update: { edit: true } },
-        { field: fields.md5Sum, label: 'MD5 Sum', formType: INPUT, placeholder: 'Enter MD5 Sum', rules: { required: true }, width: 2, visible: true, update: { edit: true } },
-        { field: fields.driverPathCreds, label: 'Driver Path Creds', formType: INPUT, placeholder: 'Enter username:password', rules: { required: false, type: 'password' }, width: 2, visible: true, update: { edit: true } },
+        { field: fields.buildName, label: 'Name', formType: INPUT, placeholder: 'Enter Build Name', rules: { required: true, type: 'search' }, width: 2, visible: true, update: { edit: true } },
+        { field: fields.driverPath, label: 'Driver Path', formType: INPUT, placeholder: 'Enter Driver Path', rules: { required: true, type: 'search' }, width: 2, visible: true, update: { edit: true } },
+        { field: fields.md5Sum, label: 'MD5 Sum', formType: INPUT, placeholder: 'Enter MD5 Sum', rules: { required: true, type: 'search' }, width: 2, visible: true, update: { edit: true } },
+        { field: fields.driverPathCreds, label: 'Driver Path Creds', formType: INPUT, placeholder: 'Enter username:password', rules: { required: false, type: 'password', autocomplete: "off" }, width: 2, visible: true, update: { edit: true } },
         { field: fields.operatingSystem, label: 'Operating System', formType: SELECT, placeholder: 'Select Operating System', rules: { required: true }, width: 2, visible: true, update: { edit: true }, options: osList },
-        { field: fields.kernelVersion, label: 'Kernel Version', formType: INPUT, placeholder: 'Enter Kernel Version', rules: { required: false }, width: 2, visible: true, update: { edit: true } },
-        { field: fields.hypervisorInfo, label: 'Hypervisor Info', formType: INPUT, placeholder: 'Enter Hypervisor Info', rules: { required: false }, width: 2, visible: true, update: { edit: true } },
+        { field: fields.kernelVersion, label: 'Kernel Version', formType: INPUT, placeholder: 'Enter Kernel Version', rules: { required: false, type: 'search' }, width: 2, visible: true, update: { edit: true } },
+        { field: fields.hypervisorInfo, label: 'Hypervisor Info', formType: INPUT, placeholder: 'Enter Hypervisor Info', rules: { required: false, type: 'search' }, width: 2, visible: true, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
     ])
 
