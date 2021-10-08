@@ -380,11 +380,11 @@ class MexListView extends React.Component {
             valid = filterCount === 0 || valid.includes(true)
             if (valid) {
                 this.state.iconKeys && this.state.iconKeys.forEach(icon => {
-                    if (valid && icon.clicked) {
-                        valid = Boolean(data[icon.field])
+                   if (valid && icon.clicked) {
+                       valid = Boolean(data[icon.field])
                     }
                 })
-            }
+           }
             return valid
         })
 
