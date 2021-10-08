@@ -20,6 +20,10 @@ export const keys = () => ([
     { field: fields.adminManager, label: 'Admin Manager', icon: 'admin_manager.svg'}
 ])
 
+export const iconKeys = () => ([
+    { field: fields.adminManager, label: 'Admin Manager', icon: 'admin_manager.svg', clicked: false }
+])
+
 export const getKey = (data) => {
     return ({
         name: data[fields.username]
@@ -59,7 +63,3 @@ export const multiDataRequest = (keys, mcList, specific) => {
     });
     return dataList;
 }
-
-export const iconKeys = () => ([
-    { field: fields.adminManager, label: 'Admin Manager', icon: 'admin_manager.svg', clicked: false }
-])
