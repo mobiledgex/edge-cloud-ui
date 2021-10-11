@@ -370,6 +370,7 @@ class DMEMetrics extends React.Component {
         let mc = await authSyncRequest(this, request)
         if (responseValid(mc)) {
             this.worker.postMessage({
+                id,
                 selections: data,
                 timezone:timezonePref(),
                 ...mc
