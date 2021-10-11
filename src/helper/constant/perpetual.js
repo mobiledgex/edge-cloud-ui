@@ -228,3 +228,7 @@ export const NUMBER = 'number'
 
 export const AUDIT = 'audit'
 export const EVENT = 'event'
+
+export const PARENT_APP_INST = 'appinst'
+export const PARENT_CLUSTER_INST = 'cluster'
+export const PARENT_CLOUDLET = 'cloudlet'
