@@ -1,5 +1,6 @@
 import { Box, Toolbar } from '@material-ui/core'
 import React from 'react'
+import { CSVLink } from 'react-csv'
 import { IconButton, Select, Icon, Picker } from '../../../../hoc/mexui'
 
 export const ACTION_DATA_TYPE = 'DataType'
@@ -55,16 +56,23 @@ const Close = (props) => {
         </Box> 
     )
 }
-const DMEToolbar = (props) => {
 
+const DMEToolbar = (props) => {
+    const { csvData, filename } = props
     return (
         <Toolbar>
             <div style={{ width: '100%' }}>
                 <Box display="flex" justifyContent="flex-end">
-                    <Close order={4} {...props}/>
-                    <DataType order={2} {...props}/>
-                    <LatencyRange order={3} {...props}/>
-                    <MPicker order={1} {...props}/>
+                    <Close order={5} {...props} />
+                    {csvData ? <Box order={4}>
+                        <CSVLink filename={filename} data={csvData}>
+                            <IconButton tooltip='Download CSV'><img src='/assets/icons/csv.svg' width={24} /></IconButton>
+                        </CSVLink>
+                    </Box> : null
+                    }
+                    <DataType order={2} {...props} />
+                    <LatencyRange order={3} {...props} />
+                    <MPicker order={1} {...props} />
                 </Box>
             </div>
         </Toolbar>
