@@ -6,6 +6,30 @@ import { fetchColorWithElimination } from "../../../../utils/color_utils"
 import { generateColor, severityHexColors } from "../../../../utils/heatmap_utils"
 import { _avg, _min, _max } from "../../../../helper/constant/operators"
 
+const formatCSV = (timeZone, item) => {
+    let data = []
+    data[0] = new Date(item[0]).toLocaleString("en-US", { timeZone })
+    data[1] = item[11]
+    data[2] = item[19]
+    data[3] = item[12]
+    data[4] = item[13]
+    data[5] = item[14]
+    data[6] = item[15]
+    data[7] = item[16]
+    data[8] = item[10]
+    data[9] = item[1]
+    data[10] = item[2]
+    data[11] = item[3]
+    data[12] = item[4]
+    data[13] = item[5]
+    data[14] = item[6]
+    data[15] = `${item[7]} ms`
+    data[16] = `${item[8]} ms`
+    data[17] = `${item[9].toFixed(2)} ms`
+    data[18] = item[18]
+    data[19] = item[17]
+    return data
+}
 const formatColumns = (columns, keys) => {
     let newColumns = []
     keys.forEach(key => {
@@ -199,8 +223,9 @@ const mergeData = (data)=>{
 }
 
 const formatMetricUsage = (worker) => {
-    const { request, response, selections } = worker
+    const { request, response, selections, timezone } = worker
     let formatted
+    let csvData = [['Time', 'App', 'Version', 'App Organization', 'Cloudlet', 'Operator', 'Cluster', 'Cluster Organization', 'No. of Samples', '0-5 ms', '5-10 ms', '10-25 ms', '25-50 ms', '50-100 ms', '>100ms', 'Max Latency', 'Min Latency', 'Avg Latency', 'Location Tile', 'Network Type']]
     if (response && response.data && response.data.data) {
         const dataList = response.data.data;
         if (dataList && dataList.length > 0) {
@@ -209,18 +234,33 @@ const formatMetricUsage = (worker) => {
             if (series && series.length > 0) {
                 const keys = request.keys
                 const requestData = request.data
-                let mergedData = {values:[]}
+                let mergedData = { values: [] }
                 for (const data of series) {
-                    const {columns, values} = mergeData(data)
+                    const { columns, values } = mergeData(data)
                     mergedData.columns = columns
-                    mergedData.values = [...mergedData.values, ...values]
+                    for (let item of values) {
+                        let valid = false
+                        for (let i = 0; i < columns.length; i++) {
+                            let column = columns[i]
+                            if (column === fields._0s || column === fields._5ms || column === fields._10ms || column === fields._25ms || column === fields._50ms || column === fields._100ms) {
+                                if (item[i] !== null) {
+                                    valid = true
+                                    break;
+                                }
+                            }
+                        }
+                        if (valid) {
+                            csvData.push(formatCSV(timezone, item))
+                            mergedData.values.push(item)
+                        }
+                    }
                 }
                 const columns = formatColumns(mergedData.columns, keys)
                 formatted = grouper(mergedData.values, columns, selections, 3)
             }
         }
     }
-    self.postMessage({ ...formatted })
+    self.postMessage({ ...formatted, csvData })
 }
 export const format = (worker) => {
     formatMetricUsage(worker)
