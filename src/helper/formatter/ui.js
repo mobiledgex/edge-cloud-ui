@@ -184,7 +184,7 @@ export const renderYesNo = (key, data, isDetail) => {
 }
 
 export const NoData = (props) => {
-    const text = props && props.searchFilter.length > 0 ? `for Search Prefix "${props.searchFilter}"` : null
+    const text = props && props.searchFilter && props.searchFilter.length > 0 ? `for Search Prefix "${props.searchFilter}"` : null
     return (
         <div align='center' style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
             <img src={`assets/icons/inbox_empty.svg`} />

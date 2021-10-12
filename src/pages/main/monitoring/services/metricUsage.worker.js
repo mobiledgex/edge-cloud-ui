@@ -1,11 +1,72 @@
 /* eslint-disable */
-import { CON_TAGS, CON_TOTAL, CON_VALUES } from "../../../../helper/constant/perpetual"
+import { CON_TAGS, CON_TOTAL, CON_VALUES, PARENT_APP_INST } from "../../../../helper/constant/perpetual"
 import { fields } from "../../../../services/model/format"
 import { center } from "../../../../utils/math_utils"
 import { fetchColorWithElimination } from "../../../../utils/color_utils"
 import { generateColor, severityHexColors } from "../../../../utils/heatmap_utils"
 import { _avg, _min, _max } from "../../../../helper/constant/operators"
 
+const precision = (data)=>{
+    return `${data.toFixed(2)} ms`
+}
+
+const formatTime = (data, timeZone)=>{
+    return new Date(data).toLocaleString("en-US", { timeZone })
+}
+
+const appendMS = (data)=>{
+    return `${data} ms`
+}
+
+const appCSVKey = [
+    { label: 'Time', index: 0, format: formatTime },
+    { label: 'App', index: 11 },
+    { label: 'Version', index: 19 },
+    { label: 'App Organization', index: 12 },
+    { label: 'Cloudlet', index: 13 },
+    { label: 'Operator', index: 14 },
+    { label: 'Cluster', index: 15 },
+    { label: 'Cluster Organization', index: 16 },
+    { label: 'No. of Samples', index: 10 },
+    { label: '0-5 ms', index: 1 },
+    { label: '5-10 ms', index: 2 },
+    { label: '10-25 ms', index: 3 },
+    { label: '25-50 ms', index: 4 },
+    { label: '50-100 ms', index: 5 },
+    { label: '>100ms', index: 6 },
+    { label: 'Max Latency', index: 7, format: appendMS },
+    { label: 'Min Latency', index: 8, format: appendMS },
+    { label: 'Avg Latency', index: 9, format: precision },
+    { label: 'Location Tile', index: 18 },
+    { label: 'Network Type', index: 17 }
+]
+
+const cloudletCSVKey = [
+    { label: 'Time', index: 0, format: formatTime },
+    { label: 'Cloudlet', index: 11 },
+    { label: 'Operator', index: 12 },
+    { label: 'No. of Samples', index: 10 },
+    { label: '0-5 ms', index: 1 },
+    { label: '5-10 ms', index: 2 },
+    { label: '10-25 ms', index: 3 },
+    { label: '25-50 ms', index: 4 },
+    { label: '50-100 ms', index: 5 },
+    { label: '>100ms', index: 6 },
+    { label: 'Max Latency', index: 7, format: appendMS },
+    { label: 'Min Latency', index: 8, format: appendMS },
+    { label: 'Avg Latency', index: 9, format: precision },
+    { label: 'Location Tile', index: 15 },
+    { label: 'Device Carrier', index: 14 },
+    { label: 'Network Type', index: 13 }
+]
+
+const formatCSV = (id, timeZone, item) => {
+    let csvKeys = id === PARENT_APP_INST ? appCSVKey : cloudletCSVKey
+    let data = csvKeys.map(key => {
+        return key.format ? key.format(item[key.index], timeZone) : item[key.index]
+    })
+    return data
+}
 const formatColumns = (columns, keys) => {
     let newColumns = []
     keys.forEach(key => {
@@ -199,8 +260,10 @@ const mergeData = (data)=>{
 }
 
 const formatMetricUsage = (worker) => {
-    const { request, response, selections } = worker
+    const { id, request, response, selections, timezone } = worker
     let formatted
+    let csvKeys = id === PARENT_APP_INST ? appCSVKey : cloudletCSVKey
+    let csvData = [csvKeys.map(key => { return key.label })]
     if (response && response.data && response.data.data) {
         const dataList = response.data.data;
         if (dataList && dataList.length > 0) {
@@ -209,18 +272,50 @@ const formatMetricUsage = (worker) => {
             if (series && series.length > 0) {
                 const keys = request.keys
                 const requestData = request.data
-                let mergedData = {values:[]}
+                let mergedData = { values: [] }
                 for (const data of series) {
-                    const {columns, values} = mergeData(data)
-                    mergedData.columns = columns
-                    mergedData.values = [...mergedData.values, ...values]
+                    let dataValid = false
+                    if (id === PARENT_APP_INST) {
+                        for (let selection of selections) {
+                            if (selection[fields.cloudletName] === data[CON_TAGS]['cloudlet'] && selection[fields.operatorName] === data[CON_TAGS]['cloudletorg'] && selection[fields.clusterName] === data[CON_TAGS]['cluster'] && selection[fields.clusterdeveloper] === data[CON_TAGS]['clusterorg']) {
+                                dataValid = true
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        dataValid = true
+                    }
+                    if (dataValid) {
+                        const { columns, values } = mergeData(data)
+                        mergedData.columns = columns
+                        for (let item of values) {
+                            let valid = false
+                            for (let i = 0; i < columns.length; i++) {
+                                let column = columns[i]
+                                if (column === fields._0s || column === fields._5ms || column === fields._10ms || column === fields._25ms || column === fields._50ms || column === fields._100ms) {
+                                    if (item[i] !== null) {
+                                        valid = true
+                                        break;
+                                    }
+                                }
+                            }
+                            if (valid) {
+                                csvData.push(formatCSV(id, timezone, item))
+                                mergedData.values.push(item)
+                            }
+                        }
+                    }
                 }
-                const columns = formatColumns(mergedData.columns, keys)
-                formatted = grouper(mergedData.values, columns, selections, 3)
+                if (mergedData.values.length > 0) {
+                    const columns = formatColumns(mergedData.columns, keys)
+                    formatted = grouper(mergedData.values, columns, selections, 3)
+                }
             }
         }
     }
-    self.postMessage({ ...formatted })
+    self.postMessage({ ...formatted, csvData })
 }
 export const format = (worker) => {
     formatMetricUsage(worker)

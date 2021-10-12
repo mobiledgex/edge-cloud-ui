@@ -33,8 +33,13 @@ import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
 import { PARENT_APP_INST } from '../helper/Constant';
 import { onlyNumeric } from '../../../../utils/string_utils';
 import { AIK_APP_ALL, AIK_APP_CLOUDLET_CLUSTER } from '../../../../services/modules/appInst/primary';
+import { timezonePref } from '../../../../utils/sharedPreferences_util';
 
 const buckets = [0, 5, 10, 25, 50, 100]
+
+const formatDate = (data) => {
+    return time(FORMAT_FULL_DATE_TIME, data)
+}
 class DMEMetrics extends React.Component {
     constructor(props) {
         super(props)
@@ -49,7 +54,8 @@ class DMEMetrics extends React.Component {
             selectDevice: undefined,
             mapcenter: undefined,
             latencyRange: 0,
-            loading:false
+            csvData: undefined,
+            loading: false
         }
         this._isMounted = false
         this.worker = new MexWorker()
@@ -61,18 +67,59 @@ class DMEMetrics extends React.Component {
         return generateColor(geoValues[0][markerType])
     }
 
-    setHistogramData = (cloudlet, key, selection, mapcenter) => {
+    filterSlider = (cloudletKey, deviceKey) => {
+        const { data, markerType, latencyRange } = this.state
+        let slider = Object.keys(data).filter(timeKey => {
+            let valid = true
+            let cloudletValues = data[timeKey][CON_VALUES]
+            if (cloudletKey) {
+                if (cloudletValues[cloudletKey]) {
+                    let deviceValues = cloudletValues[cloudletKey][CON_VALUES]
+                    if (deviceKey) {
+                        if (deviceValues[deviceKey] === undefined) {
+                            valid = false
+                        }
+                    }
+                }
+                else {
+                    valid = false
+                }
+            }
+            return valid
+        })
+
+        let index = 0
+        const sliderMarks = this.orgSliderMarks ? this.orgSliderMarks.filter((marks, i) => {
+            if (marks[markerType] >= latencyRange && slider.includes(marks.label)) {
+                marks.value = index
+                index++
+                return true
+            }
+        }) : []
+
+        this.setState({ sliderMarks: undefined }, () => {
+            this.setState({ sliderMarks })
+        })
+    }
+
+    setHistogramData = (cloudlet, key, selection, mapcenter, sliderChange) => {
         let histogramData = selection[key]
         const selectCloudlet = this.state.selectCloudlet
         let update = false
         let data = {}
         if (cloudlet) {
             data.selectCloudlet = key
+            if (!sliderChange) {
+                this.filterSlider(key)
+            }
             data.selectDevice = undefined
             update = true
         }
         else if (selectCloudlet) {
             data.selectDevice = !cloudlet ? key : undefined
+            if (!sliderChange) {
+                this.filterSlider(this.state.selectCloudlet, key)
+            }
             update = true
         }
         else {
@@ -159,22 +206,20 @@ class DMEMetrics extends React.Component {
 
     updateSelectCharts = (data, selectedDate, selectCloudlet, selectDevice) => {
         const timeData = selectedDate && data && data[selectedDate] && data[selectedDate][CON_VALUES]
-        if(timeData)
-        {
+        if (timeData) {
             let isCloudlet = true
             let chartData = timeData
             let key = selectCloudlet
             let location = timeData[selectCloudlet][perpetual.CON_TAGS][fields.cloudletLocation]
             location = [location[fields.latitude], location[fields.longitude]]
-            if(selectDevice)
-            {
+            if (selectDevice) {
                 key = selectDevice
                 chartData = timeData[selectCloudlet][perpetual.CON_VALUES]
                 location = chartData[selectDevice][perpetual.CON_TAGS]['location']
                 location = [location.lat, location.lng]
                 isCloudlet = false
             }
-            this.setHistogramData(isCloudlet, key, chartData, location)
+            this.setHistogramData(isCloudlet, key, chartData, location, true)
         }
     }
 
@@ -208,6 +253,7 @@ class DMEMetrics extends React.Component {
             selectCloudlet: undefined,
             selectDevice: undefined,
         })
+        this.filterSlider()
     }
 
     renderDetails = () => {
@@ -249,7 +295,7 @@ class DMEMetrics extends React.Component {
     }
 
     onLatencyRangeChange = () => {
-        const {markerType, latencyRange} = this.state
+        const { markerType, latencyRange } = this.state
         let index = 0
         const sliderMarks = this.orgSliderMarks ? this.orgSliderMarks.filter((marks, i) => {
             if (marks[markerType] >= latencyRange) {
@@ -268,7 +314,7 @@ class DMEMetrics extends React.Component {
     onToolbar = (action, value) => {
         switch (action) {
             case ACTION_DATA_TYPE:
-                this.setState({ markerType: value }, ()=>{
+                this.setState({ markerType: value }, () => {
                     this.onLatencyRangeChange()
                 })
                 break;
@@ -280,7 +326,7 @@ class DMEMetrics extends React.Component {
                 this.fetchData()
                 break;
             case ACTION_LATENCY_RANGE:
-                this.setState({latencyRange:onlyNumeric(value)}, ()=>{
+                this.setState({ latencyRange: onlyNumeric(value) }, () => {
                     this.onLatencyRangeChange()
                 })
                 break;
@@ -288,12 +334,12 @@ class DMEMetrics extends React.Component {
     }
 
     render() {
-        const {loading} = this.state
+        const { loading, csvData } = this.state
         return (
             <React.Fragment>
                 <Dialog fullScreen open={true}>
                     {loading ? <LinearProgress /> : null}
-                    <DMEToolbar onChange={this.onToolbar}></DMEToolbar>
+                    <DMEToolbar onChange={this.onToolbar} csvData={csvData} filename={`${formatDate(this.range.from)}_${formatDate(this.range.to)}.csv`}></DMEToolbar>
                     {this.renderMap()}
                     {this.renderSlider()}
                     <div style={{ position: 'absolute', top: 170, zIndex: 9999, pointerEvents: 'none' }}>
@@ -305,7 +351,7 @@ class DMEMetrics extends React.Component {
     }
 
     fetchData = async () => {
-        this.setState({ data: {}, sliderMarks: undefined, selectedDate: undefined, loading:true })
+        this.setState({ data: {}, sliderMarks: undefined, selectedDate: undefined, loading: true })
         const { data, id, group } = this.props
         const tempData = data[0]
         const commonRequest = {
@@ -324,14 +370,16 @@ class DMEMetrics extends React.Component {
         let mc = await authSyncRequest(this, request)
         if (responseValid(mc)) {
             this.worker.postMessage({
+                id,
                 selections: data,
+                timezone:timezonePref(),
                 ...mc
             })
             this.worker.addEventListener('message', event => {
                 if (this._isMounted) {
                     if (event.data.data) {
                         this.orgSliderMarks = event.data.slider
-                        this.setState({ data: event.data.data, sliderMarks: this.orgSliderMarks, selectedDate: event.data.starttime })
+                        this.setState({ data: event.data.data, sliderMarks: this.orgSliderMarks, selectedDate: event.data.starttime, csvData: event.data.csvData })
                     }
                     else {
                         this.props.handleAlertInfo('error', 'No latency samples were found for the selected time period')
@@ -339,7 +387,7 @@ class DMEMetrics extends React.Component {
                 }
             })
         }
-        this.setState({loading:false})
+        this.setState({ loading: false })
     }
 
     componentDidMount() {
