@@ -193,15 +193,6 @@ export const NoData = (props) => {
     )
 }
 
-export const FetchingData = () => {
-    return (
-        <div align='center' style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
-            <img src={`assets/icons/inbox_empty.svg`} />
-            <h4 style={{ color: 'grey' }}><b>Fetching Data from the server</b></h4>
-        </div>
-    )
-}
-
 export const RenderSeverity = (data, isDetailView) => {
     let id = data[fields.severity]
     let color = colors.COLOR_RGB_ERROR
