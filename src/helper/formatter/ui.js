@@ -188,7 +188,16 @@ export const NoData = (props) => {
     return (
         <div align='center' style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
             <img src={`assets/icons/inbox_empty.svg`} />
-            <h4 style={{ color: 'grey' }}><b>No Data {text}</b></h4>
+            {props && props.loading ? <h4 style={{ color: 'grey' }}><b>Fetching Data from the server</b></h4> : <h4 style={{ color: 'grey' }}><b>No Data {text}</b></h4>}
+        </div>
+    )
+}
+
+export const FetchingData = () => {
+    return (
+        <div align='center' style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
+            <img src={`assets/icons/inbox_empty.svg`} />
+            <h4 style={{ color: 'grey' }}><b>Fetching Data from the server</b></h4>
         </div>
     )
 }

@@ -162,7 +162,7 @@ class Generated extends React.Component {
                                             ))
                                         }
                                     </List>
-                                    : <NoData />
+                                    : <NoData loading={loading} />
                             }
                         </CardContent>
                     }
