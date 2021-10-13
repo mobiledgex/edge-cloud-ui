@@ -185,7 +185,7 @@ export const renderYesNo = (key, data, isDetail) => {
 
 export const NoData = (props) => {
     const { search, loading } = props
-    const text = search && search.length > 0 ? `for Search Prefix "${search}"` : null
+    const text = search && search.length > 0 ? `for "${search}"` : ''
     return (
         <div align='center' style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
             <img src={`assets/icons/inbox_empty.svg`} />

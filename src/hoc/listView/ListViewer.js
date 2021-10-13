@@ -277,7 +277,7 @@ class ListViewer extends React.Component {
                                                 })
                                 }
                             </TableBody> : null}
-                        </Table> {dataList.length === 0 ? <NoData searchFilter={this.props.searchValue} loading={loadingSpinner} /> : null}
+                        </Table> {dataList.length === 0 ? <NoData search={this.props.searchValue} loading={loadingSpinner} /> : null}
                     </TableContainer>
                     <TablePagination
                         rowsPerPageOptions={[25, 50, 75]}
