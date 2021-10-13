@@ -184,11 +184,12 @@ export const renderYesNo = (key, data, isDetail) => {
 }
 
 export const NoData = (props) => {
-    const text = props && props.searchFilter && props.searchFilter.length > 0 ? `for Search Prefix "${props.searchFilter}"` : null
+    const { search, loading } = props
+    const text = search && search.length > 0 ? `for Search Prefix "${search}"` : null
     return (
         <div align='center' style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
             <img src={`assets/icons/inbox_empty.svg`} />
-            {props && props.loading ? <h4 style={{ color: 'grey' }}><b>Fetching Data from the server</b></h4> : <h4 style={{ color: 'grey' }}><b>No Data {text}</b></h4>}
+            {<h4 style={{ color: 'grey' }}><b>{loading ? 'Fetching Data from the server' : `No Data ${text}`}</b></h4>}
         </div>
     )
 }
