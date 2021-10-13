@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { Dialog, DialogContent, Divider, Grid, Accordion, AccordionSummary, AccordionDetails, Typography, IconButton } from '@material-ui/core';
 import { Stepper, Step, StepLabel, CircularProgress } from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
@@ -109,7 +109,11 @@ export const updateStepper = (stepsArray, labels, data, serverData, wsObj) => {
 const MultiStream = (props) => {
     const body = useRef();
     const classes = useStyles();
-
+    useEffect(() => {
+        if (body.current && props.uuid !== 0) {
+            body.current.scrollTop = body.current.scrollHeight;
+        }
+    })
 
     const getSummary = (data) => (
         <AccordionSummary
