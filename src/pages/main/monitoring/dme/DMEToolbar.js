@@ -33,7 +33,7 @@ const LatencyRange = (props) =>{
     
     return (
         <Box order={order} m={1.2}>
-            <Select list={dataTypeList} onChange={onChange} value={dataTypeList[0]} width={70} height={150} upper={true} color='rgba(118, 255, 3, 0.7)' border={true}/>
+            <Select list={dataTypeList} onChange={onChange} value={dataTypeList[0]} width={85} height={150} upper={true} color='rgba(118, 255, 3, 0.7)' border={true}/>
         </Box>
     )
 }
