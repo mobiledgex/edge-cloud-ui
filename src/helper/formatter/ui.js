@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector } from "react-redux";
-import { Icon, Popup } from 'semantic-ui-react';
+import { Icon as SIcon, Popup } from 'semantic-ui-react';
 import { fields } from '../../services/model/format';
 import { IconButton, Tooltip, CircularProgress, makeStyles } from '@material-ui/core';
 import { labelFormatter } from '.';
@@ -10,6 +10,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import { colors, perpetual } from '../constant';
 import { toFirstUpperCase } from '../../utils/string_utils';
+import { Icon } from '../../hoc/mexui';
 
 const useStyles = makeStyles((theme) => ({
     text_icon: {
@@ -109,9 +110,9 @@ export const healthCheck = (key, data, isDetail) => {
     else {
         switch (id) {
             case 3:
-                return <Popup content={label} trigger={<Icon className="progressIndicator" name='check' color='green' />} />
+                return <Popup content={label} trigger={<SIcon className="progressIndicator" name='check' color='green' />} />
             default:
-                return <Popup content={label} trigger={<Icon className="progressIndicator" name='close' color='red' />} />
+                return <Popup content={label} trigger={<SIcon className="progressIndicator" name='close' color='red' />} />
         }
     }
 }
@@ -123,7 +124,7 @@ export const appInstRegion = (key, data, isDetail) => {
             data[fields.updateAvailable] ?
                 <Tooltip title={<div><strong style={{ fontSize: 13 }}>{`Current Version: ${data[fields.revision]}`}</strong><br /><br /><strong style={{ fontSize: 13 }}>{`Available Version: ${data[fields.appRevision]}`}</strong></div>}>
                     <label>
-                        <Icon color={'orange'} name={'arrow alternate circle up outline'} />&nbsp;{value}
+                        <SIcon color={'orange'} name={'arrow alternate circle up outline'} />&nbsp;{value}
                     </label>
                 </Tooltip> :
                 <label>{value}</label>
@@ -173,7 +174,7 @@ export const reporterStatus = (key, data, isDetail) => {
         return toFirstUpperCase(data[key.field])
     }
     else {
-        return <Icon name={success ? 'check' : 'close'} style={{ color: `rgb(${success ? colors.COLOR_RGB_SUCCESS : colors.COLOR_RGB_ERROR})` }} />
+        return <SIcon name={success ? 'check' : 'close'} style={{ color: `rgb(${success ? colors.COLOR_RGB_SUCCESS : colors.COLOR_RGB_ERROR})` }} />
     }
 }
 
@@ -188,7 +189,7 @@ export const NoData = (props) => {
     const text = search && search.length > 0 ? `for "${search}"` : ''
     return (
         <div align='center' style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
-            <img src={`assets/icons/inbox_empty.svg`} />
+            {loading ? <Icon style={{ color: '#808080', fontSize: 40 }} animation={true}>hourglass_empty</Icon> : <img src={`assets/icons/inbox_empty.svg`} />}
             {<h4 style={{ color: 'grey' }}><b>{loading ? 'Fetching Data from the server' : `No Data ${text}`}</b></h4>}
         </div>
     )
