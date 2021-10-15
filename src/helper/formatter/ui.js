@@ -186,7 +186,7 @@ export const renderYesNo = (key, data, isDetail) => {
 
 export const NoData = (props) => {
     const { search, loading } = props
-    const text = search && search.length > 0 ? `for "${search}"` : ''
+    const text = search && search.length > 0 ? `found for search text "${search}"` : ''
     return (
         <div align='center' style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
             {loading ? <Icon style={{ color: '#808080', fontSize: 40 }} animation={true}>hourglass_empty</Icon> : <img src={`assets/icons/inbox_empty.svg`} />}
