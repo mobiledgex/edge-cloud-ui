@@ -128,7 +128,7 @@ class AlertLocal extends React.Component {
             <div style={style}>
                 {
                     <React.Fragment key={index}>
-                        <Tooltip title={this.renderMore(item)} placement="left-start">
+                        <Tooltip title={this.renderMore(item)} placement="left-start" arrow>
                             <ListItem>
                                 {this.header(item)}
                             </ListItem>
