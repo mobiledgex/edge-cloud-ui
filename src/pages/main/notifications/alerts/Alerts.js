@@ -31,7 +31,6 @@ class AlertLocal extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            expand: -1,
             dataList: undefined
         }
         this.typingTimeout = undefined
@@ -121,7 +120,7 @@ class AlertLocal extends React.Component {
     }
 
     renderRow = (virtualProps) => {
-        const { expand, dataList } = this.state
+        const { dataList } = this.state
         const { index, style } = virtualProps;
         let item = dataList[index]
         return (
