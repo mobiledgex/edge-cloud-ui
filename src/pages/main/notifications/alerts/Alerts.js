@@ -179,11 +179,10 @@ class AlertLocal extends React.Component {
             <React.Fragment>
                 {this.renderToolbar()}
                 <br />
-
                 <div className='alert-search'>
                     <SearchFilter onFilter={this.onFilter} />
                 </div>
-                <div className='alert-local-list'>
+                <div>
                     {this.renderList()}
                 </div>
             </React.Fragment>
