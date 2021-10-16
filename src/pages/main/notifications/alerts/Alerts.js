@@ -143,7 +143,7 @@ class AlertLocal extends React.Component {
         const { dataList } = this.state
         return (
             dataList && dataList.length > 0 ? <List dense={false} >
-                <FixedSizeList height={300} itemSize={120} itemCount={dataList.length}>
+                <FixedSizeList height={250} itemSize={120} itemCount={dataList.length}>
                     {this.renderRow}
                 </FixedSizeList>
             </List> : null
