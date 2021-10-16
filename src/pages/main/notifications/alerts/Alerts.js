@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { Chip, Collapse, Divider, IconButton, List, ListItem, ListItemText, Typography, Tooltip } from '@material-ui/core'
+import { Chip, Divider, IconButton, List, ListItem, Typography, Tooltip } from '@material-ui/core'
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import { regions } from '../../../../constant';
 import { showAlertKeys } from '../../../../services/modules/alerts';
@@ -133,16 +133,6 @@ class AlertLocal extends React.Component {
                                 {this.header(item)}
                             </ListItem>
                         </Tooltip>
-                        <Collapse in={expand === index} timeout="auto" unmountOnExit>
-                            <List component="div" dense={true} style={{ marginLeft: 4 }}>
-                                {showAlertKeys().map((key, j) => {
-                                    let value = item[key.field]
-                                    if (key.summary && value) {
-                                        return <ListItem key={j}><ListItemText primary={<p><b>{key.label}</b> {`: ${key.format ? this.dataFormatter(key, value) : value}`}</p>} /></ListItem>
-                                    }
-                                })}
-                            </List>
-                        </Collapse>
                         <Divider component="li" />
                     </React.Fragment>
                 }
