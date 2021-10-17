@@ -14,7 +14,7 @@ import { Marker } from "react-leaflet";
 import MexMap from '../../../../hoc/mexmap/MexMap'
 import { cloudIcon } from '../../../../hoc/mexmap/MapProperties'
 import { perpetual } from '../../../../helper/constant'
-import { FORMAT_FULL_DATE_TIME, time } from '../../../../utils/date_util'
+import { FORMAT_DATE_FILE_NAME, FORMAT_FULL_DATE_TIME, time } from '../../../../utils/date_util'
 import { IconButton, Slider } from '../../../../hoc/mexui'
 import { CON_TAGS, CON_TOTAL, CON_VALUES } from '../../../../helper/constant/perpetual'
 import MexCircleMarker from '../../../../hoc/mexmap/utils/MexCircleMarker'
@@ -38,8 +38,13 @@ import { timezonePref } from '../../../../utils/sharedPreferences_util';
 const buckets = [0, 5, 10, 25, 50, 100]
 
 const formatDate = (data) => {
-    return time(FORMAT_FULL_DATE_TIME, data)
+    return time(FORMAT_DATE_FILE_NAME, data)
 }
+
+const fetchFileName=(self)=>{
+    return `${self.props.id === PARENT_APP_INST ? 'App' : 'Cloudlet'} Latency Data (From ${formatDate(self.range.from)} To ${formatDate(self.range.to)}).csv`
+}
+
 class DMEMetrics extends React.Component {
     constructor(props) {
         super(props)
@@ -339,7 +344,7 @@ class DMEMetrics extends React.Component {
             <React.Fragment>
                 <Dialog fullScreen open={true}>
                     {loading ? <LinearProgress /> : null}
-                    <DMEToolbar onChange={this.onToolbar} csvData={csvData} filename={`${formatDate(this.range.from)}_${formatDate(this.range.to)}.csv`}></DMEToolbar>
+                    <DMEToolbar onChange={this.onToolbar} csvData={csvData} filename={fetchFileName(this)}></DMEToolbar>
                     {this.renderMap()}
                     {this.renderSlider()}
                     <div style={{ position: 'absolute', top: 170, zIndex: 9999, pointerEvents: 'none' }}>

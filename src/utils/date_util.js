@@ -3,6 +3,7 @@ import { timezonePref } from './sharedPreferences_util'
 import momentTimezone from "moment-timezone";
 
 export const FORMAT_FULL_DATE = 'YYYY-MM-DD'
+export const FORMAT_DATE_FILE_NAME = 'YYYY-MM-DD HH-mm'
 export const FORMAT_FULL_TIME = 'HH:mm:ss'
 export const FORMAT_FULL_TIME_12 = 'hh:mm:ss'
 export const FORMAT_TIME_HH_mm = 'HH:mm'
