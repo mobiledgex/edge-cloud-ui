@@ -1,6 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import HorizontalBar from '../../charts/horizontalBar/MexHorizontalBar'
 import { clientMetrics } from '../../../../../services/modules/clientMetrics'
 import { redux_org, redux_private } from '../../../../../helper/reduxData'

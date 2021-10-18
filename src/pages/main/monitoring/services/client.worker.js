@@ -31,7 +31,8 @@ const processData = (request, response) => {
                         if (formattedData[key].skip) {
                             formattedData[key].skip = value <= 0
                         }
-                        formattedData[key][tags['method']] = value ? value : 0
+                        formattedData[key][tags['method']]  = formattedData[key][tags['method']]  ? formattedData[key][tags['method']]  : 0
+                        formattedData[key][tags['method']] = formattedData[key][tags['method']] + (value ? value : 0)
                     }
                 }
             }
