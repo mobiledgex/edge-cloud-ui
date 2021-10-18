@@ -186,7 +186,7 @@ class ListViewer extends React.Component {
 
     render() {
         const { grouping, groupingAction, selection } = this.requestInfo
-        const { dataList, dropList, selected, groupActionMenu, setSelected, iconKeys, loadingSpinner } = this.props
+        const { dataList, dropList, selected, groupActionMenu, setSelected, iconKeys, loading } = this.props
         const { expandedGroups, page, rowsPerPage, order, orderBy } = this.state
         let groupedData = grouping ? this.getGroupedData(dataList) : [];
         let isGrouping = grouping && dropList.length > 0
@@ -277,7 +277,7 @@ class ListViewer extends React.Component {
                                                 })
                                 }
                             </TableBody> : null}
-                        </Table> {dataList.length === 0 ? <NoData search={this.props.searchValue} loading={loadingSpinner} /> : null}
+                        </Table> {dataList.length === 0 ? <NoData search={this.props.searchValue} loading={loading} /> : null}
                     </TableContainer>
                     <TablePagination
                         rowsPerPageOptions={[25, 50, 75]}
@@ -311,8 +311,7 @@ class ListViewer extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data,
-        loadingSpinner: state.loadingSpinner.loading
+        organizationInfo: state.organizationInfo.data
     }
 }
 
