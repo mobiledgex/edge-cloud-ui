@@ -41,7 +41,8 @@ class MexListView extends React.Component {
             dropList: [],
             resetStream: false,
             deleteMultiple: [], 
-            iconKeys: undefined
+            iconKeys: undefined,
+            loading:false
         };
         this._isMounted = false
         this.filterText = prefixSearchPref()
@@ -318,6 +319,7 @@ class MexListView extends React.Component {
                     </div> : null
                 }
                 <MexListViewer keys={this.keys} dataList={this.state.filterList}
+                    loading={this.state.loading}
                     selected={this.state.selected}
                     setSelected={this.setSelected}
                     actionMenu={this.props.actionMenu}
@@ -563,14 +565,14 @@ class MexListView extends React.Component {
                 dataList,
                 newDataList
             }, () => {
-                this.updateState({ filterList: this.onFilterValue(undefined) })
+                this.updateState({ filterList: this.onFilterValue(undefined), loading:false })
             })
         }
     }
 
     dataFromServer = (region) => {
         if (this._isMounted) {
-            this.setState(prevState => ({ dataList: [], filterList: [], selected: [], newDataList: [], resetStream: !prevState.resetStream }))
+            this.setState(prevState => ({ dataList: [], filterList: [], selected: [], newDataList: [], resetStream: !prevState.resetStream, loading:true }))
         }
         let requestInfo = this.requestInfo
         if (requestInfo) {
