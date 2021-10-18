@@ -39,7 +39,7 @@ class AlertGlobal extends React.Component {
         super(props)
         this.state = {
             anchorEl: null,
-            dataList: {},
+            dataList: [],
             showDot: alertStatus() ? alertStatus().showDot : false
         }
         this._isMounted = false
@@ -136,7 +136,7 @@ class AlertGlobal extends React.Component {
                     if (this._isMounted) {
                         this.setState(prevState => {
                             let dataList = prevState.dataList
-                            dataList[region] = newDataList
+                            dataList = [...dataList, ...newDataList]
                             return { dataList, showDot }
                         })
                     }
@@ -176,7 +176,7 @@ class AlertGlobal extends React.Component {
             }
             else {
                 clearInterval(this.intervalId)
-                this.updateState({ dataList: {} })
+                this.updateState({ dataList: [] })
                 this.fetchdata()
             }
         }

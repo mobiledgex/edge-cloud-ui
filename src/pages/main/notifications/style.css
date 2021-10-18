@@ -8,11 +8,9 @@
 
 .alert-toolbar-right {
     float: right;
+    display: inline;
 }
 
-.alert-local-list {
-    max-height: 40vh;
-    min-height: 10vh;
-    overflow: auto; 
-    width: 100% ;
+.alert-search{
+    padding: 10px 18px 10px 18px;
 }
