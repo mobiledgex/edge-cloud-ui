@@ -42,7 +42,7 @@ const formatDate = (data) => {
 }
 
 const fetchFileName=(self)=>{
-    return `${self.props.id === PARENT_APP_INST ? 'App' : 'Cloudlet'} Latency Data (From ${formatDate(self.range.from)} To ${formatDate(self.range.to)}).csv`
+    return `${self.props.id === PARENT_APP_INST ? 'App' : 'Cloudlet'}LatencyData_${formatDate(self.range.from)}_To_${formatDate(self.range.to)}.csv`
 }
 
 class DMEMetrics extends React.Component {
