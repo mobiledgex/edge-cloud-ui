@@ -12,7 +12,7 @@ import MexTab from '../../../hoc/forms/tab/MexTab';
 import { redux_org } from '../../../helper/reduxData'
 //model
 import { service, updateFieldData, fields } from '../../../services';
-import { getOrganizationList } from '../../../services/modules/organization';
+import { getOrganizationList, showOrganizations } from '../../../services/modules/organization';
 import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota, cloudletProps } from '../../../services/modules/cloudlet';
 import { showTrustPolicies } from '../../../services/modules/trustPolicy';
 import { HELP_CLOUDLET_REG } from "../../../tutorial";
@@ -69,6 +69,7 @@ class CloudletReg extends React.Component {
         this.cloudletPropsList = [];
         this.gpuDriverList = [];
         this.kafkaRequired = true;
+        this.allianceList = []
     }
 
     updateState = (data) => {
@@ -251,8 +252,17 @@ class CloudletReg extends React.Component {
                 this.updateState({ forms })
             }
         }
+        if (currentForm.field === fields.operatorName) {
+            this.allianceList = this.allianceList.filter(org => org !== currentForm.value);
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i]
+                if (form.field === fields.allianceOrganization) {
+                    this.updateUI(form)
+                    this.updateState({ forms })
+                }
+            }
+        }
     }
-
     kafkaChange = (currentForm, forms, isInit) => {
         let inputValid = false
         for (let form of forms) {
@@ -628,6 +638,9 @@ class CloudletReg extends React.Component {
                         case fields.key:
                             form.options = this.cloudletPropsList
                             break;
+                        case fields.allianceOrganization:
+                            form.options = this.allianceList
+                            break;
                         default:
                             form.options = undefined;
                     }
@@ -644,7 +657,6 @@ class CloudletReg extends React.Component {
             operator[fields.operatorName] = data[fields.operatorName];
             this.operatorList = [operator]
             this.updateState({ mapData: [data] })
-
             requestList.push(showTrustPolicies(this, { region: data[fields.region] }))
             requestList.push(showGPUDrivers(this, { region: data[fields.region] }, true))
             requestList.push(cloudletResourceQuota(this, { region: data[fields.region], platformType: data[fields.platformType] }))
@@ -788,6 +800,7 @@ class CloudletReg extends React.Component {
             { field: fields.infraApiAccess, label: 'Infra API Access', formType: SELECT, placeholder: 'Select Infra API Access', rules: { required: true }, visible: true, tip: 'Infra Access Type is the type of access available to Infra API Endpoint\nDirect:</b> Infra API endpoint is accessible from public network\nRestricted:</b> Infra API endpoint is not accessible from public network' },
             { field: fields.infraFlavorName, label: 'Infra Flavor Name', formType: 'Input', placeholder: 'Enter Infra Flavor Name', rules: { required: false }, visible: true, tip: 'Infra specific flavor name' },
             { field: fields.infraExternalNetworkName, label: 'Infra External Network Name', formType: 'Input', placeholder: 'Enter Infra External Network Name', rules: { required: false }, visible: true, tip: 'Infra specific external network name' },
+            { field: fields.allianceOrganization, label: 'Alliance Organization', formType: MULTI_SELECT, placeholder: 'Select Alliance Operator', visible: true, tip: 'Alliance Organization of the cloudlet site', update: { id: ['15'] } },
             { field: fields.envVars, label: 'Environment Variable', formType: HEADER, forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getEnvForm }], visible: true, tip: 'Single Key-Value pair of env var to be passed to CRM' },
             { field: fields.resourceQuotas, label: 'Resource Quota', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Resource Quota', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getResoureQuotaForm }], visible: true, update: { id: ['39', '39.1', '39.2', '39.3'] }, tip: 'Alert Threshold:</b> Generate alert when more than threshold percentage of resource is used\nName:</b> Resource name on which to set quota\nValue:</b> Quota value of the resource' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
@@ -799,7 +812,6 @@ class CloudletReg extends React.Component {
             { field: fields.kafkaCluster, label: 'Kafka Cluster', formType: INPUT, placeholder: 'Enter Kafka Cluster Endpoint', rules: { required: false, onBlur: true }, visible: true, update: { id: ['42'] }, tip: 'Operator provided kafka cluster endpoint to push events to', advance: false },
             { field: fields.kafkaUser, label: 'Kafka User', formType: INPUT, placeholder: 'Enter Kafka Username', rules: { required: false, onBlur: true }, visible: true, update: { id: ['43'] }, tip: 'Username for kafka SASL/PLAIN authentification, stored securely in secret storage and never visible externally', advance: false },
             { field: fields.kafkaPassword, label: 'Kafka Password', formType: INPUT, placeholder: 'Enter Kafka Password', rules: { required: false, onBlur: true }, visible: true, update: { id: ['44'] }, tip: 'Password for kafka SASL/PLAIN authentification, stored securely in secret storage and never visible externally', advance: false },
-
         ]
     }
 
@@ -829,8 +841,12 @@ class CloudletReg extends React.Component {
         }
 
     }
+    onAddCancel = () => {
+        this.props.onClose(false)
+    }
 
     getFormData = async (data) => {
+        console.log(data, "data", this.props.org)
         let forms = this.formKeys()
         if (data) {
             if (this.props.manifestData) {
@@ -847,7 +863,19 @@ class CloudletReg extends React.Component {
             this.operatorList = organizationList.map(org => {
                 return org[fields.organizationName]
             })
+            if (redux_org.isAdmin(this)) {
+                this.allianceList = this.operatorList
+            } else {
+                let mc = await service.authSyncRequest(this, showOrganizations(this, { type: perpetual.OPERATOR }))
+                if (service.responseValid(mc)) {
+                    const dataList = mc.response.data
+                    this.allianceList = dataList.map(org => {
+                        return org[fields.organizationName]
+                    }).filter(org => org !== redux_org.nonAdminOrg(this))
+                }
+            }
         }
+
         forms.push(
             { label: this.isUpdate ? 'Update' : 'Create', formType: 'Button', onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })

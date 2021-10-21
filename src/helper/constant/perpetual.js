@@ -41,6 +41,8 @@ export const ACTION_MANIFEST = 'Show Manifest'
 export const ACTION_LATENCY_METRICS = 'LatencyMetrics'
 export const ACTION_TRACK_DEVICES = 'TrackDevices'
 export const ACTION_SHOW_NODE = 'ShowNode'
+export const ACTION_ADD_ALLIANCE_ORG = 'Add_Alliance_Org'
+export const ACTION_REMOVE_ALLIANCE_ORG = 'Remove_Alliance_Org'
 
 export const CLOUDLET_COMPAT_VERSION_2_4 = 0
 export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1

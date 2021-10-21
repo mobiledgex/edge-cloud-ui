@@ -20,6 +20,7 @@ import { uiFormatter } from '../../../helper/formatter';
 import { perpetual, role } from '../../../helper/constant';
 import { responseValid } from '../../../services/service';
 import ShowNode from './ShowNode'
+import AllianceOrganization from './AllianceOrganization';
 
 class CloudletList extends React.Component {
     constructor(props) {
@@ -50,7 +51,8 @@ class CloudletList extends React.Component {
     }
 
     onAdd = (action, data) => {
-        this.updateState({ currentView: <CloudletReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
+        console.log(data, "data")
+        this.updateState({ currentView: <CloudletReg data={data} org={true} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
     }
 
     onCloudletManifest = async (action, data) => {
@@ -111,8 +113,19 @@ class CloudletList extends React.Component {
             { id: perpetual.ACTION_UPDATE, label: 'Update', disable: this.onPreAction, onClick: this.onAdd, type: 'Edit' },
             { id: perpetual.ACTION_DELETE, label: 'Delete', disable: this.onPreAction, onClick: deleteCloudlet, ws: true, type: 'Edit' },
             { id: perpetual.ACTION_MANIFEST, label: 'Show Manifest', disable: this.onPreAction, visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest },
-            { id: perpetual.ACTION_SHOW_NODE, label: 'Show Nodes', visibility:this.onPreNodeAction, onClick: this.onShowNode }
+            { id: perpetual.ACTION_SHOW_NODE, label: 'Show Nodes', visibility: this.onPreNodeAction, onClick: this.onShowNode },
+            { id: perpetual.ACTION_ADD_ALLIANCE_ORG, label: 'Add Alliance Organization', onClick: this.onAddAllianceOrg, type: 'Edit' },
+            { id: perpetual.ACTION_REMOVE_ALLIANCE_ORG, label: 'Remove Alliance Organization', onClick: this.onRemoveAllianceOrg, type: 'Edit' }
         ]
+    }
+
+    onAddAllianceOrg = (action, data) => {
+        console.log(action, data, "data")
+        this.updateState({ currentView: <AllianceOrganization data={data} org={true} action={action.id} onClose={() => this.resetView()} /> });
+    }
+
+    onRemoveAllianceOrg = (action, data) => {
+        this.updateState({ currentView: <AllianceOrganization data={data} org={true} action={action.id} onClose={() => this.resetView()} /> });
     }
 
     groupActionMenu = () => {
