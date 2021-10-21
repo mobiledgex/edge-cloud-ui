@@ -86,7 +86,7 @@ const LeftView = (props) => {
                 </div>
             </Paper>
             <div align={'center'} style={{ marginTop: 10, marginBottom: 10 }}>
-                <SearchFilter style={{ width: '93%' }} onFilter={(value) => { onChange(ACION_SEARCH, value) }} ref={searchfilter} />
+                <SearchFilter style={{ width: '93%' }} onFilter={(value) => { onChange(ACION_SEARCH, value) }} ref={searchfilter} clear={true}/>
             </div>
             {children}
         </React.Fragment >

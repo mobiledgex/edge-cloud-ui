@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Chip, Divider, IconButton, List, ListItem, Typography, Tooltip } from '@material-ui/core'
-import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import { regions } from '../../../../constant';
 import { showAlertKeys } from '../../../../services/modules/alerts';
 import { Icon } from '../../../../hoc/mexui';
@@ -19,9 +18,9 @@ const MChip = (props) => {
     const { icon, label, value } = props
     return (
         value ?
-            <Chip component="div" variant="outlined"  label={
-                <div style={{ display: 'flex', alignItems: 'center', fontSize:13, fontWeight:900 }}>
-                    {icon ? <Icon>{icon}</Icon> : `${label}:`}<span style={{ marginLeft: 3, fontWeight:400  }}>{value}</span>
+            <Chip component="div" variant="outlined" label={
+                <div style={{ display: 'flex', alignItems: 'center', fontSize: 13, fontWeight: 900 }}>
+                    {icon ? <Icon>{icon}</Icon> : `${label}:`}<span style={{ marginLeft: 3, fontWeight: 400 }}>{value}</span>
                 </div>
             } style={{ marginBottom: 5, marginRight: 5 }} />
             : null
@@ -37,9 +36,8 @@ class AlertLocal extends React.Component {
         this.regions = regions()
     }
 
-    renderAlertPreferences = () => {
+    onClose = () => {
         this.props.handleClose()
-        this.props.history.push('/main/alerts')
     }
 
     renderToolbar = () => (
@@ -51,7 +49,7 @@ class AlertLocal extends React.Component {
                 </Typography>
             </div>
             <div className="alert-toolbar-right">
-                <IconButton size="small" onClick={this.renderAlertPreferences}><SettingsOutlinedIcon /></IconButton>
+                <IconButton size="small" onClick={this.onClose}><Icon>close</Icon></IconButton>
             </div>
         </div>
     )
@@ -143,7 +141,7 @@ class AlertLocal extends React.Component {
         const { dataList } = this.state
         return (
             dataList && dataList.length > 0 ? <List dense={false} >
-                <FixedSizeList height={250} itemSize={120} itemCount={dataList.length}>
+                <FixedSizeList height={350} itemSize={120} itemCount={dataList.length}>
                     {this.renderRow}
                 </FixedSizeList>
             </List> : null
