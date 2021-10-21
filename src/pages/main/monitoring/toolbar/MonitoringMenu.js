@@ -105,7 +105,7 @@ const MonitoringMenu = (props) => {
                 keepMounted
                 open={Boolean(anchorEl)}
             >
-                {props.search ? <div style={{ marginRight: 10, marginLeft: 10, marginBottom: 5 }}><SearchFilter onFilter={onFilter} /></div> : null}
+                {props.search ? <div style={{ marginRight: 10, marginLeft: 10, marginBottom: 5 }}><SearchFilter onFilter={onFilter} clear={true}/></div> : null}
                 <div style={{ maxHeight: 300, overflow: 'auto', }}>
                     {fetchList(props.data)}
                 </div>

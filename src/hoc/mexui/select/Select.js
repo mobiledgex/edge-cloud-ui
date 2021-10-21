@@ -105,7 +105,7 @@ export default function Select(props) {
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
                 >
-                    {props.search ? <SearchFilter onFilter={onFilter} style={{ marginBottom: 10 }} /> : null}
+                    {props.search ? <SearchFilter onFilter={onFilter} style={{ marginBottom: 10 }} clear={true}/> : null}
                     <FixedSizeList height={props.height ? props.height : 300} style={{ minWidth: 213 }} itemSize={40} itemCount={list.length}>
                         {renderRow}
                     </FixedSizeList>
