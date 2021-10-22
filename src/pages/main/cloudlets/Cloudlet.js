@@ -51,7 +51,7 @@ class CloudletList extends React.Component {
     }
 
     onAdd = (action, data) => {
-        this.updateState({ currentView: <CloudletReg data={data} org={true} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <CloudletReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
     }
 
     onCloudletManifest = async (action, data) => {
