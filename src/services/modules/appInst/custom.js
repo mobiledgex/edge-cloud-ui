@@ -11,8 +11,5 @@ export const customize = (request, value) => {
     value[fields.sharedVolumeSize] = value[fields.autoClusterInstance] ? value[fields.sharedVolumeSize] ? value[fields.sharedVolumeSize] : 0 : undefined
     value[fields.cloudlet_name_operator] = `${value[fields.cloudletName]} [${value[fields.operatorName]}]`
     value[fields.app_name_version] = `${value[fields.appName]} [${value[fields.version]}]`
-    if (value[fields.appName] === 'MEXPrometheusAppName') {
-        value = undefined
-    }
     return value
 }
