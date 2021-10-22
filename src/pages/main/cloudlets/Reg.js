@@ -846,7 +846,6 @@ class CloudletReg extends React.Component {
     }
 
     getFormData = async (data) => {
-        console.log(data, "data", this.props.org)
         let forms = this.formKeys()
         if (data) {
             if (this.props.manifestData) {

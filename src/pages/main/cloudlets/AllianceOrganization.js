@@ -80,7 +80,6 @@ class AllianceOrganization extends React.Component {
     }
 
     updateUI(form) {
-        console.log(this.allianceList, "192", form)
         if (form) {
             if (form.field) {
                 if (form.formType === DUALLIST) {
@@ -129,7 +128,6 @@ class AllianceOrganization extends React.Component {
             mcList.map(mc => {
                 if (mc.response) {
                     let data = mc.request.data;
-                    console.log(data, "data")
                     let text = this.isAllianceCloudletAdd ? 'added' : 'removed'
                     this.props.handleAlertInfo('success', `Alliance Organization ${text} successfully`)
                     this.props.onClose(true)

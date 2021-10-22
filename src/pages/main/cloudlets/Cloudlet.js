@@ -51,7 +51,6 @@ class CloudletList extends React.Component {
     }
 
     onAdd = (action, data) => {
-        console.log(data, "data")
         this.updateState({ currentView: <CloudletReg data={data} org={true} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
     }
 
