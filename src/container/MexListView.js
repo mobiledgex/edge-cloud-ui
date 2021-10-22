@@ -309,7 +309,6 @@ class MexListView extends React.Component {
 
     /*Action Block*/
     listView = () => {
-        console.log(this.state.filterList)
         let isMap = this.requestInfo.isMap && this.state.showMap
         return (
             <div className="mexListView">

@@ -37,19 +37,6 @@ class AllianceOrganization extends React.Component {
         if (this._isMounted) {
             this.setState({ ...data })
         }
-        console.log(data, "40")
-    }
-
-    /*Trigged when form value changes */
-    onValueChange = (form, data) => {
-    }
-
-    onCreateResponse = async (mc) => {
-        console.log(mc, "mc")
-    }
-
-    onCreate = async (data) => {
-
     }
 
     /*Required*/
@@ -61,13 +48,12 @@ class AllianceOrganization extends React.Component {
 
     render() {
         const { forms, activeIndex } = this.state
-        console.log(forms, "forms")
         return (
             <div>
                 <Grid container>
                     <Grid item xs={12}>
                         <div className="round_panel">
-                            <MexForms forms={forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                            <MexForms forms={forms} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </div>
                     </Grid>
                 </Grid>
@@ -75,12 +61,9 @@ class AllianceOrganization extends React.Component {
         )
     }
 
-
     getAllianceOrganizationData = (dataList, field) => {
-        console.log(dataList)
         if (dataList && dataList.length > 0)
             return dataList.map(data => {
-                console.log(data, "data")
                 return { value: data[field], label: data[field] }
             })
     }
@@ -88,13 +71,14 @@ class AllianceOrganization extends React.Component {
     onAddCancel = () => {
         this.props.onClose(false)
     }
+
     updateFormData = (forms) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             this.updateUI(form)
         }
-
     }
+
     updateUI(form) {
         console.log(this.allianceList, "192", form)
         if (form) {
@@ -113,7 +97,6 @@ class AllianceOrganization extends React.Component {
     }
 
     formattedData = () => {
-        console.log(this.state.forms)
         let data = {};
         let forms = this.state.forms;
         for (let i = 0; i < forms.length; i++) {
@@ -123,43 +106,6 @@ class AllianceOrganization extends React.Component {
             }
         }
         return data
-    }
-
-    alliance_Organization_AddResponse = (mcList) => {
-        if (mcList && mcList.length > 0) {
-            let valid = true;
-            let data = undefined
-            mcList.forEach(mc => {
-                data = mc.request.data
-                if (mc && mc.response && mc.response.status !== 200) {
-                    valid = false
-                }
-            })
-            if (valid) {
-                let msg;
-                if (this.action === perpetual.ACTION_ADD_ALLIANCE_ORG) {
-                    msg = 'added'
-                }
-                // this.props.handleAlertInfo('success', `${data['CloudletPoolOrg']} invitation ${msg}`)
-
-                this.props.onClose(true)
-            }
-        }
-    }
-
-    onRemoveAllianceOrganization = (mcList) => {
-        let valid = true;
-        let data = undefined
-        if (mcList && mcList.length > 0) {
-            mcList.forEach(mc => {
-                data = mc.request.data
-                if (mc.response.status !== 200) {
-                    valid = false;
-                }
-            })
-        }
-
-
     }
 
     onAddAllianceOrganizations = async () => {
@@ -172,8 +118,6 @@ class AllianceOrganization extends React.Component {
             requestData[fields.allianceOrganization] = org
             requestList.push(requestCall(requestData))
         })
-        console.log(requestList, "requestList")
-
         if (requestList && requestList.length > 0) {
             service.multiAuthRequest(this, requestList, this.onAddResponse)
         }
@@ -194,8 +138,60 @@ class AllianceOrganization extends React.Component {
         }
     }
 
+    filterAllianceCloudlets = () => {
+        let newAllianceList = []
+        if (this.props.data) {
+            let selectedAllianceOrgs = this.props.data[fields.allianceOrganization]
+            if (selectedAllianceOrgs && selectedAllianceOrgs.length > 0) {
+                for (let i = 0; i < selectedAllianceOrgs.length; i++) {
+                    let selectedAllianceOrg = selectedAllianceOrgs[i];
+                    for (let j = 0; j < this.allianceList.length; j++) {
+                        let allianceOrg = this.allianceList[j]
+                        if (selectedAllianceOrg === allianceOrg[fields.organizationName]) {
+                            if (this.props.action === perpetual.ACTION_ADD_ALLIANCE_ORG) {
+                                this.allianceList.splice(j, 1)
+                            }
+                            else if (this.props.action === perpetual.ACTION_REMOVE_ALLIANCE_ORG) {
+                                newAllianceList.push(allianceOrg)
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        this.allianceList = newAllianceList.length > 0 ? newAllianceList : this.allianceList
+    }
+
+    selectCloudlet = async (data) => {
+        if (this.allianceList && this.allianceList.length > 0) {
+            let action = 'Add'
+            if (this.props.action === perpetual.ACTION_REMOVE_ALLIANCE_ORG) {
+                action = 'Remove'
+            }
+            this.filterAllianceCloudlets();
+            let forms = [
+                { label: `${action} Alliance Organization`, formType: MAIN_HEADER, visible: true },
+                { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.region] },
+                { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.cloudletName] },
+                { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.operatorName] },
+                { field: fields.allianceOrganization, label: 'Alliance Organization', formType: 'DualList', visible: true },
+                { label: `${action}`, formType: 'Button', onClick: this.onAddAllianceOrganizations },
+                { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
+            ]
+            this.updateFormData(forms, data)
+            this.updateState({
+                forms
+            })
+            this.props.handleViewMode(HELP_CLOUDLET_REG);
+        }
+        else {
+            this.props.handleAlertInfo('error', 'No Alliance Organization present')
+            this.props.onClose(true)
+        }
+    }
+
     getFormData = async (data) => {
-        console.log(data, "$$$")
         let forms;
         let organizationList = await getOrganizationList(this, { type: perpetual.OPERATOR })
         this.operatorList = organizationList.filter(org => org[fields.organizationName] !== data[fields.operatorName])
@@ -208,22 +204,25 @@ class AllianceOrganization extends React.Component {
                 this.allianceList = dataList.filter(org => org[fields.organizationName] !== data[fields.operatorName])
             }
         }
-        forms = [
-            { label: 'Alliance Organization', formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.region] },
-            { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.cloudletName] },
-            { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.operatorName] },
-            { field: fields.allianceOrganization, label: 'Alliance Organization', formType: 'DualList', visible: true },
-            { label: this.isAllianceCloudletAdd ? 'Add' : 'Remove', formType: 'Button', onClick: this.onAddAllianceOrganizations },
-            { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
-        ]
-        this.updateFormData(forms, data)
-        this.updateState({
-            forms
-        })
-
+        if (this.props.action === perpetual.ACTION_ADD_ALLIANCE_ORG || this.props.action === perpetual.ACTION_REMOVE_ALLIANCE_ORG) {
+            this.selectCloudlet(data)
+        }
+        else {
+            forms = [
+                { label: 'Alliance Organization', formType: MAIN_HEADER, visible: true },
+                { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.region] },
+                { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.cloudletName] },
+                { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.operatorName] },
+                { field: fields.allianceOrganization, label: 'Alliance Organization', formType: 'DualList', visible: true },
+                { label: this.isAllianceCloudletAdd ? 'Add' : 'Remove', formType: 'Button', onClick: this.onAddAllianceOrganizations },
+                { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
+            ]
+            this.updateFormData(forms, data)
+            this.updateState({
+                forms
+            })
+        }
     }
-
 
     componentDidMount() {
         this._isMounted = true
@@ -234,6 +233,7 @@ class AllianceOrganization extends React.Component {
     componentWillUnmount() {
         this._isMounted = false
     }
+
 };
 
 const mapStateToProps = (state) => {

@@ -47,8 +47,9 @@ export const keys = () => ([
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', detailView:false },
-    { field: fields.gpuExist, label: 'GPU', detailView: false, detailView:false },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: constant.operatorRoles }
+    { field: fields.gpuExist, label: 'GPU', detailView: false },
+    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: constant.operatorRoles },
+    { field: fields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING }
 ])
 
 export const iconKeys = () => ([
@@ -302,7 +303,6 @@ export const createCloudlet = (self, data, callback) => {
     let requestData = getKey(data, true)
     data.uuid = data[fields.cloudletName]
     let request = { uuid: data.uuid, method: endpoint.CREATE_CLOUDLET, data: requestData }
-    console.log(request, "request")
     return serverData.sendWSRequest(self, request, callback, data)
 }
 
