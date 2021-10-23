@@ -54,7 +54,7 @@ class SearchFilter extends React.Component {
 
     render() {
         const { focused } = this.state
-        const { classes, compact, style } = this.props;
+        const { classes, compact, style, clear } = this.props;
         const inputStyle = focused ? { ...style, marginTop: 0 } : style
         return (
             <Input
@@ -79,9 +79,9 @@ class SearchFilter extends React.Component {
                     </InputAdornment>
                 }
                 endAdornment={
-                    compact ? null : <InputAdornment position="end">
+                    compact ? null : clear ? <InputAdornment position="end">
                         <ClearAllOutlinedIcon style={{ fontSize: 17, color: focused ? 'rgba(118, 255, 3, 0.7)' : 'white' }} onClick={this.onClear} />
-                    </InputAdornment>
+                    </InputAdornment> : null
                 }
                 onChange={this.onValueChange}
                 placeholder={'Search'} />

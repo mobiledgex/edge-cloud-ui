@@ -186,7 +186,7 @@ class ListViewer extends React.Component {
 
     render() {
         const { grouping, groupingAction, selection } = this.requestInfo
-        const { dataList, dropList, selected, groupActionMenu, setSelected, iconKeys } = this.props
+        const { dataList, dropList, selected, groupActionMenu, setSelected, iconKeys, loading } = this.props
         const { expandedGroups, page, rowsPerPage, order, orderBy } = this.state
         let groupedData = grouping ? this.getGroupedData(dataList) : [];
         let isGrouping = grouping && dropList.length > 0
@@ -277,8 +277,7 @@ class ListViewer extends React.Component {
                                                 })
                                 }
                             </TableBody> : null}
-                        </Table>
-                        {dataList.length === 0 ? <NoData searchFilter={this.props.searchValue} /> : null}
+                        </Table> {dataList.length === 0 ? <NoData search={this.props.searchValue} loading={loading || dataList.length === 0} /> : null}
                     </TableContainer>
                     <TablePagination
                         rowsPerPageOptions={[25, 50, 75]}

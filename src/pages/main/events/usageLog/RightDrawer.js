@@ -280,7 +280,7 @@ class EventLog extends React.Component {
                         <Grid item xs={9} style={{ height: 'calc(100vh - 50px)', display: 'inline-block', backgroundColor: '#1E2123', paddingLeft: 20 }}>
                             <MexCalendar dataList={calendarList} groupList={groupList} />
                         </Grid>
-                    </Grid> : <NoData />
+                    </Grid> : <NoData loading={loading} />
                     }
                 </div>
             </React.Fragment>

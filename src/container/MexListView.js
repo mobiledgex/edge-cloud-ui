@@ -41,7 +41,8 @@ class MexListView extends React.Component {
             dropList: [],
             resetStream: false,
             deleteMultiple: [], 
-            iconKeys: undefined
+            iconKeys: undefined,
+            loading:false
         };
         this._isMounted = false
         this.filterText = prefixSearchPref()
@@ -318,6 +319,7 @@ class MexListView extends React.Component {
                     </div> : null
                 }
                 <MexListViewer keys={this.keys} dataList={this.state.filterList}
+                    loading={this.state.loading}
                     selected={this.state.selected}
                     setSelected={this.setSelected}
                     actionMenu={this.props.actionMenu}
@@ -458,7 +460,7 @@ class MexListView extends React.Component {
             <Card style={{ width: '100%', height: 'calc(100vh - 55px)', backgroundColor: '#292c33', color: 'white', paddingTop: 10 }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.specificDataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
-                <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} />
+                <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} uuid={this.state.uuid} />
                 <MexToolbar requestInfo={this.requestInfo} regions={regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} toolbarAction={toolbarAction}/>
                 {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
                 {this.state.currentView ? this.state.currentView : this.listView()}
@@ -563,14 +565,14 @@ class MexListView extends React.Component {
                 dataList,
                 newDataList
             }, () => {
-                this.updateState({ filterList: this.onFilterValue(undefined) })
+                this.updateState({ filterList: this.onFilterValue(undefined), loading:false })
             })
         }
     }
 
     dataFromServer = (region) => {
         if (this._isMounted) {
-            this.setState(prevState => ({ dataList: [], filterList: [], selected: [], newDataList: [], resetStream: !prevState.resetStream }))
+            this.setState(prevState => ({ dataList: [], filterList: [], selected: [], newDataList: [], resetStream: !prevState.resetStream, loading:true }))
         }
         let requestInfo = this.requestInfo
         if (requestInfo) {

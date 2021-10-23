@@ -16,6 +16,7 @@ import ServerFilter, { ACTION_FILTER } from './ServerFilter';
 import { toFirstUpperCase } from '../../../../utils/string_utils';
 import uuid from 'uuid'
 import { removeObject } from '../../../../helper/ls';
+import { fetchObject, storeObject } from '../../../../helper/ls';
 
 const tip = [
     <p>By default audit/event log provides current logs with default limit of 25</p>,
@@ -192,6 +193,15 @@ class AuditLogView extends Component {
         }
     }
 
+    onPickerAction = (value)=>{
+        let lsFilter = fetchObject(`${this.props.type}_logs`)
+        lsFilter= lsFilter ? lsFilter : {}
+        lsFilter.range = value
+        this.filter.range = value
+        storeObject(`${this.props.type}_logs`, lsFilter)
+        this.props.fetchData({ range: value })
+    }
+
     onToolbarChange = (action, value) => {
         const { refreshToolbar } = this.state
         switch (action) {
@@ -207,8 +217,7 @@ class AuditLogView extends Component {
                 this.props.close()
                 break;
             case ACTION_PICKER:
-                this.filter.range = value
-                this.props.fetchData({ range: value })
+                this.onPickerAction(value)
                 this.setState({ refreshToolbar: !refreshToolbar })
                 break;
             case ACTION_FILTER:
@@ -216,8 +225,8 @@ class AuditLogView extends Component {
                 this.props.fetchData(value)
                 this.setState({ refreshToolbar: !refreshToolbar })
                 break;
-
         }
+
     }
 
     render() {
@@ -241,7 +250,7 @@ class AuditLogView extends Component {
                         <Grid item xs={9} style={{ height: 'calc(100vh - 50px)', display: 'inline-block', backgroundColor: '#1E2123', paddingLeft: 2 }}>
                             {this.isAudit ? <AuditView data={dataList[activeIndex]} /> : <EventView data={dataList[activeIndex]} />}
                         </Grid>
-                    </Grid> : <NoData />
+                    </Grid> : <NoData loading={loading} />
                     }
                 </div>
             </Fragment>
