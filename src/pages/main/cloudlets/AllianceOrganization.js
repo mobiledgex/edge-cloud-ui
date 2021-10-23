@@ -53,7 +53,7 @@ class AllianceOrganization extends React.Component {
                 <Grid container>
                     <Grid item xs={12}>
                         <div className="round_panel">
-                            <MexForms forms={forms} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                            <MexForms forms={forms} reloadForms={this.reloadForms} />
                         </div>
                     </Grid>
                 </Grid>
@@ -68,7 +68,7 @@ class AllianceOrganization extends React.Component {
             })
     }
 
-    onAddCancel = () => {
+    onCancel = () => {
         this.props.onClose(false)
     }
 
@@ -107,7 +107,7 @@ class AllianceOrganization extends React.Component {
         return data
     }
 
-    onAddAllianceOrganizations = async () => {
+    onActionAllianceOrganizations = async () => {
         let data = this.formattedData()
         let requestList = []
         let alliance_orgs = data[fields.allianceOrganization]
@@ -118,6 +118,7 @@ class AllianceOrganization extends React.Component {
             requestList.push(requestCall(requestData))
         })
         if (requestList && requestList.length > 0) {
+            this.props.handleLoadingSpinner(true)
             service.multiAuthRequest(this, requestList, this.onAddResponse)
         }
 
@@ -125,11 +126,13 @@ class AllianceOrganization extends React.Component {
 
     onAddResponse = (mcList) => {
         if (mcList && mcList.length > 0) {
+            this.props.handleLoadingSpinner(false)
             mcList.map(mc => {
                 if (mc.response) {
                     let data = mc.request.data;
+                    let cloudletName = data.cloudletallianceorg.key.name
                     let text = this.isAllianceCloudletAdd ? 'added' : 'removed'
-                    this.props.handleAlertInfo('success', `Alliance Organization ${text} successfully`)
+                    this.props.handleAlertInfo('success', `Alliance Organization for ${cloudletName} ${text} successfully`)
                     this.props.onClose(true)
                 }
             })
@@ -174,14 +177,13 @@ class AllianceOrganization extends React.Component {
                 { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.cloudletName] },
                 { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.operatorName] },
                 { field: fields.allianceOrganization, label: 'Alliance Organization', formType: 'DualList', visible: true },
-                { label: `${action}`, formType: 'Button', onClick: this.onAddAllianceOrganizations },
-                { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
+                { label: `${action}`, formType: 'Button', onClick: this.onActionAllianceOrganizations },
+                { label: 'Cancel', formType: 'Button', onClick: this.onCancel }
             ]
             this.updateFormData(forms, data)
             this.updateState({
                 forms
             })
-            this.props.handleViewMode(HELP_CLOUDLET_REG);
         }
         else {
             this.props.handleAlertInfo('error', 'No Alliance Organization present')
@@ -213,7 +215,7 @@ class AllianceOrganization extends React.Component {
                 { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.operatorName] },
                 { field: fields.allianceOrganization, label: 'Alliance Organization', formType: 'DualList', visible: true },
                 { label: this.isAllianceCloudletAdd ? 'Add' : 'Remove', formType: 'Button', onClick: this.onAddAllianceOrganizations },
-                { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
+                { label: 'Cancel', formType: 'Button', onClick: this.onCancel }
             ]
             this.updateFormData(forms, data)
             this.updateState({
@@ -225,7 +227,6 @@ class AllianceOrganization extends React.Component {
     componentDidMount() {
         this._isMounted = true
         this.getFormData(this.props.data)
-        this.props.handleViewMode(HELP_CLOUDLET_REG)
     }
 
     componentWillUnmount() {
@@ -242,9 +243,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
-        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) }
     };
 };
 
