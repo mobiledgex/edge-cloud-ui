@@ -235,11 +235,6 @@ class AllianceOrganization extends React.Component {
 
 };
 
-const mapStateToProps = (state) => {
-    return {
-        organizationInfo: state.organizationInfo.data
-    }
-};
 
 const mapDispatchProps = (dispatch) => {
     return {
@@ -248,4 +243,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(AllianceOrganization));
+export default withRouter(connect(null, mapDispatchProps)(AllianceOrganization));
