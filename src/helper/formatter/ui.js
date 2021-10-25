@@ -190,7 +190,7 @@ export const NoData = (props) => {
     return (
         <div align='center' style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
             {loading ? <Icon style={{ color: '#808080', fontSize: 40 }} animation={true}>hourglass_empty</Icon> : <img src={`assets/icons/inbox_empty.svg`} />}
-            {<h4 style={{ color: 'grey' }}><b>{loading ? 'Fetching data from the server' : `No Data ${text}`}</b></h4>}
+            {<h4 style={{ color: 'grey' }}><b>{loading ? 'Fetching data from the server' : `No data ${text}`}</b></h4>}
         </div>
     )
 }
