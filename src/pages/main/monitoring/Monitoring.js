@@ -255,16 +255,16 @@ class Monitoring extends React.Component {
             return <ClusterMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} />
         }
         else if (parentId === constant.PARENT_CLOUDLET) {
-            return <CloudletMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} listAction={listAction}  onActionClose={this.onActionClose} />
+            return <CloudletMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} listAction={listAction} onActionClose={this.onActionClose} />
         }
     }
 
     render() {
         const { filter, range, duration, organizations, avgData, rowSelected, showLoaded, selectedOrg, maxHeight } = this.state
         return (
-            <div mex-test="component-monitoring" style={{position:'relative'}}>
-                <Card style={{height:50, marginBottom:2}}>
-                    <MonitoringToolbar selectedOrg={selectedOrg} regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar}/>
+            <div mex-test="component-monitoring" style={{ position: 'relative' }}>
+                <Card style={{ height: 50, marginBottom: 2 }}>
+                    <MonitoringToolbar selectedOrg={selectedOrg} regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} />
                 </Card>
                 <React.Fragment>
                     {showLoaded ?
@@ -284,7 +284,7 @@ class Monitoring extends React.Component {
                                     </React.Fragment> :
                                     <NoData />
                             }
-                        </div> : 
+                        </div> :
                         <React.Fragment>
                             <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
                                 <Skeleton variant="rect" height={'25%'} style={{ marginBottom: 3 }} />
@@ -325,7 +325,7 @@ class Monitoring extends React.Component {
                         isOperator: redux_org.isOperator(this)
                     })
                     worker.terminate()
-                    if (response.status === 200) {
+                    if (response.status === 200 && response.list && response.data) {
                         if (this._isMounted) {
                             this.setState(prevState => {
                                 let avgData = prevState.avgData

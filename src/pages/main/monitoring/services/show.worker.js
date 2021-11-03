@@ -51,7 +51,7 @@ const fetchAppInstData = (parentId, showList, keys, isOperator) => {
 }
 
 const processData = (worker) => {
-    const { parentId, mcList, metricListKeys, isOperator } = worker
+    const { parentId, mcList, metricListKeys, isOperator, region } = worker
     let dataObject = {}
     if (mcList && mcList.length > 0) {
         if (parentId === PARENT_CLOUDLET) {

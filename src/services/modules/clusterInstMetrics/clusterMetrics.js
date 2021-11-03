@@ -49,7 +49,7 @@ export const clusterMetricTypeKeys = () => ([
 
 export const clusterMetrics = (self, data, list, organization) => {
     if (list) {
-        data.ClusterInsts = list
+        data.clusterinsts = list
     }
     else {
         data.clusterinst = redux_org.isOperator(self) ? { cloudlet_key: { organization } } : { organization }

@@ -109,7 +109,6 @@ const processData2 = (worker) => {
     const { metric, dataList, region, avgData, timezone, metricKeys, parentId } = worker
     const metricList = metric.keys ? metric.keys : [metric]
     let finalData = []
-    console.log(dataList)
     if (dataList && dataList.length > 0) {
         let chartData = {}
         for (let data of dataList) {
@@ -159,7 +158,6 @@ const processData2 = (worker) => {
             finalData.push(chartData[item.field])
         }
     }
-    console.log(finalData)
     self.postMessage({ status: 200, data: finalData })
 }
 
