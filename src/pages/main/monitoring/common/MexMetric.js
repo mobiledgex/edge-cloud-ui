@@ -1,6 +1,6 @@
 import React from 'react'
 import MexChart from '../charts/MexChart'
-import { metricType } from '../helper/Constant'
+import { metricType } from '../helper/montconstant'
 
 
 class MexMetric extends React.Component {

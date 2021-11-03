@@ -29,9 +29,9 @@ export const cloudletFlavorMetricsKeys = [
 ]
 
 export const cloudletMetricsListKeys = [
-    { field: fields.region, label: 'Region', sortable: true, visible: false, groupBy: true },
-    { field: fields.cloudletName, label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
-    { field: fields.operatorName, label: 'Operator', sortable: true, visible: false, groupBy: true },
+    { field: fields.region, label: 'Region', sortable: true, visible: false, groupBy: false },
+    { field: fields.cloudletName, serverField:'cloudlet', label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
+    { field: fields.operatorName, serverField:'cloudletorg', label: 'Operator', sortable: true, visible: false, groupBy: true },
     { field: fields.cloudletLocation, label: 'Location', visible: false },
     { field: 'cpu', label: 'vCpu Infra Usage', sortable: false, visible: true },
     { field: 'disk', label: 'Disk Infra Usage', sortable: false, visible: true },
@@ -39,9 +39,9 @@ export const cloudletMetricsListKeys = [
 ]
 
 export const utilizationMetricType = [
-    { field: 'cpu', serverField: 'utilization', subId: 'vCpuUsed', header: 'vCpu Infra Usage', position: 4, steppedLine: 'after' },
-    { field: 'memory', serverField: 'utilization', subId: 'memUsed', header: 'Memory Infra Usage', position: 6, unit: UNIT_MB, steppedLine: 'after' },
-    { field: 'disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Infra Usage', position: 8, unit: UNIT_GB, steppedLine: 'after' },
+    { field: 'cpu', serverField: 'utilization', subId: 'vCpuUsed', header: 'vCpu Infra Usage', position: 1, steppedLine: 'after' },
+    { field: 'memory', serverField: 'utilization', subId: 'memUsed', header: 'Memory Infra Usage', position: 3, unit: UNIT_MB, steppedLine: 'after' },
+    { field: 'disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Infra Usage', position: 5, unit: UNIT_GB, steppedLine: 'after' },
 ]
 
 export const resourceUsageMetricType = [
@@ -61,9 +61,21 @@ export const cloudletMetricTypeKeys = () => ([
     { field: 'event', header: 'Event' },
 ])
 
-export const cloudletMetrics = (data, org) => {
-    data.cloudlet = {
-        organization: org
+/**
+ * 
+ * @param {*} data request data
+ * @param {*} list extracts specific cloudlet data
+ * @param {*} org cloudlet organization
+ * @returns cloudlet metric data
+ */
+export const cloudletMetrics = (data, list, org) => {
+    if (list) {
+        data.cloudlets = list
+    }
+    else {
+        data.cloudlet = {
+            organization: org
+        }
     }
     return { method: endpoint.CLOUDLET_METRICS_ENDPOINT, data: data, keys: cloudletMetricsKeys }
 }

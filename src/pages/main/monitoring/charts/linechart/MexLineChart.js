@@ -121,8 +121,8 @@ class MexLineChart extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.data) {
-            let propsValues = props.data.values
-            if (propsValues) {
+            let datasets = props.data.datasets
+            if (datasets) {
                 const { data, avgData, globalFilter, rowSelected, labelPosition, disableRowSelectedFilter } = props
                 return { datasets: formatData(data, avgData, globalFilter, rowSelected, disableRowSelectedFilter) }
             }

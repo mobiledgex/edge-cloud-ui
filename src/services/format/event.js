@@ -67,6 +67,23 @@ export const formatBillingData = (request, response) => {
 }
 
 export const formatMetricData = (request, response) => {
+    let dataList = []
+    try {
+        let data = response.data.data;
+        if (data && data.length > 0) {
+            let series = data[0].Series
+            if (series && series.length > 0) {
+                dataList = series
+            }
+        }
+    }
+    catch (e) {
+        // console.log(e)
+    }
+    return dataList
+}
+
+export const formatMetricUsageData = (request, response) => {
     let formattedData = []
     try {
         if (response && response.data && response.data.data) {

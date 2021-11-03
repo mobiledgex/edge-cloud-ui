@@ -1,7 +1,7 @@
 import React from 'react'
 import { ImageList, ImageListItem } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
-import { PARENT_CLUSTER_INST } from '../../helper/Constant'
+import { PARENT_CLUSTER_INST } from '../../helper/montconstant'
 
 
 class AppSkeleton extends React.Component {

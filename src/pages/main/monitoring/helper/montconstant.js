@@ -47,14 +47,14 @@ export const monitoringActions = (id) => {
     }
 }
 
-export const metricRequest = (method, data, org, isPrivate) => {        
+export const metricRequest = (self, method, data, list, org) => {
     switch (method) {
         case endpoint.APP_INST_METRICS_ENDPOINT:
-            return appInstMetrics(data, org, isPrivate)
+            return appInstMetrics(self, data, list, org)
         case endpoint.CLUSTER_METRICS_ENDPOINT:
-            return clusterMetrics(data, org, isPrivate)
+            return clusterMetrics(self, data, list, org)
         case endpoint.CLOUDLET_METRICS_ENDPOINT:
-            return cloudletMetrics(data, org)
+            return cloudletMetrics(data, list, org)
         case endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT:
             return cloudletUsageMetrics(data, org)
     }

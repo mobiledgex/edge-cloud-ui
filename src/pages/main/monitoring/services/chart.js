@@ -51,3 +51,43 @@ export const generateDataset = (chartData, avgData, timezone, labelPosition, avg
     })
     return datasets
 }
+
+export const generateDataset2 = (tags, metric, timezone, dataList, avgData) => {
+    let dataset = {}
+    if (dataList && dataList.length > 0) {
+        const { position, steppedLine } = metric
+        let color = avgData.color
+
+        let data = []
+        dataList.forEach(value => {
+            if (value[position] !== null) {
+                data.push({ x: moment.tz(value[0], timezone).valueOf(), y: value[position] })
+            }
+        })
+
+        dataset = {
+            label: tags['cloudlet'],
+            fill: false,
+            lineTension: 0.5,
+            steppedLine: steppedLine ? steppedLine : false,
+            backgroundColor: color,
+            borderColor: color,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderWidth: 2,
+            borderJoinStyle: 'miter',
+            pointBorderColor: color,
+            pointBackgroundColor: color,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: color,
+            pointHoverBorderColor: color,
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data
+        }
+    }
+    return dataset
+}

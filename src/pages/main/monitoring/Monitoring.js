@@ -5,7 +5,7 @@ import * as actions from '../../../actions';
 
 import { Card } from '@material-ui/core'
 
-import * as constant from './helper/Constant'
+import * as constant from './helper/montconstant'
 import * as dateUtil from '../../../utils/date_util'
 import { fields } from '../../../services/model/format';
 import { redux_org, redux_private } from '../../../helper/reduxData';
@@ -321,7 +321,8 @@ class Monitoring extends React.Component {
                         parentId,
                         region,
                         mcList,
-                        metricListKeys: parent.metricListKeys
+                        metricListKeys: parent.metricListKeys,
+                        isOperator: redux_org.isOperator(this)
                     })
                     worker.terminate()
                     if (response.status === 200) {
@@ -329,6 +330,8 @@ class Monitoring extends React.Component {
                             this.setState(prevState => {
                                 let avgData = prevState.avgData
                                 avgData[region] = response.data
+                                avgData['filterList'] = avgData['filterList'] ? avgData['filterList'] : {}
+                                avgData['filterList'][region] = response.list
                                 return { avgData }
                             }, () => {
                                 if (count === 0) {

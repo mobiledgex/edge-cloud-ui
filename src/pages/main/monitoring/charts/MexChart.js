@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import LineChart from './linechart/MexLineChart'
-import { metricRequest } from '../helper/Constant'
+import { metricRequest } from '../helper/montconstant'
 import { Card, ImageListItem } from '@material-ui/core'
 import { timezonePref } from '../../../../utils/sharedPreferences_util'
 //services
@@ -10,7 +10,6 @@ import { redux_org, redux_private } from '../../../../helper/reduxData';
 import { processWorker } from '../../../../services/worker/interceptor'
 import MetricWorker from '../services/metric.worker.js'
 import { authSyncRequest, responseValid } from '../../../../services/service'
-import isEmpty from 'lodash/isEmpty'
 class MexChart extends React.Component {
     constructor(props) {
         super()
@@ -74,50 +73,41 @@ class MexChart extends React.Component {
      * 2. Pass fetched data to metric worker to process the data and generate line chart dataset
      */
     fetchMetricData = async () => {
-        let parent = this.props.filter.parent
-        let metric = this.props.metric
-        let region = this.props.region
-        if (metric.serverRequest) {
+        const { metric, region, filter, avgData } = this.props
+        let parent = filter.parent
+        let filterList = avgData.filterList[region]
+        if (metric.serverRequest && filterList && filterList.length > 0) {
             let data = {}
             data[fields.region] = region
             data[fields.starttime] = this.props.range.starttime
             data[fields.endtime] = this.props.range.endtime
             data[fields.selector] = metric.serverField
+            data['numsamples'] = 50
             let org = redux_org.isAdmin(this) ? this.props.org : redux_org.nonAdminOrg(this)
-            let request = metricRequest(metric.serverRequest, data, org, redux_private.isPrivate(this))
+            let request = metricRequest(this, metric.serverRequest, data, filterList, org)
             let mc = await authSyncRequest(this, { ...request, format: false })
             if (responseValid(mc)) {
                 let response = await processWorker(this.metricWorker, {
                     response: { data: mc.response.data },
                     request: request,
                     parentId: parent.id,
+                    metricKeys: filter.parent.metricListKeys,
                     region: region,
                     metric,
-                    avgData: this.props.avgData[region],
+                    avgData: avgData[region],
                     timezone: timezonePref()
                 })
-                if (response && response.status === 200) {
+                if (responseValid(mc)) {
                     let chartData = response.data
-                    chartData = chartData.filter(data => {
+                    chartData.forEach(data => {
                         this.props.updateAvgData(region, data.metric, data.avgData)
-                        return !isEmpty(data.datasets)
                     })
-                    if (this.validateData(chartData[0], this.props.avgData[region])) {
-                        this.updateData(chartData)
-                    }
-                    else {
-                        this.updateData(undefined)
-                    }
+                    this.updateData(chartData)
+                    return
                 }
-                else {
-                    this.updateData(undefined)
-                }
-            }
-            else
-            {
-                this.updateData(undefined)
             }
         }
+        this.updateData(undefined)
     }
 
     defaultContainer = () => {

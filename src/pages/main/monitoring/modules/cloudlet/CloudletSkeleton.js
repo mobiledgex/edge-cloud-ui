@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, ImageList, ImageListItem } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
-import { PARENT_CLOUDLET } from '../../helper/Constant'
+import { PARENT_CLOUDLET } from '../../helper/montconstant'
 
 
 class CloudletSkeleton extends React.Component {
