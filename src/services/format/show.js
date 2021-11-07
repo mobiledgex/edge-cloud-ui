@@ -2,7 +2,7 @@ import { toJson } from "../../utils/json_util";
 import uuid from 'uuid'
 import { generateUUID, map } from "./shared";
 
-export const formatShowData = (request, response, customData, isUnique) => {
+export const formatShowData = (request, response, customData, isUnique, self = null) => {
     let values = [];
     if (response && response.status === 200) {
         try {
@@ -22,7 +22,7 @@ export const formatShowData = (request, response, customData, isUnique) => {
                         }
                         if (requestData && value.region === undefined) { value.region = requestData.region }
                         value.uuid = keys ? (isUnique) ? generateUUID(keys, value) : uuid() : undefined
-                        let newValue = customData ? customData(request, value) : value
+                        let newValue = customData ? customData(request, value, self) : value
                         if (newValue) {
                             values.push(newValue)
                         }

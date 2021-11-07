@@ -3,10 +3,10 @@ import axios from 'axios';
 import { formatData } from "./format";
 import { isBoolean } from "../utils/boolean_utils";
 
-const formatter = (request, response, format = true) => {
+const formatter = (request, response, format = true, self) => {
     format = isBoolean(request.format) ? request.format : format
     if (format) {
-        return formatData(request, response)
+        return formatData(request, response, self)
     }
     else {
         return { request, response: { status: response.status, data: response.data } }
@@ -177,7 +177,7 @@ export const multiAuthRequest = (self, requestList, callback, format = true, sin
         axios.all(promise)
             .then(list => {
                 list.forEach((response, i) => {
-                    responseList.push(formatter(requestList[i], response, format));
+                    responseList.push(formatter(requestList[i], response, format, self));
                 })
                 showProgress(self)
                 single ? callback(responseList && responseList.length > 0 && responseList[0]) : callback(responseList);
