@@ -2,7 +2,7 @@ import { toJson } from "../../utils/json_util";
 import uuid from 'uuid'
 import { generateUUID, map } from "./shared";
 
-export const formatShowData = (request, response, customData, isUnique, self = null,) => {
+export const formatShowData = (request, response, customData, isUnique, self = null) => {
     let values = [];
     if (response && response.status === 200) {
         try {
