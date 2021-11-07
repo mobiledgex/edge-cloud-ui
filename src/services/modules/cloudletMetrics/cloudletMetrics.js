@@ -1,6 +1,7 @@
 import { UNIT_FLOOR, UNIT_GB, UNIT_MB } from '../../../pages/main/monitoring/helper/unitConvertor';
 import { endpoint, perpetual } from '../../../helper/constant';
 import { fields } from '../../model/format';
+import { TYPE_ARRAY } from '../../../helper/constant/perpetual';
 
 export const customData = (id, data) => {
     switch (id) {
@@ -30,16 +31,14 @@ export const cloudletFlavorMetricsKeys = [
 
 export const cloudletMetricsListKeys = [
     { field: fields.region, label: 'Region', sortable: true, visible: false, groupBy: false },
-    { field: fields.cloudletName, serverField:'cloudlet', label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
-    { field: fields.operatorName, serverField:'cloudletorg', label: 'Operator', sortable: true, visible: false, groupBy: true },
+    { field: fields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
+    { field: fields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, visible: false, groupBy: true },
     { field: fields.cloudletLocation, label: 'Location', visible: false },
-    { field: 'cpu', label: 'vCpu Infra Usage', sortable: false, visible: true },
-    { field: 'disk', label: 'Disk Infra Usage', sortable: false, visible: true },
-    { field: 'memory', label: 'Memory Infra Usage', sortable: false, visible: true },
+    { field: fields.resourceQuotas, label: 'Resources', visible: true, dataType: TYPE_ARRAY }
 ]
 
 export const utilizationMetricType = [
-    { field: 'cpu', serverField: 'utilization', subId: 'vCpuUsed', header: 'vCpu Infra Usage', position: 1, steppedLine: 'after' },
+    { field: 'cpu', serverField: 'utilization', subId: 'vCpuUsed',  header: 'vCpu Infra Usage', position: 1, steppedLine: 'after' },
     { field: 'memory', serverField: 'utilization', subId: 'memUsed', header: 'Memory Infra Usage', position: 3, unit: UNIT_MB, steppedLine: 'after' },
     { field: 'disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Infra Usage', position: 5, unit: UNIT_GB, steppedLine: 'after' },
 ]

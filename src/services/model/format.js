@@ -205,6 +205,7 @@ export const fields = {
     apps: 'apps',
     eventType: 'eventType',
     resourceQuotas: 'resourceQuotas',
+    cpu: 'cpu',
     resourceQuota: 'resourceQuota',
     defaultResourceAlertThreshold: 'defaultResourceAlertThreshold',
     time: 'time',
