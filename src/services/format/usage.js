@@ -1,3 +1,5 @@
+import { MEX_PROMETHEUS_APP_NAME } from "../../helper/constant/perpetual";
+
 export const formatUsageData = (request, response) => {
     let formattedData = []
     try {
@@ -11,7 +13,7 @@ export const formatUsageData = (request, response) => {
                         let columns = data.columns
                         let values = data.values
                         for (let value of values) {
-                            if (value.includes('MEXPrometheusAppName')) {
+                            if (value.includes(MEX_PROMETHEUS_APP_NAME)) {
                                 continue;
                             }
                             let data = {}
