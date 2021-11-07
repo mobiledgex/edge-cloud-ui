@@ -1,10 +1,10 @@
 import { liveness, ipAccess } from "../../../helper/formatter/label"
 import { fields } from "../../model/format"
 import { redux_org } from "../../../helper/reduxData"
-import { MEX_PROMETHEUS_APP_NAME } from "../../../helper/constant/perpetual"
+import { MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION } from "../../../helper/constant/perpetual"
 
 export const customize = (request, value, self = null) => {
-    if (value[fields.appName] === MEX_PROMETHEUS_APP_NAME && !redux_org.isAdmin(self)) {
+    if ((value[fields.appName] === MEX_PROMETHEUS_APP_NAME || value[fields.appName] === NFS_AUTO_PROVISION) && !redux_org.isAdmin(self)) {
         value = undefined
     }
     else {
