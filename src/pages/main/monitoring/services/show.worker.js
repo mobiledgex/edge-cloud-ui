@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET } from '../../../../helper/constant/endpoint'
+import { MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION } from '../../../../helper/constant/perpetual'
 import { formatData } from '../../../../services/format'
 import { fields } from '../../../../services/model/format'
 import { darkColors } from '../../../../utils/color_utils'
@@ -13,7 +14,7 @@ const fetchAppInstData = (parentId, showList, keys) => {
     let colors = darkColors(showList.length + 10)
     for (let i = 0; i < showList.length; i++) {
         const show = showList[i]
-        if (show[fields.appName] === 'MEXPrometheusAppName' || show[fields.appName] === 'NFSAutoProvision' || (show.cloudletLocation === undefined || Object.keys(show.cloudletLocation).length === 0)) {
+        if (show[fields.appName] === MEX_PROMETHEUS_APP_NAME || show[fields.appName] === NFS_AUTO_PROVISION || (show.cloudletLocation === undefined || Object.keys(show.cloudletLocation).length === 0)) {
             continue;
         }
 
