@@ -252,7 +252,6 @@ class CloudletReg extends React.Component {
                 this.updateState({ forms })
             }
         }
-        if (currentForm.field === fields.operatorName) {
             this.allianceList = this.allianceList.filter(org => org !== currentForm.value);
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i]
@@ -261,7 +260,6 @@ class CloudletReg extends React.Component {
                     this.updateState({ forms })
                 }
             }
-        }
     }
     kafkaChange = (currentForm, forms, isInit) => {
         let inputValid = false
@@ -639,7 +637,7 @@ class CloudletReg extends React.Component {
                             form.options = this.cloudletPropsList
                             break;
                         case fields.allianceOrganization:
-                            form.options = this.allianceList
+                            form.options = this.allianceList.sort()
                             break;
                         default:
                             form.options = undefined;
@@ -729,6 +727,7 @@ class CloudletReg extends React.Component {
                     multiFormCount += 1
                 })
             }
+            this.allianceList = await this.fetchingAllianceOrganization()
         }
     }
 
@@ -845,6 +844,25 @@ class CloudletReg extends React.Component {
         this.props.onClose(false)
     }
 
+    fetchingAllianceOrganization = async () => {
+        let organizationList = await getOrganizationList(this, { type: perpetual.OPERATOR })
+        this.operatorList = organizationList.map(org => {
+            return org[fields.organizationName]
+        })
+        if (redux_org.isAdmin(this)) {
+            this.allianceList = this.operatorList
+        } else {
+            let mc = await service.authSyncRequest(this, showOrganizations(this, { type: perpetual.OPERATOR }))
+            if (service.responseValid(mc)) {
+                const dataList = mc.response.data
+                this.allianceList = dataList.map(org => {
+                    return org[fields.organizationName]
+                }).filter(org => org !== redux_org.nonAdminOrg(this))
+            }
+        }
+        return this.allianceList
+    }
+
     getFormData = async (data) => {
         let forms = this.formKeys()
         if (data) {
@@ -858,21 +876,7 @@ class CloudletReg extends React.Component {
             }
         }
         else {
-            let organizationList = await getOrganizationList(this, { type: perpetual.OPERATOR })
-            this.operatorList = organizationList.map(org => {
-                return org[fields.organizationName]
-            })
-            if (redux_org.isAdmin(this)) {
-                this.allianceList = this.operatorList
-            } else {
-                let mc = await service.authSyncRequest(this, showOrganizations(this, { type: perpetual.OPERATOR }))
-                if (service.responseValid(mc)) {
-                    const dataList = mc.response.data
-                    this.allianceList = dataList.map(org => {
-                        return org[fields.organizationName]
-                    }).filter(org => org !== redux_org.nonAdminOrg(this))
-                }
-            }
+            this.allianceList = await this.fetchingAllianceOrganization()
         }
 
         forms.push(

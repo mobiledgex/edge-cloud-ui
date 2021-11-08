@@ -8,7 +8,6 @@ import { redux_org } from '../../../helper/reduxData'
 //model
 import { service, fields } from '../../../services';
 import { getOrganizationList, showOrganizations } from '../../../services/modules/organization';
-import { HELP_CLOUDLET_REG } from "../../../tutorial";
 import { addClouldletAllianceOrgs, removeClouldletAllianceOrgs } from '../../../services/modules/cloudlet/cloudlet'
 
 import { Grid } from '@material-ui/core';
@@ -112,7 +111,7 @@ class AllianceOrganization extends React.Component {
         let requestList = []
         let alliance_orgs = data[fields.allianceOrganization]
         let requestCall = this.isAllianceCloudletAdd ? addClouldletAllianceOrgs : removeClouldletAllianceOrgs
-        alliance_orgs.map(org => {
+        alliance_orgs && alliance_orgs.map(org => {
             let requestData = cloneDeep(data)
             requestData[fields.allianceOrganization] = org
             requestList.push(requestCall(requestData))

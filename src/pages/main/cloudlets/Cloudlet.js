@@ -119,7 +119,7 @@ class CloudletList extends React.Component {
     }
 
     onActionAllianceOrg = (action, data) => {
-        this.updateState({ currentView: <AllianceOrganization data={data} org={true} action={action.id} onClose={() => this.resetView()} /> });
+        data.allianceOrgs || action.id === perpetual.ACTION_ADD_ALLIANCE_ORG ? this.updateState({ currentView: <AllianceOrganization data={data} org={true} action={action.id} onClose={() => this.resetView()} /> }) : this.props.handleAlertInfo('error', 'No Alliance Organization to Remove')
     }
 
     groupActionMenu = () => {
