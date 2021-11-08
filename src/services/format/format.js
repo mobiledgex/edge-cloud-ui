@@ -36,7 +36,7 @@ import { formatBillingData, formatMetricData, formatMetricUsageData } from './ev
 import { formatUsageData } from './usage';
 import { formatCloudletPropsData } from './cloudletProps';
 
-export const formatData = (request, response) => {
+export const formatData = (request, response, self = null) => {
     let data = undefined
     switch (request.method) {
         case endpoint.SHOW_ORG:
@@ -81,7 +81,7 @@ export const formatData = (request, response) => {
             data = formatShowData(request, response, undefined)
             break;
         case endpoint.SHOW_APP_INST:
-            data = formatShowData(request, response, appInst, true)
+            data = formatShowData(request, response, appInst, true, self)
             break;
         case endpoint.SHOW_AUTO_PROV_POLICY:
             data = formatShowData(request, response, autoProvPolicy, true)
