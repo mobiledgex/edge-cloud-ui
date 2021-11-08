@@ -12,6 +12,7 @@ import { fields } from '../../../../services/model/format';
 import {redux_org, redux_private} from '../../../../helper/reduxData'
 import { lightGreen } from '@material-ui/core/colors';
 import SearchFilter from '../../../../hoc/filter/SearchFilter'
+import { PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST } from '../../../../helper/constant/perpetual';
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
@@ -69,7 +70,7 @@ const MexToolbar = (props) => {
     }
 
     const onMetricParentTypeChange = (value) => {
-        if (value.id === constant.PARENT_CLOUDLET) {
+        if (value.id === PARENT_CLOUDLET) {
             props.onChange(constant.ACTION_SUMMARY, constant.summaryList[0])
         }
         props.onChange(constant.ACTION_METRIC_PARENT_TYPE, value)
@@ -114,7 +115,7 @@ const MexToolbar = (props) => {
     )
 
     const showSummary = () => {
-        return parentId !== constant.PARENT_CLOUDLET
+        return parentId !== PARENT_CLOUDLET
     }
 
     const showOrg = () => {
@@ -124,7 +125,7 @@ const MexToolbar = (props) => {
     const parentType = () => {
         if (redux_private.isPrivate(privateAccess)) {
             return constant.metricParentTypes().map(parent => {
-                if(parent.id === constant.PARENT_APP_INST || parent.id === constant.PARENT_CLUSTER_INST )
+                if(parent.id === PARENT_APP_INST || parent.id === PARENT_CLUSTER_INST )
                 {
                     parent.role.push(constant.OPERATOR)    
                 }

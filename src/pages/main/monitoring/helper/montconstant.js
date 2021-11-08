@@ -23,26 +23,22 @@ export const ACTION_REFRESH = 8
 export const ACTION_MINIMIZE = 9
 export const ACTION_ORG = 10
 
-export const PARENT_APP_INST = 'appinst'
-export const PARENT_CLUSTER_INST = 'cluster'
-export const PARENT_CLOUDLET = 'cloudlet'
-
 export const metricType = (id) => {
     switch (id) {
-        case PARENT_APP_INST:
+        case perpetual.PARENT_APP_INST:
             return appInstMetricTypeKeys()
-        case PARENT_CLUSTER_INST:
+        case perpetual.PARENT_CLUSTER_INST:
             return clusterMetricTypeKeys()
-        case PARENT_CLOUDLET:
+        case perpetual.PARENT_CLOUDLET:
             return cloudletMetricTypeKeys()
     }
 }
 
 export const monitoringActions = (id) => {
     switch (id) {
-        case PARENT_APP_INST:
+        case perpetual.PARENT_APP_INST:
             return appInstActions
-        case PARENT_CLOUDLET:
+        case perpetual.PARENT_CLOUDLET:
             return cloudletActions
     }
 }
@@ -75,15 +71,15 @@ export const visibility = (id, keys) => {
 }
 
 export const summaryList = [
-    { label: 'Max', field: 'max', position: 2, metricType: [PARENT_APP_INST, PARENT_CLUSTER_INST] },
-    { label: 'Avg', field: 'avg', position: 0, metricType: [PARENT_APP_INST, PARENT_CLUSTER_INST] },
-    { label: 'Min', field: 'min', position: 1, metricType: [PARENT_APP_INST, PARENT_CLUSTER_INST] }
+    { label: 'Max', field: 'max', position: 2, metricType: [perpetual.PARENT_APP_INST, perpetual.PARENT_CLUSTER_INST] },
+    { label: 'Avg', field: 'avg', position: 0, metricType: [perpetual.PARENT_APP_INST, perpetual.PARENT_CLUSTER_INST] },
+    { label: 'Min', field: 'min', position: 1, metricType: [perpetual.PARENT_APP_INST, perpetual.PARENT_CLUSTER_INST] }
 ]
 
 export const metricParentTypes = () => ([
-    { id: PARENT_APP_INST, label: 'App Inst', showRequest: [showAppInsts, showCloudlets], metricListKeys: appMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData, groupBy: { label: 'App', fields: [fields.appName, fields.version], action: true } },
-    { id: PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showCloudlets, showClusterInsts], metricListKeys: clusterMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER], customData: clusterCustomData, groupBy: { label: 'Region', fields: [fields.region] } },
-    { id: PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showCloudlets], metricListKeys: cloudletMetricsListKeys, role: [perpetual.ADMIN, perpetual.OPERATOR], customData: cloudletCustomData, groupBy: { label: 'Region', fields: [fields.region] } }
+    { id: perpetual.PARENT_APP_INST, label: 'App Inst', showRequest: [showAppInsts, showCloudlets], metricListKeys: appMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER], fetchLocation: fetchLocation, customData: appCustomData, groupBy: { label: 'App', fields: [fields.appName, fields.version], action: true } },
+    { id: perpetual.PARENT_CLUSTER_INST, label: 'Cluster Inst', showRequest: [showCloudlets, showClusterInsts], metricListKeys: clusterMetricsListKeys, role: [perpetual.ADMIN, perpetual.DEVELOPER], customData: clusterCustomData, groupBy: { label: 'Region', fields: [fields.region] } },
+    { id: perpetual.PARENT_CLOUDLET, label: 'Cloudlet', showRequest: [showCloudlets], metricListKeys: cloudletMetricsListKeys, role: [perpetual.ADMIN, perpetual.OPERATOR], customData: cloudletCustomData, groupBy: { label: 'Region', fields: [fields.region] } }
 ])
 
 export const validateRole = (roles, selectedRole) => {

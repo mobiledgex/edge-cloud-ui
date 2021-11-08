@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 import { redux_org } from '../../../../helper/reduxData';
 import { fields } from '../../../../services/model/format';
 import { getComparator, stableSort } from '../../../../hoc/listView/ListConstant';
-import { TYPE_ARRAY } from '../../../../helper/constant/perpetual';
 
 const useStyles = makeStyles((theme) => ({
   visuallyHidden: {
@@ -124,19 +123,18 @@ const MTableHead = (props) => {
               sortDirection={orderBy === headCell.field ? order : false}
             >
               {
-                headCell.dataType === TYPE_ARRAY ? '' :
-                  headCell.sortable ? <TableSortLabel
-                    active={orderBy === headCell.field}
-                    direction={orderBy === headCell.field ? order : "asc"}
-                    onClick={createSortHandler(headCell.field)}
-                  >
-                    {headCell.label}
-                    {orderBy === headCell.field ? (
-                      <span className={classes.visuallyHidden}>
-                        {order === "desc" ? "sorted descending" : "sorted ascending"}
-                      </span>
-                    ) : null}
-                  </TableSortLabel> : headCell.label
+                headCell.sortable ? <TableSortLabel
+                  active={orderBy === headCell.field}
+                  direction={orderBy === headCell.field ? order : "asc"}
+                  onClick={createSortHandler(headCell.field)}
+                >
+                  {headCell.label}
+                  {orderBy === headCell.field ? (
+                    <span className={classes.visuallyHidden}>
+                      {order === "desc" ? "sorted descending" : "sorted ascending"}
+                    </span>
+                  ) : null}
+                </TableSortLabel> : headCell.label
               }
             </TableCell> : null
         ))}
@@ -196,24 +194,9 @@ class MonitoringList extends React.Component {
     })
   };
 
-  renderArray = (row, value) => {
-    let arrayList = value[row.field]
-    return (
-      <TableRow>
-        {
-          arrayList && arrayList.map((data, i) => (
-            <TableCell key={i} style={{ border: 'none' }}>
-              <div align='center'>
-                <p style={{lineHeight:0.2}}>{data[fields.name]}</p>
-                <p style={{lineHeight:0.2}}>{`0/${data[fields.value]}`}</p>
-              </div>
-            </TableCell>
-          ))
-        }
-      </TableRow>
-    )
+  onFormat = (data)=>{
+    return JSON.stringify(data)
   }
-
   render() {
     const { anchorEl, order, orderBy } = this.state
     const { filter, onCellClick, data, classes } = this.props
@@ -241,7 +224,7 @@ class MonitoringList extends React.Component {
                               <TableRow key={i} style={{ backgroundColor: value.selected ? `${value.color}1A` : `transparent` }}>
                                 <TableCell onClick={(e) => onCellClick(value)}><Icon style={{ color: value.color }}>{`${value.selected ? 'check_box' : 'check_box_outline_blank'}`}</Icon></TableCell>
                                 {this.rows.map((row, j) => (
-                                  row.visible ? <TableCell key={j} onClick={(e) => onCellClick(value)}>{row.dataType === TYPE_ARRAY ? this.renderArray(row, value) : rowValue(filter, row, value)}</TableCell> : null
+                                  row.visible ? <TableCell key={j} onClick={(e) => onCellClick(value)}>{row.format ? this.onFormat(value[row.field]) : rowValue(filter, row, value)}</TableCell> : null
                                 ))
                                 }
                                 <ActionButton actionMenu={this.actionMenu} onClick={(e) => { this.actionMenuClick(e, [value], false) }} />

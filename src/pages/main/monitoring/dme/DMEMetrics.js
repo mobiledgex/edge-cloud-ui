@@ -16,7 +16,7 @@ import { cloudIcon } from '../../../../hoc/mexmap/MapProperties'
 import { perpetual } from '../../../../helper/constant'
 import { FORMAT_DATE_FILE_NAME, FORMAT_FULL_DATE_TIME, time } from '../../../../utils/date_util'
 import { IconButton, Slider } from '../../../../hoc/mexui'
-import { CON_TAGS, CON_TOTAL, CON_VALUES } from '../../../../helper/constant/perpetual'
+import { CON_TAGS, CON_TOTAL, CON_VALUES, PARENT_APP_INST } from '../../../../helper/constant/perpetual'
 import MexCircleMarker from '../../../../hoc/mexmap/utils/MexCircleMarker'
 import { colors, generateColor } from '../../../../utils/heatmap_utils'
 import MapLegend from './MapLegend'
@@ -30,7 +30,6 @@ import DeviceDetails from './details/DeviceDetails';
 import { operators } from "../../../../helper/constant";
 import './style.css'
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
-import { PARENT_APP_INST } from '../helper/montconstant';
 import { onlyNumeric } from '../../../../utils/string_utils';
 import { AIK_APP_ALL, AIK_APP_CLOUDLET_CLUSTER } from '../../../../services/modules/appInst/primary';
 import { timezonePref } from '../../../../utils/sharedPreferences_util';

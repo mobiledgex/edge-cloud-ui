@@ -1,13 +1,9 @@
 /* eslint-disable */
 import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET } from '../../../../helper/constant/endpoint'
-import { MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION } from '../../../../helper/constant/perpetual'
+import { MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION, PARENT_APP_INST, PARENT_CLUSTER_INST, PARENT_CLOUDLET } from '../../../../helper/constant/perpetual'
 import { formatData } from '../../../../services/format'
 import { fields } from '../../../../services/model/format'
 import { darkColors } from '../../../../utils/color_utils'
-
-const PARENT_APP_INST = 'appinst'
-const PARENT_CLOUDLET = 'cloudlet'
-const PARENT_CLUSTER_INST = 'cluster'
 
 const fetchAppInstData = (parentId, showList, keys, isOperator) => {
     let formattedObject = {}
@@ -29,16 +25,28 @@ const fetchAppInstData = (parentId, showList, keys, isOperator) => {
         }
         let dataKey = ''
         let data = {}
-        keys.map(key => {
-            data[key.field] = show[key.field]
-            if (key.groupBy) {
-                //replace cluster name with realclustername for appmetrics
-                let isRealCluster = parentId === PARENT_APP_INST && show[fields.realclustername]
-                if (isRealCluster && key.field === fields.clusterName) {
-                    dataKey = dataKey + show[fields.realclustername] + '_'
+        keys.forEach(key => {
+            if (!key.resourceLabel) {
+                data[key.field] = show[key.field]
+                if (key.field === fields.resourceQuotas && show[key.field]) {
+                    let resourceQuotas = show[key.field]
+                    resourceQuotas.forEach(quota => {
+                        keys.forEach(resource => {
+                            if (resource.resourceLabel && resource.resourceLabel === quota.name) {
+                                data[resource.field] = { allotted: quota.value }
+                            }
+                        })
+                    })
                 }
-                else {
-                    dataKey = dataKey + show[key.field] + '_'
+                else if (key.groupBy) {
+                    //replace cluster name with realclustername for appmetrics
+                    let isRealCluster = parentId === PARENT_APP_INST && show[fields.realclustername]
+                    if (isRealCluster && key.field === fields.clusterName) {
+                        dataKey = dataKey + show[fields.realclustername] + '_'
+                    }
+                    else {
+                        dataKey = dataKey + show[key.field] + '_'
+                    }
                 }
             }
         })

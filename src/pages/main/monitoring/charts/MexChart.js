@@ -6,7 +6,7 @@ import { Card, ImageListItem } from '@material-ui/core'
 import { timezonePref } from '../../../../utils/sharedPreferences_util'
 //services
 import { fields } from '../../../../services/model/format'
-import { redux_org, redux_private } from '../../../../helper/reduxData';
+import { redux_org } from '../../../../helper/reduxData';
 import { processWorker } from '../../../../services/worker/interceptor'
 import MetricWorker from '../services/metric.worker.js'
 import { authSyncRequest, responseValid } from '../../../../services/service'

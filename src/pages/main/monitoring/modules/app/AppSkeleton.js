@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, ImageList, ImageListItem } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
-import { PARENT_APP_INST } from '../../helper/montconstant'
+import { PARENT_APP_INST } from '../../../../../helper/constant/perpetual'
 
 
 class AppSkeleton extends React.Component {

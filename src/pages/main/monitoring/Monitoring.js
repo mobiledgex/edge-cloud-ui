@@ -35,7 +35,7 @@ import { Skeleton } from '@material-ui/lab';
 import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../utils/sharedPreferences_util';
 import isEqual from 'lodash/isEqual';
 import { authSyncRequest, multiAuthSyncRequest } from '../../../services/service';
-import { LS_LINE_GRAPH_FULL_SCREEN } from '../../../helper/constant/perpetual';
+import { LS_LINE_GRAPH_FULL_SCREEN, PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST } from '../../../helper/constant/perpetual';
 import isEmpty from 'lodash/isEmpty';
 import { NoData } from '../../../helper/formatter/ui';
 
@@ -46,7 +46,7 @@ const defaultParent = (self) => {
 const defaultMetricType = (self, parent) => {
     let id = parent.id
     let metricTypeKeys = constant.visibility(parent.id)
-    let pref = id === constant.PARENT_CLOUDLET ? PREF_M_CLOUDLET_VISIBILITY : id === constant.PARENT_CLUSTER_INST ? PREF_M_CLUSTER_VISIBILITY : PREF_M_APP_VISIBILITY
+    let pref = id === PARENT_CLOUDLET ? PREF_M_CLOUDLET_VISIBILITY : id === PARENT_CLUSTER_INST ? PREF_M_CLUSTER_VISIBILITY : PREF_M_APP_VISIBILITY
     let monitoringPrefs = monitoringPref(self, pref)
     return monitoringPrefs ? metricTypeKeys.map(data => { if (monitoringPrefs.includes(data.header)) { return data.field } }) : metricTypeKeys.map(metricType => { return metricType.field })
 }
@@ -146,7 +146,7 @@ class Monitoring extends React.Component {
     }
 
     onParentChange = async () => {
-        if (redux_org.isOperator(this) && this.state.filter.parent.id !== constant.PARENT_CLOUDLET) {
+        if (redux_org.isOperator(this) && this.state.filter.parent.id !== PARENT_CLOUDLET) {
             this.regions = this.privateRegions
         }
         else {
@@ -232,7 +232,9 @@ class Monitoring extends React.Component {
                 Object.keys(data).map(dataKey => {
                     let avgDataRegion = avgData[region]
                     if (avgDataRegion[dataKey]) {
-                        avgDataRegion[dataKey][metric.field] = data[dataKey][metric.field]
+                        let metricInfo = avgDataRegion[dataKey][metric.field]
+                        let newMetricInfo = data[dataKey][metric.field]
+                        avgDataRegion[dataKey][metric.field] = metricInfo ? { ...metricInfo, ...newMetricInfo } : newMetricInfo
                     }
                 })
                 return { avgData }
@@ -248,13 +250,13 @@ class Monitoring extends React.Component {
         const { filter, range, avgData, rowSelected, selectedOrg, listAction } = this.state
         const { organizationInfo, privateAccess } = this.props
         let parentId = filter.parent.id
-        if (parentId === constant.PARENT_APP_INST) {
+        if (parentId === PARENT_APP_INST) {
             return <AppInstMonitoring orgInfo={organizationInfo} privateAccess={privateAccess} showAlert={this.showAlert} avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} listAction={listAction} onActionClose={this.onActionClose} />
         }
-        else if (parentId === constant.PARENT_CLUSTER_INST) {
+        else if (parentId === PARENT_CLUSTER_INST) {
             return <ClusterMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} />
         }
-        else if (parentId === constant.PARENT_CLOUDLET) {
+        else if (parentId === PARENT_CLOUDLET) {
             return <CloudletMonitoring avgData={avgData} regions={this.regions} updateAvgData={this.updateAvgData} filter={filter} rowSelected={rowSelected} range={range} selectedOrg={selectedOrg} listAction={listAction} onActionClose={this.onActionClose} />
         }
     }

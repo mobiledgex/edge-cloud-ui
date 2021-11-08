@@ -1,7 +1,7 @@
 import { UNIT_FLOOR, UNIT_GB, UNIT_MB } from '../../../pages/main/monitoring/helper/unitConvertor';
 import { endpoint, perpetual } from '../../../helper/constant';
 import { fields } from '../../model/format';
-import { TYPE_ARRAY } from '../../../helper/constant/perpetual';
+import { TYPE_JSON } from '../../../helper/constant/perpetual';
 
 export const customData = (id, data) => {
     switch (id) {
@@ -16,7 +16,7 @@ export const cloudletActions = [
 
 export const cloudletMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },
-    { label: 'Region', serverField: 'region', visible: true, groupBy: true },
+    { label: 'Region', serverField: 'region', visible: true, groupBy: false },
     { label: 'Cloudlet', serverField: 'cloudlet', visible: true, groupBy: true },
     { label: 'Operator', serverField: 'cloudletorg', visible: true, groupBy: true }
 ]
@@ -34,11 +34,14 @@ export const cloudletMetricsListKeys = [
     { field: fields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
     { field: fields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, visible: false, groupBy: true },
     { field: fields.cloudletLocation, label: 'Location', visible: false },
-    { field: fields.resourceQuotas, label: 'Resources', visible: true, dataType: TYPE_ARRAY }
+    { field: fields.resourceQuotas, label: 'Resource Quotas', visible: false },
+    { field: 'cpu', label: 'CPU', resourceLabel: 'vCPUs', format: true, sortable: false, visible: true },
+    { field: 'disk', label: 'Disk', resourceLabel: 'Disk', format: true, sortable: false, visible: false },
+    { field: 'memory', label: 'Memory', resourceLabel: 'RAM', format: true, sortable: false, visible: false }
 ]
 
 export const utilizationMetricType = [
-    { field: 'cpu', serverField: 'utilization', subId: 'vCpuUsed',  header: 'vCpu Infra Usage', position: 1, steppedLine: 'after' },
+    { field: 'cpu', serverField: 'utilization', subId: 'vCpuUsed', header: 'vCpu Infra Usage', position: 1, steppedLine: 'after' },
     { field: 'memory', serverField: 'utilization', subId: 'memUsed', header: 'Memory Infra Usage', position: 3, unit: UNIT_MB, steppedLine: 'after' },
     { field: 'disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Infra Usage', position: 5, unit: UNIT_GB, steppedLine: 'after' },
 ]
@@ -48,8 +51,8 @@ export const resourceUsageMetricType = [
     { field: 'floatingIpsUsed', serverField: 'floatingIpsUsed', header: 'Floating IP Used', position: 5, unit: UNIT_FLOOR, steppedLine: 'after' },
     { field: 'gpusUsed', serverField: 'gpusUsed', header: 'GPU Used', position: 6, unit: UNIT_FLOOR, steppedLine: 'after' },
     { field: 'instancesUsed', serverField: 'instancesUsed', header: 'Instances Used', position: 7, unit: UNIT_FLOOR, steppedLine: 'after' },
-    { field: 'ramUsed', serverField: 'ramUsed', header: 'RAM Used', position: 8, unit: UNIT_MB, steppedLine: 'after' },
-    { field: 'vcpusUsed', serverField: 'vcpusUsed', header: 'vCPUs Used', position: 9, unit: UNIT_FLOOR, steppedLine: 'after' },
+    { field: 'memory', serverField: 'ramUsed', header: 'RAM Used', position: 8, unit: UNIT_MB, steppedLine: 'after' },
+    { field: 'cpu', serverField: 'vcpusUsed', header: 'vCPUs Used', position: 9, unit: UNIT_FLOOR, steppedLine: 'after' },
 ]
 
 export const cloudletMetricTypeKeys = () => ([
