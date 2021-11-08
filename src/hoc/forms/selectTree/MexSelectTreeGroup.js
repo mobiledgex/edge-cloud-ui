@@ -177,7 +177,7 @@ export default function MexSelectRadioTree(props) {
         e.stopPropagation()
         setValue(undefined)
         setOutput(form.placeholder)
-        props.onChange(form, {})
+        props.onChange(form)
     }
 
     const copyCurrentSelection = (e) => {
