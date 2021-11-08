@@ -41,8 +41,8 @@ export const ACTION_MANIFEST = 'Show Manifest'
 export const ACTION_LATENCY_METRICS = 'LatencyMetrics'
 export const ACTION_TRACK_DEVICES = 'TrackDevices'
 export const ACTION_SHOW_NODE = 'ShowNode'
-export const ACTION_ADD_ALLIANCE_ORG = 'Add_Alliance_Org'
-export const ACTION_REMOVE_ALLIANCE_ORG = 'Remove_Alliance_Org'
+export const ACTION_ADD_ALLIANCE_ORG = 'AddAllianceOrg'
+export const ACTION_REMOVE_ALLIANCE_ORG = 'RemoveAllianceOrg'
 
 export const CLOUDLET_COMPAT_VERSION_2_4 = 0
 export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1
@@ -234,3 +234,6 @@ export const EVENT = 'event'
 export const PARENT_APP_INST = 'appinst'
 export const PARENT_CLUSTER_INST = 'cluster'
 export const PARENT_CLOUDLET = 'cloudlet'
+
+export const MEX_PROMETHEUS_APP_NAME = 'MEXPrometheusAppName'
+export const NFS_AUTO_PROVISION = 'NFSAutoProvision'

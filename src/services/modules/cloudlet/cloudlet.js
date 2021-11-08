@@ -48,8 +48,8 @@ export const keys = () => ([
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', detailView:false },
     { field: fields.gpuExist, label: 'GPU', detailView: false },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: constant.operatorRoles },
-    { field: fields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING }
+    { field: fields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING },
+    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: constant.operatorRoles }
 ])
 
 export const iconKeys = () => ([
@@ -377,9 +377,9 @@ export const fetchShowNode = async (self, data) => {
 }
 
 export const addClouldletAllianceOrgs = (data) => {
-    return { method: endpoint.ADD_CLOUDLET_ALLIANCE_ORG, data: getRequestData(data), success: 'Added Alliance Organization' }
+    return { method: endpoint.ADD_CLOUDLET_ALLIANCE_ORG, data: getRequestData(data), success: 'Alliance Organizations Added Successfully' }
 }
 
 export const removeClouldletAllianceOrgs = (data) => {
-    return { method: endpoint.REMOVE_CLOUDLET_ALLIANCE_ORG, data: getRequestData(data), success: 'Removed Alliance Organization' }
+    return { method: endpoint.REMOVE_CLOUDLET_ALLIANCE_ORG, data: getRequestData(data), success: 'Alliance Organization Removed Successfully' }
 }
