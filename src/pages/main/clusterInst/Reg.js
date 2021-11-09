@@ -439,7 +439,7 @@ class ClusterInstReg extends React.Component {
 
     getPanes = () => ([
         { label: 'Cloudlet Locations', tab: this.getMap(), onClick: () => { this.updateState({ activeIndex: 0 }) } },
-        { label: 'Graph', tab: this.getGraph(), onClick: () => { this.updateState({ activeIndex: 1 }) } }
+        // { label: 'Graph', tab: this.getGraph(), onClick: () => { this.updateState({ activeIndex: 1 }) } }
     ])
     /**
      * Tab block
