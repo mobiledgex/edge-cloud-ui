@@ -63,6 +63,14 @@ export const cloudletMetricTypeKeys = () => ([
     { field: 'event', header: 'Event' },
 ])
 
+export const cloudletResourceKeys = () => ([
+    { field: 'utilization', serverField: 'utilization', header: 'Memory Usage', keys: utilizationMetricType, serverRequest: endpoint.CLOUDLET_METRICS_ENDPOINT },
+    { field: 'resourceusage', serverField: 'resourceusage', header: 'Resource Usage', keys: resourceUsageMetricType, serverRequest: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT },
+    { field: 'count', header: 'Flavor Usage' },
+    { field: 'map', header: 'Map' },
+    { field: 'event', header: 'Event' },
+])
+
 /**
  * 
  * @param {*} data request data
@@ -71,22 +79,24 @@ export const cloudletMetricTypeKeys = () => ([
  * @returns cloudlet metric data
  */
 export const cloudletMetrics = (data, list, org) => {
+    let requestData = { ...data }
     if (list) {
-        data.cloudlets = list
+        requestData.cloudlets = list
     }
     else {
-        data.cloudlet = {
+        requestData.cloudlet = {
             organization: org
         }
     }
-    return { method: endpoint.CLOUDLET_METRICS_ENDPOINT, data: data, keys: cloudletMetricsKeys }
+    return { method: endpoint.CLOUDLET_METRICS_ENDPOINT, data: requestData, keys: cloudletMetricsKeys }
 }
 
 export const cloudletUsageMetrics = (data, org) => {
-    data.cloudlet = data.cloudlet ? data.cloudlet : {
+    let requestData = { ...data }
+    requestData.cloudlet = data.cloudlet ? data.cloudlet : {
         organization: org
     }
-    return { method: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, data: data, keys: cloudletMetricsKeys }
+    return { method: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, data: requestData, keys: cloudletMetricsKeys }
 }
 
 export const cloudletFlavorUsageMetrics = (data, org) => {

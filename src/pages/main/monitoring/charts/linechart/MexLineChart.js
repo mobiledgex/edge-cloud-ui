@@ -110,10 +110,10 @@ class MexLineChart extends React.Component {
             fullscreen: this.props.id === localStorage.getItem(LS_LINE_GRAPH_FULL_SCREEN)
         }
         if (props.data) {
-            this.metric = props.data.metric
-            this.header = this.metric ? this.metric.header : ''
-            this.unit = this.metric ? this.metric.unit : undefined
-            this.position = this.metric ? this.metric.position : 0
+            this.resourceType = props.data.resourceType
+            this.header = this.resourceType ? this.resourceType.header : ''
+            this.unit = this.resourceType ? this.resourceType.unit : undefined
+            this.position = this.resourceType ? this.resourceType.position : 0
             this.range = props.range
             this.options = optionsGenerator(this.header, this.unit, false, this.range)
         }

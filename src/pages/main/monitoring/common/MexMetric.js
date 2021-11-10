@@ -6,7 +6,12 @@ import { metricType } from '../helper/montconstant'
 class MexMetric extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {
+            resources : {}
+        }
     }
+
+    updateResources = ()=>{}
 
     render() {
         const { avgData, filter, rowSelected, style, range, org, updateAvgData, regions } = this.props

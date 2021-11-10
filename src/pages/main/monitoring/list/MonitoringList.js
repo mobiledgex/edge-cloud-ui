@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { redux_org } from '../../../../helper/reduxData';
 import { fields } from '../../../../services/model/format';
 import { getComparator, stableSort } from '../../../../hoc/listView/ListConstant';
+import MBullet from '../charts/bullet/BulletChart';
 
 const useStyles = makeStyles((theme) => ({
   visuallyHidden: {
@@ -194,8 +195,14 @@ class MonitoringList extends React.Component {
     })
   };
 
-  onFormat = (data)=>{
-    return JSON.stringify(data)
+  onFormat = (row, data)=>{
+    // //{ "title": "", "subtitle": "", "ranges": [300], "measures": [10, 50], "markers": [200] },
+    // let values = data[row.field]
+    // if (values) {
+    //   let chartData = [{}, { "title": "", "subtitle": "", "ranges": [values.infraAllotted ? values.infraAllotted : 0], "measures": [values.used ? values.used : 0, values.allotted ? values.allotted : 0], "markers": [values.infraUsed ? values.infraUsed : 0] }]
+    //   console.log(chartData, data.key)
+    //   return <MBullet id={`${data.key}_${row.field}`} data={chartData}></MBullet>
+    // }
   }
   render() {
     const { anchorEl, order, orderBy } = this.state
@@ -224,7 +231,7 @@ class MonitoringList extends React.Component {
                               <TableRow key={i} style={{ backgroundColor: value.selected ? `${value.color}1A` : `transparent` }}>
                                 <TableCell onClick={(e) => onCellClick(value)}><Icon style={{ color: value.color }}>{`${value.selected ? 'check_box' : 'check_box_outline_blank'}`}</Icon></TableCell>
                                 {this.rows.map((row, j) => (
-                                  row.visible ? <TableCell key={j} onClick={(e) => onCellClick(value)}>{row.format ? this.onFormat(value[row.field]) : rowValue(filter, row, value)}</TableCell> : null
+                                  row.visible ? <TableCell key={j} onClick={(e) => onCellClick(value)}>{row.format ? this.onFormat(row, value) : rowValue(filter, row, value)}</TableCell> : null
                                 ))
                                 }
                                 <ActionButton actionMenu={this.actionMenu} onClick={(e) => { this.actionMenuClick(e, [value], false) }} />

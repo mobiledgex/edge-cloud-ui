@@ -17,6 +17,7 @@ export const fields = {
     buildName: 'buildName',
     driverPath: 'driverPath',
     md5Sum: 'md5Sum',
+    numsamples:'numsamples',
     driverPathCreds: 'driverPathCreds',
     operatingSystem: 'operatingSystem',
     kernelVersion: 'kernelVersion',
