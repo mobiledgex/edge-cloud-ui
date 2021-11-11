@@ -637,7 +637,7 @@ class CloudletReg extends React.Component {
                             form.options = this.cloudletPropsList
                             break;
                         case fields.allianceOrganization:
-                            form.options = this.allianceList.sort()
+                            form.options = this.alphabeticalSorting(this.allianceList)
                             break;
                         default:
                             form.options = undefined;
@@ -645,6 +645,13 @@ class CloudletReg extends React.Component {
                 }
             }
         }
+    }
+
+    alphabeticalSorting = (data) => {
+        data.sort(function (a, b) {
+            return a.toLowerCase().localeCompare(b.toLowerCase());
+        });
+        return data
     }
 
     loadDefaultData = async (forms, data) => {
