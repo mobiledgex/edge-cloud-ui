@@ -12,6 +12,7 @@ import { addClouldletAllianceOrgs, removeClouldletAllianceOrgs } from '../../../
 import { Grid } from '@material-ui/core';
 import { perpetual } from '../../../helper/constant';
 import cloneDeep from 'lodash/cloneDeep';
+import { _sort } from '../../../helper/constant/operators';
 class AllianceOrganization extends React.Component {
     constructor(props) {
         super(props);
@@ -54,10 +55,10 @@ class AllianceOrganization extends React.Component {
         )
     }
 
-    getAllianceOrganizationData = (dataList, field) => {
+    getAllianceOrganizationData = (dataList) => {
         if (dataList && dataList.length > 0)
             return dataList.map(data => {
-                return { value: data[field], label: data[field] }
+                return { value: data, label: data }
             })
     }
 
@@ -78,7 +79,7 @@ class AllianceOrganization extends React.Component {
                 if (form.formType === DUALLIST) {
                     switch (form.field) {
                         case fields.allianceOrganization:
-                            form.options = this.getAllianceOrganizationData(this.allianceList, fields.organizationName)
+                            form.options = this.getAllianceOrganizationData(this.allianceList)
                             break;
                         default:
                             form.options = undefined;
@@ -133,21 +134,20 @@ class AllianceOrganization extends React.Component {
     }
 
     filterAllianceCloudlets = () => {
-        let newAllianceList = []
+        let removeList = []
         if (this.props.data) {
             let selectedAllianceOrgs = this.props.data[fields.allianceOrganization]
-            console.log(selectedAllianceOrgs)
             if (selectedAllianceOrgs && selectedAllianceOrgs.length > 0) {
                 for (let i = 0; i < selectedAllianceOrgs.length; i++) {
                     let selectedAllianceOrg = selectedAllianceOrgs[i];
                     for (let j = 0; j < this.allianceList.length; j++) {
                         let allianceOrg = this.allianceList[j]
-                        if (selectedAllianceOrg === allianceOrg[fields.organizationName]) {
+                        if (selectedAllianceOrg === allianceOrg) {
                             if (this.props.action === perpetual.ACTION_ADD_ALLIANCE_ORG) {
                                 this.allianceList.splice(j, 1)
                             }
                             else if (this.props.action === perpetual.ACTION_REMOVE_ALLIANCE_ORG) {
-                                newAllianceList.push(allianceOrg)
+                                removeList.push(allianceOrg)
                             }
                             break;
                         }
@@ -155,12 +155,13 @@ class AllianceOrganization extends React.Component {
                 }
             }
         }
-        this.allianceList = newAllianceList.length > 0 ? newAllianceList : this.allianceList
+        this.allianceList = removeList.length > 0 ? removeList : this.allianceList
     }
 
     getFormData = async (data) => {
         let organizationList = await service.showAuthSyncRequest(this, showOrganizations(this, { type: perpetual.OPERATOR }))
-        this.allianceList = organizationList.filter(org => org[fields.organizationName] !== data[fields.operatorName])
+        organizationList = _sort(organizationList.map(org => org[fields.organizationName]))
+        this.allianceList = organizationList.filter(org => org !== data[fields.operatorName])
         if (this.allianceList && this.allianceList.length > 0) {
             let action = this.props.action === perpetual.ACTION_REMOVE_ALLIANCE_ORG ? 'Remove' : 'Add'
             this.filterAllianceCloudlets();
