@@ -47,7 +47,8 @@ export const keys = () => ([
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', detailView:false },
-    { field: fields.gpuExist, label: 'GPU', detailView: false, detailView:false },
+    { field: fields.gpuExist, label: 'GPU', detailView: false },
+    { field: fields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: constant.operatorRoles }
 ])
 
@@ -58,6 +59,19 @@ export const iconKeys = () => ([
 
 export const getCloudletKey = (data) => {
     return { organization: data[fields.operatorName], name: data[fields.cloudletName] }
+}
+
+export const getRequestData = (data) => {
+    let cloudlet = {}
+    cloudlet.key = getCloudletKey(data)
+
+    if (data[fields.allianceOrganization]) {
+        cloudlet.organization = data[fields.allianceOrganization]
+    }
+    return ({
+        region: data[fields.region],
+        cloudletallianceorg: cloudlet
+    })
 }
 
 export const getKey = (data, isCreate) => {
@@ -149,6 +163,9 @@ export const getKey = (data, isCreate) => {
         }
         if (infraConfig) {
             cloudlet.infra_config = infraConfig
+        }
+        if (data[fields.allianceOrganization]) {
+            cloudlet.alliance_orgs = data[fields.allianceOrganization]
         }
 
     }
@@ -357,4 +374,12 @@ export const fetchShowNode = async (self, data) => {
     }
 
     return await authSyncRequest(self, { method: endpoint.SHOW_NODE, data: requestData })
+}
+
+export const addClouldletAllianceOrgs = (data) => {
+    return { method: endpoint.ADD_CLOUDLET_ALLIANCE_ORG, data: getRequestData(data), success: 'Alliance Organizations Added Successfully' }
+}
+
+export const removeClouldletAllianceOrgs = (data) => {
+    return { method: endpoint.REMOVE_CLOUDLET_ALLIANCE_ORG, data: getRequestData(data), success: 'Alliance Organization Removed Successfully' }
 }
