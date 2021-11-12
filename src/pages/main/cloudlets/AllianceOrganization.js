@@ -3,20 +3,15 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 //Mex
-import MexForms, { INPUT, MAIN_HEADER } from '../../../hoc/forms/MexForms';
-import { redux_org } from '../../../helper/reduxData'
+import MexForms, { DUALLIST, INPUT, MAIN_HEADER } from '../../../hoc/forms/MexForms';
 //model
 import { service, fields } from '../../../services';
-import { getOrganizationList, showOrganizations } from '../../../services/modules/organization';
+import { showOrganizations } from '../../../services/modules/organization';
 import { addClouldletAllianceOrgs, removeClouldletAllianceOrgs } from '../../../services/modules/cloudlet/cloudlet'
 
 import { Grid } from '@material-ui/core';
 import { perpetual } from '../../../helper/constant';
 import cloneDeep from 'lodash/cloneDeep';
-
-export const DUALLIST = 'DualList'
-
-
 class AllianceOrganization extends React.Component {
     constructor(props) {
         super(props);
@@ -25,7 +20,6 @@ class AllianceOrganization extends React.Component {
         }
         this._isMounted = false
         //To avoid refeching data from server
-        this.operatorList = [];
         this.cloudletData = undefined;
         this.allianceList = [];
         this.action = props.action ? props.action : perpetual.ACTION_ADD_ALLIANCE_ORG;
@@ -142,6 +136,7 @@ class AllianceOrganization extends React.Component {
         let newAllianceList = []
         if (this.props.data) {
             let selectedAllianceOrgs = this.props.data[fields.allianceOrganization]
+            console.log(selectedAllianceOrgs)
             if (selectedAllianceOrgs && selectedAllianceOrgs.length > 0) {
                 for (let i = 0; i < selectedAllianceOrgs.length; i++) {
                     let selectedAllianceOrg = selectedAllianceOrgs[i];
@@ -163,19 +158,18 @@ class AllianceOrganization extends React.Component {
         this.allianceList = newAllianceList.length > 0 ? newAllianceList : this.allianceList
     }
 
-    selectCloudlet = async (data) => {
+    getFormData = async (data) => {
+        let organizationList = await service.showAuthSyncRequest(this, showOrganizations(this, { type: perpetual.OPERATOR }))
+        this.allianceList = organizationList.filter(org => org[fields.organizationName] !== data[fields.operatorName])
         if (this.allianceList && this.allianceList.length > 0) {
-            let action = 'Add'
-            if (this.props.action === perpetual.ACTION_REMOVE_ALLIANCE_ORG) {
-                action = 'Remove'
-            }
+            let action = this.props.action === perpetual.ACTION_REMOVE_ALLIANCE_ORG ? 'Remove' : 'Add'
             this.filterAllianceCloudlets();
             let forms = [
                 { label: `${action} Alliance Organization`, formType: MAIN_HEADER, visible: true },
                 { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.region] },
                 { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.cloudletName] },
                 { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.operatorName] },
-                { field: fields.allianceOrganization, label: 'Alliance Organization', formType: 'DualList', visible: true },
+                { field: fields.allianceOrganization, label: 'Alliance Organization', formType: DUALLIST, visible: true },
                 { label: `${action}`, formType: 'Button', onClick: this.onActionAllianceOrganizations },
                 { label: 'Cancel', formType: 'Button', onClick: this.onCancel }
             ]
@@ -187,39 +181,6 @@ class AllianceOrganization extends React.Component {
         else {
             this.props.handleAlertInfo('error', 'No Alliance Organization present')
             this.props.onClose(true)
-        }
-    }
-
-    getFormData = async (data) => {
-        let forms;
-        let organizationList = await getOrganizationList(this, { type: perpetual.OPERATOR })
-        this.operatorList = organizationList.filter(org => org[fields.organizationName] !== data[fields.operatorName])
-        if (redux_org.isAdmin(this)) {
-            this.allianceList = this.operatorList
-        } else {
-            let mc = await service.authSyncRequest(this, showOrganizations(this, { type: perpetual.OPERATOR }))
-            if (service.responseValid(mc)) {
-                const dataList = mc.response.data
-                this.allianceList = dataList.filter(org => org[fields.organizationName] !== data[fields.operatorName])
-            }
-        }
-        if (this.props.action === perpetual.ACTION_ADD_ALLIANCE_ORG || this.props.action === perpetual.ACTION_REMOVE_ALLIANCE_ORG) {
-            this.selectCloudlet(data)
-        }
-        else {
-            forms = [
-                { label: 'Alliance Organization', formType: MAIN_HEADER, visible: true },
-                { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.region] },
-                { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.cloudletName] },
-                { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.operatorName] },
-                { field: fields.allianceOrganization, label: 'Alliance Organization', formType: 'DualList', visible: true },
-                { label: this.isAllianceCloudletAdd ? 'Add' : 'Remove', formType: 'Button', onClick: this.onAddAllianceOrganizations },
-                { label: 'Cancel', formType: 'Button', onClick: this.onCancel }
-            ]
-            this.updateFormData(forms, data)
-            this.updateState({
-                forms
-            })
         }
     }
 
