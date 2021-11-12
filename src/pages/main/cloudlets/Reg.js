@@ -22,6 +22,7 @@ import { endpoint, perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 import { showGPUDrivers } from '../../../services/modules/gpudriver';
 import { showAuthSyncRequest } from '../../../services/service';
+import { _sort } from '../../../helper/constant/operators';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const CloudletManifest = React.lazy(() => componentLoader(import('./CloudletManifest')));
@@ -253,7 +254,7 @@ class CloudletReg extends React.Component {
                 this.updateState({ forms })
             }
             else if (form.field === fields.allianceOrganization) {
-                this.allianceList = this.operatorList.filter(org => org !== currentForm.value);
+                this.allianceList = currentForm.value ? this.operatorList.filter(org => org !== currentForm.value) : []
                 this.updateUI(form)
                 this.updateState({ forms })
             }
@@ -636,7 +637,7 @@ class CloudletReg extends React.Component {
                             form.options = this.cloudletPropsList
                             break;
                         case fields.allianceOrganization:
-                            form.options = this.alphabeticalSorting(this.allianceList)
+                            form.options = this.allianceList
                             break;
                         default:
                             form.options = undefined;
@@ -646,12 +647,7 @@ class CloudletReg extends React.Component {
         }
     }
 
-    alphabeticalSorting = (data) => {
-        data.sort(function (a, b) {
-            return a.toLowerCase().localeCompare(b.toLowerCase());
-        });
-        return data
-    }
+    
 
     loadDefaultData = async (forms, data) => {
         if (data) {
@@ -675,7 +671,7 @@ class CloudletReg extends React.Component {
                         let request = mc.request;
                         if(request.method === endpoint.SHOW_ORG)
                         {
-                            this.operatorList = responseData.map(data=>(data[fields.organizationName]))
+                            this.operatorList = _sort(responseData.map(data=>(data[fields.organizationName])))
                         }
                         else if (request.method === endpoint.SHOW_TRUST_POLICY) {
                             this.trustPolicyList = responseData
@@ -868,7 +864,7 @@ class CloudletReg extends React.Component {
         }
         else {
             let organizationList = await showAuthSyncRequest(self, showOrganizations(self, { type: perpetual.OPERATOR }))
-            this.operatorList = organizationList.map(org => (org[fields.organizationName]))
+            this.operatorList = _sort(organizationList.map(org => (org[fields.organizationName])))
             if(redux_org.isOperator(this))
             {
                 this.allianceList = this.operatorList.filter(org=>(org !== redux_org.nonAdminOrg(this)))
