@@ -101,19 +101,20 @@ class AllianceOrganization extends React.Component {
         return data
     }
 
-    onActionAllianceOrganizations = async () => {
-        let data = this.formattedData()
-        let requestList = []
-        let alliance_orgs = data[fields.allianceOrganization]
-        let requestCall = this.isAllianceCloudletAdd ? addClouldletAllianceOrgs : removeClouldletAllianceOrgs
-        alliance_orgs && alliance_orgs.map(org => {
-            let requestData = cloneDeep(data)
-            requestData[fields.allianceOrganization] = org
-            requestList.push(requestCall(requestData))
-        })
-        if (requestList && requestList.length > 0) {
-            this.props.handleLoadingSpinner(true)
-            service.multiAuthRequest(this, requestList, this.onAddResponse)
+    onCreate = async (data) => {
+        let allianceOrgs = data[fields.allianceOrganization]
+        if (allianceOrgs && allianceOrgs.length > 0) {
+            let requestList = []
+            let requestCall = this.isAllianceCloudletAdd ? addClouldletAllianceOrgs : removeClouldletAllianceOrgs
+            allianceOrgs.forEach(org => {
+                let requestData = {...data}
+                requestData[fields.allianceOrganization] = org
+                requestList.push(requestCall(requestData))
+            })
+            if (requestList && requestList.length > 0) {
+                this.props.handleLoadingSpinner(true)
+                service.multiAuthRequest(this, requestList, this.onAddResponse)
+            }
         }
 
     }
@@ -171,7 +172,7 @@ class AllianceOrganization extends React.Component {
                 { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.cloudletName] },
                 { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.operatorName] },
                 { field: fields.allianceOrganization, label: 'Alliance Organization', formType: DUALLIST, visible: true },
-                { label: `${action}`, formType: 'Button', onClick: this.onActionAllianceOrganizations },
+                { label: `${action}`, formType: 'Button', onClick: this.onCreate },
                 { label: 'Cancel', formType: 'Button', onClick: this.onCancel }
             ]
             this.updateFormData(forms, data)
