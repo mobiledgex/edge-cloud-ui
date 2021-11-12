@@ -190,7 +190,6 @@ class AutoProvPolicyReg extends React.Component {
             this.props.handleAlertInfo('error', 'No Cloudlets present')
             this.props.onClose(true)
         }
-
     }
 
     addCloudletResponse = (mcRequestList) => {

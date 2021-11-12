@@ -18,3 +18,10 @@ export const _min = (item) => {
 export const _avg = (item) => {
     return mean(item)
 }
+
+export const _sort = (item) => {
+    item.sort(function (a, b) {
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+    });
+    return item
+}

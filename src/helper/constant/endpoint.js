@@ -41,6 +41,8 @@ export const REVOKE_ACCESS_KEY = 'auth/ctrl/RevokeAccessKey';
 export const GET_CLOUDLET_RESOURCE_QUOTA_PROPS = 'auth/ctrl/GetCloudletResourceQuotaProps';
 export const GET_CLOUDLET_PROPS = 'auth/ctrl/GetCloudletProps';
 export const SHOW_NODE = 'auth/ctrl/ShowNode'
+export const ADD_CLOUDLET_ALLIANCE_ORG = 'auth/ctrl/AddCloudletAllianceOrg';
+export const REMOVE_CLOUDLET_ALLIANCE_ORG = 'auth/ctrl/RemoveCloudletAllianceOrg';
 //Cloudlet Info
 export const SHOW_CLOUDLET_INFO = 'auth/ctrl/ShowCloudletInfo';
 export const SHOW_ORG_CLOUDLET_INFO = 'auth/orgcloudletinfo/show';
