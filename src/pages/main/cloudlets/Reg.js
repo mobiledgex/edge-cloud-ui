@@ -12,7 +12,7 @@ import MexTab from '../../../hoc/forms/tab/MexTab';
 import { redux_org } from '../../../helper/reduxData'
 //model
 import { service, updateFieldData, fields } from '../../../services';
-import { getOrganizationList, showOrganizations } from '../../../services/modules/organization';
+import { showOrganizations } from '../../../services/modules/organization';
 import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota, cloudletProps } from '../../../services/modules/cloudlet';
 import { showTrustPolicies } from '../../../services/modules/trustPolicy';
 import { HELP_CLOUDLET_REG } from "../../../tutorial";
@@ -21,6 +21,7 @@ import { Grid } from '@material-ui/core';
 import { endpoint, perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 import { showGPUDrivers } from '../../../services/modules/gpudriver';
+import { showAuthSyncRequest } from '../../../services/service';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const CloudletManifest = React.lazy(() => componentLoader(import('./CloudletManifest')));
@@ -251,16 +252,14 @@ class CloudletReg extends React.Component {
                 this.updateUI(form)
                 this.updateState({ forms })
             }
-        }
-            this.allianceList = this.allianceList.filter(org => org !== currentForm.value);
-            for (let i = 0; i < forms.length; i++) {
-                let form = forms[i]
-                if (form.field === fields.allianceOrganization) {
-                    this.updateUI(form)
-                    this.updateState({ forms })
-                }
+            else if (form.field === fields.allianceOrganization) {
+                this.allianceList = this.operatorList.filter(org => org !== currentForm.value);
+                this.updateUI(form)
+                this.updateState({ forms })
             }
+        }
     }
+
     kafkaChange = (currentForm, forms, isInit) => {
         let inputValid = false
         for (let form of forms) {
@@ -665,6 +664,7 @@ class CloudletReg extends React.Component {
             requestList.push(showTrustPolicies(this, { region: data[fields.region] }))
             requestList.push(showGPUDrivers(this, { region: data[fields.region] }, true))
             requestList.push(cloudletResourceQuota(this, { region: data[fields.region], platformType: data[fields.platformType] }))
+            requestList.push(showOrganizations(this, { type: perpetual.OPERATOR }))
             let mcList = await service.multiAuthSyncRequest(this, requestList)
 
             if (mcList && mcList.length > 0) {
@@ -673,7 +673,11 @@ class CloudletReg extends React.Component {
                     if (mc && mc.response && mc.response.data) {
                         let responseData = mc.response.data
                         let request = mc.request;
-                        if (request.method === endpoint.SHOW_TRUST_POLICY) {
+                        if(request.method === endpoint.SHOW_ORG)
+                        {
+                            this.operatorList = responseData.map(data=>(data[fields.organizationName]))
+                        }
+                        else if (request.method === endpoint.SHOW_TRUST_POLICY) {
                             this.trustPolicyList = responseData
                         }
                         if (request.method === endpoint.SHOW_GPU_DRIVER) {
@@ -734,7 +738,6 @@ class CloudletReg extends React.Component {
                     multiFormCount += 1
                 })
             }
-            this.allianceList = await this.fetchingAllianceOrganization()
         }
     }
 
@@ -806,7 +809,7 @@ class CloudletReg extends React.Component {
             { field: fields.infraApiAccess, label: 'Infra API Access', formType: SELECT, placeholder: 'Select Infra API Access', rules: { required: true }, visible: true, tip: 'Infra Access Type is the type of access available to Infra API Endpoint\nDirect:</b> Infra API endpoint is accessible from public network\nRestricted:</b> Infra API endpoint is not accessible from public network' },
             { field: fields.infraFlavorName, label: 'Infra Flavor Name', formType: 'Input', placeholder: 'Enter Infra Flavor Name', rules: { required: false }, visible: true, tip: 'Infra specific flavor name' },
             { field: fields.infraExternalNetworkName, label: 'Infra External Network Name', formType: 'Input', placeholder: 'Enter Infra External Network Name', rules: { required: false }, visible: true, tip: 'Infra specific external network name' },
-            { field: fields.allianceOrganization, label: 'Alliance Organization', formType: MULTI_SELECT, placeholder: 'Select Alliance Operator', visible: true, tip: 'Alliance Organization of the cloudlet site', update: { id: ['15'] } },
+            { field: fields.allianceOrganization, label: 'Alliance Organization', formType: MULTI_SELECT, placeholder: 'Select Alliance Operator', visible: true, tip: 'Alliance Organization of the cloudlet site', update: { id: ['47'] } },
             { field: fields.envVars, label: 'Environment Variable', formType: HEADER, forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getEnvForm }], visible: true, tip: 'Single Key-Value pair of env var to be passed to CRM' },
             { field: fields.resourceQuotas, label: 'Resource Quota', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Resource Quota', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getResoureQuotaForm }], visible: true, update: { id: ['39', '39.1', '39.2', '39.3'] }, tip: 'Alert Threshold:</b> Generate alert when more than threshold percentage of resource is used\nName:</b> Resource name on which to set quota\nValue:</b> Quota value of the resource' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
@@ -851,25 +854,6 @@ class CloudletReg extends React.Component {
         this.props.onClose(false)
     }
 
-    fetchingAllianceOrganization = async () => {
-        let organizationList = await getOrganizationList(this, { type: perpetual.OPERATOR })
-        this.operatorList = organizationList.map(org => {
-            return org[fields.organizationName]
-        })
-        if (redux_org.isAdmin(this)) {
-            this.allianceList = this.operatorList
-        } else {
-            let mc = await service.authSyncRequest(this, showOrganizations(this, { type: perpetual.OPERATOR }))
-            if (service.responseValid(mc)) {
-                const dataList = mc.response.data
-                this.allianceList = dataList.map(org => {
-                    return org[fields.organizationName]
-                }).filter(org => org !== redux_org.nonAdminOrg(this))
-            }
-        }
-        return this.allianceList
-    }
-
     getFormData = async (data) => {
         let forms = this.formKeys()
         if (data) {
@@ -883,7 +867,12 @@ class CloudletReg extends React.Component {
             }
         }
         else {
-            this.allianceList = await this.fetchingAllianceOrganization()
+            let organizationList = await showAuthSyncRequest(self, showOrganizations(self, { type: perpetual.OPERATOR }))
+            this.operatorList = organizationList.map(org => (org[fields.organizationName]))
+            if(redux_org.isOperator(this))
+            {
+                this.allianceList = this.operatorList.filter(org=>(org !== redux_org.nonAdminOrg(this)))
+            }
         }
 
         forms.push(
