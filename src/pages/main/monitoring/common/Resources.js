@@ -10,7 +10,7 @@ class Resources extends React.Component {
     }
 
     render() {
-        const { moduleId, legends, tools, handleLegendStateChange, legendList, region } = this.props
+        const { moduleId } = this.props
         return resourceKeys(moduleId).map(resource => {
             return resource.serverRequest ? <ResourceChart key={resource.field} resource={resource} {...this.props} /> : null
         })

@@ -30,7 +30,6 @@ class Module extends React.Component {
             return { legends }
         }, ()=>{
             this.props.handleDataStateChange(this.props.region, this.state.legends)
-            // console.log(this.state.legends)
         })
     }
 

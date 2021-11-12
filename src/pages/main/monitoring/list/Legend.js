@@ -1,61 +1,58 @@
 import React, { useEffect } from 'react'
-import DragButton from './DragButton'
 import BulletChart from '../charts/bullet/BulletChart';
-
+import BulletLegend from '../charts/bullet/Legend';
+import DataTable from './DataTable'
+import { onlyNumeric } from '../../../../utils/string_utils';
+import { legendKeys } from '../services/service';
 class Legend extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            maxHeight: 0,
             dataList: [],
-            bulletChartList: undefined
+            newList: undefined
         }
-        this.tableRef = React.createRef()
     }
 
     static getDerivedStateFromProps(props, state) {
         if (props.data) {
             const { regions, data } = props
-            let bulletChartList = [{}]
+            let newList = []
             regions.forEach(region => {
-                // //{ "title": "", "subtitle": "", "ranges": [300], "measures": [10, 50], "markers": [200] },
                 let dataObject = data[region]
                 dataObject && Object.keys(dataObject).forEach(key => {
                     let data = dataObject[key]
-                    if (data.cpu) {
-                        let quota = data.cpu
-                        bulletChartList.push({ title: "", subtitle: "", ranges: [quota.infraAllotted ? quota.infraAllotted : 0], measures: [quota.used ? quota.used : 0, quota.allotted ? quota.allotted : 0], markers: [quota.infraUsed ? quota.infraUsed : 0] })
-                    }
-
+                    newList.push(data)
                 })
             })
-            return { bulletChartList }
+            return { newList }
         }
         return null
     }
 
-    render() {
-        const { maxHeight, bulletChartList } = this.state
-         console.log(bulletChartList)
-        return (
-            <React.Fragment>
-                <div className="block block-1" ref={this.tableRef}>
-                    <div style={{width:200}}>
-                        {bulletChartList ? <BulletChart data={bulletChartList}/> : null}
-                    </div>
-                </div>
-                <div style={{ position: 'relative', height: 4 }}>
-                    <DragButton height={maxHeight} />
-                </div>
-            </React.Fragment>
-        )
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.props.refresh !== nextProps.refresh
     }
 
-    componentDidUpdate(preProps, preState) {
-        if (this.tableRef.current && this.state.maxHeight !== this.tableRef.current.scrollHeight) {
-            this.setState({ maxHeight: this.tableRef.current.scrollHeight })
+    onFormat = (column, data) => {
+        if (data && data.infraAllotted) {
+            let value = { title: "", subtitle: "", ranges: [data.infraAllotted ? onlyNumeric(data.infraAllotted) : 0], measures: [data.used ? onlyNumeric(data.used) : 0, data.allotted ? onlyNumeric(data.allotted) : 0], markers: [data.infraUsed ? onlyNumeric(data.infraUsed) : 0] }
+            return <BulletChart data={[value]} />
         }
+    }
+
+    render() {
+        const { newList } = this.state
+        const { moduleId } = this.props
+        return (
+            <React.Fragment>
+                {
+                    newList && newList.length > 0 ? <DataTable dataList={newList} keys={legendKeys(moduleId)} formatter={this.onFormat}>
+                        <BulletLegend />
+                    </DataTable> : null
+                }
+            </React.Fragment>
+        )
     }
 }
 

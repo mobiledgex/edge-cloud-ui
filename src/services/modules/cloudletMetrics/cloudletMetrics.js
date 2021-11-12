@@ -30,20 +30,21 @@ export const cloudletFlavorMetricsKeys = [
 ]
 
 export const cloudletMetricsListKeys = [
+    { field: '', label: '', type: 'checkbox', visible:true, width:50 },
     { field: fields.region, label: 'Region', sortable: true, visible: false, groupBy: false },
     { field: fields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
     { field: fields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, visible: false, groupBy: true },
     { field: fields.cloudletLocation, label: 'Location', visible: false },
     { field: fields.resourceQuotas, label: 'Resource Quotas', visible: false },
     { field: 'cpu', label: 'CPU', resourceLabel: 'vCPUs', format: true, sortable: false, visible: true },
-    { field: 'disk', label: 'Disk', resourceLabel: 'Disk', format: true, sortable: false, visible: false },
-    { field: 'memory', label: 'Memory', resourceLabel: 'RAM', format: true, sortable: false, visible: false }
+    { field: 'disk', label: 'Disk', resourceLabel: 'Disk', format: true, sortable: false, visible: true },
+    { field: 'memory', label: 'Memory', resourceLabel: 'RAM', format: true, sortable: false, visible: true }
 ]
 
 export const utilizationMetricType = [
-    { field: 'cpu', serverField: 'utilization', subId: 'vCpuUsed', header: 'vCpu Infra Usage', position: 1, steppedLine: 'after' },
-    { field: 'memory', serverField: 'utilization', subId: 'memUsed', header: 'Memory Infra Usage', position: 3, unit: UNIT_MB, steppedLine: 'after' },
-    { field: 'disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Infra Usage', position: 5, unit: UNIT_GB, steppedLine: 'after' },
+    { field: 'cpu', label: 'CPU', serverField: 'utilization', subId: 'vCpuUsed', header: 'vCpu Infra Usage', position: 1, steppedLine: 'after' },
+    { field: 'memory', label: 'Memory', serverField: 'utilization', subId: 'memUsed', header: 'Memory Infra Usage', position: 3, unit: UNIT_MB, steppedLine: 'after' },
+    { field: 'disk', label: 'Disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Infra Usage', position: 5, unit: UNIT_GB, steppedLine: 'after' },
 ]
 
 export const resourceUsageMetricType = [

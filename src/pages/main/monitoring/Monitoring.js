@@ -8,6 +8,7 @@ import { Card, ImageList } from '@material-ui/core'
 import { PARENT_CLOUDLET } from '../../../helper/constant/perpetual';
 
 import Module from './modules/Module'
+import DragButton from './list/DragButton'
 
 import * as dateUtil from '../../../utils/date_util'
 import { relativeTimeRanges } from './helper/montconstant';
@@ -28,9 +29,12 @@ class Monitoring extends React.Component {
         super(props)
         this.state = {
             moduleId: PARENT_CLOUDLET,
+            maxHeight: 0,
             tools: { regions: this.props.regions, range: timeRangeInMin(relativeTimeRanges[3].duration) },
-            legends: {}
+            legends: {},
+            refresh: false
         }
+        this.tableRef = React.createRef()
         //filter resources based on legendList
         this.legendList = {}
     }
@@ -38,28 +42,42 @@ class Monitoring extends React.Component {
     handleDataStateChange = (region, data) => {
         this.setState(prevState => {
             let legends = prevState.legends
+            let refresh = !prevState.refresh
             legends[region] = data
-            return { legends }
+            return { legends, refresh }
         })
     }
 
     render() {
-        const { moduleId, tools, legends } = this.state
+        const { moduleId, maxHeight, tools, legends, refresh } = this.state
         const { regions } = tools
         return (
             <div mex-test="component-monitoring" style={{ position: 'relative' }}>
                 <Card style={{ height: 50, marginBottom: 2 }}>
                 </Card>
                 <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
-                    <Legend data={legends} regions={regions}/>
-                    <ImageList cols={4} rowHeight={300}>
-                        {regions.map(region => (
-                            <Module key={region} region={region} moduleId={moduleId} tools={tools} handleDataStateChange={this.handleDataStateChange} />
-                        ))}
-                    </ImageList>
+                    <div className="block block-1" ref={this.tableRef}>
+                        <Legend moduleId={moduleId} data={legends} regions={regions} refresh={refresh} />
+                    </div>
+                    <div style={{ position: 'relative', height: 4 }}>
+                        <DragButton height={maxHeight} />
+                    </div>
+                    <div className="block block-2">
+                        <ImageList cols={4} rowHeight={300}>
+                            {regions.map(region => (
+                                <Module key={region} region={region} moduleId={moduleId} tools={tools} handleDataStateChange={this.handleDataStateChange} />
+                            ))}
+                        </ImageList>
+                    </div>
                 </div>
             </div>
         )
+    }
+
+    componentDidUpdate() {
+        if (this.tableRef.current && this.state.maxHeight !== this.tableRef.current.scrollHeight) {
+            this.setState({ maxHeight: this.tableRef.current.scrollHeight })
+        }
     }
 
     componentDidMount() {

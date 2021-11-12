@@ -27,7 +27,7 @@ export const resourceAPIs = (self, method, data, list, org) => {
     }
 }
 
-const legendKeys = (moduleId) => {
+export const legendKeys = (moduleId) => {
     switch (moduleId) {
         case PARENT_CLOUDLET:
             return cloudletMetricsListKeys
