@@ -66,7 +66,7 @@ const MexTimer = (props) => {
     const id = open ? 'mex-timer' : undefined;
 
     return (
-        <Box order={props.order}style={{marginTop:8, marginRight:10}}>
+        <React.Fragment>
             <Tooltip title={<strong style={{fontSize:13}}>{rangeLabel(props.range.starttime, props.range.endtime)}</strong>} arrow>
                 <button size='small' aria-controls="mex-timer" aria-haspopup="true" onClick={handleClick} style={{backgroundColor:'transparent', border:'1px solid rgba(118, 255, 3, 0.7)', borderRadius:5, cursor:'pointer', padding:5}}>
                     <Icon name='clock outline' style={{color:'rgba(118, 255, 3, 0.7)'}}/><strong style={{marginLeft:5, color:'rgba(118, 255, 3, 0.7)'}}>{props.duration.label}</strong><Icon name='chevron down'  style={{marginLeft:5, color:'rgba(118, 255, 3, 0.7)'}}/>
@@ -136,7 +136,7 @@ const MexTimer = (props) => {
                     </Grid>
                 </div>
             </Popover>
-        </Box>
+        </React.Fragment>
     );
 }
 

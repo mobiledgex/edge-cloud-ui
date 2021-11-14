@@ -1,168 +1,109 @@
-import React from 'react'
-import { connect, useSelector } from 'react-redux';
-import { Toolbar, makeStyles, Box, IconButton, Tooltip, Grid, Divider } from '@material-ui/core'
-import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
-import * as constant from '../helper/montconstant';
-import MexTimer from '../helper/MexTimer'
-import MonitoringMenu from './MonitoringMenu'
-import RefreshIcon from '@material-ui/icons/Refresh';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
-import { fields } from '../../../../services/model/format';
-import {redux_org, redux_private} from '../../../../helper/reduxData'
+
+import React, { useEffect } from 'react'
+import { useSelector } from "react-redux";
+import { Box, Toolbar, Typography, Grid, Divider } from '@material-ui/core';
 import { lightGreen } from '@material-ui/core/colors';
-import SearchFilter from '../../../../hoc/filter/SearchFilter'
-import { PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST } from '../../../../helper/constant/perpetual';
+import SearchFilter from '../../../../hoc/filter/SearchFilter';
+import * as dateUtil from '../../../../utils/date_util'
+import { refreshRates, relativeTimeRanges } from '../helper/montconstant';
+import { IconButton, Icon } from '../../../../hoc/mexui';
 
-const useStyles = makeStyles((theme) => ({
-    inputRoot: {
-        color: 'inherit',
-    },
-    inputInput: {
-        transition: theme.transitions.create('width'),
-        width: '0ch',
-        height: 20,
-        [theme.breakpoints.up('sm')]: {
-            '&:focus': {
-                width: '20ch',
-            },
-        },
-    },
-    searchAdorment: {
-        fontSize: 17,
-        pointerEvents: "none",
-        cursor: 'pointer'
-    }
-}));
+import MonitoringMenu from './MonitoringMenu'
+import MexTimer from '../helper/MexTimer'
 
-const MexToolbar = (props) => {
-    const classes = useStyles();
-    const orgInfo = useSelector(state=>state.organizationInfo.data)
-    const privateAccess = useSelector(state=>state.privateAccess.data)
-    const [search, setSearch] = React.useState('')
-    const [focused, setFocused] = React.useState(false)
-    const [refreshRange, setRefreshRange] = React.useState(constant.refreshRates[0])
-    const parentId = props.filter.parent.id
-    /*Search Block*/
-    const handleSearch = (e) => {
-        let value = e ? e.target.value : ''
-        setSearch(value)
-        props.onChange(constant.ACTION_SEARCH, value)
-    }
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-    const onSearch = (value)=>{
-        props.onChange(constant.ACTION_SEARCH, value)
-    }
-
-    const searchForm = (order) => (
-        <Box order={order} style={{ marginTop: `${focused ? '0px' : '7px'}`, marginLeft: 10 }}>
-            <SearchFilter onFilter={onSearch} style={{ marginBottom: 10 }} compact={true} insensitive={true} />
-        </Box>
-    )
-    /*Search Block*/
-
-    const onRegionChange = (values) => {
-        props.onChange(constant.ACTION_REGION, values)
-    }
-
-    const onOrgChange = (value) => {
-        props.onChange(constant.ACTION_ORG, value)
-    }
-
-    const onMetricParentTypeChange = (value) => {
-        if (value.id === PARENT_CLOUDLET) {
-            props.onChange(constant.ACTION_SUMMARY, constant.summaryList[0])
-        }
-        props.onChange(constant.ACTION_METRIC_PARENT_TYPE, value)
-    }
-
-    const onMetricTypeChange = (values) => {
-        props.onChange(constant.ACTION_METRIC_TYPE, values)
-    }
-
-    const onSummaryChange = (value) => {
-        props.onChange(constant.ACTION_SUMMARY, value)
-    }
-
-    const onRefreshRateChange = (value) => {
-        setRefreshRange(value)
-        props.onChange(constant.ACTION_REFRESH_RATE, value)
-    }
-
-    const onTimeRangeChange = (from, to) => {
-        setRefreshRange(constant.refreshRates[0])
-        props.onChange(constant.ACTION_TIME_RANGE, { starttime: from, endtime: to })
-    }
-
-    const onRelativeTimeChange = (duration) => {
-        props.onChange(constant.ACTION_RELATIVE_TIME, duration)
-    }
-
-    const onRefresh = () => {
-        props.onChange(constant.ACTION_REFRESH)
-    }
-
-    const renderRefresh = (order) => (
-        <Box order={order}>
-            <Grid container>
-                <Tooltip title={<strong style={{ fontSize: 13 }}>Refresh</strong>} arrow>
-                    <IconButton onClick={onRefresh}><RefreshIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} /></IconButton>
-                </Tooltip>
-                <Divider orientation="vertical" style={{ marginTop: 13, marginBottom: 13 }} flexItem />
-                <MonitoringMenu showTick={true} data={constant.refreshRates} labelKey='label' onChange={onRefreshRateChange} icon={<ExpandMoreIcon style={{ color: lightGreen['A700'] }} />} value={refreshRange} tip={'Refresh Rate'} />
-            </Grid>
-        </Box>
-    )
-
-    const showSummary = () => {
-        return parentId !== PARENT_CLOUDLET
-    }
-
-    const showOrg = () => {
-        return redux_org.isAdmin(orgInfo) && props.organizations.length > 0
-    }
-
-    const parentType = () => {
-        if (redux_private.isPrivate(privateAccess)) {
-            return constant.metricParentTypes().map(parent => {
-                if(parent.id === PARENT_APP_INST || parent.id === PARENT_CLUSTER_INST )
-                {
-                    parent.role.push(constant.OPERATOR)    
-                }
-                return parent
-            })
-        }
-        return constant.metricParentTypes()
-    }
-    return (
-        <Toolbar>
-            <label className='monitoring-header'>Monitoring</label>
-            {
-                <div style={{ width: '100%' }}>
-                    <Box display="flex" justifyContent="flex-end">
-                        {showOrg() ? <MonitoringMenu order={1} data={props.organizations} labelKey={fields.organizationName} onChange={onOrgChange} placeHolder={'Select Org'} disableDefault={true} search={true} /> : null}
-                        {props.selectedOrg || !redux_org.isAdmin(orgInfo) ? <React.Fragment>
-                            <MexTimer order={2} onChange={onTimeRangeChange} onRelativeChange={onRelativeTimeChange} range={props.range} duration={props.duration} />
-                            <MonitoringMenu order={3} data={parentType()} labelKey='label' onChange={onMetricParentTypeChange} default={props.filter.parent} />
-                            <MonitoringMenu order={4} data={props.regions} default={props.filter.region} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onRegionChange} tip='Region' />
-                            <MonitoringMenu order={5} data={constant.visibility(parentId)} default={props.filter.metricType} labelKey='header' multiple={true} field={'field'} type={'metricType'} icon={<VisibilityOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onMetricTypeChange} tip='Visibility' />
-                            {showSummary() ? <MonitoringMenu order={6} data={constant.summaryList} labelKey='label' onChange={onSummaryChange} tip={'View aggregate utilization of resources between given start and end time'}/> : null}
-                            {renderRefresh(7)}
-                            {searchForm(8)}
-                        </React.Fragment> : null}
-                    </Box>
-                </div>
-            }
-        </Toolbar>
-    )
-
+const timeRangeInMin = (range) => {
+    let endtime = dateUtil.currentUTCTime()
+    let starttime = dateUtil.subtractMins(range, endtime).valueOf()
+    starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
+    endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
+    // return { starttime: '2021-11-08T18:31:00+00:00', endtime: '2021-11-09T18:04:00+00:00' }
+    return { starttime, endtime }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        organizationInfo: state.organizationInfo.data,
-        privateAccess: state.privateAccess.data,
-    }
-};
+/********
+* Refresh
+********/
+const Refresh = (props) => {
+    const { onUpdate, value, refreshRange, setRefreshRange } = props
 
-export default connect(mapStateToProps, null)(MexToolbar);
+    var refreshId = undefined
+    const onRefreshRateChange = (rate) => {
+        setRefreshRange(rate)
+        let interval = rate.duration
+        if (refreshId) {
+            clearInterval(refreshId)
+        }
+        if (interval > 0) {
+            refreshId = setInterval(() => {
+                onUpdate({ range: timeRangeInMin(value.duration.duration) })
+            }, interval * 1000);
+        }
+    }
+
+    return (
+        <Grid container>
+            <IconButton onClick={() => { onUpdate({ range: timeRangeInMin(value.duration.duration) }) }}><Icon style={{ color: lightGreen['A700'] }}>refresh</Icon></IconButton>
+            <Divider orientation="vertical" style={{ marginTop: 13, marginBottom: 13 }} flexItem />
+            <MonitoringMenu showTick={true} data={refreshRates} labelKey='label' onChange={onRefreshRateChange} icon={<ExpandMoreIcon style={{ color: lightGreen['A700'] }} />} value={refreshRange} tip={'Refresh Rate'} />
+        </Grid>
+    )
+}
+
+const DateTimePicker = (props) => {
+    const { onUpdate, value, setRefreshRange } = props
+
+    const onTimeRangeChange = (from, to) => {
+        setRefreshRange(refreshRates[0])
+        onUpdate({ range: { starttime: from, endtime: to } })
+    }
+
+    const onRelativeChange = (duration) => {
+        onUpdate({ duration, range: timeRangeInMin(duration.duration) })
+    }
+
+    return (
+        <MexTimer onChange={onTimeRangeChange} onRelativeChange={onRelativeChange} range={value.range} duration={value.duration} />
+    )
+}
+const MexToolbar = (props) => {
+    const { onChange } = props
+    const regions = useSelector(state => state.regionInfo.region)
+    const [value, setValue] = React.useState({
+        regions,
+        range: timeRangeInMin(relativeTimeRanges[3].duration),
+        duration: relativeTimeRanges[3],
+        search: ''
+    })
+    const [refreshRange, setRefreshRange] = React.useState(refreshRates[0])
+
+    useEffect(() => {
+        onChange(value)
+    }, [value]);
+
+    const onUpdate = (out) => {
+        setValue({ ...value, ...out })
+    }
+
+    return (
+        <Toolbar>
+            <Typography variant={'h5'} className='monitoring-header'>Monitoring</Typography>
+            <div style={{ width: '100%' }}>
+                <Box display="flex" justifyContent="flex-end">
+                    <Box order={2} p={0.9}>
+                        <SearchFilter onFilter={(value) => { onUpdate({ search: value }) }} compact={true} insensitive={true} />
+                    </Box>
+                    <Box order={3}>
+                        <Refresh onUpdate={onUpdate} value={value} refreshRange={refreshRange} setRefreshRange={setRefreshRange} />
+                    </Box>
+                    <Box order={1} p={1.3}>
+                        <DateTimePicker onUpdate={onUpdate} value={value} setRefreshRange={setRefreshRange}/>
+                    </Box>
+                </Box>
+            </div>
+        </Toolbar>
+    )
+}
+
+export default MexToolbar

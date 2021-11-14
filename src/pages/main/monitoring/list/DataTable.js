@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
@@ -26,7 +26,7 @@ const styles = (theme) => ({
     },
     tableRowHover: {
         '&:hover': {
-            backgroundColor: theme.palette.grey[200],
+            // backgroundColor: theme.palette.grey[200],
         },
     },
     tableCell: {
@@ -39,7 +39,7 @@ const styles = (theme) => ({
 
 class MuiVirtualizedTable extends React.PureComponent {
     static defaultProps = {
-        headerHeight: 48,
+        headerHeight: 35,
         rowHeight: 48,
     };
 
@@ -51,8 +51,8 @@ class MuiVirtualizedTable extends React.PureComponent {
         });
     };
 
-    cellRenderer = ({ cellData, columnIndex, rowIndex }) => {
-        const { dataList, columns, classes, rowHeight, onRowClick, formatter } = this.props;
+    cellRenderer = ({ rowData, cellData, columnIndex, rowIndex }) => {
+        const { columns, classes, rowHeight, onRowClick, selection, formatter } = this.props;
         let column = columns[columnIndex]
         return (
             <TableCell
@@ -65,9 +65,9 @@ class MuiVirtualizedTable extends React.PureComponent {
                 align={(columnIndex != null && columns[columnIndex].numeric) || false ? 'right' : 'left'}
             >
                 {
-                    column.type === 'checkbox' ? <Icon style={{ color: dataList[rowIndex].color }}>{`${dataList[rowIndex].selected ? 'check_box' : 'check_box_outline_blank'}`}</Icon> : 
-                    column.format ? formatter(column, cellData) : 
-                    cellData
+                    column.type === 'checkbox' ? <Icon style={{ color: rowData.color }}>{`${selection[rowData.key] ? 'check_box' : 'check_box_outline_blank'}`}</Icon> :
+                        column.format ? formatter(column, cellData) :
+                            cellData
                 }
             </TableCell>
         );
@@ -93,39 +93,43 @@ class MuiVirtualizedTable extends React.PureComponent {
         const { classes, columns, formatter, rowHeight, headerHeight, ...tableProps } = this.props;
         return (
             <AutoSizer>
-                {({ height, width }) => (
-                    <Table
-                        height={height}
-                        width={width}
-                        rowHeight={rowHeight}
-                        gridStyle={{
-                            direction: 'inherit',
-                        }}
-                        headerHeight={headerHeight}
-                        className={classes.table}
-                        {...tableProps}
-                        rowClassName={this.getRowClassName}
-                    >
-                        {columns.map((column, index) => {
-                            column.width = column.width ? column.width : 200
-                            return (
-                                <Column
-                                    key={column.field}
-                                    headerRenderer={(headerProps) =>
-                                        this.headerRenderer({
-                                            ...headerProps,
-                                            columnIndex: index,
-                                        })
-                                    }
-                                    className={classes.flexContainer}
-                                    cellRenderer={this.cellRenderer}
-                                    dataKey={column.field}
-                                    {...column}
-                                />
-                            );
-                        })}
-                    </Table>
-                )}
+                {({ height, width }) => {
+                    //normalize width where 100 is reserved
+                    let columnWidth = (width - 100) / (columns.length - 1)
+                    return (
+                        <Table
+                            height={height}
+                            width={width}
+                            rowHeight={rowHeight}
+                            gridStyle={{
+                                direction: 'inherit',
+                            }}
+                            headerHeight={headerHeight}
+                            className={classes.table}
+                            {...tableProps}
+                            rowClassName={this.getRowClassName}
+                        >
+                            {columns.map((column, index) => {
+                                column.width = column.width && column.width > 0 ? column.width : columnWidth
+                                return (
+                                    <Column
+                                        key={column.field}
+                                        headerRenderer={(headerProps) =>
+                                            this.headerRenderer({
+                                                ...headerProps,
+                                                columnIndex: index,
+                                            })
+                                        }
+                                        className={classes.flexContainer}
+                                        cellRenderer={this.cellRenderer}
+                                        dataKey={column.field}
+                                        {...column}
+                                    />
+                                );
+                            })}
+                        </Table>
+                    )
+                }}
             </AutoSizer>
         );
     }
@@ -135,8 +139,8 @@ MuiVirtualizedTable.propTypes = {
     classes: PropTypes.object.isRequired,
     columns: PropTypes.arrayOf(
         PropTypes.shape({
-            field: PropTypes.string.isRequired,
-            label: PropTypes.string.isRequired,
+            field: PropTypes.any.isRequired,
+            label: PropTypes.any.isRequired,
             // numeric: PropTypes.bool,
             // width: PropTypes.number.isRequired,
         }),
@@ -148,29 +152,39 @@ MuiVirtualizedTable.propTypes = {
 
 const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
-
-
 export default function ReactVirtualizedTable(props) {
     const { dataList, keys, formatter } = props
+    const [selection, setSelection] = React.useState({ count: 0 })
+
+    const onRowClick = (e) => {
+        const { rowData } = e
+        let data = { ...selection }
+        data[rowData.key] = !data[rowData.key]
+        data.count = data.count + (data[rowData.key] ? 1 : -1)
+        setSelection(data)
+        if (props.onRowClick) {
+            props.onRowClick(data)
+        }
+    }
 
     return (
         <React.Fragment>
-
-            <Paper style={{ height: 300, width: '100%' }}>
+            <Paper id='table-container' style={{ height: 'inherit', width: '100%' }}>
                 <VirtualizedTable
                     rowCount={dataList.length}
                     rowGetter={({ index }) => dataList[index]}
                     columns={keys.filter(key => key.visible)}
                     formatter={formatter}
-                    dataList={dataList}
+                    onRowClick={onRowClick}
+                    selection={selection}
                 />
 
-                <div style={{ height: 350, backgroundColor: '#2A2C34', width: '100%', borderRadius: 5 }}>
+                {/* <div style={{ height: 350, backgroundColor: '#2A2C34', width: '100%', borderRadius: 5 }}>
                     <div style={{ height: 310 }}></div>
                     <div align='center'>
                         {props.children}
                     </div>
-                </div>
+                </div> */}
             </Paper>
         </React.Fragment>
     );

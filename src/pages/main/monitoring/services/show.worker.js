@@ -26,7 +26,7 @@ const fetchAppInstData = (parentId, showList, keys, isOperator) => {
         let dataKey = ''
         let data = {}
         keys.forEach(key => {
-            if (!key.resourceLabel) {
+            if (!key.resourceLabel && key.field) {
                 data[key.field] = show[key.field]
                 if (key.field === fields.resourceQuotas && show[key.field]) {
                     let resourceQuotas = show[key.field]

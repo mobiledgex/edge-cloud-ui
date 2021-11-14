@@ -4,6 +4,7 @@ import { Card, ImageListItem } from '@material-ui/core'
 import LineChart from '../charts/linechart/MexLineChart'
 import { fetchResourceData } from '../services/service'
 import MetricWorker from '../services/metric.worker.js'
+import { equal } from '../../../../helper/constant/operators'
 
 class ResourceChart extends React.Component {
     constructor(props) {
@@ -20,19 +21,21 @@ class ResourceChart extends React.Component {
 
     render() {
         const { dataList } = this.state
-        const { style, legends, tools } = this.props
-        const { range } = tools
+        const { style, legends, tools, selection } = this.props
+        const { range, search } = tools
         return (
-            dataList ? dataList.map((data, i) => {
-                let key = this.metricKeyGenerator(data.resourceType)
-                return (
-                    <ImageListItem key={key} cols={1} style={style}>
-                        <Card style={{ height: 300 }}>
-                            <LineChart id={key} rowSelected={0} data={data} avgData={legends} globalFilter={{search:''}} range={range} />
-                        </Card>
-                    </ImageListItem>
-                )
-            }) : null
+            <React.Fragment>
+                {dataList ? dataList.map((data, i) => {
+                    let key = this.metricKeyGenerator(data.resourceType)
+                    return (
+                        <ImageListItem key={key} cols={1} style={style}>
+                            <Card style={{ height: 300 }}>
+                                <LineChart id={key} data={data} legends={legends} selection={selection} globalFilter={{ search: '' }} range={range} search={search}/>
+                            </Card>
+                        </ImageListItem>
+                    )
+                }) : null}
+            </React.Fragment>
         )
     }
 
@@ -44,6 +47,15 @@ class ResourceChart extends React.Component {
             const { resources, data } = dataObject
             this.setState({ dataList: data })
             handleLegendStateChange(resources)
+        }
+    }
+
+    componentDidUpdate(preProps, preState){
+        const {range} = this.props.tools
+        //fetch data on range change
+        if(!equal(range, preProps.tools.range))
+        {
+            this.fetchResources()
         }
     }
 

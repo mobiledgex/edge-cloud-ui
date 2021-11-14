@@ -16,7 +16,7 @@ export const cloudletActions = [
 
 export const cloudletMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },
-    { label: 'Region', serverField: 'region', visible: true, groupBy: false },
+    { label: 'Region', serverField: 'region', visible: true, groupBy: true },
     { label: 'Cloudlet', serverField: 'cloudlet', visible: true, groupBy: true },
     { label: 'Operator', serverField: 'cloudletorg', visible: true, groupBy: true }
 ]
@@ -30,8 +30,8 @@ export const cloudletFlavorMetricsKeys = [
 ]
 
 export const cloudletMetricsListKeys = [
-    { field: '', label: '', type: 'checkbox', visible:true, width:50 },
-    { field: fields.region, label: 'Region', sortable: true, visible: false, groupBy: false },
+    { field: false, label: false, type: 'checkbox', visible:true, width:50 },
+    { field: fields.region, serverField: 'region', label: 'Region', sortable: true, visible: false, groupBy: true },
     { field: fields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
     { field: fields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, visible: false, groupBy: true },
     { field: fields.cloudletLocation, label: 'Location', visible: false },

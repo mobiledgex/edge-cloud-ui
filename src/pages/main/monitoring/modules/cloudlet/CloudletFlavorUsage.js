@@ -37,7 +37,7 @@ class CloudletFlavorUsage extends React.Component {
             chartData && chartData.datasets && filter.metricType.includes(chartData.metric.field) ?
                 <ImageListItem cols={1} style={style}>
                     <Card style={{ height: 300 }}>
-                        <LineChart id={'cloudlet-flavor-usage'} rowSelected={rowSelected} disableRowSelectedFilter={true} data={chartData} avgData={this.avgData} globalFilter={filter} range={range} />
+                        <LineChart id={'cloudlet-flavor-usage'} rowSelected={rowSelected} disableSelection={true} data={chartData} avgData={this.avgData} globalFilter={filter} range={range} />
                     </Card>
                 </ImageListItem> : null
         )

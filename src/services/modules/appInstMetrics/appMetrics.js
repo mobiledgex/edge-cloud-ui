@@ -47,12 +47,12 @@ export const appMetricsListKeys = [
     { field: fields.deployment, label: 'Deployment'},
     { field: fields.platformType, label: 'Platform Type'},
     { field: fields.healthCheck, label: 'Health Check', sortable: true, visible: true, groupBy: false, customData: true },
-    { field: 'cpu', label: 'CPU', sortable: false, visible: true, isArray: true },
-    { field: 'disk', label: 'Disk Usage', sortable: false, visible: true, isArray: true },
-    { field: 'memory', label: 'Memory', sortable: false, visible: true, isArray: true },
-    { field: 'sent', label: 'Network Sent', sortable: false, visible: true, isArray: true },
-    { field: 'received', label: 'Network Received', sortable: false, visible: true, isArray: true },
-    { field: 'connections', label: 'Active Connections', sortable: false, visible: true, isArray: true },
+    // { field: 'cpu', label: 'CPU', sortable: false, visible: true, isArray: true },
+    // { field: 'disk', label: 'Disk Usage', sortable: false, visible: true, isArray: true },
+    // { field: 'memory', label: 'Memory', sortable: false, visible: true, isArray: true },
+    // { field: 'sent', label: 'Network Sent', sortable: false, visible: true, isArray: true },
+    // { field: 'received', label: 'Network Received', sortable: false, visible: true, isArray: true },
+    // { field: 'connections', label: 'Active Connections', sortable: false, visible: true, isArray: true },
 ]
 
 export const networkMetricType = [
@@ -70,6 +70,7 @@ export const appInstMetricTypeKeys = () => ([
     { field: 'event', header: 'Event' },
     { field: 'client', header: 'Client Usage' },
 ])
+
 
 export const appInstActions = [
     { id: perpetual.ACTION_LATENCY_METRICS, label: 'Show Latency Metrics', group: true },

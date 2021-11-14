@@ -97,10 +97,10 @@ const processData2 = (worker) => {
                 currentData = values[count]
                 count++
             }
-            let key = generateKey(metricKeys, tags)
+            let key = generateKey(metricKeys, { ...tags, region : region.toLowerCase() })
             if (legends[key]) {
                 for (let item of metricList) {
-                    chartData[item.field] = chartData[item.field] ? chartData[item.field] : { resourceType: item, region, datasets: {}}
+                    chartData[item.field] = chartData[item.field] ? chartData[item.field] : { resourceType: item, region, datasets: {} }
                     if (parentId === PARENT_APP_INST || parentId === PARENT_CLUSTER_INST) {
                         let avg = meanBy(values, v => (v[item.position]))
                         let max = maxBy(values, v => (v[item.position]))[item.position]
@@ -114,8 +114,8 @@ const processData2 = (worker) => {
                         let avgUnit = item.unit ? convertUnit(item.unit, avg, true) : avg
                         let maxUnit = item.unit ? convertUnit(item.unit, max, true) : max
                         let minUnit = item.unit ? convertUnit(item.unit, min, true) : min
-                        chartData[item.field]['legends'][key] = {}
-                        chartData[item.field]['legends'][key][item.field] = [avgUnit, minUnit, maxUnit]
+                        resources[key] = resources[key] ? resources[key] : {}
+                        resources[key][item.field] = [avgUnit, minUnit, maxUnit]
                     }
                     else {
                         let positionValue = currentData[item.position] ? currentData[item.position] : 0
@@ -129,7 +129,6 @@ const processData2 = (worker) => {
                 }
             }
         }
-
         for (let item of metricList) {
             finalData.push(chartData[item.field])
         }

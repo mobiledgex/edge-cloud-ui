@@ -12,6 +12,7 @@ class Module extends React.Component {
         }
         //filter resources based on legendList
         this.legendList = {}
+        this._isMounted = false
     }
 
     handleLegendStateChange = (resources) => {
@@ -53,6 +54,7 @@ class Module extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.fetchLegends()
     }
 }

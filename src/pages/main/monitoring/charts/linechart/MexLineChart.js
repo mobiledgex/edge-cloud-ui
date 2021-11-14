@@ -9,19 +9,24 @@ import CloseIcon from '@material-ui/icons/Close';
 import { convertUnit } from '../../helper/unitConvertor';
 import { LS_LINE_GRAPH_FULL_SCREEN } from '../../../../../helper/constant/perpetual';
 
-const formatData = (rawData, avgData, globalFilter, rowSelected, disableRowSelectedFilter) => {
+const formatData = (props) => {
+    const { data, search, selection, disableSelection } = props
     let datasets = []
-   
-    const values = rawData && rawData.datasets ? rawData.datasets : {}
-    let keys = Object.keys(values)
+    const temp = data && data.datasets ? data.datasets : {}
+    let keys = Object.keys(temp)
     keys.forEach(key => {
-        let valueData = values[key]
-        if (key.includes(globalFilter.search) && (disableRowSelectedFilter || rowSelected === 0 || avgData[key].selected)) {
-            datasets.push(valueData)
+        //filter by selection
+        let valid = disableSelection || selection[key] || selection.count === 0
+        //filter by search
+        valid = valid && (search.length === 0 || key.includes(search))
+        if (valid) {
+            datasets.push(temp[key])
         }
-    }) 
+    })
+
     return datasets
 }
+
 const optionsGenerator = (header, unitId, fullscreen, range) => {
     return {
         stacked: true,
@@ -123,8 +128,7 @@ class MexLineChart extends React.Component {
         if (props.data) {
             let datasets = props.data.datasets
             if (datasets) {
-                const { data, avgData, globalFilter, rowSelected, labelPosition, disableRowSelectedFilter } = props
-                return { datasets: formatData(data, avgData, globalFilter, rowSelected, disableRowSelectedFilter) }
+                return { datasets: formatData(props) }
             }
         }
         return null
@@ -142,7 +146,7 @@ class MexLineChart extends React.Component {
 
     renderFullScreen = () => {
         const { fullscreen, datasets } = this.state
-        const { rowSelected, globalFilter, data, id } = this.props
+        const { selection, search, data, id } = this.props
         return (
             <Dialog fullScreen open={fullscreen} onClose={this.closeFullScreen} >
                 <div>
@@ -156,7 +160,7 @@ class MexLineChart extends React.Component {
                     </div>
                 </div>
                 {
-                    datasets.length === 0 && (rowSelected === 0 && globalFilter.search.length === 0) ?
+                    datasets.length === 0 && (selection.count === 0 && search.length === 0) ?
                         <div align='center' style={{
                             position: 'absolute',
                             left: '50%',
@@ -174,13 +178,13 @@ class MexLineChart extends React.Component {
         )
     }
 
-    validateFilter = (rowSelected, search)=>{
-       return rowSelected > 0 || search.length > 0
+    validateFilter = (selection, search)=>{
+       return selection.count > 0 || search.length > 0
     }
 
     render() {
         const { fullscreen, datasets } = this.state
-        const { rowSelected, globalFilter, data } = this.props
+        const { selection, search, data } = this.props
         let id = this.props.id ? this.props.id.toLowerCase() : uuid()
         return (
             data ? <div style={{ padding: 5, marginTop: 5, marginRight: 10 }} mex-test="component-line-chart">
@@ -190,7 +194,7 @@ class MexLineChart extends React.Component {
                             <h3 className='chart-header'>{`${this.header} - ${data.region}`}</h3>
                         </Box>
                         {
-                            datasets.length === 0 && (rowSelected === 0 && globalFilter.search.length === 0) ?
+                            datasets.length === 0 && (selection.count === 0 && search.length === 0) ?
                                 <Box>
                                     <CircularProgress size={20} thickness={3} />
                                 </Box> :
@@ -205,7 +209,7 @@ class MexLineChart extends React.Component {
                 <br />
                 <div style={{ padding: 20, width: '100%', marginTop: 20 }}>
                     {
-                        datasets.length === 0 && (rowSelected > 0 || globalFilter.search.length > 0) ?
+                        datasets.length === 0 && (selection.count > 0 || search.length > 0) ?
                             <div className='chart-no-data' align='center'>No Data</div> : datasets.length > 0 ?
                                 <Line id={id} datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets }} height={200} /> : null
                     }

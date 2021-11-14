@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import BulletChart from '../charts/bullet/BulletChart';
 import BulletLegend from '../charts/bullet/Legend';
 import DataTable from './DataTable'
@@ -9,21 +9,18 @@ class Legend extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            dataList: [],
             newList: undefined
         }
     }
 
     static getDerivedStateFromProps(props, state) {
         if (props.data) {
-            const { regions, data } = props
+            const { data, search } = props
             let newList = []
-            regions.forEach(region => {
-                let dataObject = data[region]
-                dataObject && Object.keys(dataObject).forEach(key => {
-                    let data = dataObject[key]
-                    newList.push(data)
-                })
+            data && Object.keys(data).forEach(key => {
+                if (search.length === 0 || key.includes(search)) {
+                    newList.push({ ...data[key], key })
+                }
             })
             return { newList }
         }
@@ -43,13 +40,14 @@ class Legend extends React.Component {
 
     render() {
         const { newList } = this.state
-        const { moduleId } = this.props
+        const { moduleId, handleSelectionStateChange } = this.props
         return (
             <React.Fragment>
                 {
-                    newList && newList.length > 0 ? <DataTable dataList={newList} keys={legendKeys(moduleId)} formatter={this.onFormat}>
-                        <BulletLegend />
-                    </DataTable> : null
+                    newList && newList.length > 0 ?
+                        <DataTable dataList={newList} keys={legendKeys(moduleId)} onRowClick={handleSelectionStateChange} formatter={this.onFormat}>
+                            {/* <BulletLegend /> */}
+                        </DataTable> : null
                 }
             </React.Fragment>
         )

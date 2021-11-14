@@ -1,11 +1,14 @@
-import { DataUsage } from "@material-ui/icons";
 import { endpoint } from "../../../../helper/constant";
-import { PARENT_CLOUDLET } from "../../../../helper/constant/perpetual"
+import { PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST } from "../../../../helper/constant/perpetual"
 import { redux_org } from "../../../../helper/reduxData";
 import { fields } from "../../../../services/model/format";
+import { showAppInsts } from "../../../../services/modules/appInst";
+import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys } from "../../../../services/modules/appInstMetrics";
 import { showCloudlets } from "../../../../services/modules/cloudlet";
 import { cloudletMetricsListKeys, cloudletMetrics, cloudletUsageMetrics } from "../../../../services/modules/cloudletMetrics";
 import { cloudletResourceKeys } from "../../../../services/modules/cloudletMetrics/cloudletMetrics";
+import { showClusterInsts } from "../../../../services/modules/clusterInst";
+import { clusterMetrics, clusterMetricsListKeys, clusterMetricTypeKeys } from "../../../../services/modules/clusterInstMetrics";
 import { authSyncRequest, multiAuthSyncRequest, responseValid } from "../../../../services/service";
 import { processWorker } from "../../../../services/worker/interceptor";
 import { timezonePref } from "../../../../utils/sharedPreferences_util";
@@ -15,6 +18,10 @@ const showAPIs = (moduleId) => {
     switch (moduleId) {
         case PARENT_CLOUDLET:
             return [showCloudlets]
+        case PARENT_APP_INST:
+            return [showAppInsts, showCloudlets]
+        case PARENT_CLUSTER_INST:
+            return [showCloudlets, showClusterInsts]
     }
 }
 
@@ -24,6 +31,10 @@ export const resourceAPIs = (self, method, data, list, org) => {
             return cloudletMetrics(data, list, org)
         case endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT:
             return cloudletUsageMetrics(data, org)
+        case endpoint.APP_INST_METRICS_ENDPOINT:
+            return appInstMetrics(self, data, list, org)
+        case endpoint.CLUSTER_METRICS_ENDPOINT:
+            return clusterMetrics(self, data, list, org)
     }
 }
 
@@ -31,6 +42,10 @@ export const legendKeys = (moduleId) => {
     switch (moduleId) {
         case PARENT_CLOUDLET:
             return cloudletMetricsListKeys
+        case PARENT_APP_INST:
+            return appMetricsListKeys
+        case PARENT_CLUSTER_INST:
+            return clusterMetricsListKeys
     }
 }
 
@@ -38,6 +53,10 @@ export const resourceKeys = (moduleId) => {
     switch (moduleId) {
         case PARENT_CLOUDLET:
             return cloudletResourceKeys()
+        case PARENT_APP_INST:
+            return appInstMetricTypeKeys()
+        case PARENT_CLUSTER_INST:
+            return clusterMetricTypeKeys()
     }
 }
 
