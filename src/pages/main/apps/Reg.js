@@ -168,7 +168,7 @@ class AppReg extends Component {
         { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 7, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
         { field: fields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 1, update: { edit: true } },
-        { field: fields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: true, width: 2, update: { edit: true } },
+        { field: fields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
     ])
 
@@ -192,7 +192,7 @@ class AppReg extends Component {
         { field: fields.portRangeMax, label: 'Port Max', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
         { field: fields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 1, update: { edit: true } },
-        { field: fields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: true, width: 2, update: { edit: true } },
+        { field: fields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
     ])
 
