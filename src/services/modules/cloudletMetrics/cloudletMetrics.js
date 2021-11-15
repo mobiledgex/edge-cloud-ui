@@ -30,7 +30,6 @@ export const cloudletFlavorMetricsKeys = [
 ]
 
 export const cloudletMetricsListKeys = [
-    { field: false, label: false, type: 'checkbox', visible:true, width:50 },
     { field: fields.region, serverField: 'region', label: 'Region', sortable: true, visible: false, groupBy: true },
     { field: fields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
     { field: fields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, visible: false, groupBy: true },

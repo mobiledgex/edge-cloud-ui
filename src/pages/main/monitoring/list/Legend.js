@@ -15,7 +15,8 @@ class Legend extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.data) {
-            const { data, search } = props
+            const { data, tools } = props
+            const { search } = tools
             let newList = []
             data && Object.keys(data).forEach(key => {
                 if (search.length === 0 || key.includes(search)) {
@@ -32,20 +33,26 @@ class Legend extends React.Component {
     }
 
     onFormat = (column, data) => {
-        if (data && data.infraAllotted) {
-            let value = { title: "", subtitle: "", ranges: [data.infraAllotted ? onlyNumeric(data.infraAllotted) : 0], measures: [data.used ? onlyNumeric(data.used) : 0, data.allotted ? onlyNumeric(data.allotted) : 0], markers: [data.infraUsed ? onlyNumeric(data.infraUsed) : 0] }
-            return <BulletChart data={[value]} />
+        const { tools } = this.props
+        if (data) {
+            if (data.infraAllotted) {
+                let value = { title: "", subtitle: "", ranges: [data.infraAllotted ? onlyNumeric(data.infraAllotted) : 0], measures: [data.used ? onlyNumeric(data.used) : 0, data.allotted ? onlyNumeric(data.allotted) : 0], markers: [data.infraUsed ? onlyNumeric(data.infraUsed) : 0] }
+                return <BulletChart data={[value]} />
+            }
+            else {
+                return data[tools.stats]
+            }
         }
     }
 
     render() {
         const { newList } = this.state
-        const { moduleId, handleSelectionStateChange } = this.props
+        const { tools, handleSelectionStateChange } = this.props
         return (
             <React.Fragment>
                 {
                     newList && newList.length > 0 ?
-                        <DataTable dataList={newList} keys={legendKeys(moduleId)} onRowClick={handleSelectionStateChange} formatter={this.onFormat}>
+                        <DataTable dataList={newList} keys={legendKeys(tools.moduleId)} onRowClick={handleSelectionStateChange} formatter={this.onFormat}>
                             {/* <BulletLegend /> */}
                         </DataTable> : null
                 }

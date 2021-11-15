@@ -5,13 +5,12 @@ import * as actions from '../../../actions';
 
 import { Card, ImageList } from '@material-ui/core'
 
-import { PARENT_APP_INST, PARENT_CLOUDLET } from '../../../helper/constant/perpetual';
-
 import Module from './modules/Module'
 import DragButton from './list/DragButton'
 
 import Toolbar from './toolbar/MonitoringToolbar'
 import Legend from './list/Legend';
+import Map from './common/map/Map'
 
 import './common/PageMonitoringStyles.css'
 import './style.css'
@@ -19,7 +18,6 @@ class Monitoring extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            moduleId: PARENT_CLOUDLET,
             tools: undefined,
             legends: {},
             selection: { count: 0 },
@@ -49,14 +47,23 @@ class Monitoring extends React.Component {
     handleToolbarChange = (tools) => {
         let preTools = this.state.tools
         let refresh = this.state.refresh
-        if (preTools && preTools.search !== tools.search) {
-            refresh = !refresh
+        let wait = 0
+        if (preTools) {
+            if (preTools.search !== tools.search || preTools.stats !== tools.stats) {
+                refresh = !refresh
+            }
+            else if (preTools.moduleId !== tools.moduleId) {
+                //reset components if moduleId change
+                this.setState({ tools: undefined, legends:{} })
+                wait = 100
+            }
         }
-        this.setState({ tools, refresh })
+        setTimeout(()=>{this.setState({ tools, refresh })}, wait)
+        
     }
 
     render() {
-        const { moduleId, tools, legends, selection, refresh } = this.state
+        const { tools, legends, selection, refresh } = this.state
         return (
             <div mex-test="component-monitoring" style={{ position: 'relative' }}>
                 <Card style={{ height: 50, marginBottom: 2 }}>
@@ -65,15 +72,18 @@ class Monitoring extends React.Component {
                 {tools ? (
                     <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
                         <div id='legend-block' className="block block-1" ref={this.tableRef}>
-                            <Legend moduleId={moduleId} data={legends} handleSelectionStateChange={this.handleSelectionStateChange} refresh={refresh} search={tools.search}/>
+                            <Legend tools={tools} data={legends} handleSelectionStateChange={this.handleSelectionStateChange} refresh={refresh}/>
                         </div>
                         <div style={{ position: 'relative', height: 4 }}>
                             <DragButton height={400} />
                         </div>
                         <div id='resource-block' className="block block-2">
+                            <ImageList cols={4} rowHeight={300} >
+                                <Map tools={tools} regions={tools.regions} data={legends} refresh={refresh}/>
+                            </ImageList>
                             <ImageList cols={4} rowHeight={300}>
                                 {tools.regions.map(region => (
-                                    <Module key={region} region={region} moduleId={moduleId} tools={tools} selection={selection} handleDataStateChange={this.handleDataStateChange} />
+                                    <Module key={region} region={region} moduleId={tools.moduleId} tools={tools} selection={selection} handleDataStateChange={this.handleDataStateChange} />
                                 ))}
                             </ImageList>
                         </div>
@@ -82,14 +92,6 @@ class Monitoring extends React.Component {
             </div>
         )
     }
-
-    componentDidUpdate() {
-        
-    }
-
-    componentDidMount() {
-    }
-
 }
 
 const mapStateToProps = (state) => {

@@ -12,34 +12,21 @@ import { fields } from '../../../../services/model/format';
 import { DEPLOYMENT_TYPE_VM, PARENT_APP_INST, PARENT_CLUSTER_INST, PLATFORM_TYPE_OPEN_STACK, PLATFORM_TYPE_VCD } from '../../../../helper/constant/perpetual';
 import { CLOUDLET_METRICS_ENDPOINT, APP_INST_METRICS_ENDPOINT, CLUSTER_METRICS_ENDPOINT } from '../../../../helper/constant/endpoint';
 
-const processLineChartData = (chartDataList, values, worker, legendsSkip) => {
+const processLineChartData = (chartDataList, values, worker) => {
     const { legends, timezone } = worker
     chartDataList.forEach(chartData => {
-        chartData['datasets'] = generateDataset(chartData, values, legends, timezone, undefined, legendsSkip)
+        chartData['datasets'] = generateDataset(chartData, values, legends, timezone, undefined)
     })
 }
 
-const avgCalculator = (parentId, values, metric, legends, legendsSkip) => {
+const avgCalculator = (values, metric, legends) => {
     let chartData = {}
     let resources = {}
     const keys = Object.keys(values)
     for (let valueKey of keys) {
-        if (parentId === PARENT_APP_INST) {
-            let avgValue = legends[valueKey]
-            let skip = metric.field === fields.disk || metric.field === fields.sent || metric.field === fields.received
-            if (skip && avgValue) {
-                skip = avgValue[fields.deployment] === DEPLOYMENT_TYPE_VM
-                skip = skip ? (avgValue[fields.platformType] === PLATFORM_TYPE_OPEN_STACK || avgValue[fields.platformType] === PLATFORM_TYPE_VCD) : skip
-            }
-            if (skip) {
-                legendsSkip.push(valueKey)
-                continue;
-            }
-        }
         let value = values[valueKey]
         if (value && legends[valueKey]) {
             let latestData = value[0]
-
             resources[valueKey] = resources[valueKey] ? resources[valueKey] : {}
             resources[valueKey][metric.field] = { used: latestData[metric.position] }
         }
@@ -51,12 +38,11 @@ const processData = (worker) => {
 
     const { metric, dataList, parentId, region, legends } = worker
     const metricList = metric.keys ? metric.keys : [metric]
-    let legendsSkip = []
     let chartList = []
     let resources = {}
     if (dataList.values && dataList.columns) {
         metricList.forEach(metric => {
-            let dataObject = avgCalculator(parentId, dataList.values, metric, legends, legendsSkip)
+            let dataObject = avgCalculator(dataList.values, metric, legends)
             let chartData = dataObject.chartData
             chartData.region = region
             chartData.resourceType = metric
@@ -64,7 +50,7 @@ const processData = (worker) => {
             chartList.push(chartData)
         })
     }
-    processLineChartData(chartList, dataList.values, worker, legendsSkip)
+    processLineChartData(chartList, dataList.values, worker)
     self.postMessage({ status: 200, data: chartList, resources })
 }
 
@@ -98,10 +84,20 @@ const processData2 = (worker) => {
                 count++
             }
             let key = generateKey(metricKeys, { ...tags, region : region.toLowerCase() })
-            if (legends[key]) {
+            let legend = legends[key]
+            if (legend) {
                 for (let item of metricList) {
+                    let skip = false
                     chartData[item.field] = chartData[item.field] ? chartData[item.field] : { resourceType: item, region, datasets: {} }
                     if (parentId === PARENT_APP_INST || parentId === PARENT_CLUSTER_INST) {
+                        //confirm with lev shvarts
+                        // if(parentId === PARENT_APP_INST)
+                        // {
+                        //     //skip disk and network data for app inst module (due to data inconsistency)
+                        //     skip = item.field === fields.disk || item.field === fields.sent || item.field === fields.received
+                        //     skip =  skip && legend[fields.deployment] === DEPLOYMENT_TYPE_VM
+                        //     skip = skip && (legend[fields.platformType] === PLATFORM_TYPE_OPEN_STACK || legend[fields.platformType] === PLATFORM_TYPE_VCD)
+                        // }
                         let avg = meanBy(values, v => (v[item.position]))
                         let max = maxBy(values, v => (v[item.position]))[item.position]
                         let min = minBy(values, v => (v[item.position]))[item.position]
@@ -115,7 +111,7 @@ const processData2 = (worker) => {
                         let maxUnit = item.unit ? convertUnit(item.unit, max, true) : max
                         let minUnit = item.unit ? convertUnit(item.unit, min, true) : min
                         resources[key] = resources[key] ? resources[key] : {}
-                        resources[key][item.field] = [avgUnit, minUnit, maxUnit]
+                        resources[key][item.field] = { avg: avgUnit, min: minUnit, max: maxUnit }
                     }
                     else {
                         let positionValue = currentData[item.position] ? currentData[item.position] : 0
@@ -125,7 +121,10 @@ const processData2 = (worker) => {
                         resources[key] = resources[key] ? resources[key] : {}
                         resources[key][item.field] = {infraUsed:convertedValue, infraAllotted:convertedMaxValue}
                     }
+                    // if(!skip)
+                    {
                     chartData[item.field]['datasets'][key] = generateDataset2(tags, item, timezone, values, legends[key])
+                    }
                 }
             }
         }

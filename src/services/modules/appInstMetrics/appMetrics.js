@@ -36,7 +36,7 @@ export const customData = (id, data) => {
 
 export const appMetricsListKeys = [
     { field: fields.region, label: 'Region', sortable: true, visible: true, groupBy: false },
-    { field: fields.appName, serverField:'app', label: 'App', sortable: true, visible: false, groupBy: true},
+    { field: fields.appName, serverField:'app', label: 'App', sortable: true, visible: true, groupBy: true},
     { field: fields.organizationName, serverField:'apporg',label: 'App Developer', sortable: false, visible: false, groupBy: false },
     { field: fields.version, serverField:'ver', label: 'Version', sortable: true, visible: false, groupBy: true },
     { field: fields.clusterName, serverField:'cluster', label: 'Cluster', sortable: true, visible: true, groupBy: true, customData: true },
@@ -47,12 +47,12 @@ export const appMetricsListKeys = [
     { field: fields.deployment, label: 'Deployment'},
     { field: fields.platformType, label: 'Platform Type'},
     { field: fields.healthCheck, label: 'Health Check', sortable: true, visible: true, groupBy: false, customData: true },
-    // { field: 'cpu', label: 'CPU', sortable: false, visible: true, isArray: true },
-    // { field: 'disk', label: 'Disk Usage', sortable: false, visible: true, isArray: true },
-    // { field: 'memory', label: 'Memory', sortable: false, visible: true, isArray: true },
-    // { field: 'sent', label: 'Network Sent', sortable: false, visible: true, isArray: true },
-    // { field: 'received', label: 'Network Received', sortable: false, visible: true, isArray: true },
-    // { field: 'connections', label: 'Active Connections', sortable: false, visible: true, isArray: true },
+    { field: 'cpu', label: 'CPU', sortable: false, visible: true, format:true, isArray: true },
+    { field: 'disk', label: 'Disk Usage', sortable: false, visible: true, format:true, isArray: true },
+    { field: 'memory', label: 'Memory', sortable: false, visible: true, format:true, isArray: true },
+    { field: 'sent', label: 'Network Sent', sortable: false, visible: true, format:true, isArray: true },
+    { field: 'received', label: 'Network Received', sortable: false, visible: true, format:true, isArray: true },
+    { field: 'connections', label: 'Active Connections', sortable: false, visible: true, format:true, isArray: true },
 ]
 
 export const networkMetricType = [

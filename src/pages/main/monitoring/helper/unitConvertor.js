@@ -60,7 +60,7 @@ export const convertUnit = (unit, value, decimal) => {
     if (value >= 0) {
         switch (unit) {
             case UNIT_PERCENTAGE:
-                return (Number.isInteger(value) ? value : value.toFixed(3))
+                return (Number.isInteger(value) ? value : value.toFixed(3)) + ' %'
             case UNIT_FLOOR:
                 return Math.floor(value)
             case UNIT_BYTES:

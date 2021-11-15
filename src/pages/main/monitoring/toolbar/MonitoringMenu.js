@@ -17,12 +17,8 @@ const fetchArray = (props) => {
 const MonitoringMenu = (props) => {
     const [anchorEl, setAnchorEl] = React.useState(null)
     const [filterText, setFilterText] = React.useState('')
-    const [value, setValue] = React.useState([])
+    const [value, setValue] = React.useState(props.disableDefault ? undefined : props.default ? props.default : (props.value ? props.value : (props.multiple ? fetchArray(props) : props.data[0])))
     const orgInfo = useSelector(state => state.organizationInfo.data)
-
-    useEffect(() => {
-        setValue(props.disableDefault ? undefined : props.default ? props.default : (props.value ? props.value : (props.multiple ? fetchArray(props) : props.data[0])))
-    }, [props.default, props.value, props.disableDefault, props.data])
 
     const onChange = (data) => {
         if (props.multiple) {
@@ -50,7 +46,11 @@ const MonitoringMenu = (props) => {
     }
 
     const getLabel = () => {
-        return props.value ? props.value[props.labelKey] : value ? value[props.labelKey] : props.placeHolder
+        const { labelKey, placeHolder, allCaps } = props
+        let data = props.value ? props.value : value
+        data = data && labelKey ? data[labelKey] : data
+        data = allCaps ? data.toUpperCase() : data
+        return data ? data : placeHolder
     }
 
     const renderIcon = () => (
@@ -94,7 +94,7 @@ const MonitoringMenu = (props) => {
         })
     }
     return (
-        <Box order={props.order}>
+        <Box order={props.order} p={0.1}>
             {props.tip ? <Tooltip title={<strong style={{ fontSize: 13 }}>{props.tip}</strong>} arrow>
                 {renderIcon()}
             </Tooltip> : renderIcon()}

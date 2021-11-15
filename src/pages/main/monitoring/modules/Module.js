@@ -37,9 +37,9 @@ class Module extends React.Component {
     render() {
         const { legends } = this.state
         return (
-            <React.Fragment>
-                {legends ? <Resources {...this.props} legends={legends} legendList={this.legendList} handleLegendStateChange={this.handleLegendStateChange} /> : null}
-            </React.Fragment>
+            legends ?  <React.Fragment>
+                <Resources {...this.props} legends={legends} legendList={this.legendList} handleLegendStateChange={this.handleLegendStateChange} />
+            </React.Fragment> : null
         )
     }
 

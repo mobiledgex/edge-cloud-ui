@@ -3,18 +3,13 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 
-import { Card } from '@material-ui/core'
-
 import * as constant from './helper/montconstant'
 import * as dateUtil from '../../../utils/date_util'
 import { fields } from '../../../services/model/format';
 import { redux_org, redux_private } from '../../../helper/reduxData';
 
-import MonitoringToolbar from './toolbar/MonitoringToolbar'
-
 import { HELP_MONITORING } from '../../../tutorial';
 
-import MonitoringList from './list/MonitoringList'
 import AppInstMonitoring from './modules/app/AppMonitoring'
 import AppSkeleton from './modules/app/AppSkeleton'
 import ClusterMonitoring from './modules/cluster/ClusterMonitoring'
@@ -173,57 +168,6 @@ class Monitoring extends React.Component {
         }
     }
 
-    onToolbar = async (action, value) => {
-        if (action === constant.ACTION_ORG || action === constant.ACTION_REFRESH_RATE || action === constant.ACTION_TIME_RANGE || action === constant.ACTION_RELATIVE_TIME || action === constant.ACTION_REFRESH) {
-            switch (action) {
-                case constant.ACTION_REFRESH_RATE:
-                    this.onRefreshChange(value)
-                    break;
-                case constant.ACTION_TIME_RANGE:
-                    this.onTimeRange(value)
-                    break;
-                case constant.ACTION_RELATIVE_TIME:
-                    this.onRelativeTime(value)
-                    break;
-                case constant.ACTION_REFRESH:
-                    this.onRefresh()
-                    break;
-                case constant.ACTION_ORG:
-                    this.onOrgChange(value)
-                    break;
-            }
-        }
-        else {
-            if (this._isMounted) {
-                this.setState(prevState => {
-                    let filter = prevState.filter
-                    switch (action) {
-                        case constant.ACTION_REGION:
-                            filter.region = value
-                            break;
-                        case constant.ACTION_METRIC_PARENT_TYPE:
-                            filter.parent = value
-                            filter.metricType = defaultMetricType(this, value)
-                            return { filter, showLoaded: false, avgData: this.defaultStructure() }
-                        case constant.ACTION_METRIC_TYPE:
-                            filter.metricType = value
-                            break;
-                        case constant.ACTION_SUMMARY:
-                            filter.summary = value
-                            break;
-                        case constant.ACTION_SEARCH:
-                            filter.search = value
-                            break;
-                    }
-                    return { filter }
-                }, () => {
-                    if (action === constant.ACTION_METRIC_PARENT_TYPE) {
-                        this.onParentChange()
-                    }
-                })
-            }
-        }
-    }
 
     updateAvgData = (region, metric, data) => {
         if (this._isMounted) {
@@ -265,9 +209,6 @@ class Monitoring extends React.Component {
         const { filter, range, duration, organizations, avgData, rowSelected, showLoaded, selectedOrg, maxHeight } = this.state
         return (
             <div mex-test="component-monitoring" style={{ position: 'relative' }}>
-                <Card style={{ height: 50, marginBottom: 2 }}>
-                    <MonitoringToolbar selectedOrg={selectedOrg} regions={this.regions} organizations={organizations} range={range} duration={duration} filter={filter} onChange={this.onToolbar} />
-                </Card>
                 <React.Fragment>
                     {showLoaded ?
                         <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>

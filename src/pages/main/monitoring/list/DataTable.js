@@ -155,7 +155,7 @@ const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 export default function ReactVirtualizedTable(props) {
     const { dataList, keys, formatter } = props
     const [selection, setSelection] = React.useState({ count: 0 })
-
+    const columns = [{ field: false, label: false, type: 'checkbox', visible:true, width:50 }, ...keys.filter(key => key.visible)]
     const onRowClick = (e) => {
         const { rowData } = e
         let data = { ...selection }
@@ -173,7 +173,7 @@ export default function ReactVirtualizedTable(props) {
                 <VirtualizedTable
                     rowCount={dataList.length}
                     rowGetter={({ index }) => dataList[index]}
-                    columns={keys.filter(key => key.visible)}
+                    columns={columns}
                     formatter={formatter}
                     onRowClick={onRowClick}
                     selection={selection}
