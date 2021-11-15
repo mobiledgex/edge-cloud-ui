@@ -1,5 +1,6 @@
 import React from 'react'
 import MexMap from '../../../../../hoc/mexmap/MexMap'
+import { fields } from '../../../../../services/model/format'
 
 const DEFAULT_ZOOM = 3
 
@@ -25,8 +26,16 @@ class Map extends React.Component {
     static getDerivedStateFromProps(props, state) {
         if (props.data) {
             const { data, tools } = props
+            let mapData = {}
             let keys = Object.keys(data)
-            
+            keys.map(key=>{
+                let item = data[key]
+                const {latitude, longitude} = item[fields.cloudletLocation]
+                let mapkey = `${latitude}_${longitude}`
+                mapData[mapkey] = mapData[mapkey] ? mapData[mapkey] : {}
+                mapData[mapkey] = item
+            })
+            console.log(mapData)
         }
         return null
     }
