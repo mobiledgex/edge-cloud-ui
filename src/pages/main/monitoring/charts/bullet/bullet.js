@@ -17,7 +17,7 @@ export default (function () {
             g.each(function (d, i) {
                 var rangez = ranges.call(this, d, i).slice().sort(d3.descending),
                     markerz = markers.call(this, d, i).slice().sort(d3.descending),
-                    measurez = measures.call(this, d, i).slice().sort(d3.descending),
+                    measurez = measures.call(this, d, i).slice(),
                     g = d3.select(this),
                     allZero = true
 

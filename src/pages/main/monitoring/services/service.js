@@ -2,7 +2,7 @@ import { endpoint } from "../../../../helper/constant";
 import { PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST } from "../../../../helper/constant/perpetual"
 import { redux_org } from "../../../../helper/reduxData";
 import { fields } from "../../../../services/model/format";
-import { showAppInsts } from "../../../../services/modules/appInst";
+import { requestAppInstLatency, showAppInsts } from "../../../../services/modules/appInst";
 import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys } from "../../../../services/modules/appInstMetrics";
 import { showCloudlets } from "../../../../services/modules/cloudlet";
 import { cloudletMetricsListKeys, cloudletMetrics, cloudletUsageMetrics } from "../../../../services/modules/cloudletMetrics";
@@ -111,5 +111,16 @@ export const fetchShowData = async (self, moduleId, data) => {
         if (response.status === 200 && response.list) {
             return { legends: response.data, legendList: response.list }
         }
+    }
+}
+
+export const requestLantency = async (self, data) => {
+    let mc = await requestAppInstLatency(self, data)
+    if (responseValid(mc)) {
+        self.props.handleAlertInfo('success', mc.response.data.message)
+    }
+    else {
+        if (mc.error && mc.error.response && mc.error.response.data && mc.error.response.data.message)
+            self.props.handleAlertInfo('error', mc.error.response.data.message)
     }
 }

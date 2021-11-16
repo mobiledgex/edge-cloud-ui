@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Card, ImageListItem } from '@material-ui/core'
-import LineChart from '../charts/linechart/MexLineChart'
-import { fetchResourceData } from '../services/service'
-import MetricWorker from '../services/metric.worker.js'
-import { equal } from '../../../../helper/constant/operators'
+import LineChart from '../../charts/linechart/MexLineChart'
+import { fetchResourceData } from '../../services/service'
+import MetricWorker from '../../services/metric.worker.js'
+import { equal } from '../../../../../helper/constant/operators'
 
 class ResourceChart extends React.Component {
     constructor(props) {

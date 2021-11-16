@@ -196,13 +196,7 @@ class MonitoringList extends React.Component {
   };
 
   onFormat = (row, data)=>{
-    // //{ "title": "", "subtitle": "", "ranges": [300], "measures": [10, 50], "markers": [200] },
-    // let values = data[row.field]
-    // if (values) {
-    //   let chartData = [{}, { "title": "", "subtitle": "", "ranges": [values.infraAllotted ? values.infraAllotted : 0], "measures": [values.used ? values.used : 0, values.allotted ? values.allotted : 0], "markers": [values.infraUsed ? values.infraUsed : 0] }]
-    //   console.log(chartData, data.key)
-    //   return <MBullet id={`${data.key}_${row.field}`} data={chartData}></MBullet>
-    // }
+
   }
   render() {
     const { anchorEl, order, orderBy } = this.state

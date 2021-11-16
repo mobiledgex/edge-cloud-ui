@@ -5,7 +5,9 @@ import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import Paper from '@material-ui/core/Paper';
 import { AutoSizer, Column, Table } from 'react-virtualized';
-import { Icon } from '../../../../hoc/mexui';
+import { Icon, IconButton } from '../../../../hoc/mexui';
+import { lightGreen } from '@material-ui/core/colors';
+import Actions from './Actions';
 
 const styles = (theme) => ({
     flexContainer: {
@@ -52,7 +54,7 @@ class MuiVirtualizedTable extends React.PureComponent {
     };
 
     cellRenderer = ({ rowData, cellData, columnIndex, rowIndex }) => {
-        const { columns, classes, rowHeight, onRowClick, selection, formatter } = this.props;
+        const { columns, classes, rowHeight, onRowClick, selection, formatter, onAction } = this.props;
         let column = columns[columnIndex]
         return (
             <TableCell
@@ -65,6 +67,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                 align={(columnIndex != null && columns[columnIndex].numeric) || false ? 'right' : 'left'}
             >
                 {
+                    column.type === 'button' ? <IconButton onClick={(e)=>{onAction(e, rowData)}}><Icon style={{ color: lightGreen['A700'], height: 18 }}>list</Icon></IconButton> :
                     column.type === 'checkbox' ? <Icon style={{ color: rowData.color }}>{`${selection[rowData.key] ? 'check_box' : 'check_box_outline_blank'}`}</Icon> :
                         column.format ? formatter(column, cellData) :
                             cellData
@@ -90,12 +93,12 @@ class MuiVirtualizedTable extends React.PureComponent {
     };
 
     render() {
-        const { classes, columns, formatter, rowHeight, headerHeight, ...tableProps } = this.props;
+        const { classes, columns, formatter, rowHeight, headerHeight, action, ...tableProps } = this.props;
         return (
             <AutoSizer>
                 {({ height, width }) => {
-                    //normalize width where 100 is reserved
-                    let columnWidth = (width - 100) / (columns.length - 1)
+                    //normalize width where 150 is reserved
+                    let columnWidth = (width - (action ? 150 : 50)) / (columns.length - 2)
                     return (
                         <Table
                             height={height}
@@ -153,9 +156,19 @@ MuiVirtualizedTable.propTypes = {
 const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
 export default function ReactVirtualizedTable(props) {
-    const { dataList, keys, formatter } = props
+    const { dataList, keys, formatter, handleAction, actionMenu } = props
     const [selection, setSelection] = React.useState({ count: 0 })
-    const columns = [{ field: false, label: false, type: 'checkbox', visible:true, width:50 }, ...keys.filter(key => key.visible)]
+    const [anchorEl, setAnchorEl] = React.useState(undefined)
+
+    const columns = [
+        { field: false, label: false, type: 'checkbox', visible: true, width: 50 },
+        ...keys.filter(key => key.visible)
+    ]
+
+    if (actionMenu && actionMenu.length > 0) {
+        columns.push({ field: false, label: 'Actions', type: 'button', visible: true, width: 100 })
+    }
+
     const onRowClick = (e) => {
         const { rowData } = e
         let data = { ...selection }
@@ -165,6 +178,16 @@ export default function ReactVirtualizedTable(props) {
         if (props.onRowClick) {
             props.onRowClick(data)
         }
+    }
+
+    const onActionClick = (e, action) => {
+        handleAction(action, anchorEl.data)
+        setAnchorEl(undefined)
+    }
+
+    const onActionMenu = (e, rowData)=>{
+        setAnchorEl({target:e.currentTarget, data:rowData})
+        e.stopPropagation()
     }
 
     return (
@@ -177,15 +200,11 @@ export default function ReactVirtualizedTable(props) {
                     formatter={formatter}
                     onRowClick={onRowClick}
                     selection={selection}
+                    action={actionMenu && actionMenu.length > 0}
+                    onAction={onActionMenu}
                 />
-
-                {/* <div style={{ height: 350, backgroundColor: '#2A2C34', width: '100%', borderRadius: 5 }}>
-                    <div style={{ height: 310 }}></div>
-                    <div align='center'>
-                        {props.children}
-                    </div>
-                </div> */}
             </Paper>
+            <Actions anchorEl={anchorEl && anchorEl.target} onClose={() => { setAnchorEl(undefined) }} onClick={onActionClick} actionMenu={actionMenu} />
         </React.Fragment>
     );
 }

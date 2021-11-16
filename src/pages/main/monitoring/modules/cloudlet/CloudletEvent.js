@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import EventList from '../../list/EventList'
 import { orgEvents } from '../../../../../services/modules/audit'
-import {redux_org} from '../../../../../helper/reduxData'
+import { redux_org } from '../../../../../helper/reduxData'
 import randomColor from 'randomcolor'
 import { CircularProgress, IconButton, Tooltip } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -29,7 +29,7 @@ class CloudletEvent extends React.Component {
             loading: false
         }
         this._isMounted = false
-        this.regions = props.regions
+        this.regions = props.tools.regions
     }
 
     updateState = (data) => {
@@ -54,13 +54,12 @@ class CloudletEvent extends React.Component {
         this.event({ starttime, endtime }, true)
     }
 
-
     render() {
         const { eventData, colors, showMore, loading } = this.state
-        const { filter } = this.props
+        const { tools } = this.props
         return (
             <div>
-                <EventList header='Events' eventData={eventData} filter={filter} colors={colors} keys={cloudletEventKeys} header={this.header} itemSize={80} itemExpandSize={320} />
+                <EventList header='Events' eventData={eventData} colors={colors} keys={cloudletEventKeys} header={this.header} itemSize={80} itemExpandSize={320} />
                 {showMore ? <div className='event-list-more' align="center">
                     {loading ? <CircularProgress size={20} /> :
                         <Tooltip title='More' onClick={this.loadMore}>
@@ -106,20 +105,17 @@ class CloudletEvent extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.org !== this.props.org && this._isMounted) {
-            this.setState({ eventData: [] }, () => {
-                this.event(this.props.range)
-            })
-        }
-        if (prevProps.range !== this.props.range) {
-            this.event(this.props.range)
+        const { range } = this.props.tools
+        if (prevProps.tools.range !== range) {
+            this.event(range)
         }
     }
 
     componentDidMount() {
         this._isMounted = true
+        const { range } = this.props.tools
         if (!redux_org.isAdmin(this) || this.props.org) {
-            this.event(this.props.range)
+            this.event(range)
         }
     }
 

@@ -4,15 +4,43 @@ import MexMap from '../../../../../hoc/mexmap/MexMap'
 import { Marker, Popup } from "react-leaflet";
 import { fields } from '../../../../../services/model/format'
 import { Icon } from '../../../../../hoc/mexui';
+import { PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST } from '../../../../../helper/constant/perpetual';
 
 const DEFAULT_ZOOM = 3
+
+const CloudletPopup = (props) => {
+    const { data } = props
+    return data[fields.cloudletName]
+}
+
+const AppInstPopup = (props) => {
+    const { data } = props
+    return (
+        <React.Fragment>
+            {data[fields.appName]} [{data[fields.version]}]
+            <code style={{ color: '#74B724' }}>
+                [{data[fields.clusterName]}]
+            </code>
+        </React.Fragment>
+    )
+}
+
+const ClusterInstPopup = (props) => {
+    const { data } = props
+    return (
+        <React.Fragment>
+            <code>{data[fields.clusterName]}</code>
+        </React.Fragment>
+    )
+}
 
 class Map extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             backswitch: false,
-            maps: undefined
+            maps: undefined,
+            refresh: false
         }
         this.popup = React.createRef();
     }
@@ -20,28 +48,54 @@ class Map extends React.Component {
     resetMap = () => {
     }
 
+    renderModulePopup = (data) => {
+        const { moduleId } = this.props.tools
+        switch (moduleId) {
+            case PARENT_CLOUDLET:
+                return <CloudletPopup data={data} />
+            case PARENT_APP_INST:
+                return <AppInstPopup data={data} />
+            case PARENT_CLUSTER_INST:
+                return <ClusterInstPopup data={data} />
+        }
+    }
+
     renderMarkerPopup = (data) => {
-        <Popup className="map-control-div-marker-popup" ref={this.popup}>
-            {
-                Object.keys(data).map(cloudletKey => {
-                    let dataList = data[cloudletKey]
-                    return (
-                        <div key={cloudletKey}>
-                            {
-                                dataList.map((item, i) => (
-                                    <div key={`${i}_${cloudletKey}`} className="map-control-div-marker-popup-label" >
-                                        <code style={{ fontWeight: 400, fontSize: 12 }}>
-                                            <Icon style={{ color: item.color, marginRight: 5 }}>circle</Icon>
-                                            {item[fields.cloudletName]}
-                                        </code>
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    )
-                })
-            }
-        </Popup>
+        const { moduleId } = this.props.tools
+        return (
+            <Popup className="map-control-div-marker-popup" ref={this.popup}>
+                {
+                    Object.keys(data).map(cloudletKey => {
+                        let dataList = data[cloudletKey]
+                        return (
+                            <div key={cloudletKey}>
+                                {
+                                    <React.Fragment>
+                                        <div>
+                                            {moduleId !== PARENT_CLOUDLET ?
+                                                <React.Fragment>
+                                                    <strong style={{ textTransform: 'uppercase', fontSize: 14 }}>{dataList[0][fields.cloudletName]}</strong>
+                                                    <br /><br />
+                                                </React.Fragment> : null
+                                            }
+                                            {dataList.map((item, i) => (
+
+                                                <div key={`${i}_${cloudletKey}`} className="map-control-div-marker-popup-label" >
+                                                    <code style={{ fontWeight: 400, fontSize: 12, display: 'flex', alignItems: 'center' }}>
+                                                        <Icon style={{ color: item.color, marginRight: 5, fontSize: 10 }}>circle</Icon>
+                                                        {this.renderModulePopup(item)}
+                                                    </code>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </React.Fragment>
+                                }
+                            </div>
+                        )
+                    })
+                }
+            </Popup>
+        )
     }
 
     renderMarker = () => {
@@ -69,25 +123,28 @@ class Map extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.data) {
-            const { data, tools } = props
+            const { data, tools, selection } = props
+            const { search } = tools
             let maps = {}
             let keys = Object.keys(data)
             keys.map(key => {
-                let item = data[key]
-                const { latitude, longitude } = item[fields.cloudletLocation]
-                let mapKey = `${latitude}_${longitude}`
-                let cloudletKey = item[fields.cloudletName]
-                maps[mapKey] = maps[mapKey] ? maps[mapKey] : {}
-                maps[mapKey][cloudletKey] = maps[mapKey][cloudletKey] ? maps[mapKey][cloudletKey] : []
-                maps[mapKey][cloudletKey].push(item)
+                if ((selection.count === 0 || selection[key]) && (search.length === 0 || key.includes(search))) {
+                    let item = data[key]
+                    const { latitude, longitude } = item[fields.cloudletLocation]
+                    let mapKey = `${latitude}_${longitude}`
+                    let cloudletKey = item[fields.cloudletName]
+                    maps[mapKey] = maps[mapKey] ? maps[mapKey] : {}
+                    maps[mapKey][cloudletKey] = maps[mapKey][cloudletKey] ? maps[mapKey][cloudletKey] : []
+                    maps[mapKey][cloudletKey].push(item)
+                }
             })
-            return { maps }
+            return { maps, refresh: !state.refresh }
         }
         return null
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return true//this.props.refresh !== nextProps.refresh
+        return this.props.refresh !== nextProps.refresh || this.state.refresh !== nextState.refresh
     }
 
     render() {

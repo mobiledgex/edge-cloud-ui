@@ -29,7 +29,6 @@ const margin = { top: 7, right: 40, bottom: 12, left: 10 },
 //markers - total allotted
 
 const bulletChart = (object, data) => {
-
     var chart = d3.bullet()
         .width(width)
         .height(13);

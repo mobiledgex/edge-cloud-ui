@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import Resources from '../common/Resources'
+import Resources from './resource/Resources'
 import { fetchShowData } from '../services/service'
 
 class Module extends React.Component {

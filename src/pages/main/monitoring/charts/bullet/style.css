@@ -5,6 +5,6 @@
 .bullet .range.s1 { fill: #ddd; }
 .bullet .range.s2 { fill: #ccc; }
 .bullet .measure.s0 { fill: #FFF; }
-.bullet .measure.s1 { fill: #42A46E; }
+.bullet .measure.s1 { fill: red; }
 .bullet .title { font-size: 14px; font-weight: bold; }
 .bullet .subtitle { fill: #999; }

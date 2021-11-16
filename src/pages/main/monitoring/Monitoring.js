@@ -1,18 +1,18 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom';
+import { Card } from '@material-ui/core'
 import * as actions from '../../../actions';
 
-import { Card, ImageList } from '@material-ui/core'
-
-import Module from './modules/Module'
-import DragButton from './list/DragButton'
-
 import Toolbar from './toolbar/MonitoringToolbar'
-import Legend from './list/Legend';
-import Map from './common/map/Map'
+import AppMonitoring from './modules/app/AppMonitoring';
+import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring';
+import ClusterMonitoring from './modules/cluster/ClusterMonitoring';
 
-import './common/PageMonitoringStyles.css'
+import { LS_LINE_GRAPH_FULL_SCREEN, PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST } from '../../../helper/constant/perpetual';
+import { HELP_MONITORING } from '../../../tutorial';
+
+import './PageMonitoringStyles.css'
 import './style.css'
 class Monitoring extends React.Component {
     constructor(props) {
@@ -23,7 +23,7 @@ class Monitoring extends React.Component {
             selection: { count: 0 },
             refresh: false
         }
-        this.tableRef = React.createRef()
+        this._isMounted = false
         //filter resources based on legendList
         this.legendList = {}
     }
@@ -54,12 +54,12 @@ class Monitoring extends React.Component {
             }
             else if (preTools.moduleId !== tools.moduleId) {
                 //reset components if moduleId change
-                this.setState({ tools: undefined, legends:{} })
+                this.setState({ tools: undefined, legends: {} })
                 wait = 100
             }
         }
-        setTimeout(()=>{this.setState({ tools, refresh })}, wait)
-        
+        setTimeout(() => { this.setState({ tools, refresh }) }, wait)
+
     }
 
     render() {
@@ -71,26 +71,25 @@ class Monitoring extends React.Component {
                 </Card>
                 {tools ? (
                     <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
-                        <div id='legend-block' className="block block-1" ref={this.tableRef}>
-                            <Legend tools={tools} data={legends} handleSelectionStateChange={this.handleSelectionStateChange} refresh={refresh}/>
-                        </div>
-                        <div style={{ position: 'relative', height: 4 }}>
-                            <DragButton height={400} />
-                        </div>
-                        <div id='resource-block' className="block block-2">
-                            <ImageList cols={4} rowHeight={300} >
-                                <Map tools={tools} regions={tools.regions} data={legends} refresh={refresh}/>
-                            </ImageList>
-                            <ImageList cols={4} rowHeight={300}>
-                                {tools.regions.map(region => (
-                                    <Module key={region} region={region} moduleId={tools.moduleId} tools={tools} selection={selection} handleDataStateChange={this.handleDataStateChange} />
-                                ))}
-                            </ImageList>
-                        </div>
+                        {
+                            tools.moduleId === PARENT_CLOUDLET ? <CloudletMonitoring tools={tools} legends={legends} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
+                                tools.moduleId === PARENT_CLUSTER_INST ? <ClusterMonitoring tools={tools} legends={legends} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
+                                    tools.moduleId === PARENT_APP_INST ? <AppMonitoring tools={tools} legends={legends} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange}/> :
+                                        null
+                        }
                     </div>
                 ) : null}
             </div>
         )
+    }
+
+    componentDidMount(){
+        this.props.handleViewMode(HELP_MONITORING)
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
+        localStorage.removeItem(LS_LINE_GRAPH_FULL_SCREEN)
     }
 }
 
