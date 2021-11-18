@@ -36,6 +36,7 @@ export const fetchResourceData = async (self, moduleId, data) => {
                 region,
                 metric: resourceKey,
                 legends: legends,
+                selection : data.selection,
                 timezone: timezonePref()
             })
             if (response.status === 200) {

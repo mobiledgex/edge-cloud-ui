@@ -5,6 +5,7 @@ import maxBy from 'lodash/maxBy';
 import meanBy from 'lodash/meanBy';
 import minBy from 'lodash/minBy';
 import cloneDeep from 'lodash/cloneDeep';
+import moment from 'moment'
 import { convertUnit } from '../helper/unitConvertor';
 import { generateDataset, generateDataset2 } from './chart';
 import { formatData } from '../../../../services/format/format';
@@ -12,6 +13,16 @@ import { fields } from '../../../../services/model/format';
 import { DEPLOYMENT_TYPE_VM, PARENT_APP_INST, PARENT_CLUSTER_INST, PLATFORM_TYPE_OPEN_STACK, PLATFORM_TYPE_VCD } from '../../../../helper/constant/perpetual';
 import { CLOUDLET_METRICS_ENDPOINT, APP_INST_METRICS_ENDPOINT, CLUSTER_METRICS_ENDPOINT } from '../../../../helper/constant/endpoint';
 import { darkColors } from '../../../../utils/color_utils';
+
+const FLAVOR_USAGE_TIME = 0
+const FLAVOR_USAGE_CLOUDLET = 2
+const FLAVOR_USAGE_OPERATOR = 3
+const FLAVOR_USAGE_COUNT = 4
+const FLAVOR_USAGE_FLAVOR = 5
+
+const utcTime = (format, date) => {
+    return moment(date).utc().format(format)
+}
 
 const processLineChartData = (chartDataList, values, worker) => {
     const { legends, timezone } = worker
@@ -136,18 +147,33 @@ const processData2 = (worker) => {
     self.postMessage({ status: 200, data: finalData, resources })
 }
 
+const flavorChartData = (legendKeys, dataList) => {
+    let result = {}
+    dataList.forEach(value => {
+        // let key = `${value[FLAVOR_USAGE_CLOUDLET]}_${value[FLAVOR_USAGE_OPERATOR]}`.toLowerCase()
+        let time = utcTime('YYYY-MM-DD HH:mm:ss', value[FLAVOR_USAGE_TIME])
+        let flavor = value[FLAVOR_USAGE_FLAVOR]
+        let key = `${time}_${flavor}`
+        result[key] = value[FLAVOR_USAGE_COUNT] + (result[key] ? result[key] : 0)
+    })
+    console.log(result)
+}
+
 const processFlavorData = (worker) => {
-    const { data } = worker
+    const { data, legends, selection } = worker
     if (data.values) {
         const { values } = data
-        let legends = {}
+        let flavorLegends = {}
         let columns = data.columns.filter(item => item !== undefined)
-        console.log(columns)
         let keys = Object.keys(values)
         if (keys && keys.length > 0) {
             let colors = darkColors(keys.length)
             keys.forEach((key, i) => {
-                legends[key] = { color: colors[i] }
+                flavorLegends[key] = { color: colors[i] }
+                columns.map((column, j) => {
+                    flavorLegends[key][column.serverField] = values[key][0][j]
+                })
+                flavorChartData(Object.keys(legends), values[key])
             })
         }
     }
