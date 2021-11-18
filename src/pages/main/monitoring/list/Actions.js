@@ -22,7 +22,7 @@ const Actions = (props) => {
                                     {
                                         actionMenu.map((action, i) => {
                                             let visible = group ? action.group : true
-                                            visible = visible && action.roles ? validateRole(action.roles, redux_org.roleType(orgInfo)) : visible
+                                            visible = visible && action.roles ? validateRole(action.roles, orgInfo) : visible
                                             return visible ? <MenuItem key={i} onClick={(e) => { onClick(e, { ...action, group }) }}>{action.label}</MenuItem> : null
                                         })
                                     }

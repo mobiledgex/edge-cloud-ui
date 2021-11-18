@@ -10,10 +10,6 @@ export const customData = (id, data) => {
     }
 }
 
-export const cloudletActions = [
-    { id: perpetual.ACTION_LATENCY_METRICS, label: 'Show Latency Metrics' },
-]
-
 export const cloudletMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },
     { label: 'Region', serverField: 'region', visible: true, groupBy: true },
@@ -54,14 +50,6 @@ export const resourceUsageMetricType = [
     { field: 'memory', serverField: 'ramUsed', header: 'RAM Used', position: 8, unit: UNIT_MB, steppedLine: 'after' },
     { field: 'cpu', serverField: 'vcpusUsed', header: 'vCPUs Used', position: 9, unit: UNIT_FLOOR, steppedLine: 'after' },
 ]
-
-export const cloudletMetricTypeKeys = () => ([
-    { field: 'utilization', serverField: 'utilization', header: 'Memory Usage', keys: utilizationMetricType, serverRequest: endpoint.CLOUDLET_METRICS_ENDPOINT },
-    { field: 'resourceusage', serverField: 'resourceusage', header: 'Resource Usage', keys: resourceUsageMetricType, serverRequest: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT },
-    { field: 'count', header: 'Flavor Usage' },
-    { field: 'map', header: 'Map' },
-    { field: 'event', header: 'Event' },
-])
 
 export const cloudletResourceKeys = () => ([
     { field: 'utilization', serverField: 'utilization', header: 'Memory Usage', keys: utilizationMetricType, serverRequest: endpoint.CLOUDLET_METRICS_ENDPOINT },

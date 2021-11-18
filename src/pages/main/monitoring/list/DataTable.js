@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
-import TableCell from '@material-ui/core/TableCell';
+import {TableCell} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import { AutoSizer, Column, Table } from 'react-virtualized';
+import { AutoSizer, Column, Table, defaultTableRowRenderer } from 'react-virtualized';
 import { Icon, IconButton } from '../../../../hoc/mexui';
 import { lightGreen } from '@material-ui/core/colors';
 import Actions from './Actions';
+import AppGroupView from '../modules/app/AppGroupView';
 
 const styles = (theme) => ({
     flexContainer: {
@@ -40,9 +41,14 @@ const styles = (theme) => ({
 });
 
 class MuiVirtualizedTable extends React.PureComponent {
+
+    constructor(props){
+        super(props)
+        this.isGroup = false
+    }
     static defaultProps = {
         headerHeight: 35,
-        rowHeight: 48,
+        rowHeight: 40,
     };
 
     getRowClassName = ({ index }) => {
@@ -92,11 +98,39 @@ class MuiVirtualizedTable extends React.PureComponent {
         );
     };
 
+    rowRenderer = (props) => {
+        const { index, style, className, key, rowData } = props
+        const { onAction, groupBy } = this.props
+        if (rowData.group) {
+            return (
+                <div
+                    style={{ ...style, backgroundColor: '#1d1d26'}}
+                    className={className}
+                    key={key}
+                >
+                    <div
+                        style={{
+                            marginLeft: 20,
+                            width: style.width - 85,
+                            fontSize: 14
+                        }}
+                    >
+                        <AppGroupView data={rowData}/>
+                    </div>
+                    <div style={{ display: 'inline', width: 85 }}>
+                        <IconButton onClick={(e) => { onAction(e, rowData) }}><Icon style={{ color: lightGreen['A700'], height: 18 }}>list</Icon></IconButton>
+                    </div>
+                </div>
+            )
+        }
+        return defaultTableRowRenderer(props);
+    }
+
     render() {
         const { classes, columns, formatter, rowHeight, headerHeight, action, ...tableProps } = this.props;
         return (
             <AutoSizer>
-                {({ height, width }) => {
+                {({ height, width, rowData }) => {
                     //normalize width where 150 is reserved
                     let columnWidth = (width - (action ? 150 : 50)) / (columns.length - 2)
                     return (
@@ -110,6 +144,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                             headerHeight={headerHeight}
                             className={classes.table}
                             {...tableProps}
+                            rowRenderer={this.rowRenderer}
                             rowClassName={this.getRowClassName}
                         >
                             {columns.map((column, index) => {
@@ -156,7 +191,7 @@ MuiVirtualizedTable.propTypes = {
 const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
 export default function ReactVirtualizedTable(props) {
-    const { dataList, keys, formatter, handleAction, actionMenu } = props
+    const { dataList, keys, formatter, handleAction, actionMenu, groupBy } = props
     const [selection, setSelection] = React.useState({ count: 0 })
     const [anchorEl, setAnchorEl] = React.useState(undefined)
 
@@ -202,6 +237,7 @@ export default function ReactVirtualizedTable(props) {
                     selection={selection}
                     action={actionMenu && actionMenu.length > 0}
                     onAction={onActionMenu}
+                    groupBy={groupBy}
                 />
             </Paper>
             <Actions anchorEl={anchorEl && anchorEl.target} onClose={() => { setAnchorEl(undefined) }} onClick={onActionClick} actionMenu={actionMenu} />

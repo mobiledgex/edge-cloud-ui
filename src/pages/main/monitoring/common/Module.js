@@ -44,8 +44,8 @@ class Module extends React.Component {
     }
 
     fetchLegends = async () => {
-        const { region, moduleId } = this.props
-        let data = await fetchShowData(this, moduleId, { region })
+        const { region, moduleId, tools } = this.props
+        let data = await fetchShowData(this, moduleId, { region, organization: tools.organization})
         if (data) {
             const { legends, legendList } = data
             this.legendList = legendList

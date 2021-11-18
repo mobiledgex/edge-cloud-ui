@@ -78,7 +78,6 @@ export const formatMetricData = (request, response) => {
         }
     }
     catch (e) {
-        // console.log(e)
     }
     return dataList
 }

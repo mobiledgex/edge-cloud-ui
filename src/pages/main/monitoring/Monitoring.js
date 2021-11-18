@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom';
 import { Card } from '@material-ui/core'
 import * as actions from '../../../actions';
+import { redux_org } from '../../../helper/reduxData';
 
 import Toolbar from './toolbar/MonitoringToolbar'
 import AppMonitoring from './modules/app/AppMonitoring';
@@ -14,6 +15,7 @@ import { HELP_MONITORING } from '../../../tutorial';
 
 import './PageMonitoringStyles.css'
 import './style.css'
+import { fetchOrgList } from './services/service';
 class Monitoring extends React.Component {
     constructor(props) {
         super(props)
@@ -21,7 +23,8 @@ class Monitoring extends React.Component {
             tools: undefined,
             legends: {},
             selection: { count: 0 },
-            refresh: false
+            refresh: false,
+            organizations:[]
         }
         this._isMounted = false
         //filter resources based on legendList
@@ -58,18 +61,18 @@ class Monitoring extends React.Component {
                 wait = 100
             }
         }
-        setTimeout(() => { this.setState({ tools, refresh }) }, wait)
+        setTimeout(() => { this.setState({ tools, refresh}) }, wait)
 
     }
 
     render() {
-        const { tools, legends, selection, refresh } = this.state
+        const { tools, legends, selection, refresh, organizations } = this.state
         return (
             <div mex-test="component-monitoring" style={{ position: 'relative' }}>
                 <Card style={{ height: 50, marginBottom: 2 }}>
-                    <Toolbar onChange={this.handleToolbarChange} />
+                    <Toolbar onChange={this.handleToolbarChange} organizations={organizations}/>
                 </Card>
-                {tools ? (
+                {tools && tools.organization ? (
                     <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
                         {
                             tools.moduleId === PARENT_CLOUDLET ? <CloudletMonitoring tools={tools} legends={legends} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
@@ -83,8 +86,16 @@ class Monitoring extends React.Component {
         )
     }
 
+    initOrgList = async () => {
+        if (redux_org.isAdmin(this)) {
+            let organizations = await fetchOrgList()
+            this.setState({organizations})
+        }
+    }
+
     componentDidMount(){
         this.props.handleViewMode(HELP_MONITORING)
+        this.initOrgList()
     }
 
     componentWillUnmount() {

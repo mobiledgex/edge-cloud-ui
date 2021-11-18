@@ -24,6 +24,9 @@ export const formatShowData = (request, response, customData, isUnique, self = n
                         value.uuid = keys ? (isUnique) ? generateUUID(keys, value) : uuid() : undefined
                         let newValue = customData ? customData(request, value, self) : value
                         if (newValue) {
+                            if (keys.length === 1) {
+                                newValue = newValue[keys[0].field]
+                            }
                             values.push(newValue)
                         }
                     }

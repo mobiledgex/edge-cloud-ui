@@ -2,7 +2,7 @@ import React from 'react';
 import { TableContainer, Table, TableHead, TableBody, TableCell, TableRow, Paper, Grow, Popper, ClickAwayListener, MenuList, MenuItem, TableSortLabel, makeStyles } from '@material-ui/core'
 import { Icon } from '../../../../hoc/mexui';
 import { lightGreen } from '@material-ui/core/colors';
-import { monitoringActions, validateRole } from '../helper/montconstant';
+import { validateRole } from '../helper/constant';
 import { useSelector } from 'react-redux';
 import { redux_org } from '../../../../helper/reduxData';
 import { fields } from '../../../../services/model/format';
@@ -156,7 +156,6 @@ class MonitoringList extends React.Component {
     this.rows = filter.parent.metricListKeys
     this.groupBy = filter.parent.groupBy
     this.colLen = this.rows.filter(row => (row.visible)).length + 1 + (this.groupBy.action ? 0 : 1)
-    this.actionMenu = monitoringActions(props.id)
     this.selection = []
 
   }

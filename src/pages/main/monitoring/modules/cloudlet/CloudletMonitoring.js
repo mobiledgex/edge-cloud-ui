@@ -5,8 +5,9 @@ import CloudletEvent from './CloudletEvent'
 import Map from '../../common/map/Map'
 import Legend from '../../common/legend/Legend'
 import DragButton from '../../list/DragButton'
-import { ACTION_LATENCY_METRICS } from '../../../../../helper/constant/perpetual'
 import DMEMetrics from '../../dme/DMEMetrics'
+import { ACTION_LATENCY_METRICS } from '../../../../../helper/constant/perpetual'
+import { fields } from '../../../../../services/model/format';
 
 const actionMenu = [
     { id: ACTION_LATENCY_METRICS, label: 'Show Latency Metrics' },
@@ -30,7 +31,7 @@ class CloudletMonitoring extends React.Component {
         const { moduleId, regions } = tools
         return (
             <React.Fragment>
-                <Legend tools={tools} data={legends} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} />
+                <Legend tools={tools} data={legends} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} sortBy={[fields.cloudletName]}/>
                 <div style={{ position: 'relative', height: 4 }}>
                     <DragButton height={400} />
                 </div>

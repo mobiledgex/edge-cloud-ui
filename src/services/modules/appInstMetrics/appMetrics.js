@@ -71,13 +71,6 @@ export const appInstMetricTypeKeys = () => ([
     { field: 'client', header: 'Client Usage' },
 ])
 
-
-export const appInstActions = [
-    { id: perpetual.ACTION_LATENCY_METRICS, label: 'Show Latency Metrics', group: true },
-    { id: perpetual.ACTION_REQUEST_LATENCY, label: 'Request Latency Metrics', roles: [ADMIN, DEVELOPER] },
-    { id: perpetual.ACTION_TRACK_DEVICES, label: 'Track Devices', roles: [ADMIN, DEVELOPER] }
-]
-
 export const fetchLocation = (avgValues, metricData, showList) => {
     for (let i = 0; i < showList.length; i++) {
         let show = showList[i]

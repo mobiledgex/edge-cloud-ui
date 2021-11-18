@@ -5,16 +5,16 @@ import { Box, Toolbar, Typography, Grid, Divider } from '@material-ui/core';
 import { lightGreen } from '@material-ui/core/colors';
 import SearchFilter from '../../../../hoc/filter/SearchFilter';
 import * as dateUtil from '../../../../utils/date_util'
-import { refreshRates, relativeTimeRanges, visibility } from '../helper/montconstant';
-import {redux_org} from '../../../../helper/reduxData'
-import { PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST } from '../../../../helper/constant/perpetual';
+import { refreshRates, relativeTimeRanges, visibility } from '../helper/constant';
+import { redux_org } from '../../../../helper/reduxData'
+import { DEVELOPER, PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST } from '../../../../helper/constant/perpetual';
 import { IconButton, Icon } from '../../../../hoc/mexui';
 
 import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 
 import MonitoringMenu from './MonitoringMenu'
-import MexTimer from '../helper/MexTimer'
+import MexTimer from '../common/picker/MexTimer'
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { fields } from '../../../../services/model/format';
@@ -79,15 +79,20 @@ const DateTimePicker = (props) => {
 /********
 * Module
 ********/
-const Module = (props)=>{
-    const {order, value, onUpdate} = props
+const Module = (props) => {
+    const { order, value, onUpdate } = props
     const orgInfo = useSelector(state => state.organizationInfo.data)
     const dataList = ['App Inst', 'Cluster Inst']
-    let defaultValue = dataList[0]
-    if(redux_org.isOperator(orgInfo) || redux_org.isAdmin(orgInfo))
-    {
+
+    const onValueChange = () => {
+        let data = value.moduleId === PARENT_APP_INST ? dataList[0] : dataList[1]
+        data = value.moduleId === PARENT_CLOUDLET ? dataList[2] : data
+        return data
+    }
+
+
+    if (redux_org.isOperator(orgInfo) || redux_org.isAdmin(orgInfo)) {
         dataList.push('Cloudlet')
-        defaultValue = dataList[2]
     }
 
     const onChange = (value) => {
@@ -97,14 +102,14 @@ const Module = (props)=>{
     }
 
     return (
-        <MonitoringMenu order={order} data={dataList} onChange={onChange}  default={defaultValue}/>
+        <MonitoringMenu order={order} data={dataList} onChange={onChange} value={onValueChange()} />
     )
 }
 
 /********
 * Statistics
 ********/
-const Statistics = (props)=>{
+const Statistics = (props) => {
     const { order, value, onUpdate } = props
     const dataList = ['max', 'avg', 'min']
 
@@ -113,7 +118,7 @@ const Statistics = (props)=>{
     }
 
     return (
-        value.moduleId !== PARENT_CLOUDLET  ? <MonitoringMenu order={order} data={dataList} onChange={onChange}  default={dataList[0]} allCaps={true}/> : null
+        value.moduleId !== PARENT_CLOUDLET ? <MonitoringMenu order={order} data={dataList} onChange={onChange} default={dataList[0]} allCaps={true} /> : null
     )
 }
 
@@ -134,9 +139,9 @@ const Region = (props) => {
 
 }
 
-const Visibility = (props)=>{
+const Visibility = (props) => {
     const { order, onUpdate, value } = props
-    const onChange = (value)=>{
+    const onChange = (value) => {
 
     }
     return (
@@ -144,19 +149,27 @@ const Visibility = (props)=>{
     )
 }
 
-const Organization = (props)=>{
-    const  {order, organizations} = props
+const Organization = (props) => {
+    const { order, dataList, onUpdate } = props
     const orgInfo = useSelector(state => state.organizationInfo.data)
-    onChange = ()=>{
 
+    useEffect(() => {
+        onChange(orgInfo)
+    }, [orgInfo]);
+
+
+    const onChange = (value) => {
+        let moduleId = value[fields.type] === DEVELOPER ? PARENT_APP_INST : PARENT_CLOUDLET
+        onUpdate({ organization: value, moduleId })
     }
+
     return (
-        redux_org.isAdmin() ? <MonitoringMenu order={order} data={organizations} labelKey={fields.organizationName} onChange={onChange} placeHolder={'Select Org'} disableDefault={true} search={true} /> : null
+        dataList.length > 0 ? <MonitoringMenu order={order} data={dataList} onChange={onChange} labelKey={fields.organizationName} placeHolder={'Select Org'} disableDefault={true} search={true} large={true} /> : null
     )
 }
 
 const MexToolbar = (props) => {
-    const { onChange } = props
+    const { onChange, organizations } = props
     const regions = useSelector(state => state.regionInfo.region)
     const orgInfo = useSelector(state => state.organizationInfo.data)
     const [value, setValue] = React.useState({
@@ -164,8 +177,9 @@ const MexToolbar = (props) => {
         range: timeRangeInMin(relativeTimeRanges[3].duration),
         duration: relativeTimeRanges[3],
         search: '',
-        moduleId: redux_org.isOperator(orgInfo) ? PARENT_CLOUDLET : PARENT_APP_INST,
-        stats:'max'
+        organization: redux_org.nonAdminOrg(orgInfo),
+        moduleId: redux_org.isDeveloper(orgInfo) ? PARENT_APP_INST : PARENT_CLOUDLET,
+        stats: 'max'
     })
     const [refreshRange, setRefreshRange] = React.useState(refreshRates[0])
 
@@ -182,19 +196,23 @@ const MexToolbar = (props) => {
             <Typography variant={'h5'} className='monitoring-header'>Monitoring</Typography>
             <div style={{ width: '100%' }}>
                 <Box display="flex" justifyContent="flex-end">
-                    <Box order={7}>
-                        <Refresh onUpdate={onUpdate} value={value} refreshRange={refreshRange} setRefreshRange={setRefreshRange} />
-                    </Box>
-                    <Box order={6} p={0.9}>
-                        <SearchFilter onFilter={(value) => { onUpdate({ search: value }) }} compact={true} insensitive={true} />
-                    </Box>
-                    <Visibility order={5} value={value} onUpdate={onUpdate}/>
-                    <Region order={4} value={value} onUpdate={onUpdate} />
-                    <Box order={3} p={1.1}>
-                        <DateTimePicker onUpdate={onUpdate} value={value} setRefreshRange={setRefreshRange} />
-                    </Box>
-                    <Statistics order={2} value={value} onUpdate={onUpdate} />
-                    <Module order={1} value={value} onUpdate={onUpdate} />
+                    {value.organization ?
+                        <React.Fragment>
+                            <Box order={8}>
+                                <Refresh onUpdate={onUpdate} value={value} refreshRange={refreshRange} setRefreshRange={setRefreshRange} />
+                            </Box>
+                            <Box order={7} p={0.9}>
+                                <SearchFilter onFilter={(value) => { onUpdate({ search: value }) }} compact={true} insensitive={true} />
+                            </Box>
+                            <Visibility order={6} value={value} onUpdate={onUpdate} />
+                            <Region order={5} value={value} onUpdate={onUpdate} />
+                            <Box order={4} p={1.2}>
+                                <DateTimePicker onUpdate={onUpdate} value={value} setRefreshRange={setRefreshRange} />
+                            </Box>
+                            <Statistics order={3} value={value} onUpdate={onUpdate} />
+                            <Module order={2} value={value} onUpdate={onUpdate} />
+                        </React.Fragment> : null}
+                        <Organization order={1} dataList={organizations} onUpdate={onUpdate} />
                 </Box>
             </div>
         </Toolbar>

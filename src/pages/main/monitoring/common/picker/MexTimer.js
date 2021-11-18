@@ -1,7 +1,7 @@
 import React from 'react';
-import { Popover, Grid, Button, Divider, Box, Tooltip } from '@material-ui/core';
-import * as dateUtil from '../../../../utils/date_util'
-import * as constant from './montconstant'
+import { Popover, Grid, Button, Divider, Tooltip } from '@material-ui/core';
+import * as dateUtil from '../../../../../utils/date_util'
+import { relativeTimeRanges } from '../../helper/constant'
 import * as moment from 'moment'
 import { Icon } from 'semantic-ui-react';
 import 'date-fns';
@@ -10,7 +10,7 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDateTimePicker,
 } from '@material-ui/pickers';
-import { alertInfo } from '../../../../actions';
+import { alertInfo } from '../../../../../actions';
 import { useDispatch } from 'react-redux';
 
 const rangeLabel = (from, to) => {
@@ -18,7 +18,7 @@ const rangeLabel = (from, to) => {
         <div>
             {dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, from)}
         </div>
-        <div style={{marginTop:10, marginBottom:10}} align="center">
+        <div style={{ marginTop: 10, marginBottom: 10 }} align="center">
             to
         </div>
         <div>
@@ -51,13 +51,13 @@ const MexTimer = (props) => {
         }
         else {
             setAnchorEl(null)
-            let utcFrom  = dateUtil.utcTime(dateUtil.FORMAT_FULL_T, from) + '+00:00'
-            let utcTo  = dateUtil.utcTime(dateUtil.FORMAT_FULL_T, to) + '+00:00'
+            let utcFrom = dateUtil.utcTime(dateUtil.FORMAT_FULL_T, from) + '+00:00'
+            let utcTo = dateUtil.utcTime(dateUtil.FORMAT_FULL_T, to) + '+00:00'
             props.onChange(utcFrom, utcTo)
         }
     }
 
-    const applyRelativeTimeRange = (relativeTimeRange)=>{
+    const applyRelativeTimeRange = (relativeTimeRange) => {
         setAnchorEl(null)
         props.onRelativeChange(relativeTimeRange)
     }
@@ -67,9 +67,9 @@ const MexTimer = (props) => {
 
     return (
         <React.Fragment>
-            <Tooltip title={<strong style={{fontSize:13}}>{rangeLabel(props.range.starttime, props.range.endtime)}</strong>} arrow>
-                <button size='small' aria-controls="mex-timer" aria-haspopup="true" onClick={handleClick} style={{backgroundColor:'transparent', border:'1px solid rgba(118, 255, 3, 0.7)', borderRadius:5, cursor:'pointer', padding:5}}>
-                    <Icon name='clock outline' style={{color:'rgba(118, 255, 3, 0.7)'}}/><strong style={{marginLeft:5, color:'rgba(118, 255, 3, 0.7)'}}>{props.duration.label}</strong><Icon name='chevron down'  style={{marginLeft:5, color:'rgba(118, 255, 3, 0.7)'}}/>
+            <Tooltip title={<strong style={{ fontSize: 13 }}>{rangeLabel(props.range.starttime, props.range.endtime)}</strong>} arrow>
+                <button size='small' aria-controls="mex-timer" aria-haspopup="true" onClick={handleClick} style={{ backgroundColor: 'transparent', border: '1px solid rgba(118, 255, 3, 0.7)', borderRadius: 5, cursor: 'pointer', padding: 5 }}>
+                    <Icon name='clock outline' style={{ color: 'rgba(118, 255, 3, 0.7)' }} /><strong style={{ marginLeft: 5, color: 'rgba(118, 255, 3, 0.7)' }}>{props.duration.label}</strong><Icon name='chevron down' style={{ marginLeft: 5, color: 'rgba(118, 255, 3, 0.7)' }} />
                 </button>
             </Tooltip>
             <Popover
@@ -124,10 +124,10 @@ const MexTimer = (props) => {
                         <Grid item xs={5}>
                             <div>
                                 <h4 style={{ marginBottom: 20 }}><b> Relative Time Ranges</b></h4>
-                                {constant.relativeTimeRanges.map((relativeTimeRange, i) => {
+                                {relativeTimeRanges.map((relativeTimeRange, i) => {
                                     return (
                                         <div key={i}>
-                                            <Button onClick={()=>{applyRelativeTimeRange(relativeTimeRange)}}>{relativeTimeRange.label}</Button>
+                                            <Button onClick={() => { applyRelativeTimeRange(relativeTimeRange) }}>{relativeTimeRange.label}</Button>
                                         </div>
                                     )
                                 })}

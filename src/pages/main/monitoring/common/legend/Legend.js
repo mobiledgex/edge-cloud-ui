@@ -3,8 +3,9 @@ import BulletChart from '../../charts/bullet/BulletChart';
 import BulletLegend from '../../charts/bullet/Legend';
 import DataTable from '../../list/DataTable'
 import { onlyNumeric } from '../../../../../utils/string_utils';
-import { legendKeys } from '../../services/service';
 import { _orderBy } from '../../../../../helper/constant/operators';
+import { legendKeys } from '../../helper/constant';
+import { Skeleton } from '@material-ui/lab';
 class Legend extends React.Component {
 
     constructor(props) {
@@ -16,16 +17,41 @@ class Legend extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.data) {
-            const { data, tools } = props
-            const { search } = tools
-            let newList = []
-            data && Object.keys(data).forEach(key => {
-                if (search.length === 0 || key.includes(search)) {
-                    newList.push({ ...data[key], key })
+            const { data, tools, groupBy, sortBy } = props
+            let keys = Object.keys(data)
+            if (keys.length > 0) {
+                const { search } = tools
+                let newList = []
+                keys.forEach(key => {
+                    if (search.length === 0 || key.includes(search)) {
+                        newList.push({ ...data[key], key })
+                    }
+                })
+
+                if (groupBy) {
+                    newList = _orderBy(newList, groupBy);
+                    let group = { version: 'v1' }
+                    let groupList = []
+                    newList.forEach((item, i) => {
+                        let valid = groupBy.some(field => {
+                            if (group[field] !== item[field]) {
+                                group[field] = item[field]
+                                return true
+                            }
+                        })
+                        if (valid) {
+                            groupList.push({ ...item, group: true })
+                        }
+
+                        groupList.push(item)
+                    })
+                    newList = groupList
                 }
-            })
-            newList = _orderBy(newList, ['cloudletName']);
-            return { newList }
+                else {
+                    newList = _orderBy(newList, sortBy);
+                }
+                return { newList }
+            }
         }
         return null
     }
@@ -49,16 +75,13 @@ class Legend extends React.Component {
 
     render() {
         const { newList } = this.state
-        const { tools, handleSelectionStateChange, handleAction, actionMenu } = this.props
+        const { tools, handleSelectionStateChange, handleAction, actionMenu, groupBy } = this.props
         return (
             <React.Fragment>
-                <div style={{height:40, backgroundColor:'#292C33', margin:'0px 0 0px 0px', borderRadius:'5px 5px 0px 0px'}}>
-
-                </div>
                 <div id='legend-block' className="block block-1">
                     {
                         newList && newList.length > 0 ?
-                            <DataTable dataList={newList} keys={legendKeys(tools.moduleId)} onRowClick={handleSelectionStateChange} formatter={this.onFormat} actionMenu={actionMenu} handleAction={handleAction}/> : null
+                            <DataTable dataList={newList} keys={legendKeys(tools.moduleId)} onRowClick={handleSelectionStateChange} formatter={this.onFormat} actionMenu={actionMenu} handleAction={handleAction} groupBy={groupBy} /> : <Skeleton variant='rect' height={'inherit'} />
                     }
                 </div>
             </React.Fragment>

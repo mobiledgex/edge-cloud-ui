@@ -4,6 +4,7 @@ import Map from '../../common/map/Map'
 import Module from '../../common/Module'
 import Legend from '../../common/legend/Legend'
 import DragButton from '../../list/DragButton'
+import { fields } from '../../../../../services/model/format';
 class ClusterMonitoring extends React.Component {
     constructor(props) {
         super()
@@ -15,7 +16,7 @@ class ClusterMonitoring extends React.Component {
         const { moduleId, regions } = tools
         return (
             <React.Fragment>
-                <Legend tools={tools} data={legends} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} />
+                <Legend tools={tools} data={legends} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} sortBy={[fields.clusterName]}/>
                 <div style={{ position: 'relative', height: 4 }}>
                     <DragButton height={400} />
                 </div>

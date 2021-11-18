@@ -11,15 +11,18 @@ import DragButton from '../../list/DragButton'
 import AppClient from './AppClient'
 import AppEvent from './AppEvent'
 import DMEMetrics from '../../dme/DMEMetrics'
+import AppInstClientMap from './AppInstClientMap'
 
 import { requestLantency } from '../../services/service'
 import { perpetual } from '../../../../../helper/constant'
+import { fields } from '../../../../../services/model/format';
 
 export const actionMenu = [
     { id: perpetual.ACTION_LATENCY_METRICS, label: 'Show Latency Metrics', group: true },
     { id: perpetual.ACTION_REQUEST_LATENCY, label: 'Request Latency Metrics', roles: [perpetual.ADMIN, perpetual.DEVELOPER] },
     { id: perpetual.ACTION_TRACK_DEVICES, label: 'Track Devices', roles: [perpetual.ADMIN, perpetual.DEVELOPER] }
 ]
+
 class AppMonitoring extends React.Component {
     constructor(props) {
         super()
@@ -44,7 +47,7 @@ class AppMonitoring extends React.Component {
         const { moduleId, regions, range } = tools
         return (
             <React.Fragment>
-                <Legend tools={tools} data={legends} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} />
+                <Legend tools={tools} data={legends} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} groupBy={[fields.appName, fields.version]} />
                 <div style={{ position: 'relative', height: 4 }}>
                     <DragButton height={400} />
                 </div>
@@ -56,7 +59,7 @@ class AppMonitoring extends React.Component {
                             </Card>
                         </ImageListItem>
                         <ImageListItem cols={2}>
-                            <Map tools={tools} regions={regions} data={legends} selection={selection} refresh={refresh} />
+                            <Map tools={tools} regions={regions} data={legends} selection={selection} refresh={refresh} zoom={2}/>
                         </ImageListItem>
                         <ImageListItem cols={1}>
                             <Card style={{ height: 300 }}>
@@ -68,6 +71,7 @@ class AppMonitoring extends React.Component {
                         ))}
                     </ImageList>
                     {actionView && actionView.id === perpetual.ACTION_LATENCY_METRICS ? <DMEMetrics group={false} id={moduleId} onClose={() => { this.setState({ actionView: undefined }) }} data={[actionView.data]} /> : null}
+                    {actionView && actionView.id === perpetual.ACTION_TRACK_DEVICES ? <AppInstClientMap onClose={() => { this.setState({ actionView: undefined }) }} data={actionView.data}/> : null}
                 </div>
             </React.Fragment>
         )

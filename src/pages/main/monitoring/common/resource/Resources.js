@@ -1,5 +1,5 @@
 import React from 'react'
-import { resourceKeys } from '../../services/service'
+import { resourceKeys } from '../../helper/constant'
 import ResourceChart from './ResourceChart'
 
 class Resources extends React.Component {

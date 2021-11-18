@@ -5,6 +5,7 @@ import { Marker, Popup } from "react-leaflet";
 import { fields } from '../../../../../services/model/format'
 import { Icon } from '../../../../../hoc/mexui';
 import { PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST } from '../../../../../helper/constant/perpetual';
+import { Skeleton } from '@material-ui/lab';
 
 const DEFAULT_ZOOM = 3
 
@@ -124,21 +125,23 @@ class Map extends React.Component {
     static getDerivedStateFromProps(props, state) {
         if (props.data) {
             const { data, tools, selection } = props
-            const { search } = tools
-            let maps = {}
             let keys = Object.keys(data)
-            keys.map(key => {
-                if ((selection.count === 0 || selection[key]) && (search.length === 0 || key.includes(search))) {
-                    let item = data[key]
-                    const { latitude, longitude } = item[fields.cloudletLocation]
-                    let mapKey = `${latitude}_${longitude}`
-                    let cloudletKey = item[fields.cloudletName]
-                    maps[mapKey] = maps[mapKey] ? maps[mapKey] : {}
-                    maps[mapKey][cloudletKey] = maps[mapKey][cloudletKey] ? maps[mapKey][cloudletKey] : []
-                    maps[mapKey][cloudletKey].push(item)
-                }
-            })
-            return { maps, refresh: !state.refresh }
+            if (keys.length > 0) {
+                const { search } = tools
+                let maps = {}
+                keys.map(key => {
+                    if ((selection.count === 0 || selection[key]) && (search.length === 0 || key.includes(search))) {
+                        let item = data[key]
+                        const { latitude, longitude } = item[fields.cloudletLocation]
+                        let mapKey = `${latitude}_${longitude}`
+                        let cloudletKey = item[fields.cloudletName]
+                        maps[mapKey] = maps[mapKey] ? maps[mapKey] : {}
+                        maps[mapKey][cloudletKey] = maps[mapKey][cloudletKey] ? maps[mapKey][cloudletKey] : []
+                        maps[mapKey][cloudletKey].push(item)
+                    }
+                })
+                return { maps, refresh: !state.refresh }
+            }
         }
         return null
     }
@@ -149,9 +152,9 @@ class Map extends React.Component {
 
     render() {
         const { backswitch, maps } = this.state
-        const { regions } = this.props
+        const { regions, zoom } = this.props
         return (
-            maps ? <MexMap renderMarker={this.renderMarker} back={this.resetMap} zoom={DEFAULT_ZOOM} backswitch={backswitch} region={regions} /> : null
+            maps ? <MexMap renderMarker={this.renderMarker} back={this.resetMap} zoom={zoom ? zoom : DEFAULT_ZOOM} backswitch={backswitch} region={regions} /> : <Skeleton variant='rect' height={300} />
         )
     }
 
