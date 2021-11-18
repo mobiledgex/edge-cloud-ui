@@ -105,5 +105,6 @@ export const formatMetricUsageData = (request, response) => {
     catch (e) {
         //alert(e)
     }
+    console.log(formattedData)
     return formattedData
 }

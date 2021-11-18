@@ -36,7 +36,7 @@ const avgCalculator = (values, metric, legends) => {
 
 const processData = (worker) => {
 
-    const { metric, dataList, parentId, region, legends } = worker
+    const { metric, dataList, region, legends } = worker
     const metricList = metric.keys ? metric.keys : [metric]
     let chartList = []
     let resources = {}

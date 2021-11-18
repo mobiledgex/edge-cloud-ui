@@ -8,6 +8,7 @@ import DragButton from '../../list/DragButton'
 import DMEMetrics from '../../dme/DMEMetrics'
 import { ACTION_LATENCY_METRICS } from '../../../../../helper/constant/perpetual'
 import { fields } from '../../../../../services/model/format';
+import CloudletFlavorUsage from './CloudletFlavorUsage'
 
 const actionMenu = [
     { id: ACTION_LATENCY_METRICS, label: 'Show Latency Metrics' },
@@ -28,7 +29,7 @@ class CloudletMonitoring extends React.Component {
     render() {
         const {actionView} = this.state
         const { tools, legends, selection, refresh, handleDataStateChange, handleSelectionStateChange } = this.props
-        const { moduleId, regions } = tools
+        const { moduleId, regions, range } = tools
         return (
             <React.Fragment>
                 <Legend tools={tools} data={legends} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} sortBy={[fields.cloudletName]}/>
@@ -45,9 +46,9 @@ class CloudletMonitoring extends React.Component {
                                 <CloudletEvent tools={tools} />
                             </Card>
                         </ImageListItem>
-                        {/* {regions.map((region, i) => (
-                        <CloudletFlavorUsage key={`flavor_${region}_${i}`} range={range} filter={tools} avgData={avgData[region]} rowSelected={rowSelected} region={region} org={selectedOrg} />
-                    ))} */}
+                        {regions.map((region, i) => (
+                            <CloudletFlavorUsage key={`flavor_${region}_${i}`} range={range} filter={tools} avgData={legends} region={region}/>
+                        ))}
                         {regions.map(region => (
                             <Module key={region} region={region} moduleId={moduleId} tools={tools} selection={selection} handleDataStateChange={handleDataStateChange} />
                         ))}

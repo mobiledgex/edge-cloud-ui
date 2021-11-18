@@ -60,7 +60,7 @@ export const networkMetricType = [
     { field: 'received', serverField: 'network', subId: 'recvBytes', header: 'Network Received', position: 2, unit: UNIT_BYTES },
 ]
 
-export const appInstMetricTypeKeys = () => ([
+export const appInstResourceKeys = () => ([
     { field: 'cpu', serverField: 'cpu', header: 'CPU', position: 1, unit: UNIT_PERCENTAGE, serverRequest: endpoint.APP_INST_METRICS_ENDPOINT },
     { field: 'memory', serverField: 'mem', header: 'Memory', position: 1, unit: UNIT_BYTES, serverRequest: endpoint.APP_INST_METRICS_ENDPOINT },
     { field: 'disk', serverField: 'disk', header: 'Disk Usage', position: 1, unit: UNIT_BYTES, serverRequest: endpoint.APP_INST_METRICS_ENDPOINT },

@@ -1,6 +1,6 @@
 import { cloudletResourceKeys } from '../../../../services/modules/cloudletMetrics/cloudletMetrics'
-import { appInstMetrics, appInstMetricTypeKeys, appMetricsListKeys } from '../../../../services/modules/appInstMetrics'
-import { clusterMetrics, clusterMetricsListKeys, clusterMetricTypeKeys } from '../../../../services/modules/clusterInstMetrics'
+import { appInstMetrics, appInstResourceKeys, appMetricsListKeys } from '../../../../services/modules/appInstMetrics'
+import { clusterMetrics, clusterMetricsListKeys, clusterResourceKeys } from '../../../../services/modules/clusterInstMetrics'
 import { cloudletMetrics, cloudletMetricsListKeys, cloudletUsageMetrics } from '../../../../services/modules/cloudletMetrics'
 import { showCloudlets } from "../../../../services/modules/cloudlet";
 import { showAppInsts } from "../../../../services/modules/appInst";
@@ -48,9 +48,9 @@ export const resourceKeys = (moduleId) => {
         case PARENT_CLOUDLET:
             return cloudletResourceKeys()
         case PARENT_APP_INST:
-            return appInstMetricTypeKeys()
+            return appInstResourceKeys()
         case PARENT_CLUSTER_INST:
-            return clusterMetricTypeKeys()
+            return clusterResourceKeys()
     }
 }
 

@@ -20,8 +20,6 @@ export const cloudletMetricsKeys = [
 export const cloudletFlavorMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },
     { label: 'Region', serverField: 'region', visible: true, groupBy: true },
-    // { label: 'Cloudlet', serverField: 'cloudlet', visible: true, groupBy: true },
-    // { label: 'Operator', serverField: 'cloudletorg', visible: true, groupBy: true },
     { label: 'Flavor', serverField: 'flavor', visible: true, groupBy: true }
 ]
 
@@ -52,9 +50,9 @@ export const resourceUsageMetricType = [
 ]
 
 export const cloudletResourceKeys = () => ([
-    { field: 'utilization', serverField: 'utilization', header: 'Memory Usage', keys: utilizationMetricType, serverRequest: endpoint.CLOUDLET_METRICS_ENDPOINT },
-    { field: 'resourceusage', serverField: 'resourceusage', header: 'Resource Usage', keys: resourceUsageMetricType, serverRequest: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT },
-    { field: 'count', header: 'Flavor Usage' },
+    // { field: 'utilization', serverField: 'utilization', header: 'Memory Usage', keys: utilizationMetricType, serverRequest: endpoint.CLOUDLET_METRICS_ENDPOINT },
+    // { field: 'resourceusage', serverField: 'resourceusage', header: 'Resource Usage', keys: resourceUsageMetricType, serverRequest: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT },
+    { field: 'count', header: 'Flavor Usage', serverField: 'flavorusage', serverRequest: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT },
     { field: 'map', header: 'Map' },
     { field: 'event', header: 'Event' },
 ])
@@ -84,7 +82,8 @@ export const cloudletUsageMetrics = (data, org) => {
     requestData.cloudlet = data.cloudlet ? data.cloudlet : {
         organization: org
     }
-    return { method: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, data: requestData, keys: cloudletMetricsKeys }
+    let keys = data.selector === 'flavorusage' ? cloudletFlavorMetricsKeys : cloudletMetricsKeys
+    return { method: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, data: requestData, keys }
 }
 
 export const cloudletFlavorUsageMetrics = (data, org) => {

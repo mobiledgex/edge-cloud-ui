@@ -30,7 +30,7 @@ class Module extends React.Component {
             })
             return { legends }
         }, ()=>{
-            this.props.handleDataStateChange(this.props.region, this.state.legends)
+            this.props.handleDataStateChange(this.state.legends)
         })
     }
 
@@ -49,6 +49,7 @@ class Module extends React.Component {
         if (data) {
             const { legends, legendList } = data
             this.legendList = legendList
+            this.props.handleDataStateChange(legends)
             this.setState({ legends })
         }
     }

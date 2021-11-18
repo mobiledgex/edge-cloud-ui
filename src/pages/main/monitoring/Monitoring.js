@@ -35,7 +35,7 @@ class Monitoring extends React.Component {
         this.setState({ selection })
     }
 
-    handleDataStateChange = (region, data) => {
+    handleDataStateChange = (data) => {
         this.setState(prevState => {
             let legends = prevState.legends
             let refresh = !prevState.refresh
