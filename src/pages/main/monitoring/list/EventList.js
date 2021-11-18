@@ -5,10 +5,10 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import { Collapse, Divider, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 import * as dateUtil from '../../../../utils/date_util'
-import './style.css'
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { VariableSizeList } from 'react-window';
+import './style.css'
 
 class Events extends React.Component {
     constructor(props) {
