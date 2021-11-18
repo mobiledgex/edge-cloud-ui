@@ -43,11 +43,14 @@ class ResourceChart extends React.Component {
         const { region, legends, legendList, moduleId, resource, tools, selection, handleLegendStateChange } = this.props
         const { range } = tools
         let dataObject = await fetchResourceData(this, moduleId, { region, legends, legendList, resourceKey: resource, range, selection, worker: this.metricWorker })
-        // if (dataObject) {
-        //     const { resources, data } = dataObject
-        //     this.setState({ dataList: data })
-        //     handleLegendStateChange(resources)
-        // }
+        console.log(dataObject)
+        if (dataObject) {
+            const { resources, data } = dataObject
+            this.setState({ dataList: data })
+            if (resources) {
+                handleLegendStateChange(resources)
+            }
+        }
     }
 
     componentDidUpdate(preProps, preState){

@@ -6,6 +6,7 @@ import meanBy from 'lodash/meanBy';
 import minBy from 'lodash/minBy';
 import cloneDeep from 'lodash/cloneDeep';
 import moment from 'moment'
+import momentTimezone from "moment-timezone";
 import { convertUnit } from '../helper/unitConvertor';
 import { generateDataset, generateDataset2 } from './chart';
 import { formatData } from '../../../../services/format/format';
@@ -135,7 +136,7 @@ const processData2 = (worker) => {
                     }
                     // if(!skip)
                     {
-                    chartData[item.field]['datasets'][key] = generateDataset2(tags, item, timezone, values, legends[key])
+                    chartData[item.field]['datasets'][key] = generateDataset2(legends[key], tags, item, timezone, values)
                     }
                 }
             }
@@ -144,38 +145,50 @@ const processData2 = (worker) => {
             finalData.push(chartData[item.field])
         }
     }
+    console.log(finalData)
     self.postMessage({ status: 200, data: finalData, resources })
 }
 
-const flavorChartData = (legendKeys, dataList) => {
+const flavorChartData = (legendKeys, key, dataList, timezone) => {
     let result = {}
     dataList.forEach(value => {
-        // let key = `${value[FLAVOR_USAGE_CLOUDLET]}_${value[FLAVOR_USAGE_OPERATOR]}`.toLowerCase()
-        let time = utcTime('YYYY-MM-DD HH:mm:ss', value[FLAVOR_USAGE_TIME])
-        let flavor = value[FLAVOR_USAGE_FLAVOR]
-        let key = `${time}_${flavor}`
-        result[key] = value[FLAVOR_USAGE_COUNT] + (result[key] ? result[key] : 0)
+        let time = utcTime('YYYY-MM-DD HH:mm:ss', value[FLAVOR_USAGE_TIME], timezone)
+        if (result[time]) {
+            result[time]['y'] = value[FLAVOR_USAGE_COUNT] + result[time]['y']
+        }
+        else {
+            result[time] = { x: moment.tz(value[FLAVOR_USAGE_TIME], timezone).valueOf(), y: value[FLAVOR_USAGE_COUNT] }
+        }
     })
-    console.log(result)
+    let timeList = []
+    Object.keys(result).map(item=>{
+        timeList.push(result[item])
+    })
+    return timeList
 }
 
 const processFlavorData = (worker) => {
-    const { data, legends, selection } = worker
+    const { data, legends, selection, timezone, metric, region } = worker
     if (data.values) {
         const { values } = data
         let flavorLegends = {}
         let columns = data.columns.filter(item => item !== undefined)
         let keys = Object.keys(values)
+        let datasets = {}
         if (keys && keys.length > 0) {
             let colors = darkColors(keys.length)
             keys.forEach((key, i) => {
-                flavorLegends[key] = { color: colors[i] }
+                let tags = {flavorName: values[key][0][FLAVOR_USAGE_FLAVOR]}
+                flavorLegends[key] = { color: colors[i], sorted:true }
                 columns.map((column, j) => {
                     flavorLegends[key][column.serverField] = values[key][0][j]
                 })
-                flavorChartData(Object.keys(legends), values[key])
+                let timeseries = flavorChartData(Object.keys(legends), key, values[key], timezone)
+                datasets[key] = generateDataset2(flavorLegends[key], tags, metric, timezone, timeseries)
             })
         }
+        let chartData = {resourceType: metric, region, datasets}
+        self.postMessage({ status: 200, data: [chartData] })
     }
 }
 

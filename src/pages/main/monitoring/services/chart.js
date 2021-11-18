@@ -51,21 +51,24 @@ export const generateDataset = (chartData, values, avgData, timezone, labelPosit
     return datasets
 }
 
-export const generateDataset2 = (tags, metric, timezone, dataList, avgData) => {
+export const generateDataset2 = (legend, tags, metric, timezone, dataList) => {
+    console.log(tags)
     let dataset = {}
     if (dataList && dataList.length > 0) {
         const { position, steppedLine } = metric
-        let color = avgData.color
+        let color = legend.color
 
-        let data = []
-        dataList.forEach(value => {
-            if (value[position] !== null) {
-                data.push({ x: moment.tz(value[0], timezone).valueOf(), y: value[position] })
-            }
-        })
+        let data = legend.sorted ? dataList : []
+        if (!legend.sorted) {
+            dataList.forEach(value => {
+                if (value[position] !== null) {
+                    data.push({ x: moment.tz(value[0], timezone).valueOf(), y: value[position] })
+                }
+            })
+        }
 
         dataset = {
-            label: tags['cloudlet'],
+            label: tags['flavorName'],
             fill: false,
             lineTension: 0.5,
             steppedLine: steppedLine ? steppedLine : false,

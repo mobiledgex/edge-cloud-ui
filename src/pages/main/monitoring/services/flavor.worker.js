@@ -56,7 +56,6 @@ const processData = (worker) => {
                 }
                 return result
             }, {})
-            console.log(formattedList)
             values[valueKey] = Object.keys(formattedList).map(formatted => {
                 return formattedList[formatted]
             })
