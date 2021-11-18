@@ -83,28 +83,27 @@ export const formatMetricData = (request, response) => {
 }
 
 export const formatMetricUsageData = (request, response) => {
-    let formattedData = []
-    try {
-        if (response && response.data && response.data.data) {
-            let dataList = response.data.data;
-            if (dataList && dataList.length > 0) {
-                const keys = request.keys
-                const requestData = request.data
-                let series = dataList[0].Series
-                let messages = dataList[0].messages
-                if (series && series.length > 0) {
-                    let formattingData = { columns: formatColumns(series[0].columns, keys), values: {} }
-                    for (let data of series) {
-                        formattingData.values = { ...formattingData.values, ...groupByCompare(data.values, formattingData.columns, requestData.region) }
+    let formattedData = {}
+        try {
+            if (response && response.data && response.data.data) {
+                let dataList = response.data.data;
+                if (dataList && dataList.length > 0) {
+                    const keys = request.keys
+                    const requestData = request.data
+                    let series = dataList[0].Series
+                    let messages = dataList[0].messages
+                    if (series && series.length > 0) {
+                        let formattingData = { columns: formatColumns(series[0].columns, keys), values: {} }
+                        for (let data of series) {
+                            formattingData.values = { ...formattingData.values, ...groupByCompare(data.values, formattingData.columns, requestData.region) }
+                        }
+                        formattedData = formattingData
                     }
-                    formattedData = formattingData
                 }
             }
         }
-    }
-    catch (e) {
-        //alert(e)
-    }
-    console.log(formattedData)
+        catch (e) {
+            //alert(e)
+        }
     return formattedData
 }

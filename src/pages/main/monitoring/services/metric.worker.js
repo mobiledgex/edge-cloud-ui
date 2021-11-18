@@ -11,6 +11,7 @@ import { formatData } from '../../../../services/format/format';
 import { fields } from '../../../../services/model/format';
 import { DEPLOYMENT_TYPE_VM, PARENT_APP_INST, PARENT_CLUSTER_INST, PLATFORM_TYPE_OPEN_STACK, PLATFORM_TYPE_VCD } from '../../../../helper/constant/perpetual';
 import { CLOUDLET_METRICS_ENDPOINT, APP_INST_METRICS_ENDPOINT, CLUSTER_METRICS_ENDPOINT } from '../../../../helper/constant/endpoint';
+import { darkColors } from '../../../../utils/color_utils';
 
 const processLineChartData = (chartDataList, values, worker) => {
     const { legends, timezone } = worker
@@ -135,13 +136,37 @@ const processData2 = (worker) => {
     self.postMessage({ status: 200, data: finalData, resources })
 }
 
+const processFlavorData = (worker) => {
+    const { data } = worker
+    if (data.values) {
+        const { values } = data
+        let legends = {}
+        let columns = data.columns.filter(item => item !== undefined)
+        console.log(columns)
+        let keys = Object.keys(values)
+        if (keys && keys.length > 0) {
+            let colors = darkColors(keys.length)
+            keys.forEach((key, i) => {
+                legends[key] = { color: colors[i] }
+            })
+        }
+    }
+}
+
 export const format = (worker) => {
     const { request, response } = formatData(worker.request, worker.response)
     if (request.method === CLOUDLET_METRICS_ENDPOINT || request.method === APP_INST_METRICS_ENDPOINT || request.method === CLUSTER_METRICS_ENDPOINT) {
         processData2({ ...worker, dataList: response.data })
     }
     else {
-        processData({ ...worker, dataList: response.data })
+        if(request.data.selector === 'flavorusage')
+        {
+            processFlavorData({ ...worker, data: response.data })
+        }
+        else
+        {
+            processData({ ...worker, dataList: response.data })
+        }
     }
 }
 

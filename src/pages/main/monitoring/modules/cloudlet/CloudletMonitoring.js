@@ -46,9 +46,9 @@ class CloudletMonitoring extends React.Component {
                                 <CloudletEvent tools={tools} />
                             </Card>
                         </ImageListItem>
-                        {regions.map((region, i) => (
+                        {/* {regions.map((region, i) => (
                             <CloudletFlavorUsage key={`flavor_${region}_${i}`} range={range} filter={tools} avgData={legends} region={region}/>
-                        ))}
+                        ))} */}
                         {regions.map(region => (
                             <Module key={region} region={region} moduleId={moduleId} tools={tools} selection={selection} handleDataStateChange={handleDataStateChange} />
                         ))}
