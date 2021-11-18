@@ -145,7 +145,6 @@ const processData2 = (worker) => {
             finalData.push(chartData[item.field])
         }
     }
-    console.log(finalData)
     self.postMessage({ status: 200, data: finalData, resources })
 }
 

@@ -24,7 +24,7 @@ export const fetchResourceData = async (self, moduleId, data) => {
         data[fields.starttime] = range.starttime
         data[fields.endtime] = range.endtime
         data[fields.selector] = resourceKey.serverField
-        data[fields.numsamples] = 50
+        // data[fields.numsamples] = 50
         let request = resourceAPIs(self, resourceKey.serverRequest, data, legendList, redux_org.nonAdminOrg(self))
         let mc = await authSyncRequest(this, { ...request, format: false })
         if (responseValid(mc)) {

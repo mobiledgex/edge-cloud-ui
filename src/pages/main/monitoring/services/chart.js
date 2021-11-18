@@ -52,7 +52,6 @@ export const generateDataset = (chartData, values, avgData, timezone, labelPosit
 }
 
 export const generateDataset2 = (legend, tags, metric, timezone, dataList) => {
-    console.log(tags)
     let dataset = {}
     if (dataList && dataList.length > 0) {
         const { position, steppedLine } = metric
