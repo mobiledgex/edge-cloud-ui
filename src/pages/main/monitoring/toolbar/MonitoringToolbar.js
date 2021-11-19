@@ -178,7 +178,7 @@ const MexToolbar = (props) => {
         range: timeRangeInMin(relativeTimeRanges[3].duration),
         duration: relativeTimeRanges[3],
         search: '',
-        organization: redux_org.nonAdminOrg(orgInfo),
+        organization: orgInfo,
         moduleId: redux_org.isDeveloper(orgInfo) ? PARENT_APP_INST : PARENT_CLOUDLET,
         stats: 'max'
     })

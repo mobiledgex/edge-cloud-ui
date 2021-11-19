@@ -8,6 +8,7 @@ import { timezonePref } from "../../../../utils/sharedPreferences_util";
 import { legendKeys, resourceAPIs, showAPIs } from "../helper/constant";
 import ShowWorker from '../services/show.worker.js'
 import { _orderBy } from "../../../../helper/constant/operators";
+import { es } from "date-fns/locale";
 
 export const fetchOrgList = async (self) => {
     let dataList = await showAuthSyncRequest(self, showOrganizations(self))
@@ -63,6 +64,7 @@ export const fetchResourceData = async (self, moduleId, data) => {
                 return response
             }
         }
+        return null
     }
 }
 

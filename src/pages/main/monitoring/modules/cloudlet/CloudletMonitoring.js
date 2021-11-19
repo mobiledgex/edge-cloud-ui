@@ -28,7 +28,7 @@ class CloudletMonitoring extends React.Component {
     render() {
         const {actionView} = this.state
         const { tools, legends, selection, refresh, handleDataStateChange, handleSelectionStateChange } = this.props
-        const { moduleId, regions, search, range } = tools
+        const { moduleId, regions, search, range, organization } = tools
         return (
             <React.Fragment>
                 <Legend tools={tools} data={legends} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} sortBy={[fields.cloudletName]}/>
@@ -42,7 +42,7 @@ class CloudletMonitoring extends React.Component {
                         </ImageListItem>
                         <ImageListItem cols={1}>
                             <Card style={{ height: 300 }}>
-                                <CloudletEvent tools={tools} />
+                                <CloudletEvent range={range} />
                             </Card>
                         </ImageListItem>
                         {regions.map(region => (

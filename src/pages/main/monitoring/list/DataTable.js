@@ -148,7 +148,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                             rowClassName={this.getRowClassName}
                         >
                             {columns.map((column, index) => {
-                                column.width = column.width && column.width > 0 ? column.width : columnWidth
+                                column.width = column.fixedWidth ? column.width : columnWidth
                                 return (
                                     <Column
                                         key={column.field}
@@ -196,12 +196,12 @@ export default function ReactVirtualizedTable(props) {
     const [anchorEl, setAnchorEl] = React.useState(undefined)
 
     const columns = [
-        { field: false, label: false, type: 'checkbox', visible: true, width: 50 },
+        { field: false, label: false, type: 'checkbox', visible: true, width: 50, fixedWidth:true },
         ...keys.filter(key => key.visible)
     ]
 
     if (actionMenu && actionMenu.length > 0) {
-        columns.push({ field: false, label: 'Actions', type: 'button', visible: true, width: 100 })
+        columns.push({ field: false, label: 'Actions', type: 'button', visible: true, width: 100, fixedWidth:true })
     }
 
     const onRowClick = (e) => {
