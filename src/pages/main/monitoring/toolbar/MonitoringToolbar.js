@@ -24,8 +24,8 @@ const timeRangeInMin = (range) => {
     let starttime = dateUtil.subtractMins(range, endtime).valueOf()
     starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
     endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
-    return { "starttime": "2021-10-04T08:19:04+00:00","endtime": "2021-11-06T09:19:04+00:00",}
-    // return { starttime, endtime }
+    // return { "starttime": "2021-10-04T08:19:04+00:00","endtime": "2021-11-06T09:19:04+00:00",}
+    return { starttime, endtime }
 }
 
 /********

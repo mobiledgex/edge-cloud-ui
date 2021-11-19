@@ -50,7 +50,7 @@ class Map extends React.Component {
     }
 
     renderModulePopup = (data) => {
-        const { moduleId } = this.props.tools
+        const { moduleId } = this.props
         switch (moduleId) {
             case PARENT_CLOUDLET:
                 return <CloudletPopup data={data} />
@@ -62,7 +62,7 @@ class Map extends React.Component {
     }
 
     renderMarkerPopup = (data) => {
-        const { moduleId } = this.props.tools
+        const { moduleId } = this.props
         return (
             <Popup className="map-control-div-marker-popup" ref={this.popup}>
                 {
@@ -124,10 +124,9 @@ class Map extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.data) {
-            const { data, tools, selection } = props
+            const { data, search, selection } = props
             let keys = Object.keys(data)
             if (keys.length > 0) {
-                const { search } = tools
                 let maps = {}
                 keys.map(key => {
                     if ((selection.count === 0 || selection[key]) && (search.length === 0 || key.includes(search))) {

@@ -15,10 +15,6 @@ class Resources extends React.Component {
             return resource.serverRequest ? <ResourceChart key={resource.field} resource={resource} {...this.props} /> : null
         })
     }
-
-    componentDidMount() {
-        const { tools } = this.props
-    }
 }
 
 export default Resources

@@ -28,7 +28,7 @@ class CloudletMonitoring extends React.Component {
     render() {
         const {actionView} = this.state
         const { tools, legends, selection, refresh, handleDataStateChange, handleSelectionStateChange } = this.props
-        const { moduleId, regions, range } = tools
+        const { moduleId, regions, search, range } = tools
         return (
             <React.Fragment>
                 <Legend tools={tools} data={legends} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} sortBy={[fields.cloudletName]}/>
@@ -38,7 +38,7 @@ class CloudletMonitoring extends React.Component {
                 <div id='resource-block' className="block block-2">
                     <ImageList cols={4} rowHeight={300} >
                         <ImageListItem cols={3}>
-                            <Map tools={tools} regions={regions} data={legends} selection={selection} refresh={refresh} />
+                            <Map moduleId={moduleId} search={search} regions={regions} data={legends} selection={selection} refresh={refresh} />
                         </ImageListItem>
                         <ImageListItem cols={1}>
                             <Card style={{ height: 300 }}>
@@ -46,7 +46,7 @@ class CloudletMonitoring extends React.Component {
                             </Card>
                         </ImageListItem>
                         {regions.map(region => (
-                            <Module key={region} region={region} moduleId={moduleId} tools={tools} selection={selection} handleDataStateChange={handleDataStateChange} />
+                            <Module key={region} region={region} moduleId={moduleId} search={search} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} />
                         ))}
                         {actionView && actionView.id === ACTION_LATENCY_METRICS ? <DMEMetrics id={moduleId} onClose={() => { this.setState({ actionView: undefined }) }} data={[actionView.data]} /> : null}
                     </ImageList>

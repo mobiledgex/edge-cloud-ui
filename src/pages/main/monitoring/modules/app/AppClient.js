@@ -1,9 +1,11 @@
 import React from 'react'
 import HorizontalBar from '../../charts/horizontalBar/MexHorizontalBar'
 import { clientMetrics } from '../../../../../services/modules/clientMetrics'
-import { redux_org, redux_private } from '../../../../../helper/reduxData'
 import MexWorker from '../../services/client.worker.js'
 import { authSyncRequest, responseValid } from '../../../../../services/service'
+import { equal } from '../../../../../helper/constant/operators'
+import { Skeleton } from '@material-ui/lab'
+import { fields } from '../../../../../services/model/format'
 
 class MexAppClient extends React.Component {
 
@@ -11,45 +13,35 @@ class MexAppClient extends React.Component {
         super(props)
         this.state = {
             stackedData: {},
-            loading: true
+            loading: true,
         }
         this._isMounted = false
-    }
-
-    validatData = (data) => {
-        let valid = false
-        this.props.regions.map(region => {
-            if (!valid && data[region]) {
-                [
-                    valid = data[region].length > 0
-                ]
-            }
-        })
-        return valid
+        this.init = true
     }
 
     render() {
         const { stackedData, loading } = this.state
-        const { filter, regions } = this.props
-        return stackedData ? <HorizontalBar loading={loading} header='Client API Usage Count' chartData={stackedData} filter={filter} regions={regions} /> :
-            <div className="event-list-main" align="center" style={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                <div align="left" className="event-list-header">
-                    <h3 className='chart-header'>Client API Usage Count</h3>
-                </div>
-                <h3 style={{ padding: '90px 0px' }} className='chart-header'><b>No Data</b></h3>
-            </div>
+        const { search, regions } = this.props
+        return (this.init ? <Skeleton variant='rect' height={300} /> :
+            stackedData ? <HorizontalBar loading={loading} header='Client API Usage Count' chartData={stackedData} search={search} regions={regions} /> :
+                <div className="event-list-main" align="center" style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                    <div align="left" className="event-list-header">
+                        <h3 className='chart-header'>Client API Usage Count</h3>
+                    </div>
+                    <h3 style={{ padding: '90px 0px' }} className='chart-header'><b>No Data</b></h3>
+                </div>)
     }
 
-    fetchData = async (region, range) => {
+    fetchData = async (region) => {
+        const { range, organization } = this.props
         this.setState({ loading: true })
-        const {orgInfo, privateAccess} = this.props
-        const requestData = clientMetrics({
-            region: region,
+        const requestData = clientMetrics(this, {
+            region,
             selector: "api",
             numsamples: 1,
             starttime: range.starttime,
             endtime: range.endtime
-        }, redux_org.isAdmin(orgInfo) ? this.props.org : redux_org.nonAdminOrg(orgInfo), redux_private.isPrivate(privateAccess))
+        }, organization[fields.organizationName])
 
         let mc = await authSyncRequest(this, { ...requestData, format: false })
         if (responseValid(mc)) {
@@ -67,34 +59,30 @@ class MexAppClient extends React.Component {
                         return { stackedData, loading: false }
                     })
                 }
+                this.init = false
                 worker.terminate()
             })
         }
     }
 
-    client = (range) => {
+    client = () => {
         this.setState({ stackedData: {} })
         this.props.regions.map(region => {
-            this.fetchData(region, range)
+            this.fetchData(region)
         })
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.org !== this.props.org) {
-            this.setState({ stackedData: {} }, () => {
-                this.client(this.props.range)
-            })
-        }
-        if (prevProps.range !== this.props.range) {
-            this.client(this.props.range)
+    componentDidUpdate(preProps, preState) {
+        const { range } = this.props
+        //fetch data on range change
+        if (!equal(range, preProps.range)) {
+            this.client()
         }
     }
 
     componentDidMount() {
         this._isMounted = true
-        if (!redux_org.isAdmin(this.props.orgInfo) || this.props.org) {
-            this.client(this.props.range)
-        }
+        this.client()
     }
 
     componentWillUnmount() {
