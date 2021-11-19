@@ -4,26 +4,13 @@
 import maxBy from 'lodash/maxBy';
 import meanBy from 'lodash/meanBy';
 import minBy from 'lodash/minBy';
-import cloneDeep from 'lodash/cloneDeep';
-import moment from 'moment'
-import momentTimezone from "moment-timezone";
 import { convertUnit } from '../helper/unitConvertor';
 import { generateDataset, generateDataset2 } from './chart';
 import { formatData } from '../../../../services/format/format';
 import { fields } from '../../../../services/model/format';
 import { DEPLOYMENT_TYPE_VM, PARENT_APP_INST, PARENT_CLUSTER_INST, PLATFORM_TYPE_OPEN_STACK, PLATFORM_TYPE_VCD } from '../../../../helper/constant/perpetual';
 import { CLOUDLET_METRICS_ENDPOINT, APP_INST_METRICS_ENDPOINT, CLUSTER_METRICS_ENDPOINT } from '../../../../helper/constant/endpoint';
-import { darkColors } from '../../../../utils/color_utils';
-
-const FLAVOR_USAGE_TIME = 0
-const FLAVOR_USAGE_CLOUDLET = 2
-const FLAVOR_USAGE_OPERATOR = 3
-const FLAVOR_USAGE_COUNT = 4
-const FLAVOR_USAGE_FLAVOR = 5
-
-const utcTime = (format, date) => {
-    return moment(date).utc().format(format)
-}
+import { processFlavorData, processFlavorSelection } from './flavor';
 
 const processLineChartData = (chartDataList, values, worker) => {
     const { legends, timezone } = worker
@@ -148,62 +135,25 @@ const processData2 = (worker) => {
     self.postMessage({ status: 200, data: finalData, resources })
 }
 
-const flavorChartData = (legendKeys, key, dataList, timezone) => {
-    let result = {}
-    dataList.forEach(value => {
-        let time = utcTime('YYYY-MM-DD HH:mm:ss', value[FLAVOR_USAGE_TIME], timezone)
-        if (result[time]) {
-            result[time]['y'] = value[FLAVOR_USAGE_COUNT] + result[time]['y']
-        }
-        else {
-            result[time] = { x: moment.tz(value[FLAVOR_USAGE_TIME], timezone).valueOf(), y: value[FLAVOR_USAGE_COUNT] }
-        }
-    })
-    let timeList = []
-    Object.keys(result).map(item=>{
-        timeList.push(result[item])
-    })
-    return timeList
-}
-
-const processFlavorData = (worker) => {
-    const { data, legends, selection, timezone, metric, region } = worker
-    if (data.values) {
-        const { values } = data
-        let flavorLegends = {}
-        let columns = data.columns.filter(item => item !== undefined)
-        let keys = Object.keys(values)
-        let datasets = {}
-        if (keys && keys.length > 0) {
-            let colors = darkColors(keys.length)
-            keys.forEach((key, i) => {
-                let tags = {flavorName: values[key][0][FLAVOR_USAGE_FLAVOR]}
-                flavorLegends[key] = { color: colors[i], sorted:true }
-                columns.map((column, j) => {
-                    flavorLegends[key][column.serverField] = values[key][0][j]
-                })
-                let timeseries = flavorChartData(Object.keys(legends), key, values[key], timezone)
-                datasets[key] = generateDataset2(flavorLegends[key], tags, metric, timezone, timeseries)
-            })
-        }
-        let chartData = {resourceType: metric, region, datasets}
-        self.postMessage({ status: 200, data: [chartData] })
-    }
-}
-
 export const format = (worker) => {
-    const { request, response } = formatData(worker.request, worker.response)
-    if (request.method === CLOUDLET_METRICS_ENDPOINT || request.method === APP_INST_METRICS_ENDPOINT || request.method === CLUSTER_METRICS_ENDPOINT) {
-        processData2({ ...worker, dataList: response.data })
+    if (worker.flavorSelection) {
+        self.postMessage({ status: 200, datasets: processFlavorSelection(worker) })
     }
     else {
-        if(request.data.selector === 'flavorusage')
-        {
-            processFlavorData({ ...worker, data: response.data })
+        const { request, response } = formatData(worker.request, worker.response)
+        if (request.method === CLOUDLET_METRICS_ENDPOINT || request.method === APP_INST_METRICS_ENDPOINT || request.method === CLUSTER_METRICS_ENDPOINT) {
+            processData2({ ...worker, dataList: response.data })
         }
-        else
-        {
-            processData({ ...worker, dataList: response.data })
+        else {
+            if (request.data.selector === fields.flavorusage) {
+                let chartData = processFlavorData({ ...worker, data: response.data })
+                if (chartData) {
+                    self.postMessage({ status: 200, data: [chartData] })
+                }
+            }
+            else {
+                processData({ ...worker, dataList: response.data })
+            }
         }
     }
 }

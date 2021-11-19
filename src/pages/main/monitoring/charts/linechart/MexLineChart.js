@@ -178,10 +178,6 @@ class MexLineChart extends React.Component {
         )
     }
 
-    validateFilter = (selection, search)=>{
-       return selection.count > 0 || search.length > 0
-    }
-
     render() {
         const { fullscreen, datasets } = this.state
         const { selection, search, data } = this.props

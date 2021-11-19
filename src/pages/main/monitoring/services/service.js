@@ -16,15 +16,35 @@ export const fetchOrgList = async (self) => {
     }
 }
 
+export const fetchFlavorBySelection = async (data) => {
+    const { worker, dataList, selection } = data
+    if (dataList && dataList.length > 0) {
+        const { legends, region, resourceType, values } = dataList[0]
+        let response = await processWorker(worker, {
+            legends,
+            region,
+            resource: resourceType,
+            values,
+            selection,
+            region,
+            timezone: timezonePref(),
+            flavorSelection: true
+        })
+        if (response.status === 200) {
+            return { datasets: response.datasets, values, region, legends, resourceType }
+        }
+    }
+}
+
 export const fetchResourceData = async (self, moduleId, data) => {
-    const { region, legends, legendList, resourceKey, range, worker } = data
+    const { region, legends, legendList, resourceKey, range, worker, selection } = data
     if (resourceKey.serverRequest && legendList && legendList.length > 0) {
         let data = {}
         data[fields.region] = region
         data[fields.starttime] = range.starttime
         data[fields.endtime] = range.endtime
         data[fields.selector] = resourceKey.serverField
-        // data[fields.numsamples] = 50
+        data[fields.numsamples] = 50
         let request = resourceAPIs(self, resourceKey.serverRequest, data, legendList, redux_org.nonAdminOrg(self))
         let mc = await authSyncRequest(this, { ...request, format: false })
         if (responseValid(mc)) {
@@ -36,7 +56,7 @@ export const fetchResourceData = async (self, moduleId, data) => {
                 region,
                 metric: resourceKey,
                 legends: legends,
-                selection : data.selection,
+                selection : selection,
                 timezone: timezonePref()
             })
             if (response.status === 200) {

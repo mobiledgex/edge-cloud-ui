@@ -2,9 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Card, ImageListItem } from '@material-ui/core'
 import LineChart from '../../charts/linechart/MexLineChart'
-import { fetchResourceData } from '../../services/service'
+import { fetchResourceData, fetchFlavorBySelection } from '../../services/service'
 import MetricWorker from '../../services/metric.worker.js'
 import { equal } from '../../../../../helper/constant/operators'
+import { fields } from '../../../../../services/model/format'
 
 class ResourceChart extends React.Component {
     constructor(props) {
@@ -13,9 +14,10 @@ class ResourceChart extends React.Component {
             dataList: undefined
         }
         this.metricWorker = new MetricWorker();
+        this.isFlavor = props.resource.field === fields.flavorusage
     }
 
-    metricKeyGenerator = (resourceType) => {   
+    metricKeyGenerator = (resourceType) => {
         return `${resourceType.serverField}${resourceType.subId ? `-${resourceType.subId}` : ''}`
     }
 
@@ -28,9 +30,9 @@ class ResourceChart extends React.Component {
                 {dataList ? dataList.map((data, i) => {
                     let key = this.metricKeyGenerator(data.resourceType)
                     return (
-                        <ImageListItem key={key} cols={1} style={style}>
+                        <ImageListItem key={key} cols={this.isFlavor ? 2 : 1} style={style}>
                             <Card style={{ height: 300 }}>
-                                <LineChart id={key} data={data} legends={legends} selection={selection} globalFilter={{ search: '' }} range={range} search={search}/>
+                                <LineChart id={key} data={data} legends={legends} selection={selection} range={range} search={search} disableSelection={this.isFlavor}/>
                             </Card>
                         </ImageListItem>
                     )
@@ -52,12 +54,24 @@ class ResourceChart extends React.Component {
         }
     }
 
-    componentDidUpdate(preProps, preState){
-        const {range} = this.props.tools
+    onSelection = async () => {
+        const { dataList } = this.state
+        const { region, selection } = this.props
+        let data = await fetchFlavorBySelection({ worker: this.metricWorker, region, selection, dataList })
+        if (data) {
+            this.setState({ dataList: [data] })
+        }
+    }
+
+    componentDidUpdate(preProps, preState) {
+        const { tools, selection, resource } = this.props
+        const { range } = tools
         //fetch data on range change
-        if(!equal(range, preProps.tools.range))
-        {
+        if (!equal(range, preProps.tools.range)) {
             this.fetchResources()
+        }
+        else if (selection && selection.count !== preProps.selection.count && this.isFlavor) {
+            this.onSelection()
         }
     }
 

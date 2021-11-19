@@ -8,7 +8,6 @@ import DragButton from '../../list/DragButton'
 import DMEMetrics from '../../dme/DMEMetrics'
 import { ACTION_LATENCY_METRICS } from '../../../../../helper/constant/perpetual'
 import { fields } from '../../../../../services/model/format';
-import CloudletFlavorUsage from './CloudletFlavorUsage'
 
 const actionMenu = [
     { id: ACTION_LATENCY_METRICS, label: 'Show Latency Metrics' },
@@ -46,9 +45,6 @@ class CloudletMonitoring extends React.Component {
                                 <CloudletEvent tools={tools} />
                             </Card>
                         </ImageListItem>
-                        {/* {regions.map((region, i) => (
-                            <CloudletFlavorUsage key={`flavor_${region}_${i}`} range={range} filter={tools} avgData={legends} region={region}/>
-                        ))} */}
                         {regions.map(region => (
                             <Module key={region} region={region} moduleId={moduleId} tools={tools} selection={selection} handleDataStateChange={handleDataStateChange} />
                         ))}

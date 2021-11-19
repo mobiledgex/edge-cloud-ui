@@ -18,6 +18,7 @@ export const fields = {
     driverPath: 'driverPath',
     md5Sum: 'md5Sum',
     numsamples:'numsamples',
+    flavorusage:'flavorusage',
     driverPathCreds: 'driverPathCreds',
     operatingSystem: 'operatingSystem',
     kernelVersion: 'kernelVersion',
