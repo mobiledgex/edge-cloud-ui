@@ -28,6 +28,7 @@ import { customize as appInstUsage } from '../modules/appInstUsage/custom';
 import { customize as clusterInstUsage } from '../modules/clusterInstUsage/custom';
 import { customize as gpuDriver } from '../modules/gpudriver/custom';
 import { customize as alertPolicy } from '../modules/alertPolicy/custom';
+import { customize as network } from '../modules/network/custom';
 
 import { formatShowData } from './show';
 import { formatChargifyData } from './chargify';
@@ -130,6 +131,9 @@ export const formatData = (request, response, self = null) => {
             break;
         case endpoint.SHOW_BILLING_ORG:
             data = formatShowData(request, response, billingorg)
+            break;
+        case endpoint.SHOW_NETWORKS:
+            data = formatShowData(request, response, network)
             break;
         case endpoint.SHOW_POOL_ACCESS_CONFIRMATION:
         case endpoint.SHOW_POOL_ACCESS_INVITATION:

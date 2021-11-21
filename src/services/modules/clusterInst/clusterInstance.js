@@ -173,6 +173,9 @@ export const clusterKey = (data, isCreate) => {
         if (data[fields.fields]) {
             clusterinst.fields = data[fields.fields]
         }
+        if (data[fields.network]) {
+            clusterinst.networks = data[fields.network]
+        }
     }
     return ({
         region: data[fields.region],

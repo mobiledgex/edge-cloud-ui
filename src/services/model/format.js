@@ -85,7 +85,7 @@ export const fields = {
     disk: 'disk',
     sent: 'sent',
     received: 'received',
-    network: 'network',
+    network: 'networks',
     licenseConfig: 'licenseConfig',
     properties:'properties',
     property:'property',
