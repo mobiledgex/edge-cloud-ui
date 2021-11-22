@@ -1,23 +1,18 @@
 import React from 'react'
-import { Icon } from 'semantic-ui-react'
-import { Marker, Popup } from "react-leaflet";
+import { Marker } from "react-leaflet";
 import { fields } from '../../../../../services/model/format';
 import { showAppInstClient } from '../../../../../services/modules/appInstClient'
 import cloneDeep from 'lodash/cloneDeep'
 import MexCircleMarker from '../../../../../hoc/mexmap/utils/MexCircleMarker'
-import { cloudGreenIcon, mobileIcon } from "../../../../../hoc/mexmap/MapProperties";
+import { cloudGreenIcon } from "../../../../../hoc/mexmap/MapProperties";
 import MexMap from '../../../../../hoc/mexmap/MexMap'
 import MexCurve from '../../../../../hoc/mexmap/utils/MexCurve'
 import { Dialog } from '@material-ui/core';
 import Legend from './MapLegend'
 import { fetchPath, fetchURL } from '../../../../../services/config';
 import { fetchToken } from '../../../../../services/service';
-import { ACTION_TRACK_DEVICES } from '../../../../../helper/constant/perpetual';
-import { equal } from '../../../../../helper/constant/operators';
 
-const DEFAULT_ZOOM = 2
 class AppMexMap extends React.Component {
-
     constructor(props) {
         super(props)
         this.state = {
@@ -46,7 +41,7 @@ class AppMexMap extends React.Component {
             this.ws = undefined
         }
         this.setState({ showDevices: false, mapData: {}, backswitch: false }, () => {
-            this.props.onActionClose()
+            this.props.onClose()
         })
     }
 
@@ -94,55 +89,6 @@ class AppMexMap extends React.Component {
         }
     }
 
-
-
-    renderMarkerPopup = (data) => {
-        let selected = data['selected'] ? data['selected'] : 0
-        return (
-            <Popup className="map-control-div-marker-popup" ref={this.popup}>
-                {
-                    Object.keys(data).map(cloudlet => {
-                        return (
-                            cloudlet !== fields.cloudletLocation && cloudlet !== 'selected' && (data.selected === 0 || data[cloudlet].selected) ?
-                                <div key={cloudlet}>
-                                    <strong style={{ textTransform: 'uppercase', fontSize: 14 }}>{cloudlet}</strong>
-                                    <div style={{ marginBottom: 10 }}></div>
-                                    {data[cloudlet].map((item, i) => {
-                                        let keyData = item.keyData
-                                        let visible = keyData.hidden ? false : true
-                                        if (visible) {
-                                            return (
-                                                selected === 0 || keyData.selected ?
-                                                    <div key={`${i}_${cloudlet}`} className="map-control-div-marker-popup-label">
-                                                        <code style={{ fontWeight: 400, fontSize: 12 }}>
-                                                            <Icon style={{ color: keyData.color, marginRight: 5 }} name='circle' />
-                                                            {keyData[fields.appName]} [{keyData[fields.version]}]
-                                                            <code style={{ color: '#74B724' }}>
-                                                                [{keyData[fields.clusterName]}]
-                                                            </code>
-                                                        </code>
-                                                    </div> : null
-                                            )
-                                        }
-                                    })} </div> : null
-
-                        )
-                    })
-                }
-            </Popup>
-        )
-    }
-
-    calculateLength = (data) => {
-        let cost = 0
-        Object.keys(data).map(key => {
-            if (key !== fields.cloudletLocation && key !== 'selected') {
-                cost = cost + data[key].length
-            }
-        })
-        return cost
-    }
-
     renderDeviceMarker = () => {
         const { showDevices, mapData, polyline, curveColor } = this.state
         return mapData ?
@@ -170,52 +116,24 @@ class AppMexMap extends React.Component {
             </div> : null
     }
 
-    renderMarker = () => {
-        const { data } = this.props
-        return data ?
-            <div>
-                {Object.keys(data).map((key, i) => {
-                    if (key !== 'selected') {
-                        let location = data[key][fields.cloudletLocation]
-                        let lat = location[fields.latitude]
-                        let lon = location[fields.longitude]
-                        return (
-                            data.selected === 0 || data[key].selected ?
-                                <React.Fragment key={key}>
-                                    <Marker icon={cloudGreenIcon(this.calculateLength(data[key]))} position={[lat, lon]}>
-                                        {this.renderMarkerPopup(data[key])}
-                                    </Marker>
-                                </React.Fragment> : null
-                        )
-                    }
-                })}
-            </div> : null
-    }
+
 
     render() {
         const { backswitch, showDevices } = this.state
         const { region } = this.props
         return (
-            <React.Fragment>
-                {showDevices ?
-                    <Dialog fullScreen open={showDevices} onClose={this.resetMap} disableEscapeKeyDown={true}>
-                        <MexMap renderMarker={this.renderDeviceMarker} back={this.resetMap} zoom={3} backswitch={backswitch} region={region} fullscreen={showDevices} />
-                    </Dialog> :
-                    <MexMap renderMarker={this.renderMarker} back={this.resetMap} zoom={DEFAULT_ZOOM} backswitch={backswitch} region={region} />
-                }
-            </React.Fragment>
+            <Dialog fullScreen open={showDevices} onClose={this.resetMap} disableEscapeKeyDown={true}>
+                <MexMap renderMarker={this.renderDeviceMarker} back={this.resetMap} zoom={3} backswitch={backswitch} region={region} fullscreen={showDevices} />
+            </Dialog>
         )
     }
 
-    componentDidUpdate(preProps, preState) {
-        const { listAction } = this.props
-        if (listAction && listAction.id === ACTION_TRACK_DEVICES && !equal(listAction, preProps.listAction)) {
-            this.mapClick(listAction.data[0])
-        }
+    componentDidMount() {
+        this.mapClick(this.props.data)
     }
 
-    componentWillUnmount(){
-        this.props.onActionClose()
+    componentWillUnmount() {
+        this.props.onClose()
     }
 }
 

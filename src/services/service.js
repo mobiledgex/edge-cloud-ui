@@ -94,7 +94,7 @@ const responseStatus = (self, status) => {
             break;
     }
 
-    if (!valid && self.props.handleAlertInfo) {
+    if (!valid && self && self.props && self.props.handleAlertInfo) {
         self.props.handleAlertInfo('error', msg)
     }
     return valid
