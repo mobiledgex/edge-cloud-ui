@@ -162,7 +162,6 @@ class ClusterInstReg extends React.Component {
                 if (this.networkOrgList[key]) {
                     this.networkList[key] = this.networkOrgList[key]
                 }
-                console.log(this.networkList, "klkl")
             }))
             this.updateUI(form)
             this.updateState({ forms })
