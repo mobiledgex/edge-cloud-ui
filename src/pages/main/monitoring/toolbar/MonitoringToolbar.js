@@ -1,167 +1,243 @@
-import React from 'react'
-import { connect, useSelector } from 'react-redux';
-import { Toolbar, makeStyles, Box, IconButton, Tooltip, Grid, Divider } from '@material-ui/core'
-import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
-import * as constant from '../helper/Constant';
-import MexTimer from '../helper/MexTimer'
-import MonitoringMenu from './MonitoringMenu'
-import RefreshIcon from '@material-ui/icons/Refresh';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
-import { fields } from '../../../../services/model/format';
-import {redux_org, redux_private} from '../../../../helper/reduxData'
+
+import React, { useEffect, useRef } from 'react'
+import { useSelector } from "react-redux";
+import { Box, Toolbar, Typography, Grid, Divider } from '@material-ui/core';
 import { lightGreen } from '@material-ui/core/colors';
-import SearchFilter from '../../../../hoc/filter/SearchFilter'
+import SearchFilter from '../../../../hoc/filter/SearchFilter';
+import * as dateUtil from '../../../../utils/date_util'
+import { refreshRates, relativeTimeRanges, visibility } from '../helper/constant';
+import { redux_org } from '../../../../helper/reduxData'
+import { DEVELOPER, PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST } from '../../../../helper/constant/perpetual';
+import { IconButton, Icon } from '../../../../hoc/mexui';
 
-const useStyles = makeStyles((theme) => ({
-    inputRoot: {
-        color: 'inherit',
-    },
-    inputInput: {
-        transition: theme.transitions.create('width'),
-        width: '0ch',
-        height: 20,
-        [theme.breakpoints.up('sm')]: {
-            '&:focus': {
-                width: '20ch',
-            },
-        },
-    },
-    searchAdorment: {
-        fontSize: 17,
-        pointerEvents: "none",
-        cursor: 'pointer'
-    }
-}));
+import PublicOutlinedIcon from '@material-ui/icons/PublicOutlined';
+import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 
-const MexToolbar = (props) => {
-    const classes = useStyles();
-    const orgInfo = useSelector(state=>state.organizationInfo.data)
-    const privateAccess = useSelector(state=>state.privateAccess.data)
-    const [search, setSearch] = React.useState('')
-    const [focused, setFocused] = React.useState(false)
-    const [refreshRange, setRefreshRange] = React.useState(constant.refreshRates[0])
-    const parentId = props.filter.parent.id
-    /*Search Block*/
-    const handleSearch = (e) => {
-        let value = e ? e.target.value : ''
-        setSearch(value)
-        props.onChange(constant.ACTION_SEARCH, value)
-    }
+import MonitoringMenu from './MonitoringMenu'
+import MexTimer from '../common/picker/MexTimer'
 
-    const onSearch = (value)=>{
-        props.onChange(constant.ACTION_SEARCH, value)
-    }
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { fields } from '../../../../services/model/format';
+import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../../utils/sharedPreferences_util';
 
-    const searchForm = (order) => (
-        <Box order={order} style={{ marginTop: `${focused ? '0px' : '7px'}`, marginLeft: 10 }}>
-            <SearchFilter onFilter={onSearch} style={{ marginBottom: 10 }} compact={true} insensitive={true} />
-        </Box>
-    )
-    /*Search Block*/
+const timeRangeInMin = (range) => {
+    let endtime = dateUtil.currentUTCTime()
+    let starttime = dateUtil.subtractMins(range, endtime).valueOf()
+    starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
+    endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
+    return { starttime, endtime }
+}
 
-    const onRegionChange = (values) => {
-        props.onChange(constant.ACTION_REGION, values)
-    }
+/********
+* Refresh
+********/
+const Refresh = (props) => {
+    const { onUpdate, value, refreshRange, setRefreshRange } = props
 
-    const onOrgChange = (value) => {
-        props.onChange(constant.ACTION_ORG, value)
-    }
-
-    const onMetricParentTypeChange = (value) => {
-        if (value.id === constant.PARENT_CLOUDLET) {
-            props.onChange(constant.ACTION_SUMMARY, constant.summaryList[0])
+    var refreshId = undefined
+    const onRefreshRateChange = (rate) => {
+        setRefreshRange(rate)
+        let interval = rate.duration
+        if (refreshId) {
+            clearInterval(refreshId)
         }
-        props.onChange(constant.ACTION_METRIC_PARENT_TYPE, value)
+        if (interval > 0) {
+            refreshId = setInterval(() => {
+                onUpdate({ range: timeRangeInMin(value.duration.duration) })
+            }, interval * 1000);
+        }
     }
 
-    const onMetricTypeChange = (values) => {
-        props.onChange(constant.ACTION_METRIC_TYPE, values)
-    }
+    return (
+        <Grid container>
+            <IconButton onClick={() => { onUpdate({ range: timeRangeInMin(value.duration.duration) }) }}><Icon style={{ color: lightGreen['A700'] }}>refresh</Icon></IconButton>
+            <Divider orientation="vertical" style={{ marginTop: 13, marginBottom: 13 }} flexItem />
+            <MonitoringMenu showTick={true} data={refreshRates} labelKey='label' onChange={onRefreshRateChange} icon={<ExpandMoreIcon style={{ color: lightGreen['A700'] }} />} value={refreshRange} tip={'Refresh Rate'} />
+        </Grid>
+    )
+}
 
-    const onSummaryChange = (value) => {
-        props.onChange(constant.ACTION_SUMMARY, value)
-    }
-
-    const onRefreshRateChange = (value) => {
-        setRefreshRange(value)
-        props.onChange(constant.ACTION_REFRESH_RATE, value)
-    }
+/********
+* Date Time Picker
+********/
+const DateTimePicker = (props) => {
+    const { onUpdate, value, setRefreshRange } = props
 
     const onTimeRangeChange = (from, to) => {
-        setRefreshRange(constant.refreshRates[0])
-        props.onChange(constant.ACTION_TIME_RANGE, { starttime: from, endtime: to })
+        setRefreshRange(refreshRates[0])
+        onUpdate({ range: { starttime: from, endtime: to } })
     }
 
-    const onRelativeTimeChange = (duration) => {
-        props.onChange(constant.ACTION_RELATIVE_TIME, duration)
+    const onRelativeChange = (duration) => {
+        onUpdate({ duration, range: timeRangeInMin(duration.duration) })
     }
 
-    const onRefresh = () => {
-        props.onChange(constant.ACTION_REFRESH)
-    }
-
-    const renderRefresh = (order) => (
-        <Box order={order}>
-            <Grid container>
-                <Tooltip title={<strong style={{ fontSize: 13 }}>Refresh</strong>} arrow>
-                    <IconButton onClick={onRefresh}><RefreshIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} /></IconButton>
-                </Tooltip>
-                <Divider orientation="vertical" style={{ marginTop: 13, marginBottom: 13 }} flexItem />
-                <MonitoringMenu showTick={true} data={constant.refreshRates} labelKey='label' onChange={onRefreshRateChange} icon={<ExpandMoreIcon style={{ color: lightGreen['A700'] }} />} value={refreshRange} tip={'Refresh Rate'} />
-            </Grid>
-        </Box>
-    )
-
-    const showSummary = () => {
-        return parentId !== constant.PARENT_CLOUDLET
-    }
-
-    const showOrg = () => {
-        return redux_org.isAdmin(orgInfo) && props.organizations.length > 0
-    }
-
-    const parentType = () => {
-        if (redux_private.isPrivate(privateAccess)) {
-            return constant.metricParentTypes().map(parent => {
-                if(parent.id === constant.PARENT_APP_INST || parent.id === constant.PARENT_CLUSTER_INST )
-                {
-                    parent.role.push(constant.OPERATOR)    
-                }
-                return parent
-            })
-        }
-        return constant.metricParentTypes()
-    }
     return (
-        <Toolbar>
-            <label className='monitoring-header'>Monitoring</label>
-            {
-                <div style={{ width: '100%' }}>
-                    <Box display="flex" justifyContent="flex-end">
-                        {showOrg() ? <MonitoringMenu order={1} data={props.organizations} labelKey={fields.organizationName} onChange={onOrgChange} placeHolder={'Select Org'} disableDefault={true} search={true} /> : null}
-                        {props.selectedOrg || !redux_org.isAdmin(orgInfo) ? <React.Fragment>
-                            <MexTimer order={2} onChange={onTimeRangeChange} onRelativeChange={onRelativeTimeChange} range={props.range} duration={props.duration} />
-                            <MonitoringMenu order={3} data={parentType()} labelKey='label' onChange={onMetricParentTypeChange} default={props.filter.parent} />
-                            <MonitoringMenu order={4} data={props.regions} default={props.filter.region} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onRegionChange} tip='Region' />
-                            <MonitoringMenu order={5} data={constant.visibility(parentId)} default={props.filter.metricType} labelKey='header' multiple={true} field={'field'} type={'metricType'} icon={<VisibilityOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onMetricTypeChange} tip='Visibility' />
-                            {showSummary() ? <MonitoringMenu order={6} data={constant.summaryList} labelKey='label' onChange={onSummaryChange} tip={'View aggregate utilization of resources between given start and end time'}/> : null}
-                            {renderRefresh(7)}
-                            {searchForm(8)}
-                        </React.Fragment> : null}
-                    </Box>
-                </div>
-            }
-        </Toolbar>
+        <MexTimer onChange={onTimeRangeChange} onRelativeChange={onRelativeChange} range={value.range} duration={value.duration} />
+    )
+}
+
+/********
+* Module
+********/
+const Module = (props) => {
+    const { order, value, onUpdate } = props
+    const orgInfo = useSelector(state => state.organizationInfo.data)
+    const dataList = ['App Inst', 'Cluster Inst']
+
+    const onValueChange = () => {
+        let data = value.moduleId === PARENT_APP_INST ? dataList[0] : dataList[1]
+        data = value.moduleId === PARENT_CLOUDLET ? dataList[2] : data
+        return data
+    }
+    if (redux_org.isOperator(orgInfo) || redux_org.isAdmin(orgInfo)) {
+        dataList.push('Cloudlet')
+    }
+    const onChange = (value) => {
+        let moduleId = value === 'App Inst' ? PARENT_APP_INST : PARENT_CLOUDLET
+        moduleId = value === 'Cluster Inst' ? PARENT_CLUSTER_INST : moduleId
+        onUpdate({ moduleId, visibility: preVisibility(moduleId, orgInfo) })
+    }
+
+    return (
+        <MonitoringMenu order={order} data={dataList} onChange={onChange} value={onValueChange()} />
+    )
+}
+
+/********
+* Statistics
+********/
+const Statistics = (props) => {
+    const { order, value, onUpdate } = props
+    const dataList = ['max', 'avg', 'min']
+
+    const onChange = (value) => {
+        onUpdate({ stats: value })
+    }
+
+    return (
+        value.moduleId !== PARENT_CLOUDLET ? <MonitoringMenu order={order} data={dataList} onChange={onChange} default={dataList[0]} allCaps={true} /> : null
+    )
+}
+
+/********
+* Region
+********/
+const Region = (props) => {
+    const { order, onUpdate, value } = props
+    const regions = useSelector(state => state.regionInfo.region)
+
+    const onChange = (value) => {
+        onUpdate({ regions: value })
+    }
+
+    return (
+        <MonitoringMenu order={order} data={regions} default={value.regions} onChange={onChange} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} />
     )
 
 }
 
-const mapStateToProps = (state) => {
-    return {
-        organizationInfo: state.organizationInfo.data,
-        privateAccess: state.privateAccess.data,
+const Visibility = (props) => {
+    const { order, onUpdate, value } = props
+    const onChange = (value) => {
+        onUpdate({ visibility: value })
     }
-};
+    return (
+        <MonitoringMenu order={order} data={visibility(value.moduleId)} default={value.visibility} labelKey='header' multiple={true} field={'field'} type={'metricType'} icon={<VisibilityOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onChange} tip='Visibility' />
+    )
+}
 
-export default connect(mapStateToProps, null)(MexToolbar);
+const Organization = (props) => {
+    const { order, dataList, onUpdate } = props
+    const orgInfo = useSelector(state => state.organizationInfo.data)
+
+    useEffect(() => {
+        onChange(orgInfo)
+    }, [orgInfo]);
+
+
+    const onChange = (value) => {
+        let moduleId = value[fields.type] === DEVELOPER ? PARENT_APP_INST : PARENT_CLOUDLET
+        onUpdate({ organization: value, moduleId })
+    }
+
+    return (
+        dataList.length > 0 ? <MonitoringMenu order={order} data={dataList} onChange={onChange} labelKey={fields.organizationName} placeHolder={'Select Org'} disableDefault={true} search={true} large={true} /> : null
+    )
+}
+
+const preVisibility = (moduleId, orgInfo) => {
+    let prefId = moduleId === PARENT_CLOUDLET ? PREF_M_CLOUDLET_VISIBILITY : moduleId === PARENT_CLUSTER_INST ? PREF_M_CLUSTER_VISIBILITY : PREF_M_APP_VISIBILITY
+    let visibilityPref = monitoringPref(orgInfo, prefId)
+    let dataList = []
+    visibility(moduleId).forEach(item => {
+        if (!Boolean(visibilityPref) || visibilityPref.includes(item.header)) { dataList.push(item.field) }
+    })
+    return dataList
+}
+
+const useConstructor = (callBack = () => { }) => {
+    const hasBeenCalled = useRef(false);
+    if (hasBeenCalled.current) return;
+    callBack();
+    hasBeenCalled.current = true;
+}
+
+const MexToolbar = (props) => {
+    const { onChange, organizations } = props
+    const regions = useSelector(state => state.regionInfo.region)
+    const orgInfo = useSelector(state => state.organizationInfo.data)
+    const [value, setValue] = React.useState()
+    const [refreshRange, setRefreshRange] = React.useState(refreshRates[0])
+
+    useConstructor(() => {
+        const moduleId = redux_org.isDeveloper(orgInfo) ? PARENT_APP_INST : PARENT_CLOUDLET
+        setValue({
+            regions: monitoringPref(orgInfo, PREF_M_REGION) ? monitoringPref(orgInfo, PREF_M_REGION) : regions,
+            range: timeRangeInMin(relativeTimeRanges[5].duration),
+            duration: relativeTimeRanges[5],
+            search: '',
+            organization: orgInfo,
+            moduleId: moduleId,
+            stats: 'max',
+            visibility: preVisibility(moduleId, orgInfo)
+        })
+    });
+
+    useEffect(() => {
+        onChange(value)
+    }, [value]);
+
+    const onUpdate = (out) => {
+        setValue({ ...value, ...out })
+    }
+
+    return (
+        <Toolbar>
+            <Typography variant={'h5'} className='monitoring-header'>Monitoring</Typography>
+            <div style={{ width: '100%' }}>
+                <Box display="flex" justifyContent="flex-end">
+                    {value && value.organization ?
+                        <React.Fragment>
+                            <Box order={8}>
+                                <Refresh onUpdate={onUpdate} value={value} refreshRange={refreshRange} setRefreshRange={setRefreshRange} />
+                            </Box>
+                            <Box order={7} p={0.9}>
+                                <SearchFilter onFilter={(value) => { onUpdate({ search: value }) }} compact={true} insensitive={true} />
+                            </Box>
+                            <Visibility order={6} value={value} onUpdate={onUpdate} />
+                            <Region order={5} value={value} onUpdate={onUpdate} />
+                            <Box order={4} p={1.2}>
+                                <DateTimePicker onUpdate={onUpdate} value={value} setRefreshRange={setRefreshRange} />
+                            </Box>
+                            <Statistics order={3} value={value} onUpdate={onUpdate} />
+                            <Module order={2} value={value} onUpdate={onUpdate} />
+                        </React.Fragment> : null}
+                    <Organization order={1} dataList={organizations} onUpdate={onUpdate} />
+                </Box>
+            </div>
+        </Toolbar>
+    )
+}
+
+export default MexToolbar

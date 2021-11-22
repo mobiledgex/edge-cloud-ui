@@ -5,20 +5,25 @@ import { endpoint, perpetual } from '../../../helper/constant'
 
 let fields = formatter.fields;
 
-export const keys = () => ([
-    { field: fields.organizationName, serverField: 'Name', label: 'Organization', sortable: true, visible: true, filter: true },
-    { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true, filter: true, group: true },
-    { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: true },
-    { field: fields.address, serverField: 'Address', label: 'Address', sortable: true, visible: true },
-    { field: fields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', roles: [perpetual.ADMIN_MANAGER], format: true },
-    { field: fields.publicImages, serverField: 'PublicImages', label: 'Public Image', sortable: true, visible: true },
-    {
-        field: fields.userList, label: 'User List', sortable: true, visible: false,
-        keys: [{ field: fields.username, label: 'Username' }, { field: fields.userRole, label: 'Role' }]
-    },
-    { field: fields.manage, label: 'Manage', visible: true, clickable: true, format: true },
-    { field: fields.actions, label: 'Actions', visible: true, clickable: true }
-])
+export const keys = (nameOnly) => {
+    let items = [{ field: fields.organizationName, serverField: 'Name', label: 'Organization', sortable: true, visible: true, filter: true }]
+    if (!nameOnly) {
+        items = [...items, 
+            { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true, filter: true, group: true },
+            { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: true },
+            { field: fields.address, serverField: 'Address', label: 'Address', sortable: true, visible: true },
+            { field: fields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', roles: [perpetual.ADMIN_MANAGER], format: true },
+            { field: fields.publicImages, serverField: 'PublicImages', label: 'Public Image', sortable: true, visible: true },
+            {
+                field: fields.userList, label: 'User List', sortable: true, visible: false,
+                keys: [{ field: fields.username, label: 'Username' }, { field: fields.userRole, label: 'Role' }]
+            },
+            { field: fields.manage, label: 'Manage', visible: true, clickable: true, format: true },
+            { field: fields.actions, label: 'Actions', visible: true, clickable: true }
+        ]
+    }
+    return items
+}
 
 export const iconKeys = () => ([
     { field: fields.edgeboxOnly, label: 'Edgebox Only', icon: 'edgeboxonly.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER] },
@@ -37,8 +42,8 @@ export const getKey = (data, isCreate) => {
     return (requestData)
 }
 
-export const showOrganizations = (self, data) => {
-    return { method: endpoint.SHOW_ORG, data: data, keys: keys() }
+export const showOrganizations = (self, data, nameOnly = false) => {
+    return { method: endpoint.SHOW_ORG, data, keys: keys(nameOnly) }
 }
 
 export const getOrganizationList = async (self, data) => {

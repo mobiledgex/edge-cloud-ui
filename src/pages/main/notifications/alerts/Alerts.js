@@ -32,7 +32,6 @@ class AlertLocal extends React.Component {
         this.state = {
             dataList: undefined
         }
-        this.typingTimeout = undefined
         this.regions = regions()
     }
 
@@ -156,20 +155,13 @@ class AlertLocal extends React.Component {
             })
             return valid.includes(true)
         })
-        this.typingTimeout = undefined
         this.setState({ dataList: newData })
     }
 
     onFilter = (value, clear) => {
         let filterText = clear ? '' : value.toLowerCase()
-        if (this.typingTimeout) {
-            clearTimeout(this.typingTimeout)
-            this.typingTimeout = undefined
-        }
-        this.typingTimeout = setTimeout(() => {
-            const { data } = this.props
-            this.filterData(showAlertKeys(), data, filterText)
-        }, 500)
+        const { data } = this.props
+        this.filterData(showAlertKeys(), data, filterText)
     }
 
     render() {
