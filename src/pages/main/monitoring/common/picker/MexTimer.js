@@ -62,14 +62,17 @@ const MexTimer = (props) => {
         props.onRelativeChange(relativeTimeRange)
     }
 
-    const onDaysUptoChange = (e)=>{
-        let value  = e.target.value
+    const onDaysUptoChange = (e) => {
+        let value = e.target.value
         setDays(value)
     }
 
-    const onDaysUptoClick = ()=>{
+    const onDaysUptoClick = () => {
         setAnchorEl(null)
-        props.onRelativeChange({label:'Custom', duration:days*1440})
+        if(value > 0)
+        {
+            props.onRelativeChange({ label: `Last ${days} day${days > 1 ? 's' : ''}`, duration: days * 1440 })
+        }
     }
 
     const open = Boolean(anchorEl);
