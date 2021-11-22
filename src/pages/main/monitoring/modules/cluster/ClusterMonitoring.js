@@ -13,7 +13,7 @@ class ClusterMonitoring extends React.Component {
 
     render() {
         const { tools, legends, selection, refresh, handleDataStateChange, handleSelectionStateChange } = this.props
-        const { moduleId, search, regions, organization } = tools
+        const { moduleId, search, regions, organization, visibility, range } = tools
         return (
             <React.Fragment>
                 <Legend tools={tools} data={legends} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} sortBy={[fields.clusterName]}/>
@@ -26,7 +26,7 @@ class ClusterMonitoring extends React.Component {
                             <Map moduleId={moduleId} search={search}  regions={regions} data={legends} selection={selection} refresh={refresh} />
                         </ImageListItem>
                         {tools.regions.map(region => (
-                            <Module key={region} region={region} moduleId={moduleId} search={search} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} />
+                            <Module key={region} region={region} moduleId={moduleId} search={search} visibility={visibility} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} />
                         ))}
                     </ImageList>
                 </div>

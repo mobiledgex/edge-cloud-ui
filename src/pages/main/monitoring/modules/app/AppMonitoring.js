@@ -44,7 +44,7 @@ class AppMonitoring extends React.Component {
     render() {
         const { actionView } = this.state
         const { tools, legends, selection, refresh, handleDataStateChange, handleSelectionStateChange } = this.props
-        const { moduleId, regions, search, range, organization } = tools
+        const { moduleId, regions, search, range, organization, visibility } = tools
         return (
             <React.Fragment>
                 <Legend tools={tools} data={legends} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} groupBy={[fields.appName, fields.version]} />
@@ -53,25 +53,33 @@ class AppMonitoring extends React.Component {
                 </div>
                 <div id='resource-block' className="block block-2">
                     <ImageList cols={4} rowHeight={300} >
-                        <ImageListItem cols={1}>
-                            <Card style={{ height: 300, width: '100%' }}>
-                                <AppClient regions={regions} range={range} search={search} organization={organization}/>
-                            </Card>
-                        </ImageListItem>
-                        <ImageListItem cols={2}>
-                            <Map moduleId={moduleId} search={search} regions={regions} data={legends} selection={selection} refresh={refresh} zoom={2}/>
-                        </ImageListItem>
-                        <ImageListItem cols={1}>
-                            <Card style={{ height: 300 }}>
-                                <AppEvent regions={regions} tools={tools} search={search} range={range} organization={organization}/>
-                            </Card>
-                        </ImageListItem>
+                        {
+                            visibility.includes(fields.client) ?
+                                <ImageListItem cols={1}>
+                                    <Card style={{ height: 300, width: '100%' }}>
+                                        <AppClient regions={regions} range={range} search={search} organization={organization} />
+                                    </Card>
+                                </ImageListItem> : null
+                        }
+                        {
+                            visibility.includes(fields.map) ? <ImageListItem cols={2}>
+                                <Map moduleId={moduleId} search={search} regions={regions} data={legends} selection={selection} refresh={refresh} zoom={2} />
+                            </ImageListItem> : null
+                        }
+                        {
+                            visibility.includes(fields.event) ?
+                                <ImageListItem cols={1}>
+                                    <Card style={{ height: 300 }}>
+                                        <AppEvent regions={regions} tools={tools} search={search} range={range} organization={organization} />
+                                    </Card>
+                                </ImageListItem> : null
+                        }
                         {regions.map(region => (
-                            <Module key={region} region={region} moduleId={moduleId} search={search} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} />
+                            <Module key={region} region={region} moduleId={moduleId} search={search} visibility={visibility} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} />
                         ))}
                     </ImageList>
                     {actionView && actionView.id === perpetual.ACTION_LATENCY_METRICS ? <DMEMetrics group={false} id={moduleId} onClose={() => { this.setState({ actionView: undefined }) }} data={[actionView.data]} /> : null}
-                    {actionView && actionView.id === perpetual.ACTION_TRACK_DEVICES ? <AppInstClientMap onClose={() => { this.setState({ actionView: undefined }) }} data={actionView.data}/> : null}
+                    {actionView && actionView.id === perpetual.ACTION_TRACK_DEVICES ? <AppInstClientMap onClose={() => { this.setState({ actionView: undefined }) }} data={actionView.data} /> : null}
                 </div>
             </React.Fragment>
         )

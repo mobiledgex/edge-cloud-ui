@@ -16,6 +16,7 @@ import { HELP_MONITORING } from '../../../tutorial';
 import './PageMonitoringStyles.css'
 import './style.css'
 import { fetchOrgList } from './services/service';
+import { equal } from '../../../helper/constant/operators';
 class Monitoring extends React.Component {
     constructor(props) {
         super(props)
@@ -37,7 +38,7 @@ class Monitoring extends React.Component {
 
     handleDataStateChange = (data) => {
         this.setState(prevState => {
-            let legends = prevState.legends
+            let legends = { ...prevState.legends }
             let refresh = !prevState.refresh
             let dataKeys = Object.keys(data)
             dataKeys.forEach(key => {
@@ -52,7 +53,7 @@ class Monitoring extends React.Component {
         let refresh = this.state.refresh
         let wait = 0
         if (preTools) {
-            if (preTools.search !== tools.search || preTools.stats !== tools.stats) {
+            if (preTools.search !== tools.search || preTools.stats !== tools.stats || !equal(preTools.visibility, tools.visibility)) {
                 refresh = !refresh
             }
             else if (preTools.moduleId !== tools.moduleId) {
@@ -61,7 +62,7 @@ class Monitoring extends React.Component {
                 wait = 100
             }
         }
-        setTimeout(() => { this.setState({ tools, refresh}) }, wait)
+        setTimeout(() => { this.setState({ tools, refresh})}, wait)
 
     }
 

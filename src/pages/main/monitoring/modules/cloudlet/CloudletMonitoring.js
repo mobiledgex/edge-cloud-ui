@@ -28,10 +28,10 @@ class CloudletMonitoring extends React.Component {
     render() {
         const {actionView} = this.state
         const { tools, legends, selection, refresh, handleDataStateChange, handleSelectionStateChange } = this.props
-        const { moduleId, regions, search, range, organization } = tools
+        const { moduleId, regions, search, range, organization, visibility } = tools
         return (
             <React.Fragment>
-                <Legend tools={tools} data={legends} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} sortBy={[fields.cloudletName]}/>
+                <Legend tools={tools} data={legends} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} sortBy={[fields.cloudletName]} />
                 <div style={{ position: 'relative', height: 4 }}>
                     <DragButton height={400} />
                 </div>
@@ -46,7 +46,7 @@ class CloudletMonitoring extends React.Component {
                             </Card>
                         </ImageListItem>
                         {regions.map(region => (
-                            <Module key={region} region={region} moduleId={moduleId} search={search} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} />
+                            <Module key={region} region={region} moduleId={moduleId} visibility={visibility} search={search} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} />
                         ))}
                         {actionView && actionView.id === ACTION_LATENCY_METRICS ? <DMEMetrics id={moduleId} onClose={() => { this.setState({ actionView: undefined }) }} data={[actionView.data]} /> : null}
                     </ImageList>
@@ -58,4 +58,5 @@ class CloudletMonitoring extends React.Component {
     componentDidMount() {
     }
 }
+
 export default CloudletMonitoring

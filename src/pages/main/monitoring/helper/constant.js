@@ -71,24 +71,21 @@ export const visibility = (id, keys) => {
 
 export const relativeTimeRanges = [
     { label: 'Last 5 minutes', duration: 5 },
-    { label: 'Last 15 minutes', duration: 15 },
     { label: 'Last 30 minutes', duration: 30 },
     { label: 'Last 1 hour', duration: 60 },
     { label: 'Last 3 hours', duration: 180 },
     { label: 'Last 6 hours', duration: 360 },
-    { label: 'Last 12 hours', duration: 720 },
+    { label: 'Last 12 hours', duration: 720 }
 ]
 
 export const refreshRates = [
     { label: 'Off', duration: 0 },
-    // { label: '5s', duration: 5 },
-    // { label: '10s', duration: 10 },
+    { label: '15s', duration: 15 },
     { label: '30s', duration: 30 },
     { label: '1m', duration: 60 },
     { label: '5m', duration: 300 },
     { label: '15m', duration: 900 },
     { label: '30m', duration: 1800 },
     { label: '1h', duration: 3600 },
-    { label: '2h', duration: 7200 },
-    { label: '1d', duration: 86400 }
+    { label: '2h', duration: 7200 }
 ]

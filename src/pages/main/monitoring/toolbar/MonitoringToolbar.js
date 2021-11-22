@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useSelector } from "react-redux";
 import { Box, Toolbar, Typography, Grid, Divider } from '@material-ui/core';
 import { lightGreen } from '@material-ui/core/colors';
@@ -18,6 +18,7 @@ import MexTimer from '../common/picker/MexTimer'
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { fields } from '../../../../services/model/format';
+import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../../utils/sharedPreferences_util';
 
 const timeRangeInMin = (range) => {
     let endtime = dateUtil.currentUTCTime()
@@ -99,7 +100,7 @@ const Module = (props) => {
     const onChange = (value) => {
         let moduleId = value === 'App Inst' ? PARENT_APP_INST : PARENT_CLOUDLET
         moduleId = value === 'Cluster Inst' ? PARENT_CLUSTER_INST : moduleId
-        onUpdate({ moduleId })
+        onUpdate({ moduleId, visibility: preVisibility(moduleId, orgInfo) })
     }
 
     return (
@@ -143,10 +144,10 @@ const Region = (props) => {
 const Visibility = (props) => {
     const { order, onUpdate, value } = props
     const onChange = (value) => {
-
+        onUpdate({ visibility: value })
     }
     return (
-        <MonitoringMenu order={order} data={visibility(value.moduleId)} labelKey='header' multiple={true} field={'field'} type={'metricType'} icon={<VisibilityOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onChange} tip='Visibility' />
+        <MonitoringMenu order={order} data={visibility(value.moduleId)} default={value.visibility} labelKey='header' multiple={true} field={'field'} type={'metricType'} icon={<VisibilityOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} onChange={onChange} tip='Visibility' />
     )
 }
 
@@ -169,20 +170,43 @@ const Organization = (props) => {
     )
 }
 
+const preVisibility = (moduleId, orgInfo) => {
+    let prefId = moduleId === PARENT_CLOUDLET ? PREF_M_CLOUDLET_VISIBILITY : moduleId === PARENT_CLUSTER_INST ? PREF_M_CLUSTER_VISIBILITY : PREF_M_APP_VISIBILITY
+    let visibilityPref = monitoringPref(orgInfo, prefId)
+    let dataList = []
+    visibility(moduleId).forEach(item => {
+        if (!Boolean(visibilityPref) || visibilityPref.includes(item.header)) { dataList.push(item.field) }
+    })
+    return dataList
+}
+
+const useConstructor = (callBack = () => { }) => {
+    const hasBeenCalled = useRef(false);
+    if (hasBeenCalled.current) return;
+    callBack();
+    hasBeenCalled.current = true;
+}
+
 const MexToolbar = (props) => {
     const { onChange, organizations } = props
     const regions = useSelector(state => state.regionInfo.region)
     const orgInfo = useSelector(state => state.organizationInfo.data)
-    const [value, setValue] = React.useState({
-        regions,
-        range: timeRangeInMin(relativeTimeRanges[3].duration),
-        duration: relativeTimeRanges[3],
-        search: '',
-        organization: orgInfo,
-        moduleId: redux_org.isDeveloper(orgInfo) ? PARENT_APP_INST : PARENT_CLOUDLET,
-        stats: 'max'
-    })
+    const [value, setValue] = React.useState()
     const [refreshRange, setRefreshRange] = React.useState(refreshRates[0])
+
+    useConstructor(() => {
+        const moduleId = redux_org.isDeveloper(orgInfo) ? PARENT_APP_INST : PARENT_CLOUDLET
+        setValue({
+            regions: monitoringPref(orgInfo, PREF_M_REGION) ? monitoringPref(orgInfo, PREF_M_REGION) : regions,
+            range: timeRangeInMin(relativeTimeRanges[5].duration),
+            duration: relativeTimeRanges[5],
+            search: '',
+            organization: orgInfo,
+            moduleId: moduleId,
+            stats: 'max',
+            visibility: preVisibility(moduleId, orgInfo)
+        })
+    });
 
     useEffect(() => {
         onChange(value)
@@ -197,7 +221,7 @@ const MexToolbar = (props) => {
             <Typography variant={'h5'} className='monitoring-header'>Monitoring</Typography>
             <div style={{ width: '100%' }}>
                 <Box display="flex" justifyContent="flex-end">
-                    {value.organization ?
+                    {value && value.organization ?
                         <React.Fragment>
                             <Box order={8}>
                                 <Refresh onUpdate={onUpdate} value={value} refreshRange={refreshRange} setRefreshRange={setRefreshRange} />
@@ -213,7 +237,7 @@ const MexToolbar = (props) => {
                             <Statistics order={3} value={value} onUpdate={onUpdate} />
                             <Module order={2} value={value} onUpdate={onUpdate} />
                         </React.Fragment> : null}
-                        <Organization order={1} dataList={organizations} onUpdate={onUpdate} />
+                    <Organization order={1} dataList={organizations} onUpdate={onUpdate} />
                 </Box>
             </div>
         </Toolbar>

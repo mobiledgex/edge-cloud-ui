@@ -1,4 +1,6 @@
 import React from 'react'
+import { withRouter } from 'react-router'
+import { connect } from 'react-redux'
 import HorizontalBar from '../../charts/horizontalBar/MexHorizontalBar'
 import { clientMetrics } from '../../../../../services/modules/clientMetrics'
 import MexWorker from '../../services/client.worker.js'
@@ -6,6 +8,9 @@ import { authSyncRequest, responseValid } from '../../../../../services/service'
 import { equal } from '../../../../../helper/constant/operators'
 import { Skeleton } from '@material-ui/lab'
 import { fields } from '../../../../../services/model/format'
+import isEmpty from 'lodash/isEmpty'
+import { NoData } from '../../helper/NoData'
+
 
 class MexAppClient extends React.Component {
 
@@ -19,17 +24,14 @@ class MexAppClient extends React.Component {
         this.init = true
     }
 
+
+
     render() {
         const { stackedData, loading } = this.state
         const { search, regions } = this.props
         return (this.init ? <Skeleton variant='rect' height={300} /> :
-            stackedData ? <HorizontalBar loading={loading} header='Client API Usage Count' chartData={stackedData} search={search} regions={regions} /> :
-                <div className="event-list-main" align="center" style={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                    <div align="left" className="event-list-header">
-                        <h3 className='chart-header'>Client API Usage Count</h3>
-                    </div>
-                    <h3 style={{ padding: '90px 0px' }} className='chart-header'><b>No Data</b></h3>
-                </div>)
+            isEmpty(stackedData) ? <NoData header={'Client API Usage Count'}/> : <HorizontalBar loading={loading} header='Client API Usage Count' chartData={stackedData} search={search} regions={regions} />
+        )
     }
 
     fetchData = async (region) => {
@@ -54,15 +56,17 @@ class MexAppClient extends React.Component {
             worker.addEventListener('message', event => {
                 if (this._isMounted) {
                     this.setState(prevState => {
-                        let stackedData = prevState.stackedData
-                        stackedData[region] = event.data.data
+                        let stackedData = { ...prevState.stackedData }
+                        if (!isEmpty(event.data.data)) {
+                            stackedData[region] = event.data.data
+                        }
                         return { stackedData, loading: false }
                     })
                 }
-                this.init = false
                 worker.terminate()
             })
         }
+        this.init = false
     }
 
     client = () => {
@@ -90,4 +94,10 @@ class MexAppClient extends React.Component {
     }
 }
 
-export default MexAppClient
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
+export default withRouter(connect(mapStateToProps, null)(MexAppClient));

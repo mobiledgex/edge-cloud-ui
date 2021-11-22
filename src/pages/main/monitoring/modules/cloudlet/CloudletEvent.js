@@ -6,7 +6,8 @@ import { redux_org } from '../../../../../helper/reduxData'
 import randomColor from 'randomcolor'
 import { CircularProgress, IconButton, Tooltip } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { authSyncRequest } from '../../../../../services/service'
+import { authSyncRequest, responseValid } from '../../../../../services/service'
+import { equal } from '../../../../../helper/constant/operators'
 
 const cloudletEventKeys = [
     { label: 'Cloudlet', serverField: 'cloudlet', summary: true, filter: true },
@@ -29,7 +30,6 @@ class CloudletEvent extends React.Component {
             loading: false
         }
         this._isMounted = false
-        this.regions = props.tools.regions
     }
 
     updateState = (data) => {
@@ -88,7 +88,7 @@ class CloudletEvent extends React.Component {
             limit: 10
         })
         let mc = await authSyncRequest(this, { ...requestData, format: false })
-        if (mc && mc.response && mc.response.status === 200) {
+        if (responseValid(mc)) {
             let more = mc.request.data.more
             let dataList = mc.response.data
             let showMore = dataList.length === 10
@@ -105,18 +105,16 @@ class CloudletEvent extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const { range } = this.props.tools
-        if (prevProps.tools.range !== range) {
+        const { range } = this.props
+        if (!equal(prevProps.range, range)) {
             this.event(range)
         }
     }
 
     componentDidMount() {
         this._isMounted = true
-        const { range } = this.props.tools
-        if (!redux_org.isAdmin(this) || this.props.org) {
-            this.event(range)
-        }
+        const { range } = this.props
+        this.event(range)
     }
 
     componentWillUnmount() {

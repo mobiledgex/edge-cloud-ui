@@ -194,7 +194,7 @@ class MexLineChart extends React.Component {
                                 <Box>
                                     <CircularProgress size={20} thickness={3} />
                                 </Box> :
-                                <Box m={-1.5}>
+                                <Box m={-1}>
                                     <IconButton onClick={this.openFullScreen}>
                                         <AspectRatioIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />
                                     </IconButton>

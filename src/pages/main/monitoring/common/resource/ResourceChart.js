@@ -23,17 +23,17 @@ class ResourceChart extends React.Component {
 
     render() {
         const { dataList } = this.state
-        const { style, legends, range, search, selection } = this.props
+        const { style, legends, range, search, selection, visibility } = this.props
         return (
             <React.Fragment>
                 {dataList ? dataList.map((data, i) => {
                     let key = this.metricKeyGenerator(data.resourceType)
                     return (
-                        <ImageListItem key={key} cols={1} style={style}>
+                        visibility.includes(data.resourceType.field) ? <ImageListItem key={key} cols={1} style={style}>
                             <Card style={{ height: 300 }}>
                                 <LineChart id={key} data={data} legends={legends} selection={selection} range={range} search={search} disableSelection={this.isFlavor}/>
                             </Card>
-                        </ImageListItem>
+                        </ImageListItem> : null
                     )
                 }) : null}
             </React.Fragment>

@@ -37,7 +37,7 @@ class Module extends React.Component {
     render() {
         const { legends } = this.state
         return (
-            legends ?  <React.Fragment>
+            legends ? <React.Fragment>
                 <Resources {...this.props} legends={legends} legendList={this.legendList} handleLegendStateChange={this.handleLegendStateChange} />
             </React.Fragment> : null
         )
@@ -62,9 +62,7 @@ class Module extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        privateAccess: state.privateAccess.data,
-        organizationInfo: state.organizationInfo.data,
-        regions: state.regionInfo.region
+        organizationInfo: state.organizationInfo.data
     }
 };
 
