@@ -25,7 +25,6 @@ const timeRangeInMin = (range) => {
     let starttime = dateUtil.subtractMins(range, endtime).valueOf()
     starttime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
     endtime = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
-    // return { "starttime": "2021-10-04T08:19:04+00:00","endtime": "2021-11-06T09:19:04+00:00",}
     return { starttime, endtime }
 }
 
@@ -91,12 +90,9 @@ const Module = (props) => {
         data = value.moduleId === PARENT_CLOUDLET ? dataList[2] : data
         return data
     }
-
-
     if (redux_org.isOperator(orgInfo) || redux_org.isAdmin(orgInfo)) {
         dataList.push('Cloudlet')
     }
-
     const onChange = (value) => {
         let moduleId = value === 'App Inst' ? PARENT_APP_INST : PARENT_CLOUDLET
         moduleId = value === 'Cluster Inst' ? PARENT_CLUSTER_INST : moduleId
