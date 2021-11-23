@@ -175,7 +175,7 @@ export const getKey = (data, isCreate) => {
     })
 }
 
-export const cloudletWithInfo = (mcList) => {
+export const cloudletWithInfo = (mcList, feature) => {
     let cloudletInfoList = []
     let cloudletList = []
     if (mcList && mcList.length > 0) {
@@ -196,7 +196,11 @@ export const cloudletWithInfo = (mcList) => {
                     let cloudletInfo = cloudletInfoList[j]
                     if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
                         cloudlet[fields.compatibilityVersion] = cloudletInfo[fields.compatibilityVersion] ? cloudletInfo[fields.compatibilityVersion] : perpetual.CLOUDLET_COMPAT_VERSION_2_4
-                        valid = cloudletInfo[fields.state] === perpetual.STATUS_READY && (cloudlet[fields.maintenanceState] === undefined || cloudlet[fields.maintenanceState] === 0)
+                        const cloudletState = (cloudletInfo[fields.state] === perpetual.STATUS_READY) && (cloudlet[fields.maintenanceState] === undefined || cloudlet[fields.maintenanceState] === 0)
+                        valid = cloudletState
+                        if (feature === perpetual.CLUSTER_INST) {
+                            valid = cloudletState && (cloudlet.platformType !== perpetual.PLATFORM_TYPE_K8S_BARE_METAL)
+                        }
                         break;
                     }
                 }

@@ -83,7 +83,7 @@ class ClusterInstReg extends React.Component {
             this.props.handleLoadingSpinner(true)
             sendRequests(this, requestList).addEventListener('message', event => {
                 let mcList = event.data
-                this.cloudletList = cloudletWithInfo(mcList).filter((item) => item.platformType !== perpetual.PLATFORM_TYPE_K8S_BARE_METAL) // Filtering non-baremetal cloudlet
+                this.cloudletList = cloudletWithInfo(mcList, perpetual.CLUSTER_INST)
                 this.props.handleLoadingSpinner(false)
                 this.updateUI(form)
                 this.updateState({ forms })
