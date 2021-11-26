@@ -23,6 +23,9 @@ import { operators, shared, perpetual } from '../helper/constant';
 import { fetchDataFromServer } from './service';
 import { service } from '../services';
 import { timeRangeInMin } from '../hoc/mexui/Picker';
+import { multiAuthSyncRequest } from '../services/service';
+import { showOrganizations } from '../services/modules/organization';
+import { showUsers } from '../services/modules/users';
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -477,7 +480,7 @@ class MexListView extends React.Component {
                 this.dataFromServer(this.selectedRegion)
                 break;
             case ACTION_REFRESH:
-                this.dataFromServer(this.selectedRegion)
+                this.dataFromServer(this.selectedRegion, ACTION_REFRESH)
                 break;
             case ACTION_NEW:
                 this.requestInfo.onAdd()
@@ -498,7 +501,6 @@ class MexListView extends React.Component {
                 this.range = value
                 this.dataFromServer(this.selectedRegion)
             default:
-
         }
     }
 
@@ -527,7 +529,7 @@ class MexListView extends React.Component {
         return filterList;
     }
 
-    onServerResponse = (mcList) => {
+    onServerResponse = (mcList, type) => {
         this.requestCount -= 1
         let requestInfo = this.requestInfo
         let newDataList = []
@@ -542,7 +544,6 @@ class MexListView extends React.Component {
                     newDataList = mc.response.data
                 }
             }
-
         }
 
         let dataList = cloneDeep(this.state.dataList)
@@ -568,9 +569,12 @@ class MexListView extends React.Component {
                 this.updateState({ filterList: this.onFilterValue(undefined), loading:false })
             })
         }
+        if (type === ACTION_REFRESH && this.props.handleAvailableListUser) {
+            this.props.handleAvailableListUser('UPDATE_USER_ROLE', newDataList)
+        }
     }
 
-    dataFromServer = (region) => {
+    dataFromServer = async (region, type) => {
         if (this._isMounted) {
             this.setState(prevState => ({ dataList: [], filterList: [], selected: [], newDataList: [], resetStream: !prevState.resetStream, loading:true }))
         }
@@ -594,7 +598,15 @@ class MexListView extends React.Component {
             if (filterList && filterList.length > 0) {
                 for (let i = 0; i < filterList.length; i++) {
                     let filter = filterList[i];
-                    fetchDataFromServer(this, requestInfo.requestType, filter, this.onServerResponse)
+                    if (this.props.handleAvailableListUser && type === ACTION_REFRESH) {
+                        let requestList = []
+                        requestList.push(showOrganizations(this, {}))
+                        requestList.push(showUsers(this))
+                        let mcList = await multiAuthSyncRequest(this, requestList)
+                        this.onServerResponse(mcList, ACTION_REFRESH)
+                    } else {
+                        fetchDataFromServer(this, requestInfo.requestType, filter, this.onServerResponse)
+                    }
                 }
             }
             else {
