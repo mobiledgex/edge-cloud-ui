@@ -18,21 +18,21 @@ import { redux_org } from '../../../../helper/reduxData';
 import { getUserMetaData } from '../../../../helper/ls';
 import { timezonePref } from '../../../../utils/sharedPreferences_util';
 import Help from '../../events/helper/Help'
-import { HEADER } from '../../../../hoc/forms/MexForms';
 import { perpetual } from '../../../../helper/constant';
 import { DialogTitle } from '../../../../hoc/mexui';
 
+export const PREF_HEADER = 'Header'
 export const PREF_DATATABLE = 'Datatable'
 export const PREF_MONITORING = 'Monitoring'
 export const PREF_TIMEZONE = 'Timezone'
 export const PREF_LOGS = 'Logs'
 
 const preferencesList = [
-    { id: HEADER, label: 'General' },
+    { id: PREF_HEADER, label: 'General' },
     { id: PREF_DATATABLE, label: 'Data Table' },
     { id: PREF_TIMEZONE, label: 'Date & Time' },
     { id: PREF_LOGS, label: 'Logs' },
-    { id: HEADER, label: 'Organization' },
+    { id: PREF_HEADER, label: 'Organization' },
     { id: PREF_MONITORING, label: 'Monitoring' },
 ]
 
@@ -165,7 +165,7 @@ class Preferences extends React.Component {
                             <Grid xs={3} item>
                                 <List dense={true}>
                                     {preferencesList.map((parent, i) => (
-                                        parent.id === HEADER ?
+                                        parent.id === PREF_HEADER ?
                                             redux_org.nonAdminOrg(this) ? <div key={i} align="left" style={{ marginTop: `${i > 0 ? '15px' : '0px'}` }}>
                                                 <strong style={{ color: '#888888', marginBottom: 10 }}><b>{parent.label}</b></strong>
                                             </div> : null

@@ -83,10 +83,7 @@ class MexTerminal extends Component {
             execRequest: execRequest
         }
 
-        let store = JSON.parse(localStorage.PROJECT_INIT);
-        let token = store ? store.userToken : 'null';
         let request = {
-            token: token,
             method: method,
             data: requestedData
         }

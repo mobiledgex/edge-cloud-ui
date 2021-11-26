@@ -18,7 +18,7 @@
       
   <script>
     try {
-        let gaId = JSON.parse("%REACT_APP_GA_MEASUREMENT_ID%")[window.location.host]
+        let gaId = JSON.parse("%REACT_APP_GA_MEASUREMENT_ID%")[window.location.hostname]
         if (gaId) {
           let gaScript = document.createElement("script");
           gaScript.setAttribute("src", `https://www.googletagmanager.com/gtag/js?id=${gaId}`);
