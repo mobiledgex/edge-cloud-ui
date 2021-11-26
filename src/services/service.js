@@ -40,13 +40,15 @@ const showMessage = (self, request, message) => {
  * @param {*} auth 
  * @returns 
  */
-export const fetchToken = (self) => {
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-    if (store) {
-        return store.userToken
-    }
-    if (self && self.props && self.props.history) {
-        self.props.history.push('/logout');
+export const fetchToken = (self, ws) => {
+    if (window.location.host === 'localhost:3000' || ws) {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        if (store) {
+            return store.userToken
+        }
+        if (self && self.props && self.props.history) {
+            self.props.history.push('/logout');
+        }
     }
 }
 

@@ -9,7 +9,7 @@ import { authSyncRequest, fetchToken, responseValid, syncRequest } from '../serv
  *           because websocket supports multi request response 
  *  **/
 export const sendWSRequest = async (self, requestData, callback, orgData) => {
-    let token = fetchToken(self)
+    let token = fetchToken(self, true)
     if (token) {
         requestData.token = token;
         requestData.orgData = orgData

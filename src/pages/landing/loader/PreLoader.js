@@ -9,7 +9,6 @@ import { withRouter } from 'react-router-dom';
 import { redux_org } from '../../../helper/reduxData';
 import { endpoint, perpetual } from '../../../helper/constant';
 import { fetchToken, multiAuthSyncRequest } from '../../../services/service';
-import { getUserMetaData } from '../../../helper/ls';
 
 class LogoLoader extends React.Component {
 
