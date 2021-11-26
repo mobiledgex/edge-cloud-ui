@@ -192,16 +192,15 @@ export const cloudletWithInfo = (mcList, pageId) => {
         if (cloudletList && cloudletList.length > 0) {
             cloudletList = cloudletList.filter(cloudlet => {
                 let valid = false
-                if (pageId === perpetual.PAGE_CLUSTER_INSTANCES && cloudlet.platformType === perpetual.PLATFORM_TYPE_K8S_BARE_METAL) {
+                if (pageId === perpetual.PAGE_CLUSTER_INSTANCES && cloudlet.platformType === perpetual.PLATFORM_TYPE_K8S_BARE_METAL || cloudlet[fields.maintenanceState] > 0) {
                     return valid
                 }
                 else {
-                    const notInMaintainance = cloudlet[fields.maintenanceState] === undefined || cloudlet[fields.maintenanceState] === 0
                     for (let j = 0; j < cloudletInfoList.length; j++) {
                         let cloudletInfo = cloudletInfoList[j]
                         if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
                             cloudlet[fields.compatibilityVersion] = cloudletInfo[fields.compatibilityVersion] ? cloudletInfo[fields.compatibilityVersion] : perpetual.CLOUDLET_COMPAT_VERSION_2_4
-                            valid = (cloudletInfo[fields.state] === perpetual.STATUS_READY) && notInMaintainance
+                            valid = cloudletInfo[fields.state] === perpetual.STATUS_READY
                             break;
                         }
                     }
