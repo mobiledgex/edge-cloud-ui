@@ -83,7 +83,7 @@ class ClusterInstReg extends React.Component {
             this.props.handleLoadingSpinner(true)
             sendRequests(this, requestList).addEventListener('message', event => {
                 let mcList = event.data
-                this.cloudletList = cloudletWithInfo(mcList, perpetual.CLUSTER_INST)
+                this.cloudletList = cloudletWithInfo(mcList, perpetual.PAGE_CLUSTER_INSTANCES)
                 this.props.handleLoadingSpinner(false)
                 this.updateUI(form)
                 this.updateState({ forms })
