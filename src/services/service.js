@@ -2,6 +2,8 @@ import { fetchHttpURL, validateExpiry } from "./config"
 import axios from 'axios';
 import { formatData } from "./format";
 import { isBoolean } from "../utils/boolean_utils";
+import { WS_TOKEN } from "../helper/constant/endpoint";
+import { LS_THASH } from "../helper/constant/perpetual";
 
 const formatter = (request, response, format = true, self) => {
     format = isBoolean(request.format) ? request.format : format
@@ -34,17 +36,38 @@ const showMessage = (self, request, message) => {
     }
 }
 
+
+/**
+ * fetch token for websocket
+ * @param {*} request 
+ * @param {*} auth 
+ * @returns
+ */
+export const fetchWSToken = async (self) => {
+    let mc = await authSyncRequest(self, { method: WS_TOKEN })
+    if(responseValid(mc))
+    {
+        return mc.response.data.token
+    }
+    else
+    {
+        if (self && self.props && self.props.history) {
+            self.props.history.push('/logout');
+        }
+    }
+}
+
 /**
  * 
  * @param {*} request 
  * @param {*} auth 
- * @returns 
+ * @returns
  */
-export const fetchToken = (self, ws) => {
-    if (window.location.host === 'localhost:3000' || ws) {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if (store) {
-            return store.userToken
+export const fetchToken = (self) => {
+    if (window.location.hostname === 'localhost') {
+        let token = localStorage.getItem(LS_THASH)
+        if (token) {
+            return token
         }
         if (self && self.props && self.props.history) {
             self.props.history.push('/logout');
@@ -102,7 +125,7 @@ const responseStatus = (self, status) => {
     return valid
 }
 
-const errorResponse = (self, request, error, callback, auth=true) => {
+const errorResponse = (self, request, error, callback, auth = true) => {
     if (error && error.response) {
         const response = error.response
         const code = response.status

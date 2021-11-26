@@ -21,8 +21,14 @@ class Login extends Component {
     }
 
     loadMainPage = (data) => {
-        if (data.token) {
-            localStorage.setItem(perpetual.LOCAL_STRAGE_KEY, JSON.stringify({ userToken: data.token }))
+        if (data && data.token) {
+            if (window.location.hostname === 'localhost') {
+                localStorage.setItem(perpetual.LS_THASH, data.token)
+            }
+            else
+            {
+                localStorage.setItem(perpetual.LS_THASH, true)  
+            }
             this.props.history.push('preloader')
         }
     }
