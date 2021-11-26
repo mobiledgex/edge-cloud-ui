@@ -126,11 +126,11 @@ class Landing extends Component {
     componentDidMount() {
         this.receiveClientIp()
         if (this.props.match.path === '/logout') {
-            localStorage.removeItem(perpetual.LOCAL_STRAGE_KEY);
+            localStorage.removeItem(perpetual.LS_THASH);
             localStorage.removeItem(perpetual.LS_USER_META_DATA);
             localStorage.removeItem(perpetual.LS_REGIONS);
         }
-        else if (localStorage.getItem(perpetual.LOCAL_STRAGE_KEY)) {
+        else if (localStorage.getItem(perpetual.LS_THASH)) {
             this.props.history.push(`/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)
         }
     }

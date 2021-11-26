@@ -10,7 +10,7 @@ import MexCurve from '../../../../../hoc/mexmap/utils/MexCurve'
 import { Dialog } from '@material-ui/core';
 import Legend from './MapLegend'
 import { fetchPath, fetchURL } from '../../../../../services/config';
-import { fetchToken } from '../../../../../services/service';
+import { fetchWSToken } from '../../../../../services/service';
 
 class AppMexMap extends React.Component {
     constructor(props) {
@@ -45,47 +45,50 @@ class AppMexMap extends React.Component {
         })
     }
 
-    sendWSRequest = (request) => {
-        this.setState({ showDevices: true })
-        this.ws = new WebSocket(`${fetchURL(true)}/ws${fetchPath(request)}`)
-        this.ws.onopen = () => {
-            this.ws.send(`{"token": "${fetchToken(this)}"}`);
-            this.ws.send(JSON.stringify(request.data));
-        }
-        this.ws.onmessage = evt => {
-            let response = JSON.parse(evt.data);
-            if (response.code === 200) {
-                let responseData = response.data
-                let location = responseData[fields.location]
-                if (location) {
-                    let latitude = location.latitude ? location.latitude : 0
-                    let longitude = location.longitude ? location.longitude : 0
-                    let uniqueId = responseData.client_key.unique_id
-                    let mapData = cloneDeep(this.state.mapData)
-                    let polyline = cloneDeep(this.state.polyline)
-                    let key = `${latitude}_${longitude}`
-                    let data = []
-                    if (mapData[key]) {
-                        data = mapData[key]
-                        data.devices = data.devices ? data.devices : []
-                        if (!data.devices.includes(uniqueId)) {
-                            data.devices.push(uniqueId)
-                            let label = parseInt(data.label) + 1
-                            data.label = label
+    sendWSRequest = async (request) => {
+        let token = await fetchWSToken(this)
+        if (token) {
+            this.setState({ showDevices: true })
+            this.ws = new WebSocket(`${fetchURL(true)}/ws${fetchPath(request)}`)
+            this.ws.onopen = () => {
+                this.ws.send(`{"token": "${token}"}`);
+                this.ws.send(JSON.stringify(request.data));
+            }
+            this.ws.onmessage = evt => {
+                let response = JSON.parse(evt.data);
+                if (response.code === 200) {
+                    let responseData = response.data
+                    let location = responseData[fields.location]
+                    if (location) {
+                        let latitude = location.latitude ? location.latitude : 0
+                        let longitude = location.longitude ? location.longitude : 0
+                        let uniqueId = responseData.client_key.unique_id
+                        let mapData = cloneDeep(this.state.mapData)
+                        let polyline = cloneDeep(this.state.polyline)
+                        let key = `${latitude}_${longitude}`
+                        let data = []
+                        if (mapData[key]) {
+                            data = mapData[key]
+                            data.devices = data.devices ? data.devices : []
+                            if (!data.devices.includes(uniqueId)) {
+                                data.devices.push(uniqueId)
+                                let label = parseInt(data.label) + 1
+                                data.label = label
+                            }
                         }
+                        else {
+                            polyline.push([latitude, longitude])
+                            data = { cloudletLocation: { latitude, longitude }, label: 1, devices: [uniqueId] }
+                        }
+                        mapData[key] = data
+                        this.setState({ mapData, polyline })
                     }
-                    else {
-                        polyline.push([latitude, longitude])
-                        data = { cloudletLocation: { latitude, longitude }, label: 1, devices: [uniqueId] }
-                    }
-                    mapData[key] = data
-                    this.setState({ mapData, polyline })
                 }
             }
-        }
 
-        this.ws.onclose = evt => {
+            this.ws.onclose = evt => {
 
+            }
         }
     }
 
