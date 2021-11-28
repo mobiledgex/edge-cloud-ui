@@ -20,7 +20,7 @@ const MonitoringMenu = (props) => {
     const { order, labelKey, large, search, icon, tip, multiple, showTick, field, disableDefault } = props
     const [anchorEl, setAnchorEl] = React.useState(null)
     const [filterText, setFilterText] = React.useState('')
-    const [dataList, setList] = React.useState(props.data)
+    const [dataList, setList] = React.useState([])
     const [value, setValue] = React.useState(disableDefault ? undefined : props.default ? props.default : (props.value ? props.value : (multiple ? fetchArray(props) : props.data[0])))
     const orgInfo = useSelector(state => state.organizationInfo.data)
 
@@ -36,6 +36,10 @@ const MonitoringMenu = (props) => {
             }
         }
     }, [filterText]);
+
+    useEffect(() => {
+        setList(props.data)
+    }, [props.data]);
 
     const onChange = (data) => {
         if (multiple) {

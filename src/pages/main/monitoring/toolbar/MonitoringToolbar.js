@@ -19,6 +19,7 @@ import MexTimer from '../common/picker/MexTimer'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { fields } from '../../../../services/model/format';
 import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../../utils/sharedPreferences_util';
+import { da } from 'date-fns/locale';
 
 const timeRangeInMin = (range) => {
     let endtime = dateUtil.currentUTCTime()
@@ -83,16 +84,22 @@ const DateTimePicker = (props) => {
 const Module = (props) => {
     const { order, value, onUpdate } = props
     const orgInfo = useSelector(state => state.organizationInfo.data)
-    const dataList = ['App Inst', 'Cluster Inst']
+    const [dataList, setList] = React.useState([])
 
     const onValueChange = () => {
         let data = value.moduleId === PARENT_APP_INST ? dataList[0] : dataList[1]
         data = value.moduleId === PARENT_CLOUDLET ? dataList[2] : data
         return data
     }
-    if (redux_org.isOperator(orgInfo) || redux_org.isAdmin(orgInfo)) {
-        dataList.push('Cloudlet')
-    }
+
+    useEffect(() => {
+        let dataList = ['App Inst', 'Cluster Inst']
+        if (redux_org.isOperator(orgInfo) || redux_org.isAdmin(orgInfo)) {
+            dataList.push('Cloudlet')
+        }
+        setList(dataList)
+    }, [orgInfo]);
+
     const onChange = (value) => {
         let moduleId = value === 'App Inst' ? PARENT_APP_INST : PARENT_CLOUDLET
         moduleId = value === 'Cluster Inst' ? PARENT_CLUSTER_INST : moduleId
@@ -157,8 +164,10 @@ const Organization = (props) => {
 
 
     const onChange = (value) => {
-        let moduleId = value[fields.type] === DEVELOPER ? PARENT_APP_INST : PARENT_CLOUDLET
-        onUpdate({ organization: value, moduleId })
+        if (!redux_org.isAdmin(value)) {
+            let moduleId = value[fields.type] === DEVELOPER ? PARENT_APP_INST : PARENT_CLOUDLET
+            onUpdate({ organization: value, moduleId, visibility: preVisibility(moduleId, value) })
+        }
     }
 
     return (
@@ -197,7 +206,7 @@ const MexToolbar = (props) => {
             range: timeRangeInMin(relativeTimeRanges[5].duration),
             duration: relativeTimeRanges[5],
             search: '',
-            organization: orgInfo,
+            organization: redux_org.isAdmin(orgInfo) ? undefined : orgInfo,
             moduleId: moduleId,
             stats: 'max',
             visibility: preVisibility(moduleId, orgInfo)
