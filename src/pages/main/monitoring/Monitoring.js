@@ -17,6 +17,7 @@ import './PageMonitoringStyles.css'
 import './style.css'
 import { fetchOrgList } from './services/service';
 import { equal } from '../../../helper/constant/operators';
+
 class Monitoring extends React.Component {
     constructor(props) {
         super(props)
@@ -25,27 +26,35 @@ class Monitoring extends React.Component {
             legends: {},
             selection: { count: 0 },
             refresh: false,
-            organizations:[]
+            organizations: []
         }
         this._isMounted = false
         //filter resources based on legendList
         this.legendList = {}
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
     handleSelectionStateChange = (selection) => {
-        this.setState({ selection })
+        this.updateState({ selection })
     }
 
     handleDataStateChange = (data) => {
-        this.setState(prevState => {
-            let legends = { ...prevState.legends }
-            let refresh = !prevState.refresh
-            let dataKeys = Object.keys(data)
-            dataKeys.forEach(key => {
-                legends[key] = data[key]
+        if (this._isMounted) {
+            this.setState(prevState => {
+                let legends = { ...prevState.legends }
+                let refresh = !prevState.refresh
+                let dataKeys = Object.keys(data)
+                dataKeys.forEach(key => {
+                    legends[key] = data[key]
+                })
+                return { legends, refresh }
             })
-            return { legends, refresh }
-        })
+        }
     }
 
     handleToolbarChange = (tools) => {
@@ -53,16 +62,16 @@ class Monitoring extends React.Component {
         let refresh = this.state.refresh
         let wait = 0
         if (preTools) {
-            if (preTools.search !== tools.search || preTools.stats !== tools.stats || !equal(preTools.visibility, tools.visibility)) {
-                refresh = !refresh
-            }
-            else if (preTools.moduleId !== tools.moduleId) {
+            if (preTools.moduleId !== tools.moduleId) {
                 //reset components if moduleId change
-                this.setState({ tools: undefined, legends: {} })
+                this.updateState({ tools: undefined, legends: {} })
                 wait = 100
             }
+            else if (preTools.search !== tools.search || preTools.stats !== tools.stats || !equal(preTools.visibility, tools.visibility)) {
+                refresh = !refresh
+            }
         }
-        setTimeout(() => { this.setState({ tools, refresh})}, wait)
+        setTimeout(() => { this.updateState({ tools, refresh }) }, wait)
 
     }
 
@@ -71,14 +80,14 @@ class Monitoring extends React.Component {
         return (
             <div mex-test="component-monitoring" style={{ position: 'relative' }}>
                 <Card style={{ height: 50, marginBottom: 2 }}>
-                    <Toolbar onChange={this.handleToolbarChange} organizations={organizations}/>
+                    <Toolbar onChange={this.handleToolbarChange} organizations={organizations} />
                 </Card>
                 {tools && tools.organization ? (
                     <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
                         {
                             tools.moduleId === PARENT_CLOUDLET ? <CloudletMonitoring tools={tools} legends={legends} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
                                 tools.moduleId === PARENT_CLUSTER_INST ? <ClusterMonitoring tools={tools} legends={legends} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
-                                    tools.moduleId === PARENT_APP_INST ? <AppMonitoring tools={tools} legends={legends} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange}/> :
+                                    tools.moduleId === PARENT_APP_INST ? <AppMonitoring tools={tools} legends={legends} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
                                         null
                         }
                     </div>
@@ -90,11 +99,12 @@ class Monitoring extends React.Component {
     initOrgList = async () => {
         if (redux_org.isAdmin(this)) {
             let organizations = await fetchOrgList()
-            this.setState({organizations})
+            this.updateState({ organizations })
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
+        this._isMounted = true
         this.props.handleViewMode(HELP_MONITORING)
         this.initOrgList()
     }

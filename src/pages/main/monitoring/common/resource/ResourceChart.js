@@ -17,6 +17,12 @@ class ResourceChart extends React.Component {
         this.isFlavor = props.resource.field === fields.flavorusage
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
     metricKeyGenerator = (resourceType) => {
         return `${resourceType.serverField}${resourceType.subId ? `-${resourceType.subId}` : ''}`
     }
@@ -31,7 +37,7 @@ class ResourceChart extends React.Component {
                     return (
                         visibility.includes(data.resourceType.field) ? <ImageListItem key={key} cols={1} style={style}>
                             <Card style={{ height: 300 }}>
-                                <LineChart id={key} data={data} legends={legends} selection={selection} range={range} search={search} disableSelection={this.isFlavor}/>
+                                <LineChart id={key} data={data} legends={legends} selection={selection} range={range} search={search} disableSelection={this.isFlavor} />
                             </Card>
                         </ImageListItem> : null
                     )
@@ -45,9 +51,11 @@ class ResourceChart extends React.Component {
         let dataObject = await fetchResourceData(this, moduleId, { region, legends, legendList, resourceKey: resource, range, selection, worker: this.metricWorker })
         if (dataObject) {
             const { resources, data } = dataObject
-            this.setState({ dataList: data })
-            if (resources) {
-                handleLegendStateChange(resources)
+            if (this._isMounted) {
+                this.updateState({ dataList: data })
+                if (resources) {
+                    handleLegendStateChange(resources)
+                }
             }
         }
     }
@@ -57,7 +65,7 @@ class ResourceChart extends React.Component {
         const { region, selection } = this.props
         let data = await fetchFlavorBySelection({ worker: this.metricWorker, region, selection, dataList })
         if (data) {
-            this.setState({ dataList: [data] })
+            this.updateState({ dataList: [data] })
         }
     }
 
@@ -65,7 +73,7 @@ class ResourceChart extends React.Component {
         const { range, selection, resource } = this.props
         //fetch data on range change
         if (!equal(range, preProps.range)) {
-            this.setState({dataList:undefined })
+            this.updateState({ dataList: undefined })
             this.fetchResources()
         }
         else if (selection && selection.count !== preProps.selection.count && this.isFlavor) {
@@ -74,7 +82,12 @@ class ResourceChart extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.fetchResources()
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 }
 
