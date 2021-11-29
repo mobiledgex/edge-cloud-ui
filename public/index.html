@@ -15,25 +15,25 @@
       img-src * data: blob;
       object-src 'self' data: blob;
       connect-src *">
-      
+
   <script>
     try {
-        let gaId = JSON.parse("%REACT_APP_GA_MEASUREMENT_ID%")[window.location.hostname]
-        if (gaId) {
-          let gaScript = document.createElement("script");
-          gaScript.setAttribute("src", `https://www.googletagmanager.com/gtag/js?id=${gaId}`);
-          gaScript.setAttribute("async", "true");
-          document.head.appendChild(gaScript)
-          window.dataLayer = window.dataLayer || [];
-          function gtag() { dataLayer.push(arguments); }
-          gtag('js', new Date());
-          gtag('config', gaId);
-        }
+      let gaId = JSON.parse(atob("%REACT_APP_GA_MEASUREMENT_ID%"))[window.location.hostname]
+      if (gaId) {
+        let gaScript = document.createElement("script");
+        gaScript.setAttribute("src", `https://www.googletagmanager.com/gtag/js?id=${gaId}`);
+        gaScript.setAttribute("async", "true");
+        document.head.appendChild(gaScript)
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', gaId);
       }
-      catch (e) {
-        console.log('Invalid gaID')
-      }
-    </script>
+    }
+    catch (e) {
+      console.log(e, 'Invalid gaID')
+    }
+  </script>
   <!--cache disable start-->
   <!--<meta http-equiv='cache-control' content='no-cache'>
     <meta http-equiv='expires' content='0'>
