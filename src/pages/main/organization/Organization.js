@@ -245,7 +245,6 @@ class OrganizationList extends React.Component {
     }
 
     handleAvailableListUser = (type, value) => {
-        console.log("refresh")
         switch (type) {
             case "UPDATE_USER_ROLE":
                 this.props.handleRoleInfo(value)
