@@ -102,7 +102,7 @@ export const cloudletInfoState = (key, data, isDetail) => {
 }
 
 export const healthCheck = (key, data, isDetail) => {
-    let id = data[key.field]
+    let id = key ? data[key.field] : data
     let label = labelFormatter.healthCheck(id)
     if (isDetail) {
         return label
