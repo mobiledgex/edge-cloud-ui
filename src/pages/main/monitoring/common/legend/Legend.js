@@ -6,6 +6,7 @@ import { onlyNumeric } from '../../../../../utils/string_utils';
 import { _orderBy } from '../../../../../helper/constant/operators';
 import { legendKeys } from '../../helper/constant';
 import { Skeleton } from '@material-ui/lab';
+import { validateRole } from '../../../../../helper/constant/role';
 class Legend extends React.Component {
 
     constructor(props) {
@@ -73,6 +74,11 @@ class Legend extends React.Component {
         }
     }
 
+    filterAction = () => {
+        const { tools, actionMenu } = this.props
+        return actionMenu && actionMenu.filter(item => item.roles ? validateRole(item.roles, tools.organization) : true)
+    }
+
     render() {
         const { newList } = this.state
         const { tools, handleSelectionStateChange, handleAction, actionMenu, groupBy } = this.props
@@ -81,7 +87,7 @@ class Legend extends React.Component {
                 <div id='legend-block' className="block block-1">
                     {
                         newList && newList.length > 0 ?
-                            <DataTable dataList={newList} keys={legendKeys(tools.moduleId)} onRowClick={handleSelectionStateChange} formatter={this.onFormat} actionMenu={actionMenu} handleAction={handleAction} groupBy={groupBy} /> : <Skeleton variant='rect' height={'inherit'} />
+                            <DataTable dataList={newList} keys={legendKeys(tools.moduleId)} onRowClick={handleSelectionStateChange} formatter={this.onFormat} actionMenu={this.filterAction()} handleAction={handleAction} groupBy={groupBy} /> : <Skeleton variant='rect' height={'inherit'} />
                     }
                 </div>
             </React.Fragment>

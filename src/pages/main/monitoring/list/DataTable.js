@@ -99,12 +99,12 @@ class MuiVirtualizedTable extends React.PureComponent {
     };
 
     rowRenderer = (props) => {
-        const { index, style, className, key, rowData } = props
-        const { onAction, groupBy } = this.props
+        const { style, className, key, rowData } = props
+        const { action, onAction } = this.props
         if (rowData.group) {
             return (
                 <div
-                    style={{ ...style, backgroundColor: '#1d1d26'}}
+                    style={{ ...style, backgroundColor: '#1d1d26' }}
                     className={className}
                     key={key}
                 >
@@ -115,11 +115,11 @@ class MuiVirtualizedTable extends React.PureComponent {
                             fontSize: 14
                         }}
                     >
-                        <AppGroupView data={rowData}/>
+                        <AppGroupView data={rowData} />
                     </div>
-                    <div style={{ display: 'inline', width: 85 }}>
-                        <IconButton onClick={(e) => { onAction(e, rowData) }}><Icon style={{ color: lightGreen['A700'], height: 18 }}>list</Icon></IconButton>
-                    </div>
+                    {action ? <div style={{ display: 'inline', width: 85 }}>
+                        <IconButton onClick={(e) => { onAction(e, rowData, true) }}><Icon style={{ color: lightGreen['A700'], height: 18 }}>list</Icon></IconButton>
+                    </div> : null}
                 </div>
             )
         }
@@ -220,8 +220,8 @@ export default function ReactVirtualizedTable(props) {
         setAnchorEl(undefined)
     }
 
-    const onActionMenu = (e, rowData)=>{
-        setAnchorEl({target:e.currentTarget, data:rowData})
+    const onActionMenu = (e, rowData, group)=>{
+        setAnchorEl({target:e.currentTarget, data:rowData, group})
         e.stopPropagation()
     }
 
@@ -240,7 +240,7 @@ export default function ReactVirtualizedTable(props) {
                     groupBy={groupBy}
                 />
             </Paper>
-            <Actions anchorEl={anchorEl && anchorEl.target} onClose={() => { setAnchorEl(undefined) }} onClick={onActionClick} actionMenu={actionMenu} />
+            <Actions anchorEl={anchorEl && anchorEl.target} onClose={() => { setAnchorEl(undefined) }} onClick={onActionClick} actionMenu={actionMenu} group={anchorEl && anchorEl.group}/>
         </React.Fragment>
     );
 }
