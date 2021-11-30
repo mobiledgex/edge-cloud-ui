@@ -54,18 +54,11 @@ export default function MexSelectRadioTree(props) {
     let form = props.form;
     const filterOptions = () => {
         let optionList = {};
-        let dataList = form.options
-        if (dataList) {
-            let keys = Object.keys(dataList)
-            if (keys.length > 0) {
-                keys.map(key => {
-                    let data = dataList[key]
-                    const childrenList = data.map(item => (item[form.showField ? form.showField : form.field]))
-                    optionList[key] = childrenList
-                })
-            }
+        if(form.options)
+        {
+            optionList = {...form.options}
         }
-        setRawDataList(cloneDeep(optionList))
+        setRawDataList(optionList)
         return optionList
     }
 
