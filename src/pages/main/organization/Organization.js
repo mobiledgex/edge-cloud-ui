@@ -22,6 +22,7 @@ import { validatePrivateAccess } from '../../../constant';
 import { getUserMetaData } from '../../../helper/ls';
 import { updateUserMetaData } from '../../../services/modules/users';
 import { showUsers } from '../../../services/modules/users';
+import { ACTION_REFRESH } from '../../../container/MexToolbar';
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
@@ -246,7 +247,7 @@ class OrganizationList extends React.Component {
 
     handleAvailableListUser = (type, value) => {
         switch (type) {
-            case "UPDATE_USER_ROLE":
+            case ACTION_REFRESH:
                 this.props.handleRoleInfo(value)
                 break;
             default:

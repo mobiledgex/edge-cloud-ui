@@ -480,7 +480,7 @@ class MexListView extends React.Component {
                 this.dataFromServer(this.selectedRegion)
                 break;
             case ACTION_REFRESH:
-                this.dataFromServer(this.selectedRegion, ACTION_REFRESH)
+                this.dataFromServer(this.selectedRegion, type)
                 break;
             case ACTION_NEW:
                 this.requestInfo.onAdd()
@@ -570,7 +570,7 @@ class MexListView extends React.Component {
             })
         }
         if (type === ACTION_REFRESH && this.props.handleAvailableListUser) {
-            this.props.handleAvailableListUser('UPDATE_USER_ROLE', newDataList)
+            this.props.handleAvailableListUser(type, newDataList)
         }
     }
 
@@ -598,19 +598,13 @@ class MexListView extends React.Component {
             if (filterList && filterList.length > 0) {
                 for (let i = 0; i < filterList.length; i++) {
                     let filter = filterList[i];
-                    if (this.props.handleAvailableListUser && type === ACTION_REFRESH) {
-                        let requestList = []
-                        requestList.push(showOrganizations(this, {}))
-                        requestList.push(showUsers(this))
-                        let mcList = await multiAuthSyncRequest(this, requestList)
-                        this.onServerResponse(mcList, ACTION_REFRESH)
-                    } else {
-                        fetchDataFromServer(this, requestInfo.requestType, filter, this.onServerResponse)
-                    }
+                    let mcList = await fetchDataFromServer(this, requestInfo.requestType, filter)
+                    this.onServerResponse(mcList, type)
                 }
             }
             else {
-                fetchDataFromServer(this, requestInfo.requestType, this.onServerResponse)
+                let mcList = await fetchDataFromServer(this, requestInfo.requestType)
+                this.onServerResponse(mcList)
             }
         }
 
