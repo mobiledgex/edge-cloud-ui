@@ -7,6 +7,8 @@ import { _orderBy } from '../../../../../helper/constant/operators';
 import { legendKeys } from '../../helper/constant';
 import { Skeleton } from '@material-ui/lab';
 import { validateRole } from '../../../../../helper/constant/role';
+import { fields } from '../../../../../services/model/format';
+import { healthCheck } from '../../../../../helper/formatter/label';
 class Legend extends React.Component {
 
     constructor(props) {
@@ -64,7 +66,10 @@ class Legend extends React.Component {
     onFormat = (column, data) => {
         const { tools } = this.props
         if (data) {
-            if (data.infraAllotted) {
+            if (column.field === fields.healthCheck) {
+                return healthCheck(data)
+            }
+            else if (data.infraAllotted) {
                 let value = { title: "", subtitle: "", ranges: [data.infraAllotted ? onlyNumeric(data.infraAllotted) : 0], measures: [data.allotted ? onlyNumeric(data.allotted) : 0, data.used ? onlyNumeric(data.used) : 0], markers: [data.infraUsed ? onlyNumeric(data.infraUsed) : 0] }
                 return <BulletChart data={[value]} />
             }
