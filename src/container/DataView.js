@@ -35,11 +35,11 @@ class DataView extends React.Component {
     }
 
     render() {
-        const { requestInfo, actionMenu, multiDataRequest, groupActionMenu, currentView, onClick, customToolbar, tableHeight, refreshToggle, toolbarAction, detailAction, handleAvailableListUser } = this.props
+        const { requestInfo, actionMenu, multiDataRequest, groupActionMenu, currentView, onClick, customToolbar, tableHeight, refreshToggle, toolbarAction, detailAction, handleListViewClick } = this.props
         const { visible } = this.state
         return (
             visible ?
-                currentView ? currentView : <MexListView actionMenu={actionMenu()} requestInfo={requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={groupActionMenu} onClick={onClick} customToolbar={customToolbar} tableHeight={tableHeight} refreshToggle={refreshToggle} toolbarAction={toolbarAction} detailAction={detailAction} handleAvailableListUser={handleAvailableListUser} /> : null
+                currentView ? currentView : <MexListView actionMenu={actionMenu()} requestInfo={requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={groupActionMenu} onClick={onClick} customToolbar={customToolbar} tableHeight={tableHeight} refreshToggle={refreshToggle} toolbarAction={toolbarAction} detailAction={detailAction} handleListViewClick={handleListViewClick} /> : null
         )
     }
 

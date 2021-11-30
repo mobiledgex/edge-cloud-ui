@@ -563,11 +563,11 @@ class MexListView extends React.Component {
                 dataList,
                 newDataList
             }, () => {
-                this.updateState({ filterList: this.onFilterValue(undefined), loading:false })
+                this.updateState({ filterList: this.onFilterValue(undefined), loading: false })
             })
         }
-        if (type === ACTION_REFRESH && this.props.handleAvailableListUser) {
-            this.props.handleAvailableListUser(type, newDataList)
+        if (type === ACTION_REFRESH && this.props.handleListViewClick) {
+            this.props.handleListViewClick({ type, data: newDataList })
         }
     }
 
@@ -590,18 +590,20 @@ class MexListView extends React.Component {
                     filterList = [{ startdate: this.range.from, enddate: this.range.to }]
                 }
             }
-            
+
             this.requestCount = filterList.length;
+            let mcList = []
             if (filterList && filterList.length > 0) {
                 for (let i = 0; i < filterList.length; i++) {
                     let filter = filterList[i];
-                    let mcList = await fetchDataFromServer(this, requestInfo.requestType, filter)
-                    this.onServerResponse(mcList, type)
+                    mcList = await fetchDataFromServer(this, requestInfo.requestType, filter)
                 }
             }
             else {
-                let mcList = await fetchDataFromServer(this, requestInfo.requestType)
-                this.onServerResponse(mcList)
+                mcList = await fetchDataFromServer(this, requestInfo.requestType)
+            }
+            if (mcList && mcList.length > 0) {
+                this.onServerResponse(mcList, type)
             }
         }
 

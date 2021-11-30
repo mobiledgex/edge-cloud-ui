@@ -240,15 +240,16 @@ class OrganizationList extends React.Component {
         const { tableHeight, currentView } = this.state
         return (
             <div style={{ width: '100%', height: '100%' }}>
-                <DataView id={perpetual.PAGE_ORGANIZATIONS} multiDataRequest={multiDataRequest} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight} handleAvailableListUser={this.handleAvailableListUser} />
+                <DataView id={perpetual.PAGE_ORGANIZATIONS} multiDataRequest={multiDataRequest} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} />
             </div>
         )
     }
 
-    handleAvailableListUser = (type, value) => {
+    handleListViewClick = (item) => {
+        const { type, data } = item
         switch (type) {
             case ACTION_REFRESH:
-                this.props.handleRoleInfo(value)
+                this.props.handleRoleInfo(data)
                 break;
             default:
         }
