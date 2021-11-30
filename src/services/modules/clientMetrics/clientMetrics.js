@@ -1,4 +1,5 @@
 import { endpoint } from '../../../helper/constant';
+import { redux_org } from '../../../helper/reduxData';
 
 export const clientMetricsKeys = [
     { label: 'Date', serverField: 'time' },
@@ -14,7 +15,7 @@ export const clientMetricsKeys = [
     { label: 'Method', serverField: 'method' }
 ]
 
-export const clientMetrics = (data, organization, isPrivate) => {
-    data.appinst = isPrivate ? { cluster_inst_key: { cloudlet_key: { organization } } } : { app_key: { organization } }
+export const clientMetrics = (self, data, organization) => {
+    data.appinst = redux_org.isOperator(self) ? { cluster_inst_key: { cloudlet_key: { organization } } } : { app_key: { organization } }
     return { method: endpoint.CLIENT_METRICS_ENDPOINT, data: data, keys: clientMetricsKeys }
 }

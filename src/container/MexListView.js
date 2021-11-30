@@ -2,7 +2,6 @@ import React from 'react';
 import { Card } from '@material-ui/core';
 
 import './styles.css';
-import orderBy from "lodash/orderBy";
 import { fields } from '../services/model/format';
 import * as serverData from '../services/model/serverData';
 import { withRouter } from 'react-router-dom';
@@ -555,7 +554,7 @@ class MexListView extends React.Component {
         }
 
         if (newDataList.length > 0) {
-            newDataList = orderBy(newDataList, requestInfo.sortBy)
+            newDataList = operators._orderBy(newDataList, requestInfo.sortBy)
             dataList = [...dataList, ...newDataList]
         }
 

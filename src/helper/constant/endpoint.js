@@ -6,6 +6,8 @@ export const RESET_PASSWORD = "passwordreset";
 export const RESET_PASSWORD_REQUEST = "passwordresetrequest";
 export const CREATE_USER = "usercreate";
 export const PUBLIC_CONFIG = 'publicconfig'
+//ws token
+export const WS_TOKEN = 'auth/wstoken';
 //Organization
 export const SHOW_ORG = 'auth/org/show';
 export const CREATE_ORG = 'auth/org/create';
@@ -41,6 +43,8 @@ export const REVOKE_ACCESS_KEY = 'auth/ctrl/RevokeAccessKey';
 export const GET_CLOUDLET_RESOURCE_QUOTA_PROPS = 'auth/ctrl/GetCloudletResourceQuotaProps';
 export const GET_CLOUDLET_PROPS = 'auth/ctrl/GetCloudletProps';
 export const SHOW_NODE = 'auth/ctrl/ShowNode'
+export const ADD_CLOUDLET_ALLIANCE_ORG = 'auth/ctrl/AddCloudletAllianceOrg';
+export const REMOVE_CLOUDLET_ALLIANCE_ORG = 'auth/ctrl/RemoveCloudletAllianceOrg';
 //Cloudlet Info
 export const SHOW_CLOUDLET_INFO = 'auth/ctrl/ShowCloudletInfo';
 export const SHOW_ORG_CLOUDLET_INFO = 'auth/orgcloudletinfo/show';

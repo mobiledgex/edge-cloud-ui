@@ -14,7 +14,7 @@
 }
 
 .block-1 {
-    height: 25%;
+    height: 150px;
     resize: vertical; /* resize vertical */
     overflow: auto; /* resize works for overflow other than visible */
     background-color: #292C33;

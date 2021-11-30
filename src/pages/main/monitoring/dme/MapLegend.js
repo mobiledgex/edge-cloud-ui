@@ -2,7 +2,7 @@ import { MapControl, withLeaflet } from "react-leaflet";
 import L from "leaflet";
 import { fields } from "../../../../services/model/format";
 import { operators } from "../../../../helper/constant";
-import { PARENT_APP_INST } from "../helper/Constant";
+import { PARENT_APP_INST } from "../../../../helper/constant/perpetual";
 class Legend extends MapControl {
 
     createLeafletElement(props) {

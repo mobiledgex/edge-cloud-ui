@@ -2,11 +2,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import EventList from '../../list/EventList'
 import { orgEvents } from '../../../../../services/modules/audit'
-import {redux_org} from '../../../../../helper/reduxData'
+import { redux_org } from '../../../../../helper/reduxData'
 import randomColor from 'randomcolor'
 import { CircularProgress, IconButton, Tooltip } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { authSyncRequest } from '../../../../../services/service'
+import { authSyncRequest, responseValid } from '../../../../../services/service'
+import { equal } from '../../../../../helper/constant/operators'
 
 const cloudletEventKeys = [
     { label: 'Cloudlet', serverField: 'cloudlet', summary: true, filter: true },
@@ -29,7 +30,6 @@ class CloudletEvent extends React.Component {
             loading: false
         }
         this._isMounted = false
-        this.regions = props.regions
     }
 
     updateState = (data) => {
@@ -54,13 +54,12 @@ class CloudletEvent extends React.Component {
         this.event({ starttime, endtime }, true)
     }
 
-
     render() {
         const { eventData, colors, showMore, loading } = this.state
-        const { filter } = this.props
+        const { tools } = this.props
         return (
             <div>
-                <EventList header='Events' eventData={eventData} filter={filter} colors={colors} keys={cloudletEventKeys} header={this.header} itemSize={80} itemExpandSize={320} />
+                <EventList header='Events' eventData={eventData} colors={colors} keys={cloudletEventKeys} header={this.header} itemSize={80} itemExpandSize={320} />
                 {showMore ? <div className='event-list-more' align="center">
                     {loading ? <CircularProgress size={20} /> :
                         <Tooltip title='More' onClick={this.loadMore}>
@@ -89,7 +88,7 @@ class CloudletEvent extends React.Component {
             limit: 10
         })
         let mc = await authSyncRequest(this, { ...requestData, format: false })
-        if (mc && mc.response && mc.response.status === 200) {
+        if (responseValid(mc)) {
             let more = mc.request.data.more
             let dataList = mc.response.data
             let showMore = dataList.length === 10
@@ -106,21 +105,16 @@ class CloudletEvent extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.org !== this.props.org && this._isMounted) {
-            this.setState({ eventData: [] }, () => {
-                this.event(this.props.range)
-            })
-        }
-        if (prevProps.range !== this.props.range) {
-            this.event(this.props.range)
+        const { range } = this.props
+        if (!equal(prevProps.range, range)) {
+            this.event(range)
         }
     }
 
     componentDidMount() {
         this._isMounted = true
-        if (!redux_org.isAdmin(this) || this.props.org) {
-            this.event(this.props.range)
-        }
+        const { range } = this.props
+        this.event(range)
     }
 
     componentWillUnmount() {

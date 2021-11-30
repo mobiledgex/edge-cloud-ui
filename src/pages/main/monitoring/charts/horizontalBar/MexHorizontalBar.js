@@ -90,36 +90,34 @@ const optionsGenerator = (maxValue) => {
     }
 }
 
-const processData = (regions, chartData, filter) => {
+const processData = (regions, chartData, search) => {
     let datasets = []
     let labels = []
     let max = 0
     regions.forEach(region => {
-        if (filter.region.includes(region)) {
-            let dataObject = chartData[region]
-            if (dataObject) {
-                let dataKeys = Object.keys(dataObject)
-                dataKeys.forEach(datakey => {
-                    if (datakey.includes(filter.search)) {
-                        const data = dataObject[datakey]
-                        if (data.skip === false) {
-                            const tags = data.tags
-                            labels.push(`${region} - ${tags['app']} [${tags['ver']}]`)
-                            keys.forEach(key => {
-                                let order = key.order
-                                let count = data[key.id] ? data[key.id] : 0
-                                if (datasets[order]) {
-                                    datasets[order]['data'].push(count)
-                                }
-                                else {
-                                    datasets[order] = { backgroundColor: key.color, label: key.label, data: [count] }
-                                }
-                                max = max < count ? count : max
-                            })
-                        }
+        let dataObject = chartData[region]
+        if (dataObject) {
+            let dataKeys = Object.keys(dataObject)
+            dataKeys.forEach(datakey => {
+                if (datakey.includes(search)) {
+                    const data = dataObject[datakey]
+                    if (data.skip === false) {
+                        const tags = data.tags
+                        labels.push(`${region} - ${tags['app']} [${tags['ver']}]`)
+                        keys.forEach(key => {
+                            let order = key.order
+                            let count = data[key.id] ? data[key.id] : 0
+                            if (datasets[order]) {
+                                datasets[order]['data'].push(count)
+                            }
+                            else {
+                                datasets[order] = { backgroundColor: key.color, label: key.label, data: [count] }
+                            }
+                            max = max < count ? count : max
+                        })
                     }
-                })
-            }
+                }
+            })
         }
     })
     return { datasets, labels, max }
@@ -129,7 +127,6 @@ class MexHorizontalBar extends React.Component {
 
     constructor(props) {
         super(props)
-        this.filter = props.filter
         this.color = []
         this.keys = []
         this.maxValue = 0
@@ -146,8 +143,8 @@ class MexHorizontalBar extends React.Component {
     }
 
     render() {
-        const { chartData, header, filter, regions, loading } = this.props
-        const {datasets, labels, max} = processData(regions, chartData, filter)
+        const { chartData, header, search, regions, loading } = this.props
+        const {datasets, labels, max} = processData(regions, chartData, search)
         return (
             <div mex-test="component-pie-chart" className='horizontal-main' >
                 <div align="left" style={{ marginBottom: 10, display: 'inline-block' }}>

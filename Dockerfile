@@ -19,8 +19,10 @@ COPY . .
 RUN sed -i "s/protocol: 'ws'/protocol: 'wss'/" /edge-cloud-ui/node_modules/react-dev-utils/webpackHotDevClient.js
 
 ARG TAG
+ARG REACT_APP_GA_MEASUREMENT_ID
 ENV BUILD_VERSION=$TAG
 ENV REACT_APP_BUILD_VERSION=$TAG
+ENV REACT_APP_GA_MEASUREMENT_ID=$REACT_APP_GA_MEASUREMENT_ID
 
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 ENV HTTPS=true

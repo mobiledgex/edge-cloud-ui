@@ -6,7 +6,7 @@ export const STATUS_UNDER_MAINTAINANCE = 999
 export const COLOR_GREEN = '#388E3C'
 export const COLOR_RED = '#ab2424'
 
-export const LOCAL_STRAGE_KEY = 'PROJECT_INIT'
+export const LS_THASH = '8600b1cdcdf58f43ee8a2152433448fa'
 export const LS_USER_META_DATA = 'usermetadata'
 export const LS_REGIONS = 'regions'
 export const LS_LINE_GRAPH_FULL_SCREEN = 'LineGraphFullScreen'
@@ -41,6 +41,8 @@ export const ACTION_MANIFEST = 'Show Manifest'
 export const ACTION_LATENCY_METRICS = 'LatencyMetrics'
 export const ACTION_TRACK_DEVICES = 'TrackDevices'
 export const ACTION_SHOW_NODE = 'ShowNode'
+export const ACTION_ADD_ALLIANCE_ORG = 'AddAllianceOrg'
+export const ACTION_REMOVE_ALLIANCE_ORG = 'RemoveAllianceOrg'
 
 export const CLOUDLET_COMPAT_VERSION_2_4 = 0
 export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1
