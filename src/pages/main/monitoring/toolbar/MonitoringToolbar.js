@@ -19,7 +19,6 @@ import MexTimer from '../common/picker/MexTimer'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { fields } from '../../../../services/model/format';
 import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../../utils/sharedPreferences_util';
-import { da } from 'date-fns/locale';
 
 const timeRangeInMin = (range) => {
     let endtime = dateUtil.currentUTCTime()
@@ -123,7 +122,7 @@ const Statistics = (props) => {
     }
 
     return (
-        value.moduleId !== PARENT_CLOUDLET ? <MonitoringMenu order={order} data={dataList} onChange={onChange} default={dataList[0]} allCaps={true} /> : null
+        value.moduleId !== PARENT_CLOUDLET ? <MonitoringMenu order={order} data={dataList} onChange={onChange} default={dataList[0]} fCaps={true} /> : null
     )
 }
 
