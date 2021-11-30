@@ -8,7 +8,8 @@ let fields = formatter.fields;
 
 export const keys = () => ([
     { field: fields.organizationName, serverField: 'Name', label: 'Organization', sortable: true, visible: true, filter: true },
-    { field: fields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true, filter: true, group: true },
+    { field: fields.type, serverField: 'Type', label: 'Type', sortable: true },
+    { field: fields.role, label: 'Role', sortable: true, visible: true, filter: true, group: true },
     { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: true },
     { field: fields.address, serverField: 'Address', label: 'Address', sortable: true, visible: true },
     { field: fields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', roles: [perpetual.ADMIN_MANAGER], format: true },
