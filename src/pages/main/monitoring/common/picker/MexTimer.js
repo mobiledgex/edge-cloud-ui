@@ -69,7 +69,7 @@ const MexTimer = (props) => {
 
     const onDaysUptoClick = () => {
         setAnchorEl(null)
-        if(value > 0)
+        if(days > 0)
         {
             props.onRelativeChange({ label: `Last ${days} day${days > 1 ? 's' : ''}`, duration: days * 1440 })
         }
