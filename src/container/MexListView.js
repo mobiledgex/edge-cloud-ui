@@ -40,9 +40,9 @@ class MexListView extends React.Component {
             uuid: 0,
             dropList: [],
             resetStream: false,
-            deleteMultiple: [], 
+            deleteMultiple: [],
             iconKeys: undefined,
-            loading:false
+            loading: false
         };
         this._isMounted = false
         this.filterText = prefixSearchPref()
@@ -71,7 +71,7 @@ class MexListView extends React.Component {
         this.props.handleViewMode(null)
         return (
             <Card style={{ height: 'calc(100vh - 116px)', backgroundColor: '#292c33', borderRadius: 5, overflowY: 'auto' }}>
-                <MexDetailViewer detailData={data} keys={this.keys} formatData={this.requestInfo.formatData} detailAction={detailAction}/>
+                <MexDetailViewer detailData={data} keys={this.keys} formatData={this.requestInfo.formatData} detailAction={detailAction} />
                 {additionalDetail ? additionalDetail(data) : null}
             </Card>
         )
@@ -303,7 +303,7 @@ class MexListView extends React.Component {
     }
 
     onIconFilter = (iconKeys) => {
-        this.setState({ iconKeys }, ()=>{
+        this.setState({ iconKeys }, () => {
             this.onFilterValue()
         })
     }
@@ -382,11 +382,11 @@ class MexListView extends React.Component {
             }) : [true]
             valid = filterCount === 0 || valid.includes(true)
             if (valid) {
-                 this.state.iconKeys && this.state.iconKeys.forEach(icon => {
+                this.state.iconKeys && this.state.iconKeys.forEach(icon => {
                     if (valid && icon.clicked) {
                         valid = Boolean(data[icon.field])
-                     }
-                 })
+                    }
+                })
             }
             return valid
         })
@@ -461,7 +461,7 @@ class MexListView extends React.Component {
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                 <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.specificDataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} uuid={this.state.uuid} />
-                <MexToolbar requestInfo={this.requestInfo} regions={regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} toolbarAction={toolbarAction}/>
+                <MexToolbar requestInfo={this.requestInfo} regions={regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} toolbarAction={toolbarAction} />
                 {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
                 {this.state.currentView ? this.state.currentView : this.listView()}
                 <MexMessageMultiNorm data={deleteMultiple} close={this.onDeleteMulClose} />
@@ -527,6 +527,7 @@ class MexListView extends React.Component {
     }
 
     onServerResponse = (mcList, type) => {
+        const { handleListViewClick } = this.props
         this.requestCount -= 1
         let requestInfo = this.requestInfo
         let newDataList = []
@@ -566,14 +567,14 @@ class MexListView extends React.Component {
                 this.updateState({ filterList: this.onFilterValue(undefined), loading: false })
             })
         }
-        if (type === ACTION_REFRESH && this.props.handleListViewClick) {
-            this.props.handleListViewClick({ type, data: newDataList })
+        if (handleListViewClick && type === ACTION_REFRESH) {
+            handleListViewClick({ type, data: newDataList })
         }
     }
 
     dataFromServer = async (region, type) => {
         if (this._isMounted) {
-            this.setState(prevState => ({ dataList: [], filterList: [], selected: [], newDataList: [], resetStream: !prevState.resetStream, loading:true }))
+            this.setState(prevState => ({ dataList: [], filterList: [], selected: [], newDataList: [], resetStream: !prevState.resetStream, loading: true }))
         }
         let requestInfo = this.requestInfo
         if (requestInfo) {
