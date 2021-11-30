@@ -1,6 +1,6 @@
 import { service } from "../services";
 
-export const fetchDataFromServer = (self, requestTypeList, filter, callback) => {
+export const fetchDataFromServer = (self, requestTypeList, filter) => {
     let requestList = [];
     for (const requestType of requestTypeList) {
         let request = requestType(self, Object.assign({}, filter))
@@ -8,5 +8,5 @@ export const fetchDataFromServer = (self, requestTypeList, filter, callback) => 
             requestList.push(request);
         }
     }
-    service.multiAuthRequest(self, requestList, callback)
+    return service.multiAuthSyncRequest(self, requestList)
 }
