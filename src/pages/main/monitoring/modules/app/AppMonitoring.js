@@ -18,7 +18,7 @@ import { perpetual } from '../../../../../helper/constant'
 import { fields } from '../../../../../services/model/format';
 
 export const actionMenu = [
-    { id: perpetual.ACTION_LATENCY_METRICS, label: 'Show Latency Metrics', group: true },
+    { id: perpetual.ACTION_LATENCY_METRICS, label: 'Show Latency Metrics', roles: [perpetual.ADMIN, perpetual.DEVELOPER], group: true },
     { id: perpetual.ACTION_REQUEST_LATENCY, label: 'Request Latency Metrics', roles: [perpetual.ADMIN, perpetual.DEVELOPER] },
     { id: perpetual.ACTION_TRACK_DEVICES, label: 'Track Devices', roles: [perpetual.ADMIN, perpetual.DEVELOPER] }
 ]

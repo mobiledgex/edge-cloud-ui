@@ -128,8 +128,11 @@ const processData2 = (worker) => {
                 }
             }
         }
+        
         for (let item of metricList) {
-            finalData.push(chartData[item.field])
+            if (chartData[item.field]) {
+                finalData.push(chartData[item.field])
+            }
         }
     }
     self.postMessage({ status: 200, data: finalData, resources })
