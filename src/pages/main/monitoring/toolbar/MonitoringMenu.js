@@ -10,6 +10,7 @@ import SearchFilter from '../../../../hoc/filter/SearchFilter';
 import { validateRole } from '../../../../helper/constant/role';
 import { FixedSizeList } from 'react-window';
 import './style.css'
+import { toFirstUpperCase } from '../../../../utils/string_utils';
 
 const fetchArray = (props) => {
     const { data, field } = props
@@ -17,7 +18,7 @@ const fetchArray = (props) => {
 }
 
 const MonitoringMenu = (props) => {
-    const { order, labelKey, large, search, icon, tip, multiple, showTick, field, disableDefault } = props
+    const { order, labelKey, large, search, icon, tip, multiple, showTick, field, disableDefault, fCaps } = props
     const [anchorEl, setAnchorEl] = React.useState(null)
     const [filterText, setFilterText] = React.useState('')
     const [dataList, setList] = React.useState([])
@@ -67,10 +68,10 @@ const MonitoringMenu = (props) => {
     }
 
     const getLabel = () => {
-        const { placeHolder, allCaps } = props
+        const { placeHolder } = props
         let data = props.value ? props.value : value
         data = data && labelKey ? data[labelKey] : data
-        data = allCaps ? data.toUpperCase() : data
+        data = fCaps ? toFirstUpperCase(data) : data
         return data ? data : placeHolder
     }
 
@@ -130,6 +131,7 @@ const MonitoringMenu = (props) => {
     const fetchList = () => {
         return dataList.map((item, i) => {
             let itemData = labelKey ? item[labelKey] : item
+            itemData = fCaps ? toFirstUpperCase(itemData) : itemData
             if (itemData.toLowerCase().includes(filterText)) {
                 let valid = item.role ? validateRole(item.role, orgInfo) : true
                 let selectedValue = props.value ? props.value : value

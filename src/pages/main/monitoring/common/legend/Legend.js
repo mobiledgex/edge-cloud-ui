@@ -8,7 +8,7 @@ import { legendKeys } from '../../helper/constant';
 import { Skeleton } from '@material-ui/lab';
 import { validateRole } from '../../../../../helper/constant/role';
 import { fields } from '../../../../../services/model/format';
-import { healthCheck } from '../../../../../helper/formatter/label';
+import { healthCheck } from '../../../../../helper/formatter/ui';
 class Legend extends React.Component {
 
     constructor(props) {
@@ -67,7 +67,7 @@ class Legend extends React.Component {
         const { tools } = this.props
         if (data) {
             if (column.field === fields.healthCheck) {
-                return healthCheck(data)
+                return healthCheck(undefined, data)
             }
             else if (data.infraAllotted) {
                 let value = { title: "", subtitle: "", ranges: [data.infraAllotted ? onlyNumeric(data.infraAllotted) : 0], measures: [data.allotted ? onlyNumeric(data.allotted) : 0, data.used ? onlyNumeric(data.used) : 0], markers: [data.infraUsed ? onlyNumeric(data.infraUsed) : 0] }
