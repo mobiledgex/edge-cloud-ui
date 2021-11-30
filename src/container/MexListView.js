@@ -23,9 +23,6 @@ import { operators, shared, perpetual } from '../helper/constant';
 import { fetchDataFromServer } from './service';
 import { service } from '../services';
 import { timeRangeInMin } from '../hoc/mexui/Picker';
-import { multiAuthSyncRequest } from '../services/service';
-import { showOrganizations } from '../services/modules/organization';
-import { showUsers } from '../services/modules/users';
 
 class MexListView extends React.Component {
     constructor(props) {
