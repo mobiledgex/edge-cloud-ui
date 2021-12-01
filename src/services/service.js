@@ -237,13 +237,12 @@ export const multiAuthSyncRequest = async (self, requestList, format = true) => 
 
         try {
             let responseList = await axios.all(promise)
-            console.log('Rahul1234try',responseList)
             responseList.forEach((response, i) => {
                 resResults.push(formatter(requestList[i], response, format));
             })
         }
         catch (error) {
-            console.log('Rahul1234error',error)
+            alert(error)
             errorResponse(self, requestList[0], error)
         }
         showProgress(self)
