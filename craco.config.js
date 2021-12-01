@@ -113,11 +113,11 @@ module.exports = {
                 'ant'
             ],
         ],
-        // "env": {
-        //     "production": {
-        //         "plugins": ["transform-remove-console"]// remove all console.log at production build
-        //     }
-        // }
+        "env": {
+            "production": {
+                "plugins": ["transform-remove-console"]// remove all console.log at production build
+            }
+        }
     },
     plugins: [
         {
