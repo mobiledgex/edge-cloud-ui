@@ -47,7 +47,9 @@ export const fetchHttpURL = (request) => {
 export const validateExpiry = (self, message) => {
     if (message) {
         message = message.toLowerCase()
-        let isExpired = message.indexOf('expired jwt') > -1 || message.indexOf('expired token') > -1 || message.indexOf('token is expired') > -1 || message === 'No bearer token found'
+        console.log('Rahul1234',message)
+        let isExpired = message.indexOf('expired jwt') > -1 || message.indexOf('expired token') > -1 || message.indexOf('token is expired') > -1 || message === 'no bearer token found'
+        console.log('Rahul1234',isExpired)
         if (isExpired && self) {
             setTimeout(() => {
                 if (self && self.props && self.props.history) {
