@@ -186,7 +186,7 @@ export const renderYesNo = (key, data, isDetail) => {
 
 export const NoData = (props) => {
     const { search, loading, dataList, responseStatus } = props
-    const message = responseStatus === perpetual.RESPONSE_SUCCESS && dataList.length === 0 ? "No Data" : "Fetching Data From Server"
+    const message = responseStatus === perpetual.RESPONSE_SUCCESS && dataList.length === 0 ? "No data" : "Fetching data from server"
     const text = dataList.length === 0 && search && search.length > 0 ? `${message} Found for search text "${search}"` : message
     return (
         <div align='center' style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
