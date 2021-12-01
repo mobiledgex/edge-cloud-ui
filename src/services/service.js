@@ -242,7 +242,6 @@ export const multiAuthSyncRequest = async (self, requestList, format = true) => 
             })
         }
         catch (error) {
-            alert(error)
             errorResponse(self, requestList[0], error)
         }
         showProgress(self)
