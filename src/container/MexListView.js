@@ -22,7 +22,7 @@ import { operators, shared, perpetual } from '../helper/constant';
 import { fetchDataFromServer } from './service';
 import { service } from '../services';
 import { timeRangeInMin } from '../hoc/mexui/Picker';
-
+import { HELP_ORG_LIST } from "../tutorial";
 class MexListView extends React.Component {
     constructor(props) {
         super(props);
@@ -128,6 +128,11 @@ class MexListView extends React.Component {
                             dataList = dataList.filter(item => { return !operators.equal(item, data) })
                             return { dataList, filterList }
                         })
+                    }
+                    if (this.requestInfo.viewMode === HELP_ORG_LIST) {
+                        const roles = this.props.roleInfo.filter((item) => item[fields.organizationName] !== data[fields.organizationName])
+                        this.props.handleRoleInfo(roles)
+                        this.props.organizationInfo[fields.organizationName] === data[fields.organizationName] ? this.props.handleOrganizationInfo(undefined) : null
                     }
                     valid = true;
                 }
@@ -631,7 +636,8 @@ class MexListView extends React.Component {
 const mapStateToProps = (state) => {
     return {
         regions: state.regionInfo.region,
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        roleInfo: state.roleInfo.role
     }
 };
 
@@ -639,7 +645,9 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) },
+        handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
+        handleOrganizationInfo: (data) => { dispatch(actions.organizationInfo(data)) }
     };
 };
 
