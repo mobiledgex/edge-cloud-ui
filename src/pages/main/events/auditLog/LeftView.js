@@ -231,7 +231,7 @@ class AuditLogView extends Component {
 
     render() {
         const { activeIndex, dataList } = this.state
-        const { endtime, loading, type, orgList } = this.props
+        const { endtime, loading, type, orgList, responseStatus } = this.props
         return (
             <Fragment>
                 <Toolbar type={type} header={`${toFirstUpperCase(type)} Logs`} tip={tip} onChange={this.onToolbarChange} loading={loading} filter={this.filter}>
@@ -250,7 +250,7 @@ class AuditLogView extends Component {
                         <Grid item xs={9} style={{ height: 'calc(100vh - 50px)', display: 'inline-block', backgroundColor: '#1E2123', paddingLeft: 2 }}>
                             {this.isAudit ? <AuditView data={dataList[activeIndex]} /> : <EventView data={dataList[activeIndex]} />}
                         </Grid>
-                    </Grid> : <NoData loading={loading} />
+                    </Grid> : <NoData loading={loading} dataList={dataList} responseStatus={responseStatus} />
                     }
                 </div>
             </Fragment>

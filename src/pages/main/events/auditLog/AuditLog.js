@@ -28,6 +28,7 @@ class AuditLog extends Component {
         }
         defaultRange(this)
         this.type = this.props.type
+        this.responseStatus = false
     }
 
     updateStatus = (data) => {
@@ -52,6 +53,7 @@ class AuditLog extends Component {
         }
         if (responseValid(mc)) {
             let dataList = mc.response.data
+            this.responseStatus = mc.response.status
             this.setState({ dataList, toggle: !this.state.toggle })
         }
     }
@@ -71,7 +73,7 @@ class AuditLog extends Component {
         const { selectedDate, dataList, loading, isOrg, toggle, orgList} = this.state
         return (
             <Fragment>
-                <LeftView type={this.type} isOrg={isOrg} toggle={toggle} dataList={dataList} orgList={orgList} fetchData={this.onFetchData} close={this.handleClose} loading={loading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} />
+                <LeftView type={this.type} isOrg={isOrg} toggle={toggle} dataList={dataList} orgList={orgList} fetchData={this.onFetchData} close={this.handleClose} loading={loading} selectedDate={selectedDate} onSelectedDate={this.updateSelectedDate} responseStatus={this.responseStatus} />
             </Fragment>
         )
     }

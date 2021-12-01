@@ -251,7 +251,7 @@ class EventLog extends React.Component {
 
     render() {
         const { filterList, tabValue, calendarList, groupList } = this.state
-        const { endtime, organizationList, classes, loading } = this.props
+        const { endtime, organizationList, classes, loading, responseStatus } = this.props
         const keys = Object.keys(filterList)
         return (
             <React.Fragment>
@@ -280,7 +280,7 @@ class EventLog extends React.Component {
                         <Grid item xs={9} style={{ height: 'calc(100vh - 50px)', display: 'inline-block', backgroundColor: '#1E2123', paddingLeft: 20 }}>
                             <MexCalendar dataList={calendarList} groupList={groupList} />
                         </Grid>
-                    </Grid> : <NoData loading={loading} />
+                    </Grid> : <NoData loading={loading} dataList={calendarList} responseStatus={responseStatus} />
                     }
                 </div>
             </React.Fragment>

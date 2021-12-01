@@ -51,7 +51,8 @@ class MexListView extends React.Component {
         this.selectedRow = {};
         this.sorting = false;
         this.selectedRegion = REGION_ALL
-        this.range = timeRangeInMin()
+        this.range = timeRangeInMin();
+        this.responseStatus = false
     }
 
     updateState = (data) => {
@@ -321,6 +322,7 @@ class MexListView extends React.Component {
                     loading={this.state.loading}
                     selected={this.state.selected}
                     setSelected={this.setSelected}
+                    responseStatus={this.responseStatus}
                     actionMenu={this.props.actionMenu}
                     cellClick={this.getCellClick}
                     actionClose={this.onActionClose}
@@ -534,11 +536,13 @@ class MexListView extends React.Component {
         if (mcList && mcList.length > 0) {
             if (this.props.multiDataRequest) {
                 newDataList = this.props.multiDataRequest(requestInfo.keys, mcList)
+                this.responseStatus = newDataList.length > 0 || newDataList.length === 0 ? perpetual.RESPONSE_SUCCESS : false
             }
             else {
                 let mc = mcList[0]
                 if (mc.response && mc.response.data) {
                     newDataList = mc.response.data
+                    this.responseStatus = mc.response.status
                 }
             }
         }

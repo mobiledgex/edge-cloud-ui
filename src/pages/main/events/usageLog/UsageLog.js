@@ -47,6 +47,7 @@ class UsageLog extends React.Component {
         this.data = {};
         defaultRange(this)
         this.organizationList = []
+        this.responseStatus = false
     }
 
     /*Action menu block*/
@@ -62,6 +63,7 @@ class UsageLog extends React.Component {
         }
         if (responseValid(mc)) {
             let worker = new EventWorker()
+            this.responseStatus = mc.response.status
             worker.postMessage({ ...mc })
             worker.addEventListener('message', async (event) => {
                 let data = event.data
@@ -111,7 +113,7 @@ class UsageLog extends React.Component {
         const { liveData, loading, toggle } = this.state
         return (
             <Suspense fallback={<div>loading</div>}>
-                <RightDrawer close={this.handleClose} fetchData={this.onFetchData} endtime={this.endtime} toggle={toggle} liveData={liveData} loading={loading} organizationList={this.organizationList} onOrgChange={this.onOrganizationChange} selectedOrg={this.selectedOrg} />
+                <RightDrawer close={this.handleClose} fetchData={this.onFetchData} endtime={this.endtime} toggle={toggle} liveData={liveData} loading={loading} organizationList={this.organizationList} onOrgChange={this.onOrganizationChange} selectedOrg={this.selectedOrg} responseStatus={this.responseStatus} />
             </Suspense>
         )
     }

@@ -237,3 +237,5 @@ export const PARENT_CLOUDLET = 'cloudlet'
 
 export const MEX_PROMETHEUS_APP_NAME = 'MEXPrometheusAppName'
 export const NFS_AUTO_PROVISION = 'NFSAutoProvision'
+
+export const RESPONSE_SUCCESS = 200
