@@ -7,15 +7,7 @@
   <meta name="theme-color" content="#000000">
   <meta name="Description" content="MobiledgeX Console">
   <meta http-equiv="Content-Security-Policy" content="
-      default-src 'self' 'unsafe-inline' https://cartodb-basemaps-c.global.ssl.fastly.net; 
-      style-src 'self' 'unsafe-inline'; 
-      font-src 'self' 'unsafe-inline' https://fonts.gstatic.com https://cdnjs.cloudflare.com data: blob;
-      style-src-elem 'self' 'unsafe-inline' https://unpkg.com/leaflet@1.6.0/dist/leaflet.css https://fonts.googleapis.com/css https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css https://fonts.googleapis.com/icon;
-      script-src-elem 'self' 'unsafe-inline' https://www.google-analytics.com/analytics.js https://www.googletagmanager.com;
-      img-src * data: blob;
-      object-src 'self' data: blob;
-      connect-src *">
-
+      script-src-elem 'self' https://www.google.com https://www.gstatic.com/ https://www.google-analytics.com/analytics.js https://www.googletagmanager.com https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js;">
   <script>
     try {
       let gaId = JSON.parse(atob("%REACT_APP_GA_MEASUREMENT_ID%"))[window.location.hostname]
