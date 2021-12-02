@@ -525,13 +525,13 @@ class MexListView extends React.Component {
         return filterList;
     }
 
-    onServerResponse = (mcList, type) => {
+    requestToFetch = async (type, requestInfo, filter) => {
         const { handleListViewClick } = this.props
-        this.requestCount -= 1
-        let requestInfo = this.requestInfo
-        let newDataList = []
-
+        let mcList = await fetchDataFromServer(this, requestInfo.requestType, filter)
         if (mcList && mcList.length > 0) {
+            this.requestCount -= 1
+            let requestInfo = this.requestInfo
+            let newDataList = []
             if (this.props.multiDataRequest) {
                 newDataList = this.props.multiDataRequest(requestInfo.keys, mcList)
             }
@@ -541,37 +541,37 @@ class MexListView extends React.Component {
                     newDataList = mc.response.data
                 }
             }
-        }
 
-        let dataList = cloneDeep(this.state.dataList)
-        if (mcList && mcList.length > 0 && dataList.length > 0) {
-            let requestData = mcList[0].request.data
-            if (requestData.region) {
-                dataList = dataList.filter(function (obj) {
-                    return obj[fields.region] !== requestData.region;
-                });
+            let dataList = cloneDeep(this.state.dataList)
+            if (mcList && mcList.length > 0 && dataList.length > 0) {
+                let requestData = mcList[0].request.data
+                if (requestData.region) {
+                    dataList = dataList.filter(function (obj) {
+                        return obj[fields.region] !== requestData.region;
+                    });
+                }
             }
-        }
 
-        if (newDataList.length > 0) {
-            newDataList = operators._orderBy(newDataList, requestInfo.sortBy)
-            dataList = [...dataList, ...newDataList]
-        }
+            if (newDataList.length > 0) {
+                newDataList = operators._orderBy(newDataList, requestInfo.sortBy)
+                dataList = [...dataList, ...newDataList]
+            }
 
-        if (this._isMounted) {
-            this.setState({
-                dataList,
-                newDataList
-            }, () => {
-                this.updateState({ filterList: this.onFilterValue(undefined), loading: false })
-            })
-        }
-        if (handleListViewClick && type === ACTION_REFRESH) {
-            handleListViewClick({ type, data: newDataList })
+            if (this._isMounted) {
+                this.setState({
+                    dataList,
+                    newDataList
+                }, () => {
+                    this.updateState({ filterList: this.onFilterValue(undefined), loading: false })
+                })
+            }
+            if (handleListViewClick && type === ACTION_REFRESH) {
+                handleListViewClick({ type, data: newDataList })
+            }
         }
     }
 
-    dataFromServer = async (region, type) => {
+    dataFromServer = (region, type) => {
         if (this._isMounted) {
             this.setState(prevState => ({ dataList: [], filterList: [], selected: [], newDataList: [], resetStream: !prevState.resetStream, loading: true }))
         }
@@ -592,18 +592,14 @@ class MexListView extends React.Component {
             }
 
             this.requestCount = filterList.length;
-            let mcList = []
             if (filterList && filterList.length > 0) {
                 for (let i = 0; i < filterList.length; i++) {
                     let filter = filterList[i];
-                    mcList = await fetchDataFromServer(this, requestInfo.requestType, filter)
+                    this.requestToFetch(type, requestInfo, filter)
                 }
             }
             else {
-                mcList = await fetchDataFromServer(this, requestInfo.requestType)
-            }
-            if (mcList && mcList.length > 0) {
-                this.onServerResponse(mcList, type)
+                this.requestToFetch(type, requestInfo)
             }
         }
 
