@@ -130,9 +130,7 @@ class MexListView extends React.Component {
                         })
                     }
                     if (this.requestInfo.viewMode === HELP_ORG_LIST) {
-                        const roles = this.props.roleInfo.filter((item) => item[fields.organizationName] !== data[fields.organizationName])
-                        this.props.handleRoleInfo(roles)
-                        this.props.organizationInfo[fields.organizationName] === data[fields.organizationName] ? this.props.handleOrganizationInfo(undefined) : null
+                        this.updateRolesInfo(data)
                     }
                     valid = true;
                 }
@@ -145,6 +143,12 @@ class MexListView extends React.Component {
                 }
             }
         }
+    }
+
+    updateRolesInfo = (data) => {
+        const roles = this.props.roleInfo.filter((role) => role[fields.organizationName] !== data[fields.organizationName])
+        this.props.handleRoleInfo(roles)
+        this.props.organizationInfo[fields.organizationName] === data[fields.organizationName] ? this.props.handleOrganizationInfo(undefined) : null
     }
 
     onMultiResponse = (mc) => {
