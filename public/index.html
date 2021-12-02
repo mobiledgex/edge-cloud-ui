@@ -7,16 +7,17 @@
   <meta name="theme-color" content="#000000">
   <meta name="Description" content="MobiledgeX Console">
   <meta http-equiv="Content-Security-Policy" content="
-      default-src 'self' 'unsafe-inline' https://cartodb-basemaps-c.global.ssl.fastly.net; 
-      style-src 'self' 'unsafe-inline'; 
-      font-src 'self' 'unsafe-inline' https://fonts.gstatic.com https://cdnjs.cloudflare.com data: blob;
-      style-src-elem 'self' 'unsafe-inline' https://unpkg.com/leaflet@1.6.0/dist/leaflet.css https://fonts.googleapis.com/css https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css https://fonts.googleapis.com/icon;
-      script-src-elem 'self' 'unsafe-inline' https://www.google-analytics.com/analytics.js https://www.googletagmanager.com;
-      img-src * data: blob;
-      object-src 'self' data: blob;
-      connect-src *">
+    default-src 'self';
+    style-src 'self'  'unsafe-inline' ;
+    style-src-elem 'self'  'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css;
+    font-src 'self' https://fonts.gstatic.com data:;
+    img-src 'self' data: blob https://*.basemaps.cartocdn.com;
+    script-src 'self' 'nonce-fe5c41401df28f2961b186867a0bf92a' https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js https://www.google-analytics.com/analytics.js https://www.google.com/recaptcha/api.js;
+    connect-src 'self' https://ipv4.icanhazip.com https://www.google-analytics.com wss://*.mobiledgex.net;
+    frame-src 'self' https://www.google.com/">
 
-  <script>
+
+  <script nonce="fe5c41401df28f2961b186867a0bf92a">
     try {
       let gaId = JSON.parse(atob("%REACT_APP_GA_MEASUREMENT_ID%"))[window.location.hostname]
       if (gaId) {
@@ -41,12 +42,10 @@
   <!--cache disable end-->
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
   <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-  <link rel="preload" href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" as="style"
-    onload="this.rel='stylesheet'" />
-  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css" as="style"
-    onload="this.rel='stylesheet'" />
-  <link rel="preload" href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" as="style"
-    onload="this.rel='stylesheet'" />
+  <link rel='stylesheet' href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css" as='style' />
+  <link rel='stylesheet' href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined"
+    as='style' />
+  <link rel='stylesheet' href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" as='style' />
   <title>MobiledgeX Console</title>
 </head>
 
