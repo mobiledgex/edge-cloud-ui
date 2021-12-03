@@ -393,7 +393,6 @@ class MexListView extends React.Component {
         })
 
         this.updateState({ filterList })
-
         return filterList
     }
 
@@ -479,6 +478,7 @@ class MexListView extends React.Component {
                 break;
             case ACTION_REFRESH:
                 this.dataFromServer(this.selectedRegion, type)
+                this.responseStatus = false
                 break;
             case ACTION_NEW:
                 this.requestInfo.onAdd()
@@ -532,11 +532,10 @@ class MexListView extends React.Component {
         this.requestCount -= 1
         let requestInfo = this.requestInfo
         let newDataList = []
-
         if (mcList && mcList.length > 0) {
             if (this.props.multiDataRequest) {
                 newDataList = this.props.multiDataRequest(requestInfo.keys, mcList)
-                this.responseStatus = newDataList.length > 0 || newDataList.length === 0 ? perpetual.RESPONSE_SUCCESS : false
+                this.responseStatus = (newDataList.length > 0 || newDataList.length === 0) ? perpetual.RESPONSE_SUCCESS : false
             }
             else {
                 let mc = mcList[0]
