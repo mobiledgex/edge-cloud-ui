@@ -13,7 +13,12 @@
     img-src 'self' data: blob https://*.basemaps.cartocdn.com;
     script-src 'self' 'nonce-fe5c41401df28f2961b186867a0bf92a' https://www.googletagmanager.com https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js https://www.google-analytics.com/analytics.js https://www.google.com/recaptcha/api.js;
     connect-src 'self' https://ipv4.icanhazip.com https://www.google-analytics.com wss://*.mobiledgex.net ws://*.mobiledgex.net;
-    frame-src 'self' https://www.google.com/">
+    frame-src 'self' https://www.google.com;
+    object-src 'none';
+    base-uri 'self';
+    manifest-src 'self';
+    media-src 'self';
+    worker-src 'self';">
 
 
   <script nonce="fe5c41401df28f2961b186867a0bf92a">
