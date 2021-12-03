@@ -96,7 +96,7 @@ class VerticalStepper extends React.Component {
                         if (steps.length >= 1 && steps[0].code === 200) {
                             if (lastStep.code === 200) {
                                 item.steps.push({ code: CODE_FINISH })
-                                this.props.dataFromServer(request)
+                                this.props.generateRequestData(request)
                             }
                         }
                         if (lastStep.code === 200) {

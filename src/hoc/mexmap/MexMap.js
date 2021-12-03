@@ -101,7 +101,7 @@ class MexMap extends React.Component {
                     maxBounds={[[-90.0, -180.0], [90.0, 180.0]]}>
                     <TileLayer
                         style={{ width: '100%', height: '100%', zIndex: 1 }}
-                        url={'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png'}
+                        url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'}
                         zoom={2}
                         style={{ zIndex: 1 }}
                     />
