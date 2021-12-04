@@ -237,3 +237,9 @@ export const PARENT_CLOUDLET = 'cloudlet'
 
 export const MEX_PROMETHEUS_APP_NAME = 'MEXPrometheusAppName'
 export const NFS_AUTO_PROVISION = 'NFSAutoProvision'
+
+export const PAGE_NETWORKS = 'networks'
+export const CONNECTION_UNDEFINED = 'undefined'
+export const CONNECT_TO_LOAD_BALANCER = 'Connect to Loadbalancer'
+export const CONNECT_TO_CLUSTER_NODES = 'Connect to Cluster Nodes'
+export const CONNECT_TO_ALL = 'Connect to All'

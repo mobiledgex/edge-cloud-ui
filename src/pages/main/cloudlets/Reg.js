@@ -846,9 +846,6 @@ class CloudletReg extends React.Component {
         }
 
     }
-    onAddCancel = () => {
-        this.props.onClose(false)
-    }
 
     getFormData = async (data) => {
         let forms = this.formKeys()

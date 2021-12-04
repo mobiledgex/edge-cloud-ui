@@ -1,3 +1,3 @@
-export const customize = (request, value) => {
+export const customize = (value) => {
     return value
 }

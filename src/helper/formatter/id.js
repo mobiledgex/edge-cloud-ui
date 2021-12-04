@@ -174,3 +174,18 @@ export const vmAppOS = (label) => {
             return 5
     }
 }
+
+export const connectionType = (label) => {
+    switch (label) {
+        case perpetual.CONNECTION_UNDEFINED:
+            return 0
+        case perpetual.CONNECT_TO_LOAD_BALANCER:
+            return 1
+        case perpetual.CONNECT_TO_CLUSTER_NODES:
+            return 2
+        case perpetual.CONNECT_TO_ALL:
+            return 3
+        default:
+            return label
+    }
+}

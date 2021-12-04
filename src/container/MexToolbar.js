@@ -118,7 +118,7 @@ const MexToolbar = (props) => {
         requestInfo.onAdd && (!redux_org.isViewer(this) || requestInfo.viewerEdit) ?
             <MBox order={order} style={{ marginTop: -5 }}>
                 <IconButton aria-label="new" onClick={(e) => { props.onAction(ACTION_NEW) }}>
-                    <Icon style={{ color: iconColor }} >add</Icon>
+                    <Icon style={{ color: iconColor }}>add</Icon>
                 </IconButton>
             </MBox> : null
     )

@@ -262,5 +262,8 @@ export const fields = {
     deviceCarrier: 'deviceCarrier',
     isPrivate: 'isPrivate',
     alertPolicyName: 'alertPolicyName',
-    allianceOrganization: 'allianceOrganization'
+    allianceOrganization: 'allianceOrganization',
+    networkName: 'networkName',
+    routes: 'routes',
+    connectionType: 'connectionType'
 }
