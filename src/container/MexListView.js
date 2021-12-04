@@ -528,6 +528,7 @@ class MexListView extends React.Component {
     requestToFetch = async (type, requestInfo, filter) => {
         const { handleListViewClick } = this.props
         let mcList = await fetchDataFromServer(this, requestInfo.requestType, filter)
+        this.count = this.count - 1
         if (mcList && mcList.length > 0) {
             this.requestCount -= 1
             let requestInfo = this.requestInfo
@@ -557,13 +558,17 @@ class MexListView extends React.Component {
                 dataList = [...dataList, ...newDataList]
             }
 
-            if (this._isMounted) {
+            if (this._isMounted && dataList && dataList.length > 0) {
                 this.setState({
                     dataList,
                     newDataList
                 }, () => {
-                    this.updateState({ filterList: this.onFilterValue(undefined), loading: false })
+                    this.updateState({ filterList: this.onFilterValue(undefined) })
                 })
+            }
+
+            if (this.count === 0) {
+                this.updateState({ loading: false })
             }
             if (handleListViewClick && type === ACTION_REFRESH) {
                 handleListViewClick({ type, data: newDataList })
@@ -593,12 +598,14 @@ class MexListView extends React.Component {
 
             this.requestCount = filterList.length;
             if (filterList && filterList.length > 0) {
+                this.count = filterList.length
                 for (let i = 0; i < filterList.length; i++) {
                     let filter = filterList[i];
                     this.requestToFetch(type, requestInfo, filter)
                 }
             }
             else {
+                this.count = 0
                 this.requestToFetch(type, requestInfo)
             }
         }
