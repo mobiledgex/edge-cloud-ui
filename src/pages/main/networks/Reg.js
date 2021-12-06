@@ -27,7 +27,6 @@ class NetworkReg extends React.Component {
         this.isUpdate = this.props.isUpdate
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         //To avoid refeching data from server
-        this.requestedRegionList = [];
         this.operatorList = [];
         this.cloudletList = []
 
@@ -51,7 +50,6 @@ class NetworkReg extends React.Component {
                     }
                 }
             }
-            this.requestedRegionList.push(region)
         }
     }
 
@@ -104,7 +102,7 @@ class NetworkReg extends React.Component {
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
         }
-        if (form.field === fields.operatorName && redux_org.isAdmin(this)) {
+        if (form.field === fields.operatorName) {
             this.operatorValueChange(form, forms, isInit)
         }
     }
