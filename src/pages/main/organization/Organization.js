@@ -122,11 +122,14 @@ class OrganizationList extends React.Component {
     }
 
     onDelete = async (data, success) => {
+        const roles = this.props.roleInfo.filter((role) => role[fields.organizationName] !== data[fields.organizationName])
+        this.props.handleRoleInfo(roles)
         if (success && data[fields.organizationName] === redux_org.orgName(this)) {
             let data = getUserMetaData()
             if (data && data[fields.organizationInfo]) {
                 data[fields.organizationInfo] = undefined
                 updateUserMetaData(this, data)
+                this.props.handleOrganizationInfo(undefined)
             }
             if (this._isMounted) {
                 this.forceUpdate()
