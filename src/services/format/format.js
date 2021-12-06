@@ -36,7 +36,6 @@ import { formatBillingData, formatMetricData } from './event';
 import { formatUsageData } from './usage';
 import { formatCloudletPropsData } from './cloudletProps';
 import { customize as network } from '../modules/network/custom';
-import { formatNetworkData } from './networks'
 
 export const formatData = (request, response, self = null) => {
     let data = undefined
@@ -149,7 +148,7 @@ export const formatData = (request, response, self = null) => {
             data = formatShowData(request, response, alertPolicy)
             break;
         case endpoint.SHOW_NETWORKS:
-            data = formatNetworkData(request, response, network)
+            data = formatShowData(request, response, network)
             break;
         default:
             data = response && response.data ? response.data : [];
