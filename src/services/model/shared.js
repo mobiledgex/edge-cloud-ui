@@ -2,24 +2,8 @@ import { lightGreen } from '@material-ui/core/colors';
 import React from 'react'
 import {Icon, Popup} from 'semantic-ui-react';
 import { perpetual } from '../../helper/constant';
+import { serverFields } from '../../helper/formatter';
 import {fields} from './format';
-
-const TRACKED_STATE_UNKNOWN = 0
-const NOT_PRESENT = 1
-const CREATE_REQUESTED = 2
-const CREATING = 3
-const CREATE_ERROR= 4
-const READY = 5
-const UPDATE_REQUESTED = 6
-const UPDATING = 7
-const UPDATE_ERROR = 8
-const DELETE_REQUESTED = 9
-const DELETING = 10
-const DELETE_ERROR = 11
-const DELETE_PREPARE = 12
-const CRM_INITOK = 13
-const CREATING_DEPENDENCIES = 14 
-const DELETE_DONE = 15
 
 export const additionalDetail = (data) => {
     return (
@@ -58,37 +42,37 @@ export const additionalDetail = (data) => {
 
 const getStateStatus = (id) => {
     switch (id) {
-        case TRACKED_STATE_UNKNOWN:
+        case serverFields.SERVER_TRACKED_STATE_UNKNOWN:
             return "Tracked State Unknown"
-        case NOT_PRESENT:
+        case serverFields.SERVER_NOT_PRESENT:
             return "Not Present"
-        case CREATE_REQUESTED:
+        case serverFields.SERVER_CREATE_REQUESTED:
             return "Create Requested"
-        case CREATING:
+        case serverFields.SERVER_CREATING:
             return "Creating"
-        case CREATE_ERROR:
+        case serverFields.SERVER_CREATE_ERROR:
             return "Create Error"
-        case READY:
+        case serverFields.SERVER_READY:
             return "Ready"
-        case UPDATE_REQUESTED:
+        case serverFields.SERVER_UPDATE_REQUESTED:
             return "Update Requested"
-        case UPDATING:
+        case serverFields.SERVER_UPDATING:
             return "Updating"
-        case UPDATE_ERROR:
+        case serverFields.SERVER_UPDATE_ERROR:
             return "Update Error"
-        case DELETE_REQUESTED:
+        case serverFields.SERVER_DELETE_REQUESTED:
             return "Delete Requested"
-        case DELETING:
+        case serverFields.SERVER_DELETING:
             return "Deleting"
-        case DELETE_ERROR:
+        case serverFields.SERVER_DELETE_ERROR:
             return "Delete Error"
-        case DELETE_PREPARE:
+        case serverFields.SERVER_DELETE_PREPARE:
             return "Delete Prepare"
-        case CRM_INITOK:
+        case serverFields.SERVER_CRM_INITOK:
             return "CRM Init"
-        case CREATING_DEPENDENCIES:
+        case serverFields.SERVER_CREATING_DEPENDENCIES:
             return "Creating"
-        case DELETE_DONE:
+        case serverFields.SERVER_DELETE_DONE:
             return "Deleted"
         default:
             return id
@@ -103,17 +87,17 @@ export const showProgress = (data, isDetailView) => {
     else {
         let icon = null;
         switch (state) {
-            case READY:
+            case serverFields.SERVER_READY:
                 icon = <Popup content={getStateStatus(state)} trigger={<Icon className='progressIndicator' name='check' color='green' />} />
                 break;
-            case CREATING:
-            case UPDATING:
-            case CREATING_DEPENDENCIES:
-            case CRM_INITOK:
+            case serverFields.SERVER_CREATING:
+            case serverFields.SERVER_UPDATING:
+            case serverFields.SERVER_CREATING_DEPENDENCIES:
+            case serverFields.SERVER_CRM_INITOK:
                 icon = <Popup content='View Progress' trigger={<Icon className='progressIndicator' loading color='green' name='circle notch' />} />
                 break;
-            case DELETING:
-            case DELETE_PREPARE:
+            case serverFields.SERVER_DELETING:
+            case serverFields.SERVER_DELETE_PREPARE:
                 icon = <Popup content='View Progress' trigger={<Icon className='progressIndicator' loading color='red' name='circle notch' />} />
                 break;
             default:

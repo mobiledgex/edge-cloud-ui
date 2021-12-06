@@ -107,6 +107,7 @@ export const PLATFORM_TYPE_AWS_EC2 = 'AWS EC2'
 export const PLATFORM_TYPE_VCD = 'VCD'
 export const PLATFORM_TYPE_K8S_BARE_METAL = 'K8S Bare Metal'
 export const PLATFORM_TYPE_KIND = 'Kind'
+export const PLATFORM_TYPE_FEDERATION = 'Federation'
 
 export const MAINTENANCE_STATE_NORMAL_OPERATION = 'Normal Operation'
 export const MAINTENANCE_STATE_MAINTENANCE_START = 'Maintenance Start'

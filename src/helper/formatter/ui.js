@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Icon as SIcon, Popup } from 'semantic-ui-react';
 import { fields } from '../../services/model/format';
 import { IconButton, Tooltip, CircularProgress, makeStyles } from '@material-ui/core';
-import { labelFormatter } from '.';
+import { labelFormatter, serverFields } from '.';
 import { redux_org } from '../reduxData';
 
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -66,25 +66,32 @@ export const cloudletInfoState = (key, data, isDetail) => {
     let color = colors.COLOR_RGB_ERROR
     switch (id) {
         case 0:
+        case perpetual.UNKNOWN:
             state = perpetual.UNKNOWN
             break;
         case 1:
+        case serverFields.SERVER_ERROR:
             state = 'Error'
             break;
         case 2:
+        case serverFields.SERVER_READY:
             state = perpetual.ONLINE
             color = colors.COLOR_RGB_SUCCESS
             break;
         case 3:
+        case serverFields.SERVER_OFFLINE:
             state = perpetual.OFFLINE
             break;
         case 4:
+        case serverFields.SERVER_NOT_PRESENT:
             state = 'Not Present'
             break;
         case 5:
+        case serverFields.SERVER_INIT:
             state = 'Init'
             break;
         case 6:
+        case serverFields.SERVER_UPGRADE:
             state = 'Upgrade'
             break;
         case 999:
@@ -109,7 +116,7 @@ export const healthCheck = (key, data, isDetail) => {
     }
     else {
         switch (id) {
-            case 3:
+            case serverFields.OK:
                 return <Popup content={label} trigger={<SIcon className="progressIndicator" name='check' color='green' />} />
             default:
                 return <Popup content={label} trigger={<SIcon className="progressIndicator" name='close' color='red' />} />
