@@ -42,37 +42,37 @@ export const additionalDetail = (data) => {
 
 const getStateStatus = (id) => {
     switch (id) {
-        case serverFields.SERVER_TRACKED_STATE_UNKNOWN:
+        case serverFields.TRACKED_STATE_UNKNOWN:
             return "Tracked State Unknown"
-        case serverFields.SERVER_NOT_PRESENT:
+        case serverFields.NOT_PRESENT:
             return "Not Present"
-        case serverFields.SERVER_CREATE_REQUESTED:
+        case serverFields.CREATE_REQUESTED:
             return "Create Requested"
-        case serverFields.SERVER_CREATING:
+        case serverFields.CREATING:
             return "Creating"
-        case serverFields.SERVER_CREATE_ERROR:
+        case serverFields.CREATE_ERROR:
             return "Create Error"
-        case serverFields.SERVER_READY:
+        case serverFields.READY:
             return "Ready"
-        case serverFields.SERVER_UPDATE_REQUESTED:
+        case serverFields.UPDATE_REQUESTED:
             return "Update Requested"
-        case serverFields.SERVER_UPDATING:
+        case serverFields.UPDATING:
             return "Updating"
-        case serverFields.SERVER_UPDATE_ERROR:
+        case serverFields.UPDATE_ERROR:
             return "Update Error"
-        case serverFields.SERVER_DELETE_REQUESTED:
+        case serverFields.DELETE_REQUESTED:
             return "Delete Requested"
-        case serverFields.SERVER_DELETING:
+        case serverFields.DELETING:
             return "Deleting"
-        case serverFields.SERVER_DELETE_ERROR:
+        case serverFields.DELETE_ERROR:
             return "Delete Error"
-        case serverFields.SERVER_DELETE_PREPARE:
+        case serverFields.DELETE_PREPARE:
             return "Delete Prepare"
-        case serverFields.SERVER_CRM_INITOK:
+        case serverFields.CRM_INITOK:
             return "CRM Init"
-        case serverFields.SERVER_CREATING_DEPENDENCIES:
+        case serverFields.CREATING_DEPENDENCIES:
             return "Creating"
-        case serverFields.SERVER_DELETE_DONE:
+        case serverFields.DELETE_DONE:
             return "Deleted"
         default:
             return id
@@ -87,17 +87,17 @@ export const showProgress = (data, isDetailView) => {
     else {
         let icon = null;
         switch (state) {
-            case serverFields.SERVER_READY:
+            case serverFields.READY:
                 icon = <Popup content={getStateStatus(state)} trigger={<Icon className='progressIndicator' name='check' color='green' />} />
                 break;
-            case serverFields.SERVER_CREATING:
-            case serverFields.SERVER_UPDATING:
-            case serverFields.SERVER_CREATING_DEPENDENCIES:
-            case serverFields.SERVER_CRM_INITOK:
+            case serverFields.CREATING:
+            case serverFields.UPDATING:
+            case serverFields.CREATING_DEPENDENCIES:
+            case serverFields.CRM_INITOK:
                 icon = <Popup content='View Progress' trigger={<Icon className='progressIndicator' loading color='green' name='circle notch' />} />
                 break;
-            case serverFields.SERVER_DELETING:
-            case serverFields.SERVER_DELETE_PREPARE:
+            case serverFields.DELETING:
+            case serverFields.DELETE_PREPARE:
                 icon = <Popup content='View Progress' trigger={<Icon className='progressIndicator' loading color='red' name='circle notch' />} />
                 break;
             default:

@@ -70,28 +70,28 @@ export const cloudletInfoState = (key, data, isDetail) => {
             state = perpetual.UNKNOWN
             break;
         case 1:
-        case serverFields.SERVER_ERROR:
+        case serverFields.ERROR:
             state = 'Error'
             break;
         case 2:
-        case serverFields.SERVER_READY:
+        case serverFields.READY:
             state = perpetual.ONLINE
             color = colors.COLOR_RGB_SUCCESS
             break;
         case 3:
-        case serverFields.SERVER_OFFLINE:
+        case serverFields.OFFLINE:
             state = perpetual.OFFLINE
             break;
         case 4:
-        case serverFields.SERVER_NOT_PRESENT:
+        case serverFields.NOT_PRESENT:
             state = 'Not Present'
             break;
         case 5:
-        case serverFields.SERVER_INIT:
+        case serverFields.INIT:
             state = 'Init'
             break;
         case 6:
-        case serverFields.SERVER_UPGRADE:
+        case serverFields.UPGRADE:
             state = 'Upgrade'
             break;
         case 999:
