@@ -19,8 +19,6 @@ class NetworkReg extends React.Component {
         super(props);
         this.state = {
             forms: [],
-            mapData: [],
-            activeIndex: 0,
             region: undefined,
         }
         this._isMounted = false
@@ -77,22 +75,13 @@ class NetworkReg extends React.Component {
             }
         }
         if (region && operatorName) {
-            let requestData = {
-                cloudlet: {
-                    "key": {
-                        "organization": operatorName
-                    }
-                },
-                "region": region
-            }
+            let requestData = { cloudlet: { key: { organization: operatorName } }, region }
             this.props.handleLoadingSpinner(true)
             let mcList = await service.showAuthSyncRequest(this, showCloudlets(this, requestData, true))
             this.cloudletList = mcList.map(org => (org[fields.cloudletName]))
-
             this.props.handleLoadingSpinner(false)
             this.updateUI(form)
             this.updateState({ forms })
-
         }
 
     }

@@ -43,14 +43,6 @@ class NetworkList extends React.Component {
         this.updateState({ currentView: <NetworkReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
     }
 
-    onPreAction = (type, action, data) => {
-        if (type === perpetual.ACTION_DISABLE) {
-            let disable = redux_org.isAdmin(this) || data[fields.operatorName] === redux_org.orgName(this)
-            return !disable
-        }
-    }
-
-
     actionMenu = () => {
         return [
             { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onAdd, type: 'Edit' },
