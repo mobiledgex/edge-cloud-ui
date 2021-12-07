@@ -1,128 +1,95 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import * as actions from '../../../../../actions';
 import { Card, ImageList, ImageListItem } from '@material-ui/core'
-import { fields } from '../../../../../services/model/format'
+
+import Legend from '../../common/legend/Legend'
+import Module from '../../common/Module'
+import Map from '../../common/map/Map'
+import DragButton from '../../list/DragButton'
 import AppClient from './AppClient'
 import AppEvent from './AppEvent'
-import MexMetric from '../../common/MexMetric'
-import { ACTION_LATENCY_METRICS, ACTION_REQUEST_LATENCY } from '../../../../../helper/constant/perpetual'
-import { perpetual } from '../../../../../helper/constant';
 import DMEMetrics from '../../dme/DMEMetrics'
-import AppMexMap from './AppMexMap'
-import { equal } from '../../../../../helper/constant/operators'
-import { requestAppInstLatency } from '../../../../../services/modules/appInst'
-import { responseValid } from '../../../../../services/service'
+import AppInstClientMap from './AppInstClientMap'
 
-const healthDataStructure = () => {
-    let healthData = {}
-    healthData[perpetual.ONLINE] = { value: 0, color: '#66BB6A' }
-    healthData[perpetual.OFFLINE] = { value: 0, color: '#EF5350' }
-    return healthData
-}
+import { requestLantency } from '../../services/service'
+import { perpetual } from '../../../../../helper/constant'
+import { fields } from '../../../../../services/model/format';
 
-const processData = (avgData) => {
-    let mapData = { selected: 0 }
-    let healthData = healthDataStructure()
-    Object.keys(avgData).map(region => {
-        let avgDataRegion = avgData[region]
-        Object.keys(avgDataRegion).map(key => {
-            let keyData = avgDataRegion[key]
-            let health = keyData[fields.healthCheck]
-            if (health === 3) {
-                healthData[perpetual.ONLINE]['value'] = parseInt(healthData[perpetual.ONLINE]['value']) + 1
-            }
-            else {
-                healthData[perpetual.OFFLINE]['value'] = parseInt(healthData[perpetual.OFFLINE]['value']) + 1
-            }
-            if (keyData[fields.cloudletLocation]) {
-                let cloudletLocation = keyData[fields.cloudletLocation]
-                let key = `${cloudletLocation.latitude}_${cloudletLocation.longitude}`
-                let cloudletKey = keyData[fields.cloudletName]
-                let data = { cloudletLocation, keyData: keyData }
-                let mapDataLocation = mapData[key]
-                mapDataLocation = mapDataLocation ? mapDataLocation : { cloudletLocation }
-                mapDataLocation.selected = mapDataLocation.selected ? mapDataLocation.selected : 0
-                mapDataLocation.selected += (keyData.selected ? 1 : 0)
-                if (mapDataLocation[cloudletKey]) {
-                    mapDataLocation[cloudletKey].push(data)
-                }
-                else {
-                    mapDataLocation[cloudletKey] = [data]
-                }
-                mapDataLocation[cloudletKey].selected = mapDataLocation[cloudletKey].selected ? mapDataLocation[cloudletKey].selected : 0
-                mapDataLocation[cloudletKey].selected += (keyData.selected ? 1 : 0)
-                mapData.selected += keyData.selected
-                mapData[key] = mapDataLocation
-            }
-        })
-    })
-    return { mapData, healthData }
-}
+export const actionMenu = [
+    { id: perpetual.ACTION_LATENCY_METRICS, label: 'Show Latency Metrics', roles: [perpetual.ADMIN, perpetual.DEVELOPER], group: true },
+    { id: perpetual.ACTION_REQUEST_LATENCY, label: 'Request Latency Metrics', roles: [perpetual.ADMIN, perpetual.DEVELOPER] },
+    { id: perpetual.ACTION_TRACK_DEVICES, label: 'Track Devices', roles: [perpetual.ADMIN, perpetual.DEVELOPER] }
+]
 
 class AppMonitoring extends React.Component {
     constructor(props) {
         super()
         this.state = {
-            mapData: {},
-            healthData: {}
+            actionView: {}
         }
     }
 
-    static getDerivedStateFromProps(props, state) {
-        return processData(props.avgData)
+    handleAction = (action, data) => {
+        if (action.id === perpetual.ACTION_REQUEST_LATENCY) {
+            requestLantency(this, data)
+        }
+        else {
+            let actionView = { id: action.id, data }
+            this.setState({ actionView })
+        }
     }
 
     render() {
-        const { mapData } = this.state
-        const { avgData, filter, range, rowSelected, selectedOrg, updateAvgData, onActionClose, listAction, regions, privateAccess, orgInfo } = this.props
+        const { actionView } = this.state
+        const { tools, legends, selection, refresh, handleDataStateChange, handleSelectionStateChange } = this.props
+        const { moduleId, regions, search, range, organization, visibility } = tools
         return (
             <React.Fragment>
-                <ImageList cols={4} rowHeight={300}>
-                    {filter.metricType.includes('client') ?
-                        <ImageListItem cols={1}>
-                            <Card style={{ height: 300, width: '100%' }}>
-                                <AppClient regions={regions} filter={filter} range={range} org={selectedOrg} privateAccess={privateAccess}  orgInfo={orgInfo}/>
-                            </Card>
-                        </ImageListItem> : null}
-                    {filter.metricType.includes('map') ?
-                        <ImageListItem cols={2}>
-                            <AppMexMap data={mapData} region={filter.region} listAction={listAction} avgData={avgData} onActionClose={onActionClose} />
-                        </ImageListItem> : null}
-                    {filter.metricType.includes('event') ?
-                        <ImageListItem cols={1}>
-                            <Card style={{ height: 300 }}>
-                                <AppEvent regions={regions} filter={filter} range={range} org={selectedOrg} avgData={avgData} orgInfo={orgInfo}/>
-                            </Card>
-                        </ImageListItem> : null}
-                    <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
-                </ImageList>
-                {listAction && listAction.id === ACTION_LATENCY_METRICS ? <DMEMetrics group={listAction.group} id={filter.parent.id} onClose={onActionClose} data={listAction.data} /> : null}
+                <Legend tools={tools} data={legends} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} groupBy={[fields.appName, fields.version]} />
+                <div style={{ position: 'relative', height: 4 }}>
+                    <DragButton height={400} />
+                </div>
+                <div id='resource-block' className="block block-2">
+                    <ImageList cols={4} rowHeight={300} >
+                        {
+                            visibility.includes(fields.client) ?
+                                <ImageListItem cols={1}>
+                                    <Card style={{ height: 300, width: '100%' }}>
+                                        <AppClient regions={regions} range={range} search={search} organization={organization} />
+                                    </Card>
+                                </ImageListItem> : null
+                        }
+                        {
+                            visibility.includes(fields.map) ? <ImageListItem cols={2}>
+                                <Map moduleId={moduleId} search={search} regions={regions} data={legends} selection={selection} refresh={refresh} zoom={2} />
+                            </ImageListItem> : null
+                        }
+                        {
+                            visibility.includes(fields.event) ?
+                                <ImageListItem cols={1}>
+                                    <Card style={{ height: 300 }}>
+                                        <AppEvent regions={regions} tools={tools} search={search} range={range} organization={organization} />
+                                    </Card>
+                                </ImageListItem> : null
+                        }
+                        {regions.map(region => (
+                            <Module key={region} region={region} moduleId={moduleId} search={search} visibility={visibility} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} />
+                        ))}
+                    </ImageList>
+                    {actionView && actionView.id === perpetual.ACTION_LATENCY_METRICS ? <DMEMetrics group={false} id={moduleId} onClose={() => { this.setState({ actionView: undefined }) }} data={[actionView.data]} /> : null}
+                    {actionView && actionView.id === perpetual.ACTION_TRACK_DEVICES ? <AppInstClientMap onClose={() => { this.setState({ actionView: undefined }) }} data={actionView.data} /> : null}
+                </div>
             </React.Fragment>
         )
     }
-
-    requestLantency = async (listAction) => {
-        const { data } = listAction
-        if (data && data.length > 0) {
-            let mc = await requestAppInstLatency(this, data[0])
-            if (responseValid(mc)) {
-                responseValid(mc) && this.props.showAlert('success', mc.response.data.message)
-            }
-            else {
-                if (mc.error && mc.error.response && mc.error.response.data && mc.error.response.data.message)
-                    this.props.showAlert('error', mc.error.response.data.message)
-            }
-        }
-        this.props.onActionClose()
-    }
-
-    componentDidUpdate(preProps, preState) {
-        const { listAction } = this.props
-        if (listAction && !equal(listAction, preProps.listAction)) {
-            if (listAction.id === ACTION_REQUEST_LATENCY) {
-                this.requestLantency(listAction)
-            }
-        }
-    }
 }
 
-export default AppMonitoring;
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+    };
+};
+
+export default withRouter(connect(null, mapDispatchProps)(AppMonitoring));

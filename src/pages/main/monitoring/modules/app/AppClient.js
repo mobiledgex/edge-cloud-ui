@@ -1,9 +1,16 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
 import HorizontalBar from '../../charts/horizontalBar/MexHorizontalBar'
 import { clientMetrics } from '../../../../../services/modules/clientMetrics'
-import { redux_org, redux_private } from '../../../../../helper/reduxData'
 import MexWorker from '../../services/client.worker.js'
 import { authSyncRequest, responseValid } from '../../../../../services/service'
+import { equal } from '../../../../../helper/constant/operators'
+import { Skeleton } from '@material-ui/lab'
+import { fields } from '../../../../../services/model/format'
+import isEmpty from 'lodash/isEmpty'
+import { NoData } from '../../helper/NoData'
+
 
 class MexAppClient extends React.Component {
 
@@ -11,45 +18,32 @@ class MexAppClient extends React.Component {
         super(props)
         this.state = {
             stackedData: {},
-            loading: true
+            loading: true,
         }
         this._isMounted = false
+        this.init = true
     }
 
-    validatData = (data) => {
-        let valid = false
-        this.props.regions.map(region => {
-            if (!valid && data[region]) {
-                [
-                    valid = data[region].length > 0
-                ]
-            }
-        })
-        return valid
-    }
+
 
     render() {
         const { stackedData, loading } = this.state
-        const { filter, regions } = this.props
-        return stackedData ? <HorizontalBar loading={loading} header='Client API Usage Count' chartData={stackedData} filter={filter} regions={regions} /> :
-            <div className="event-list-main" align="center" style={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                <div align="left" className="event-list-header">
-                    <h3 className='chart-header'>Client API Usage Count</h3>
-                </div>
-                <h3 style={{ padding: '90px 0px' }} className='chart-header'><b>No Data</b></h3>
-            </div>
+        const { search, regions } = this.props
+        return (this.init ? <Skeleton variant='rect' height={300} /> :
+            isEmpty(stackedData) ? <NoData header={'Client API Usage Count'}/> : <HorizontalBar loading={loading} header='Client API Usage Count' chartData={stackedData} search={search} regions={regions} />
+        )
     }
 
-    fetchData = async (region, range) => {
+    fetchData = async (region) => {
+        const { range, organization } = this.props
         this.setState({ loading: true })
-        const {orgInfo, privateAccess} = this.props
-        const requestData = clientMetrics({
-            region: region,
+        const requestData = clientMetrics(this, {
+            region,
             selector: "api",
             numsamples: 1,
             starttime: range.starttime,
             endtime: range.endtime
-        }, redux_org.isAdmin(orgInfo) ? this.props.org : redux_org.nonAdminOrg(orgInfo), redux_private.isPrivate(privateAccess))
+        }, organization[fields.organizationName])
 
         let mc = await authSyncRequest(this, { ...requestData, format: false })
         if (responseValid(mc)) {
@@ -62,39 +56,37 @@ class MexAppClient extends React.Component {
             worker.addEventListener('message', event => {
                 if (this._isMounted) {
                     this.setState(prevState => {
-                        let stackedData = prevState.stackedData
-                        stackedData[region] = event.data.data
+                        let stackedData = { ...prevState.stackedData }
+                        if (!isEmpty(event.data.data)) {
+                            stackedData[region] = event.data.data
+                        }
                         return { stackedData, loading: false }
                     })
                 }
                 worker.terminate()
             })
         }
+        this.init = false
     }
 
-    client = (range) => {
+    client = () => {
         this.setState({ stackedData: {} })
         this.props.regions.map(region => {
-            this.fetchData(region, range)
+            this.fetchData(region)
         })
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.org !== this.props.org) {
-            this.setState({ stackedData: {} }, () => {
-                this.client(this.props.range)
-            })
-        }
-        if (prevProps.range !== this.props.range) {
-            this.client(this.props.range)
+    componentDidUpdate(preProps, preState) {
+        const { range } = this.props
+        //fetch data on range change
+        if (!equal(range, preProps.range)) {
+            this.client()
         }
     }
 
     componentDidMount() {
         this._isMounted = true
-        if (!redux_org.isAdmin(this.props.orgInfo) || this.props.org) {
-            this.client(this.props.range)
-        }
+        this.client()
     }
 
     componentWillUnmount() {
@@ -102,4 +94,10 @@ class MexAppClient extends React.Component {
     }
 }
 
-export default MexAppClient
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data
+    }
+};
+
+export default withRouter(connect(mapStateToProps, null)(MexAppClient));

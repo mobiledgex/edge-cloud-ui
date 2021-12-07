@@ -26,7 +26,7 @@ jobs:
           repository: mobiledgex/console
           tags: ${{ steps.get_tag.outputs.RELEASE_TAG }},latest
           cache_froms: harbor.mobiledgex.net/mobiledgex/console:latest
-          build_args: TAG=${{ steps.get_tag.outputs.RELEASE_TAG }}
+          build_args: TAG=${{ steps.get_tag.outputs.RELEASE_TAG }},REACT_APP_GA_MEASUREMENT_ID=${{ secrets.REACT_APP_GA_MEASUREMENT_ID }}
 
       - name: Build and push prod image to registry
         uses: docker/build-push-action@v1

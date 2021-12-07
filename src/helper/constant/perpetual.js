@@ -6,7 +6,7 @@ export const STATUS_UNDER_MAINTAINANCE = 999
 export const COLOR_GREEN = '#388E3C'
 export const COLOR_RED = '#ab2424'
 
-export const LOCAL_STRAGE_KEY = 'PROJECT_INIT'
+export const LS_THASH = '8600b1cdcdf58f43ee8a2152433448fa'
 export const LS_USER_META_DATA = 'usermetadata'
 export const LS_REGIONS = 'regions'
 export const LS_LINE_GRAPH_FULL_SCREEN = 'LineGraphFullScreen'

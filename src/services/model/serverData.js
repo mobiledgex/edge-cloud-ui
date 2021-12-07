@@ -1,7 +1,7 @@
 import * as serviceMC from './serviceMC';
 import { SHOW_AUDIT_ORG } from '../../helper/constant/endpoint';
 import { endpoint } from '../../helper/constant';
-import { authSyncRequest, fetchToken, responseValid, syncRequest } from '../service';
+import { authSyncRequest, fetchWSToken, responseValid, syncRequest } from '../service';
 
 /**
  * orgData : this parameter is useful when we are trying to process multiple 
@@ -9,7 +9,7 @@ import { authSyncRequest, fetchToken, responseValid, syncRequest } from '../serv
  *           because websocket supports multi request response 
  *  **/
 export const sendWSRequest = async (self, requestData, callback, orgData) => {
-    let token = fetchToken(self)
+    let token = await fetchWSToken(self)
     if (token) {
         requestData.token = token;
         requestData.orgData = orgData

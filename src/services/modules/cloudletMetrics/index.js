@@ -1,13 +1,12 @@
 import { customize } from './custom'
-import { cloudletMetrics, cloudletMetricTypeKeys, cloudletMetricsListKeys, customData, cloudletUsageMetrics, cloudletFlavorUsageMetrics, cloudletActions } from './cloudletMetrics'
+import { cloudletMetrics, cloudletResourceKeys, cloudletMetricsListKeys, customData, cloudletUsageMetrics, cloudletFlavorUsageMetrics } from './cloudletMetrics'
 export {
     customize,
     cloudletMetrics,
-    cloudletMetricTypeKeys,
+    cloudletResourceKeys,
     cloudletMetricsListKeys,
     customData,
     cloudletUsageMetrics,
-    cloudletFlavorUsageMetrics,
-    cloudletActions
+    cloudletFlavorUsageMetrics
 }
 

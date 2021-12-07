@@ -1,6 +1,7 @@
 import { UNIT_FLOOR, UNIT_GB, UNIT_MB } from '../../../pages/main/monitoring/helper/unitConvertor';
 import { endpoint, perpetual } from '../../../helper/constant';
 import { fields } from '../../model/format';
+import { TYPE_JSON } from '../../../helper/constant/perpetual';
 
 export const customData = (id, data) => {
     switch (id) {
@@ -8,10 +9,6 @@ export const customData = (id, data) => {
             return `${data[fields.cloudletName]} [${data[fields.operatorName]}]`
     }
 }
-
-export const cloudletActions = [
-    { id: perpetual.ACTION_LATENCY_METRICS, label: 'Show Latency Metrics' },
-]
 
 export const cloudletMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },
@@ -23,25 +20,24 @@ export const cloudletMetricsKeys = [
 export const cloudletFlavorMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },
     { label: 'Region', serverField: 'region', visible: true, groupBy: true },
-    // { label: 'Cloudlet', serverField: 'cloudlet', visible: true, groupBy: true },
-    // { label: 'Operator', serverField: 'cloudletorg', visible: true, groupBy: true },
     { label: 'Flavor', serverField: 'flavor', visible: true, groupBy: true }
 ]
 
 export const cloudletMetricsListKeys = [
-    { field: fields.region, label: 'Region', sortable: true, visible: false, groupBy: true },
-    { field: fields.cloudletName, label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
-    { field: fields.operatorName, label: 'Operator', sortable: true, visible: false, groupBy: true },
+    { field: fields.region, serverField: 'region', label: 'Region', sortable: true, visible: true, groupBy: true },
+    { field: fields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
+    { field: fields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, visible: false, groupBy: true },
     { field: fields.cloudletLocation, label: 'Location', visible: false },
-    { field: 'cpu', label: 'vCpu Infra Usage', sortable: false, visible: true },
-    { field: 'disk', label: 'Disk Infra Usage', sortable: false, visible: true },
-    { field: 'memory', label: 'Memory Infra Usage', sortable: false, visible: true },
+    { field: fields.resourceQuotas, label: 'Resource Quotas', visible: false },
+    { field: 'cpu', label: 'CPU', resourceLabel: 'vCPUs', format: true, sortable: false, visible: true },
+    { field: 'disk', label: 'Disk', resourceLabel: 'Disk', format: true, sortable: false, visible: true },
+    { field: 'memory', label: 'Memory', resourceLabel: 'RAM', format: true, sortable: false, visible: true }
 ]
 
 export const utilizationMetricType = [
-    { field: 'cpu', serverField: 'utilization', subId: 'vCpuUsed', header: 'vCpu Infra Usage', position: 4, steppedLine: 'after' },
-    { field: 'memory', serverField: 'utilization', subId: 'memUsed', header: 'Memory Infra Usage', position: 6, unit: UNIT_MB, steppedLine: 'after' },
-    { field: 'disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Infra Usage', position: 8, unit: UNIT_GB, steppedLine: 'after' },
+    { field: 'cpu', label: 'CPU', serverField: 'utilization', subId: 'vCpuUsed', header: 'vCpu Infra Usage', position: 1, steppedLine: 'after' },
+    { field: 'memory', label: 'Memory', serverField: 'utilization', subId: 'memUsed', header: 'Memory Infra Usage', position: 3, unit: UNIT_MB, steppedLine: 'after' },
+    { field: 'disk', label: 'Disk', serverField: 'utilization', subId: 'diskUsed', header: 'Disk Infra Usage', position: 5, unit: UNIT_GB, steppedLine: 'after' },
 ]
 
 export const resourceUsageMetricType = [
@@ -49,30 +45,45 @@ export const resourceUsageMetricType = [
     { field: 'floatingIpsUsed', serverField: 'floatingIpsUsed', header: 'Floating IP Used', position: 5, unit: UNIT_FLOOR, steppedLine: 'after' },
     { field: 'gpusUsed', serverField: 'gpusUsed', header: 'GPU Used', position: 6, unit: UNIT_FLOOR, steppedLine: 'after' },
     { field: 'instancesUsed', serverField: 'instancesUsed', header: 'Instances Used', position: 7, unit: UNIT_FLOOR, steppedLine: 'after' },
-    { field: 'ramUsed', serverField: 'ramUsed', header: 'RAM Used', position: 8, unit: UNIT_MB, steppedLine: 'after' },
-    { field: 'vcpusUsed', serverField: 'vcpusUsed', header: 'vCPUs Used', position: 9, unit: UNIT_FLOOR, steppedLine: 'after' },
+    { field: 'memory', serverField: 'ramUsed', header: 'RAM Used', position: 8, unit: UNIT_MB, steppedLine: 'after' },
+    { field: 'cpu', serverField: 'vcpusUsed', header: 'vCPUs Used', position: 9, unit: UNIT_FLOOR, steppedLine: 'after' },
 ]
 
-export const cloudletMetricTypeKeys = () => ([
+export const cloudletResourceKeys = () => ([
+    { field: 'flavorusage', header: 'Flavor Usage', serverField: 'flavorusage', serverRequest: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, steppedLine: 'after' },
     { field: 'utilization', serverField: 'utilization', header: 'Memory Usage', keys: utilizationMetricType, serverRequest: endpoint.CLOUDLET_METRICS_ENDPOINT },
     { field: 'resourceusage', serverField: 'resourceusage', header: 'Resource Usage', keys: resourceUsageMetricType, serverRequest: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT },
-    { field: 'count', header: 'Flavor Usage' },
     { field: 'map', header: 'Map' },
     { field: 'event', header: 'Event' },
 ])
 
-export const cloudletMetrics = (data, org) => {
-    data.cloudlet = {
-        organization: org
+/**
+ * 
+ * @param {*} data request data
+ * @param {*} list extracts specific cloudlet data
+ * @param {*} org cloudlet organization
+ * @returns cloudlet metric data
+ */
+export const cloudletMetrics = (data, list, org) => {
+    let requestData = { ...data }
+    if (list) {
+        requestData.cloudlets = list
     }
-    return { method: endpoint.CLOUDLET_METRICS_ENDPOINT, data: data, keys: cloudletMetricsKeys }
+    else {
+        requestData.cloudlet = {
+            organization: org
+        }
+    }
+    return { method: endpoint.CLOUDLET_METRICS_ENDPOINT, data: requestData, keys: cloudletMetricsKeys }
 }
 
 export const cloudletUsageMetrics = (data, org) => {
-    data.cloudlet = data.cloudlet ? data.cloudlet : {
+    let requestData = { ...data }
+    requestData.cloudlet = data.cloudlet ? data.cloudlet : {
         organization: org
     }
-    return { method: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, data: data, keys: cloudletMetricsKeys }
+    let keys = data.selector === 'flavorusage' ? cloudletFlavorMetricsKeys : cloudletMetricsKeys
+    return { method: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, data: requestData, keys }
 }
 
 export const cloudletFlavorUsageMetrics = (data, org) => {

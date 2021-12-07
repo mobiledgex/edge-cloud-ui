@@ -6,6 +6,8 @@ export const RESET_PASSWORD = "passwordreset";
 export const RESET_PASSWORD_REQUEST = "passwordresetrequest";
 export const CREATE_USER = "usercreate";
 export const PUBLIC_CONFIG = 'publicconfig'
+//ws token
+export const WS_TOKEN = 'auth/wstoken';
 //Organization
 export const SHOW_ORG = 'auth/org/show';
 export const CREATE_ORG = 'auth/org/create';

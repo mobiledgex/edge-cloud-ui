@@ -1,78 +1,56 @@
 import React from 'react'
 import { Card, ImageList, ImageListItem } from '@material-ui/core'
-import { fields } from '../../../../../services/model/format'
-import CloudletMexMap from './CloudletMexMap'
+import Module from '../../common/Module'
 import CloudletEvent from './CloudletEvent'
-import MexMetric from '../../common/MexMetric'
-import CloudletFlavorUsage from './CloudletFlavorUsage'
+import Map from '../../common/map/Map'
+import Legend from '../../common/legend/Legend'
+import DragButton from '../../list/DragButton'
 import DMEMetrics from '../../dme/DMEMetrics'
 import { ACTION_LATENCY_METRICS } from '../../../../../helper/constant/perpetual'
+import { fields } from '../../../../../services/model/format';
 
-const processData = (avgData) => {
-    let mapData = {}
-    let selected = 0
-    Object.keys(avgData).map(region => {
-        let avgDataRegion = avgData[region]
-        Object.keys(avgDataRegion).map(key => {
-            let keyData = avgDataRegion[key]
-            if (keyData[fields.cloudletLocation]) {
-                let cloudletLocation = keyData[fields.cloudletLocation]
-                let key = `${cloudletLocation.latitude}_${cloudletLocation.longitude}`
-                let cloudletKey = 'data'//keyData.cloudlet
-                let data = { cloudletLocation, keyData: keyData }
-                selected += (keyData.selected ? 1 : 0)
-                let mapDataLocation = mapData[key]
-                mapDataLocation = mapDataLocation ? mapDataLocation : { cloudletLocation }
-                mapDataLocation.selected = selected
-                if (mapDataLocation[cloudletKey]) {
-                    mapDataLocation[cloudletKey].push(data)
-                }
-                else {
-                    mapDataLocation[cloudletKey] = [data]
-                }
-                mapData[key] = mapDataLocation
-            }
-        })
-    })
-    return { mapData }
-}
+const actionMenu = [
+    { id: ACTION_LATENCY_METRICS, label: 'Show Latency Metrics' },
+]
 class CloudletMonitoring extends React.Component {
     constructor(props) {
         super()
         this.state = {
-            mapData: {}
+            actionView:undefined
         }
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if (props.listAction) {
-            return null
-        }
-        else {
-            return processData(props.avgData)
-        }
+    handleAction = (action, data) => {
+        let actionView = { id: action.id, data }
+        this.setState({actionView})
     }
 
     render() {
-        const { mapData } = this.state
-        const { avgData, filter, rowSelected, range, selectedOrg, updateAvgData, listAction, onActionClose, regions } = this.props
+        const {actionView} = this.state
+        const { tools, legends, selection, refresh, handleDataStateChange, handleSelectionStateChange } = this.props
+        const { moduleId, regions, search, range, organization, visibility } = tools
         return (
             <React.Fragment>
-                <ImageList cols={4} rowHeight={300}>
-                    {filter.metricType.includes('map') ? <ImageListItem cols={3}>
-                        <CloudletMexMap data={mapData} region={filter.region} />
-                    </ImageListItem> : null}
-                    {filter.metricType.includes('event') ? <ImageListItem cols={1}>
-                        <Card style={{ height: 300 }}>
-                            <CloudletEvent regions={regions} filter={filter} range={range} org={selectedOrg} />
-                        </Card>
-                    </ImageListItem> : null}
-                    {filter.region.map((region, i) => (
-                        <CloudletFlavorUsage key={`flavor_${region}_${i}`} range={range} filter={filter} avgData={avgData[region]} rowSelected={rowSelected} region={region} org={selectedOrg} />
-                    ))}
-                    <MexMetric avgData={avgData} updateAvgData={updateAvgData} filter={filter} regions={regions} rowSelected={rowSelected} range={range} org={selectedOrg} />
-                </ImageList>
-                {listAction && listAction.id === ACTION_LATENCY_METRICS ? <DMEMetrics id={filter.parent.id} onClose={onActionClose} data={listAction.data} /> : null}
+                <Legend tools={tools} data={legends} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} sortBy={[fields.cloudletName]} />
+                <div style={{ position: 'relative', height: 4 }}>
+                    <DragButton height={400} />
+                </div>
+                <div id='resource-block' className="block block-2">
+                    <ImageList cols={4} rowHeight={300} >
+                        <ImageListItem cols={3}>
+                            <Map moduleId={moduleId} search={search} regions={regions} data={legends} selection={selection} refresh={refresh} />
+                        </ImageListItem>
+                        <ImageListItem cols={1}>
+                            <Card style={{ height: 300 }}>
+                                <CloudletEvent range={range} />
+                            </Card>
+                        </ImageListItem>
+                        {regions.map(region => (
+                            <Module key={region} region={region} moduleId={moduleId} visibility={visibility} search={search} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} />
+                        ))}
+                        {actionView && actionView.id === ACTION_LATENCY_METRICS ? <DMEMetrics id={moduleId} onClose={() => { this.setState({ actionView: undefined }) }} data={[actionView.data]} /> : null}
+                    </ImageList>
+                </div>
             </React.Fragment>
         )
     }
@@ -80,4 +58,5 @@ class CloudletMonitoring extends React.Component {
     componentDidMount() {
     }
 }
+
 export default CloudletMonitoring

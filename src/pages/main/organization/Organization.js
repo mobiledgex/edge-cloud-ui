@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData';
-import { keys, iconKeys, showOrganizations, deleteOrganization, edgeboxOnlyAPI } from '../../../services/modules/organization';
+import { keys, iconKeys, showOrganizations, deleteOrganization, edgeboxOnlyAPI, multiDataRequest } from '../../../services/modules/organization';
 import OrganizationReg from './Reg';
 import * as serverData from '../../../services/model/serverData'
 import * as shared from '../../../services/model/shared';
@@ -21,6 +21,8 @@ import { authSyncRequest, fetchToken, responseValid } from '../../../services/se
 import { validatePrivateAccess } from '../../../constant';
 import { getUserMetaData } from '../../../helper/ls';
 import { updateUserMetaData } from '../../../services/modules/users';
+import { showUsers } from '../../../services/modules/users';
+import { ACTION_REFRESH } from '../../../container/MexToolbar';
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
@@ -223,7 +225,7 @@ class OrganizationList extends React.Component {
             id: perpetual.PAGE_ORGANIZATIONS,
             headerLabel: 'Organizations',
             nameField: fields.organizationName,
-            requestType: [showOrganizations],
+            requestType: [showOrganizations, showUsers],
             sortBy: [fields.organizationName],
             keys: this.keys,
             iconKeys:iconKeys(),
@@ -238,9 +240,19 @@ class OrganizationList extends React.Component {
         const { tableHeight, currentView } = this.state
         return (
             <div style={{ width: '100%', height: '100%' }}>
-                <DataView id={perpetual.PAGE_ORGANIZATIONS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight} />
+                <DataView id={perpetual.PAGE_ORGANIZATIONS} multiDataRequest={multiDataRequest} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} />
             </div>
         )
+    }
+
+    handleListViewClick = (item) => {
+        const { type, data } = item
+        switch (type) {
+            case ACTION_REFRESH:
+                this.props.handleRoleInfo(data)
+                break;
+            default:
+        }
     }
 
     getUserRoles = () => {

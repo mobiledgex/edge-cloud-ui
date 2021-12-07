@@ -2,7 +2,6 @@ import React from 'react';
 import { Card } from '@material-ui/core';
 
 import './styles.css';
-import orderBy from "lodash/orderBy";
 import { fields } from '../services/model/format';
 import * as serverData from '../services/model/serverData';
 import { withRouter } from 'react-router-dom';
@@ -40,9 +39,9 @@ class MexListView extends React.Component {
             uuid: 0,
             dropList: [],
             resetStream: false,
-            deleteMultiple: [], 
+            deleteMultiple: [],
             iconKeys: undefined,
-            loading:false
+            loading: false
         };
         this._isMounted = false
         this.filterText = prefixSearchPref()
@@ -71,7 +70,7 @@ class MexListView extends React.Component {
         this.props.handleViewMode(null)
         return (
             <Card style={{ height: 'calc(100vh - 116px)', backgroundColor: '#292c33', borderRadius: 5, overflowY: 'auto' }}>
-                <MexDetailViewer detailData={data} keys={this.keys} formatData={this.requestInfo.formatData} detailAction={detailAction}/>
+                <MexDetailViewer detailData={data} keys={this.keys} formatData={this.requestInfo.formatData} detailAction={detailAction} />
                 {additionalDetail ? additionalDetail(data) : null}
             </Card>
         )
@@ -254,7 +253,7 @@ class MexListView extends React.Component {
                     case perpetual.ACTION_POOL_ACCESS_DEVELOPER:
                     case perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT:
                     case perpetual.ACTION_EDGE_BOX_ENABLE:
-                        action.onClick(action, data, () => { this.dataFromServer(this.selectedRegion) })
+                        action.onClick(action, data, () => { this.generateRequestData(this.selectedRegion) })
                         break;
                 }
             }
@@ -303,7 +302,7 @@ class MexListView extends React.Component {
     }
 
     onIconFilter = (iconKeys) => {
-        this.setState({ iconKeys }, ()=>{
+        this.setState({ iconKeys }, () => {
             this.onFilterValue()
         })
     }
@@ -352,7 +351,7 @@ class MexListView extends React.Component {
         this.updateState({
             multiStepsArray: []
         })
-        this.dataFromServer(this.selectedRegion)
+        this.generateRequestData(this.selectedRegion)
     }
 
     onProgress(data) {
@@ -382,11 +381,11 @@ class MexListView extends React.Component {
             }) : [true]
             valid = filterCount === 0 || valid.includes(true)
             if (valid) {
-                 this.state.iconKeys && this.state.iconKeys.forEach(icon => {
+                this.state.iconKeys && this.state.iconKeys.forEach(icon => {
                     if (valid && icon.clicked) {
                         valid = Boolean(data[icon.field])
-                     }
-                 })
+                    }
+                })
             }
             return valid
         })
@@ -459,9 +458,9 @@ class MexListView extends React.Component {
         return (
             <Card style={{ width: '100%', height: 'calc(100vh - 55px)', backgroundColor: '#292c33', color: 'white', paddingTop: 10 }}>
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
-                <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} dataFromServer={this.specificDataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
+                <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} generateRequestData={this.specificDataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
                 <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} uuid={this.state.uuid} />
-                <MexToolbar requestInfo={this.requestInfo} regions={regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} toolbarAction={toolbarAction}/>
+                <MexToolbar requestInfo={this.requestInfo} regions={regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} toolbarAction={toolbarAction} />
                 {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
                 {this.state.currentView ? this.state.currentView : this.listView()}
                 <MexMessageMultiNorm data={deleteMultiple} close={this.onDeleteMulClose} />
@@ -474,10 +473,10 @@ class MexListView extends React.Component {
         switch (type) {
             case ACTION_REGION:
                 this.selectedRegion = value;
-                this.dataFromServer(this.selectedRegion)
+                this.generateRequestData(this.selectedRegion)
                 break;
             case ACTION_REFRESH:
-                this.dataFromServer(this.selectedRegion)
+                this.generateRequestData(this.selectedRegion, type)
                 break;
             case ACTION_NEW:
                 this.requestInfo.onAdd()
@@ -496,9 +495,8 @@ class MexListView extends React.Component {
                 this.setState({ dropList: value })
             case ACTION_PICKER:
                 this.range = value
-                this.dataFromServer(this.selectedRegion)
+                this.generateRequestData(this.selectedRegion)
             default:
-
         }
     }
 
@@ -527,12 +525,14 @@ class MexListView extends React.Component {
         return filterList;
     }
 
-    onServerResponse = (mcList) => {
-        this.requestCount -= 1
-        let requestInfo = this.requestInfo
-        let newDataList = []
-
+    requestToFetch = async (type, requestInfo, filter) => {
+        const { handleListViewClick } = this.props
+        let mcList = await fetchDataFromServer(this, requestInfo.requestType, filter)
+        this.count = this.count - 1
         if (mcList && mcList.length > 0) {
+            this.requestCount -= 1
+            let requestInfo = this.requestInfo
+            let newDataList = []
             if (this.props.multiDataRequest) {
                 newDataList = this.props.multiDataRequest(requestInfo.keys, mcList)
             }
@@ -543,36 +543,42 @@ class MexListView extends React.Component {
                 }
             }
 
-        }
-
-        let dataList = cloneDeep(this.state.dataList)
-        if (mcList && mcList.length > 0 && dataList.length > 0) {
-            let requestData = mcList[0].request.data
-            if (requestData.region) {
-                dataList = dataList.filter(function (obj) {
-                    return obj[fields.region] !== requestData.region;
-                });
+            let dataList = cloneDeep(this.state.dataList)
+            if (mcList && mcList.length > 0 && dataList.length > 0) {
+                let requestData = mcList[0].request.data
+                if (requestData.region) {
+                    dataList = dataList.filter(function (obj) {
+                        return obj[fields.region] !== requestData.region;
+                    });
+                }
             }
-        }
 
-        if (newDataList.length > 0) {
-            newDataList = orderBy(newDataList, requestInfo.sortBy)
-            dataList = [...dataList, ...newDataList]
-        }
+            if (newDataList.length > 0) {
+                newDataList = operators._orderBy(newDataList, requestInfo.sortBy)
+                dataList = [...dataList, ...newDataList]
+            }
 
-        if (this._isMounted) {
-            this.setState({
-                dataList,
-                newDataList
-            }, () => {
-                this.updateState({ filterList: this.onFilterValue(undefined), loading:false })
-            })
+            if (this._isMounted && dataList && dataList.length > 0) {
+                this.setState({
+                    dataList,
+                    newDataList
+                }, () => {
+                    this.updateState({ filterList: this.onFilterValue(undefined) })
+                })
+            }
+
+            if (this.count === 0) {
+                this.updateState({ loading: false })
+            }
+            if (handleListViewClick && type === ACTION_REFRESH) {
+                handleListViewClick({ type, data: newDataList })
+            }
         }
     }
 
-    dataFromServer = (region) => {
+    generateRequestData = (region, type) => {
         if (this._isMounted) {
-            this.setState(prevState => ({ dataList: [], filterList: [], selected: [], newDataList: [], resetStream: !prevState.resetStream, loading:true }))
+            this.setState(prevState => ({ dataList: [], filterList: [], selected: [], newDataList: [], resetStream: !prevState.resetStream, loading: true }))
         }
         let requestInfo = this.requestInfo
         if (requestInfo) {
@@ -589,16 +595,18 @@ class MexListView extends React.Component {
                     filterList = [{ startdate: this.range.from, enddate: this.range.to }]
                 }
             }
-            
+
             this.requestCount = filterList.length;
             if (filterList && filterList.length > 0) {
+                this.count = filterList.length
                 for (let i = 0; i < filterList.length; i++) {
                     let filter = filterList[i];
-                    fetchDataFromServer(this, requestInfo.requestType, filter, this.onServerResponse)
+                    this.requestToFetch(type, requestInfo, filter)
                 }
             }
             else {
-                fetchDataFromServer(this, requestInfo.requestType, this.onServerResponse)
+                this.count = 0
+                this.requestToFetch(type, requestInfo)
             }
         }
 
@@ -607,14 +615,14 @@ class MexListView extends React.Component {
     componentDidUpdate(preProps, preState) {
         if (!operators.equal(this.props.organizationInfo, preProps.organizationInfo)) {
             if (!shared.isPathOrg(this)) {
-                this.dataFromServer(this.selectedRegion)
+                this.generateRequestData(this.selectedRegion)
             }
         }
     }
 
     componentDidMount() {
         this._isMounted = true
-        this.dataFromServer(REGION_ALL)
+        this.generateRequestData(REGION_ALL)
         this.props.handleViewMode(this.requestInfo.viewMode);
     }
 

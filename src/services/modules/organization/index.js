@@ -1,5 +1,5 @@
 import { customize } from './custom'
-import  {showOrganizations, keys, iconKeys, createOrganization, updateOrganization, deleteOrganization, edgeboxOnlyAPI, getOrganizationList} from './organization'
+import { showOrganizations, keys, iconKeys, createOrganization, updateOrganization, deleteOrganization, edgeboxOnlyAPI, getOrganizationList, multiDataRequest } from './organization'
 export {
     customize,
     keys, 
@@ -9,6 +9,7 @@ export {
     updateOrganization, 
     deleteOrganization, 
     edgeboxOnlyAPI, 
-    getOrganizationList
+    getOrganizationList,
+    multiDataRequest
 }
 
