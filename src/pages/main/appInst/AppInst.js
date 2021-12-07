@@ -15,7 +15,7 @@ import { Dialog } from '@material-ui/core';
 import { HELP_APP_INST_LIST } from "../../../tutorial";
 import { perpetual, role } from '../../../helper/constant';
 import * as serverData from '../../../services/model/serverData'
-import { idFormatter, labelFormatter, uiFormatter } from '../../../helper/formatter';
+import { idFormatter, labelFormatter, serverFields, uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
 import { developerRoles } from '../../../constant';
 import { DEPLOYMENT_TYPE_VM } from '../../../helper/constant/perpetual';
@@ -106,7 +106,7 @@ class AppInstList extends React.Component {
     }
 
     getDeleteActionMessage = (action, data) => {
-        if (data[fields.cloudletStatus] !== perpetual.CLOUDLET_STATUS_READY && redux_org.isAdmin(this)) {
+        if (data[fields.cloudletStatus] !== serverFields.READY && redux_org.isAdmin(this)) {
             return `Cloudlet status is not online, do you still want to proceed with ${data[fields.appName]} App Instance deletion?`
         }
     }

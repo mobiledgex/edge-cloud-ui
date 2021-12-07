@@ -15,7 +15,7 @@ import DataView from '../../../container/DataView';
 import ClusterInstReg from './Reg';
 import { HELP_CLUSTER_INST_LIST } from "../../../tutorial";
 import { perpetual, role } from '../../../helper/constant';
-import { labelFormatter } from '../../../helper/formatter';
+import { labelFormatter, serverFields } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
 import { developerRoles } from '../../../constant';
 
@@ -52,7 +52,7 @@ class ClusterInstView extends React.Component {
     }
 
     getDeleteActionMessage = (action, data) => {
-        if (data[fields.cloudletStatus] !== perpetual.CLOUDLET_STATUS_READY && redux_org.isAdmin(this)) {
+        if (data[fields.cloudletStatus] !== serverFields.READY && redux_org.isAdmin(this)) {
             return `Cloudlet status is not online, do you still want to proceed with ${data[fields.clusterName]} Cluster Instance deletion?`
         }
     }
