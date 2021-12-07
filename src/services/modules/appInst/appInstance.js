@@ -8,6 +8,7 @@ import { customize } from '.'
 import { generateUUID } from '../../format/shared'
 import { REQUEST_APP_INST_LATENCY } from '../../../helper/constant/endpoint';
 import { AIK_APP_CLOUDLET_CLUSTER, primaryKeys } from './primary';
+import { serverFields } from '../../../helper/formatter';
 
 let fields = formatter.fields;
 
@@ -160,7 +161,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             appInst[fields.compatibilityVersion] = cloudletInfo[fields.compatibilityVersion]
           }
         }
-        appInst[fields.cloudletStatus] = appInst[fields.cloudletStatus] ? appInst[fields.cloudletStatus] : perpetual.CLOUDLET_STATUS_UNKNOWN
+        appInst[fields.cloudletStatus] = appInst[fields.cloudletStatus] ? appInst[fields.cloudletStatus] : serverFields.UNKNOWN
       }
     }
     return appInstList;
@@ -227,7 +228,7 @@ export const changePowerState = (data) => {
 
 export const deleteAppInst = (self, data) => {
   let requestData = getKey(data)
-  if (data[fields.cloudletStatus] !== perpetual.CLOUDLET_STATUS_READY && redux_org.isAdmin(self)) {
+  if (data[fields.cloudletStatus] !== serverFields.READY && redux_org.isAdmin(self)) {
     requestData.appinst.crm_override = perpetual.CRM_OVERRIDE_IGNORE_CRM
   }
   return { uuid: data.uuid, method: endpoint.DELETE_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]} deleted successfully` }

@@ -1,73 +1,74 @@
 import * as perpetual from "../constant/perpetual"
+import * as serverFields from './serverFields'
 
 export const powerState = (label) => {
     switch (label) {
         case perpetual.UNKNOWN:
-            return 0
+            return serverFields.UNKNOWN
         case perpetual.POWER_STATE_POWER_ON_REQUESTED:
-            return 1
+            return serverFields.POWER_ON_REQUESTED
         case perpetual.POWER_STATE_POWERING_ON:
-            return 2
+            return serverFields.POWERING_ON
         case perpetual.POWER_STATE_POWER_ON:
-            return 3
+            return serverFields.POWER_ON
         case perpetual.POWER_STATE_POWER_OFF_REQUESTED:
-            return 4
+            return serverFields.POWER_OFF_REQUESTED
         case perpetual.POWER_STATE_POWERING_OFF:
-            return 5
+            return serverFields.POWERING_OFF
         case perpetual.POWER_STATE_POWER_OFF:
-            return 6
+            return serverFields.POWER_OFF
         case perpetual.POWER_STATE_REBOOT_REQUESTED:
-            return 7
+            return serverFields.REBOOT_REQUESTED
         case perpetual.POWER_STATE_REBOOTING:
-            return 8
+            return serverFields.REBOOTING
         case perpetual.POWER_STATE_REBOOT:
-            return 9
+            return serverFields.REBOOT
         case perpetual.POWER_STATE_ERROR:
-            return 10
+            return serverFields.ERROR
     }
 }
 
 export const maintainance = (label) => {
     switch (label) {
         case perpetual.MAINTENANCE_STATE_NORMAL_OPERATION:
-            return 0
+            return serverFields.NORMAL_OPERATION
         case perpetual.MAINTENANCE_STATE_MAINTENANCE_START:
-            return 1
+            return serverFields.MAINTENANCE_START
         case perpetual.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER:
-            return 5
+            return serverFields.MAINTENANCE_START_NO_FAILOVER
     }
 }
 
 export const platformType = (label) => {
     switch (label) {
         case perpetual.PLATFORM_TYPE_FAKE:
-            return 0
+            return serverFields.FAKE
         case perpetual.PLATFORM_TYPE_DIND:
-            return 1
+            return serverFields.DIND
         case perpetual.PLATFORM_TYPE_OPEN_STACK:
-            return 2
+            return serverFields.OPENSTACK
         case perpetual.PLATFORM_TYPE_AZURE:
-            return 3
+            return serverFields.AZURE
         case perpetual.PLATFORM_TYPE_OPEN_GCP:
-            return 4
+            return serverFields.OPEN_GCP
         case perpetual.PLATFORM_TYPE_EDGEBOX:
-            return 5
+            return serverFields.EDGEBOX
         case perpetual.PLATFORM_TYPE_FAKEINFRA:
-            return 6
+            return serverFields.FAKEINFRA
         case perpetual.PLATFORM_TYPE_VSPHERE:
-            return 7
+            return serverFields.VSPHERE
         case perpetual.PLATFORM_TYPE_AWS_EKS:
-            return 8
+            return serverFields.AWS_EKS
         case perpetual.PLATFORM_TYPE_VMPOOL:
-            return 9
+            return serverFields.VMPOOL
         case perpetual.PLATFORM_TYPE_AWS_EC2:
-            return 10
+            return serverFields.AWS_EC2
         case perpetual.PLATFORM_TYPE_VCD:
-            return 11
+            return serverFields.VCD
         case perpetual.PLATFORM_TYPE_K8S_BARE_METAL:
-            return 12
+            return serverFields.K8S_BARE_METAL
         case perpetual.PLATFORM_TYPE_KIND:
-            return 13
+            return serverFields.KIND
         default:
             return label
     }
@@ -76,9 +77,9 @@ export const platformType = (label) => {
 export const infraApiAccess = (label) => {
     switch (label) {
         case perpetual.INFRA_API_ACCESS_DIRECT:
-            return 0
+            return serverFields.DIRECT
         case perpetual.INFRA_API_ACCESS_RESTRICTED:
-            return 1
+            return serverFields.RESTRICTED
         default:
             return label
     }
@@ -87,9 +88,9 @@ export const infraApiAccess = (label) => {
 export const ipSupport = (label) => {
     switch (label) {
         case perpetual.IP_SUPPORT_STATIC:
-            return 1
+            return serverFields.STATIC
         case perpetual.IP_SUPPORT_DYNAMIC:
-            return 2
+            return serverFields.DYNAMIC
         default:
             return label
     }
@@ -98,11 +99,11 @@ export const ipSupport = (label) => {
 export const ipAccess = (label) => {
     switch (label) {
         case perpetual.UNKNOWN:
-            return 0
+            return serverFields.UNKNOWN
         case perpetual.IP_ACCESS_DEDICATED:
-            return 1
+            return serverFields.DEDICATED
         case perpetual.IP_ACCESS_SHARED:
-            return 3
+            return serverFields.SHARED
         default:
             return label
     }
@@ -111,11 +112,11 @@ export const ipAccess = (label) => {
 export const imageType = (label) => {
     switch (label) {
         case perpetual.IMAGE_TYPE_DOCKER:
-            return 1
+            return serverFields.DOCKER
         case perpetual.IMAGE_TYPE_QCOW:
-            return 2
+            return serverFields.QCOW
         case perpetual.IMAGE_TYPE_HELM:
-            return 3
+            return serverFields.HELM
         default:
             return label
     }
@@ -124,11 +125,11 @@ export const imageType = (label) => {
 export const accessType = (label) => {
     switch (label) {
         case perpetual.ACCESS_TYPE_DEFAULT_FOR_DEPLOYMENT:
-            return 0
+            return serverFields.DEFAULT_FOR_DEPLOYMENT
         case perpetual.ACCESS_TYPE_DIRECT:
-            return 1
+            return serverFields.DIRECT
         case perpetual.ACCESS_TYPE_LOAD_BALANCER:
-            return 2
+            return serverFields.LOAD_BALANCER
         default:
             return label
     }
@@ -137,9 +138,9 @@ export const accessType = (label) => {
 export const kind = (label) => {
     switch (label) {
         case perpetual.CONFIG_HELM_CUST:
-            return 'helmCustomizationYaml'
+            return serverFields.HELM_CUSTOMIZATION_YAML
         case perpetual.CONFIG_ENV_VAR:
-            return 'envVarsYaml'
+            return serverFields.ENV_VARS_YAML
         default:
             return label
     }
@@ -148,29 +149,29 @@ export const kind = (label) => {
 export const reportInterval = (label) => {
     switch (label) {
         case perpetual.REPORTER_SCHEDULE_WEEKLY:
-            return 0
+            return serverFields.EVERY_WEEK
         case perpetual.REPORTER_SCHEDULE_15_DAYS:
-            return 1
+            return serverFields.EVERY_15_DAYS
         case perpetual.REPORTER_SCHEDULE_MONTHLY:
-            return 2
+            return serverFields.EVERY_MONTH
         default:
-            return 0
+            return serverFields.UNKNOWN
     }
 }
 
 export const vmAppOS = (label) => {
     switch (label) {
         case perpetual.OS_UNKNOWN:
-            return 0
+            return serverFields.UNKNOWN
         case perpetual.OS_LINUX:
-            return 1
+            return serverFields.LINUX
         case perpetual.OS_WINDOWS_10:
-            return 2
+            return serverFields.WINDOWS_10
         case perpetual.OS_WINDOWS_2012:
-            return 3
+            return serverFields.WINDOWS_2012
         case perpetual.OS_WINDOWS_2016:
-            return 4
+            return serverFields.WINDOWS_2016
         case perpetual.OS_WINDOWS_2019:
-            return 5
+            return serverFields.WINDOWS_2019
     }
 }

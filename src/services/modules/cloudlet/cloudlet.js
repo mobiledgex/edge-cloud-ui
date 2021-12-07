@@ -3,7 +3,7 @@ import * as serverData from '../../model/serverData'
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import * as constant from '../../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util'
-import { idFormatter } from '../../../helper/formatter'
+import { idFormatter, serverFields } from '../../../helper/formatter'
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant'
 import { customize } from '../../modules/cloudlet'
@@ -200,7 +200,7 @@ export const cloudletWithInfo = (mcList, pageId) => {
                         let cloudletInfo = cloudletInfoList[j]
                         if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
                             cloudlet[fields.compatibilityVersion] = cloudletInfo[fields.compatibilityVersion] ? cloudletInfo[fields.compatibilityVersion] : perpetual.CLOUDLET_COMPAT_VERSION_2_4
-                            valid = cloudletInfo[fields.state] === perpetual.STATUS_READY
+                            valid = cloudletInfo[fields.state] === serverFields.READY
                             break;
                         }
                     }

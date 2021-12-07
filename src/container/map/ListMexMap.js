@@ -6,6 +6,7 @@ import { fields } from '../../services/model/format';
 import Legend from './MapLegend'
 import { mapLegendColor, renderSVG } from '../../hoc/mexmap/constant';
 import { perpetual } from '../../helper/constant';
+import { serverFields } from '../../helper/formatter';
 
 const DEFAULT_ZOOM = 3
 
@@ -37,7 +38,7 @@ class ListMexMap extends React.Component {
 
     renderColor = (data) => {
         let colorKey = 0
-        if (data[fields.cloudletStatus] === perpetual.STATUS_READY) {
+        if (data[fields.cloudletStatus] === serverFields.READY) {
             colorKey = 1
         }
         else if (data[fields.cloudletStatus] === perpetual.STATUS_UNDER_MAINTAINANCE) {
@@ -69,7 +70,7 @@ class ListMexMap extends React.Component {
             let maintenance = false;
 
             dataList.map(data => {
-                if (data[fields.cloudletStatus] === perpetual.STATUS_READY) {
+                if (data[fields.cloudletStatus] === serverFields.READY) {
                     online = true
                 }
                 else if (data[fields.cloudletStatus] === perpetual.STATUS_UNDER_MAINTAINANCE) {
