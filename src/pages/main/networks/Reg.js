@@ -40,14 +40,12 @@ class NetworkReg extends React.Component {
 
     regionValueChange = (currentForm, forms, isInit) => {
         let region = currentForm.value;
+        this.updateState({ region })
         if (region) {
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i]
-                if (form.field === fields.operatorName && !redux_org.isAdmin(this)) {
+                if (form.field === fields.operatorName) {
                     this.operatorValueChange(form, forms, isInit)
-                    if (!isInit) {
-                        this.getCloudletInfo(form, forms)
-                    }
                 }
             }
         }
