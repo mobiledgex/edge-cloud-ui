@@ -63,10 +63,10 @@ class AppReg extends Component {
         }
     }
 
-    validateRemoteIP = (form) => {
+    validateRemoteCIDR = (form) => {
         if (form.value && form.value.length > 0) {
-            if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(form.value)) {
-                form.error = 'Remote IP format is invalid (must be between 0.0.0.0 to 255.255.255.255)'
+            if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([0-9]|1[0-9]|2[0-9]|3[0-2]?)$/.test(form.value)) {
+                form.error = 'Remote CIDR format is invalid (must be between 0.0.0.0/0 to 255.255.255.255/32)'
                 return false;
             }
         }
@@ -212,9 +212,11 @@ class AppReg extends Component {
 
     outboundConnectionsForm = () => ([
         { field: fields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp', 'icmp'], update: { edit: true } },
-        { field: fields.ocPort, label: 'Port', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 5, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
-        { field: fields.ocRemoteIP, label: 'Remote IP', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: this.validateRemoteIP },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
+        { field: fields.ocPortMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
+        { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
+        { field: fields.ocPortMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
+        { field: fields.ocRemoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: this.validateRemoteCIDR },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     getOutboundConnectionsForm = (form) => {
@@ -481,9 +483,9 @@ class AppReg extends Component {
             let form = forms[i];
             if (form.uuid === parentForm.uuid) {
                 for (let outboundConnectionForm of form.forms) {
-                    if (outboundConnectionForm.field === fields.ocPort) {
+                    if (outboundConnectionForm.field === fields.ocPortMin || outboundConnectionForm.field === fields.ocPortMax) {
                         outboundConnectionForm.visible = !(currentForm.value === 'icmp')
-                        break;
+                        outboundConnectionForm.value = undefined
                     }
                 }
                 break;
@@ -623,6 +625,8 @@ class AppReg extends Component {
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
                 if (form.uuid) {
+
+                    console.log(form)
                     let uuid = form.uuid;
                     let multiFormData = data[uuid]
                     if (multiFormData) {
@@ -666,11 +670,14 @@ class AppReg extends Component {
                         else if (multiFormData[fields.kind] && multiFormData[fields.config]) {
                             configs.push(multiFormData)
                         }
-                        else if ((multiFormData[fields.ocPort] && multiFormData[fields.ocProtocol] && multiFormData[fields.ocRemoteIP]) || (multiFormData[fields.ocProtocol] && multiFormData[fields.ocRemoteIP])) {
+                        else if (form.field === fields.requiredOutboundConnectionmulti) {
                             let requiredOutboundConnection = {}
-                            requiredOutboundConnection.remote_ip = multiFormData[fields.ocRemoteIP]
-                            if (multiFormData[fields.ocPort]) {
-                                requiredOutboundConnection.port = parseInt(multiFormData[fields.ocPort])
+                            requiredOutboundConnection.remote_cidr = multiFormData[fields.ocRemoteCIDR]
+                            if (multiFormData[fields.ocPortMax]) {
+                                requiredOutboundConnection.port_range_max = parseInt(multiFormData[fields.ocPortMax])
+                            }
+                            if (multiFormData[fields.ocPortMin]) {
+                                requiredOutboundConnection.port_range_min = parseInt(multiFormData[fields.ocPortMin])
                             }
                             requiredOutboundConnection.protocol = multiFormData[fields.ocProtocol]
                             requiredOutboundConnections.push(requiredOutboundConnection)
@@ -1013,12 +1020,16 @@ class AppReg extends Component {
                         if (outboundConnectionsForm.field === fields.ocProtocol) {
                             outboundConnectionsForm.value = requiredOutboundConnection['protocol']
                         }
-                        else if (outboundConnectionsForm.field === fields.ocRemoteIP) {
-                            outboundConnectionsForm.value = requiredOutboundConnection['remote_ip']
+                        else if (outboundConnectionsForm.field === fields.ocRemoteCIDR) {
+                            outboundConnectionsForm.value = requiredOutboundConnection['remote_cidr']
                         }
-                        else if (outboundConnectionsForm.field === fields.ocPort) {
+                        else if (outboundConnectionsForm.field === fields.ocPortMin) {
                             outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
-                            outboundConnectionsForm.value = requiredOutboundConnection['port']
+                            outboundConnectionsForm.value = requiredOutboundConnection['port_range_min']
+                        }
+                        else if (outboundConnectionsForm.field === fields.ocPortMax) {
+                            outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
+                            outboundConnectionsForm.value = requiredOutboundConnection['port_range_max']
                         }
                     }
                     forms.splice(18 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))

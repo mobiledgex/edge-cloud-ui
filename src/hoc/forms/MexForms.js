@@ -247,7 +247,7 @@ const MexForms = (props) => {
                     <Tooltip key={index} title={form.label} aria-label="icon">
                         <IconButton style={form.style} onClick={(e) => { form.onClick(e, form) }}>{getIcon(form.icon)}</IconButton>
                     </Tooltip> :
-                    <IconButton key={index} style={form.style} onClick={(e) => { form.onClick(e, form) }}>{getIcon(form.icon)}</IconButton>
+                    <IconButton key={index} style={form.style} onClick={(e) => { form.onClick(e, form) }} disabled={form.onClick === undefined}>{getIcon(form.icon)}</IconButton>
                 :
                 form.formType === BUTTON ?
                     <MexButton
