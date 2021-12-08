@@ -16,11 +16,11 @@ export const keys = () => ([
     { field: fields.routes, label: 'Routes', serverField: 'routes', sortable: false, visible: false, clickable: true, dataType: perpetual.TYPE_JSON },
 ])
 
-export const getKey = (data, isCreate, isDelete) => {
+export const getKey = (data, isCreate) => {
     let Network = {}
     Network.key = { cloudlet_key: getCloudletKey(data), name: data[fields.networkName] }
     if (isCreate) {
-        Network['connection_type'] = idFormatter.connectionType(data[fields.connectionType])
+        Network.connection_type = idFormatter.connectionType(data[fields.connectionType])
     }
     return ({
         region: data[fields.region],
