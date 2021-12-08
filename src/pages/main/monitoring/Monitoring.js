@@ -17,6 +17,7 @@ import './PageMonitoringStyles.css'
 import './style.css'
 import { fetchOrgList } from './services/service';
 import { equal } from '../../../helper/constant/operators';
+import { NoData } from '../../../helper/formatter/ui';
 
 class Monitoring extends React.Component {
     constructor(props) {
@@ -26,9 +27,11 @@ class Monitoring extends React.Component {
             legends: {},
             selection: { count: 0 },
             refresh: false,
-            organizations: []
+            organizations: [],
+            loading:true
         }
         this._isMounted = false
+        this.count = 0
         //filter resources based on legendList
         this.legendList = {}
     }
@@ -43,7 +46,16 @@ class Monitoring extends React.Component {
         this.updateState({ selection })
     }
 
-    handleDataStateChange = (data) => {
+    handleDataStateChange = (data, init) => {
+        if(init)
+        {
+            this.count = this.count + 1
+            if(this.count === this.state.tools.regions.length)
+            {
+                this.count = 0
+                this.updateState({loading:false})
+            }
+        }
         if (this._isMounted) {
             this.setState(prevState => {
                 let legends = { ...prevState.legends }
@@ -62,9 +74,9 @@ class Monitoring extends React.Component {
         let refresh = this.state.refresh
         let wait = 0
         if (preTools) {
-            if (preTools.moduleId !== tools.moduleId) {
+            if (preTools.moduleId !== tools.moduleId || !equal(preTools.organization, tools.organization)) {
                 //reset components if moduleId change
-                this.updateState({ tools: undefined, legends: {} })
+                this.updateState({ tools: undefined, legends: {}, loading: true })
                 wait = 100
             }
             else if (preTools.search !== tools.search || preTools.stats !== tools.stats || !equal(preTools.visibility, tools.visibility)) {
@@ -76,22 +88,26 @@ class Monitoring extends React.Component {
     }
 
     render() {
-        const { tools, legends, selection, refresh, organizations } = this.state
+        const { tools, legends, selection, refresh, organizations, loading } = this.state
         return (
             <div mex-test="component-monitoring" style={{ position: 'relative' }}>
                 <Card style={{ height: 50, marginBottom: 2 }}>
                     <Toolbar onChange={this.handleToolbarChange} organizations={organizations} />
                 </Card>
-                {tools && tools.organization ? (
-                    <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
-                        {
-                            tools.moduleId === PARENT_CLOUDLET ? <CloudletMonitoring tools={tools} legends={legends} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
-                                tools.moduleId === PARENT_CLUSTER_INST ? <ClusterMonitoring tools={tools} legends={legends} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
-                                    tools.moduleId === PARENT_APP_INST ? <AppMonitoring tools={tools} legends={legends} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
-                                        null
+                {
+                    !loading && Object.keys(legends).length === 0 ? <div className="outer" style={{ height: 'calc(100vh - 106px)' }}><NoData /></div> : <React.Fragment>
+                        {tools && tools.organization ? (
+                            <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
+                                {
+                                    tools.moduleId === PARENT_CLOUDLET ? <CloudletMonitoring tools={tools} legends={legends} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
+                                        tools.moduleId === PARENT_CLUSTER_INST ? <ClusterMonitoring tools={tools} legends={legends} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
+                                            tools.moduleId === PARENT_APP_INST ? <AppMonitoring tools={tools} legends={legends} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
+                                                null
+                                }
+                            </div>
+                        ) : null
                         }
-                    </div>
-                ) : null}
+                    </React.Fragment>}
             </div>
         )
     }

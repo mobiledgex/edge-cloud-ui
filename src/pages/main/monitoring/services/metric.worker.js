@@ -8,7 +8,7 @@ import { convertUnit } from '../helper/unitConvertor';
 import { generateDataset, generateDataset2 } from './chart';
 import { formatData } from '../../../../services/format/format';
 import { fields } from '../../../../services/model/format';
-import { DEPLOYMENT_TYPE_VM, PARENT_APP_INST, PARENT_CLUSTER_INST, PLATFORM_TYPE_OPEN_STACK, PLATFORM_TYPE_VCD } from '../../../../helper/constant/perpetual';
+import { DEPLOYMENT_TYPE_VM, PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST, PLATFORM_TYPE_OPEN_STACK, PLATFORM_TYPE_VCD } from '../../../../helper/constant/perpetual';
 import { CLOUDLET_METRICS_ENDPOINT, APP_INST_METRICS_ENDPOINT, CLUSTER_METRICS_ENDPOINT } from '../../../../helper/constant/endpoint';
 import { processFlavorData, processFlavorSelection } from './flavor';
 
@@ -35,7 +35,6 @@ const avgCalculator = (values, metric, legends) => {
 }
 
 const processData = (worker) => {
-
     const { metric, dataList, region, legends } = worker
     const metricList = metric.keys ? metric.keys : [metric]
     let chartList = []
@@ -65,6 +64,18 @@ const generateKey = (metricKeys, data) => {
         }
     })
     return key.toLowerCase()
+}
+
+const legendField = (parentId)=>{
+    switch(parentId)
+    {
+        case PARENT_APP_INST:
+            return ['app', 'ver', 'cluster']
+        case PARENT_CLUSTER_INST:
+            return ['cluster']
+        case PARENT_CLOUDLET:
+            return ['cloudlet']
+    }
 }
 
 const processData2 = (worker) => {
@@ -123,7 +134,7 @@ const processData2 = (worker) => {
                     }
                     // if(!skip)
                     {
-                    chartData[item.field]['datasets'][key] = generateDataset2(legends[key], tags, item, timezone, values)
+                    chartData[item.field]['datasets'][key] = generateDataset2(legends[key], tags, item, timezone, values, legendField(parentId))
                     }
                 }
             }

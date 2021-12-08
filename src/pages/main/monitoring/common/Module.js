@@ -15,23 +15,31 @@ class Module extends React.Component {
         this._isMounted = false
     }
 
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
     handleLegendStateChange = (resources) => {
-        this.setState(prevState => {
-            let legends = prevState.legends
-            Object.keys(legends).map(legendKey => {
-                if (resources && resources[legendKey]) {
-                    let data = legends[legendKey]
-                    let resourcesKeys = Object.keys(resources[legendKey])
-                    resourcesKeys && resourcesKeys.map(resourceKey => {
-                        data[resourceKey] = data[resourceKey] ? data[resourceKey] : {}
-                        data[resourceKey] = { ...data[resourceKey], ...resources[legendKey][resourceKey] }
-                    })
-                }
+        if (this._isMounted) {
+            this.setState(prevState => {
+                let legends = prevState.legends
+                Object.keys(legends).map(legendKey => {
+                    if (resources && resources[legendKey]) {
+                        let data = legends[legendKey]
+                        let resourcesKeys = Object.keys(resources[legendKey])
+                        resourcesKeys && resourcesKeys.map(resourceKey => {
+                            data[resourceKey] = data[resourceKey] ? data[resourceKey] : {}
+                            data[resourceKey] = { ...data[resourceKey], ...resources[legendKey][resourceKey] }
+                        })
+                    }
+                })
+                return { legends }
+            }, () => {
+                this.props.handleDataStateChange(this.state.legends)
             })
-            return { legends }
-        }, ()=>{
-            this.props.handleDataStateChange(this.state.legends)
-        })
+        }
     }
 
     render() {
@@ -49,14 +57,19 @@ class Module extends React.Component {
         if (data) {
             const { legends, legendList } = data
             this.legendList = legendList
-            this.props.handleDataStateChange(legends)
-            this.setState({ legends })
+            this.props.handleDataStateChange(legends, true)
+            this.updateState({ legends })
         }
     }
 
     componentDidMount() {
         this._isMounted = true
         this.fetchLegends()
+    }
+
+    componentWillUnmount()
+    {
+        this._isMounted = false  
     }
 }
 

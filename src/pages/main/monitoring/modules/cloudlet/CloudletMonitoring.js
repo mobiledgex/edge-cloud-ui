@@ -37,14 +37,19 @@ class CloudletMonitoring extends React.Component {
                 </div>
                 <div id='resource-block' className="block block-2">
                     <ImageList cols={4} rowHeight={300} >
-                        <ImageListItem cols={3}>
-                            <Map moduleId={moduleId} search={search} regions={regions} data={legends} selection={selection} refresh={refresh} />
-                        </ImageListItem>
-                        <ImageListItem cols={1}>
-                            <Card style={{ height: 300 }}>
-                                <CloudletEvent range={range} />
-                            </Card>
-                        </ImageListItem>
+                        {
+                            visibility.includes(fields.map) ? <ImageListItem cols={3}>
+                                <Map moduleId={moduleId} search={search} regions={regions} data={legends} selection={selection} refresh={refresh} />
+                            </ImageListItem> : null
+                        }
+                        {
+                            visibility.includes(fields.event) ?
+                                <ImageListItem cols={1}>
+                                    <Card style={{ height: 300 }}>
+                                        <CloudletEvent range={range} />
+                                    </Card>
+                                </ImageListItem> : null
+                        }
                         {regions.map(region => (
                             <Module key={region} region={region} moduleId={moduleId} visibility={visibility} search={search} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} />
                         ))}

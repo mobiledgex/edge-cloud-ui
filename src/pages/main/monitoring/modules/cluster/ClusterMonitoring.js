@@ -22,9 +22,11 @@ class ClusterMonitoring extends React.Component {
                 </div>
                 <div id='resource-block' className="block block-2">
                     <ImageList cols={4} rowHeight={300} >
-                        <ImageListItem cols={4}>
-                            <Map moduleId={moduleId} search={search}  regions={regions} data={legends} selection={selection} refresh={refresh} />
-                        </ImageListItem>
+                        {
+                            visibility.includes(fields.map) ? <ImageListItem cols={4}>
+                                <Map moduleId={moduleId} search={search} regions={regions} data={legends} selection={selection} refresh={refresh} />
+                            </ImageListItem> : null
+                        }
                         {tools.regions.map(region => (
                             <Module key={region} region={region} moduleId={moduleId} search={search} visibility={visibility} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} />
                         ))}
