@@ -95,6 +95,7 @@ const processData2 = (worker) => {
                 count++
             }
             let key = generateKey(metricKeys, { ...tags, region : region.toLowerCase() })
+
             let legend = legends[key]
             if (legend) {
                 for (let item of metricList) {

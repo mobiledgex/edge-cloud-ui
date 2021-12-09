@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef } from 'react'
 import { useSelector } from "react-redux";
-import { Box, Toolbar, Typography, Grid, Divider } from '@material-ui/core';
+import { Card, Box, Toolbar, Typography, Grid, Divider } from '@material-ui/core';
 import { lightGreen } from '@material-ui/core/colors';
 import SearchFilter from '../../../../hoc/filter/SearchFilter';
 import * as dateUtil from '../../../../utils/date_util'
@@ -221,30 +221,34 @@ const MexToolbar = (props) => {
     }
 
     return (
-        <Toolbar>
-            <Typography variant={'h5'} className='monitoring-header'>Monitoring</Typography>
-            <div style={{ width: '100%' }}>
-                <Box display="flex" justifyContent="flex-end">
-                    {value && value.organization ?
-                        <React.Fragment>
-                            <Box order={8}>
-                                <Refresh onUpdate={onUpdate} value={value} refreshRange={refreshRange} setRefreshRange={setRefreshRange} />
-                            </Box>
-                            <Box order={7} p={0.9}>
-                                <SearchFilter onFilter={(value) => { onUpdate({ search: value }) }} compact={true} insensitive={true} />
-                            </Box>
-                            <Visibility order={6} value={value} onUpdate={onUpdate} />
-                            <Region order={5} value={value} onUpdate={onUpdate} />
-                            <Box order={4} p={1.2}>
-                                <DateTimePicker onUpdate={onUpdate} value={value} setRefreshRange={setRefreshRange} />
-                            </Box>
-                            <Statistics order={3} value={value} onUpdate={onUpdate} />
-                            <Module order={2} value={value} onUpdate={onUpdate} />
-                        </React.Fragment> : null}
-                    <Organization order={1} dataList={organizations} onUpdate={onUpdate} />
-                </Box>
-            </div>
-        </Toolbar>
+        <React.Fragment>
+            <Card style={{ height: 50, marginBottom: 2 }}>
+                <Toolbar>
+                    <Typography variant={'h5'} className='monitoring-header'>Monitoring</Typography>
+                    <div style={{ width: '100%' }}>
+                        <Box display="flex" justifyContent="flex-end">
+                            {value && value.organization ?
+                                <React.Fragment>
+                                    <Box order={8}>
+                                        <Refresh onUpdate={onUpdate} value={value} refreshRange={refreshRange} setRefreshRange={setRefreshRange} />
+                                    </Box>
+                                    <Box order={7} p={0.9}>
+                                        <SearchFilter onFilter={(value) => { onUpdate({ search: value }) }} compact={true} insensitive={true} />
+                                    </Box>
+                                    <Visibility order={6} value={value} onUpdate={onUpdate} />
+                                    <Region order={5} value={value} onUpdate={onUpdate} />
+                                    <Box order={4} p={1.2}>
+                                        <DateTimePicker onUpdate={onUpdate} value={value} setRefreshRange={setRefreshRange} />
+                                    </Box>
+                                    <Statistics order={3} value={value} onUpdate={onUpdate} />
+                                    <Module order={2} value={value} onUpdate={onUpdate} />
+                                </React.Fragment> : null}
+                            <Organization order={1} dataList={organizations} onUpdate={onUpdate} />
+                        </Box>
+                    </div>
+                </Toolbar>
+            </Card>
+        </React.Fragment>
     )
 }
 
