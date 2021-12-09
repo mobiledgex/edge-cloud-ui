@@ -12,21 +12,23 @@ class ClusterMonitoring extends React.Component {
 
 
     render() {
-        const { tools, legends, selection, refresh, handleDataStateChange, handleSelectionStateChange } = this.props
+        const { tools, legends, selection, refresh, handleDataStateChange, loading, handleSelectionStateChange, metricRequestData } = this.props
         const { moduleId, search, regions, organization, visibility, range } = tools
         return (
             <React.Fragment>
-                <Legend tools={tools} data={legends} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} sortBy={[fields.clusterName]}/>
+                <Legend tools={tools} data={legends} loading={loading} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} sortBy={[fields.clusterName]}/>
                 <div style={{ position: 'relative', height: 4 }}>
                     <DragButton height={400} />
                 </div>
                 <div id='resource-block' className="block block-2">
                     <ImageList cols={4} rowHeight={300} >
-                        <ImageListItem cols={4}>
-                            <Map moduleId={moduleId} search={search}  regions={regions} data={legends} selection={selection} refresh={refresh} />
-                        </ImageListItem>
+                        {
+                            visibility.includes(fields.map) ? <ImageListItem cols={4}>
+                                <Map moduleId={moduleId} search={search} regions={regions} data={legends} selection={selection} zoom={2} />
+                            </ImageListItem> : null
+                        }
                         {tools.regions.map(region => (
-                            <Module key={region} region={region} moduleId={moduleId} search={search} visibility={visibility} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} />
+                            legends && legends[region] ? <Module key={region} region={region} legends={legends[region]} metricRequestData={metricRequestData[region]} moduleId={moduleId} visibility={visibility} search={search} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} /> : null
                         ))}
                     </ImageList>
                 </div>
