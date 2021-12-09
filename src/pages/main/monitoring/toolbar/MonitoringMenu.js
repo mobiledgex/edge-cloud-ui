@@ -41,7 +41,7 @@ const MonitoringMenu = (props) => {
     useEffect(() => {
         setList(props.data)
         setValue(disableDefault ? undefined : props.default ? props.default : (props.value ? props.value : (multiple ? fetchArray(props) : props.data[0])))
-    }, [props.data]);
+    }, [props.data, props.default]);
 
     const onChange = (data) => {
         if (multiple) {

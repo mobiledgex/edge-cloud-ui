@@ -136,7 +136,6 @@ const Region = (props) => {
     const onChange = (value) => {
         onUpdate({ regions: value })
     }
-
     return (
         <MonitoringMenu order={order} data={regions} default={value.regions} onChange={onChange} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} />
     )
@@ -156,6 +155,7 @@ const Visibility = (props) => {
 const Organization = (props) => {
     const { order, dataList, onUpdate } = props
     const orgInfo = useSelector(state => state.organizationInfo.data)
+    const regions = useSelector(state => state.regionInfo.region)
 
     useEffect(() => {
         onChange(orgInfo)
@@ -165,7 +165,7 @@ const Organization = (props) => {
     const onChange = (value) => {
         if (!redux_org.isAdmin(value)) {
             let moduleId = value[fields.type] === DEVELOPER ? PARENT_APP_INST : PARENT_CLOUDLET
-            onUpdate({ organization: value, moduleId, visibility: preVisibility(moduleId, value) })
+            onUpdate({ organization: value, moduleId, visibility: preVisibility(moduleId, value), regions: monitoringPref(orgInfo, PREF_M_REGION) ? monitoringPref(orgInfo, PREF_M_REGION) : regions })
         }
     }
 

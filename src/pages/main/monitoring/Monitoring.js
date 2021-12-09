@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom';
-import { Card } from '@material-ui/core'
 import * as actions from '../../../actions';
 import { redux_org } from '../../../helper/reduxData';
 
