@@ -9,7 +9,7 @@ export const pages = [
     { label: 'Accounts', icon: 'dvr', id: perpetual.PAGE_ACCOUNTS, path: 'accounts', roles: [perpetual.ADMIN], visible: true },
     { divider: true },
     { label: 'Cloudlets', icon: 'cloud_queue', id: perpetual.PAGE_CLOUDLETS, path: 'cloudlets', visible: true },
-    { label: 'Networks', icon: 'cloud_queue', id: perpetual.PAGE_NETWORKS, path: 'networks', visible: true },
+    { label: 'Networks', icon: 'podcasts', id: perpetual.PAGE_NETWORKS, path: 'networks', visible: true },
     { label: 'Cloudlet Pools', icon: 'cloud_circle', id: perpetual.PAGE_CLOUDLET_POOLS, path: 'cloudlet-pools', roles: [perpetual.ADMIN, perpetual.OPERATOR], visible: true },
     { label: 'Cloudlet Pools', icon: 'cloud_circle', id: perpetual.PAGE_POOL_ACCESS, path: 'pool-access', roles: [perpetual.DEVELOPER_MANAGER], visible: true },
     { label: 'Flavors', icon: 'free_breakfast', id: perpetual.PAGE_FLAVORS, path: 'flavors', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
