@@ -28,6 +28,7 @@ import { customize as appInstUsage } from '../modules/appInstUsage/custom';
 import { customize as clusterInstUsage } from '../modules/clusterInstUsage/custom';
 import { customize as gpuDriver } from '../modules/gpudriver/custom';
 import { customize as alertPolicy } from '../modules/alertPolicy/custom';
+import { customize as network } from '../modules/network/custom';
 
 import { formatShowData } from './show';
 import { formatChargifyData } from './chargify';
@@ -35,7 +36,6 @@ import { formatAlertData } from './alert';
 import { formatBillingData, formatMetricData, formatMetricUsageData } from './event';
 import { formatUsageData } from './usage';
 import { formatCloudletPropsData } from './cloudletProps';
-import { customize as network } from '../modules/network/custom';
 
 export const formatData = (request, response, self = null) => {
     let data = undefined

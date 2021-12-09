@@ -16,12 +16,9 @@ class NetworkList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentView: null,
-            dialogMessageInfo: {}
+            currentView: null
         }
         this._isMounted = false;
-        this.action = '';
-        this.data = {};
         this.keys = keys();
     }
 
@@ -58,7 +55,7 @@ class NetworkList extends React.Component {
     }
 
     canAdd = () => {
-        if (role.validateRole(operatorRoles, this.props.organizationInfo) && !(redux_org.isOperator(this) && redux_org.edgeboxOnly(this))) {
+        if (role.validateRole(operatorRoles, this.props.organizationInfo)) {
             return this.onAdd
         }
     }
@@ -78,13 +75,6 @@ class NetworkList extends React.Component {
         })
     }
 
-    /**
-    * Customized data block
-    * ** */
-    componentDidMount() {
-        this._isMounted = true
-    }
-
     render() {
         const { currentView } = this.state
         return (
@@ -92,6 +82,10 @@ class NetworkList extends React.Component {
                 <DataView currentView={currentView} resetView={this.resetView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
             </React.Fragment>
         )
+    }
+
+    componentDidMount() {
+        this._isMounted = true
     }
 
     componentWillUnmount() {
