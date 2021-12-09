@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef } from 'react'
 import { useSelector } from "react-redux";
-import { Box, Toolbar, Typography, Grid, Divider } from '@material-ui/core';
+import { Card, Box, Toolbar, Typography, Grid, Divider } from '@material-ui/core';
 import { lightGreen } from '@material-ui/core/colors';
 import SearchFilter from '../../../../hoc/filter/SearchFilter';
 import * as dateUtil from '../../../../utils/date_util'
@@ -136,7 +136,6 @@ const Region = (props) => {
     const onChange = (value) => {
         onUpdate({ regions: value })
     }
-
     return (
         <MonitoringMenu order={order} data={regions} default={value.regions} onChange={onChange} multiple={true} icon={<PublicOutlinedIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />} />
     )
@@ -156,6 +155,7 @@ const Visibility = (props) => {
 const Organization = (props) => {
     const { order, dataList, onUpdate } = props
     const orgInfo = useSelector(state => state.organizationInfo.data)
+    const regions = useSelector(state => state.regionInfo.region)
 
     useEffect(() => {
         onChange(orgInfo)
@@ -165,7 +165,7 @@ const Organization = (props) => {
     const onChange = (value) => {
         if (!redux_org.isAdmin(value)) {
             let moduleId = value[fields.type] === DEVELOPER ? PARENT_APP_INST : PARENT_CLOUDLET
-            onUpdate({ organization: value, moduleId, visibility: preVisibility(moduleId, value) })
+            onUpdate({ organization: value, moduleId, visibility: preVisibility(moduleId, value), regions: monitoringPref(orgInfo, PREF_M_REGION) ? monitoringPref(orgInfo, PREF_M_REGION) : regions })
         }
     }
 
@@ -221,30 +221,34 @@ const MexToolbar = (props) => {
     }
 
     return (
-        <Toolbar>
-            <Typography variant={'h5'} className='monitoring-header'>Monitoring</Typography>
-            <div style={{ width: '100%' }}>
-                <Box display="flex" justifyContent="flex-end">
-                    {value && value.organization ?
-                        <React.Fragment>
-                            <Box order={8}>
-                                <Refresh onUpdate={onUpdate} value={value} refreshRange={refreshRange} setRefreshRange={setRefreshRange} />
-                            </Box>
-                            <Box order={7} p={0.9}>
-                                <SearchFilter onFilter={(value) => { onUpdate({ search: value }) }} compact={true} insensitive={true} />
-                            </Box>
-                            <Visibility order={6} value={value} onUpdate={onUpdate} />
-                            <Region order={5} value={value} onUpdate={onUpdate} />
-                            <Box order={4} p={1.2}>
-                                <DateTimePicker onUpdate={onUpdate} value={value} setRefreshRange={setRefreshRange} />
-                            </Box>
-                            <Statistics order={3} value={value} onUpdate={onUpdate} />
-                            <Module order={2} value={value} onUpdate={onUpdate} />
-                        </React.Fragment> : null}
-                    <Organization order={1} dataList={organizations} onUpdate={onUpdate} />
-                </Box>
-            </div>
-        </Toolbar>
+        <React.Fragment>
+            <Card style={{ height: 50, marginBottom: 2 }}>
+                <Toolbar>
+                    <Typography variant={'h5'} className='monitoring-header'>Monitoring</Typography>
+                    <div style={{ width: '100%' }}>
+                        <Box display="flex" justifyContent="flex-end">
+                            {value && value.organization ?
+                                <React.Fragment>
+                                    <Box order={8}>
+                                        <Refresh onUpdate={onUpdate} value={value} refreshRange={refreshRange} setRefreshRange={setRefreshRange} />
+                                    </Box>
+                                    <Box order={7} p={0.9}>
+                                        <SearchFilter onFilter={(value) => { onUpdate({ search: value }) }} compact={true} insensitive={true} />
+                                    </Box>
+                                    <Visibility order={6} value={value} onUpdate={onUpdate} />
+                                    <Region order={5} value={value} onUpdate={onUpdate} />
+                                    <Box order={4} p={1.2}>
+                                        <DateTimePicker onUpdate={onUpdate} value={value} setRefreshRange={setRefreshRange} />
+                                    </Box>
+                                    <Statistics order={3} value={value} onUpdate={onUpdate} />
+                                    <Module order={2} value={value} onUpdate={onUpdate} />
+                                </React.Fragment> : null}
+                            <Organization order={1} dataList={organizations} onUpdate={onUpdate} />
+                        </Box>
+                    </div>
+                </Toolbar>
+            </Card>
+        </React.Fragment>
     )
 }
 

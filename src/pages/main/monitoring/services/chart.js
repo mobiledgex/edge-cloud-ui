@@ -51,7 +51,14 @@ export const generateDataset = (chartData, values, avgData, timezone, labelPosit
     return datasets
 }
 
-export const generateDataset2 = (legend, tags, metric, timezone, dataList) => {
+export const generateDataset2 = (legend, tags, metric, timezone, dataList, legendField) => {
+    let label = ''
+    legendField.forEach((item, i) => {
+        if(tags[item])
+        {
+            label = `${label} ${i>0 ? '[' : ''}${tags[item]}${i>0 ? ']' : ''}`
+        }
+    })
     let dataset = {}
     if (dataList && dataList.length > 0) {
         const { position, steppedLine } = metric
@@ -67,7 +74,7 @@ export const generateDataset2 = (legend, tags, metric, timezone, dataList) => {
         }
 
         dataset = {
-            label: tags['flavorName'],
+            label,
             fill: false,
             lineTension: 0.5,
             steppedLine: steppedLine ? steppedLine : false,
