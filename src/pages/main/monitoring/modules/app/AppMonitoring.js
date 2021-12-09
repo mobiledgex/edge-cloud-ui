@@ -43,11 +43,11 @@ class AppMonitoring extends React.Component {
 
     render() {
         const { actionView } = this.state
-        const { tools, legends, selection, refresh, handleDataStateChange, handleSelectionStateChange } = this.props
+        const { tools, legends, metricRequestData, loading, selection, handleDataStateChange, handleSelectionStateChange } = this.props
         const { moduleId, regions, search, range, organization, visibility } = tools
         return (
             <React.Fragment>
-                <Legend tools={tools} data={legends} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} groupBy={[fields.appName, fields.version]} />
+                <Legend tools={tools} data={legends} loading={loading} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} groupBy={[fields.appName, fields.version]} />
                 <div style={{ position: 'relative', height: 4 }}>
                     <DragButton height={400} />
                 </div>
@@ -63,7 +63,7 @@ class AppMonitoring extends React.Component {
                         }
                         {
                             visibility.includes(fields.map) ? <ImageListItem cols={2}>
-                                <Map moduleId={moduleId} search={search} regions={regions} data={legends} selection={selection} refresh={refresh} zoom={2} />
+                                <Map moduleId={moduleId} search={search} regions={regions} data={legends} selection={selection} zoom={2} />
                             </ImageListItem> : null
                         }
                         {
@@ -75,7 +75,7 @@ class AppMonitoring extends React.Component {
                                 </ImageListItem> : null
                         }
                         {regions.map(region => (
-                            <Module key={region} region={region} moduleId={moduleId} search={search} visibility={visibility} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} />
+                            legends && legends[region] ? <Module key={region} region={region} legends={legends[region]} metricRequestData={metricRequestData[region]} moduleId={moduleId} visibility={visibility} search={search} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} /> : null
                         ))}
                     </ImageList>
                     {actionView && actionView.id === perpetual.ACTION_LATENCY_METRICS ? <DMEMetrics group={false} id={moduleId} onClose={() => { this.setState({ actionView: undefined }) }} data={[actionView.data]} /> : null}

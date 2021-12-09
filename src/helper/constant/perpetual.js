@@ -1,6 +1,5 @@
 
 export const MOBILEDGEX = 'MobiledgeX'
-export const STATUS_READY = 2
 export const STATUS_UNDER_MAINTAINANCE = 999
 
 export const COLOR_GREEN = '#388E3C'
@@ -107,6 +106,7 @@ export const PLATFORM_TYPE_AWS_EC2 = 'AWS EC2'
 export const PLATFORM_TYPE_VCD = 'VCD'
 export const PLATFORM_TYPE_K8S_BARE_METAL = 'K8S Bare Metal'
 export const PLATFORM_TYPE_KIND = 'Kind'
+export const PLATFORM_TYPE_FEDERATION = 'Federation'
 
 export const MAINTENANCE_STATE_NORMAL_OPERATION = 'Normal Operation'
 export const MAINTENANCE_STATE_MAINTENANCE_START = 'Maintenance Start'
@@ -204,8 +204,6 @@ export const OS_WINDOWS_2019 = 'Windows 2019'
 
 export const BILLING_TYPE_SELF = 'self'
 export const BILLING_TYPE_PARENT = 'parent'
-export const CLOUDLET_STATUS_READY = 2
-export const CLOUDLET_STATUS_UNKNOWN = 0
 
 export const REPORTER_SCHEDULE_WEEKLY = 'Every Week'
 export const REPORTER_SCHEDULE_15_DAYS = 'Every 15 Days'
