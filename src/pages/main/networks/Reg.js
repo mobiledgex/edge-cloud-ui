@@ -8,7 +8,7 @@ import { redux_org } from '../../../helper/reduxData'
 //model
 import { service, fields } from '../../../services';
 import { createNetwork, updateNetwork } from '../../../services/modules/network';
-import { HELP_NETWORK_REG } from "../../../tutorial";
+import { HELP_NETWORK_LIST } from "../../../tutorial";
 
 import { Grid } from '@material-ui/core';
 import { perpetual } from '../../../helper/constant';
@@ -237,7 +237,7 @@ class NetworkReg extends React.Component {
     componentDidMount() {
         this._isMounted = true
         this.getFormData(this.props.data)
-        this.props.handleViewMode(HELP_NETWORK_REG)
+        this.props.handleViewMode(HELP_NETWORK_LIST)
     }
 
     componentWillUnmount() {

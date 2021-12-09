@@ -8,7 +8,7 @@ import { redux_org } from '../../../helper/reduxData'
 import { fields } from '../../../services/model/format';
 import NetworkReg from './Reg';
 import { operatorRoles } from '../../../constant'
-import { HELP_NETWORK_REG } from "../../../tutorial";
+import { HELP_NETWORK_LIST } from "../../../tutorial";
 import { perpetual, role } from '../../../helper/constant';
 import { deleteNetwork, showNetwork, keys } from '../../../services/modules/network'
 
@@ -74,7 +74,7 @@ class NetworkList extends React.Component {
             sortBy: [fields.region, fields.networkName],
             keys: this.keys,
             onAdd: this.canAdd(),
-            viewMode: HELP_NETWORK_REG
+            viewMode: HELP_NETWORK_LIST
         })
     }
 
