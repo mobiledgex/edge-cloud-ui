@@ -12,20 +12,19 @@ import { HELP_NETWORK_LIST } from "../../../tutorial";
 
 import { Grid } from '@material-ui/core';
 import { perpetual } from '../../../helper/constant';
-import { getOrganizationList } from '../../../services/modules/organization';
 import { showCloudlets } from '../../../services/modules/cloudlet';
+
 class NetworkReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             forms: [],
-            region: undefined,
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
         this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         //To avoid refeching data from server
-        this.operatorList = [];
+        this.requestedRegionList = []
         this.cloudletList = []
 
     }
@@ -36,60 +35,45 @@ class NetworkReg extends React.Component {
         }
     }
 
-    regionValueChange = (currentForm, forms, isInit) => {
-        let region = currentForm.value;
-        this.updateState({ region })
-        if (region) {
-            for (let i = 0; i < forms.length; i++) {
-                let form = forms[i]
-                if (form.field === fields.operatorName) {
-                    this.operatorValueChange(form, forms, isInit)
-                }
-            }
+    getCloudletInfo = async (region, form, forms) => {
+        if (!this.requestedRegionList.includes(region)) {
+            this.cloudletList = [...this.cloudletList, ...await service.showAuthSyncRequest(this, showCloudlets(this, { region }))]
         }
+        this.updateUI(form)
+        this.updateState({ forms })
     }
 
     operatorValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
+        for (let form of forms) {
             if (form.field === fields.cloudletName) {
                 this.updateUI(form)
                 if (!isInit) {
-                    this.getCloudletInfo(form, forms)
                     this.updateState({ forms })
                 }
+                break;
             }
         }
     }
 
-    getCloudletInfo = async (form, forms) => {
-        let region = undefined;
-        let operatorName = undefined;
-        for (let i = 0; i < forms.length; i++) {
-            let tempForm = forms[i]
-            if (tempForm.field === fields.region) {
-                region = tempForm.value
+    regionValueChange = (currentForm, forms, isInit) => {
+        let region = currentForm.value;
+        if (region) {
+            for (let form of forms) {
+                if (form.field === fields.operatorName) {
+                    if (!isInit) {
+                        this.getCloudletInfo(region, form, forms)
+                    }
+                }
             }
-            else if (tempForm.field === fields.operatorName) {
-                operatorName = tempForm.value
-            }
+            this.requestedRegionList.push(region);
         }
-        if (region && operatorName) {
-            let requestData = { cloudlet: { key: { organization: operatorName } }, region }
-            this.props.handleLoadingSpinner(true)
-            let mcList = await service.showAuthSyncRequest(this, showCloudlets(this, requestData, true))
-            this.cloudletList = mcList.map(org => (org[fields.cloudletName]))
-            this.props.handleLoadingSpinner(false)
-            this.updateUI(form)
-            this.updateState({ forms })
-        }
-
     }
+
     checkForms = (form, forms, isInit = false) => {
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
         }
-        if (form.field === fields.operatorName) {
+        else if (form.field === fields.operatorName) {
             this.operatorValueChange(form, forms, isInit)
         }
     }
@@ -165,7 +149,7 @@ class NetworkReg extends React.Component {
                 if (form.formType === SELECT || form.formType === MULTI_SELECT) {
                     switch (form.field) {
                         case fields.operatorName:
-                            form.options = this.operatorList
+                            form.options = this.cloudletList
                             break;
                         case fields.region:
                             form.options = this.regions;
@@ -188,8 +172,8 @@ class NetworkReg extends React.Component {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Network`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to Network.', update: { key: true } },
-            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the cloudlet site', update: { key: true } },
-            { field: fields.cloudletName, label: 'Cloudlet Name', formType: SELECT, placeholder: 'Select Cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true } },
+            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), dependentData: [{ index: 1, field: fields.region }], tip: 'Organization of the cloudlet site', update: { key: true } },
+            { field: fields.cloudletName, label: 'Cloudlet Name', formType: SELECT, placeholder: 'Select Cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true }, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.operatorName }] },
             { field: fields.networkName, label: 'Network Name', formType: INPUT, placeholder: 'Enter Network Name', rules: { required: true }, visible: true, update: { key: true } },
             { field: fields.connectionType, label: 'Connection Type', formType: SELECT, placeholder: 'Enter Connection Type', rules: { required: true }, visible: true, update: { key: true } }
         ]
@@ -200,10 +184,7 @@ class NetworkReg extends React.Component {
             let form = forms[i]
             this.updateUI(form)
             if (data) {
-                if (form.field === fields.envVars && data[fields.envVars] === undefined) {
-                    form.visible = false;
-                }
-                else if (form.forms && form.formType !== HEADER && form.formType !== MULTI_FORM) {
+               if (form.forms && form.formType !== HEADER && form.formType !== MULTI_FORM) {
                     this.updateFormData(form.forms, data)
                 }
                 else {
@@ -220,10 +201,6 @@ class NetworkReg extends React.Component {
 
     getFormData = async (data) => {
         let forms = this.formKeys()
-        let orgList = await getOrganizationList(this, { type: perpetual.OPERATOR })
-        this.operatorList = orgList.map(org => {
-            return org[fields.organizationName]
-        })
         forms.push(
             { label: this.isUpdate ? 'Update' : 'Create', formType: 'Button', onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
