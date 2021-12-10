@@ -24,6 +24,7 @@ import BillingOrg from './billing/billingOrg/BillingOrg';
 import Invoices from './billing/invoices/Invoices';
 import Reporter from './reporter/Reporter';
 import GPUDriver from './gpudriver/GPUDriver';
+import Networks from './networks/Networks';
 import * as constant from '../../constant';
 import { perpetual, role } from '../../helper/constant';
 
@@ -69,6 +70,8 @@ const renderPage = (id) => {
             return Reporter
         case perpetual.PAGE_GPU_DRIVER:
             return GPUDriver
+        case perpetual.PAGE_NETWORKS:
+            return Networks
     }
 }
 
