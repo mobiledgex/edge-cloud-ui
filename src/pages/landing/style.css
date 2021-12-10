@@ -1,0 +1,12 @@
+#terms {
+    font-size: 15px;
+    background-color: #ffffff;
+}
+#terms h4{
+    color: #273c43 !important;
+}
+#terms p{
+    line-height: 1.8em !important;
+    padding: 0.3rem;
+    color: #273c43 !important;
+}
