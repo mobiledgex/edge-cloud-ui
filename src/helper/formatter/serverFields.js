@@ -72,4 +72,8 @@ export const MAINTENANCE_START = 'MaintainanceStart'
 export const MAINTENANCE_START_NO_FAILOVER = 'MaintainanceStartNoFailOver'
 export const HELM_CUSTOMIZATION_YAML = 'helmCustomizationYaml'
 export const ENV_VARS_YAML = 'envVarsYaml'
+export const CONNECT_TO_CLUSTER_NODES = 'ConnectToClusterNodes'
+export const CONNECT_TO_LOAD_BALANCER  = 'ConnectToLoadBalancer'
+export const CONNECT_TO_ALL = 'ConnectToAll'
+export const CONNECTION_UNDEFINED = 'ConnectionUndefined'
 
