@@ -74,7 +74,7 @@ class NetworkReg extends React.Component {
                     break;
                 }
             }
-            this.requestedRegionList.push(region);
+            this.requestedRegionList.includes(region) ? this.requestedRegionList : this.requestedRegionList.push(region)
         }
     }
 
@@ -181,7 +181,7 @@ class NetworkReg extends React.Component {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Network`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to Network.', update: { key: true } },
-            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), dependentData: [{ index: 1, field: fields.region }], tip: 'Organization of the cloudlet site', update: { key: true } },
+            { field: fields.operatorName, label: 'Operator', formType: redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), dependentData: [{ index: 1, field: fields.region }], tip: 'Organization of the cloudlet site', update: { key: true } },
             { field: fields.cloudletName, label: 'Cloudlet Name', formType: SELECT, placeholder: 'Select Cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true }, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.operatorName }] },
             { field: fields.networkName, label: 'Network Name', formType: INPUT, placeholder: 'Enter Network Name', rules: { required: true }, visible: true, update: { key: true } },
             { field: fields.connectionType, label: 'Connection Type', formType: SELECT, placeholder: 'Enter Connection Type', rules: { required: true }, visible: true, update: { key: true } }
@@ -202,7 +202,6 @@ class NetworkReg extends React.Component {
                 }
             }
         }
-
     }
     onAddCancel = () => {
         this.props.onClose(false)
