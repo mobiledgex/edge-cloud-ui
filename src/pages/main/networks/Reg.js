@@ -40,6 +40,14 @@ class NetworkReg extends React.Component {
             this.cloudletList = [...this.cloudletList, ...await service.showAuthSyncRequest(this, showCloudlets(this, { region }))]
         }
         this.updateUI(form)
+        if (redux_org.isOperator(this)) {
+            for (let form of forms) {
+                if (form.field === fields.cloudletName) {
+                    this.updateUI(form)
+                    break;
+                }
+            }
+        }
         this.updateState({ forms })
     }
 
@@ -63,6 +71,7 @@ class NetworkReg extends React.Component {
                     if (!isInit) {
                         this.getCloudletInfo(region, form, forms)
                     }
+                    break;
                 }
             }
             this.requestedRegionList.push(region);
@@ -189,7 +198,7 @@ class NetworkReg extends React.Component {
                 }
                 else {
                     form.value = data[form.field]
-                    this.checkForms(form, forms, true, data)
+                    this.checkForms(form, forms, true)
                 }
             }
         }
