@@ -12,7 +12,7 @@ export const keys = () => ([
     { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', label: 'Cloudlet', sortable: true, visible: true, filter: true, key: true },
     { field: fields.operatorName, label: 'Organization', serverField: 'key#OS#cloudlet_key#OS#organization', sortable: false, visible: true, clickable: true },
     { field: fields.connectionType, label: 'Connection Type', serverField: 'connection_type', sortable: false, visible: false, clickable: true },
-    { field: fields.routes, label: 'Routes', serverField: 'routes', sortable: false, visible: false, clickable: true, dataType: perpetual.TYPE_JSON },
+    { field: fields.accessRoutes, abel: 'Routes', serverField: 'routes', sortable: false, visible: false, clickable: true, dataType: perpetual.TYPE_JSON },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: operatorRoles }
 ])
 
@@ -21,6 +21,12 @@ export const getKey = (data, isCreate) => {
     Network.key = { cloudlet_key: getCloudletKey(data), name: data[fields.networkName] }
     if (isCreate) {
         Network.connection_type = idFormatter.connectionType(data[fields.connectionType])
+        if (data[fields.fields]) {
+            Network.fields = data[fields.fields]
+        }
+        if (data[fields.accessRoutes]) {
+            Network.routes = data[fields.accessRoutes]
+        }
     }
     return ({
         region: data[fields.region],
@@ -46,5 +52,5 @@ export const updateNetwork = async (self, data) => {
 
 export const deleteNetwork = (self, data) => {
     let requestData = getKey(data)
-    return { method: endpoint.DELETE_NETWORK, data: requestData, success: `Network ${data[fields.networkName]} deleted successfully` }
+    return { method: endpoint.DELETE_NETWORKS, data: requestData, success: `Network ${data[fields.networkName]} deleted successfully` }
 }
