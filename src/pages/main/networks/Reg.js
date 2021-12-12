@@ -278,7 +278,6 @@ class NetworkReg extends React.Component {
     }
 
     loadDefaultData = (forms, data) => {
-        if (data) {
             let multiFormCount = 0
             if (data[fields.accessRoutes]) {
                 let routeArray = data[fields.accessRoutes]
@@ -306,7 +305,6 @@ class NetworkReg extends React.Component {
                     this.checkForms(form, forms, true)
                 }
             }
-        }
     }
 
     getFormData = async (data) => {
@@ -314,8 +312,9 @@ class NetworkReg extends React.Component {
         forms.push(
             { label: this.isUpdate ? 'Update' : 'Create', formType: 'Button', onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
-
-        this.loadDefaultData(forms, data)
+        if (data) {
+            await this.loadDefaultData(forms, data)
+        }
         this.updateFormData(forms, data)
         this.updateState({
             forms
