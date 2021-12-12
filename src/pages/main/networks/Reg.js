@@ -278,14 +278,6 @@ class NetworkReg extends React.Component {
     }
 
     loadDefaultData = (forms, data) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            this.updateUI(form)
-            if (data) {
-                form.value = data[form.field]
-                this.checkForms(form, forms, true)
-            }
-        }
         if (data) {
             let multiFormCount = 0
             if (data[fields.accessRoutes]) {
@@ -306,8 +298,17 @@ class NetworkReg extends React.Component {
                     multiFormCount = +1
                 }
             }
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i]
+                this.updateUI(form)
+                if (data) {
+                    form.value = data[form.field]
+                    this.checkForms(form, forms, true)
+                }
+            }
         }
     }
+
     getFormData = async (data) => {
         let forms = this.formKeys()
         forms.push(
