@@ -107,10 +107,9 @@ class NetworkReg extends React.Component {
                     let uuid = form.uuid;
                     let multiFormData = data[uuid]
                     if (multiFormData) {
-                        routesList.push(multiFormData)
-                    }
-                    if (multiFormData[fields.accessRoutes]) {
-                        routesList.push[multiFormData]
+                        if (form.field === fields.routes) {
+                            routesList.push(multiFormData)
+                        }
                     }
                     data[uuid] = undefined
                 }
@@ -217,7 +216,7 @@ class NetworkReg extends React.Component {
     addForm = (e, form) => {
         let parent = form.parent;
         let forms = this.state.forms;
-        forms.splice(parent.id + 1, 0, form.addForm());
+        forms.splice(parent.id + 1, 0, form.Form());
         this.updateState({ forms })
     }
 
