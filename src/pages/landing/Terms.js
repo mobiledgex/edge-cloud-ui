@@ -2,18 +2,9 @@ import React from "react";
 import { Typography, Grid, makeStyles } from "@material-ui/core/";
 import '../landing/style.css';
 const useStyles = makeStyles({
-    root: {
-        lineHeight: 1.6,
-        fontSize: "1.1rem",
-        fontWeight: 400,
-        lineHeight: 1.8,
-        textAlign: "left",
-        backgroundColor: '#ffffff',
-        color: '#273c43'
-    },
     img: {
         display: 'flex',
-        margin: '0 auto 3em auto',
+        margin: '0 auto 3rem auto',
         width: '186px',
         height: '26px'
     },
@@ -32,8 +23,7 @@ export default function Terms() {
             alignItems="center"
             item
             md={12}
-            id="terms"
-            className={classes.root}
+            className="terms"
         >
             <Grid item md={6} className={classes.outerPadding} >
                 <img className={classes.img} id='company_logo' src='/assets/brand/mex_logo_dark.png' alt="MobiledgeX" />
@@ -620,14 +610,14 @@ export default function Terms() {
                     feedback, comments and/or questions regarding the Edge Services,
                     please feel free to contact us at:
                 </p>
-                <div>
+                <p>
                     MobiledgeX, Inc.
                     <br />
                     333 W San Carlos St., STE 600
                     <br />
                     San Jose, CA 95110
                     <br />
-                </div>
+                </p>
             </Grid>
         </Grid>
     );
