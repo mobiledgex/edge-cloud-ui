@@ -158,9 +158,6 @@ class NetworkReg extends React.Component {
         )
     }
 
-    onAddCancel = () => {
-        this.props.onClose(false)
-    }
 
     resetFormValue = (form) => {
         let rules = form.rules
@@ -210,15 +207,15 @@ class NetworkReg extends React.Component {
         ]
     }
 
-    getRoutesForm = (form) => {
-        return ({ uuid: uuid(), field: fields.routes, formType: MULTI_FORM, forms: form ? form : this.routeFormArray(), width: 3, visible: true })
-    }
-
     addForm = (e, form) => {
         let parent = form.parent;
         let forms = this.state.forms;
         forms.splice(parent.id + 1, 0, form.Form());
         this.updateState({ forms })
+    }
+
+    getRoutesForm = (form) => {
+        return ({ uuid: uuid(), field: fields.routes, formType: MULTI_FORM, forms: form ? form : this.routeFormArray(), width: 3, visible: true })
     }
 
     routeFormArray = () => ([
@@ -252,10 +249,6 @@ class NetworkReg extends React.Component {
             }
         }
     }
-    onAddCancel = () => {
-        this.props.onClose(false)
-    }
-
     loadDefaultData = (forms, data) => {
             let multiFormCount = 0
             if (data[fields.accessRoutes]) {
@@ -276,6 +269,10 @@ class NetworkReg extends React.Component {
                     multiFormCount = +1
                 }
             }
+    }
+
+    onAddCancel = () => {
+        this.props.onClose(false)
     }
 
     getFormData = async (data) => {
