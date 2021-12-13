@@ -14,6 +14,7 @@ import { Grid } from '@material-ui/core';
 import { perpetual } from '../../../helper/constant';
 import { showCloudlets } from '../../../services/modules/cloudlet';
 import uuid from 'uuid';
+import { validateRemoteCIDR, validateRemoteIP } from '../../../helper/constant/shared';
 
 class NetworkReg extends React.Component {
     constructor(props) {
@@ -221,32 +222,10 @@ class NetworkReg extends React.Component {
     }
 
     routeFormArray = () => ([
-        { field: fields.destinationCidr, label: 'Destination CIDR', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: this.validateRemoteCIDR },
-        { field: fields.nextHopIp, label: 'IP', formType: INPUT, rules: { required: true }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateRemoteIP },
+        { field: fields.destinationCidr, label: 'Destination CIDR', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: validateRemoteCIDR },
+        { field: fields.nextHopIp, label: 'IP', formType: INPUT, rules: { required: true }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: validateRemoteIP },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeForm }
     ])
-
-    validateRemoteCIDR = (form) => {
-        if (form.value && form.value.length > 0) {
-            if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([0-9]|1[0-9]|2[0-9]|3[0-2]?)$/.test(form.value)) {
-                form.error = 'Destination CIDR format is invalid (must be between 0.0.0.0/0 to 255.255.255.255/32)'
-                return false;
-            }
-        }
-        form.error = undefined;
-        return true;
-    }
-
-    validateRemoteIP = (form) => {
-        if (form.value && form.value.length > 0) {
-            if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(form.value)) {
-                form.error = 'Route IP format is invalid (must be between 0.0.0.0 to 255.255.255.255)'
-                return false;
-            }
-        }
-        form.error = undefined;
-        return true;
-    }
 
     removeForm = (e, form) => {
         if (form.parent) {
@@ -295,14 +274,6 @@ class NetworkReg extends React.Component {
                     }
                     forms.splice(7 + multiFormCount, 0, this.getRoutesForm(routeForms))
                     multiFormCount = +1
-                }
-            }
-            for (let i = 0; i < forms.length; i++) {
-                let form = forms[i]
-                this.updateUI(form)
-                if (data) {
-                    form.value = data[form.field]
-                    this.checkForms(form, forms, true)
                 }
             }
     }
