@@ -15,7 +15,6 @@ import PublicIP from 'public-ip';
 import UAParser from 'ua-parser-js';
 import { Container } from 'semantic-ui-react';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import './style.css'
 import { withStyles } from '@material-ui/styles';
 import { perpetual } from '../../helper/constant';
 

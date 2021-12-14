@@ -129,7 +129,7 @@ class CloudletList extends React.Component {
     }
 
     customStream = (data) => {
-        return data[fields.infraApiAccess] === serverFields.RESTRICTED && data[fields.cloudletStatus] !== serverFields.READY
+        return data[fields.infraApiAccess] === serverFields.RESTRICTED_ACCESS && data[fields.cloudletStatus] !== serverFields.READY
     }
 
     canAdd = () => {

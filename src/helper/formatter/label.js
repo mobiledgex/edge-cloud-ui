@@ -111,10 +111,10 @@ export const platformType = (id) => {
 export const infraApiAccess = (id) => {
     switch (id) {
         case 0:
-        case serverFields.DIRECT:
+        case serverFields.DIRECT_ACCESS:
             return perpetual.INFRA_API_ACCESS_DIRECT
         case 1:
-        case serverFields.RESTRICTED:
+        case serverFields.RESTRICTED_ACCESS:
             return perpetual.INFRA_API_ACCESS_RESTRICTED
         default:
             return id
