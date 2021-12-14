@@ -163,6 +163,7 @@ class ListViewer extends React.Component {
     };
 
     setSelectedRow = (header, row) => {
+        console.log(header, row)
         this.setState({ selectedRow: row })
         this.props.cellClick(header, row)
     }

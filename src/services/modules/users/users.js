@@ -7,7 +7,7 @@ export const keys = () => ([
     { field: fields.username, serverField: 'username', label: 'Username', sortable: true, visible: true, filter: true, group: true },
     { field: fields.organizationName, serverField: 'org', label: 'Organization', sortable: true, visible: true, filter: true, group: true },
     { field: fields.role, serverField: 'role', label: 'Role Type', sortable: true, visible: true, filter: true, group: true },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: [...developerRoles, ...operatorRoles] }
+    // { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: [...developerRoles, ...operatorRoles] }
 ])
 
 export const getKey = (data) => {

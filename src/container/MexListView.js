@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from '@material-ui/core';
+import { Card, Typography } from '@material-ui/core';
 
 import './styles.css';
 import { fields } from '../services/model/format';
@@ -22,6 +22,8 @@ import { operators, shared, perpetual } from '../helper/constant';
 import { fetchDataFromServer } from './service';
 import { service } from '../services';
 import { timeRangeInMin } from '../hoc/mexui/Picker';
+import DataGrid from '../hoc/listViewV/DataGrid';
+import { Icon } from '../hoc/mexui';
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -80,10 +82,10 @@ class MexListView extends React.Component {
         this.selectedRow = row
         let data = row
 
-        if (key.field === fields.state) {
+        if (key && key.field === fields.state) {
             this.onProgress(data)
         }
-        else if (key.clickable) {
+        else if (key && key.clickable) {
             if (this.props.onClick) {
                 this.props.onClick(key, data)
             }
@@ -310,14 +312,16 @@ class MexListView extends React.Component {
     /*Action Block*/
     listView = () => {
         let isMap = this.requestInfo.isMap && this.state.showMap
+        const {formatData} = this.requestInfo
+        const {loading, filterList, dropList} = this.state
         return (
             <div className="mexListView">
                 {isMap ?
                     <div className='panel_worldmap' style={{ height: 400 }}>
-                        <ListMexMap onClick={this.onMapMarkerClick} id={this.requestInfo.id} dataList={this.state.filterList} region={this.selectedRegion} />
+                        <ListMexMap onClick={this.onMapMarkerClick} id={this.requestInfo.id} dataList={filterList} region={this.selectedRegion} />
                     </div> : null
                 }
-                <MexListViewer keys={this.keys} dataList={this.state.filterList}
+                {/* <MexListViewer keys={this.keys} dataList={this.state.filterList}
                     loading={this.state.loading}
                     selected={this.state.selected}
                     setSelected={this.setSelected}
@@ -333,7 +337,17 @@ class MexListView extends React.Component {
                     viewerEdit={this.requestInfo.viewerEdit}
                     tableHeight={this.props.tableHeight}
                     searchValue={this.filterText}
-                />
+                /> */}
+                <DataGrid loading={loading} keys={this.keys}
+                    searchValue={this.filterText}
+                    groupBy={dropList}
+                    dataList={filterList}
+                    actionMenu={this.props.actionMenu}
+                    onActionClose={this.onActionClose}
+                    cellClick={this.getCellClick}
+                    formatter={formatData}
+                    selected={this.state.selected}
+                    setSelected={this.setSelected} />
             </div>)
     }
 
@@ -469,6 +483,8 @@ class MexListView extends React.Component {
 
     }
 
+    
+
     onToolbarAction = (type, value) => {
         switch (type) {
             case ACTION_REGION:
@@ -493,6 +509,7 @@ class MexListView extends React.Component {
                 break;
             case ACTION_GROUP:
                 this.setState({ dropList: value })
+                break;
             case ACTION_PICKER:
                 this.range = value
                 this.generateRequestData(this.selectedRegion)

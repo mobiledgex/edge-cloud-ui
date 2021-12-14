@@ -36,7 +36,7 @@ export const keys = () => ([
     keys: [{ field: fields.appName, label: 'App Name' },
     { field: fields.version, label: 'Version' }]
   },
-  { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: developerRoles }
+  // { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: developerRoles }
 ])
 
 const getKey = (data, isCreate) => {

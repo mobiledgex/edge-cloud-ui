@@ -142,6 +142,7 @@ export const fields = {
     cloudletStatus: 'cloudletStatus',
     actions: 'actions',
     manage: 'manage',
+    checkbox:'checkbox',
     poolName: 'poolName',
     operatorOrg: 'operatorOrg',
     developerOrg: 'developerOrg',

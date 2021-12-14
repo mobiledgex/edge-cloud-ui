@@ -16,7 +16,7 @@ export const keys = () => ([
   { field: fields.targetActiveConnections, serverField: 'target_active_connections', label: 'Target Active Connections' },
   { field: fields.targetMEM, serverField: 'target_mem', label: 'Target Memory (%)' },
   { field: fields.targetCPU, serverField: 'target_cpu', label: 'Target CPU (%)' },
-  { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: developerRoles }
+  // { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: developerRoles }
 ])
 
 const getKey = (data, isCreate) => {

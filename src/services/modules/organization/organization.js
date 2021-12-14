@@ -21,7 +21,7 @@ export const keys = (nameOnly) => {
                 keys: [{ field: fields.username, label: 'Username' }, { field: fields.userRole, label: 'Role' }]
             },
             { field: fields.manage, label: 'Manage', visible: true, clickable: true, format: true },
-            { field: fields.actions, label: 'Actions', visible: true, clickable: true }
+            // { field: fields.actions, label: 'Actions', visible: true, clickable: true }
         ]
     }
     return items

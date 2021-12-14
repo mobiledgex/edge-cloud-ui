@@ -13,7 +13,7 @@ export const keys = () => ([
     { field: fields.operatorName, label: 'Organization', serverField: 'key#OS#cloudlet_key#OS#organization', sortable: false, visible: true, clickable: true },
     { field: fields.connectionType, label: 'Connection Type', serverField: 'connection_type', sortable: false, visible: false, clickable: true },
     { field: fields.routes, label: 'Routes', serverField: 'routes', sortable: false, visible: false, clickable: true, dataType: perpetual.TYPE_JSON },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: operatorRoles }
+    // { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: operatorRoles }
 ])
 
 export const getKey = (data, isCreate) => {
