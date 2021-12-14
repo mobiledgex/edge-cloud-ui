@@ -163,6 +163,9 @@ export const CREATE_ALERT_POLICY = 'auth/ctrl/CreateAlertPolicy';
 export const DELETE_ALERT_POLICY = 'auth/ctrl/DeleteAlertPolicy';
 export const UPDATE_ALERT_POLICY = 'auth/ctrl/UpdateAlertPolicy';
 
-
-
+//Network
+export const CREATE_NETWORKS = '/auth/ctrl/CreateNetwork'
+export const SHOW_NETWORKS = 'auth/ctrl/ShowNetwork';
+export const UPDATE_NETWORK = '/auth/ctrl/UpdateNetwork'
+export const DELETE_NETWORK = '/auth/ctrl/DeleteNetwork'
 

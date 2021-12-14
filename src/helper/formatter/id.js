@@ -175,3 +175,18 @@ export const vmAppOS = (label) => {
             return serverFields.WINDOWS_2019
     }
 }
+
+export const connectionType = (label) => {
+    switch (label) {
+        case perpetual.CONNECTION_UNDEFINED:
+            return serverFields.CONNECTION_UNDEFINED
+        case perpetual.CONNECT_TO_LOAD_BALANCER:
+            return serverFields.CONNECT_TO_LOAD_BALANCER
+        case perpetual.CONNECT_TO_CLUSTER_NODES:
+            return serverFields.CONNECT_TO_CLUSTER_NODES
+        case perpetual.CONNECT_TO_ALL:
+            return serverFields.CONNECT_TO_ALL
+        default:
+            return label
+    }
+}

@@ -40,8 +40,7 @@ class Map extends React.Component {
         super(props)
         this.state = {
             backswitch: false,
-            maps: undefined,
-            refresh: false
+            maps: undefined
         }
         this.popup = React.createRef();
     }
@@ -66,10 +65,10 @@ class Map extends React.Component {
         return (
             <Popup className="map-control-div-marker-popup" ref={this.popup}>
                 {
-                    Object.keys(data).map(cloudletKey => {
-                        let dataList = data[cloudletKey]
+                    Object.keys(data).map(key => {
+                        let dataList = data[key]
                         return (
-                            <div key={cloudletKey}>
+                            <div key={key}>
                                 {
                                     <React.Fragment>
                                         <div>
@@ -81,7 +80,7 @@ class Map extends React.Component {
                                             }
                                             {dataList.map((item, i) => (
 
-                                                <div key={`${i}_${cloudletKey}`} className="map-control-div-marker-popup-label" >
+                                                <div key={`${i}_${key}`} className="map-control-div-marker-popup-label" >
                                                     <code style={{ fontWeight: 400, fontSize: 12, display: 'flex', alignItems: 'center' }}>
                                                         <Icon style={{ color: item.color, marginRight: 5, fontSize: 10 }}>circle</Icon>
                                                         {this.renderModulePopup(item)}
@@ -123,30 +122,30 @@ class Map extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.data) {
-            const { data, search, selection } = props
-            let keys = Object.keys(data)
-            if (keys.length > 0) {
-                let maps = {}
-                keys.map(key => {
-                    if ((selection.count === 0 || selection[key]) && (search.length === 0 || key.includes(search))) {
-                        let item = data[key]
-                        const { latitude, longitude } = item[fields.cloudletLocation]
-                        let mapKey = `${latitude}_${longitude}`
-                        let cloudletKey = item[fields.cloudletName]
-                        maps[mapKey] = maps[mapKey] ? maps[mapKey] : {}
-                        maps[mapKey][cloudletKey] = maps[mapKey][cloudletKey] ? maps[mapKey][cloudletKey] : []
-                        maps[mapKey][cloudletKey].push(item)
+        const { data, search, selection, regions } = props
+        if (data) {
+            let maps = {}
+            regions.map(region => {
+                if (data[region]) {
+                    let keys = Object.keys(data[region])
+                    if (keys.length > 0) {
+                        keys.map(key => {
+                            if ((selection.count === 0 || selection[key]) && (search.length === 0 || key.includes(search))) {
+                                let item = data[region][key]
+                                const { latitude, longitude } = item[fields.cloudletLocation]
+                                let mapKey = `${latitude}_${longitude}`
+                                let cloudletKey = item[fields.cloudletName]
+                                maps[mapKey] = maps[mapKey] ? maps[mapKey] : {}
+                                maps[mapKey][cloudletKey] = maps[mapKey][cloudletKey] ? maps[mapKey][cloudletKey] : []
+                                maps[mapKey][cloudletKey].push(item)
+                            }
+                        })
                     }
-                })
-                return { maps, refresh: !state.refresh }
-            }
+                }
+            })
+            return { maps }
         }
         return null
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return this.props.refresh !== nextProps.refresh || this.state.refresh !== nextState.refresh
     }
 
     render() {

@@ -29,6 +29,7 @@ export const HELP_TRUST_POLICY_REG = 'trustPolicyReg'
 export const HELP_MONITORING = 'monitoringAdmin'
 export const HELP_USER_ROLES = 'userRoles'
 export const HELP_ALERTS = 'alerts'
+export const HELP_NETWORK_LIST = 'NetworkList'
 
 export const userRoles = (org, type, isDoc) => {
     if (isDoc) {

@@ -28,6 +28,7 @@ import { customize as appInstUsage } from '../modules/appInstUsage/custom';
 import { customize as clusterInstUsage } from '../modules/clusterInstUsage/custom';
 import { customize as gpuDriver } from '../modules/gpudriver/custom';
 import { customize as alertPolicy } from '../modules/alertPolicy/custom';
+import { customize as network } from '../modules/network/custom';
 
 import { formatShowData } from './show';
 import { formatChargifyData } from './chargify';
@@ -145,6 +146,9 @@ export const formatData = (request, response, self = null) => {
             break;
         case endpoint.SHOW_ALERT_POLICY:
             data = formatShowData(request, response, alertPolicy)
+            break;
+        case endpoint.SHOW_NETWORKS:
+            data = formatShowData(request, response, network)
             break;
         default:
             data = response && response.data ? response.data : [];
