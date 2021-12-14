@@ -4,7 +4,7 @@ import clsx from 'clsx';
 
 const useStyles = makeStyles({
     textColor: {
-        color: 'black'
+        color: '#273c43'
     }
 });
 

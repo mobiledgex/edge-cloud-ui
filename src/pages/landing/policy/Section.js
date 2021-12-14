@@ -5,7 +5,7 @@ import './style.css'
 
 const useStyles = makeStyles({
     textColor: {
-        color: 'black'
+        color: '#273c43'
     },
     divider: {
         backgroundColor: '#AEAEAE',

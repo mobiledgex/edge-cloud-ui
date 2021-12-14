@@ -7,7 +7,7 @@ import Section from "./Section";
 
 const useStyles = makeStyles({
     textColor: {
-        color: 'black'
+        color: '#273c43'
     },
     divider: {
         backgroundColor: '#AEAEAE',
