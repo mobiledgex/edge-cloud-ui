@@ -1,7 +1,7 @@
 import React from "react";
-import Terms from './Terms'
-import './style.css'
+import Terms from './Terms';
 import AcceptablePolicy from "./AcceptablePolicy";
+import './style.css'
 
 
 export default function Policy(props) {
