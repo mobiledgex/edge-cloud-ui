@@ -346,7 +346,7 @@ class RegistryUserForm extends React.Component {
                         </Grid.Row>
                         <Grid.Row>
                             <span>
-                                By clicking Sign Up, you agree to our <a href="#/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Trust Policy</a>.
+                                By clicking Sign Up, you agree to our <a href="#/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="#/acceptable-use-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Acceptable Use Policy</a>.
                             </span>
                         </Grid.Row>
                     </Grid>

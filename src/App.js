@@ -12,7 +12,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import { getDarkTheme, getLightTheme, THEME_TYPE } from "./themeStyle";
 import LogoSpinner from './hoc/loader/LogoSpinner'
 import { componentLoader } from './hoc/loader/componentLoader';
-import Terms from './pages/landing/Terms'
+import Policy from './pages/landing/policy/Policy'
 
 const Main = lazy(() => componentLoader(import('./pages/main/Main')));
 const Landing = lazy(() => componentLoader(import('./pages/landing/Landing')));
@@ -28,7 +28,8 @@ class App extends Component {
                 <Router>
                     <Suspense fallback={<LogoSpinner />}>
                         <Switch>
-                            <Route exact path='/terms-of-use' component={Terms} />
+                            <Route exact path='/terms-of-use' component={Policy} />
+                            <Route exact path='/acceptable-use-policy' component={Policy} />
                             <Route exact path='/' component={Landing} />
                             <Route exact path='/register' component={Landing} />
                             <Route exact path='/forgotpassword' component={Landing} />

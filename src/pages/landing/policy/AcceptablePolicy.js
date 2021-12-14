@@ -16,6 +16,9 @@ const useStyles = makeStyles({
         marginTop: 15,
         textAlign: 'justify',
         padding: 10
+    },
+    section:{
+
     }
 });
 
@@ -56,7 +59,9 @@ export default function AcceptablePolicy() {
 
             <Section> Introduction</Section>
             <Para>
-                {introduction.map((intro, index) => <p key={index}>{intro}</p>)}
+                <ul>
+                    {introduction.map((intro, index) => <li key={index}>{intro}</li>)}
+                </ul>
             </Para>
             <Section>Compliance with Law</Section>
             <Para>
@@ -66,7 +71,8 @@ export default function AcceptablePolicy() {
             <Para>
                 Each user of a console account must use reasonable care in keeping software they run on the MobiledgeX’s servers up-to-date and patched with the latest security updates. Failure to use reasonable care to protect your account may result in a security compromise by outside sources. A compromised server creating network interference will result in immediate notification from MobiledgeX and will be disconnected from the network immediately so as to not directly affect other accounts. No service credits will be issued for outages resulting from disconnection due to breached server security. You are solely responsible for any breaches of security under Your control affecting servers.. The labor used to resolve any damage is categorized as Emergency Security Breach Recovery and is currently charged at $400 USD per hour. System and Network Security Violations of system or network security are strictly prohibited, and may result in criminal and civil liability. MobiledgeX investigates all incidents involving such violations and will cooperate with law enforcement if criminal violation is suspected.
             </Para>
-            <Section>Examples of system or network security violations include, without limitation, the following:</Section>
+            <br/>
+            <Para><b>Examples of system or network security violations include, without limitation, the following:</b></Para>
             <Para>
                 <ul>
                     {networkSecurityviolations.map((point, index) =>
