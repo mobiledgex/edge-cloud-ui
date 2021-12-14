@@ -35,7 +35,7 @@ export const customData = (id, data) => {
 }
 
 export const appMetricsListKeys = [
-    { field: fields.region, label: 'Region', sortable: true, visible: true, groupBy: false },
+    { field: fields.region, serverField: 'region', label: 'Region', sortable: true, visible: true, groupBy: true },
     { field: fields.appName, serverField:'app', label: 'App', sortable: true, visible: true, groupBy: true},
     { field: fields.organizationName, serverField:'apporg',label: 'App Developer', sortable: false, visible: false, groupBy: false },
     { field: fields.version, serverField:'ver', label: 'Version', sortable: true, visible: false, groupBy: true },

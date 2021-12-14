@@ -625,8 +625,6 @@ class AppReg extends Component {
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
                 if (form.uuid) {
-
-                    console.log(form)
                     let uuid = form.uuid;
                     let multiFormData = data[uuid]
                     if (multiFormData) {

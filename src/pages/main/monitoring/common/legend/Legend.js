@@ -1,6 +1,5 @@
 import React from 'react'
 import BulletChart from '../../charts/bullet/BulletChart';
-import BulletLegend from '../../charts/bullet/Legend';
 import DataTable from '../../list/DataTable'
 import { onlyNumeric } from '../../../../../utils/string_utils';
 import { _orderBy } from '../../../../../helper/constant/operators';
@@ -8,59 +7,60 @@ import { legendKeys } from '../../helper/constant';
 import { Skeleton } from '@material-ui/lab';
 import { validateRole } from '../../../../../helper/constant/role';
 import { fields } from '../../../../../services/model/format';
-import { healthCheck } from '../../../../../helper/formatter/ui';
+import { healthCheck, NoData } from '../../../../../helper/formatter/ui';
+
 class Legend extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            newList: undefined
+            dataList: undefined
         }
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.data) {
-            const { data, tools, groupBy, sortBy } = props
-            let keys = Object.keys(data)
-            if (keys.length > 0) {
-                const { search } = tools
-                let newList = []
-                keys.forEach(key => {
-                    if (search.length === 0 || key.includes(search)) {
-                        newList.push({ ...data[key], key })
-                    }
-                })
-
-                if (groupBy) {
-                    newList = _orderBy(newList, groupBy);
-                    let group = { version: 'v1' }
-                    let groupList = []
-                    newList.forEach((item, i) => {
-                        let valid = groupBy.some(field => {
-                            if (group[field] !== item[field]) {
-                                group[field] = item[field]
-                                return true
+        let dataList = []
+        const { data, tools, groupBy, sortBy } = props
+        if (data) {
+            const { regions, search } = tools
+            regions.map(region => {
+                if (data[region]) {
+                    let keys = Object.keys(data[region])
+                    if (keys.length > 0) {
+                        keys.forEach(key => {
+                            if (search.length === 0 || key.includes(search)) {
+                                dataList.push({ ...data[region][key], key })
                             }
                         })
-                        if (valid) {
-                            groupList.push({ ...item, group: true })
-                        }
+                    }
+                }
+            })
+        }
 
-                        groupList.push(item)
+        if (dataList.length > 0) {
+            if (groupBy) {
+                dataList = _orderBy(dataList, groupBy);
+                let group = { version: 'v1' }
+                let groupList = []
+                dataList.forEach((item, i) => {
+                    let valid = groupBy.some(field => {
+                        if (group[field] !== item[field]) {
+                            group[field] = item[field]
+                            return true
+                        }
                     })
-                    newList = groupList
-                }
-                else {
-                    newList = _orderBy(newList, sortBy);
-                }
-                return { newList }
+                    if (valid) {
+                        groupList.push({ ...item, group: true })
+                    }
+                    groupList.push(item)
+                })
+                dataList = groupList
+            }
+            else {
+                dataList = _orderBy(dataList, sortBy);
             }
         }
-        return null
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return this.props.refresh !== nextProps.refresh
+        return { dataList }
     }
 
     onFormat = (column, data) => {
@@ -85,14 +85,19 @@ class Legend extends React.Component {
     }
 
     render() {
-        const { newList } = this.state
-        const { tools, handleSelectionStateChange, handleAction, actionMenu, groupBy } = this.props
+        const { dataList } = this.state
+        const { tools, handleSelectionStateChange, handleAction, loading, groupBy } = this.props
         return (
             <React.Fragment>
                 <div id='legend-block' className="block block-1">
                     {
-                        newList && newList.length > 0 ?
-                            <DataTable dataList={newList} keys={legendKeys(tools.moduleId)} onRowClick={handleSelectionStateChange} formatter={this.onFormat} actionMenu={this.filterAction()} handleAction={handleAction} groupBy={groupBy} /> : <Skeleton variant='rect' height={'inherit'} />
+                        loading ? <Skeleton variant='rect' height={'inherit'} /> :
+                            <React.Fragment>
+                                {
+                                    dataList && dataList.length > 0 ?
+                                        <DataTable dataList={dataList} keys={legendKeys(tools.moduleId)} onRowClick={handleSelectionStateChange} formatter={this.onFormat} actionMenu={this.filterAction()} handleAction={handleAction} groupBy={groupBy} /> : <NoData />
+                                }
+                            </React.Fragment>
                     }
                 </div>
             </React.Fragment>

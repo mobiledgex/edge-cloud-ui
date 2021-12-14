@@ -47,8 +47,8 @@ class ResourceChart extends React.Component {
     }
 
     fetchResources = async () => {
-        const { region, legends, legendList, moduleId, resource, range, selection, handleLegendStateChange } = this.props
-        let dataObject = await fetchResourceData(this, moduleId, { region, legends, legendList, resourceKey: resource, range, selection, worker: this.metricWorker })
+        const { region, legends, metricRequestData, moduleId, resource, range, selection, handleLegendStateChange } = this.props
+        let dataObject = await fetchResourceData(this, moduleId, { region, legends, metricRequestData, resourceKey: resource, range, selection, worker: this.metricWorker })
         if (dataObject) {
             const { resources, data } = dataObject
             if (this._isMounted) {

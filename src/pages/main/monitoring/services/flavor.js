@@ -35,7 +35,7 @@ const flavorChartData = (region, legend, metric, selection, dataList, timezone) 
     })
     if(timeList.length > 0)
     {
-        return generateDataset2(legend, legend.tags, metric, timezone, timeList)
+        return generateDataset2(legend, legend.tags, metric, timezone, timeList, ['flavorName'])
     }
 }
 
