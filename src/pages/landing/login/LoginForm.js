@@ -100,7 +100,7 @@ const Login = (props) => {
                 <div className={clsx(classes.textColor, classes.validation)} onClick={() => reValidate(perpetual.VERIFY_EMAIL)}>Verify Email</div>
                 <div className={clsx(classes.textColor, classes.validation, classes.validationRight)} onClick={() => reValidate(perpetual.VERIFY_PASSWORD)}>Forgot Password</div>
                 <Button onClick={() => onSubmit()}>Log In</Button>
-                <br /><br /><br />
+                <br /><br />
                 <span>
                     <div className={classes.linkContainer}><Link className={classes.aLink} to="/terms-of-use" target="_blank">Terms of Use</Link> &amp; <Link className={classes.aLink} to="/acceptable-use-policy" target="_blank" >Acceptable Use Policy</Link>.</div>
                 </span>

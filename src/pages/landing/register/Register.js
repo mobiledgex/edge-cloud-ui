@@ -15,7 +15,7 @@ import cloneDeep from "lodash/cloneDeep";
 import { load } from "../../../helper/zxcvbn";
 import ReCAPTCHA from "react-google-recaptcha";
 import MexOTPRegistration from '../otp/MexOTPRegistration';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { endpoint } from "../../../helper/constant";
 import { authSyncRequest } from "../../../services/service";
 
@@ -346,7 +346,7 @@ class RegistryUserForm extends React.Component {
                         </Grid.Row>
                         <Grid.Row>
                             <span>
-                                By clicking Sign Up, you agree to our <a href="#/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</a> and <a href="#/acceptable-use-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Acceptable Use Policy</a>.
+                                By clicking Sign Up, you agree to our <Link to="/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</Link> and <Link to="/acceptable-use-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Acceptable Use Policy</Link>.
                             </span>
                         </Grid.Row>
                     </Grid>
