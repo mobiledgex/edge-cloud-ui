@@ -55,7 +55,7 @@ export default function AcceptablePolicy() {
         <React.Fragment>
             <Typography variant="h5" className={clsx(classes.textColor)}><b>ACCEPTABLE USE POLICY</b></Typography>
             <Divider className={classes.divider} />
-            <Typography variant="body1" className={clsx(classes.textColor)}><b>Effective date:</b> July 16, 2021</Typography>
+            <Typography variant="body1" className={clsx(classes.textColor)}><b>Effective date:</b> December 1, 2021</Typography>
 
             <Section> Introduction</Section>
             <Para>
