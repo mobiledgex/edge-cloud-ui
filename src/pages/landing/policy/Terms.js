@@ -27,7 +27,7 @@ export default function Terms() {
         <React.Fragment>
             <Typography variant="h5" className={clsx(classes.textColor)}><b>Terms of Use</b></Typography>
             <Divider className={classes.divider} />
-            <Typography variant="body1" className={clsx(classes.textColor)}><b>Effective date:</b> June 25, 2017</Typography>
+            <Typography variant="body1" className={clsx(classes.textColor)}><b>Effective date:</b> December 1, 2021</Typography>
             <div className={classes.content}>
                 <Para>
                     Welcome! By accessing and using MobiledgeX Edge-Cloud Service and
