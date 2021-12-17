@@ -21,9 +21,6 @@ export const getKey = (data, isCreate) => {
     Network.key = { cloudlet_key: getCloudletKey(data), name: data[fields.networkName] }
     if (isCreate) {
         Network.connection_type = idFormatter.connectionType(data[fields.connectionType])
-        if (data[fields.fields]) {
-            Network.fields = data[fields.fields]
-        }
         if (data[fields.accessRoutes]) {
             Network.routes = data[fields.accessRoutes]
         }
