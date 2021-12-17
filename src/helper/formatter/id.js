@@ -77,9 +77,9 @@ export const platformType = (label) => {
 export const infraApiAccess = (label) => {
     switch (label) {
         case perpetual.INFRA_API_ACCESS_DIRECT:
-            return serverFields.DIRECT
+            return serverFields.DIRECT_ACCESS
         case perpetual.INFRA_API_ACCESS_RESTRICTED:
-            return serverFields.RESTRICTED
+            return serverFields.RESTRICTED_ACCESS
         default:
             return label
     }
