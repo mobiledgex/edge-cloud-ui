@@ -207,13 +207,16 @@ export default function Terms() {
                     our affiliates, or any third party to legal liability, or (iv) may
                     be fraudulent.
                 </Para>
-                <Section>7. Fees, Billing and Free Trialses</Section>
+                <Section>7. Fees, Billing and Free Trials</Section>
                 <Para>
                     <ul>
                         <li>
                             For the use of the Edge Services, you shall pay us the applicable
                             fees and charges in for the MobiledgeX Edge-Cloud subscription U.S.
-                            Dollars by payment methods that we authorize.
+                            Dollars by payment methods that we authorize. The term of each subscription 
+                            shall be as specified in the applicable order form. The subscription expires 
+                            at the end of the term and does not automatically renew. You may elect to 
+                            renew your Edge-Cloud subscription for additional terms.
                         </li>
                         <li>
                             If you elect to purchase MobiledgeX Support Services, Support
