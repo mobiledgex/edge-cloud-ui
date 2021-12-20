@@ -288,3 +288,20 @@ export const connectionType = (id) => {
             return id
     }
 }
+
+export const qosProfile = (label) => {
+    switch (label) {
+        case serverFields.LOW_LATENCY:
+            return perpetual.QOS_LOW_LATENCY
+        case serverFields.NO_PRIORITY:
+            return perpetual.NO_PRIORITY
+        case serverFields.THROUGHPUT_DOWN_S:
+            return perpetual.QOS_THROUGHPUT_DOWN_S
+        case serverFields.THROUGHPUT_DOWN_M:
+            return perpetual.QOS_THROUGHPUT_DOWN_M
+        case serverFields.THROUGHPUT_DOWN_L:
+            return perpetual.QOS_THROUGHPUT_DOWN_L
+        default:
+            return label
+    }
+}
