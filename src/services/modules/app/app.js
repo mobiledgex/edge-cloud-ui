@@ -39,6 +39,8 @@ export const keys = () => ([
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
     { field: fields.trusted, serverField: 'trusted', label: 'Trusted', visible: false, sortable: true, format: true },
     { field: fields.configs, serverField: 'configs', label: 'Configs', keys: configs() },
+    { field: fields.allowServerless, serverField: 'allow_serverless', label: 'Allow Serverless', format: true },
+    { field: fields.serverlessConfig, serverField: 'serverless_config', label: 'Serverless Config', dataType: perpetual.TYPE_JSON },
     { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: false },
     { field: fields.requiredOutboundConnections, serverField: 'required_outbound_connections', label: 'Required Outbound Connections', visible: false, dataType: perpetual.TYPE_JSON },
     { field: fields.templateDelimiter, serverField: 'template_delimiter', label: 'Template Delimiter' },
@@ -51,6 +53,7 @@ export const keys = () => ([
 export const getKey = (data, isCreate) => {
 
     let app = {}
+    let serverless_config = {}
 
     app.key = {
         organization: data[fields.organizationName],
@@ -81,6 +84,17 @@ export const getKey = (data, isCreate) => {
 
         app.default_flavor = { name: data[fields.flavorName] }
         app.auth_public_key = data[fields.authPublicKey]
+        app.allow_serverless = data[fields.allowServerless]
+        if (data[fields.serverlessRam]) {
+            serverless_config.ram = parseInt(data[fields.serverlessRam])
+        }
+        if (data[fields.serverlessVcpu]) {
+            serverless_config.vcpus = parseInt(data[fields.serverlessVcpu])
+        }
+        if (data[fields.serverlessMinReplicas]) {
+            serverless_config.min_replicas = parseInt(data[fields.serverlessMinReplicas])
+        }
+        app.serverless_config = serverless_config
         if (data[fields.officialFQDN]) {
             app.official_fqdn = data[fields.officialFQDN]
         }

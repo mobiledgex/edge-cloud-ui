@@ -11,6 +11,8 @@ export const customize = (request, value) => {
     value[fields.deploymentManifest] = value[fields.deploymentManifest] ? value[fields.deploymentManifest].trim() : value[fields.deploymentManifest]
     if (value[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
         value[fields.scaleWithCluster] = value[fields.scaleWithCluster] ? value[fields.scaleWithCluster] : false
+        value[fields.allowServerless] = value[fields.allowServerless] ? value[fields.allowServerless] : false
+        value[fields.serverlessConfig] = value[fields.serverlessConfig] ? value[fields.serverlessConfig] : undefined
     }
     value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
     value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined

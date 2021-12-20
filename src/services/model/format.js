@@ -272,5 +272,10 @@ export const fields = {
     allianceOrganization: 'allianceOrganization',
     networkName: 'networkName',
     routes: 'routes',
-    connectionType: 'connectionType'
+    connectionType: 'connectionType',
+    allowServerless: 'allowServerless',
+    serverlessConfig: 'serverlessConfig',
+    serverlessMinReplicas: 'serverlessMinReplicas',
+    serverlessVcpu: 'serverlessVcpu',
+    serverlessRam: 'serverlessRam'
 }
