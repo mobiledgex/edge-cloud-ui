@@ -294,7 +294,7 @@ export const qosProfile = (label) => {
         case serverFields.LOW_LATENCY:
             return perpetual.QOS_LOW_LATENCY
         case serverFields.NO_PRIORITY:
-            return perpetual.NO_PRIORITY
+            return perpetual.QOS_NO_PRIORITY
         case serverFields.THROUGHPUT_DOWN_S:
             return perpetual.QOS_THROUGHPUT_DOWN_S
         case serverFields.THROUGHPUT_DOWN_M:
