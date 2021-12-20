@@ -1,9 +1,45 @@
 import React from 'react'
-import { useHistory } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
+import { Link, useHistory } from 'react-router-dom';
+import { Grid, makeStyles } from '@material-ui/core';
 import { Icon, Input, Button } from 'semantic-ui-react';
 import { perpetual } from '../../../helper/constant';
 
+const useStyles = makeStyles({
+    signUp: {
+        padding: '0 20px 0 20px'
+    },
+    container: {
+        padding: 30
+    },
+    textColor: {
+        color: '#FFF'
+    },
+    userInput: {
+        width: '80%',
+        color: 'white',
+        marginLeft: 15
+    },
+    validation: {
+        float: 'left',
+        display: 'inline',
+        left: 0,
+        cursor: 'pointer',
+        marginBottom: 15,
+        marginTop: 0,
+        color: '#C4D3DC'
+    },
+    validationRight: { float: 'right', right: 0 },
+    linkContainer: {
+        fontSize: 15,
+        padding: '0'
+    },
+    aLink: {
+        fontStyle: 'italic',
+        textDecoration: 'underline',
+        color: "rgba(255,255,255,.5)",
+        cursor: 'pointer'
+    }
+});
 
 const Login = (props) => {
     const history = useHistory()
@@ -11,6 +47,7 @@ const Login = (props) => {
     const [username, setUsername] = React.useState(undefined)
     const [password, setPassword] = React.useState(undefined)
     const [visiblity, setVisiblity] = React.useState(false)
+    const classes = useStyles();
 
     const onChangeUser = (e, { name, value }) => {
         setUsername(value)
@@ -33,7 +70,7 @@ const Login = (props) => {
         props.onSubmit(username, password)
     }
 
-    const reValidate = (type)=>{
+    const reValidate = (type) => {
         history.push({
             pathname: '/forgotpassword',
             state: { type }
@@ -58,9 +95,13 @@ const Login = (props) => {
                         {loginDanger}
                     </div>
                 </Grid>
-                <div style={{ float: 'left', display: 'inline', left: 0, color: 'white', cursor: 'pointer', marginBottom: 15, marginTop: 0, color:'#C4D3DC' }} onClick={() => reValidate(perpetual.VERIFY_EMAIL)}>Verify Email</div>
-                <div style={{ float: 'right', display: 'inline', right: 0, color: 'white', cursor: 'pointer', marginBottom: 15, marginTop: 0, color:'#C4D3DC' }} onClick={()=> reValidate(perpetual.VERIFY_PASSWORD)}>Forgot Password</div>
+                <div style={{ float: 'left', display: 'inline', left: 0, color: 'white', cursor: 'pointer', marginBottom: 15, marginTop: 0, color: '#C4D3DC' }} onClick={() => reValidate(perpetual.VERIFY_EMAIL)}>Verify Email</div>
+                <div style={{ float: 'right', display: 'inline', right: 0, color: 'white', cursor: 'pointer', marginBottom: 15, marginTop: 0, color: '#C4D3DC' }} onClick={() => reValidate(perpetual.VERIFY_PASSWORD)}>Forgot Password</div>
                 <Button onClick={() => onSubmit()}>Log In</Button>
+                <br /><br />
+                <span>
+                    <div className={classes.linkContainer}><Link className={classes.aLink} to="/terms-of-use" target="_blank">Terms of Use</Link> &amp; <Link className={classes.aLink} to="/acceptable-use-policy" target="_blank" >Acceptable Use Policy</Link>.</div>
+                </span>
             </div>
         </React.Fragment>
     )

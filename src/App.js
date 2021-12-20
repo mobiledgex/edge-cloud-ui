@@ -12,6 +12,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import { getDarkTheme, getLightTheme, THEME_TYPE } from "./themeStyle";
 import LogoSpinner from './hoc/loader/LogoSpinner'
 import { componentLoader } from './hoc/loader/componentLoader';
+import Policy from './pages/landing/policy/Policy'
 
 const Main = lazy(() => componentLoader(import('./pages/main/Main')));
 const Landing = lazy(() => componentLoader(import('./pages/landing/Landing')));
@@ -33,6 +34,8 @@ class App extends Component {
                             <Route exact path='/passwordreset' component={Landing} />
                             <Route exact path='/logout' component={Landing} />
                             <Route exact path='/verify' component={Landing} />
+                            <Route exact path='/terms-of-use' component={Policy} />
+                            <Route exact path='/acceptable-use-policy' component={Policy} />
                             <Route exact path='/preloader' component={PreLoader} />
                             <Route path='/main' component={Main} />
                             <Redirect from='*' to='/' />
