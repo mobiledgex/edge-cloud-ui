@@ -3,7 +3,7 @@ import * as serverData from '../../model/serverData'
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import * as constant from '../../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util'
-import { idFormatter } from '../../../helper/formatter'
+import { idFormatter, serverFields } from '../../../helper/formatter'
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant'
 import { customize } from '../../modules/cloudlet'
@@ -46,7 +46,7 @@ export const keys = () => ([
     { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: perpetual.TYPE_YAML },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', detailView:false },
+    { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', detailView: false },
     { field: fields.gpuExist, label: 'GPU', detailView: false },
     { field: fields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: constant.operatorRoles }
@@ -175,7 +175,7 @@ export const getKey = (data, isCreate) => {
     })
 }
 
-export const cloudletWithInfo = (mcList) => {
+export const cloudletWithInfo = (mcList, pageId) => {
     let cloudletInfoList = []
     let cloudletList = []
     if (mcList && mcList.length > 0) {
@@ -192,15 +192,20 @@ export const cloudletWithInfo = (mcList) => {
         if (cloudletList && cloudletList.length > 0) {
             cloudletList = cloudletList.filter(cloudlet => {
                 let valid = false
-                for (let j = 0; j < cloudletInfoList.length; j++) {
-                    let cloudletInfo = cloudletInfoList[j]
-                    if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
-                        cloudlet[fields.compatibilityVersion] = cloudletInfo[fields.compatibilityVersion] ? cloudletInfo[fields.compatibilityVersion] : perpetual.CLOUDLET_COMPAT_VERSION_2_4
-                        valid = cloudletInfo[fields.state] === perpetual.STATUS_READY && (cloudlet[fields.maintenanceState] === undefined || cloudlet[fields.maintenanceState] === 0)
-                        break;
-                    }
+                if (pageId === perpetual.PAGE_CLUSTER_INSTANCES && cloudlet.platformType === perpetual.PLATFORM_TYPE_K8S_BARE_METAL || cloudlet[fields.maintenanceState] > 0) {
+                    return valid
                 }
-                return valid
+                else {
+                    for (let j = 0; j < cloudletInfoList.length; j++) {
+                        let cloudletInfo = cloudletInfoList[j]
+                        if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
+                            cloudlet[fields.compatibilityVersion] = cloudletInfo[fields.compatibilityVersion] ? cloudletInfo[fields.compatibilityVersion] : perpetual.CLOUDLET_COMPAT_VERSION_2_4
+                            valid = cloudletInfo[fields.state] === serverFields.READY
+                            break;
+                        }
+                    }
+                    return valid
+                }
             })
         }
     }

@@ -1,6 +1,7 @@
 import { customize } from './custom'
-import { showNetwork } from './networks'
+import { createNetwork, showNetwork, updateNetwork, deleteNetwork, keys } from './network'
 export {
     customize,
-    showNetwork
+    keys,
+    createNetwork, showNetwork, updateNetwork, deleteNetwork
 }

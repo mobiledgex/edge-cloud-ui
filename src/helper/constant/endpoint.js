@@ -6,6 +6,8 @@ export const RESET_PASSWORD = "passwordreset";
 export const RESET_PASSWORD_REQUEST = "passwordresetrequest";
 export const CREATE_USER = "usercreate";
 export const PUBLIC_CONFIG = 'publicconfig'
+//ws token
+export const WS_TOKEN = 'auth/wstoken';
 //Organization
 export const SHOW_ORG = 'auth/org/show';
 export const CREATE_ORG = 'auth/org/create';
@@ -163,6 +165,9 @@ export const UPDATE_ALERT_POLICY = 'auth/ctrl/UpdateAlertPolicy';
 //Network
 export const SHOW_NETWORKS = 'auth/ctrl/ShowNetwork';
 
-
-
+//Network
+export const CREATE_NETWORKS = '/auth/ctrl/CreateNetwork'
+export const SHOW_NETWORKS = 'auth/ctrl/ShowNetwork';
+export const UPDATE_NETWORKS = '/auth/ctrl/UpdateNetwork'
+export const DELETE_NETWORKS = '/auth/ctrl/DeleteNetwork'
 

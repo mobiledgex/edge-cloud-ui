@@ -56,7 +56,6 @@ class CloudletReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT, perpetual.INFRA_API_ACCESS_RESTRICTED]
         //To avoid refeching data from server
         this.requestedRegionList = [];
@@ -609,7 +608,7 @@ class CloudletReg extends React.Component {
                             form.options = this.operatorList
                             break;
                         case fields.region:
-                            form.options = this.regions;
+                            form.options = this.props.regions;
                             break;
                         case fields.ipSupport:
                             form.options = [perpetual.IP_SUPPORT_DYNAMIC];
@@ -846,9 +845,6 @@ class CloudletReg extends React.Component {
         }
 
     }
-    onAddCancel = () => {
-        this.props.onClose(false)
-    }
 
     getFormData = async (data) => {
         let forms = this.formKeys()
@@ -904,7 +900,8 @@ class CloudletReg extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 };
 

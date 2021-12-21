@@ -8,6 +8,7 @@ import { fields } from '../../services/model/format';
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
 import { perpetual } from '../../helper/constant';
+import { serverFields } from '../../helper/formatter';
 
 export const CODE_FINISH = 100;
 export const CODE_SUCCESS = 200;
@@ -96,7 +97,7 @@ class VerticalStepper extends React.Component {
                         if (steps.length >= 1 && steps[0].code === 200) {
                             if (lastStep.code === 200) {
                                 item.steps.push({ code: CODE_FINISH })
-                                this.props.dataFromServer(request)
+                                this.props.generateRequestData(request)
                             }
                         }
                         if (lastStep.code === 200) {
@@ -143,12 +144,12 @@ class VerticalStepper extends React.Component {
         if (stream) {
             let valid = false
             let state = data[fields.state];
-            if (state === perpetual.STATUS_READY || state === 3 || state === 6 || state === 7 || state === 9 || state === 10 || state === 12 || state === 13 || state === 14) {
+            if (state === serverFields.READY || state === serverFields.CREATING || state === serverFields.UPDATE_REQUESTED || state === serverFields.UPDATING || state === serverFields.DELETE_REQUESTED || state === serverFields.DELETING || state === serverFields.DELETE_PREPARE || state === serverFields.CRM_INITOK || state === serverFields.CREATING_DEPENDENCIES) {
                 valid = true
             }
             else if (data[fields.powerState]) {
                 let powerState = data[fields.powerState];
-                if (powerState !== 0 && powerState !== 3 && powerState !== 6 && powerState !== 9 && powerState !== 10) {
+                if (powerState !== serverFields.UNKNOWN && powerState !== serverFields.POWER_ON && powerState !== serverFields.POWER_OFF && powerState !== serverFields.REBOOT && powerState !== serverFields.ERROR) {
                     valid = true
                 }
             }
@@ -163,7 +164,7 @@ class VerticalStepper extends React.Component {
                 let data = this.props.dataList[i];
                 let forceStream = false
                 let valid = false
-                if (data[fields.state] !== 5) {
+                if (data[fields.state] !== serverFields.READY) {
                     valid = this.sendWSRequest(data, forceStream)
                 }
                 if(this.props.customStream)

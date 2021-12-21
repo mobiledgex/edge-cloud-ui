@@ -33,7 +33,7 @@ import { customize as network } from '../modules/network/custom';
 import { formatShowData } from './show';
 import { formatChargifyData } from './chargify';
 import { formatAlertData } from './alert';
-import { formatBillingData, formatMetricData } from './event';
+import { formatBillingData, formatMetricData, formatMetricUsageData } from './event';
 import { formatUsageData } from './usage';
 import { formatCloudletPropsData } from './cloudletProps';
 
@@ -100,7 +100,7 @@ export const formatData = (request, response, self = null) => {
             data = formatMetricData(request, response, cloudletMetrics)
             break;
         case endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT:
-            data = formatMetricData(request, response, cloudletMetricUsage)
+            data = formatMetricUsageData(request, response, cloudletMetricUsage)
             break;
         case endpoint.APP_INST_METRICS_ENDPOINT:
             data = formatMetricData(request, response, appInstMetrics)
@@ -149,6 +149,9 @@ export const formatData = (request, response, self = null) => {
             break;
         case endpoint.SHOW_ALERT_POLICY:
             data = formatShowData(request, response, alertPolicy)
+            break;
+        case endpoint.SHOW_NETWORKS:
+            data = formatShowData(request, response, network)
             break;
         default:
             data = response && response.data ? response.data : [];

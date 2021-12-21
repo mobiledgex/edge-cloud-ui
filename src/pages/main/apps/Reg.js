@@ -3,7 +3,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, SWITCH, TEXT_AREA, ICON_BUTTON, SELECT_RADIO_TREE, formattedData, HEADER, MULTI_FORM, MAIN_HEADER } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, SWITCH, TEXT_AREA, ICON_BUTTON, SELECT_RADIO_TREE, formattedData, HEADER, MULTI_FORM, MAIN_HEADER, TIME_COUNTER } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -21,11 +21,13 @@ import { refreshAllAppInst, showAppInsts } from '../../../services/modules/appIn
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { HELP_APP_REG } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'
+import { validateRemoteCIDR } from '../../../helper/constant/shared'
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from '@material-ui/core';
 import { endpoint, perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
+
 const MexFlow = lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 
 class AppReg extends Component {
@@ -61,18 +63,6 @@ class AppReg extends Component {
         if (this._isMounted) {
             this.setState({ ...data })
         }
-    }
-
-    validateRemoteIP = (form) => {
-        if (form.value && form.value.length > 0) {
-            if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(form.value)) {
-                form.error = 'Remote IP format is invalid (must be between 0.0.0.0 to 255.255.255.255)'
-                return false;
-            }
-        }
-        form.error = undefined;
-        return true;
-
     }
 
     validateOCPortRange = (form) => {
@@ -168,7 +158,7 @@ class AppReg extends Component {
         { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 7, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
         { field: fields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 1, update: { edit: true } },
-        { field: fields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: true, width: 2, update: { edit: true } },
+        { field: fields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
     ])
 
@@ -177,8 +167,8 @@ class AppReg extends Component {
     }
 
     annotationForm = () => ([
-        { field: fields.key, label: 'Key', formType: INPUT, rules: { required: true }, width: 7, visible: true },
-        { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 7, visible: true },
+        { field: fields.key, label: 'Key', formType: INPUT, rules: { required: true }, width: 7, visible: true, update: { edit: true } },
+        { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 7, visible: true, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
@@ -192,7 +182,7 @@ class AppReg extends Component {
         { field: fields.portRangeMax, label: 'Port Max', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
         { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
         { field: fields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 1, update: { edit: true } },
-        { field: fields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: true, width: 2, update: { edit: true } },
+        { field: fields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
     ])
 
@@ -212,9 +202,11 @@ class AppReg extends Component {
 
     outboundConnectionsForm = () => ([
         { field: fields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp', 'icmp'], update: { edit: true } },
-        { field: fields.ocPort, label: 'Port', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 5, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
-        { field: fields.ocRemoteIP, label: 'Remote IP', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: this.validateRemoteIP },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 3, onClick: this.removeMultiForm }
+        { field: fields.ocPortMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
+        { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
+        { field: fields.ocPortMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
+        { field: fields.ocRemoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: validateRemoteCIDR },
+        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     getOutboundConnectionsForm = (form) => {
@@ -481,11 +473,23 @@ class AppReg extends Component {
             let form = forms[i];
             if (form.uuid === parentForm.uuid) {
                 for (let outboundConnectionForm of form.forms) {
-                    if (outboundConnectionForm.field === fields.ocPort) {
+                    if (outboundConnectionForm.field === fields.ocPortMin || outboundConnectionForm.field === fields.ocPortMax) {
                         outboundConnectionForm.visible = !(currentForm.value === 'icmp')
-                        break;
+                        outboundConnectionForm.value = undefined
                     }
                 }
+                break;
+            }
+        }
+        if (!isInit) {
+            this.updateState({ forms })
+        }
+    }
+
+    qosSessionProfileChange = (currentForm, forms, isInit) => {
+        for (let form of forms) {
+            if (form.field === fields.qosSessionDuration) {
+                form.visible = currentForm.value !== perpetual.QOS_NO_PRIORITY
                 break;
             }
         }
@@ -536,6 +540,9 @@ class AppReg extends Component {
         }
         else if (form.field === fields.trusted) {
             this.trustedChange(form, forms, isInit)
+        }
+        else if (form.field === fields.qosSessionProfile) {
+            this.qosSessionProfileChange(form, forms, isInit)
         }
         if (flowDataList.length > 0) {
             if (isInit) {
@@ -666,11 +673,14 @@ class AppReg extends Component {
                         else if (multiFormData[fields.kind] && multiFormData[fields.config]) {
                             configs.push(multiFormData)
                         }
-                        else if ((multiFormData[fields.ocPort] && multiFormData[fields.ocProtocol] && multiFormData[fields.ocRemoteIP]) || (multiFormData[fields.ocProtocol] && multiFormData[fields.ocRemoteIP])) {
+                        else if (form.field === fields.requiredOutboundConnectionmulti) {
                             let requiredOutboundConnection = {}
-                            requiredOutboundConnection.remote_ip = multiFormData[fields.ocRemoteIP]
-                            if (multiFormData[fields.ocPort]) {
-                                requiredOutboundConnection.port = parseInt(multiFormData[fields.ocPort])
+                            requiredOutboundConnection.remote_cidr = multiFormData[fields.ocRemoteCIDR]
+                            if (multiFormData[fields.ocPortMax]) {
+                                requiredOutboundConnection.port_range_max = parseInt(multiFormData[fields.ocPortMax])
+                            }
+                            if (multiFormData[fields.ocPortMin]) {
+                                requiredOutboundConnection.port_range_min = parseInt(multiFormData[fields.ocPortMin])
                             }
                             requiredOutboundConnection.protocol = multiFormData[fields.ocProtocol]
                             requiredOutboundConnections.push(requiredOutboundConnection)
@@ -837,6 +847,9 @@ class AppReg extends Component {
                         case fields.deployment:
                             form.options = [perpetual.DEPLOYMENT_TYPE_DOCKER, perpetual.DEPLOYMENT_TYPE_KUBERNETES, perpetual.DEPLOYMENT_TYPE_VM, perpetual.DEPLOYMENT_TYPE_HELM]
                             break;
+                        case fields.qosSessionProfile:
+                            form.options = [perpetual.QOS_LOW_LATENCY, perpetual.QOS_NO_PRIORITY, perpetual.QOS_THROUGHPUT_DOWN_S, perpetual.QOS_THROUGHPUT_DOWN_M, perpetual.QOS_THROUGHPUT_DOWN_L]
+                            break;
                         default:
                             form.options = undefined;
                     }
@@ -862,7 +875,7 @@ class AppReg extends Component {
             { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: SWITCH, visible: this.isUpdate, value: false, update: { edit: true }, tip: 'Upgrade App Instances running in the cloudlets' },
             { field: fields.trusted, label: 'Trusted', formType: SWITCH, visible: true, value: false, update: { id: ['37'] }, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
             { field: fields.accessPorts, label: 'Ports', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], update: { id: ['7'], ignoreCase: true }, visible: true, tip: 'Ports:</b>Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443\nHealth Check:</b> Periodically tests the health of applications as TCP packets are generated from the load balancer to the application and its associated port. This information is useful for Developers to manage and mitigate issues.' },
-            { field: fields.annotations, label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
+            { field: fields.annotations, label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, update: { id: ['14'] }, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
             { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, update: { id: ['21', '21.1', '21.2'] }, tip: 'Customization files passed through to implementing services' },
             { field: fields.requiredOutboundConnections, label: 'Required Outbound Connections', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Connections', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getOutboundConnectionsForm }], visible: false, update: { id: ['38', '38.1', '38.2', '38.4'] }, tip: 'Connections this app require to determine if the app is compatible with a trust policy' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
@@ -873,6 +886,8 @@ class AppReg extends Component {
             { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: SWITCH, visible: false, value: false, update: { id: ['22'] }, advance: false, tip: 'Option to run App on all nodes of the cluster' },
             { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: { id: ['13'] }, tip: 'Command that the container runs to start service', advance: false },
             { field: fields.templateDelimiter, label: 'Template Delimeter', formType: INPUT, placeholder: 'Enter Template Delimeter', rules: { required: false }, visible: true, update: { id: ['33'] }, tip: 'Delimiter to be used for template parsing, defaults to [[ ]]', advance: false },
+            { field: fields.qosSessionProfile, label: 'QOS Network Prioritization', formType: SELECT, placeholder: 'Select Profile', visible: true, update: { id: ['43'] }, tip: 'Qualifier for the requested latency profile, one of NoPriority, LowLatency, ThroughputDownS, ThroughputDownM, ThroughputDownL', advance: false },
+            { field: fields.qosSessionDuration, label: 'QOS Session Duration', formType: TIME_COUNTER, placeholder: 'Enter Duration', rules: { required: false, onBlur: true }, visible: false, update: { id: ['44'] }, tip: 'Session duration in seconds. Maximal value of 24 hours is used if not set', default: '24h', advance: false },
             { field: fields.skipHCPorts, update: { id: ['34'], ignoreCase: true } },
         ]
     }
@@ -959,7 +974,7 @@ class AppReg extends Component {
                             portForm.value = !skipHCPort
                         }
                     }
-                    forms.splice(14 + multiFormCount, 0, this.getPortForm(portForms))
+                    forms.splice(17 + multiFormCount, 0, this.getPortForm(portForms))
                     multiFormCount += 1
                 }
             }
@@ -981,7 +996,7 @@ class AppReg extends Component {
                             annotationForm.value = value
                         }
                     }
-                    forms.splice(15 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
+                    forms.splice(18 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
                     multiFormCount += 1
                 }
             }
@@ -999,7 +1014,7 @@ class AppReg extends Component {
                             configForm.value = config[fields.config]
                         }
                     }
-                    forms.splice(16 + multiFormCount, 0, this.getConfigForm(configForms))
+                    forms.splice(19 + multiFormCount, 0, this.getConfigForm(configForms))
                     multiFormCount += 1
                 }
             }
@@ -1013,15 +1028,19 @@ class AppReg extends Component {
                         if (outboundConnectionsForm.field === fields.ocProtocol) {
                             outboundConnectionsForm.value = requiredOutboundConnection['protocol']
                         }
-                        else if (outboundConnectionsForm.field === fields.ocRemoteIP) {
-                            outboundConnectionsForm.value = requiredOutboundConnection['remote_ip']
+                        else if (outboundConnectionsForm.field === fields.ocRemoteCIDR) {
+                            outboundConnectionsForm.value = requiredOutboundConnection['remote_cidr']
                         }
-                        else if (outboundConnectionsForm.field === fields.ocPort) {
+                        else if (outboundConnectionsForm.field === fields.ocPortMin) {
                             outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
-                            outboundConnectionsForm.value = requiredOutboundConnection['port']
+                            outboundConnectionsForm.value = requiredOutboundConnection['port_range_min']
+                        }
+                        else if (outboundConnectionsForm.field === fields.ocPortMax) {
+                            outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
+                            outboundConnectionsForm.value = requiredOutboundConnection['port_range_max']
                         }
                     }
-                    forms.splice(17 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
+                    forms.splice(20 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
                     multiFormCount += 1
                 }
             }
@@ -1073,8 +1092,7 @@ class AppReg extends Component {
             this.updateFlowDataList.push(appFlow.portFlow(this.tlsCount))
             this.originalData = cloneDeep(data)
             await this.loadDefaultData(forms, data)
-            if(this.isClone)
-            {
+            if (this.isClone) {
                 this.requestedRegionList.push(data[fields.region])
                 data[fields.region] = [data[fields.region]]
             }

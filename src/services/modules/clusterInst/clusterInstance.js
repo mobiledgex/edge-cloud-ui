@@ -2,7 +2,7 @@ import * as formatter from '../../model/format'
 import * as serverData from '../../model/serverData'
 import { showAuthSyncRequest } from '../../service';
 import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util'
-import { idFormatter } from '../../../helper/formatter';
+import { idFormatter, serverFields } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
 import { customize } from '../../modules/clusterInst';
@@ -98,7 +98,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
                             clusterData[fields.cloudletStatus] = cloudletInfo[fields.state]
                         }
                     }
-                    clusterData[fields.cloudletStatus] = clusterData[fields.cloudletStatus] ? clusterData[fields.cloudletStatus] : perpetual.CLOUDLET_STATUS_UNKNOWN
+                    clusterData[fields.cloudletStatus] = clusterData[fields.cloudletStatus] ? clusterData[fields.cloudletStatus] : serverFields.UNKNOWN
                     dataList.push(clusterData)
                 }
             }
@@ -202,7 +202,7 @@ export const updateClusterInst = (self, data, callback) => {
 
 export const deleteClusterInst = (self, data) => {
     let requestData = clusterKey(data)
-    if (data[fields.cloudletStatus] !== perpetual.CLOUDLET_STATUS_READY && redux_org.isAdmin(self)) {
+    if (data[fields.cloudletStatus] !== serverFields.READY && redux_org.isAdmin(self)) {
         requestData.clusterinst.crm_override = perpetual.CRM_OVERRIDE_IGNORE_CRM
     }
     return { uuid: data.uuid, method: endpoint.DELETE_CLUSTER_INST, data: requestData, success: `Cluster Instance ${data[fields.appName]} deleted successfully` }

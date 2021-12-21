@@ -16,7 +16,7 @@ import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 import { getCloudletManifest, revokeAccessKey, fetchShowNode } from '../../../services/modules/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
-import { uiFormatter } from '../../../helper/formatter';
+import { serverFields, uiFormatter } from '../../../helper/formatter';
 import { perpetual, role } from '../../../helper/constant';
 import { responseValid } from '../../../services/service';
 import ShowNode from './ShowNode'
@@ -129,7 +129,7 @@ class CloudletList extends React.Component {
     }
 
     customStream = (data) => {
-        return data[fields.infraApiAccess] === 'Restricted' && data[fields.cloudletStatus] !== perpetual.STATUS_READY
+        return data[fields.infraApiAccess] === serverFields.RESTRICTED_ACCESS && data[fields.cloudletStatus] !== serverFields.READY
     }
 
     canAdd = () => {

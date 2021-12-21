@@ -40,7 +40,6 @@ class CloudletPoolReg extends React.Component {
         this.isUpdate = this.props.isUpdate
         this.action = props.action ? props.action : perpetual.ADD_ORGANIZATION
         this.isOrgDelete = this.action === perpetual.DELETE_ORGANIZATION || this.action === perpetual.ACTION_POOL_ACCESS_ADMIN_REMOVE
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.operatorList = []
         this.organizationList = []
         this.cloudletList = []
@@ -382,7 +381,7 @@ class CloudletPoolReg extends React.Component {
                 if (form.formType === SELECT || form.formType === DUALLIST) {
                     switch (form.field) {
                         case fields.region:
-                            form.options = this.regions;
+                            form.options = this.props.regions;
                             break;
                         case fields.operatorName:
                             form.options = this.operatorList
@@ -468,7 +467,8 @@ class CloudletPoolReg extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 };
 

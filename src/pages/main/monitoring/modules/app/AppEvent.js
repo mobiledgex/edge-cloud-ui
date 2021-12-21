@@ -1,12 +1,14 @@
 import React from 'react'
 import EventList from '../../list/EventList'
 import { orgEvents } from '../../../../../services/modules/audit'
-import {redux_org} from '../../../../../helper/reduxData'
 import randomColor from 'randomcolor'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { IconButton, Tooltip } from '@material-ui/core'
 import { authSyncRequest } from '../../../../../services/service'
+import { equal } from '../../../../../helper/constant/operators'
+import { fields } from '../../../../../services/model/format'
+import { Skeleton } from '@material-ui/lab';
 
 const appEventKeys = [
     { label: 'Name', serverField: 'name', summary: false, filter: true },
@@ -35,7 +37,7 @@ class MexAppEvent extends React.Component {
             loading: false
         }
         this._isMounted = false
-        this.regions = props.regions
+        this.isInit = true
     }
 
     updateState = (data) => {
@@ -61,8 +63,7 @@ class MexAppEvent extends React.Component {
         this.event({ starttime, endtime }, true)
     }
 
-    filterData = (filter, dataList) => {
-        let search = filter.search
+    filterData = (search, dataList) => {
         let valid = []
         return dataList.filter(data => {
             let mtags = data.mtags
@@ -78,10 +79,12 @@ class MexAppEvent extends React.Component {
 
     render() {
         const { eventData, colors, showMore, loading } = this.state
-        const { filter } = this.props
+        const { search } = this.props
         return (
+            this.isInit ? 
+            <Skeleton variant='rect' height={300} /> :
             <div>
-                <EventList eventData={this.filterData(filter, eventData)} filter={filter} colors={colors} keys={appEventKeys} header={this.header} itemSize={105} itemExpandSize={350} showMore={showMore} />
+                <EventList eventData={this.filterData(search, eventData)} colors={colors} keys={appEventKeys} header={this.header} itemSize={105} itemExpandSize={350} showMore={showMore} />
                 {showMore ? <div className='event-list-more' align="center">
                     {loading ? <CircularProgress size={20} /> :
                         <Tooltip title='More' onClick={this.loadMore}>
@@ -94,13 +97,13 @@ class MexAppEvent extends React.Component {
         )
     }
 
-    event = async (range, more) => {
+    event = async (more) => {
         if (this._isMounted) {
-            const {orgInfo} = this.props
+            const  {range, organization} = this.props
             this.updateState({ loading: true })
             const requestData = orgEvents({
                 match: {
-                    orgs: [redux_org.isAdmin(orgInfo) ? this.props.org : redux_org.nonAdminOrg(orgInfo)],
+                    orgs: [organization[fields.organizationName]],
                     types: ["event"],
                     tags: { app: "*" }
                 },
@@ -122,28 +125,21 @@ class MexAppEvent extends React.Component {
 
                 this.updateState({ eventData: dataList, colors, showMore })
             }
+            this.isInit = false
             this.updateState({loading: false})
         }
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.org !== this.props.org) {
-            if (this._isMounted) {
-                this.setState({ eventData: [] }, () => {
-                    this.event(this.props.range)
-                })
-            }
-        }
-        if (prevProps.range !== this.props.range) {
-            this.event(this.props.range)
+        const { range } = this.props
+        if (!equal(range, prevProps.range)) {
+            this.event()
         }
     }
 
     componentDidMount() {
         this._isMounted = true
-        if (!redux_org.isAdmin(this.props.orgInfo) || this.props.org) {
-            this.event(this.props.range)
-        }
+        this.event()
     }
 
     componentWillUnmount() {

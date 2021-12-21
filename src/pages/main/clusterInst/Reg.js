@@ -47,7 +47,6 @@ class ClusterInstReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         //To avoid refecthing data from server
         this.requestedRegionList = [];
         this.organizationList = []
@@ -87,7 +86,7 @@ class ClusterInstReg extends React.Component {
             this.props.handleLoadingSpinner(true)
             sendRequests(this, requestList).addEventListener('message', event => {
                 let mcList = event.data
-                this.cloudletList = cloudletWithInfo(mcList)
+                this.cloudletList = cloudletWithInfo(mcList, perpetual.PAGE_CLUSTER_INSTANCES)
                 this.props.handleLoadingSpinner(false)
                 this.updateUI(form)
                 this.updateState({ forms })
@@ -467,7 +466,7 @@ class ClusterInstReg extends React.Component {
                             form.options = this.organizationList
                             break;
                         case fields.region:
-                            form.options = this.regions;
+                            form.options = this.props.regions;
                             break;
                         case fields.operatorName:
                             form.options = this.cloudletList
@@ -510,7 +509,6 @@ class ClusterInstReg extends React.Component {
             cloudlet[fields.operatorName] = data[fields.operatorName]
             cloudlet[fields.cloudletLocation] = data[fields.cloudletLocation]
             this.cloudletList = [cloudlet]
-
             this.updateState({ mapData: [cloudlet] })
 
             let flavor = {}
@@ -609,7 +607,8 @@ class ClusterInstReg extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 };
 

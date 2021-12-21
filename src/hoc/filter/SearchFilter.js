@@ -36,15 +36,22 @@ class SearchFilter extends React.Component {
             filterText: '',
             focused: false
         }
+        this.typingTimeout = undefined
     }
 
     onValueChange = (e) => {
         let value = e.target.value
         this.setState({ filterText: value })
-        if (this.props.insensitive) {
-            value = value ? value.toLowerCase() : value
+        if (this.typingTimeout) {
+            clearTimeout(this.typingTimeout)
+            this.typingTimeout = undefined
         }
-        this.props.onFilter(value)
+        this.typingTimeout = setTimeout(() => {
+            if (this.props.insensitive) {
+                value = value ? value.toLowerCase() : value
+            }
+            this.props.onFilter(value)
+        }, 500)
     }
 
     onClear = () => {
@@ -75,7 +82,7 @@ class SearchFilter extends React.Component {
                 } : { root: classes.inputRoot }}
                 startAdornment={
                     <InputAdornment className={classes.searchAdorment} style={{ fontSize: 17 }} position="start">
-                        <SearchIcon style={{color: focused || compact ? 'rgba(118, 255, 3, 0.7)' : 'white' }} />
+                        <SearchIcon style={{ color: focused || compact ? 'rgba(118, 255, 3, 0.7)' : 'white' }} />
                     </InputAdornment>
                 }
                 endAdornment={
