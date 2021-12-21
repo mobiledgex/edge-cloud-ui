@@ -53,7 +53,6 @@ export const keys = () => ([
 export const getKey = (data, isCreate) => {
 
     let app = {}
-    let serverless_config = {}
 
     app.key = {
         organization: data[fields.organizationName],
