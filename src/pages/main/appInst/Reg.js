@@ -42,7 +42,6 @@ class AppInstReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.requestedRegionList = []
         this.organizationList = []
         this.cloudletList = []
@@ -529,7 +528,7 @@ class AppInstReg extends React.Component {
                 if (form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === SELECT_RADIO_TREE_GROUP) {
                     switch (form.field) {
                         case fields.region:
-                            form.options = this.regions;
+                            form.options = this.props.regions;
                             break;
                         case fields.organizationName:
                             form.options = this.organizationList
@@ -732,7 +731,8 @@ class AppInstReg extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 };
 

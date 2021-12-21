@@ -273,6 +273,9 @@ export const fields = {
     networkName: 'networkName',
     routes: 'routes',
     connectionType: 'connectionType',
+    destinationCidr: 'destination_cidr',
+    nextHopIp: 'next_hop_ip',
+    accessRoutes: 'accessRoutes'
     qosSessionProfile:'qosSessionProfile',
     qosSessionDuration:'qosSessionDuration'
 }
