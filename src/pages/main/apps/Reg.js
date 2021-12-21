@@ -21,6 +21,7 @@ import { refreshAllAppInst, showAppInsts } from '../../../services/modules/appIn
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { HELP_APP_REG } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'
+import { validateRemoteCIDR } from '../../../helper/constant/shared'
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from '@material-ui/core';
@@ -62,18 +63,6 @@ class AppReg extends Component {
         if (this._isMounted) {
             this.setState({ ...data })
         }
-    }
-
-    validateRemoteCIDR = (form) => {
-        if (form.value && form.value.length > 0) {
-            if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([0-9]|1[0-9]|2[0-9]|3[0-2]?)$/.test(form.value)) {
-                form.error = 'Remote CIDR format is invalid (must be between 0.0.0.0/0 to 255.255.255.255/32)'
-                return false;
-            }
-        }
-        form.error = undefined;
-        return true;
-
     }
 
     validateOCPortRange = (form) => {
@@ -216,7 +205,7 @@ class AppReg extends Component {
         { field: fields.ocPortMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: fields.ocPortMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
-        { field: fields.ocRemoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: this.validateRemoteCIDR },
+        { field: fields.ocRemoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: validateRemoteCIDR },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 

@@ -22,7 +22,6 @@ class AutoProvPolicyReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         this.organizationList = []
         this.cloudletList = []
     }
@@ -308,7 +307,7 @@ class AutoProvPolicyReg extends React.Component {
                             form.options = this.organizationList
                             break;
                         case fields.region:
-                            form.options = this.regions;
+                            form.options = this.props.regions;
                             break;
                         case fields.cloudlets:
                             form.options = this.getCloudletData(this.cloudletList);
@@ -463,7 +462,8 @@ class AutoProvPolicyReg extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 };
 

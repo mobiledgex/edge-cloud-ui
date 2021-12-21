@@ -38,7 +38,7 @@ class MonitoringPreferences extends React.Component {
         this.state = {
             forms: []
         }
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        this.regions = this.props.regions
     }
 
     cloudletForms = () => ([
@@ -146,7 +146,8 @@ class MonitoringPreferences extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 };
 
