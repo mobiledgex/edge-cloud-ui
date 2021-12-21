@@ -55,7 +55,6 @@ class AppReg extends Component {
         this.updateFlowDataList = []
         this.imagePathTyped = false
         this.appInstExist = false
-        this.expandServerlessConfig = false
     }
 
     updateState = (data) => {
@@ -292,7 +291,7 @@ class AppReg extends Component {
 
     deploymentValueChange = (currentForm, forms, isInit) => {
         forms = forms.filter((form) => {
-            if (form.field === fields.imageType) {
+            if (form.field === fields.imageType) { 
                 form.value = currentForm.value === perpetual.DEPLOYMENT_TYPE_HELM ? perpetual.IMAGE_TYPE_HELM :
                     currentForm.value === perpetual.DEPLOYMENT_TYPE_VM ? perpetual.IMAGE_TYPE_QCOW : perpetual.IMAGE_TYPE_DOCKER
                 return form
@@ -334,9 +333,11 @@ class AppReg extends Component {
                 return form
             }
         })
-        if (currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
-            for (const form of forms) {
+        for (const form of forms) { 
+            if (currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
                 form.field === fields.allowServerless ? form.visible = true : null
+            } else {
+                form.field === fields.allowServerless ? form.visible = false : null
             }
         }
         if (!isInit) {
@@ -603,13 +604,11 @@ class AppReg extends Component {
     }
 
     serverLessConfig = (e, form) => {
-        let forms = this.state.forms
-        this.expandServerlessConfig = !this.expandServerlessConfig
-        form.icon = this.expandServerlessConfig ? 'expand_more' : 'expand_less'
+        let forms = this.state.forms    
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.serverlessMinReplicas || form.field === fields.serverlessVcpu || form.field === fields.serverlessRam) {
-                form.visible = this.expandServerlessConfig
+                form.visible = true
             }
         }
         this.reloadForms()
