@@ -275,7 +275,7 @@ export const fields = {
     connectionType: 'connectionType',
     destinationCidr: 'destination_cidr',
     nextHopIp: 'next_hop_ip',
-    accessRoutes: 'accessRoutes'
+    accessRoutes: 'accessRoutes',
     qosSessionProfile:'qosSessionProfile',
     qosSessionDuration:'qosSessionDuration'
 }
