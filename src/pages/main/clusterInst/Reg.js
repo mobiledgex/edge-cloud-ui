@@ -45,7 +45,6 @@ class ClusterInstReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
         //To avoid refecthing data from server
         this.requestedRegionList = [];
         this.organizationList = []
@@ -419,7 +418,7 @@ class ClusterInstReg extends React.Component {
                             form.options = this.organizationList
                             break;
                         case fields.region:
-                            form.options = this.regions;
+                            form.options = this.props.regions;
                             break;
                         case fields.operatorName:
                             form.options = this.cloudletList
@@ -552,7 +551,8 @@ class ClusterInstReg extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 };
 
