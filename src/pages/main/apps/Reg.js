@@ -3,7 +3,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, SWITCH, TEXT_AREA, ICON_BUTTON, SELECT_RADIO_TREE, formattedData, HEADER, MULTI_FORM, MAIN_HEADER } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, SWITCH, TEXT_AREA, ICON_BUTTON, SELECT_RADIO_TREE, formattedData, HEADER, MULTI_FORM, MAIN_HEADER, TIME_COUNTER } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -27,6 +27,7 @@ import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from '@material-ui/core';
 import { endpoint, perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
+
 const MexFlow = lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 
 class AppReg extends Component {
@@ -485,6 +486,18 @@ class AppReg extends Component {
         }
     }
 
+    qosSessionProfileChange = (currentForm, forms, isInit) => {
+        for (let form of forms) {
+            if (form.field === fields.qosSessionDuration) {
+                form.visible = currentForm.value !== perpetual.QOS_NO_PRIORITY
+                break;
+            }
+        }
+        if (!isInit) {
+            this.updateState({ forms })
+        }
+    }
+
     checkForms = (form, forms, isInit = false, data) => {
         let flowDataList = []
         if (form.field === fields.region) {
@@ -527,6 +540,9 @@ class AppReg extends Component {
         }
         else if (form.field === fields.trusted) {
             this.trustedChange(form, forms, isInit)
+        }
+        else if (form.field === fields.qosSessionProfile) {
+            this.qosSessionProfileChange(form, forms, isInit)
         }
         if (flowDataList.length > 0) {
             if (isInit) {
@@ -831,6 +847,9 @@ class AppReg extends Component {
                         case fields.deployment:
                             form.options = [perpetual.DEPLOYMENT_TYPE_DOCKER, perpetual.DEPLOYMENT_TYPE_KUBERNETES, perpetual.DEPLOYMENT_TYPE_VM, perpetual.DEPLOYMENT_TYPE_HELM]
                             break;
+                        case fields.qosSessionProfile:
+                            form.options = [perpetual.QOS_LOW_LATENCY, perpetual.QOS_NO_PRIORITY, perpetual.QOS_THROUGHPUT_DOWN_S, perpetual.QOS_THROUGHPUT_DOWN_M, perpetual.QOS_THROUGHPUT_DOWN_L]
+                            break;
                         default:
                             form.options = undefined;
                     }
@@ -867,6 +886,8 @@ class AppReg extends Component {
             { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: SWITCH, visible: false, value: false, update: { id: ['22'] }, advance: false, tip: 'Option to run App on all nodes of the cluster' },
             { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: { id: ['13'] }, tip: 'Command that the container runs to start service', advance: false },
             { field: fields.templateDelimiter, label: 'Template Delimeter', formType: INPUT, placeholder: 'Enter Template Delimeter', rules: { required: false }, visible: true, update: { id: ['33'] }, tip: 'Delimiter to be used for template parsing, defaults to [[ ]]', advance: false },
+            { field: fields.qosSessionProfile, label: 'QOS Network Prioritization', formType: SELECT, placeholder: 'Select Profile', visible: true, update: { id: ['43'] }, tip: 'Qualifier for the requested latency profile, one of NoPriority, LowLatency, ThroughputDownS, ThroughputDownM, ThroughputDownL', advance: false },
+            { field: fields.qosSessionDuration, label: 'QOS Session Duration', formType: TIME_COUNTER, placeholder: 'Enter Duration', rules: { required: false, onBlur: true }, visible: false, update: { id: ['44'] }, tip: 'Session duration in seconds. Maximal value of 24 hours is used if not set', default: '24h', advance: false },
             { field: fields.skipHCPorts, update: { id: ['34'], ignoreCase: true } },
         ]
     }
@@ -953,7 +974,7 @@ class AppReg extends Component {
                             portForm.value = !skipHCPort
                         }
                     }
-                    forms.splice(15 + multiFormCount, 0, this.getPortForm(portForms))
+                    forms.splice(17 + multiFormCount, 0, this.getPortForm(portForms))
                     multiFormCount += 1
                 }
             }
@@ -975,7 +996,7 @@ class AppReg extends Component {
                             annotationForm.value = value
                         }
                     }
-                    forms.splice(16 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
+                    forms.splice(18 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
                     multiFormCount += 1
                 }
             }
@@ -993,7 +1014,7 @@ class AppReg extends Component {
                             configForm.value = config[fields.config]
                         }
                     }
-                    forms.splice(17 + multiFormCount, 0, this.getConfigForm(configForms))
+                    forms.splice(19 + multiFormCount, 0, this.getConfigForm(configForms))
                     multiFormCount += 1
                 }
             }
@@ -1019,7 +1040,7 @@ class AppReg extends Component {
                             outboundConnectionsForm.value = requiredOutboundConnection['port_range_max']
                         }
                     }
-                    forms.splice(18 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
+                    forms.splice(20 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
                     multiFormCount += 1
                 }
             }
@@ -1071,8 +1092,7 @@ class AppReg extends Component {
             this.updateFlowDataList.push(appFlow.portFlow(this.tlsCount))
             this.originalData = cloneDeep(data)
             await this.loadDefaultData(forms, data)
-            if(this.isClone)
-            {
+            if (this.isClone) {
                 this.requestedRegionList.push(data[fields.region])
                 data[fields.region] = [data[fields.region]]
             }

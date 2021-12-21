@@ -37,6 +37,8 @@ export const keys = () => ([
     { field: fields.autoProvPolicies, serverField: 'auto_prov_policies', label: 'Auto Provisioning Policies', dataType: perpetual.TYPE_ARRAY },
     { field: fields.alertPolicies, serverField: 'alert_policies', label: 'Alert Policies', dataType: perpetual.TYPE_ARRAY },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
+    { field: fields.qosSessionProfile, serverField: 'qos_session_profile', label: 'QOS Network Prioritization' },
+    { field: fields.qosSessionDuration, serverField: 'qos_session_duration', label: 'QOS Session Duration' },
     { field: fields.trusted, serverField: 'trusted', label: 'Trusted', visible: false, sortable: true, format: true },
     { field: fields.configs, serverField: 'configs', label: 'Configs', keys: configs() },
     { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: false },
@@ -117,6 +119,14 @@ export const getKey = (data, isCreate) => {
 
         if (data[fields.vmappostype]) {
             app.vm_app_os_type = idFormatter.vmAppOS(data[fields.vmappostype])
+        }
+
+        if (data[fields.qosSessionProfile]) {
+            app.qos_session_profile = idFormatter.qosProfile(data[fields.qosSessionProfile])
+        }
+
+        if (data[fields.qosSessionDuration]) {
+            app.qos_session_duration = data[fields.qosSessionDuration]
         }
 
         if (data[fields.fields]) {
