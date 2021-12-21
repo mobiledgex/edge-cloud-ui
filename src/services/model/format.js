@@ -277,5 +277,6 @@ export const fields = {
     serverlessConfig: 'serverlessConfig',
     serverlessMinReplicas: 'serverlessMinReplicas',
     serverlessVcpu: 'serverlessVcpu',
-    serverlessRam: 'serverlessRam'
+    serverlessRam: 'serverlessRam',
+    accessServerlessConfig: 'accessServerlessConfig'
 }
