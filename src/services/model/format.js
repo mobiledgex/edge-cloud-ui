@@ -273,5 +273,10 @@ export const fields = {
     allianceOrganization: 'allianceOrganization',
     networkName: 'networkName',
     routes: 'routes',
-    connectionType: 'connectionType'
+    connectionType: 'connectionType',
+    destinationCidr: 'destination_cidr',
+    nextHopIp: 'next_hop_ip',
+    accessRoutes: 'accessRoutes',
+    qosSessionProfile:'qosSessionProfile',
+    qosSessionDuration:'qosSessionDuration'
 }

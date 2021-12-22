@@ -77,9 +77,9 @@ export const platformType = (label) => {
 export const infraApiAccess = (label) => {
     switch (label) {
         case perpetual.INFRA_API_ACCESS_DIRECT:
-            return serverFields.DIRECT
+            return serverFields.DIRECT_ACCESS
         case perpetual.INFRA_API_ACCESS_RESTRICTED:
-            return serverFields.RESTRICTED
+            return serverFields.RESTRICTED_ACCESS
         default:
             return label
     }
@@ -186,6 +186,23 @@ export const connectionType = (label) => {
             return serverFields.CONNECT_TO_CLUSTER_NODES
         case perpetual.CONNECT_TO_ALL:
             return serverFields.CONNECT_TO_ALL
+        default:
+            return label
+    }
+}
+
+export const qosProfile = (label) => {
+    switch (label) {
+        case perpetual.QOS_LOW_LATENCY:
+            return serverFields.LOW_LATENCY
+        case perpetual.QOS_NO_PRIORITY:
+            return serverFields.NO_PRIORITY
+        case perpetual.QOS_THROUGHPUT_DOWN_S:
+            return serverFields.THROUGHPUT_DOWN_S
+        case perpetual.QOS_THROUGHPUT_DOWN_M:
+            return serverFields.THROUGHPUT_DOWN_M
+        case perpetual.QOS_THROUGHPUT_DOWN_L:
+            return serverFields.THROUGHPUT_DOWN_L
         default:
             return label
     }
