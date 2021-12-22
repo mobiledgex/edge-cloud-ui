@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
@@ -208,29 +208,28 @@ export default function DataGrid(props) {
     }
 
     useEffect(() => {
-        if(groupBy && groupBy.length > 0)
-        {
-        let groups = getGroupedData(dataList)
-        if (groups) {
-            let groupList = []
-            Object.keys(groups).map(group => {
-                groupList.push({ value: group, data: groups[group] })
-            })
-            setGroupList(groupList)
-            setList([])
-            setSelect(undefined)
-        }}
-        else
-        {
+        if (groupBy && groupBy.length > 0) {
+            let groups = getGroupedData(dataList)
+            if (groups) {
+                let groupList = []
+                Object.keys(groups).map(group => {
+                    groupList.push({ value: group, data: groups[group] })
+                })
+                setGroupList(groupList)
+                setList([])
+                setSelect(undefined)
+            }
+        }
+        else {
             setGroupList([])
             setList(dataList)
-            setSelect(undefined) 
+            setSelect(undefined)
         }
     }, [groupBy]);
 
     useEffect(() => {
-        if(!select)
-        setList(dataList)
+        if (!select)
+            setList(dataList)
     }, [dataList]);
 
     const columns = [
@@ -271,8 +270,7 @@ export default function DataGrid(props) {
             }
             setSelected(newSelected);
         }
-        else if(column.clickable)
-        {
+        else if (column.clickable) {
             cellClick(column, data)
         }
     }
@@ -282,23 +280,21 @@ export default function DataGrid(props) {
         setAnchorEl(undefined)
     }
 
-    
-
     return (
         <React.Fragment>
             {
                 groupList.length > 0 ?
                     groupList.map((group, i) => (
                         select === undefined || select === group.value ? <div key={i} ><div style={{ height: 50, backgroundColor: '#1D1D26', display: 'flex', alignItems: 'center' }}>
-                            <IconButton onClick={()=>{groupClick(group)}}><Icon>{select ? 'keyboard_arrow_down' : 'chevron_right'}</Icon></IconButton>
+                            <IconButton onClick={() => { groupClick(group) }}><Icon>{select ? 'keyboard_arrow_down' : 'chevron_right'}</Icon></IconButton>
                             <Typography>{group.value}</Typography>
-                        </div><Divider/></div> : null
+                        </div><Divider /></div> : null
                     ))
                     : null
             }
             {
-                itemList.length === 0 ? <NoData search={searchValue} loading={loading} /> :
-                    <Paper id='table-container' style={{ height: 'inherit', width: '100%' }}>
+                itemList.length === 0 && groupList.length === 0 ? <NoData search={searchValue} loading={loading} /> :
+                    itemList.length > 1 ? <Paper id='table-container' style={{ height: 'inherit', width: '100%' }}>
                         <VirtualizedTable
                             rowCount={itemList.length}
                             rowGetter={({ index }) => itemList[index]}
@@ -309,7 +305,7 @@ export default function DataGrid(props) {
                             selection={selected}
                             action={actionMenu && actionMenu.length > 0}
                         />
-                    </Paper>
+                    </Paper> : null
             }
             <Actions anchorEl={anchorEl && anchorEl.target} onClose={() => { setAnchorEl(undefined) }} onClick={onActionClick} actionMenu={actionMenu} group={anchorEl && anchorEl.group} />
         </React.Fragment>
