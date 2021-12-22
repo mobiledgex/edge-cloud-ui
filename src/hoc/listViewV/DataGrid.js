@@ -294,7 +294,7 @@ export default function DataGrid(props) {
             }
             {
                 itemList.length === 0 && groupList.length === 0 ? <NoData search={searchValue} loading={loading} /> :
-                    itemList.length > 1 ? <Paper id='table-container' style={{ height: 'inherit', width: '100%' }}>
+                    itemList.length > 0 ? <Paper id='table-container' style={{ height: 'inherit', width: '100%' }}>
                         <VirtualizedTable
                             rowCount={itemList.length}
                             rowGetter={({ index }) => itemList[index]}
