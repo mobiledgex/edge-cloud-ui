@@ -38,7 +38,8 @@ export const createNetwork = async (self, data, callback) => {
 }
 
 export const showNetwork = (self, data) => {
-    return { method: endpoint.SHOW_NETWORKS, data: data, keys: keys() }
+    let requestData = getKey(data, true)
+    return { method: endpoint.SHOW_NETWORKS, data: requestData, keys: keys() }
 }
 
 export const updateNetwork = async (self, data) => {

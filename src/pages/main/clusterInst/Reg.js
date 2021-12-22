@@ -144,18 +144,19 @@ class ClusterInstReg extends React.Component {
             }
         }
 
-        this.networkList = {}
+        this.networkOrgList = {}
         if (region && operatorName && cloudletList) {
             await Promise.all(cloudletList.map(async (cloudletName) => {
                 let key = `${region}>${operatorName}>${cloudletName}`
                 if (this.networkOrgList[key] === undefined) {
-                    let networkList = await showAuthSyncRequest(this, showNetwork({ region: region, cloudletName, operatorName }))
+                    let networkList = await showAuthSyncRequest(this, showNetwork(this, { region, cloudletName, operatorName }))
                     if (networkList.length > 0) {
-                        const networkData = networkList.map((data) => {
-                            return { [fields.network]: data.key['name'], region: region }
-
+                        networkList = networkList.map((data) => {
+                            return data.networkName 
                         })
-                        this.networkOrgList[key] = networkData
+                    }
+                    if (networkList && networkList.length > 0) {
+                        this.networkOrgList[key] = networkList
                     }
                 }
                 if (this.networkOrgList[key]) {
@@ -229,6 +230,12 @@ class ClusterInstReg extends React.Component {
                     this.updateUI(form)
                 }
             }
+            else if (form.field === fields.network) {
+                if (!isInit) {
+                    this.networkList = {}
+                    this.updateUI(form)
+                }
+            }
         }
     }
 
@@ -270,7 +277,9 @@ class ClusterInstReg extends React.Component {
                 break;
             }
             if (form.field === fields.network) {
-                this.getNetworkData(form, forms)
+                if (!isInit) {
+                    this.getNetworkData(form, forms)
+                }
             }
         }
         this.updateState({
@@ -547,9 +556,9 @@ class ClusterInstReg extends React.Component {
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], update: { key: true } },
             { field: fields.cloudletName, label: 'Cloudlet', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }], update: { key: true } },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: false, tip: 'Deployment type (kubernetes or docker)' },
-            { field: fields.network, label: 'Network', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE_GROUP, placeholder: 'Select Network', visible: true, dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.ipAccess, label: 'IP Access', formType: SELECT, placeholder: 'Select IP Access', visible: true, update: false, tip: 'IpAccess indicates the type of RootLB that Developer requires for their App' },
-            { field: fields.autoScalePolicyName, label: 'Auto Scale Policy', formType: SELECT, placeholder: 'Select Auto Scale Policy', visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.organizationName }], update: { id: ['18'] } },
+            { field: fields.autoScalePolicyName, label: 'Auto Scale Policy', formType: SELECT, placeholder: 'Select Auto Scale Policy', visible: true, update: { id: ['18'] } },
+            { field: fields.network, label: 'Network', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE_GROUP, placeholder: 'Select Network', visible: true },
             { field: fields.flavorName, label: 'Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE_GROUP, placeholder: 'Select Flavor', rules: { required: true, copy:true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'FlavorKey uniquely identifies a Flavor' },
             { field: fields.numberOfMasters, label: 'Number of Masters', formType: INPUT, placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, tip: 'Number of k8s masters (In case of docker deployment, this field is not required)' },
             { field: fields.numberOfNodes, label: 'Number of Workers', formType: INPUT, placeholder: 'Enter Number of Workers', rules: { type: 'number' }, visible: false, update: { id: ['14'] }, tip: 'Number of k8s nodes (In case of docker deployment, this field is not required)' },
