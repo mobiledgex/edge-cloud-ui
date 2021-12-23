@@ -1,5 +1,5 @@
 import * as perpetual from "../../../helper/constant/perpetual"
-import { accessType, imageType, vmAppOS, kind } from "../../../helper/formatter/label"
+import { accessType, imageType, vmAppOS, kind, qosProfile } from "../../../helper/formatter/label"
 import { fields } from "../../model/format"
 
 export const customize = (request, value) => {
@@ -7,6 +7,7 @@ export const customize = (request, value) => {
     value[fields.accessType] = accessType(value[fields.accessType])
     value[fields.imageType] = imageType(value[fields.imageType])
     value[fields.vmappostype] = vmAppOS(value[fields.vmappostype])
+    value[fields.qosSessionProfile] = qosProfile(value[fields.qosSessionProfile])
     value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
     value[fields.deploymentManifest] = value[fields.deploymentManifest] ? value[fields.deploymentManifest].trim() : value[fields.deploymentManifest]
     if (value[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {

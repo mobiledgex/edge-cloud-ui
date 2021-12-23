@@ -278,5 +278,10 @@ export const fields = {
     serverlessMinReplicas: 'serverlessMinReplicas',
     serverlessVcpu: 'serverlessVcpu',
     serverlessRam: 'serverlessRam',
-    accessServerlessConfig: 'accessServerlessConfig'
+    accessServerlessConfig: 'accessServerlessConfig',
+    destinationCidr: 'destination_cidr',
+    nextHopIp: 'next_hop_ip',
+    accessRoutes: 'accessRoutes',
+    qosSessionProfile:'qosSessionProfile',
+    qosSessionDuration:'qosSessionDuration'
 }
