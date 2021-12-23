@@ -224,14 +224,15 @@ MuiVirtualizedTable.propTypes = {
 const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
 const getHeight = (props) => {
-    const { tableHeight, selected, isMap, iconKeys } = props
-    let height = isMap ? 504 : 135
+    const { tableHeight, selected, isMap, iconKeys, groupBy } = props
+    let height = isMap ? 535 : 135
     height = selected.length > 0 ? height + 62 : height
     if (tableHeight) {
         height = tableHeight
         height = selected.length > 0 ? height + 49 : height
     }
     height = iconKeys ? height + 39 : height
+    height = groupBy.length > 0 ? height + 51 : height
     return `calc(100vh - ${height}px)`
 }
 
@@ -345,18 +346,18 @@ export default function DataGrid(props) {
 
     return (
         <div id='mex-data-grid' style={{ borderRadius: 5 }}>
+            <IconBar keys={iconKeys} onClick={onIconFilter} />
             {selected && selected.length > 0 ? <GridAction numSelected={selected.length} groupActionMenu={groupActionMenu} groupActionClose={groupActionClose} /> : null}
             {
                 groupList.length > 0 ?
                     groupList.map((group, i) => (
-                        select === undefined || select === group.value ? <div key={i} ><div style={{ height: 50, backgroundColor: '#1D1D26', display: 'flex', alignItems: 'center' }}>
+                        select === undefined || select === group.value ? <div key={i} ><div style={{ height: 50, display: 'flex', alignItems: 'center' }}>
                             <IconButton onClick={() => { groupClick(group) }}><Icon>{select ? 'keyboard_arrow_down' : 'chevron_right'}</Icon></IconButton>
                             <Typography>{group.value}</Typography>
                         </div><Divider /></div> : null
                     ))
                     : null
             }
-            <IconBar keys={iconKeys} onClick={onIconFilter} />
             {
                 itemList.length === 0 && groupList.length === 0 ? <div style={{ height: 'calc(100vh - 104px)' }}><NoData search={searchValue} loading={loading} style={{ width: '100%' }} /></div> :
                     itemList.length > 0 ?
