@@ -2,14 +2,17 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
-import { TableCell, Divider, Typography } from '@material-ui/core';
+import { TableCell, Divider, Typography, Tooltip } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { AutoSizer, Column, Table } from 'react-virtualized';
 import { Icon, IconButton } from '../mexui';
 import { lightGreen } from '@material-ui/core/colors';
-import Actions from '../../pages/main/monitoring/list/Actions';
+import Actions from './Action';
 import { fields } from '../../services';
 import { NoData } from '../../helper/formatter/ui';
+import GridAction from './GroupAction';
+import './style.css'
+import IconBar from './ListIconBar';
 
 const styles = (theme) => ({
     flexContainer: {
@@ -27,6 +30,9 @@ const styles = (theme) => ({
     },
     tableRow: {
         cursor: 'pointer',
+        "&:last-child th, &:last-child td": {
+            borderBottom: '0px !important',
+        },
     },
     tableRowHover: {
         '&:hover': {
@@ -34,7 +40,18 @@ const styles = (theme) => ({
         },
     },
     tableCell: {
-        flex: 1,
+        flex: 1
+    },
+    textHeader: {
+        fontSize: '.975rem',
+        color: '#FFF',
+        fontWeight: 900,
+        lineHeight: 1.5715
+    },
+    textBody: {
+        fontSize: '.875rem',
+        fontWeight: 900,
+        lineHeight: 1.5715
     },
     noClick: {
         cursor: 'initial',
@@ -46,6 +63,7 @@ const styles = (theme) => ({
 
 const ELE_BUTTON = 'button'
 const ELE_CHECKBOX = 'checkbox'
+const ELE_ICON = 'icon'
 
 class MuiVirtualizedTable extends React.PureComponent {
 
@@ -53,11 +71,14 @@ class MuiVirtualizedTable extends React.PureComponent {
         super(props)
         this.isGroup = false
         this.val = undefined
+        this.selectAll = false
     }
     static defaultProps = {
-        headerHeight: 35,
+        headerHeight: 50,
         rowHeight: 50,
     };
+
+
 
     getRowClassName = ({ index }) => {
         const { classes, onRowClick } = this.props;
@@ -76,7 +97,7 @@ class MuiVirtualizedTable extends React.PureComponent {
     }
 
     cellRenderer = ({ rowData, cellData, columnIndex, rowIndex }) => {
-        const { columns, classes, rowHeight, onRowClick, selection, formatter } = this.props;
+        const { columns, classes, rowHeight, onRowClick, selection, formatter, iconKeys } = this.props;
         let column = columns[columnIndex]
         return (
             <TableCell
@@ -90,37 +111,62 @@ class MuiVirtualizedTable extends React.PureComponent {
                 align={(columnIndex != null && columns[columnIndex].numeric) || false ? 'right' : 'left'}
             >
                 {
-                    column.type === ELE_BUTTON ? <IconButton ><Icon style={{ color: lightGreen['A700'], height: 18 }}>list</Icon></IconButton> :
-                        column.type === ELE_CHECKBOX ? <IconButton ><Icon className={classes.checkbox} style={{ color: rowData.color }}>{`${selection.includes(rowData.uuid) ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton> :
-                            column.format ? formatter(column, rowData) :
-                                cellData
+                    column.type === ELE_ICON ? iconKeys.map((key, j) => {
+                        return (
+                            <React.Fragment key={j}>
+                                {rowData[key.field] ? <img src={`/assets/icons/${key.icon}`} width={24} style={{ marginTop: 5 }} /> : null}
+                            </React.Fragment>
+                        )
+                    }) :
+                        column.type === ELE_BUTTON ? <IconButton ><Icon style={{ color: lightGreen['A700'], height: 18 }}>list</Icon></IconButton> :
+                            column.type === ELE_CHECKBOX ? <IconButton ><Icon className={classes.checkbox} style={{ color: rowData.color }}>{`${selection.includes(rowData.uuid) ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton> :
+                                column.format ? formatter(column, rowData) :
+                                    <span className={classes.textBody}>{cellData}</span>
                 }
             </TableCell>
         );
     };
 
+    onSelectAll = (e) => {
+        this.selectAll = !this.selectAll
+        if (this.selectAll) {
+            let selectall = []
+            selectall = this.props.dataList.map(data => {
+                return data.uuid
+            })
+            this.props.setSelected(selectall);
+        }
+        else {
+            this.props.setSelected([]);
+        }
+    };
+
     headerRenderer = ({ label, columnIndex }) => {
         const { headerHeight, columns, classes } = this.props;
+        let column = columns[columnIndex]
         return (
             <TableCell
                 component="div"
                 className={clsx(classes.tableCell, classes.flexContainer, classes.noClick)}
                 variant="head"
                 style={{ height: headerHeight }}
-                align={columns[columnIndex].numeric || false ? 'right' : 'left'}
+                align={column.numeric || false ? 'right' : 'left'}
             >
-                <span>{label}</span>
+                {
+                    column.type === ELE_CHECKBOX ? <IconButton onClick={this.onSelectAll}><Icon className={classes.checkbox}>{`${this.selectAll ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton>:
+                        <span className={classes.textHeader}>{label}</span>
+                }
             </TableCell>
         );
     };
 
     render() {
-        const { classes, columns, formatter, rowHeight, headerHeight, action, ...tableProps } = this.props;
+        const { classes, columns, columnCount, formatter, iconKeys, rowHeight, headerHeight, action, ...tableProps } = this.props;
         return (
             <AutoSizer>
                 {({ height, width, rowData }) => {
-                    //normalize width where 150 is reserved
-                    let columnWidth = (width - (action ? 180 : 80)) / (columns.length - 2)
+                    let reservedWidth = 80 + (action ? 100 : 0) + (iconKeys && iconKeys.length > 0 ? 70 : 0)
+                    let columnWidth = (width - reservedWidth) / columnCount
                     return (
                         <Table
                             height={height}
@@ -177,8 +223,21 @@ MuiVirtualizedTable.propTypes = {
 
 const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
+const getHeight = (props) => {
+    const { tableHeight, selected, isMap, iconKeys } = props
+    let height = isMap ? 504 : 135
+    height = selected.length > 0 ? height + 62 : height
+    if (tableHeight) {
+        height = tableHeight
+        height = selected.length > 0 ? height + 49 : height
+    }
+    height = iconKeys ? height + 39 : height
+    return `calc(100vh - ${height}px)`
+}
+
+
 export default function DataGrid(props) {
-    const { loading, groupBy, searchValue, dataList, keys, formatter, actionMenu, cellClick, selected, setSelected, onActionClose } = props
+    const { loading, groupBy, searchValue, dataList, keys, formatter, actionMenu, cellClick, selected, setSelected, onActionClose, groupActionMenu, groupActionClose, iconKeys, onIconFilter, viewerEdit } = props
     const [itemList, setList] = React.useState([])
     const [groupList, setGroupList] = React.useState([])
     const [select, setSelect] = React.useState(undefined)
@@ -232,19 +291,23 @@ export default function DataGrid(props) {
             setList(dataList)
     }, [dataList]);
 
-    const columns = [
-        { field: fields.checkbox, label: false, type: 'checkbox', visible: true, width: 80, fixedWidth: true, clickable: true },
-        ...keys.filter(key => {
-            let valid = key.visible
-            if (groupBy && groupBy.length > 0 && key.field === groupBy[0].field) {
-                valid = false
-            }
-            return valid
-        })
-    ]
+    let columns = [{ field: fields.checkbox, label: false, type: ELE_CHECKBOX, visible: true, width: 80, fixedWidth: true, clickable: true }]
+    let columnCount = 0
+
+    if (iconKeys && iconKeys.length > 0) {
+        columns.push({ field: fields.listFilter, label: '', type: ELE_ICON, visible: true, width: 70, fixedWidth: true })
+    }
+    columns = [...columns, ...keys.filter(key => {
+        let valid = key.visible
+        if (groupBy && groupBy.length > 0 && key.field === groupBy[0].field) {
+            valid = false
+        }
+        columnCount = valid ? (columnCount + 1) : columnCount
+        return valid
+    })]
 
     if (actionMenu && actionMenu.length > 0) {
-        columns.push({ field: fields.actions, label: 'Actions', type: 'button', visible: true, width: 100, fixedWidth: true, clickable: true })
+        columns.push({ field: fields.actions, label: 'Actions', type: ELE_BUTTON, visible: true, width: 100, fixedWidth: true, clickable: true })
     }
 
     const onRowClick = (e) => {
@@ -281,7 +344,8 @@ export default function DataGrid(props) {
     }
 
     return (
-        <React.Fragment>
+        <div id='mex-data-grid' style={{ borderRadius: 5 }}>
+            {selected && selected.length > 0 ? <GridAction numSelected={selected.length} groupActionMenu={groupActionMenu} groupActionClose={groupActionClose} /> : null}
             {
                 groupList.length > 0 ?
                     groupList.map((group, i) => (
@@ -292,22 +356,31 @@ export default function DataGrid(props) {
                     ))
                     : null
             }
+            <IconBar keys={iconKeys} onClick={onIconFilter} />
             {
-                itemList.length === 0 && groupList.length === 0 ? <NoData search={searchValue} loading={loading} /> :
-                    itemList.length > 0 ? <Paper id='table-container' style={{ height: 'inherit', width: '100%' }}>
-                        <VirtualizedTable
-                            rowCount={itemList.length}
-                            rowGetter={({ index }) => itemList[index]}
-                            columns={columns}
-                            formatter={formatter}
-                            onRowClick={onRowClick}
-                            onCellClick={onCellClick}
-                            selection={selected}
-                            action={actionMenu && actionMenu.length > 0}
-                        />
-                    </Paper> : null
+                itemList.length === 0 && groupList.length === 0 ? <div style={{ height: 'calc(100vh - 104px)' }}><NoData search={searchValue} loading={loading} style={{ width: '100%' }} /></div> :
+                    itemList.length > 0 ?
+                        <React.Fragment>
+                            <Paper id='table-container' style={{ height: `${getHeight(props)}`, width: '100%' }}>
+                                <VirtualizedTable
+                                    rowCount={itemList.length}
+                                    rowGetter={({ index }) => itemList[index]}
+                                    columns={columns}
+                                    columnCount={columnCount}
+                                    formatter={formatter}
+                                    onRowClick={onRowClick}
+                                    onCellClick={onCellClick}
+                                    iconKeys={iconKeys}
+                                    selection={selected}
+                                    setSelected={setSelected}
+                                    dataList={itemList}
+                                    action={actionMenu && actionMenu.length > 0}
+                                />
+                            </Paper>
+                            <div className='footer'><strong>{`Total Rows: ${itemList.length}`}</strong></div>
+                        </React.Fragment> : null
             }
-            <Actions anchorEl={anchorEl && anchorEl.target} onClose={() => { setAnchorEl(undefined) }} onClick={onActionClick} actionMenu={actionMenu} group={anchorEl && anchorEl.group} />
-        </React.Fragment>
+            <Actions anchorEl={anchorEl && anchorEl.target} onClose={() => { setAnchorEl(undefined) }} onClick={onActionClick} actionMenu={actionMenu} viewerEdit={viewerEdit} group={anchorEl && anchorEl.group} data={anchorEl && anchorEl.data}/>
+        </div>
     );
 }

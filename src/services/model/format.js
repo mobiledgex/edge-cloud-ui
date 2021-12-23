@@ -161,6 +161,7 @@ export const fields = {
     configs: 'configs',
     configmulti: 'configmulti',
     config: 'config',
+    listFilter:'listFilter',
     kind: 'kind',
     ocPortMin: 'ocPortMin',
     ocPortMax: 'ocPortMax',

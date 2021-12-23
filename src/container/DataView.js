@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import MexListView from './MexListView';
 import { operators, shared } from '../helper/constant';
+import { redux_org } from '../helper/reduxData';
 
 class DataView extends React.Component {
     constructor(props) {
@@ -34,12 +35,29 @@ class DataView extends React.Component {
         return false
     }
 
+    filterActionMenu = () => {
+        let actionMenu = this.props.actionMenu()
+        if (actionMenu && actionMenu.length > 0) {
+            let viewerEdit = this.props.requestInfo.viewerEdit
+            let menu = actionMenu.filter(action => {
+                let valid = true
+                if (action.type === 'Edit') {
+                    if (redux_org.isViewer(this)) {
+                        valid = false
+                    }
+                }
+                return valid || viewerEdit
+            })
+            return menu
+        }
+    }
+
     render() {
-        const { requestInfo, actionMenu, multiDataRequest, groupActionMenu, currentView, onClick, customToolbar, tableHeight, refreshToggle, toolbarAction, detailAction, handleListViewClick } = this.props
+        const { requestInfo, multiDataRequest, groupActionMenu, currentView, onClick, customToolbar, tableHeight, refreshToggle, toolbarAction, detailAction, handleListViewClick } = this.props
         const { visible } = this.state
         return (
             visible ?
-                currentView ? currentView : <MexListView actionMenu={actionMenu()} requestInfo={requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={groupActionMenu} onClick={onClick} customToolbar={customToolbar} tableHeight={tableHeight} refreshToggle={refreshToggle} toolbarAction={toolbarAction} detailAction={detailAction} handleListViewClick={handleListViewClick} /> : null
+                currentView ? currentView : <MexListView actionMenu={this.filterActionMenu()} requestInfo={requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={groupActionMenu} onClick={onClick} customToolbar={customToolbar} tableHeight={tableHeight} refreshToggle={refreshToggle} toolbarAction={toolbarAction} detailAction={detailAction} handleListViewClick={handleListViewClick} /> : null
         )
     }
 

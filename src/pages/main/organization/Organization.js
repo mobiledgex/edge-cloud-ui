@@ -28,7 +28,7 @@ class OrganizationList extends React.Component {
         super(props);
         this.state = {
             currentView: null,
-            tableHeight: redux_org.isViewer(this) ? undefined : 271
+            tableHeight: redux_org.isViewer(this) ? undefined : 243
         }
         this._isMounted = false
         this.action = '';
