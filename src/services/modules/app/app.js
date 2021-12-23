@@ -84,7 +84,7 @@ export const getKey = (data, isCreate) => {
         app.default_flavor = { name: data[fields.flavorName] }
         app.auth_public_key = data[fields.authPublicKey]
         app.allow_serverless = data[fields.allowServerless]
-        app.serverless_config = data[fields.serverlessConfig]
+        app.allow_serverless ? app.serverless_config = data[fields.accessServerlessConfig] : null
         if (data[fields.officialFQDN]) {
             app.official_fqdn = data[fields.officialFQDN]
         }
