@@ -9,6 +9,7 @@ const useToolbarStyles = makeStyles((theme) => ({
         paddingRight: theme.spacing(1),
         paddingTop: theme.spacing(1),
         paddingBottom: theme.spacing(1),
+        height:50
     },
     highlight:
     {
@@ -45,17 +46,15 @@ const icons = (action) => {
 
 const GridAction = (props) => {
     const classes = useToolbarStyles();
-    const { numSelected } = props;
+    const { numSelected, length } = props;
     return (
         <React.Fragment>
             <Toolbar className={clsx(classes.root, {
                 [classes.highlight]: numSelected > 0,
             })}>
-                {numSelected > 0 ? (
-                    <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-                        {numSelected} selected
-                    </Typography>
-                ) : null}
+                <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
+                    <strong >{`Selected: ${numSelected}/${length}`}</strong>
+                </Typography>
                 {numSelected > 0 ? (
                     props.groupActionMenu ?
                         props.groupActionMenu().map((actionMenu, i) => {
@@ -68,7 +67,6 @@ const GridAction = (props) => {
                         }) : null
                 ) : null}
             </Toolbar>
-            <Divider />
         </React.Fragment>
     );
 }

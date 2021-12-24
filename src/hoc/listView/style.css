@@ -1,9 +1,3 @@
-#mex-data-grid .footer {
-    font-size: .875rem;
-    color: #FFF;
-    font-weight: 900;
-    height: 30px; 
-    display:flex; 
-    align-items:center;
-    padding-left: 10px;
+#mex-data-grid .ReactVirtualized__Grid__innerScrollContainer {
+    margin-bottom: 40px;
 }

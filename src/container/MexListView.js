@@ -23,6 +23,8 @@ import { service } from '../services';
 import { timeRangeInMin } from '../hoc/mexui/Picker';
 import DataGrid from '../hoc/listView/DataGrid';
 import { redux_org } from '../helper/reduxData';
+import IconBar from '../hoc/listView/ListIconBar';
+import GridAction from '../hoc/listView/GroupAction';
 
 class MexListView extends React.Component {
     constructor(props) {
@@ -312,7 +314,8 @@ class MexListView extends React.Component {
     listView = () => {
         let isMap = this.requestInfo.isMap && this.state.showMap
         const {formatData} = this.requestInfo
-        const {loading, filterList, dropList, iconKeys} = this.state
+        const {loading, filterList, dropList, selected, iconKeys} = this.state
+        const {groupActionMenu} = this.props
         return (
             <div id="data-grid">
                 {isMap ?
@@ -328,15 +331,16 @@ class MexListView extends React.Component {
                     onActionClose={this.onActionClose}
                     cellClick={this.getCellClick}
                     formatter={formatData}
-                    selected={this.state.selected}
+                    selected={selected}
+                    selection = {this.requestInfo.selection}
                     setSelected={this.setSelected}
                     isMap={isMap}
                     tableHeight={this.props.tableHeight}
                     iconKeys={iconKeys}
-                    onIconFilter={this.onIconFilter}
-                    groupActionMenu={this.props.groupActionMenu}
-                    groupActionClose={this.groupActionClose}
-                    viewerEdit={this.requestInfo.viewerEdit} />
+                    viewerEdit={this.requestInfo.viewerEdit}>
+                    <IconBar keys={iconKeys} onClick={this.onIconFilter} />
+                    <GridAction length={filterList.length} numSelected={selected.length} groupActionMenu={groupActionMenu} groupActionClose={this.groupActionClose}/>
+                </DataGrid>
             </div>)
     }
 
