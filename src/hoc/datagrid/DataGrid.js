@@ -313,7 +313,7 @@ class DataGrid extends React.Component {
     listView = () => {
         let isMap = this.requestInfo.isMap && this.state.showMap
         const {formatData} = this.requestInfo
-        const {loading, filterList, dropList, selected, iconKeys} = this.state
+        const {loading, dataList, filterList, dropList, selected, iconKeys} = this.state
         const {groupActionMenu} = this.props
         return (
             <div id="data-grid">
@@ -338,7 +338,7 @@ class DataGrid extends React.Component {
                     iconKeys={iconKeys}
                     viewerEdit={this.requestInfo.viewerEdit}>
                     <MexFilterBar keys={iconKeys} onClick={this.onIconFilter} />
-                    <GridAction length={filterList.length} numSelected={selected.length} groupActionMenu={groupActionMenu} groupActionClose={this.groupActionClose}/>
+                    <GridAction length={dataList.length} numSelected={selected.length} groupActionMenu={groupActionMenu} groupActionClose={this.groupActionClose}/>
                 </MexTable>
             </div>)
     }

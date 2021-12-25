@@ -354,7 +354,7 @@ export default function MexTable(props) {
                                     <div key={i} >
                                         <div style={{ height: 50, display: 'flex', alignItems: 'center' }}>
                                             <IconButton onClick={() => { groupClick(group) }}><Icon>{select ? 'keyboard_arrow_down' : 'chevron_right'}</Icon></IconButton>
-                                            <Typography>{group.value}</Typography>
+                                            <Typography>{group.value !== 'undefined' ? group.value : ''}</Typography>
                                         </div><Divider />
                                     </div> : null
                             ))

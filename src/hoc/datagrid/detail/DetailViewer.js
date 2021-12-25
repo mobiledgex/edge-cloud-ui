@@ -9,7 +9,7 @@ import { perpetual } from '../../../helper/constant';
 const useStyles = makeStyles((theme) => ({
     table_row: {
         '&:hover': {
-            backgroundColor: '#1e2123',
+            backgroundColor: '#181a1f',
         }
     },
     table_cell_label: {
@@ -72,7 +72,7 @@ const getArrayRow = (id, item, dataList, classes) => {
                     <TableBody>
                         {dataList.map((data, i) => {
                             return (
-                                <TableRow key={i} style={{ backgroundColor: i % 2 === 0 ? '#1E2123' : 'transparent' }}>{(
+                                <TableRow key={i} style={{ backgroundColor: i % 2 === 0 ? '#181a1f' : 'transparent' }}>{(
                                     <TableCell style={{ borderBottom: "none" }}>
                                         <p style={{ wordBreak: 'break-all' }}>{data}</p>
                                     </TableCell>)
@@ -121,7 +121,7 @@ const MexDetailViewer = (props) => {
                         {
                             keys.map((item, i) => {
                                 const visible = item.roles ? item.roles.includes(redux_org.roleType(orgInfo)) : true
-                                return visible ? <TableCell key={i}>{item.label}</TableCell> : null
+                                return visible ? <TableCell key={i}><strong>{item.label}</strong></TableCell> : null
                             })
                         }
                         {detailAction ? <TableCell></TableCell> : null}
@@ -130,12 +130,12 @@ const MexDetailViewer = (props) => {
                 <TableBody>
                     {dataList.map((data, i) => {
                         return (
-                            <TableRow key={i} style={{ backgroundColor: i % 2 === 0 ? '#1E2123' : 'transparent' }}>{(
+                            <TableRow key={i} style={{ backgroundColor: i % 2 === 0 ? '#181a1f' : 'transparent' }}>{(
                                 keys.map((item, j) => {
                                     const visible = item.roles ? item.roles.includes(redux_org.roleType(orgInfo)) : true
                                     return (
                                         visible ? <TableCell key={j} style={{ borderBottom: "none" }}>
-                                            {getData(data, item)}
+                                            <strong>{getData(data, item)}</strong>
                                         </TableCell> : null
                                     )
                                 }))
@@ -151,9 +151,9 @@ const MexDetailViewer = (props) => {
     const getRow = (id, item, info, subView) => {
         return (
             <TableRow key={id} className={subView ? '' : classes.table_row}>
-                <TableCell className={classes.table_cell_label}>{item.label}</TableCell>
+                <TableCell className={classes.table_cell_label}><strong>{item.label}</strong></TableCell>
                 <TableCell className={classes.table_cell_value}>
-                    {subView ? info : getData(info, item)}
+                    <strong>{subView ? info : getData(info, item)}</strong>
                 </TableCell>
             </TableRow>
         )
