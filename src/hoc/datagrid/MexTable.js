@@ -217,12 +217,12 @@ MuiVirtualizedTable.propTypes = {
 
 const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
-const getHeight = (props) => {
+const getHeight = (props, table) => {
     const { tableHeight, isMap, iconKeys, groupBy } = props
     let height = isMap ? 556 : 154
     height = tableHeight ? tableHeight : height
     height = iconKeys ? height + 40 : height
-    height = groupBy.length > 0 ? height + 52 : height
+    height = table && groupBy.length > 0 ? height + 50 : height
     return `calc(100vh - ${height}px)`
 }
 
@@ -346,7 +346,7 @@ export default function MexTable(props) {
             {props.children}
             {
                 groupList.length > 0 ?
-                    <React.Fragment>
+                    <div style={{height: `${select ? '50px' : getHeight(props)}`, overflow:'auto'}}>
                         <Divider />
                         {
                             groupList.map((group, i) => (
@@ -359,13 +359,13 @@ export default function MexTable(props) {
                                     </div> : null
                             ))
                         }
-                    </React.Fragment>
+                    </div>
                     : null
             }
             {
                 itemList.length === 0 && groupList.length === 0 ? <div style={{ height: `calc(100vh - ${iconKeys ? '194px' : '154px'})` }}><NoData search={searchValue} loading={loading} style={{ width: '100%' }} /></div> :
                     itemList.length > 0 && (groupList.length === 0 || select !== undefined) ?
-                        <Paper id='table-container' style={{ height: `${getHeight(props)}`, width: '100%' }}>
+                        <Paper id='table-container' style={{ height: `${getHeight(props, true)}`}}>
                             <VirtualizedTable
                                 rowCount={itemList.length}
                                 rowGetter={({ index }) => itemList[index]}
