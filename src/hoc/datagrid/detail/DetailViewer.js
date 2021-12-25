@@ -1,10 +1,10 @@
 import React from 'react';
 import { useSelector } from "react-redux";
 import { Table, TableBody, TableCell, TableHead, TableRow, Divider, makeStyles } from '@material-ui/core';
-import { syntaxHighLighter } from '../../hoc/highLighter/highLighter'
-import { time } from '../../utils/date_util'
-import { redux_org } from '../../helper/reduxData'
-import { perpetual } from '../../helper/constant';
+import { syntaxHighLighter } from '../../highLighter/highLighter'
+import { time } from '../../../utils/date_util'
+import { redux_org } from '../../../helper/reduxData'
+import { perpetual } from '../../../helper/constant';
 
 const useStyles = makeStyles((theme) => ({
     table_row: {

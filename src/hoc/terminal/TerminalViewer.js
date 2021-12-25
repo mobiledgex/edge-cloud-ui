@@ -1,23 +1,22 @@
 
 import React, { Component, Suspense, lazy } from 'react';
-import * as actions from "../actions";
+import * as actions from "../../actions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { Image, Label } from 'semantic-ui-react';
-import * as style from '../hoc/terminal/TerminalStyle';
+import * as style from './TerminalStyle';
 import { Paper, Box } from '@material-ui/core';
-import MexForms, { INPUT, MULTI_FORM, SELECT, SWITCH } from '../hoc/forms/MexForms';
-import { fields } from '../services/model/format'
-import { redux_org } from '../helper/reduxData';
-import { service } from '../services'
-import { endpoint, perpetual } from '../helper/constant';
-import '../hoc/terminal/style.css'
-import { componentLoader } from '../hoc/loader/componentLoader';
+import MexForms, { INPUT, MULTI_FORM, SELECT, SWITCH } from '../forms/MexForms';
+import { fields } from '../../services/model/format'
+import { redux_org } from '../../helper/reduxData';
+import { service } from '../../services'
+import { endpoint, perpetual } from '../../helper/constant';
+import { componentLoader } from '../loader/componentLoader';
+import './style.css'
 
-const Terminal = lazy(() => componentLoader(import('../hoc/terminal/mexTerminal')));
+const Terminal = lazy(() => componentLoader(import('./MexTerminal')));
 
-
-class MexTerminal extends Component {
+class TerminalViewer extends Component {
 
     constructor(props) {
         super(props)
@@ -352,4 +351,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(MexTerminal));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(TerminalViewer));

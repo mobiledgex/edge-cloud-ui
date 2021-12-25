@@ -1,32 +1,31 @@
 import React from 'react';
-import { Card, Typography } from '@material-ui/core';
-
-import './styles.css';
-import { fields } from '../services/model/format';
-import * as serverData from '../services/model/serverData';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import * as actions from '../../actions';
+import { Card } from '@material-ui/core';
+import { fields } from '../../services/model/format';
+import * as serverData from '../../services/model/serverData';
 
 import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH, ACTION_GROUP, ACTION_PICKER } from './MexToolbar';
 import MexDetailViewer from './detail/DetailViewer';
-import MexMessageStream from '../hoc/stepper/mexMessageStream';
-import MexMessageMultiNorm from '../hoc/stepper/mexMessageMultiNormal';
-import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
-import { prefixSearchPref, showMapPref } from '../utils/sharedPreferences_util';
-import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
-import ListMexMap from './map/ListMexMap'
+import MexMessageStream from '../stepper/mexMessageStream';
+import MexMessageMultiNorm from '../stepper/mexMessageMultiNormal';
+import MexMultiStepper, { updateStepper } from '../stepper/mexMessageMultiStream'
+import { prefixSearchPref, showMapPref } from '../../utils/sharedPreferences_util';
+import MexMessageDialog from '../dialog/mexWarningDialog'
 import cloneDeep from 'lodash/cloneDeep';
-import { operators, shared, perpetual } from '../helper/constant';
-import { fetchDataFromServer } from './service';
-import { service } from '../services';
-import { timeRangeInMin } from '../hoc/mexui/Picker';
-import DataGrid from '../hoc/listView/DataGrid';
-import { redux_org } from '../helper/reduxData';
-import IconBar from '../hoc/listView/ListIconBar';
-import GridAction from '../hoc/listView/GroupAction';
+import { operators, shared, perpetual } from '../../helper/constant';
+import { fetchDataFromServer } from './services/service';
+import { service } from '../../services';
+import { timeRangeInMin } from '../mexui/Picker';
+import MexTable from './MexTable';
+import { redux_org } from '../../helper/reduxData';
+import MexFilterBar from './MexFilterBar';
+import GridAction from './action/GroupAction';
+import ListMexMap from './map/ListMexMap';
+import './style.css'
 
-class MexListView extends React.Component {
+class DataGrid extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -323,7 +322,7 @@ class MexListView extends React.Component {
                         <ListMexMap onClick={this.onMapMarkerClick} id={this.requestInfo.id} dataList={filterList} region={this.selectedRegion} />
                     </div> : null
                 }
-                <DataGrid loading={loading} keys={this.keys}
+                <MexTable loading={loading} keys={this.keys}
                     searchValue={this.filterText}
                     groupBy={dropList}
                     dataList={filterList}
@@ -338,9 +337,9 @@ class MexListView extends React.Component {
                     tableHeight={this.props.tableHeight}
                     iconKeys={iconKeys}
                     viewerEdit={this.requestInfo.viewerEdit}>
-                    <IconBar keys={iconKeys} onClick={this.onIconFilter} />
+                    <MexFilterBar keys={iconKeys} onClick={this.onIconFilter} />
                     <GridAction length={filterList.length} numSelected={selected.length} groupActionMenu={groupActionMenu} groupActionClose={this.groupActionClose}/>
-                </DataGrid>
+                </MexTable>
             </div>)
     }
 
@@ -669,4 +668,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(MexListView));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(DataGrid));

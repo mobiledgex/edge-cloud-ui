@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import MexListView from './MexListView';
+import DataGrid from '../hoc/datagrid/DataGrid';
 import { operators, shared } from '../helper/constant';
 import { redux_org } from '../helper/reduxData';
 
@@ -57,7 +57,7 @@ class DataView extends React.Component {
         const { visible } = this.state
         return (
             visible ?
-                currentView ? currentView : <MexListView actionMenu={this.filterActionMenu()} requestInfo={requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={groupActionMenu} onClick={onClick} customToolbar={customToolbar} tableHeight={tableHeight} refreshToggle={refreshToggle} toolbarAction={toolbarAction} detailAction={detailAction} handleListViewClick={handleListViewClick} /> : null
+                currentView ? currentView : <DataGrid actionMenu={this.filterActionMenu()} requestInfo={requestInfo()} multiDataRequest={multiDataRequest} groupActionMenu={groupActionMenu} onClick={onClick} customToolbar={customToolbar} tableHeight={tableHeight} refreshToggle={refreshToggle} toolbarAction={toolbarAction} detailAction={detailAction} handleListViewClick={handleListViewClick} /> : null
         )
     }
 

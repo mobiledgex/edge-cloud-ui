@@ -7,10 +7,9 @@ import Paper from '@material-ui/core/Paper';
 import { AutoSizer, Column, Table } from 'react-virtualized';
 import { Icon, IconButton } from '../mexui';
 import { lightGreen } from '@material-ui/core/colors';
-import Actions from './Action';
+import Actions from './action/Action';
 import { fields } from '../../services';
 import { NoData } from '../../helper/formatter/ui';
-import './style.css'
 
 const styles = (theme) => ({
     flexContainer: {
@@ -220,15 +219,15 @@ const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
 const getHeight = (props) => {
     const { tableHeight, isMap, iconKeys, groupBy } = props
-    let height = isMap ? 556 : 156
+    let height = isMap ? 556 : 154
     height = tableHeight ? tableHeight : height
-    height = iconKeys ? height + 39 : height
-    height = groupBy.length > 0 ? height + 51 : height
+    height = iconKeys ? height + 40 : height
+    height = groupBy.length > 0 ? height + 52 : height
     return `calc(100vh - ${height}px)`
 }
 
 
-export default function DataGrid(props) {
+export default function MexTable(props) {
     const { loading, groupBy, searchValue, dataList, keys, formatter, actionMenu, cellClick, selected, setSelected, selection, onActionClose, iconKeys, viewerEdit } = props
     const [itemList, setList] = React.useState([])
     const [groupList, setGroupList] = React.useState([])
@@ -258,7 +257,7 @@ export default function DataGrid(props) {
         }
     }
 
-    useEffect(() => {
+    const updateGroupList = () => {
         if (groupBy && groupBy.length > 0) {
             let groups = getGroupedData(dataList)
             if (groups) {
@@ -271,6 +270,12 @@ export default function DataGrid(props) {
                 setSelect(undefined)
             }
         }
+    }
+
+    useEffect(() => {
+        if (groupBy && groupBy.length > 0) {
+            updateGroupList()
+        }
         else {
             setGroupList([])
             setList(dataList)
@@ -279,8 +284,8 @@ export default function DataGrid(props) {
     }, [groupBy]);
 
     useEffect(() => {
-        if (!select)
-            setList(dataList)
+        setList(dataList)
+        updateGroupList()
     }, [dataList]);
 
     let columns = []
@@ -337,7 +342,7 @@ export default function DataGrid(props) {
     }
 
     return (
-        <div id='mex-data-grid' style={{ borderRadius: 5 }}>
+        <div id='mex-data-grid'>
             {props.children}
             {
                 groupList.length > 0 ?
@@ -358,8 +363,8 @@ export default function DataGrid(props) {
                     : null
             }
             {
-                itemList.length === 0 && groupList.length === 0 ? <div style={{ height: 'calc(100vh - 104px)' }}><NoData search={searchValue} loading={loading} style={{ width: '100%' }} /></div> :
-                    itemList.length > 0 ?
+                itemList.length === 0 && groupList.length === 0 ? <div style={{ height: `calc(100vh - ${iconKeys ? '194px' : '154px'})` }}><NoData search={searchValue} loading={loading} style={{ width: '100%' }} /></div> :
+                    itemList.length > 0 && (groupList.length === 0 || select !== undefined) ?
                         <Paper id='table-container' style={{ height: `${getHeight(props)}`, width: '100%' }}>
                             <VirtualizedTable
                                 rowCount={itemList.length}

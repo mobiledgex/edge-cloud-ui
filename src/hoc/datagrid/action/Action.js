@@ -1,8 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Grow, Popper, ClickAwayListener, MenuList, MenuItem, Paper } from '@material-ui/core'
-import { ACTION_VISIBLE } from '../../helper/constant/perpetual'
-import { redux_org } from '../../helper/reduxData'
+import { ACTION_VISIBLE } from '../../../helper/constant/perpetual'
+import { redux_org } from '../../../helper/reduxData'
 
 const canEdit = (orgInfo, viewerEdit, action) => {
     let valid = true

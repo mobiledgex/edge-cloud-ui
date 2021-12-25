@@ -17,18 +17,18 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { perpetual } from '../../../helper/constant';
 import { uiFormatter } from '../../../helper/formatter'
 import { lightGreen } from '@material-ui/core/colors';
-import { authSyncRequest, fetchToken, responseValid } from '../../../services/service';
+import { authSyncRequest, fetchToken } from '../../../services/service';
 import { validatePrivateAccess } from '../../../constant';
 import { getUserMetaData } from '../../../helper/ls';
 import { updateUserMetaData } from '../../../services/modules/users';
 import { showUsers } from '../../../services/modules/users';
-import { ACTION_REFRESH } from '../../../container/MexToolbar';
+import { ACTION_REFRESH } from '../../../hoc/datagrid/MexToolbar';
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentView: null,
-            tableHeight: redux_org.isViewer(this) ? undefined : 263
+            tableHeight: redux_org.isViewer(this) ? undefined : 264
         }
         this._isMounted = false
         this.action = '';

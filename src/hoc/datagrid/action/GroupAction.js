@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles, Tooltip, IconButton, Typography, Toolbar, Divider } from '@material-ui/core';
 import clsx from 'clsx';
-import { Icon } from '../mexui';
+import { Icon } from '../../mexui';
 
 const useToolbarStyles = makeStyles((theme) => ({
     root: {

@@ -10,7 +10,6 @@ import { showApps } from '../../../services/modules/app';
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import AppInstReg from './Reg';
 import * as shared from '../../../services/model/shared';
-import TerminalViewer from '../../../container/TerminalViewer';
 import { Dialog } from '@material-ui/core';
 import { HELP_APP_INST_LIST } from "../../../tutorial";
 import { perpetual, role } from '../../../helper/constant';
@@ -19,6 +18,7 @@ import { idFormatter, labelFormatter, serverFields, uiFormatter } from '../../..
 import { redux_org } from '../../../helper/reduxData';
 import { developerRoles } from '../../../constant';
 import { DEPLOYMENT_TYPE_VM } from '../../../helper/constant/perpetual';
+import TerminalViewer from '../../../hoc/terminal/TerminalViewer';
 
 class AppInstList extends React.Component {
     constructor(props) {

@@ -5,7 +5,7 @@ import * as actions from '../../../actions';
 import uuid from 'uuid';
 //Mex
 import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA, ICON_BUTTON, formattedData, MAIN_HEADER, HEADER, MULTI_FORM } from '../../../hoc/forms/MexForms';
-import ListMexMap from '../../../container/map/ListMexMap'
+import ListMexMap from '../../../hoc/datagrid/map/ListMexMap';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
 import MexTab from '../../../hoc/forms/tab/MexTab';
