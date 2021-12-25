@@ -44,16 +44,21 @@ const icons = (action) => {
     return icon ? <Icon outlined={true} style={style}>{icon}</Icon> : undefined
 }
 
+const selectionLabel = (props)=>{
+    const { numSelected, length } = props;
+    let label = `Total Rows: ${length}` 
+    label = numSelected > 0 ? `Rows Selected: ${numSelected}/${length}` : label
+    return label
+}
+
 const GridAction = (props) => {
     const classes = useToolbarStyles();
     const { numSelected, length } = props;
     return (
         <React.Fragment>
-            <Toolbar className={clsx(classes.root, {
-                [classes.highlight]: numSelected > 0,
-            })}>
+            <Toolbar className={clsx(classes.root)}>
                 <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-                    <strong >{`Selected: ${numSelected}/${length}`}</strong>
+                    <strong >{selectionLabel(props)}</strong>
                 </Typography>
                 {numSelected > 0 ? (
                     props.groupActionMenu ?

@@ -4,9 +4,6 @@
     padding:1px;
 }
 
-#mex-list-view .MuiPaper-elevation1 {
-    box-shadow: none;
-}
 .ui.header .content.next {
     width: 100%;
     position: relative;
