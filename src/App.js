@@ -1,20 +1,20 @@
 import React, { Component, Suspense, lazy } from 'react';
 import { HashRouter as Router, Redirect, Route, Switch } from "react-router-dom";
-import 'semantic-ui-css/semantic.min.css';
 import { connect } from 'react-redux';
 import * as actions from './actions';
-import './app.css';
-import './css/index.css';
-import './css/pages/audit.css';
 import { ThemeProvider } from "@material-ui/styles";
 import { getDarkTheme, getLightTheme, THEME_TYPE } from "./themeStyle";
-import LogoSpinner from './hoc/loader/LogoSpinner'
+import LogoSpinner from './hoc/loader/LogoSpinner';
 import { componentLoader } from './hoc/loader/componentLoader';
-import Policy from './pages/landing/policy/Policy'
+import Policy from './pages/landing/policy/Policy';
+import 'semantic-ui-css/semantic.min.css';
+import './app.css';
+import './css/index.css';
 
 const Main = lazy(() => componentLoader(import('./pages/main/Main')));
 const Landing = lazy(() => componentLoader(import('./pages/landing/Landing')));
 const PreLoader = lazy(() => componentLoader(import('./pages/landing/loader/PreLoader')));
+
 class App extends Component {
     constructor() {
         super();
