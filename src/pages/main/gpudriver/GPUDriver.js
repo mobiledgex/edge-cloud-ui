@@ -132,7 +132,7 @@ class GPUDrivers extends React.Component {
         }
         return (
             <React.Fragment>
-                <DataView id={perpetual.PAGE_FLAVORS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} detailAction={this.detailAction} />
+                <DataView id={perpetual.PAGE_FLAVORS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} actionRoles={operatorRoles} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} detailAction={this.detailAction} />
                 <Dialog open={Boolean(response)}>
                     <DialogTitle onClose={() => { this.updateState({ downloadURL: undefined }) }} label={'GPU Driver Build URL'}/>
                     {Boolean(response) ? <React.Fragment>

@@ -219,7 +219,7 @@ class AppInstList extends React.Component {
         const { currentView } = this.state
         return (
             <React.Fragment>
-                <DataView id={perpetual.PAGE_APP_INSTANCES} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
+                <DataView id={perpetual.PAGE_APP_INSTANCES} resetView={this.resetView} actionMenu={this.actionMenu} actionRoles={developerRoles} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu}/>
                 <Dialog disableEscapeKeyDown={true} fullScreen open={this.state.openTerminal} onClose={this.onDialogClose}>
                     <TerminalViewer data={this.state.terminalData} onClose={() => {
                         this.updateState({ openTerminal: false })

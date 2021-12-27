@@ -169,7 +169,7 @@ class CloudletList extends React.Component {
             onAdd: this.canAdd(),
             viewMode: HELP_CLOUDLET_LIST,
             grouping: true,
-            iconKeys:iconKeys(),
+            iconKeys: iconKeys(),
             formatData: this.dataFormatter
         })
     }
@@ -208,7 +208,7 @@ class CloudletList extends React.Component {
         const { currentView } = this.state
         return (
             <React.Fragment>
-                <DataView currentView={currentView} resetView={this.resetView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+                <DataView currentView={currentView} resetView={this.resetView} actionMenu={this.actionMenu} actionRoles={operatorRoles} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
             </React.Fragment>
         )

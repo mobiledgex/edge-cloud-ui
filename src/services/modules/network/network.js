@@ -3,7 +3,6 @@ import { endpoint, perpetual } from '../../../helper/constant';
 import { getCloudletKey } from '../../modules/cloudlet'
 import { authSyncRequest } from "../../service";
 import { idFormatter } from '../../../helper/formatter'
-import { operatorRoles } from '../../../constant'
 let fields = formatter.fields;
 
 export const keys = () => ([
@@ -12,8 +11,7 @@ export const keys = () => ([
     { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', label: 'Cloudlet', sortable: true, visible: true, filter: true, key: true },
     { field: fields.operatorName, label: 'Organization', serverField: 'key#OS#cloudlet_key#OS#organization', sortable: false, visible: true, clickable: true },
     { field: fields.connectionType, label: 'Connection Type', serverField: 'connection_type', sortable: false, visible: false, clickable: true },
-    { field: fields.accessRoutes, label: 'Routes', serverField: 'routes', sortable: false, visible: false, clickable: true, dataType: perpetual.TYPE_JSON },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: operatorRoles }
+    { field: fields.accessRoutes, label: 'Routes', serverField: 'routes', sortable: false, visible: false, clickable: true, dataType: perpetual.TYPE_JSON }
 ])
 
 export const getKey = (data, isCreate) => {
