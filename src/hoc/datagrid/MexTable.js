@@ -413,7 +413,7 @@ export default function MexTable(props) {
                     : null
             }
             {
-                itemList.length === 0 && groupList.length === 0 ? <div style={{ height: `calc(100vh - ${iconKeys ? '194px' : '154px'})` }}><NoData search={searchValue} loading={loading} style={{ width: '100%' }} /></div> :
+                itemList.length === 0 && groupList.length === 0 ? <div style={{ height: getHeight(props, true) }}><NoData search={searchValue} loading={loading} style={{ width: '100%' }} /></div> :
                     itemList.length > 0 && (groupList.length === 0 || select !== undefined) ?
                         <Paper id='table-container' style={{ height: `${getHeight(props, true)}`}}>
                             <VirtualizedTable
