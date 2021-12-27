@@ -17,6 +17,7 @@ const useToolbarStyles = makeStyles((theme) => ({
     },
     title: {
         flex: '1 1 100%',
+        color:'#E8E8E8'
     },
 }));
 

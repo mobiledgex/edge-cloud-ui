@@ -7,7 +7,7 @@ import { fields } from '../../services/model/format';
 import * as serverData from '../../services/model/serverData';
 
 import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH, ACTION_GROUP, ACTION_PICKER } from './MexToolbar';
-import MexDetailViewer from './detail/DetailViewer';
+import DetailViewer from './detail/DetailViewer';
 import MexMessageStream from '../stepper/mexMessageStream';
 import MexMessageMultiNorm from '../stepper/mexMessageMultiNormal';
 import MexMultiStepper, { updateStepper } from '../stepper/mexMessageMultiStream'
@@ -71,10 +71,9 @@ class DataGrid extends React.Component {
         let additionalDetail = this.requestInfo.additionalDetail
         this.props.handleViewMode(null)
         return (
-            <Card style={{ height: 'calc(100vh - 116px)', backgroundColor: '#292c33', borderRadius: 5, overflowY: 'auto' }}>
-                <MexDetailViewer detailData={data} keys={this.keys} formatData={this.requestInfo.formatData} detailAction={detailAction} />
+            <DetailViewer detailData={data} keys={this.keys} formatData={this.requestInfo.formatData} detailAction={detailAction}>
                 {additionalDetail ? additionalDetail(data) : null}
-            </Card>
+            </DetailViewer>
         )
     }
 

@@ -38,12 +38,13 @@ const styles = (theme) => ({
     },
     textHeader: {
         fontSize: '.975rem',
-        color: '#FFF',
+        color: '#CECECE',
         fontWeight: 900,
         lineHeight: 1.5715
     },
     textBody: {
         fontSize: '.875rem',
+        color: '#E8E8E8',
         fontWeight: 900,
         lineHeight: 1.5715
     },
@@ -52,8 +53,40 @@ const styles = (theme) => ({
     },
     checkbox: {
         cursor: 'pointer'
+    },
+    sortIcon: {
+        marginLeft: 5,
+        fontSize: 14,
+        transition: theme.transitions.create(["transform"], {
+            duration: theme.transitions.duration.short
+        })
+    },
+    arrowUp: {
+        transform: "rotate(-180deg)"
+    },
+    arrowDown: {
+        transform: "rotate(0)"
+    },
+    sortIconVisible: {
+        visibility: 'hidden'
     }
 });
+
+export const getComparator = (order, orderBy) => {
+    return order === "desc"
+        ? (a, b) => (a[orderBy] > b[orderBy] ? -1 : 1)
+        : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
+}
+
+export const stableSort = (dataList, comparator, isGrouping) => {
+    const stabilizedThis = dataList.map((key, index) => [key, index]);
+    stabilizedThis.sort((a, b) => {
+        const order = comparator(a[0], b[0]);
+        if (order !== 0) return order;
+        return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+}
 
 const ELE_BUTTON = 'button'
 const ELE_CHECKBOX = 'checkbox'
@@ -136,19 +169,23 @@ class MuiVirtualizedTable extends React.PureComponent {
     };
 
     headerRenderer = ({ label, columnIndex }) => {
-        const { headerHeight, columns, classes } = this.props;
+        const { headerHeight, columns, classes, order, orderBy, onSortClick } = this.props;
         let column = columns[columnIndex]
         return (
             <TableCell
                 component="div"
-                className={clsx(classes.tableCell, classes.flexContainer, classes.noClick)}
+                className={clsx(classes.tableCell, classes.flexContainer, { [classes.noClick]: !column.filter })}
                 variant="head"
                 style={{ height: headerHeight }}
+                onClick={() => { onSortClick(column) }}
                 align={column.numeric || false ? 'right' : 'left'}
             >
                 {
                     column.type === ELE_CHECKBOX ? <IconButton onClick={this.onSelectAll}><Icon className={classes.checkbox}>{`${this.selectAll ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton> :
                         <span className={classes.textHeader}>{label}</span>
+                }
+                {
+                    column.filter ? <Icon className={clsx(classes.sortIcon, order === 'asc' ? classes.arrowDown : classes.arrowUp, {[classes.sortIconVisible] : column.field !== orderBy})}>{'arrow_upward'}</Icon> : null
                 }
             </TableCell>
         );
@@ -231,6 +268,8 @@ export default function MexTable(props) {
     const { loading, groupBy, searchValue, dataList, keys, formatter, actionMenu, cellClick, selected, setSelected, selection, onActionClose, iconKeys, viewerEdit } = props
     const [itemList, setList] = React.useState([])
     const [groupList, setGroupList] = React.useState([])
+    const [order, setOrder] = React.useState('asc')
+    const [orderBy, setOrderBy] = React.useState()
     const [select, setSelect] = React.useState(undefined)
     const [anchorEl, setAnchorEl] = React.useState(undefined)
 
@@ -341,6 +380,17 @@ export default function MexTable(props) {
         setAnchorEl(undefined)
     }
 
+    const onSortClick = (column) => {
+        if (column.filter) {
+            let isAsc = orderBy === column.field && order === 'asc'
+            let newOrder = isAsc ? 'desc' : 'asc'
+            let list = stableSort(itemList, getComparator(newOrder, column.field))
+            setOrderBy(column.field)
+            setOrder(newOrder)
+            setList(list)
+        }
+    }
+
     return (
         <div id='mex-data-grid'>
             {props.children}
@@ -374,11 +424,14 @@ export default function MexTable(props) {
                                 formatter={formatter}
                                 onRowClick={onRowClick}
                                 onCellClick={onCellClick}
+                                onSortClick ={onSortClick}
                                 iconKeys={iconKeys}
                                 selection={selection}
                                 selected={selected}
                                 setSelected={setSelected}
                                 dataList={itemList}
+                                order={order}
+                                orderBy={orderBy}
                                 action={actionMenu && actionMenu.length > 0}
                             />
                         </Paper> : null
