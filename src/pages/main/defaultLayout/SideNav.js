@@ -187,17 +187,6 @@ const Options = (props) => {
     }
 
     const renderPopover = (item) => {
-        // if (!drawerOpen && item.sub) {
-        //     return (
-        //         <List component='div' disablePadding>
-        //             {item.options.map(option => (
-        //                 <React.Fragment key={option.id}>
-        //                     {renderItem(option)}
-        //                 </React.Fragment>
-        //             ))}
-        //         </List>
-        //     )
-        // }
         return drawerOpen ? '' : item.label
     }
 
