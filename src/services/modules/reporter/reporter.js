@@ -24,8 +24,7 @@ export const keys = () => (
         { field: fields.schedule, label: 'Interval', serverField: SERVER_FIELD_SCHEDULE, visible: true },
         { field: fields.timezone, label: 'Timezone', serverField: SERVER_FIELD_TIMEZONE, visible: true },
         { field: fields.username, label: 'Username', serverField: 'Username', sortable: false, filter: true, visible: true },
-        { field: fields.status, label: 'Last Report Status', serverField: 'Status', visible: true, format: true },
-        // { field: 'actions', label: 'Actions', visible: true, clickable: true, roles: [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER] }
+        { field: fields.status, label: 'Last Report Status', serverField: 'Status', visible: true, format: true }
     ]
 )
 

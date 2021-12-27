@@ -5,7 +5,6 @@ import { endpoint, perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData';
 import { sendWSRequest } from '../../model/serverData';
 import { ADMIN, TYPE_JSON } from '../../../helper/constant/perpetual';
-import { operatorRoles } from '../../../constant';
 
 let fields = formatter.fields
 
@@ -28,8 +27,7 @@ export const keys = () => ([
     },
     { field: fields.buildCount, label: 'Number of Builds', visible: true, detailView: false },
     { field: fields.licenseConfig, serverField: 'license_config', label: 'License Configuration', format: true },
-    { field: fields.properties, serverField: 'properties', label: 'Properties', format: true, dataType: TYPE_JSON },
-    // { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: operatorRoles }
+    { field: fields.properties, serverField: 'properties', label: 'Properties', format: true, dataType: TYPE_JSON }
 ])
 
 export const iconKeys = () => ([

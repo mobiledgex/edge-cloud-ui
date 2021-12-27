@@ -79,7 +79,7 @@ class NetworkList extends React.Component {
         const { currentView } = this.state
         return (
             <React.Fragment>
-                <DataView currentView={currentView} resetView={this.resetView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+                <DataView currentView={currentView} resetView={this.resetView} actionMenu={this.actionMenu} actionRoles={operatorRoles} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
             </React.Fragment>
         )
     }

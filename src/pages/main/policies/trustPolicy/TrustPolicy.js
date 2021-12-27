@@ -92,7 +92,7 @@ class TrustPolicy extends React.Component {
     render() {
         const { currentView } = this.state
         return (
-            <DataView id={perpetual.PAGE_TRUST_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_TRUST_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} actionRoles={operatorRoles} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
         )
     }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Grow, Popper, ClickAwayListener, MenuList, MenuItem, Paper } from '@material-ui/core'
-import { ACTION_VISIBLE } from '../../../helper/constant/perpetual'
+import { ACTION_DISABLE, ACTION_LABEL, ACTION_VISIBLE } from '../../../helper/constant/perpetual'
 import { redux_org } from '../../../helper/reduxData'
 
 const canEdit = (orgInfo, viewerEdit, action) => {
@@ -12,6 +12,15 @@ const canEdit = (orgInfo, viewerEdit, action) => {
         }
     }
     return valid || viewerEdit
+}
+
+const actionLabel = (action, data) => {
+    if (typeof action.label === 'function') {
+        return action.label(ACTION_LABEL, action, data)
+    }
+    else {
+        return action.label
+    }
 }
 
 const Actions = (props) => {
@@ -33,7 +42,7 @@ const Actions = (props) => {
                                             let visible = data && canEdit(orgInfo, viewerEdit, action) ? action.visible ? action.visible(data) : true : false
                                             visible = data && action.visibility ? action.visibility(ACTION_VISIBLE, action, data) : visible
                                             visible = group ? action.group : visible
-                                            return visible ? <MenuItem key={i} onClick={(e) => { onClick(e, { ...action, group }) }}>{action.label}</MenuItem> : null
+                                            return visible ? <MenuItem key={i} onClick={(e) => { onClick(e, { ...action, group }) }} disabled={action.disable ? action.disable(ACTION_DISABLE, action, data) : false}>{actionLabel(action, data)}</MenuItem>  : null
                                         })
                                     }
                                 </MenuList>
