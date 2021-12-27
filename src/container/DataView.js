@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import DataGrid from '../hoc/datagrid/DataGrid';
 import { operators, shared } from '../helper/constant';
 import { redux_org } from '../helper/reduxData';
+import { validateRole } from '../helper/constant/role';
 
 class DataView extends React.Component {
     constructor(props) {
@@ -36,8 +37,9 @@ class DataView extends React.Component {
     }
 
     filterActionMenu = () => {
+        let actionRoles = this.props.actionRoles
         let actionMenu = this.props.actionMenu()
-        if (actionMenu && actionMenu.length > 0) {
+        if (actionMenu && actionMenu.length > 0 && (actionRoles === undefined || validateRole(actionRoles, this.props.organizationInfo))) {
             let viewerEdit = this.props.requestInfo.viewerEdit
             let menu = actionMenu.filter(action => {
                 let valid = true

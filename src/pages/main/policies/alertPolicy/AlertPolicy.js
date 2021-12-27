@@ -12,6 +12,7 @@ import { fields } from '../../../../services/model/format';
 import { uiFormatter } from '../../../../helper/formatter';
 import { showApps } from '../../../../services/modules/app';
 import { redux_org } from '../../../../helper/reduxData';
+import { developerRoles } from '../../../../constant';
 
 class AlertPolicy extends React.Component {
     constructor(props) {
@@ -98,7 +99,7 @@ class AlertPolicy extends React.Component {
     render() {
         const { currentView } = this.state
         return (
-            <DataView id={perpetual.PAGE_ALERT_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} multiDataRequest={multiDataRequest} />
+            <DataView id={perpetual.PAGE_ALERT_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} actionRoles={developerRoles} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} multiDataRequest={multiDataRequest} />
         )
     }
 

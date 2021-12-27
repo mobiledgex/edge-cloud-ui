@@ -15,8 +15,7 @@ export const keys = () => ([
   { field: fields.stabilizationWindowSec, serverField: 'stabilization_window_sec', label: 'Stabilization Window (sec)' },
   { field: fields.targetActiveConnections, serverField: 'target_active_connections', label: 'Target Active Connections' },
   { field: fields.targetMEM, serverField: 'target_mem', label: 'Target Memory (%)' },
-  { field: fields.targetCPU, serverField: 'target_cpu', label: 'Target CPU (%)' },
-  // { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: developerRoles }
+  { field: fields.targetCPU, serverField: 'target_cpu', label: 'Target CPU (%)' }
 ])
 
 const getKey = (data, isCreate) => {

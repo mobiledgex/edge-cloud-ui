@@ -90,7 +90,7 @@ class FlavorList extends React.Component {
     render() {
         const {currentView} = this.state
         return (
-            <DataView id={perpetual.PAGE_FLAVORS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_FLAVORS} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} actionRoles={[perpetual.ADMIN_MANAGER]} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
     }
 

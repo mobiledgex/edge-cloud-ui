@@ -90,7 +90,7 @@ class BillingOrg extends React.Component {
     render() {
         const { currentView } = this.state
         return (
-            <DataView id={perpetual.PAGE_BILLING_ORG} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} />
+            <DataView id={perpetual.PAGE_BILLING_ORG} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} actionRoles={[perpetual.ADMIN_MANAGER, perpetual.DEVELOPER_MANAGER]} requestInfo={this.requestInfo} />
         )
     }
 
