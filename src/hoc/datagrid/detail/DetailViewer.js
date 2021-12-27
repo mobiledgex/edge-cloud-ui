@@ -21,6 +21,9 @@ const useStyles = makeStyles((theme) => ({
             boxShadow: '0px 2px 8px #181a1f'
         }
     },
+    main_label:{
+        marginLeft:10
+    },
     table_cell_label: {
         borderBottom: "none",
         verticalAlign: 'text-top',
@@ -136,7 +139,7 @@ const MexDetailViewer = (props) => {
                         {
                             keys.map((item, i) => {
                                 const visible = item.roles ? item.roles.includes(redux_org.roleType(orgInfo)) : true
-                                return visible ? <TableCell key={i}><strong classes={classes.textColor}>{item.label}</strong></TableCell> : null
+                                return visible ? <TableCell key={i}><strong className={classes.textColor}>{item.label}</strong></TableCell> : null
                             })
                         }
                         {detailAction ? <TableCell></TableCell> : null}
@@ -150,7 +153,7 @@ const MexDetailViewer = (props) => {
                                     const visible = item.roles ? item.roles.includes(redux_org.roleType(orgInfo)) : true
                                     return (
                                         visible ? <TableCell key={j} className={classes.bottomBorder}>
-                                            <strong classes={classes.textColor}>{getData(data, item)}</strong>
+                                            <strong className={classes.textColor}>{getData(data, item)}</strong>
                                         </TableCell> : null
                                     )
                                 }))
@@ -166,9 +169,9 @@ const MexDetailViewer = (props) => {
     const getRow = (id, item, info, subView) => {
         return (
             <TableRow key={id} className={subView ? '' : classes.table_row}>
-                <TableCell className={classes.table_cell_label}><strong classes={clsx(classes.main_label, classes.textColor)}>&nbsp;&nbsp;&nbsp;{item.label}</strong></TableCell>
+                <TableCell className={classes.table_cell_label}><strong className={clsx(classes.main_label, classes.textColor)}>{item.label}</strong></TableCell>
                 <TableCell className={classes.table_cell_value}>
-                    <strong classes={classes.textColor}>{subView ? info : getData(info, item)}</strong>
+                    <strong className={classes.textColor}>{subView ? info : getData(info, item)}</strong>
                 </TableCell>
             </TableRow>
         )
