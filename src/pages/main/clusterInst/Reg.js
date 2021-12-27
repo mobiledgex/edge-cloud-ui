@@ -16,7 +16,6 @@ import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import { fetchCloudletFlavors } from '../../../services/modules/flavor';
 import { getAutoScalePolicyList, showAutoScalePolicies } from '../../../services/modules/autoScalePolicy';
 //Map
-import ListMexMap from "../../../container/map/ListMexMap"
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
 import { HELP_CLUSTER_INST_REG } from "../../../tutorial";
 
@@ -27,6 +26,7 @@ import { endpoint, perpetual } from '../../../helper/constant';
 import { service, updateFieldData } from '../../../services';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 import cloneDeep from 'lodash/cloneDeep';
+import ListMexMap from '../../../hoc/datagrid/map/ListMexMap';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 

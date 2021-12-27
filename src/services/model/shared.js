@@ -1,8 +1,9 @@
+import { CircularProgress } from '@material-ui/core';
 import { lightGreen } from '@material-ui/core/colors';
 import React from 'react'
-import {Icon, Popup} from 'semantic-ui-react';
 import { perpetual } from '../../helper/constant';
 import { serverFields } from '../../helper/formatter';
+import { IconButton, Icon } from '../../hoc/mexui';
 import {fields} from './format';
 
 export const additionalDetail = (data) => {
@@ -88,20 +89,20 @@ export const showProgress = (data, isDetailView) => {
         let icon = null;
         switch (state) {
             case serverFields.READY:
-                icon = <Popup content={getStateStatus(state)} trigger={<Icon className='progressIndicator' name='check' color='green' />} />
+                icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon style={{color:'green', fontSize:16}}>check</Icon></IconButton>
                 break;
             case serverFields.CREATING:
             case serverFields.UPDATING:
             case serverFields.CREATING_DEPENDENCIES:
             case serverFields.CRM_INITOK:
-                icon = <Popup content='View Progress' trigger={<Icon className='progressIndicator' loading color='green' name='circle notch' />} />
+                icon = <IconButton tooltip={'View Progress'}><CircularProgress size={14} style={{color:'green'}}/></IconButton>
                 break;
             case serverFields.DELETING:
             case serverFields.DELETE_PREPARE:
-                icon = <Popup content='View Progress' trigger={<Icon className='progressIndicator' loading color='red' name='circle notch' />} />
+                icon = <IconButton tooltip={'View Progress'}><CircularProgress size={14} style={{color:'red'}}/></IconButton>
                 break;
             default:
-                icon = <Popup content={getStateStatus(state)} trigger={<Icon className='progressIndicator' name='close' color='red' />} />
+                icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon style={{color:'red', fontSize:15}}>close</Icon></IconButton>
         }
         return icon
     }

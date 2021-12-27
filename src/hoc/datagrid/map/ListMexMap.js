@@ -1,12 +1,12 @@
 import React from 'react'
-import MexMap from '../../hoc/mexmap/MexMap'
-import { Icon } from 'semantic-ui-react'
 import { Marker, Popup } from "react-leaflet";
-import { fields } from '../../services/model/format';
+import { fields } from '../../../services/model/format';
 import Legend from './MapLegend'
-import { mapLegendColor, renderSVG } from '../../hoc/mexmap/constant';
-import { perpetual } from '../../helper/constant';
-import { serverFields } from '../../helper/formatter';
+import { mapLegendColor, renderSVG } from '../../mexmap/constant';
+import { serverFields } from '../../../helper/formatter';
+import { perpetual } from '../../../helper/constant';
+import MexMap from '../../mexmap/MexMap'
+import { Icon } from 'semantic-ui-react'
 
 const DEFAULT_ZOOM = 3
 

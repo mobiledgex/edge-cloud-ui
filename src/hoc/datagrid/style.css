@@ -1,0 +1,11 @@
+#mex-list-view {
+    padding:1px;
+}
+
+#mex-data-grid {
+    border-radius: 5px;
+}
+
+#mex-data-grid .ReactVirtualized__Grid__innerScrollContainer {
+    margin-bottom: 40px;
+}

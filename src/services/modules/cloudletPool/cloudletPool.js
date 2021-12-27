@@ -24,7 +24,7 @@ export const keys = () => ([
     },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: operatorRoles }
+    // { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: operatorRoles }
 ])
 
 export const getKey = (data) => {

@@ -129,9 +129,8 @@ const useStyles = makeStyles((theme) => ({
         cursor:'pointer'
     },
     sub: {
-        backgroundColor: props => props.sub ? '#1E2123' : 'default',
-        boxShadow: props => props.sub ? '0px 2px 8px #1E2123' : 'none',
-        borderRadius: props => props.sub ? '0 0 5px 5px' : 0,
+        backgroundColor: props => props.sub ? '#181a1f' : 'default',
+        boxShadow: props => props.sub ? '0px 2px 8px #181a1f' : 'none',
         "&:hover": {
             backgroundColor: 'default'
         }
@@ -188,17 +187,6 @@ const Options = (props) => {
     }
 
     const renderPopover = (item) => {
-        // if (!drawerOpen && item.sub) {
-        //     return (
-        //         <List component='div' disablePadding>
-        //             {item.options.map(option => (
-        //                 <React.Fragment key={option.id}>
-        //                     {renderItem(option)}
-        //                 </React.Fragment>
-        //             ))}
-        //         </List>
-        //     )
-        // }
         return drawerOpen ? '' : item.label
     }
 

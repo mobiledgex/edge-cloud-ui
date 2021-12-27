@@ -22,7 +22,7 @@ export const keys = () => (
         { field: fields.children, serverField: 'Children', label: 'Children', sortable: true, visible: false },
         { field: fields.createdAt, serverField: 'CreatedAt', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
         { field: fields.updatedAt, serverField: 'UpdatedAt', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
-        { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: [perpetual.ADMIN_MANAGER, perpetual.DEVELOPER_MANAGER] }
+        // { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: [perpetual.ADMIN_MANAGER, perpetual.DEVELOPER_MANAGER] }
     ]
 )
 
