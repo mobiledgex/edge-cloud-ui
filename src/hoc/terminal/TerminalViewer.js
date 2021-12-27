@@ -14,7 +14,7 @@ import { endpoint, perpetual } from '../../helper/constant';
 import { componentLoader } from '../loader/componentLoader';
 import './style.css'
 
-const Terminal = lazy(() => componentLoader(import('./MexTerminal1')));
+const Terminal = lazy(() => componentLoader(import('./MexTerminal')));
 
 class TerminalViewer extends Component {
 
