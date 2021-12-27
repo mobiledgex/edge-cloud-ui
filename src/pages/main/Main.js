@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import MexAlert from '../../hoc/alert/AlertDialog';
 import Menu from './Menu'
-import '../../css/introjs.css';
-import '../../css/introjs-dark.css';
 import { pages } from '../../constant';
 import { role } from '../../helper/constant';
 import { withRouter } from 'react-router-dom';

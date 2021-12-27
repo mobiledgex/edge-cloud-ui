@@ -23,7 +23,7 @@ export const keys = () => ([
     field: fields.outboundSecurityRules, serverField: 'outbound_security_rules', label: 'Outbound Security Rules',
     keys: outboundSecurityRulesKeys
   },
-  { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: [perpetual.ADMIN_MANAGER, perpetual.ADMIN_CONTRIBUTOR, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_CONTRIBUTOR] }
+  // { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: [perpetual.ADMIN_MANAGER, perpetual.ADMIN_CONTRIBUTOR, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_CONTRIBUTOR] }
 ])
 
 const getKey = (data) => {

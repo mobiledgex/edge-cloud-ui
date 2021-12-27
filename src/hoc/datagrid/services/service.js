@@ -1,4 +1,4 @@
-import { service } from "../services";
+import { service } from "../../../services";
 
 export const fetchDataFromServer = (self, requestTypeList, filter) => {
     let requestList = [];

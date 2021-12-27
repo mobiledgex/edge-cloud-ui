@@ -22,7 +22,7 @@ export const keys = () => ([
     { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator' },
     { field: fields.cloudletLocation, serverField: 'loc', label: 'Location', dataType: perpetual.TYPE_JSON }]
   },
-  { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: developerRoles }
+  // { field: 'actions', label: 'Actions', sortable: false, visible: true, clickable: true, roles: developerRoles }
 ])
 
 const getKey = (data) => {

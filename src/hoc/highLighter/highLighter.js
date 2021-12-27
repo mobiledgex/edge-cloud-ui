@@ -6,7 +6,7 @@ import bash from 'react-syntax-highlighter/dist/esm/languages/hljs/bash';
 import allyDark from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 import {copyData} from '../../utils/file_util'
 
-import { Box, IconButton, Tooltip } from '@material-ui/core';
+import { IconButton, Tooltip } from '@material-ui/core';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 
 SyntaxHighlighter.registerLanguage('yaml', yaml);
@@ -20,7 +20,7 @@ export const syntaxHighLighter = (language, data) => (
 )
 
 export const codeHighLighter = (data) => (
-    <div style={{ backgroundColor: '#2B2B2B', borderRadius: 5, position: 'relative' }}>
+    <div style={{ backgroundColor: '#2B2B2B', borderRadius: 5, position: 'relative', color:'#E8E8E8' }}>
         <div style={{ overflowY: 'auto', maxHeight: 200 }}>
             <div style={{ width: '93%', padding:12 }}>
                 <code style={{ wordBreak: 'break-all' }}>{data}</code>

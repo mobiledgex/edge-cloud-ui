@@ -1,16 +1,28 @@
 import React from 'react';
 import { useSelector } from "react-redux";
-import { Table, TableBody, TableCell, TableHead, TableRow, Divider, makeStyles } from '@material-ui/core';
-import { syntaxHighLighter } from '../../hoc/highLighter/highLighter'
-import { time } from '../../utils/date_util'
-import { redux_org } from '../../helper/reduxData'
-import { perpetual } from '../../helper/constant';
+import { Table, TableBody, TableCell, TableHead, TableRow, Divider, makeStyles, Card } from '@material-ui/core';
+import { syntaxHighLighter } from '../../highLighter/highLighter'
+import { time } from '../../../utils/date_util'
+import { redux_org } from '../../../helper/reduxData'
+import { perpetual } from '../../../helper/constant';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
+    container: {
+        height: 'calc(100vh - 110px)',
+        backgroundColor: '#292c33',
+        borderRadius: 5,
+        overflowY: 'auto',
+        marginTop: 5
+    },
     table_row: {
         '&:hover': {
-            backgroundColor: '#1e2123',
+            backgroundColor: '#181a1f',
+            boxShadow: '0px 2px 8px #181a1f'
         }
+    },
+    main_label:{
+        marginLeft:10
     },
     table_cell_label: {
         borderBottom: "none",
@@ -19,6 +31,12 @@ const useStyles = makeStyles((theme) => ({
     },
     table_cell_value: {
         borderBottom: "none"
+    },
+    textColor: {
+        color: '#E8E8E8'
+    },
+    bottomBorder: {
+        borderBottom: 'none'
     }
 }));
 
@@ -72,8 +90,8 @@ const getArrayRow = (id, item, dataList, classes) => {
                     <TableBody>
                         {dataList.map((data, i) => {
                             return (
-                                <TableRow key={i} style={{ backgroundColor: i % 2 === 0 ? '#1E2123' : 'transparent' }}>{(
-                                    <TableCell style={{ borderBottom: "none" }}>
+                                <TableRow key={i} style={{ backgroundColor: i % 2 === 0 ? '#181a1f' : 'transparent' }}>{(
+                                    <TableCell className={classes.bottomBorder}>
                                         <p style={{ wordBreak: 'break-all' }}>{data}</p>
                                     </TableCell>)
                                 }
@@ -121,7 +139,7 @@ const MexDetailViewer = (props) => {
                         {
                             keys.map((item, i) => {
                                 const visible = item.roles ? item.roles.includes(redux_org.roleType(orgInfo)) : true
-                                return visible ? <TableCell key={i}>{item.label}</TableCell> : null
+                                return visible ? <TableCell key={i}><strong className={classes.textColor}>{item.label}</strong></TableCell> : null
                             })
                         }
                         {detailAction ? <TableCell></TableCell> : null}
@@ -130,17 +148,17 @@ const MexDetailViewer = (props) => {
                 <TableBody>
                     {dataList.map((data, i) => {
                         return (
-                            <TableRow key={i} style={{ backgroundColor: i % 2 === 0 ? '#1E2123' : 'transparent' }}>{(
+                            <TableRow key={i} style={{ backgroundColor: i % 2 === 0 ? '#181a1f' : 'transparent' }}>{(
                                 keys.map((item, j) => {
                                     const visible = item.roles ? item.roles.includes(redux_org.roleType(orgInfo)) : true
                                     return (
-                                        visible ? <TableCell key={j} style={{ borderBottom: "none" }}>
-                                            {getData(data, item)}
+                                        visible ? <TableCell key={j} className={classes.bottomBorder}>
+                                            <strong className={classes.textColor}>{getData(data, item)}</strong>
                                         </TableCell> : null
                                     )
                                 }))
                             }
-                                {detailAction ? <TableCell style={{ borderBottom: "none" }}>{detailAction({ ...parentData, ...data })}</TableCell> : null}
+                                {detailAction ? <TableCell className={classes.bottomBorder}>{detailAction({ ...parentData, ...data })}</TableCell> : null}
                             </TableRow>)
                     })}
                 </TableBody>
@@ -151,9 +169,9 @@ const MexDetailViewer = (props) => {
     const getRow = (id, item, info, subView) => {
         return (
             <TableRow key={id} className={subView ? '' : classes.table_row}>
-                <TableCell className={classes.table_cell_label}>{item.label}</TableCell>
+                <TableCell className={classes.table_cell_label}><strong className={clsx(classes.main_label, classes.textColor)}>{item.label}</strong></TableCell>
                 <TableCell className={classes.table_cell_value}>
-                    {subView ? info : getData(info, item)}
+                    <strong className={classes.textColor}>{subView ? info : getData(info, item)}</strong>
                 </TableCell>
             </TableRow>
         )
@@ -162,26 +180,28 @@ const MexDetailViewer = (props) => {
     return (
         <React.Fragment>
             <Divider />
-            <br/>
-            <Table style={{ width: '100%', backgroundColor: '#292c33', border: 'none', marginLeft: 20 }}>
-                <TableBody>
-                    {props.keys.map((item, i) => {
-                        let data = detailData[item.field]
-                        return (
-                            checkRole(redux_org.role(orgInfo), item) ?
-                                (data !== undefined && (item.detailView === undefined || item.detailView)) ?
-                                    item.keys ?
-                                        data.length > 0 ?
-                                            getRow(i, item, subView(item.keys, detailData, data), true) : null
-                                        :
-                                        isArrayString(item, data) ? getArrayRow(i, item, data, classes) :
-                                            getRow(i, item, detailData) :
-                                    null
-                                : null
-                        )
-                    })}
-                </TableBody>
-            </Table>
+            <Card className={classes.container}>
+                <Table >
+                    <TableBody>
+                        {props.keys.map((item, i) => {
+                            let data = detailData[item.field]
+                            return (
+                                checkRole(redux_org.role(orgInfo), item) ?
+                                    (data !== undefined && (item.detailView === undefined || item.detailView)) ?
+                                        item.keys ?
+                                            data.length > 0 ?
+                                                getRow(i, item, subView(item.keys, detailData, data), true) : null
+                                            :
+                                            isArrayString(item, data) ? getArrayRow(i, item, data, classes) :
+                                                getRow(i, item, detailData) :
+                                        null
+                                    : null
+                            )
+                        })}
+                    </TableBody>
+                </Table>
+                {props.children}
+            </Card>
         </React.Fragment>
     )
 }

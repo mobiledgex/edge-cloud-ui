@@ -138,8 +138,9 @@ export const appInstRegion = (key, data, isDetail) => {
     )
 }
 
-export const emailVerfied = (key, data, isDetail, callback) => {
-    let id = data[key.field]
+export const EmailVerfied = (props) => {
+    const {column, data, isDetail, callback} = props
+    let id = data[column.field]
     if (isDetail) {
         return labelFormatter.showYesNo(id)
     }
@@ -150,10 +151,11 @@ export const emailVerfied = (key, data, isDetail, callback) => {
     }
 }
 
-export const lock = (key, data, isDetail, callback) => {
+export const Lock = (props) => {
+    const {column, data, isDetail, callback} = props
     const [locked, setLocked] = React.useState(false)
     const [loading, setLoading] = React.useState(false)
-    let id = data[key.field]
+    let id = data[column.field]
     useEffect(() => {
         setLocked(id)
     }, [id]);
