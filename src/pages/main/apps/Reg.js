@@ -318,18 +318,23 @@ class AppReg extends Component {
                 form.visible = deployTypeVM
                 form.value = deployTypeVM ? form.value : undefined
                 return form
-            } 
+            }
+            else if (currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
+                form.field === fields.allowServerless ? form.visible = true : null
+                form.field === fields.serverlessConfig ? form.visible = true : null
+                form.field === fields.serverless ? form.visible = true : null
+                return form
+            }
+            else if (currentForm.value !== perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
+                form.field === fields.allowServerless ? form.visible = false : null
+                form.field === fields.serverlessConfig ? form.visible = false : null
+                form.field === fields.serverless ? form.visible = false : null
+                return form
+            }
             else {
                 return form
             }
         })
-        for (const form of forms) { 
-            if (currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
-                form.field === fields.allowServerless ? form.visible = true : null
-            } else {
-                form.field === fields.allowServerless ? form.visible = false : null
-            }
-        }
         if (!isInit) {
             this.updateState({ forms })
         }
@@ -573,24 +578,16 @@ class AppReg extends Component {
     }
     allowServerLess = (currentForm, forms, isInit) => {
         forms = forms.filter((form) => {
-            if (form.field === fields.accessServerlessConfig || form.serverless !== undefined) {
+            if (form.field === fields.accessServerlessConfig || form.serverless !== undefined || form.field === fields.serverlessConfig) {
                 form.visible = currentForm.value
                 form.serverless = currentForm.value
+                form.serverLessConfig = currentForm.value
                 return form
-            } else {
+            }
+            else {
                 return form
             }
         })
-        if (this.isUpdate) {
-            let routeForms = this.serverlessConfigForm()
-            for (let j = 0; j < routeForms.length; j++) {
-                let routeForm = routeForms[j];
-                if (routeForm.field === fields.serverlessVcpu || routeForm.field === fields.serverlessMinReplicas || routeForm.field === fields.serverlessRam) {
-                    routeForm.visible = currentForm.value // to hide and show the serverless options according to allowserverless toggle
-                }
-            }
-            forms.splice(17, 1, this.getServerlessConfig(routeForms))
-        }
         if (!isInit) {
             this.updateState({ forms })
         }
@@ -697,7 +694,7 @@ class AppReg extends Component {
                     let multiFormData = data[uuid]
                     if (multiFormData) {
                         if (multiFormData[fields.serverlessMinReplicas] && multiFormData[fields.serverlessRam] && multiFormData[fields.serverlessVcpu]) {
-                            serverless_config = { min_replicas: parseInt(multiFormData[fields.serverlessMinReplicas]), ram: parseInt(multiFormData[fields.serverlessRam]), vcpus: parseInt(multiFormData[fields.serverlessVcpu]) }
+                            serverless_config = { min_replicas: parseInt(multiFormData[fields.serverlessMinReplicas]), ram: parseInt(multiFormData[fields.serverlessRam]), vcpus: parseFloat(multiFormData[fields.serverlessVcpu]) }
                         }
                         data[fields.accessServerlessConfig] = serverless_config
                         if (multiFormData[fields.portRangeMin] && multiFormData[fields.portRangeMax]) {
@@ -756,6 +753,9 @@ class AppReg extends Component {
                     data[uuid] = undefined
                 }
             }
+            if (data[fields.allowServerless]) {
+                data[fields.allowServerless] = data[fields.allowServerless]
+            }
 
             if ((data[fields.imagePath] && data[fields.imagePath].length > 0) || (data[fields.deploymentManifest] && data[fields.deploymentManifest].length > 0)) {
                 if (ports.length > 0) {
@@ -794,6 +794,9 @@ class AppReg extends Component {
                                 if (!updateData[fields.trusted] && roc && roc.length > 0) {
                                     updateData[fields.fields].push("38", "38.1", "38.2", "38.4")
                                 }
+                            }
+                            if (data[fields.allowServerless]) {
+                                updateData[fields.allowServerless] = data[fields.allowServerless]
                             }
                             if (updateData.fields.length > 0) {
                                 let mc = await updateApp(this, updateData)
@@ -1044,7 +1047,7 @@ class AppReg extends Component {
                             portForm.value = !skipHCPort
                         }
                     }
-                    forms.splice(17 + multiFormCount, 0, this.getPortForm(portForms))
+                    forms.splice(18 + multiFormCount, 0, this.getPortForm(portForms))
                     multiFormCount += 1
                 }
             }
