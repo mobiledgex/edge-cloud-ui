@@ -331,6 +331,7 @@ class DataGrid extends React.Component {
                     formatter={formatData}
                     selected={selected}
                     selection = {this.requestInfo.selection}
+                    sortBy = {this.requestInfo.sortBy}
                     setSelected={this.setSelected}
                     isMap={isMap}
                     tableHeight={this.props.tableHeight}
