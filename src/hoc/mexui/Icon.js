@@ -13,10 +13,10 @@ export const useStyles = makeStyles(() =>
 
 const Icon = (props) => {
     const classes = useStyles();
-    const { outlined, className, animation } = props
+    const { outlined, className, animation, id } = props
     return (
         <React.Fragment>
-            <MIcon className={clsx(`material-icons${outlined ? '-outlined' : ''}`, className, animation ? classes.rotateIcon : '')} style={props.style}>{props.children}</MIcon>
+            <MIcon id={id} className={clsx(`material-icons${outlined ? '-outlined' : ''}`, className, animation ? classes.rotateIcon : '')} style={props.style}>{props.children}</MIcon>
             <style>
                 {
                     `@keyframes spin {

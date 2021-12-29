@@ -33,6 +33,11 @@ const styles = (theme) => ({
             backgroundColor: '#181a1f',
         },
     },
+    tableHeader:{
+        "&:hover #sort-icon": {
+            visibility: 'visible'
+          }
+    },
     tableCell: {
         flex: 1
     },
@@ -174,7 +179,7 @@ class MuiVirtualizedTable extends React.PureComponent {
         return (
             <TableCell
                 component="div"
-                className={clsx(classes.tableCell, classes.flexContainer, { [classes.noClick]: !column.filter })}
+                className={clsx(classes.tableHeader, classes.tableCell, classes.flexContainer, { [classes.noClick]: !column.sortable })}
                 variant="head"
                 style={{ height: headerHeight }}
                 onClick={() => { onSortClick(column) }}
@@ -185,7 +190,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                         <span className={classes.textHeader}>{label}</span>
                 }
                 {
-                    column.filter ? <Icon className={clsx(classes.sortIcon, order === 'asc' ? classes.arrowDown : classes.arrowUp, {[classes.sortIconVisible] : column.field !== orderBy})}>{'arrow_upward'}</Icon> : null
+                    column.sortable ? <Icon id='sort-icon' className={clsx(classes.sortIcon, order === 'asc' ? classes.arrowDown : classes.arrowUp, {[classes.sortIconVisible] : column.field !== orderBy})}>{'arrow_upward'}</Icon> : null
                 }
             </TableCell>
         );
@@ -265,11 +270,11 @@ const getHeight = (props, table) => {
 
 
 export default function MexTable(props) {
-    const { loading, groupBy, searchValue, dataList, keys, formatter, actionMenu, cellClick, selected, setSelected, selection, onActionClose, iconKeys, viewerEdit } = props
+    const { loading, groupBy, searchValue, dataList, keys, formatter, actionMenu, cellClick, selected, setSelected, selection, onActionClose, iconKeys, viewerEdit, sortBy } = props
     const [itemList, setList] = React.useState([])
     const [groupList, setGroupList] = React.useState([])
     const [order, setOrder] = React.useState('asc')
-    const [orderBy, setOrderBy] = React.useState()
+    const [orderBy, setOrderBy] = React.useState((sortBy && sortBy.length > 0)  ? sortBy[0] : undefined)
     const [select, setSelect] = React.useState(undefined)
     const [anchorEl, setAnchorEl] = React.useState(undefined)
 
@@ -381,7 +386,7 @@ export default function MexTable(props) {
     }
 
     const onSortClick = (column) => {
-        if (column.filter) {
+        if (column.sortable) {
             let isAsc = orderBy === column.field && order === 'asc'
             let newOrder = isAsc ? 'desc' : 'asc'
             let list = stableSort(itemList, getComparator(newOrder, column.field))
