@@ -44,9 +44,6 @@ export default function MexCheckboxInput(props) {
         region.length > 0 && selected.length === region.length;
     const anchorRef = React.useRef(null);
 
-
-
-
     const handleChange = (event) => {
         const value = event.target.value;
         if (value === "all") {
