@@ -383,10 +383,6 @@ class AppReg extends Component {
 
     regionValueChange = (currentForm, forms, isInit) => {
         let regions = currentForm.value;
-        if (regions && regions.includes('All')) {
-            regions = cloneDeep(this.regions)
-            regions.splice(0, 1)
-        }
         if (!this.isUpdate && regions && regions.length > 0) {
             regions.map(region => {
                 this.regionDependentDataUpdate(region, forms, isInit)
@@ -860,7 +856,7 @@ class AppReg extends Component {
     formKeys = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Apps`, formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: this.isUpdate ? SELECT : SELECT_CHECKBOX, expanded: true, options: this.regions, visible: true, placeholder: 'Select Region', rules: { required: true }, update: { key: true }, tip: 'Allows developer to upload app info to different controllers' },
+            { field: fields.region, label: 'Region', formType: this.isUpdate ? SELECT : SELECT_CHECKBOX, options: this.regions, visible: true, placeholder: 'Select Region', rules: { required: true }, update: { key: true }, tip: 'Allows developer to upload app info to different controllers' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Organization or Company Name that a Developer is part of', update: { key: true } },
             { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name', dataValidateFunc: this.validateAppName, update: { key: true } },
             { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version', update: { key: true } },
