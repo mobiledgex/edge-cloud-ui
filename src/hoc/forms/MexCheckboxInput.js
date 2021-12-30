@@ -45,39 +45,30 @@ export default function MexCheckboxInput(props) {
     const anchorRef = React.useRef(null);
 
 
-    const noSelectedData = () => {
-        form.value = undefined
-        props.onChange(form, undefined)
-    }
 
-    const selectedData = (data) => {
-        setSelected(data);
-        form.value = data
-        props.onChange(form, data)
-    }
 
     const handleChange = (event) => {
         const value = event.target.value;
         if (value === "all") {
             const selectedValue = selected.length === region.length ? [] : region
+            setSelected(selectedValue);
             if (selectedValue.length === 0) {
-                noSelectedData()
+                form.value = undefined
                 return
             }
-            selectedData(selectedValue)
-            return;
+            form.value = selectedValue
+            return
         }
 
         // added below code to update selected options
         const list = [...selected];
         const index = list.indexOf(value);
         index === -1 ? list.push(value) : list.splice(index, 1);
+        setSelected(list);
         if (list.length === 0) {
-            noSelectedData()
+            form.value = undefined
             return
         }
-        selectedData(list)
-        return
 
     };
 
@@ -103,8 +94,8 @@ export default function MexCheckboxInput(props) {
             return;
         }
         setOpen(false);
+        props.onChange(form, selected) // call api on dropdown close
     };
-
     const listItem = region.map((option) => {
         return (
             <div key={option}>
