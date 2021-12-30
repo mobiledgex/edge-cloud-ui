@@ -13,6 +13,7 @@ import MexDate from './MexDate';
 import MexTimeCounter from './MexTimeCounter';
 import MexSelectTree from './selectTree/MexSelectTree';
 import MexSelectTreeGroup from './selectTree/MexSelectTreeGroup';
+import MexCheckboxInput from './MexCheckboxInput'
 import { Form, Grid, Divider } from 'semantic-ui-react';
 import { IconButton, Tooltip } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
@@ -45,6 +46,7 @@ export const SELECT_RADIO_TREE = 'SelectRadioTree'
 export const SELECT_RADIO_TREE_GROUP = 'SelectRadioTreeGroup'
 export const DATE_PICKER = 'DatePicker'
 export const TIME_COUNTER = 'TimeCounter'
+export const SELECT_CHECKBOX = 'SelectCheckBox'
 
 /***
 * Map values from form to field
@@ -299,7 +301,6 @@ const MexForms = (props) => {
     }
 
     const loadHorizontalForms = (parentId, forms) => {
-
         let parentForm = props.forms[parentId];
         return forms.map((form, i) => {
             initValidateRules(form)
@@ -408,6 +409,7 @@ const MexForms = (props) => {
                                                     <MexSwitch form={form} onChange={onValueSelect} /> :
                                                     form.formType === DATE_PICKER ?
                                                         <MexDate form={form} onChange={onValueSelect} /> :
+                                                        form.formType === SELECT_CHECKBOX ? <MexCheckboxInput form={form} onChange={onValueSelect} /> :
                                                         form.formType === TIME_COUNTER ?
                                                             <MexTimeCounter form={form} onChange={onValueSelect} /> :
                                                             null
