@@ -36,9 +36,9 @@ const StyledPaper = withStyles({
 
 export default function MexCheckboxInput(props) {
     let form = props.form;
+    const region = form.options
     const classes = useStyles();
     const [open, setOpen] = useState(false);
-    const [region, setRegion] = useState(form.options)
     const [selected, setSelected] = useState(form.value ? form.value : []);
     const isAllSelected =
         region.length > 0 && selected.length === region.length;
@@ -50,7 +50,6 @@ export default function MexCheckboxInput(props) {
             const selectedValue = selected.length === region.length ? [] : region
             setSelected(selectedValue);
             if (selectedValue.length === 0) {
-                form.value = undefined
                 return
             }
             form.value = selectedValue
@@ -60,12 +59,8 @@ export default function MexCheckboxInput(props) {
         // added below code to update selected options
         const list = [...selected];
         const index = list.indexOf(value);
-        index === -1 ? list.push(value) : list.splice(index, 1);
+        index === -1 ? list.push(value) : list.splice(index, 1); // 
         setSelected(list);
-        if (list.length === 0) {
-            form.value = undefined
-            return
-        }
 
     };
 
@@ -93,6 +88,7 @@ export default function MexCheckboxInput(props) {
         setOpen(false);
         props.onChange(form, selected) // call api on dropdown close
     };
+
     const listItem = region.map((option) => {
         return (
             <div key={option}>
@@ -105,6 +101,7 @@ export default function MexCheckboxInput(props) {
             </div>
         );
     });
+
     return (
         <div className={classes.root}>
             <div
