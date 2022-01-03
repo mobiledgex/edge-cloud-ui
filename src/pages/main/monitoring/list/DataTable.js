@@ -6,7 +6,6 @@ import {TableCell, Tooltip} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { AutoSizer, Column, Table, defaultTableRowRenderer } from 'react-virtualized';
 import { Icon, IconButton } from '../../../../hoc/mexui';
-import { lightGreen } from '@material-ui/core/colors';
 import Actions from './Actions';
 import AppGroupView from '../modules/app/AppGroupView';
 import cloneDeep from 'lodash/cloneDeep';
@@ -74,7 +73,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                 align={(columnIndex != null && columns[columnIndex].numeric) || false ? 'right' : 'left'}
             >
                 {
-                    column.type === 'button' ? <IconButton onClick={(e) => { onAction(e, rowData) }}><Icon style={{ color: lightGreen['A700'], height: 18 }}>list</Icon></IconButton> :
+                    column.type === 'button' ? <IconButton onClick={(e) => { onAction(e, rowData) }}><Icon color='green' style={{ height: 18 }}>menu_open</Icon></IconButton> :
                         column.type === 'checkbox' ? <Icon style={{ color: rowData.color }}>{`${selection[rowData.key] ? 'check_box' : 'check_box_outline_blank'}`}</Icon> :
                             column.format ? formatter(column, cellData) :
                                 <Tooltip title={<strong style={{ fontSize: 13 }}>{cellData}</strong>}><span style={{ width: column.width - 10, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{cellData}</span></Tooltip>
@@ -119,7 +118,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                         <AppGroupView data={rowData} />
                     </div>
                     {action ? <div style={{ display: 'inline', width: 85 }}>
-                        <IconButton onClick={(e) => { onAction(e, rowData, true) }}><Icon style={{ color: lightGreen['A700'], height: 18 }}>list</Icon></IconButton>
+                        <IconButton onClick={(e) => { onAction(e, rowData, true) }}><Icon color='green' style={{ height: 18 }}>menu_open</Icon></IconButton>
                     </div> : null}
                 </div>
             )
