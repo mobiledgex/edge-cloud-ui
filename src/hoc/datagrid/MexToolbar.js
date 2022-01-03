@@ -22,7 +22,7 @@ export const ACTION_BACK = 8;
 export const ACTION_GROUP = 9;
 export const ACTION_PICKER = 10;
 
-const iconColor = 'green'
+const iconColor = lightGreen['A700']
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
