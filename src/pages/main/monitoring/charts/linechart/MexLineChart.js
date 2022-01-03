@@ -3,11 +3,12 @@ import { Line } from 'react-chartjs-2'
 import * as dateUtil from '../../../../../utils/date_util'
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import uuid from 'uuid'
-import { Box, Dialog, IconButton } from '@material-ui/core';
+import { Box, Dialog } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CloseIcon from '@material-ui/icons/Close';
 import { convertUnit } from '../../helper/unitConvertor';
 import { LS_LINE_GRAPH_FULL_SCREEN } from '../../../../../helper/constant/perpetual';
+import { IconButton } from '../../../../../hoc/mexui';
 
 const formatData = (props) => {
     const { data, search, selection, disableSelection } = props
@@ -154,7 +155,7 @@ class MexLineChart extends React.Component {
                         <h3 style={{ padding: 10 }}> {`${this.header} - ${data.region}`}</h3>
                     </div>
                     <div style={{ display: 'inline-block', float: 'right' }}>
-                        <IconButton onClick={this.closeFullScreen} style={{ padding: 10 }}>
+                        <IconButton tooltip={'close'} onClick={this.closeFullScreen} style={{ padding: 10 }}>
                             <CloseIcon />
                         </IconButton>
                     </div>
@@ -195,8 +196,8 @@ class MexLineChart extends React.Component {
                                     <CircularProgress size={20} thickness={3} />
                                 </Box> :
                                 <Box m={-1}>
-                                    <IconButton onClick={this.openFullScreen}>
-                                        <AspectRatioIcon style={{ color: 'rgba(118, 255, 3, 0.7)' }} />
+                                    <IconButton tooltip={'Fullscreen'} onClick={this.openFullScreen}>
+                                        <AspectRatioIcon style={{ color: 'green' }} />
                                     </IconButton>
                                 </Box>
                         }

@@ -5,7 +5,7 @@ const AppGroupView = (props) => {
     const { data } = props
     return (
         <b>
-            {`App: ${data[fields.appName]} [${data[fields.version]}]`}
+            {`App: ${data[fields.appName]} [${data[fields.version]}] - ${data[fields.region]}`}
         </b>
     )
 }

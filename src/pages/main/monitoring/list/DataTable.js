@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
-import {TableCell} from '@material-ui/core';
+import {TableCell, Tooltip} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { AutoSizer, Column, Table, defaultTableRowRenderer } from 'react-virtualized';
 import { Icon, IconButton } from '../../../../hoc/mexui';
-import { lightGreen } from '@material-ui/core/colors';
 import Actions from './Actions';
 import AppGroupView from '../modules/app/AppGroupView';
+import cloneDeep from 'lodash/cloneDeep';
 
 const styles = (theme) => ({
     flexContainer: {
@@ -47,8 +47,8 @@ class MuiVirtualizedTable extends React.PureComponent {
         this.isGroup = false
     }
     static defaultProps = {
-        headerHeight: 35,
-        rowHeight: 40,
+        headerHeight: 45,
+        rowHeight: 45,
     };
 
     getRowClassName = ({ index }) => {
@@ -73,10 +73,10 @@ class MuiVirtualizedTable extends React.PureComponent {
                 align={(columnIndex != null && columns[columnIndex].numeric) || false ? 'right' : 'left'}
             >
                 {
-                    column.type === 'button' ? <IconButton onClick={(e)=>{onAction(e, rowData)}}><Icon style={{ color: lightGreen['A700'], height: 18 }}>list</Icon></IconButton> :
-                    column.type === 'checkbox' ? <Icon style={{ color: rowData.color }}>{`${selection[rowData.key] ? 'check_box' : 'check_box_outline_blank'}`}</Icon> :
-                        column.format ? formatter(column, cellData) :
-                            cellData
+                    column.type === 'button' ? <IconButton onClick={(e) => { onAction(e, rowData) }}><Icon color='green' style={{ height: 18 }}>menu_open</Icon></IconButton> :
+                        column.type === 'checkbox' ? <Icon style={{ color: rowData.color }}>{`${selection[rowData.key] ? 'check_box' : 'check_box_outline_blank'}`}</Icon> :
+                            column.format ? formatter(column, cellData) :
+                                <Tooltip title={<strong style={{ fontSize: 13 }}>{cellData}</strong>}><span style={{ width: column.width - 10, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{cellData}</span></Tooltip>
                 }
             </TableCell>
         );
@@ -118,7 +118,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                         <AppGroupView data={rowData} />
                     </div>
                     {action ? <div style={{ display: 'inline', width: 85 }}>
-                        <IconButton onClick={(e) => { onAction(e, rowData, true) }}><Icon style={{ color: lightGreen['A700'], height: 18 }}>list</Icon></IconButton>
+                        <IconButton onClick={(e) => { onAction(e, rowData, true) }}><Icon color='green' style={{ height: 18 }}>menu_open</Icon></IconButton>
                     </div> : null}
                 </div>
             )
@@ -127,12 +127,12 @@ class MuiVirtualizedTable extends React.PureComponent {
     }
 
     render() {
-        const { classes, columns, formatter, rowHeight, headerHeight, action, ...tableProps } = this.props;
+        const { classes, columns, formatter, rowHeight, headerHeight, fixedWidth, columnCount, ...tableProps } = this.props;
         return (
             <AutoSizer>
                 {({ height, width, rowData }) => {
                     //normalize width where 150 is reserved
-                    let columnWidth = (width - (action ? 150 : 50)) / (columns.length - 2)
+                    let columnWidth = (width - fixedWidth) / (columnCount)
                     return (
                         <Table
                             height={height}
@@ -194,13 +194,22 @@ export default function ReactVirtualizedTable(props) {
     const { dataList, keys, formatter, handleAction, actionMenu, groupBy } = props
     const [selection, setSelection] = React.useState({ count: 0 })
     const [anchorEl, setAnchorEl] = React.useState(undefined)
+    let fixedWidth = 50
+    let columnCount = 0
 
     const columns = [
-        { field: false, label: false, type: 'checkbox', visible: true, width: 50, fixedWidth:true },
-        ...keys.filter(key => key.visible)
+        { field: false, label: false, type: 'checkbox', visible: true, width: 50, fixedWidth: true },
+        ...cloneDeep(keys).filter(key => {
+            if (key.visible) {
+                columnCount = columnCount + (key.width ? 0 : 1)
+                fixedWidth = fixedWidth + (key.width ? key.width : 0)
+                key.fixedWidth = Boolean(key.width)
+                return true
+            }
+        })
     ]
-
     if (actionMenu && actionMenu.length > 0) {
+        fixedWidth = fixedWidth + 100
         columns.push({ field: false, label: 'Actions', type: 'button', visible: true, width: 100, fixedWidth:true })
     }
 
@@ -238,6 +247,8 @@ export default function ReactVirtualizedTable(props) {
                     action={actionMenu && actionMenu.length > 0}
                     onAction={onActionMenu}
                     groupBy={groupBy}
+                    fixedWidth = {fixedWidth}
+                    columnCount={columnCount}
                 />
             </Paper>
             <Actions anchorEl={anchorEl && anchorEl.target} onClose={() => { setAnchorEl(undefined) }} onClick={onActionClick} actionMenu={actionMenu} group={anchorEl && anchorEl.group}/>

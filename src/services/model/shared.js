@@ -89,7 +89,7 @@ export const showProgress = (data, isDetailView) => {
         let icon = null;
         switch (state) {
             case serverFields.READY:
-                icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon style={{color:'green', fontSize:16}}>check</Icon></IconButton>
+                icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon color='green' size={16}>check</Icon></IconButton>
                 break;
             case serverFields.CREATING:
             case serverFields.UPDATING:
@@ -102,7 +102,7 @@ export const showProgress = (data, isDetailView) => {
                 icon = <IconButton tooltip={'View Progress'}><CircularProgress size={14} style={{color:'red'}}/></IconButton>
                 break;
             default:
-                icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon style={{color:'red', fontSize:15}}>close</Icon></IconButton>
+                icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon color='red' size={16}>close</Icon></IconButton>
         }
         return icon
     }

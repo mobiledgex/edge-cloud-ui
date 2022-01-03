@@ -36,7 +36,7 @@ class AppMonitoring extends React.Component {
             requestLantency(this, data)
         }
         else {
-            let actionView = { id: action.id, data }
+            let actionView = { id: action.id, data, group: action.group }
             this.setState({ actionView })
         }
     }
@@ -47,7 +47,7 @@ class AppMonitoring extends React.Component {
         const { moduleId, regions, search, range, organization, visibility } = tools
         return (
             <React.Fragment>
-                <Legend tools={tools} data={legends} loading={loading} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} groupBy={[fields.appName, fields.version]} />
+                <Legend tools={tools} data={legends} loading={loading} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} groupBy={[fields.region, fields.appName, fields.version]} />
                 <div style={{ position: 'relative', height: 4 }}>
                     <DragButton height={400} />
                 </div>
@@ -78,7 +78,7 @@ class AppMonitoring extends React.Component {
                             legends && legends[region] ? <Module key={region} region={region} legends={legends[region]} metricRequestData={metricRequestData[region]} moduleId={moduleId} visibility={visibility} search={search} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} /> : null
                         ))}
                     </ImageList>
-                    {actionView && actionView.id === perpetual.ACTION_LATENCY_METRICS ? <DMEMetrics group={false} id={moduleId} onClose={() => { this.setState({ actionView: undefined }) }} data={[actionView.data]} /> : null}
+                    {actionView && actionView.id === perpetual.ACTION_LATENCY_METRICS ? <DMEMetrics group={Boolean(actionView.group)} id={moduleId} onClose={() => { this.setState({ actionView: undefined }) }} data={[actionView.data]} /> : null}
                     {actionView && actionView.id === perpetual.ACTION_TRACK_DEVICES ? <AppInstClientMap onClose={() => { this.setState({ actionView: undefined }) }} data={actionView.data} /> : null}
                 </div>
             </React.Fragment>
