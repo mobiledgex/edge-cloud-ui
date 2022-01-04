@@ -74,8 +74,8 @@ class Main extends React.Component {
     redirectInvalidPath = () => {
         const orgInfo = this.props.organizationInfo
         const pathname = this.props.history.location.pathname
-        if ((orgInfo === undefined && !pathname.includes('/organizations')) || !(pathname.includes('/logout') || this.validatePath(pages, orgInfo, pathname))) {
-            this.props.history.push(`/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)
+        if ((orgInfo === undefined && !pathname.includes('/dashboard')) || !(pathname.includes('/logout') || this.validatePath(pages, orgInfo, pathname))) {
+            this.props.history.push(`/main/${perpetual.PAGE_DASHBOARD.toLowerCase()}`)
         }
     }
 

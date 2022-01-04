@@ -4,6 +4,7 @@ import SideNav from './defaultLayout/SideNav'
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 
 //Pages
+import Dashboard from './dashboard/Dashboard'
 import Organization from './organization/Organization'
 import Account from './accounts/Account';
 import User from './userRole/UserRole';
@@ -30,6 +31,8 @@ import { perpetual, role } from '../../helper/constant';
 
 const renderPage = (id) => {
     switch (id) {
+        case perpetual.PAGE_DASHBOARD:
+            return Dashboard
         case perpetual.PAGE_ORGANIZATIONS:
             return Organization
         case perpetual.PAGE_USER_ROLES:

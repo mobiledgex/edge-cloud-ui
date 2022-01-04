@@ -130,7 +130,7 @@ class Landing extends Component {
             localStorage.removeItem(perpetual.LS_REGIONS);
         }
         else if (localStorage.getItem(perpetual.LS_THASH)) {
-            this.props.history.push(`/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)
+            this.props.history.push(`/main/${perpetual.PAGE_DASHBOARD.toLowerCase()}`)
         }
     }
 }

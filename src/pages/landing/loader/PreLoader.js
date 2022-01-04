@@ -20,7 +20,7 @@ class LogoLoader extends React.Component {
     loadMainPage = () => {
         this.props.handleLoadMain(true)
         let currentPage = this.props.location.state ? this.props.location.state.currentPage : undefined
-        this.props.history.push(currentPage ? currentPage : `/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)
+        this.props.history.push(currentPage ? currentPage : `/main/${perpetual.PAGE_DASHBOARD.toLowerCase()}`)
     }
 
     fetchOrgInfo = (userInfo) => {
