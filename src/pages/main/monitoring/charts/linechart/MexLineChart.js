@@ -9,6 +9,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { convertUnit } from '../../helper/unitConvertor';
 import { LS_LINE_GRAPH_FULL_SCREEN } from '../../../../../helper/constant/perpetual';
 import { IconButton } from '../../../../../hoc/mexui';
+import { ICON_COLOR } from '../../../../../helper/constant/colors';
 
 const formatData = (props) => {
     const { data, search, selection, disableSelection } = props
@@ -197,7 +198,7 @@ class MexLineChart extends React.Component {
                                 </Box> :
                                 <Box m={-1}>
                                     <IconButton tooltip={'Fullscreen'} onClick={this.openFullScreen}>
-                                        <AspectRatioIcon style={{ color: 'green' }} />
+                                        <AspectRatioIcon style={{ color: ICON_COLOR }} />
                                     </IconButton>
                                 </Box>
                         }

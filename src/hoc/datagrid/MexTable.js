@@ -6,10 +6,10 @@ import { TableCell, Divider, Typography } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { AutoSizer, Column, Table } from 'react-virtualized';
 import { Icon, IconButton } from '../mexui';
-import { lightGreen } from '@material-ui/core/colors';
 import Actions from './action/Action';
 import { fields } from '../../services';
 import { NoData } from '../../helper/formatter/ui';
+import { ICON_COLOR } from '../../helper/constant/colors';
 
 const styles = (theme) => ({
     flexContainer: {
@@ -150,7 +150,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                             </React.Fragment>
                         )
                     }) :
-                        column.type === ELE_BUTTON ? <IconButton ><Icon style={{height: 18 }} color={'green'}>menu_open</Icon></IconButton> :
+                        column.type === ELE_BUTTON ? <IconButton ><Icon style={{height: 18 }} color={ICON_COLOR}>list</Icon></IconButton> :
                             column.type === ELE_CHECKBOX ? <IconButton ><Icon className={classes.checkbox} style={{ color: rowData.color }}>{`${selected.includes(rowData.uuid) ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton> :
                                 column.format ? formatter(column, rowData) :
                                     <span className={classes.textBody}>{cellData}</span>
@@ -261,7 +261,7 @@ const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
 const getHeight = (props, table) => {
     const { tableHeight, isMap, iconKeys, groupBy } = props
-    let height = isMap ? 556 : 154
+    let height = isMap ? 552 : 152
     height = tableHeight ? tableHeight : height
     height = iconKeys ? height + 40 : height
     height = table && groupBy.length > 0 ? height + 50 : height
