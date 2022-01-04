@@ -16,13 +16,13 @@ import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { perpetual } from '../../../helper/constant';
 import { uiFormatter } from '../../../helper/formatter'
-import { lightGreen } from '@material-ui/core/colors';
 import { authSyncRequest, fetchToken } from '../../../services/service';
 import { validatePrivateAccess } from '../../../constant';
 import { getUserMetaData } from '../../../helper/ls';
 import { updateUserMetaData } from '../../../services/modules/users';
 import { showUsers } from '../../../services/modules/users';
 import { ACTION_REFRESH } from '../../../hoc/datagrid/MexToolbar';
+import { ICON_COLOR } from '../../../helper/constant/colors';
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
@@ -88,7 +88,7 @@ class OrganizationList extends React.Component {
                     // subheader="Dynamically scale and deploy applications on Operator Edge geographically close to your end-users. Deploying to MobiledgeX's cloudlets provides applications the advantage of low latency, which can be extremely useful for real-time applications such as Augmented Reality, Mobile Gaming, Self-Driving Cars, Drones, etc."
                     action={
                         <IconButton aria-label="developer" onClick={() => { this.onAdd(perpetual.DEVELOPER) }}>
-                            <ArrowForwardIosIcon style={{ fontSize: 20, color: lightGreen['A700'] }} />
+                            <ArrowForwardIosIcon style={{ fontSize: 20, color: ICON_COLOR }} />
                         </IconButton>
                     }
                 />
@@ -108,7 +108,7 @@ class OrganizationList extends React.Component {
                     // subheader='Register your cloudlet by providing MobiledgeX with a pool of compute resources and access to the OpenStack API endpoint by specifying a few required parameters, such as dynamic IP addresses, cloudlet names, location of cloudlets, certs, and more, using the Edge-Cloud Console. MobiledgeX relies on this information to remotely access the cloudlets to determine resource requirements as well as dynamically track usage.'
                     action={
                         <IconButton aria-label="operator" onClick={() => { this.onAdd(perpetual.OPERATOR) }}>
-                            <ArrowForwardIosIcon style={{ fontSize: 20, color: lightGreen['A700'] }} />
+                            <ArrowForwardIosIcon style={{ fontSize: 20, color: ICON_COLOR }} />
                         </IconButton>
                     }
                 />

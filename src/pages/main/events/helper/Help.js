@@ -21,7 +21,7 @@ const Help = (props) => {
     return (
         <React.Fragment>
             <IconButton style={style} className={className} tooltip={renderHelp()}>
-                <Icon outlined={true} style={{ color }}>info_out</Icon>
+                <Icon outlined={true} color={color}>info_out</Icon>
             </IconButton>
         </React.Fragment>
     )

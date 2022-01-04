@@ -12,8 +12,8 @@ import { fields } from '../../../services/model/format';
 import { operators } from '../../../helper/constant';
 import { redux_org } from '../../../helper/reduxData';
 import cloneDeep from 'lodash/cloneDeep';
-import { lightGreen } from '@material-ui/core/colors';
 import { service } from '../../../services';
+import { ICON_COLOR } from '../../../helper/constant/colors';
 
 const orgKeys = [
     { field: fields.name, label: 'Billing Org' },
@@ -78,7 +78,7 @@ class Billing extends React.Component {
 
     renderInvoice = (data) => (
         <Tooltip title={<strong style={{ fontSize: 13 }}>Invoices</strong>}>
-            <IconButton onClick={() => { this.onInvoice(data) }}><DescriptionOutlinedIcon style={{ color: lightGreen['A700'] }} /></IconButton>
+            <IconButton onClick={() => { this.onInvoice(data) }}><DescriptionOutlinedIcon style={{ color: ICON_COLOR }} /></IconButton>
         </Tooltip>
     )
 

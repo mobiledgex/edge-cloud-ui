@@ -10,6 +10,7 @@ import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import { colors, perpetual } from '../constant';
 import { toFirstUpperCase } from '../../utils/string_utils';
 import { Icon } from '../../hoc/mexui';
+import { ICON_COLOR } from '../constant/colors';
 
 const useStyles = makeStyles((theme) => ({
     text_icon: {
@@ -123,9 +124,9 @@ export const healthCheck = (key, data, isDetail) => {
     else {
         switch (id) {
             case serverFields.OK:
-                return <MTooltip title={label}><Icon color='green' size={14}>done</Icon></MTooltip>
+                return <MTooltip title={label}><Icon color={ICON_COLOR} size={14}>done</Icon></MTooltip>
             default:
-                return <MTooltip title={label}><Icon color='red' size={14}>close</Icon></MTooltip>
+                return <MTooltip title={label}><Icon color={ICON_COLOR} size={14}>close</Icon></MTooltip>
         }
     }
 }
