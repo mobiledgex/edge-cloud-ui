@@ -10,9 +10,9 @@ import '../../../node_modules/react-calendar-timeline/lib/Timeline.css'
 import * as dateUtil from '../../utils/date_util'
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import './style.css'
-import { lightGreen } from '@material-ui/core/colors';
 import { Icon } from '../mexui';
+import { ICON_COLOR } from '../../helper/constant/colors';
+import './style.css'
 
 const keys = {
     groupIdKey: "id",
@@ -152,17 +152,17 @@ class MexCalendar extends React.Component {
                 <div style={{ border: '1px solid #BBBBBB', borderRadius: 5, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
                     <Tooltip title={<strong style={{ fontSize: 13 }}>Previous</strong>}>
                         <IconButton onClick={this.onPrevClick}>
-                            <ArrowBackIosIcon fontSize='small' style={{ color: lightGreen['A700'] }} />
+                            <ArrowBackIosIcon fontSize='small' style={{ color: ICON_COLOR }} />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title={<strong style={{ fontSize: 13 }}>Next</strong>}>
                         <IconButton aria-label="refresh" onClick={this.onNextClick}>
-                            <ArrowForwardIosIcon fontSize='small' style={{ color: lightGreen['A700'] }} />
+                            <ArrowForwardIosIcon fontSize='small' style={{ color: ICON_COLOR }} />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title={<strong style={{ fontSize: 13 }}>Today</strong>}>
                         <IconButton aria-label="refresh" onClick={this.onReset}>
-                            <Icon style={{ color: lightGreen['A700'] }}>today</Icon>
+                            <Icon style={{ color: ICON_COLOR }}>today</Icon>
                         </IconButton>
                     </Tooltip>
                     <div style={{ display: 'inline', marginLeft: 30 }}>

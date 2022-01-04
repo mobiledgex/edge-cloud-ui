@@ -93,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
     content: {
         flexGrow: 1,
         padding: 2,
-        marginTop: 51,
+        marginTop: 49,
         overflow: 'auto'
     },
     xLogo: {

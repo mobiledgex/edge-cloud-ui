@@ -9,6 +9,7 @@ import { Icon, IconButton } from '../../../../hoc/mexui';
 import Actions from './Actions';
 import AppGroupView from '../modules/app/AppGroupView';
 import cloneDeep from 'lodash/cloneDeep';
+import { ICON_COLOR } from '../../../../helper/constant/colors';
 
 const styles = (theme) => ({
     flexContainer: {
@@ -73,7 +74,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                 align={(columnIndex != null && columns[columnIndex].numeric) || false ? 'right' : 'left'}
             >
                 {
-                    column.type === 'button' ? <IconButton onClick={(e) => { onAction(e, rowData) }}><Icon color='green' style={{ height: 18 }}>menu_open</Icon></IconButton> :
+                    column.type === 'button' ? <IconButton onClick={(e) => { onAction(e, rowData) }}><Icon color={ICON_COLOR} style={{ height: 18 }}>list</Icon></IconButton> :
                         column.type === 'checkbox' ? <Icon style={{ color: rowData.color }}>{`${selection[rowData.key] ? 'check_box' : 'check_box_outline_blank'}`}</Icon> :
                             column.format ? formatter(column, cellData) :
                                 <Tooltip title={<strong style={{ fontSize: 13 }}>{cellData}</strong>}><span style={{ width: column.width - 10, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{cellData}</span></Tooltip>
@@ -118,7 +119,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                         <AppGroupView data={rowData} />
                     </div>
                     {action ? <div style={{ display: 'inline', width: 85 }}>
-                        <IconButton onClick={(e) => { onAction(e, rowData, true) }}><Icon color='green' style={{ height: 18 }}>menu_open</Icon></IconButton>
+                        <IconButton onClick={(e) => { onAction(e, rowData, true) }}><Icon color={ICON_COLOR} style={{ height: 18 }}>list</Icon></IconButton>
                     </div> : null}
                 </div>
             )
