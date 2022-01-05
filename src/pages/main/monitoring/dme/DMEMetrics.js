@@ -28,11 +28,11 @@ import DMEToolbar, { ACTION_CLOSE, ACTION_DATA_TYPE, ACTION_LATENCY_RANGE, ACTIO
 import CloudletDetails from './details/CloudletDetails';
 import DeviceDetails from './details/DeviceDetails';
 import { operators } from "../../../../helper/constant";
-import './style.css'
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
 import { onlyNumeric } from '../../../../utils/string_utils';
 import { AIK_APP_ALL, AIK_APP_CLOUDLET_CLUSTER } from '../../../../services/modules/appInst/primary';
 import { timezonePref } from '../../../../utils/sharedPreferences_util';
+import './style.css'
 
 const buckets = [0, 5, 10, 25, 50, 100]
 
