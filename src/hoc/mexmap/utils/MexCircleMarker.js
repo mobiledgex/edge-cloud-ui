@@ -8,9 +8,9 @@ const renderPopup = (dataList) => {
             <div className="map-control-div-marker-popup-label">
                 {dataList.map((data, i) => {
                     return (
-                        <div  key={i}>
+                        <div key={i}>
                             <code>{data}</code>
-                            <br/>
+                            <br />
                         </div>
                     )
                 })}
@@ -26,7 +26,9 @@ const MexCircleMarker = props => {
 
 
     useEffect(() => {
-        setRadius(radius)
+        if (radius > 0) {
+            setRadius(radius)
+        }
     }, [radius]);
 
     const updateRadius = (value) => {
