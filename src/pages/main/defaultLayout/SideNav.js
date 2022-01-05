@@ -249,7 +249,7 @@ const SideNav = (props) => {
                     [classes.appBarShift]: open,
                 })}
             >
-                {loading ? <LinearProgress style={{ postion: 'absolute', width: '100%' }} /> : null}
+                {loading ? <LinearProgress style={{ position: 'absolute', width: '100%', top:49 }} /> : null}
                 <Toolbar style={{ backgroundColor: '#3B3F47' }}>
                     <About className={clsx(classes.xLogo, { [classes.hide]: open, })} src='/assets/brand/X_Logo_green.svg' />
                     <IconButton
