@@ -119,7 +119,7 @@ class ClusterInstReg extends React.Component {
                         this.flavorOrgList[key] = flavorList
                     }
                 }
-                if( this.flavorOrgList[key])
+                if (this.flavorOrgList[key])
                 {
                     this.flavorList[key] = this.flavorOrgList[key]
                 }
@@ -144,7 +144,7 @@ class ClusterInstReg extends React.Component {
             }
         }
 
-        this.networkOrgList = {}
+        this.networkList = {}
         if (region && operatorName && cloudletList) {
             await Promise.all(cloudletList.map(async (cloudletName) => {
                 let key = `${region}>${operatorName}>${cloudletName}`
