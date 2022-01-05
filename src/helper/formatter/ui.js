@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { useSelector } from "react-redux";
-import { Icon as SIcon, Popup } from 'semantic-ui-react';
 import { fields } from '../../services/model/format';
 import { IconButton, Tooltip, CircularProgress, makeStyles } from '@material-ui/core';
 import { labelFormatter, serverFields } from '.';
@@ -11,6 +10,7 @@ import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import { colors, perpetual } from '../constant';
 import { toFirstUpperCase } from '../../utils/string_utils';
 import { Icon } from '../../hoc/mexui';
+import { ICON_COLOR } from '../constant/colors';
 
 const useStyles = makeStyles((theme) => ({
     text_icon: {
@@ -36,6 +36,13 @@ const TextIcon = (props) => {
         <div className={classes.text_icon} onClick={onClick} align='center'>
             <strong>{value}</strong>
         </div>
+    )
+}
+
+const MTooltip = (props)=>{
+    const  {title, children}= props
+    return (
+        title ? <Tooltip title={<strong style={{fontSize:13}}>{title}</strong>}><span>{children}</span></Tooltip> : null
     )
 }
 
@@ -117,9 +124,9 @@ export const healthCheck = (key, data, isDetail) => {
     else {
         switch (id) {
             case serverFields.OK:
-                return <Popup content={label} trigger={<SIcon className="progressIndicator" name='check' color='green' />} />
+                return <MTooltip title={label}><Icon color={ICON_COLOR} size={14}>done</Icon></MTooltip>
             default:
-                return <Popup content={label} trigger={<SIcon className="progressIndicator" name='close' color='red' />} />
+                return <MTooltip title={label}><Icon color={ICON_COLOR} size={14}>close</Icon></MTooltip>
         }
     }
 }
@@ -130,16 +137,17 @@ export const appInstRegion = (key, data, isDetail) => {
         isDetail ? value :
             data[fields.updateAvailable] ?
                 <Tooltip title={<div><strong style={{ fontSize: 13 }}>{`Current Version: ${data[fields.revision]}`}</strong><br /><br /><strong style={{ fontSize: 13 }}>{`Available Version: ${data[fields.appRevision]}`}</strong></div>}>
-                    <label>
-                        <SIcon color={'orange'} name={'arrow alternate circle up outline'} />&nbsp;{value}
+                    <label style={{display:'flex'}}>
+                        <Icon color='orange' size={14}>arrow_circle_up</Icon>&nbsp;{value}
                     </label>
                 </Tooltip> :
                 <label>{value}</label>
     )
 }
 
-export const emailVerfied = (key, data, isDetail, callback) => {
-    let id = data[key.field]
+export const EmailVerfied = (props) => {
+    const {column, data, isDetail, callback} = props
+    let id = data[column.field]
     if (isDetail) {
         return labelFormatter.showYesNo(id)
     }
@@ -150,10 +158,11 @@ export const emailVerfied = (key, data, isDetail, callback) => {
     }
 }
 
-export const lock = (key, data, isDetail, callback) => {
+export const Lock = (props) => {
+    const {column, data, isDetail, callback} = props
     const [locked, setLocked] = React.useState(false)
     const [loading, setLoading] = React.useState(false)
-    let id = data[key.field]
+    let id = data[column.field]
     useEffect(() => {
         setLocked(id)
     }, [id]);
@@ -181,7 +190,7 @@ export const reporterStatus = (key, data, isDetail) => {
         return toFirstUpperCase(data[key.field])
     }
     else {
-        return <SIcon name={success ? 'check' : 'close'} style={{ color: `rgb(${success ? colors.COLOR_RGB_SUCCESS : colors.COLOR_RGB_ERROR})` }} />
+        return <Icon size={14} color={`rgb(${success ? colors.COLOR_RGB_SUCCESS : colors.COLOR_RGB_ERROR})`}>{success ? 'check' : 'close'}</Icon>
     }
 }
 

@@ -5,11 +5,11 @@ import { showGeneratedReports, downloadReport } from '../../../services/modules/
 import CloudDownloadOutlinedIcon from '@material-ui/icons/CloudDownloadOutlined';
 import PictureAsPdfOutlinedIcon from '@material-ui/icons/PictureAsPdfOutlined';
 import { withStyles } from '@material-ui/styles';
-import { lightGreen } from '@material-ui/core/colors';
 import { redux_org } from '../../../helper/reduxData';
 import { Select, IconButton, DialogTitle } from '../../../hoc/mexui'
 import { NoData } from '../../../helper/formatter/ui'
 import { FORMAT_FULL_DATE, time } from '../../../utils/date_util';
+import { ICON_COLOR } from '../../../helper/constant/colors';
 
 const OPEN = 0
 const DOWNLOAD = 1
@@ -38,7 +38,7 @@ class Generated extends React.Component {
             reports: [],
             pdfLoading: undefined,
             loading: false,
-            selectedOrg:undefined
+            selectedOrg: undefined
         }
         this._isMounted = false
     }
@@ -83,12 +83,12 @@ class Generated extends React.Component {
 
     onOrgChange = (value) => {
         if (this._isMounted && value) {
-            this.setState({ reports: [], selectedOrg:value }, () => {
+            this.setState({ reports: [], selectedOrg: value }, () => {
                 this.fetchReports(value)
             })
         }
         else {
-            this.updateState({ reports: [], selectedOrg:undefined })
+            this.updateState({ reports: [], selectedOrg: undefined })
         }
     }
 
@@ -150,12 +150,12 @@ class Generated extends React.Component {
                                                     </Grid>
                                                     <Grid item xs={1}>
                                                         {
-                                                            <IconButton disabled={pdfLoading !== undefined} loading={pdfLoading === `${i}_${OPEN}`} tooltip='Open' onClick={() => { this.fetchReport(i, filename, OPEN) }}><PictureAsPdfOutlinedIcon style={{ color: lightGreen['A700'] }} /></IconButton>
+                                                            <IconButton disabled={pdfLoading !== undefined} loading={pdfLoading === `${i}_${OPEN}`} tooltip='Open' onClick={() => { this.fetchReport(i, filename, OPEN) }}><PictureAsPdfOutlinedIcon style={{ color: ICON_COLOR }} /></IconButton>
                                                         }
                                                     </Grid>
                                                     <Grid item xs={1}>
                                                         {
-                                                            <IconButton disabled={pdfLoading !== undefined} loading={pdfLoading === `${i}_${DOWNLOAD}`} tooltip='Download' onClick={() => { this.fetchReport(i, filename, DOWNLOAD) }}><CloudDownloadOutlinedIcon style={{ color: lightGreen['A700'] }} /></IconButton>
+                                                            <IconButton disabled={pdfLoading !== undefined} loading={pdfLoading === `${i}_${DOWNLOAD}`} tooltip='Download' onClick={() => { this.fetchReport(i, filename, DOWNLOAD) }}><CloudDownloadOutlinedIcon style={{ color: ICON_COLOR }} /></IconButton>
                                                         }
                                                     </Grid>
                                                 </Grid>

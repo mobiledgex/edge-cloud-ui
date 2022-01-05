@@ -882,10 +882,6 @@ body, button, input, textarea, optgroup, select, textarea,
     color: rgba(136,221,0,.85);
 }
 
-.mexListView{
-    height: calc(100vh - 117px); /* title Area Height */
-}
-
 .round_panel {
     background-color: #292c33;
     height: calc(100vh - 55px);

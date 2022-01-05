@@ -11,9 +11,8 @@ const useStyles = makeStyles(theme => ({
         flexGrow: 1,
     },
     sectionDesktop: {
-
         display: 'none',
-        [theme.breakpoints.up('md')]: {
+        [theme.breakpoints.up('sm')]: {
             display: 'flex',
         },
         marginRight: 5

@@ -1,7 +1,7 @@
 import React from 'react'
 import { MapControl, withLeaflet } from "react-leaflet";
 import L from "leaflet";
-import { mapLegendColor } from '../../hoc/mexmap/constant';
+import { mapLegendColor } from '../../mexmap/constant';
 
 
 const gradientFilter = (i) =>{

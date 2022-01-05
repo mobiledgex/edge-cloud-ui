@@ -107,7 +107,7 @@ class AutoProvPolicy extends React.Component {
     render() {
         const {currentView } = this.state
         return (
-            <DataView id={perpetual.PAGE_AUTO_PROVISIONING_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_AUTO_PROVISIONING_POLICY} resetView={this.resetView} actionMenu={this.actionMenu} actionRoles={developerRoles} currentView={currentView} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
         )
     }
 

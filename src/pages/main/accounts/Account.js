@@ -9,10 +9,9 @@ import { keys, showAccounts, deleteAccount, multiDataRequest, iconKeys } from '.
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import * as serverData from '../../../services/model/serverData';
 import { perpetual } from '../../../helper/constant';
-import { uiFormatter } from '../../../helper/formatter';
-import { redux_org } from '../../../helper/reduxData'
 import { showUsers } from '../../../services/modules/users';
 import { ADMIN_MANAGER } from '../../../helper/constant/perpetual';
+import { EmailVerfied, Lock } from '../../../helper/formatter/ui';
 
 class AccountList extends Component {
     constructor(props) {
@@ -104,10 +103,10 @@ class AccountList extends Component {
 
     dataFormatter = (key, data, isDetail) => {
         if (key.field === fields.emailVerified) {
-            return uiFormatter.emailVerfied(key, data, isDetail, () => this.sendEmailWarning(data[fields.username], data[fields.email]))
+            return <EmailVerfied column={key} data={data} isDetail={isDetail} callback={() => this.sendEmailWarning(data[fields.username], data[fields.email])} />
         }
         else if (key.field === fields.locked) {
-            return uiFormatter.lock(key, data, isDetail, this.onLocking)
+            return <Lock column={key} data={data} isDetail={isDetail} callback={this.onLocking} />
         }
     }
 

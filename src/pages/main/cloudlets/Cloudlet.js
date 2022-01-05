@@ -21,6 +21,7 @@ import { perpetual, role } from '../../../helper/constant';
 import { responseValid } from '../../../services/service';
 import ShowNode from './ShowNode'
 import AllianceOrganization from './AllianceOrganization';
+import { ICON_COLOR } from '../../../helper/constant/colors';
 
 class CloudletList extends React.Component {
     constructor(props) {
@@ -169,7 +170,7 @@ class CloudletList extends React.Component {
             onAdd: this.canAdd(),
             viewMode: HELP_CLOUDLET_LIST,
             grouping: true,
-            iconKeys:iconKeys(),
+            iconKeys: iconKeys(),
             formatData: this.dataFormatter
         })
     }
@@ -179,7 +180,7 @@ class CloudletList extends React.Component {
     showProgress = (data, isDetailView) => {
         let progressRender = null
         if (!isDetailView && this.customStream(data)) {
-            progressRender = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading color='green' name='circle notch' />} />
+            progressRender = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading color={ICON_COLOR} name='circle notch' />} />
         }
         else {
             progressRender = shared.showProgress(data, isDetailView)
@@ -208,7 +209,7 @@ class CloudletList extends React.Component {
         const { currentView } = this.state
         return (
             <React.Fragment>
-                <DataView currentView={currentView} resetView={this.resetView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+                <DataView currentView={currentView} resetView={this.resetView} actionMenu={this.actionMenu} actionRoles={operatorRoles} requestInfo={this.requestInfo} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
                 <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
             </React.Fragment>
         )

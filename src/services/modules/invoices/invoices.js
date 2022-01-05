@@ -21,8 +21,7 @@ export const keys = () => ([
     { field: 'dueAmount', serverField: 'due_amount', label: 'Amount Due', visible: true },
     { field: 'items', serverField: 'line_items', label: 'Item', visible: false, dataType: perpetual.TYPE_JSON, detailView: false },
     { field: 'customer', serverField: 'customer', label: 'Customer', visible: false, dataType: perpetual.TYPE_JSON, detailView: false },
-    { field: 'seller', serverField: 'seller', label: 'Seller', visible: false, dataType: perpetual.TYPE_JSON, detailView: false },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
+    { field: 'seller', serverField: 'seller', label: 'Seller', visible: false, dataType: perpetual.TYPE_JSON, detailView: false }
 ])
 
 export const showInvoices = (self, data) => {
