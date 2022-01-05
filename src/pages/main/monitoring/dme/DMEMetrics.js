@@ -33,6 +33,7 @@ import { onlyNumeric } from '../../../../utils/string_utils';
 import { AIK_APP_ALL, AIK_APP_CLOUDLET_CLUSTER } from '../../../../services/modules/appInst/primary';
 import { timezonePref } from '../../../../utils/sharedPreferences_util';
 import './style.css'
+import { equal } from '../../../../helper/constant/operators';
 
 const buckets = [0, 5, 10, 25, 50, 100]
 
@@ -59,7 +60,8 @@ class DMEMetrics extends React.Component {
             mapcenter: undefined,
             latencyRange: 0,
             csvData: undefined,
-            loading: false
+            loading: false,
+            hoveredLocation:undefined
         }
         this._isMounted = false
         this.worker = new MexWorker()
@@ -135,17 +137,18 @@ class DMEMetrics extends React.Component {
     }
 
     renderDevice = (data, markerType, connectorMerge) => {
-        const { selectDevice } = this.state
+        const { selectDevice, hoveredLocation } = this.state
         const deviceGeoObject = data[CON_VALUES]
         return Object.keys(deviceGeoObject).map(key => {
             if (selectDevice === undefined || selectDevice === key) {
                 const geoTags = deviceGeoObject[key][perpetual.CON_TAGS]
                 const geoValues = deviceGeoObject[key][perpetual.CON_VALUES]
                 const location = geoTags['location']
+                let radius = hoveredLocation && equal(location, hoveredLocation) ? 13 : 4
                 connectorMerge.push([location.lat, location.lng])
                 return (
                     <React.Fragment key={key}>
-                        <MexCircleMarker coords={location} color={this.generateColor(geoValues, markerType)} onClick={() => { this.setHistogramData(false, key, deviceGeoObject, [location.lat, location.lng]) }} radius={4} />
+                        <MexCircleMarker coords={location} color={this.generateColor(geoValues, markerType)} onClick={() => { this.setHistogramData(false, key, deviceGeoObject, [location.lat, location.lng]) }} radius={radius}/>
                     </React.Fragment>
                 )
             }
@@ -264,7 +267,7 @@ class DMEMetrics extends React.Component {
         const { selectDevice, histogramData, markerType } = this.state
         const { id } = this.props
         return selectDevice ? <DeviceDetails data={histogramData} keys={id === PARENT_APP_INST ? appDeviceKeys : cloudletDeviceKeys} /> :
-            <CloudletDetails data={histogramData} markerType={markerType} onClick={(key, data, location) => { this.setHistogramData(false, key, data, location) }} />
+            <CloudletDetails data={histogramData} markerType={markerType} onMouseOver={(location)=>{this.setState({hoveredLocation:location})}} onMouseOut={()=>{this.setState({hoveredLocation:undefined})}} onClick={(key, data, location) => { this.setHistogramData(false, key, data, location) }} />
     }
 
     renderSlider = () => {
