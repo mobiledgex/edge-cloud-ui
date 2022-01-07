@@ -749,12 +749,12 @@ class AppReg extends Component {
                                 regions.splice(0, 1)
                             }
                             regions.map(region => {
-                                let requestData = JSON.parse(JSON.stringify(data))
+                                let requestData = cloneDeep(data)
                                 requestData[fields.region] = region
                                 requestData[fields.flavorName] = undefined
                                 for (let i = 0; i < data[fields.flavorName].length; i++) {
                                     let flavor = data[fields.flavorName][i]
-                                    if (flavor && flavor.parent === region) {
+                                    if (flavor && flavor.parent.includes(region)) {
                                         requestData[fields.flavorName] = flavor.value
                                         break;
                                     }

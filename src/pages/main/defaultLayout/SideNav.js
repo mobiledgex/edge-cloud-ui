@@ -34,7 +34,7 @@ const drawerWidth = 250;
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        display: 'flex',
+        display: 'flex'
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
@@ -86,9 +86,11 @@ const useStyles = makeStyles((theme) => ({
     toolbar: {
         display: 'flex',
         alignItems: 'right',
+        height:50,
         justifyContent: 'flex-end',
+        backgroundColor:'#3B3F47',
         padding: theme.spacing(0.7, 0, 0, 1),
-        boxShadow:'0px 1px 5px #000'
+        boxShadow:'0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)'
     },
     content: {
         flexGrow: 1,
