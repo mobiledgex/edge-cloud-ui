@@ -583,6 +583,9 @@ class ClusterInstReg extends React.Component {
 
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
+            if (form.field === fields.network) {
+                data[fields.network] === undefined ? form.visible = false : form.visible = true
+            }
             this.updateUI(form)
             if (data) {
                 form.value = data[form.field]
