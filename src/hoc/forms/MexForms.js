@@ -125,7 +125,8 @@ const MexForms = (props) => {
         setError(form.error)
             let element = document.getElementById(form.field)
             if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'start' })
+                element.style.scrollMargin = '10px';
+                element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
             }
     }
 
