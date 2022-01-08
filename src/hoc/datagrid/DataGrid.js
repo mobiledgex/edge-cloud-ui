@@ -8,7 +8,7 @@ import * as serverData from '../../services/model/serverData';
 
 import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH, ACTION_GROUP, ACTION_PICKER } from './MexToolbar';
 import DetailViewer from './detail/DetailViewer';
-import MexMessageStream from '../stepper/mexMessageStream';
+import MexMessageStream from '../stepper/MexMessageStream1';
 import MexMessageMultiNorm from '../stepper/mexMessageMultiNormal';
 import MexMultiStepper, { updateStepper } from '../stepper/mexMessageMultiStream'
 import { prefixSearchPref, showMapPref } from '../../utils/sharedPreferences_util';
@@ -43,7 +43,7 @@ class DataGrid extends React.Component {
             resetStream: false,
             deleteMultiple: [],
             iconKeys: undefined,
-            progressSelection:undefined,
+            progressData:undefined,
             loading: false
         };
         this._isMounted = false
@@ -362,7 +362,7 @@ class DataGrid extends React.Component {
     }
 
     onProgress(data) {
-        this.setState({progressSelection:data})
+        this.setState({progressData:data})
         if (this._isMounted) {
             this.updateState({
                 uuid: data.uuid
@@ -461,13 +461,13 @@ class DataGrid extends React.Component {
     }
 
     render() {
-        const { resetStream, deleteMultiple, showMap, progressSelection } = this.state
+        const { resetStream, deleteMultiple, showMap, progressData } = this.state
         const { regions, toolbarAction } = this.props
         return (
             <div id="mex-list-view">
                 <Card className='container'>
                     <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
-                    <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} progressSelection={progressSelection} dataList={this.state.newDataList} generateRequestData={this.specificDataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
+                    <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} progressData={progressData} generateRequestData={this.specificDataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
                     <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} uuid={this.state.uuid} />
                     <MexToolbar requestInfo={this.requestInfo} regions={regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} toolbarAction={toolbarAction} />
                     {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}

@@ -286,12 +286,9 @@ class MexMessageStream extends React.Component {
         if (this.body.current && this.props.uuid !== 0) {
             this.body.current.scrollTop = this.body.current.scrollHeight;
         }
-        if (!equal(prevProps.progressSelection, this.props.progressSelection)) {
-            this.streamProgress(this.props.progressSelection)
+        if (!equal(prevProps.progressData, this.props.progressData)) {
+            this.streamProgress(this.props.progressData)
         }
-        // if (!isEqual(prevProps.dataList,  this.props.dataList)) {
-        //     this.streamProgress()
-        // }
     }
 
     componentDidMount() {
