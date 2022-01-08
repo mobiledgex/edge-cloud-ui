@@ -38,7 +38,7 @@ const onClose = (event, reason) => {
     }
 }
 
-const MexMessageMultiNorm = (props) => {
+const MexMessageMultiNormal = (props) => {
     const { data } = props
     return (
         <Dialog onClose={onClose} aria-labelledby="message-multi-normal" open={data.length > 0} disableEscapeKeyDown={true} PaperProps={{
@@ -61,4 +61,4 @@ const MexMessageMultiNorm = (props) => {
     )
 }
 
-export default MexMessageMultiNorm
+export default MexMessageMultiNormal

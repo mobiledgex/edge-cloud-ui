@@ -10,7 +10,7 @@ import { fields } from '../../../../services/model/format';
 import { Grid } from '@material-ui/core';
 import { redux_org } from '../../../../helper/reduxData';
 import uuid from 'uuid';
-import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/mexMessageMultiStream'
+import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/MexMessageMultiStream'
 import { ACTION_UPDATE, OS_LINUX } from '../../../../helper/constant/perpetual';
 import { buildTip, osList } from './shared';
 import { buildKey, removeBuild } from '../../../../services/modules/gpudriver';
