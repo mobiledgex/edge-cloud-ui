@@ -8,7 +8,7 @@ import { fields } from '../../../../services/model/format';
 import { redux_org } from '../../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../../services/modules/organization';
-import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/MexMessageMultiStream1'
+import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/MexMessageMultiStream'
 import { Grid } from '@material-ui/core';
 import { service, updateFieldData } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';

@@ -11,7 +11,7 @@ import { redux_org } from '../../../../helper/reduxData'
 import { getOrganizationList } from '../../../../services/modules/organization';
 import { updateTrustPolicy, createTrustPolicy } from '../../../../services/modules/trustPolicy';
 import { HELP_TRUST_POLICY_REG } from "../../../../tutorial";
-import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/MexMessageMultiStream1'
+import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/MexMessageMultiStream'
 import { Grid } from '@material-ui/core';
 import { service, updateFieldData } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';

@@ -16,7 +16,7 @@ import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import { fetchCloudletFlavors } from '../../../services/modules/flavor';
 import { getAutoScalePolicyList, showAutoScalePolicies } from '../../../services/modules/autoScalePolicy';
 //Map
-import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/MexMessageMultiStream1'
+import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/MexMessageMultiStream'
 import { HELP_CLUSTER_INST_REG } from "../../../tutorial";
 
 import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
