@@ -106,7 +106,7 @@ export const updateStepper = (stepsArray, labels, data, serverData, wsObj) => {
 }
 
 
-const MultiStream = (props) => {
+const MexMessageMultiStream = (props) => {
     const body = useRef();
     const classes = useStyles();
     useEffect(() => {
@@ -237,5 +237,5 @@ const MultiStream = (props) => {
     )
 }
 
-export default MultiStream;
+export default MexMessageMultiStream;
 
