@@ -19,7 +19,7 @@ import { fetchCloudletFlavors } from '../../../services/modules/flavor/flavor';
 import { getAppList } from '../../../services/modules/app';
 import { createAppInst, updateAppInst } from '../../../services/modules/appInst';
 
-import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
+import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/MexMessageMultiStream1'
 import { HELP_APP_INST_REG } from "../../../tutorial";
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'

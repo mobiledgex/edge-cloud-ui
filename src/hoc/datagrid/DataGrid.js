@@ -10,7 +10,7 @@ import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, AC
 import DetailViewer from './detail/DetailViewer';
 import MexMessageStream from '../stepper/MexMessageStream';
 import MexMessageMultiNorm from '../stepper/mexMessageMultiNormal';
-import MexMultiStepper, { updateStepper } from '../stepper/mexMessageMultiStream'
+import MexMultiStepper, { updateStepper } from '../stepper/MexMessageMultiStream1'
 import { prefixSearchPref, showMapPref } from '../../utils/sharedPreferences_util';
 import MexMessageDialog from '../dialog/mexWarningDialog'
 import cloneDeep from 'lodash/cloneDeep';

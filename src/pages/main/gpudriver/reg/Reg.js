@@ -13,7 +13,7 @@ import { getOrganizationList } from '../../../../services/modules/organization';
 import { perpetual } from '../../../../helper/constant';
 import uuid from 'uuid';
 import { buildKey, createGPUDriver } from '../../../../services/modules/gpudriver';
-import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/mexMessageMultiStream'
+import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/MexMessageMultiStream1'
 import { ACTION_UPDATE, OS_LINUX } from '../../../../helper/constant/perpetual';
 import { uploadData } from '../../../../utils/file_util';
 import { buildTip, osList } from './shared';
