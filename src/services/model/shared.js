@@ -94,10 +94,12 @@ export const showProgress = (data, isDetailView) => {
                 break;
             case serverFields.CREATING:
             case serverFields.UPDATING:
+            case serverFields.UPDATE_REQUESTED:
             case serverFields.CREATING_DEPENDENCIES:
             case serverFields.CRM_INITOK:
                 icon = <IconButton tooltip={'View Progress'}><CircularProgress size={14} style={{color:ICON_COLOR}}/></IconButton>
                 break;
+            case serverFields.DELETE_REQUESTED:
             case serverFields.DELETING:
             case serverFields.DELETE_PREPARE:
                 icon = <IconButton tooltip={'View Progress'}><CircularProgress size={14} style={{color:'red'}}/></IconButton>
