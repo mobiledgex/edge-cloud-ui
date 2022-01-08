@@ -9,7 +9,7 @@ import * as serverData from '../../services/model/serverData';
 import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH, ACTION_GROUP, ACTION_PICKER } from './MexToolbar';
 import DetailViewer from './detail/DetailViewer';
 import MexMessageStream from '../stepper/MexMessageStream';
-import MexMessageMultiNorm from '../stepper/MexMessageMultiNormal1';
+import MexMessageMultiNorm from '../stepper/MexMessageMultiNormal';
 import MexMultiStepper, { updateStepper } from '../stepper/MexMessageMultiStream'
 import { prefixSearchPref, showMapPref } from '../../utils/sharedPreferences_util';
 import MexMessageDialog from '../dialog/mexWarningDialog'
