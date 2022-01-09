@@ -46,17 +46,17 @@ const CustomCheckBox = (props) => {
 
 export default function MexCheckboxInput(props) {
     let form = props.form;
-    const region = form.options
+    const options = form.options
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState(form.value ? form.value : []);
-    const isAllSelected = region.length > 0 && selected.length === region.length;
+    const isAllSelected = options.length > 0 && selected.length === options.length;
     const anchorRef = React.useRef(null);
 
     const handleChange = (event) => {
         const value = event.target.value;
         if (value === "all") {
-            const selectedValue = selected.length === region.length ? [] : region
+            const selectedValue = selected.length === options.length ? [] : options
             setSelected(selectedValue);
             if (selectedValue.length === 0) {
                 return
@@ -98,7 +98,7 @@ export default function MexCheckboxInput(props) {
         props.onChange(form, selected) // call api on dropdown close
     };
 
-    const listItem = region.map((option) => {
+    const listItem = options.map((option) => {
         return (
             <CustomCheckBox
                 value={option}
@@ -124,13 +124,16 @@ export default function MexCheckboxInput(props) {
                         <div className='select-tree-output'>{Array.isArray(selected) && selected.length > 0 ? selected.join(', ') : form.placeholder}</div>
                     </Box>
                     <Box p={1}>
-                        <Tooltip title={'clear'} aria-label="clear">
-                            <Icon name={`${selected.length > 0 ? 'close' : 'dropdown'}`} onClick={(clearSelection)} className={classes.textColor}></Icon>
-                        </Tooltip>
+                        {
+                            selected.length === 0 ? <Icon name={`${selected.length > 0 ? 'close' : 'dropdown'}`} className={classes.textColor}></Icon> :
+                                <Tooltip title={'clear'} aria-label="clear">
+                                    <Icon name={`${selected.length > 0 ? 'close' : 'dropdown'}`} onClick={(clearSelection)} className={classes.textColor}></Icon>
+                                </Tooltip>
+                        }
                     </Box>
                     {form.error ?
                         <Box p={1}><Tooltip title={form.error} aria-label="clear">
-                            <Icon color='red' name='times circle outline'/>
+                            <Icon color='red' name='times circle outline' />
                         </Tooltip>
                         </Box> : null}
                 </Box>
