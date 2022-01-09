@@ -4,6 +4,7 @@ import { Paper, Box, Tooltip, Checkbox, Divider, MenuList, Popper, ClickAwayList
 import { Icon } from 'semantic-ui-react';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -16,8 +17,11 @@ const useStyles = makeStyles((theme) => ({
     marginLeftCheckbox: {
         marginLeft: '10%'
     },
-    textColor:{
+    textColor: {
         color: '#ACACAC'
+    },
+    iconPointer: {
+        cursor: 'pointer'
     }
 }));
 
@@ -36,7 +40,7 @@ const StyledPaper = withStyles({
 
 const CustomCheckBox = (props) => {
     const classes = useStyles();
-    const {placeholder, value} = props
+    const { placeholder, value } = props
     return <div style={{ alignItems: "center", display: 'flex' }} >
         <Checkbox {...props} checkedIcon={<CheckBoxIcon className={classes.textColor} />} icon={<CheckBoxOutlineBlankIcon className={classes.textColor} />} />
         <span>{placeholder ? placeholder : value}</span>
@@ -113,7 +117,7 @@ export default function MexCheckboxInput(props) {
             <div
                 id={form.field}
                 style={{ backgroundColor: `${form.error ? 'rgba(211, 46, 46, 0.1)' : 'none'}` }}
-                className={open ? 'header_active' : 'header'}
+                className={clsx(open ? 'header_active' : 'header')}
                 ref={anchorRef}
                 aria-controls={open ? 'menu-list-grow' : undefined}
                 aria-haspopup="true"
@@ -125,9 +129,9 @@ export default function MexCheckboxInput(props) {
                     </Box>
                     <Box p={1}>
                         {
-                            selected.length === 0 ? <Icon name={`${selected.length > 0 ? 'close' : 'dropdown'}`} className={classes.textColor}></Icon> :
+                            selected.length === 0 ? <Icon name={`${selected.length > 0 ? 'close' : 'dropdown'}`} className={clsx(classes.textColor, classes.iconPointer)}></Icon> :
                                 <Tooltip title={'clear'} aria-label="clear">
-                                    <Icon name={`${selected.length > 0 ? 'close' : 'dropdown'}`} onClick={(clearSelection)} className={classes.textColor}></Icon>
+                                    <Icon name={`${selected.length > 0 ? 'close' : 'dropdown'}`} onClick={(clearSelection)} className={clsx(classes.textColor, classes.iconPointer)}></Icon>
                                 </Tooltip>
                         }
                     </Box>
@@ -155,7 +159,7 @@ export default function MexCheckboxInput(props) {
                         <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
                             <Divider />
                             <div className='marginLeftCheckbox' className={classes.textColor}>
-                                <CustomCheckBox value="all" onChange={handleChange} checked={isAllSelected} placeholder="Select All"/>
+                                <CustomCheckBox value="all" onChange={handleChange} checked={isAllSelected} placeholder="Select All" />
                                 {listItem}
                             </div>
                         </MenuList>
