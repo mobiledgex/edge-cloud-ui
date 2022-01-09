@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import MenuList from '@material-ui/core/MenuList';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Box, Tooltip, Checkbox } from '@material-ui/core';
+import { Paper, Box, Tooltip, Checkbox, Divider, MenuList, Popper, ClickAwayListener } from '@material-ui/core';
 import { Icon } from 'semantic-ui-react';
-
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -18,6 +15,9 @@ const useStyles = makeStyles((theme) => ({
     },
     marginLeftCheckbox: {
         marginLeft: '10%'
+    },
+    textColor:{
+        color: '#ACACAC'
     }
 }));
 
@@ -34,14 +34,23 @@ const StyledPaper = withStyles({
     }
 })(Paper);
 
+const CustomCheckBox = (props) => {
+    const classes = useStyles();
+    const {placeholder, value} = props
+    return <div style={{ alignItems: "center", display: 'flex' }} >
+        <Checkbox {...props} checkedIcon={<CheckBoxIcon className={classes.textColor} />} icon={<CheckBoxOutlineBlankIcon className={classes.textColor} />} />
+        <span>{placeholder ? placeholder : value}</span>
+    </div>
+}
+
+
 export default function MexCheckboxInput(props) {
     let form = props.form;
     const region = form.options
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState(form.value ? form.value : []);
-    const isAllSelected =
-        region.length > 0 && selected.length === region.length;
+    const isAllSelected = region.length > 0 && selected.length === region.length;
     const anchorRef = React.useRef(null);
 
     const handleChange = (event) => {
@@ -59,7 +68,7 @@ export default function MexCheckboxInput(props) {
         // added below code to update selected options
         const list = [...selected];
         const index = list.indexOf(value);
-        index === -1 ? list.push(value) : list.splice(index, 1); // 
+        index === -1 ? list.push(value) : list.splice(index, 1);
         setSelected(list);
 
     };
@@ -91,14 +100,11 @@ export default function MexCheckboxInput(props) {
 
     const listItem = region.map((option) => {
         return (
-            <div key={option}>
-                <Checkbox
-                    value={option}
-                    onChange={handleChange}
-                    checked={selected.includes(option)}
-                />
-                <span>{option}</span>
-            </div>
+            <CustomCheckBox
+                value={option}
+                onChange={handleChange}
+                checked={selected.includes(option)}
+            />
         );
     });
 
@@ -115,16 +121,16 @@ export default function MexCheckboxInput(props) {
             >
                 <Box display="flex">
                     <Box p={1} flexGrow={1} width={'75%'}>
-                        <div className='select-tree-output'>{Array.isArray(selected) && selected.length > 0 ? selected.join(',') : form.placeholder}</div>
+                        <div className='select-tree-output'>{Array.isArray(selected) && selected.length > 0 ? selected.join(', ') : form.placeholder}</div>
                     </Box>
                     <Box p={1}>
                         <Tooltip title={'clear'} aria-label="clear">
-                            <Icon name="close" onClick={(clearSelection)}></Icon>
+                            <Icon name={`${selected.length > 0 ? 'close' : 'dropdown'}`} onClick={(clearSelection)} className={classes.textColor}></Icon>
                         </Tooltip>
                     </Box>
                     {form.error ?
                         <Box p={1}><Tooltip title={form.error} aria-label="clear">
-                            <Icon color='red' name='times circle outline' />
+                            <Icon color='red' name='times circle outline'/>
                         </Tooltip>
                         </Box> : null}
                 </Box>
@@ -144,13 +150,10 @@ export default function MexCheckboxInput(props) {
                 <StyledPaper className='tree_dropdown'>
                     <ClickAwayListener onClickAway={handleClose}>
                         <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                            <hr></hr>
-                            <div className='marginLeftCheckbox'>
-                                <div style={{ alignItems: "center", margin: 10 }}>
-                                    <Checkbox value="all" onChange={handleChange} checked={isAllSelected} />
-                                    <span> Select All</span>
-                                    {listItem}
-                                </div>
+                            <Divider />
+                            <div className='marginLeftCheckbox' className={classes.textColor}>
+                                <CustomCheckBox value="all" onChange={handleChange} checked={isAllSelected} placeholder="Select All"/>
+                                {listItem}
                             </div>
                         </MenuList>
                     </ClickAwayListener>
