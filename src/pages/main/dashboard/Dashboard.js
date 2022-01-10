@@ -1,5 +1,7 @@
+import { Card, ImageList, ImageListItem } from '@material-ui/core'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
+import Control from './control/Control'
 
 class Dashboard extends React.Component {
     constructor(props) {
@@ -11,7 +13,9 @@ class Dashboard extends React.Component {
 
     render() {
         return (
-            <React.Fragment>sssss</React.Fragment>
+            <React.Fragment>
+                <Control></Control>
+            </React.Fragment>
         )
     }
 }

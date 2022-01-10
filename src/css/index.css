@@ -1,22 +1,3 @@
-html {
-    height: 100%;
-}
-body {
-    min-height: 100%;
-    background: radial-gradient( #222a38, #080b0f ) !important;
-    color: rgba(255,255,255,.5) !important;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
-
-/* font */
-body, button, input, textarea, optgroup, select, textarea,
-.header, .menu,
-.legendtext {
-    font-family: 'Helvetica, 'Helvetica Neue', Arial', sans-serif !important;
-}
-
 #root {
     margin: 0;
     padding: 0;

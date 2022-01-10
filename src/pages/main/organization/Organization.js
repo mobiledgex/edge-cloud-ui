@@ -23,12 +23,13 @@ import { updateUserMetaData } from '../../../services/modules/users';
 import { showUsers } from '../../../services/modules/users';
 import { ACTION_REFRESH } from '../../../hoc/datagrid/MexToolbar';
 import { ICON_COLOR } from '../../../helper/constant/colors';
+
 class OrganizationList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentView: null,
-            tableHeight: redux_org.isViewer(this) ? undefined : 261
+            tableHeight: redux_org.isViewer(this) ? undefined : 262
         }
         this._isMounted = false
         this.action = '';

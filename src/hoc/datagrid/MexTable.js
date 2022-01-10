@@ -261,7 +261,7 @@ const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
 const getHeight = (props, table) => {
     const { tableHeight, isMap, iconKeys, groupBy } = props
-    let height = isMap ? 552 : 152
+    let height = isMap ? 553 : 153
     height = tableHeight ? tableHeight : height
     height = iconKeys ? height + 40 : height
     height = table && groupBy.length > 0 ? height + 50 : height
