@@ -32,7 +32,7 @@ class Main extends React.Component {
     render() {
         const { loadMain } = this.props
         return (
-            loadMain ? <div className='view_body'>
+            loadMain ? <div >
                 <Menu />
                 {this.state.mexAlertMessage ? <MexAlert data={this.state.mexAlertMessage} onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
             </div> : null
