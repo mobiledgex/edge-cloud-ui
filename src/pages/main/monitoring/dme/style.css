@@ -58,9 +58,6 @@
 }
 [mtooltip]::after {
   content: attr(mtooltip); /* magic! */
-  
-  /* most of the rest of this is opinion */
-  font-family: Helvetica, sans-serif;
   text-align: center;
   
   /* 
