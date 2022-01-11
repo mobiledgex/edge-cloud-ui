@@ -104,7 +104,7 @@ class Reporter extends React.Component {
             (
                 redux_org.isOperator(this) || orgList.length > 0) ?
                 <React.Fragment>
-                    <DataView id={perpetual.PAGE_REPORTER} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} actionRoles={[perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER]} requestInfo={this.requestInfo} toolbarAction={this.toolbarAction} customToolbar={this.customToolbar} tableHeight={262} />
+                    <DataView id={perpetual.PAGE_REPORTER} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} actionRoles={[perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER]} requestInfo={this.requestInfo} toolbarAction={this.toolbarAction} customToolbar={this.customToolbar} tableHeight={263} />
                     <Generated open={open} orgList={orgList} close={() => { this.updateState({ open: false }) }} />
                 </React.Fragment> : <LogoSpinner />
         )
