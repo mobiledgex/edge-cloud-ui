@@ -18,8 +18,7 @@
             "name": "EU"
         },
         "cloudlet": {
-            "name": "automationDusseldorfCloudlet",
-            "warning":"cloudlet offline"
+            "name": "automationDusseldorfCloudlet"
         },
         "operator": {
             "name": "TDG"
@@ -47,7 +46,8 @@
             "name": "EU"
         },
         "cloudlet": {
-            "name": "kafka_test_cloudlet"
+            "name": "kafka_test_cloudlet",
+            "alert":{"type":"warning", "msg":"Utilized 10 out of 11 CPU"}
         },
         "operator": {
             "name": "TDG"
@@ -113,7 +113,7 @@
         },
         "app": {
             "name": "testtdg",
-            "error":"Health check failed"
+            "alert":{"type":"error", "msg":"Health check failed"}
         },
         "cluster": {
             "name": "testcluster"

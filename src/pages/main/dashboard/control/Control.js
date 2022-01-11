@@ -3,6 +3,8 @@ import React from 'react'
 import Sunburst from '../../../../hoc/charts/d3/sunburst/Sunburst';
 import Tooltip from './Tooltip'
 import { formatData, sequence } from './format';
+import './style.css'
+import Sequence from '../../../../hoc/charts/d3/sequence/SequenceFunnel';
 
 class Control extends React.Component {
     constructor(props) {
@@ -10,23 +12,29 @@ class Control extends React.Component {
         this.state = {
             dataset: formatData(sequence),
             toggle: false,
-            height:0,
-            showMore:false
+            height: 0,
+            showMore: false
         }
     }
 
-    onMore = (show)=>{
-        this.setState({showMore:show})
+    onMore = (show) => {
+        this.setState({ showMore: show })
+    }
+
+    onSequenceChange = (sequence) => {
+        this.setState({ dataset: formatData(sequence), toggle: !this.state.toggle })
     }
 
     render() {
         const { height, toggle, dataset, showMore } = this.state
         return (
             <React.Fragment>
-                <Card id='sunburst-container' style={{ width: 'calc(95vh - 21px)' }}>
-                    <Tooltip height={height} show={showMore} onClose={this.onMore}></Tooltip>
-                    <Sunburst sequence={sequence} dataset={dataset} toggle={toggle} onMore={this.onMore}/>
-                </Card>
+                <div id='sunburst-container' style={{ width: 'calc(95vh - 64px)' }}>
+                    <Tooltip height={height} show={showMore} onClose={this.onMore}>
+                        {showMore ? null : <Sequence sequence={sequence} onChange={this.onSequenceChange} />}
+                    </Tooltip>
+                    <Sunburst sequence={sequence} dataset={dataset} toggle={toggle} onMore={this.onMore} />
+                </div>
             </React.Fragment>
         )
     }

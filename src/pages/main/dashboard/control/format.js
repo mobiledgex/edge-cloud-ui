@@ -10,21 +10,11 @@ export const sequence = [
 ]
 export const color = { 'Ready': '#00C851', "Delete": '#ff4444', 'Maintainance': '#ffbb33' }
 
-const fetchAlertType = (data)=>{
-    if(Boolean(data.error))
-    {
-        return 'error'
-    }
-    else if(Boolean(data.warning))
-    {
-        return 'warning'
-    }
-}
 const formatSequence = (order, index, inp, output) => {
     let data = inp[order[index].field]
     let nextIndex = index + 1
     if (data) {
-        let alertType = fetchAlertType(data)
+        let alertType = data.alert && data.alert.type
         let exist = false
         let nextsequence = (nextIndex < order.length) && inp[order[nextIndex].field] !== undefined
         let newout = undefined
@@ -61,7 +51,7 @@ const formatSequence = (order, index, inp, output) => {
             output.push(newout)
         }
 
-        newout.alertType = newout.error ? newout.error : newout.alertType ? newout.alertType : alertType
+        newout.alertType = newout.alert ? newout.alert : newout.alertType ? newout.alertType : alertType
         return newout.alertType
     }
 
@@ -72,5 +62,6 @@ export const formatData = (order) => {
         let item = rawData[i]
         formatSequence(order, 0, item, data.children)
     }
+    console.log(data)
     return data
 }

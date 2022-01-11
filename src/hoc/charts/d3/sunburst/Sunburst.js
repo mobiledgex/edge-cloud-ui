@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { IconButton } from '@material-ui/core';
+import { Card, IconButton } from '@material-ui/core';
+import {Icon} from '../../../mexui'
 // import Tooltip from '../Tooltip'
 import { useStyles } from './sunburst-styling';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
@@ -35,19 +36,13 @@ const partition = data => {
         (root);
 }
 
+const alertTypes = { error: { label:'Error', color: '#CC4643', iconCode: '\ue888', icon: 'highlight_off' }, warning: { label:'Warning', color: '#FFB74D', iconCode: '\uf083', icon:'warning_amber' } }
 
-const alertTypeIndicator = (d, type) => {
-    let icon = '\ue888'
-    let color = '#CC4643'
-    if (d.alertType === 'error') {
-        icon= '\ue888'
-        color = '#CC4643'
-    }
-    else if (d.alertType === 'warning') {
-        icon = '\uf083'
-        color = '#FFB74D'
-    }
-    return type === 'icon' ? icon : color 
+
+const alertTypeIndicator = (d, code) => {
+    let type = d.alertType && d.alertType.type
+    let alertType = type && alertTypes[type] ? alertTypes[type] : alertTypes['error']
+    return alertType[code]
 }
 const Sunburst = (props) => {
     const { toggle, sequence, dataset, onMore } = props
@@ -109,7 +104,7 @@ const Sunburst = (props) => {
                 .attr("fill-opacity", d => {
                     return +(iconVisible(d.target) && Boolean(d.data.alertType))
                 })
-                .text(d => { return alertTypeIndicator(d.data, 'icon') })
+                .text(d => { return alertTypeIndicator(d.data, 'iconCode') })
                 .attrTween("transform", d => () => labelTransform(d.current));
         }
 
@@ -150,6 +145,7 @@ const Sunburst = (props) => {
                 let value = color(data.name)
                 if (iconVisible(d) && Boolean(data.alertType)) {
                     value = alertTypeIndicator(data, 'color')
+                    console.log(data, value)
                 }
                 else if (data.color) {
                     value = data.color;
@@ -164,12 +160,12 @@ const Sunburst = (props) => {
             .on('click', clicked);
 
         path.on("mouseover", (e, d) => {
-            if (d.children || d.data.error) {
+            if (d.children || d.data.alert) {
                 tooltip.html(() => {
                     return `<div style="font-size:10px;color:black;" align="left">
                     <p>${'Name: ' + d.data.name}</p>
                     <p>${d.children ? 'Count: ' + format(d.children.length) : ''}</p>
-                    <p>${d.data.error ? 'Error: ' + d.data.error : ''}</p>
+                    <p>${d.data.alert ? `${alertTypes[d.data.alert.type].label}: ` + d.data.alert.msg : ''}</p>
                     </div>`
                 });
                 tooltip.style("visibility", "visible");
@@ -205,7 +201,7 @@ const Sunburst = (props) => {
             .attr("fill-opacity", d => +(iconVisible(d) && Boolean(d.data.alertType)))
             .attr("transform", d => labelTransform(d))
             .attr('font-size', '20px')
-            .text(d => { return alertTypeIndicator(d.data, 'icon') })
+            .text(d => { return alertTypeIndicator(d.data, 'iconCode') })
             .attr("class", "material-icons")
             .attr('x', 45)
             .attr('y', 50)
@@ -239,11 +235,25 @@ const Sunburst = (props) => {
     }, [toggle]);
 
     return (
-        <div className='sunburst' style={{ padding: 10, borderRadius: 5, position: 'relative' }} ref={sbRef}>
-            <div className={classes.action}>
-                <IconButton className={classes.tooltipBtn} onClick={() => { onMore(true) }} size='small'><MoreHorizIcon /></IconButton>
-            </div>
-        </div>
+        <React.Fragment>
+            <Card style={{ marginBottom: 2 }}>
+                <div style={{ height:50, display: 'inline-flex', alignItems:'center', fontSize:15 }}>
+                    {Object.keys(alertTypes).map(item => (
+                        <div key={item} style={{display:'inline-flex', marginLeft:10}}>
+                            <Icon size={17} oultined color={alertTypes[item].color}>{alertTypes[item].icon}</Icon>
+                            <span variant='button' style={{ marginLeft: 10 }}>{alertTypes[item].label}</span>
+                        </div>
+                    ))}
+                </div>
+            </Card>
+            <Card>
+                <div className='sunburst' style={{ padding: 10, borderRadius: 5, position: 'relative' }} ref={sbRef}>
+                    <div className={classes.action}>
+                        <IconButton className={classes.tooltipBtn} onClick={() => { onMore(true) }} size='small'><MoreHorizIcon /></IconButton>
+                    </div>
+                </div>
+            </Card>
+        </React.Fragment>
     )
 }
 
