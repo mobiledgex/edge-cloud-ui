@@ -247,3 +247,8 @@ export const QOS_LOW_LATENCY = 'Low Latency'
 export const QOS_THROUGHPUT_DOWN_S = 'Throughput Down S'
 export const QOS_THROUGHPUT_DOWN_M = 'Throughput Down M'
 export const QOS_THROUGHPUT_DOWN_L = 'Throughput Down L'
+
+export const PAGE_FEDERATION = 'Federation'
+export const PAGE_PARTNER_FEDERATION = 'PartnerFederation'
+export const SHARE_ZONES_WITH_PARTNER = 'ShareZonesWithPartner'
+export const ADD_ZONES_FROM_PARTNER = 'AddZonesFromPartner'

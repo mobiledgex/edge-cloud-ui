@@ -537,6 +537,7 @@ class DataGrid extends React.Component {
     }
 
     requestToFetch = async (type, requestInfo, filter) => {
+        console.log(requestInfo, "requestInfo")
         const { handleListViewClick } = this.props
         let mcList = await fetchDataFromServer(this, requestInfo.requestType, filter)
         this.count = this.count - 1
@@ -563,7 +564,6 @@ class DataGrid extends React.Component {
                     });
                 }
             }
-
             if (newDataList.length > 0) {
                 newDataList = operators._orderBy(newDataList, requestInfo.sortBy)
                 dataList = [...dataList, ...newDataList]

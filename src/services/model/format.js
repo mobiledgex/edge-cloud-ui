@@ -279,5 +279,16 @@ export const fields = {
     nextHopIp: 'next_hop_ip',
     accessRoutes: 'accessRoutes',
     qosSessionProfile:'qosSessionProfile',
-    qosSessionDuration:'qosSessionDuration'
+    qosSessionDuration: 'qosSessionDuration',
+    federationName: 'federationName',
+    countryCode: 'countryCode',
+    mnc: 'mnc',
+    mcc: 'mcc',
+    locatorendpoint: 'locatorEndPoint',
+    federationId: 'federationId',
+    apiKey: 'apiKey',
+    partnerOperatorName: 'partnerOperator',
+    partnerFederationid: 'partnerFederationid',
+    partnerCountryCode: 'partnerCountryCode',
+    federationAddr: 'federationAddr'
 }

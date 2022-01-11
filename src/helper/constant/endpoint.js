@@ -169,3 +169,13 @@ export const SHOW_NETWORKS = 'auth/ctrl/ShowNetwork';
 export const UPDATE_NETWORKS = '/auth/ctrl/UpdateNetwork'
 export const DELETE_NETWORKS = '/auth/ctrl/DeleteNetwork'
 
+//Federation
+export const SHOW_FEDERATION = 'auth/federation/show';
+export const SHOW_FEDERATION_PARTNER_ZONE = 'auth/federation/partner/zone/show';
+export const CREATE_FEDERATION = 'auth/federation/create'
+
+//Federator
+export const SHOW_FEDERATOR = 'auth/federator/self/show'
+export const SHOW_FEDERATOR_SELF_ZONE = 'auth/federator/self/zone/show'
+export const CREATE_FEDERATOR = 'auth/federator/self/create'
+export const UPDATE_FEDERATOR = 'auth/federator/self/update'

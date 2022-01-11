@@ -3,7 +3,7 @@ import { perpetual } from '../helper/constant'
 
 export const HELP_ORG_LIST = 'OrgList'
 export const HELP_ORG_REG_1 = 'OrgREG_1'
-export const HELP_ORG_REG_2 = 'OrgREG_1'
+export const HELP_ORG_REG_2 = 'OrgREG_2'
 export const HELP_ORG_REG_3 = 'OrgREG_3'
 export const HELP_CLOUDLET_LIST = 'cloudletList'
 export const HELP_CLOUDLET_REG = 'cloudletListReg'
@@ -30,6 +30,9 @@ export const HELP_MONITORING = 'monitoringAdmin'
 export const HELP_USER_ROLES = 'userRoles'
 export const HELP_ALERTS = 'alerts'
 export const HELP_NETWORK_LIST = 'NetworkList'
+export const HELP_FEDERATION_LIST = 'FederationList'
+export const HELP_FEDERATION_REG_1 = 'FederationListREG_1'
+export const HELP_FEDERATION_REG_2 = 'FederationListREG_2'
 
 export const userRoles = (org, type, isDoc) => {
     if (isDoc) {

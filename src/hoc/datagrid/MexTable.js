@@ -152,7 +152,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                     }) :
                         column.type === ELE_BUTTON ? <IconButton ><Icon style={{ color: lightGreen['A700'], height: 18 }}>list</Icon></IconButton> :
                             column.type === ELE_CHECKBOX ? <IconButton ><Icon className={classes.checkbox} style={{ color: rowData.color }}>{`${selected.includes(rowData.uuid) ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton> :
-                                column.format ? formatter(column, rowData) :
+                                // column.format ? formatter(column, rowData) :
                                     <span className={classes.textBody}>{cellData}</span>
                 }
             </TableCell>

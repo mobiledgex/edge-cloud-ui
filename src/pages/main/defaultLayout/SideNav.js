@@ -239,6 +239,7 @@ const SideNav = (props) => {
             setOpen(flag)
         }
     }
+    console.log(props.children, "props.children")
 
     return (
         <div className={classes.root}>
