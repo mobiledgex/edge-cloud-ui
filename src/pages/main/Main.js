@@ -32,7 +32,7 @@ class Main extends React.Component {
     render() {
         const { loadMain } = this.props
         return (
-            loadMain ? <React.Fragment>
+            loadMain ? <React.Fragment >
                 <Menu />
                 {this.state.mexAlertMessage ? <MexAlert data={this.state.mexAlertMessage} onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
             </React.Fragment> : null

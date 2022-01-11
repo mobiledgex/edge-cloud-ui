@@ -110,6 +110,9 @@ const useStyles = makeStyles((theme) => ({
     drawerControl: {
         marginBottom: 5
     },
+    drawerControl: {
+        marginBottom: 5
+    },
     grow: {
         flexGrow: 1,
     },

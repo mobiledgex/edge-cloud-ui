@@ -14,6 +14,7 @@ import './style.css'
 import { fetchOrgList } from './services/service';
 import { equal } from '../../../helper/constant/operators';
 import Show from './Show';
+import { NoData } from '../../../helper/formatter/ui';
 
 
 
@@ -26,7 +27,7 @@ class Monitoring extends React.Component {
             selection: { count: 0 },
             refresh: false,
             organizations: [],
-            loading: true
+            loading: false
         }
         this._isMounted = false
         this.count = 0
@@ -47,7 +48,7 @@ class Monitoring extends React.Component {
         if (preTools) {
             if (preTools.moduleId !== tools.moduleId || !equal(preTools.organization, tools.organization)) {
                 //reset components if moduleId change
-                this.updateState({ tools: undefined, legends: {}, loading: true })
+                this.updateState({ tools: undefined, legends: {} })
                 wait = 100
             }
             else if (preTools.search !== tools.search || preTools.stats !== tools.stats || !equal(preTools.visibility, tools.visibility)) {
@@ -59,23 +60,26 @@ class Monitoring extends React.Component {
     }
 
     render() {
-        const { tools, organizations } = this.state
+        const { tools, organizations, loading } = this.state
         return (
             <div mex-test="component-monitoring" style={{ position: 'relative' }}>
                 <Toolbar onChange={this.handleToolbarChange} organizations={organizations} />
-                {
-                    tools && tools.organization ? (
-                        <Show tools={tools} />
-                    ) : null
-                }
+                <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
+                    {
+                        tools && tools.organization ? (
+                            <Show tools={tools} />
+                        ) : <NoData loading={loading} />
+                    }
+                </div>
             </div>
         )
     }
 
     initOrgList = async () => {
+        this.updateState({ loading: true })
         if (redux_org.isAdmin(this)) {
             let organizations = await fetchOrgList()
-            this.updateState({ organizations })
+            this.updateState({ organizations, loading: false })
         }
     }
 

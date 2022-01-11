@@ -150,10 +150,10 @@ class MuiVirtualizedTable extends React.PureComponent {
                             </React.Fragment>
                         )
                     }) :
-                        column.type === ELE_BUTTON ? <IconButton ><Icon style={{height: 18 }} color={ICON_COLOR}>list</Icon></IconButton> :
-                            column.type === ELE_CHECKBOX ? <IconButton ><Icon className={classes.checkbox} style={{ color: rowData.color }}>{`${selected.includes(rowData.uuid) ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton> :
+                        column.type === ELE_BUTTON ? <IconButton id={`mex-data-grid-row-${column.field}`}><Icon style={{height: 18 }} color={ICON_COLOR}>list</Icon></IconButton> :
+                            column.type === ELE_CHECKBOX ? <IconButton id={`mex-data-grid-row-${column.field}`}><Icon className={classes.checkbox} style={{ color: rowData.color }}>{`${selected.includes(rowData.uuid) ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton> :
                                 column.format ? formatter(column, rowData) :
-                                    <span className={classes.textBody}>{cellData}</span>
+                                    <span id={`mex-data-grid-row-${column.field}`} className={classes.textBody}>{cellData}</span>
                 }
             </TableCell>
         );

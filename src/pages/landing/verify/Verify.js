@@ -38,9 +38,9 @@ class VerifyContent extends Component {
         const { verified, success, message } = this.state
         const color = success ? '#75B927' : '#D32F2F'
         return (
-            <div style={{ height: '22vh', padding: 10 }} >
+            <div style={{ padding: 10 }} >
                 <br />
-                <h2 style={{ color: '#C4D3DC', fontWeight:400 }}>Verifying Your Account</h2>
+                <h2 style={{ color: '#C4D3DC', fontWeight: 400 }}>Verifying Your Account</h2>
                 <br /><br />
                 {
                     verified ?
