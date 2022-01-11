@@ -153,9 +153,9 @@ class AppReg extends Component {
     ])
 
     serverlessConfigForm = () => ([
-        { field: fields.serverlessMinReplicas, label: 'Min Replicas', formType: INPUT, placeholder: 'Enter Min Replicas', rules: { required: true, type: 'number' }, visible: true, width: 5, update: { edit: true } },
-        { field: fields.serverlessVcpu, label: 'Virtual CPU', formType: INPUT, placeholder: 'Enter VCPUs per container', rules: { required: true }, visible: true, width: 5, update: { edit: true }, dataValidateFunc: this.validateDecimalInteger },
-        { field: fields.serverlessRam, label: 'RAM', formType: INPUT, placeholder: 'Enter RAM Allocation per container', rules: { required: true, type: 'number' }, visible: true, width: 5, update: { edit: true } },
+        { field: fields.serverlessMinReplicas, label: 'Min Replicas', formType: INPUT, placeholder: 'Enter min replicas', rules: { required: true, type: 'number' }, visible: true, width: 5, update: { edit: true } },
+        { field: fields.serverlessVcpu, label: 'Virtual CPU', formType: INPUT, placeholder: 'Enter vCPUs per container', rules: { required: true }, visible: true, width: 5, update: { edit: true }, dataValidateFunc: this.validateDecimalInteger },
+        { field: fields.serverlessRam, label: 'RAM', formType: INPUT, placeholder: 'Enter RAM allocation per container', rules: { required: true, type: 'number' }, visible: true, width: 5, update: { edit: true } },
     ])
     /**Deployment manifest block */
 
