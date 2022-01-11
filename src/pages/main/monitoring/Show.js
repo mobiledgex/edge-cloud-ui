@@ -42,13 +42,13 @@ class Show extends React.Component {
         const { loading, legends, selection, refresh } = this.state
         const { tools } = this.props
         return (
-            <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
+            <React.Fragment>
                 {
                     tools.moduleId === PARENT_CLOUDLET ? <CloudletMonitoring tools={tools} loading={loading} legends={legends} metricRequestData={this.legendList} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
                         tools.moduleId === PARENT_CLUSTER_INST ? <ClusterMonitoring tools={tools} loading={loading} legends={legends} metricRequestData={this.legendList} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
                             tools.moduleId === PARENT_APP_INST ? <AppMonitoring tools={tools} loading={loading} legends={legends} metricRequestData={this.legendList} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> : null
                 }
-            </div>
+            </React.Fragment>
         )
     }
 
