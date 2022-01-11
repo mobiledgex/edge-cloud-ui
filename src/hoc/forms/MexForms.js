@@ -121,10 +121,11 @@ const MexForms = (props) => {
 
     const errorBanner = (form) => {
         setError(form.error)
-        let element = document.getElementById(form.field)
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        }
+            let element = document.getElementById(form.field)
+            if (element) {
+                element.style.scrollMargin = '10px';
+                element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+            }
     }
 
     const validateRules = (form, valid) => {
@@ -319,7 +320,7 @@ const MexForms = (props) => {
                                 <div style={{ marginBottom: 5 }}>
                                     <Tooltip title={`${form.label} ${required ? ' *' : ''}`}>
                                         <label style={{ ...form.labelStyle, color: '#CECECE', display: 'flex' }}>
-                                            <p style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', marginRight:3 }}>{form.label}</p>{required ? '*' : ''}
+                                            <p style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', marginRight: 3 }}>{form.label}</p>{required ? '*' : ''}
                                         </label>
                                     </Tooltip>
                                 </div> :
@@ -333,7 +334,7 @@ const MexForms = (props) => {
                                     form.formType === SWITCH ?
                                         <div style={{ marginTop: 5 }}><MexSwitch horizontal={true} form={form} onChange={onValueSelect} /></div> :
                                         form.formType === ICON_BUTTON || form.formType === BUTTON ?
-                                            <div key={i} style={{display:'flex', alignItems:'center', textAlign:'center', verticalAlign:'middle', height:55}}>{loadButton(form, i)}</div> :
+                                            <div key={i} style={{ display: 'flex', alignItems: 'center', textAlign: 'center', verticalAlign: 'middle', height: 55 }}>{loadButton(form, i)}</div> :
                                             null
                         }
                     </Grid.Column> : null
@@ -388,7 +389,7 @@ const MexForms = (props) => {
                     <Grid.Column width={4} className='detail_item'>
                         {form.labelIcon ?
                             <IconButton disabled={true}>{form.labelIcon}<sup style={{ color: requiredColor }}>{required ? ' *' : ''}</sup></IconButton> :
-                            <div style={form.labelStyle ? form.labelStyle : { marginTop: 8, color:'#CECECE' }}>{form.label}<sup style={{ color: requiredColor }}>{required ? ' *' : ''}</sup></div>}
+                            <div style={form.labelStyle ? form.labelStyle : { marginTop: 8, color: '#CECECE' }}>{form.label}<sup style={{ color: requiredColor }}>{required ? ' *' : ''}</sup></div>}
                     </Grid.Column>
                     <Grid.Column width={11}>
                         {
@@ -452,7 +453,7 @@ const MexForms = (props) => {
                                                     loadHeader(i, form) :
                                                     form.formType === MULTI_FORM ?
                                                         form.forms ?
-                                                            <Grid.Row key={i} id={form.field} style={{ width: '100%', marginLeft:20 }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
+                                                            <Grid.Row key={i} id={form.field} style={{ width: '100%', marginLeft: 20 }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
                                                             : null :
                                                         loadForms(i, form) :
                                             null

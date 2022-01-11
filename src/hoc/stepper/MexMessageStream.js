@@ -2,16 +2,17 @@ import React from 'react'
 import { Stepper, Popover, Step, StepLabel, CircularProgress } from '@material-ui/core';
 import Check from "@material-ui/icons/Check";
 import ErrorIcon from '@material-ui/icons/Error';
+import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import { green, red } from '@material-ui/core/colors';
 import * as serverData from '../../services/model/serverData';
 import { fields } from '../../services/model/format';
 import cloneDeep from 'lodash/cloneDeep';
-import isEqual from 'lodash/isEqual';
-import { perpetual } from '../../helper/constant';
 import { serverFields } from '../../helper/formatter';
+import { equal } from '../../helper/constant/operators';
 
 export const CODE_FINISH = 100;
 export const CODE_SUCCESS = 200;
+export const CODE_REQUEST = 300;
 export const CODE_FAILED = 400;
 
 
@@ -29,7 +30,7 @@ const useStyles = {
         alignItems: 'center',
     },
     wrapper: {
-        position: "relative"
+        position: 'relative'
     },
     stepper: {
         backgroundColor: '#616161'
@@ -38,17 +39,21 @@ const useStyles = {
         color: '#FFF',
         width: 200,
         fontWeight: 500,
+        marginTop:-5,
         wordWrap: "break-word"
     },
     iconLabel: {
-        fontSize: 15
+        fontSize: 15,
+        alignItems:'center',
+        justifyContent:'center'
     },
     progress: {
-        position: "absolute",
-        color: "#FFF",
-        top: 0,
-        left: -6,
-        zIndex: 1
+        color: '#FFF',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -20,
+        marginLeft: -12,
     },
     success: {
         backgroundColor: green[500],
@@ -68,7 +73,7 @@ const useStyles = {
 
 
 const classes = useStyles;
-class VerticalStepper extends React.Component {
+class MexMessageStream extends React.Component {
 
     constructor(props) {
         super(props)
@@ -110,7 +115,7 @@ class VerticalStepper extends React.Component {
             })
         }
 
-       if (mc.response) {
+        if (mc.response) {
             let response = mc.response.data
             let step = { code: response.code, message: response.data.message }
             if (responseData === null) {
@@ -119,15 +124,20 @@ class VerticalStepper extends React.Component {
             else {
                 stepsList.map((item, i) => {
                     if (request.uuid === item.uuid) {
-                        item.steps.push(step)
+                        if (item.steps[0].code === CODE_REQUEST) {
+                            item.steps = [step]
+                        }
+                        else {
+                            item.steps.push(step)
+                        }
                     }
                 })
             }
         }
 
-        if(this._isMounted)
-        {
-            this.setState({ stepsArray: stepsList })
+        if (this._isMounted) {
+            this.setState({ stepsArray: stepsList }, ()=>{
+            })
         }
     }
 
@@ -157,21 +167,29 @@ class VerticalStepper extends React.Component {
         }
     }
 
-    streamProgress = () => {
+    streamProgress = (data) => {
         let stream = this.props.streamType;
         if (stream) {
-            for (let i = 0; i < this.props.dataList.length; i++) {
-                let data = this.props.dataList[i];
+            let stepsArray = cloneDeep(this.state.stepsArray)
+            let proceed = true
+            for (const steps of stepsArray) {
+                if (steps.uuid === data.uuid) {
+                    proceed = false
+                    break;
+                }
+            }
+            if (proceed) {
                 let forceStream = false
                 let valid = false
                 if (data[fields.state] !== serverFields.READY) {
                     valid = this.sendWSRequest(data, forceStream)
                 }
-                if(this.props.customStream)
-                {
+                if (this.props.customStream) {
                     forceStream = this.props.customStream(data)
                 }
                 if (valid || forceStream) {
+                    stepsArray.push({ uuid: data.uuid, steps: [{code: CODE_REQUEST, message:'Waiting for response from server'}] })
+                    this.setState({ stepsArray })
                     serverData.sendWSRequest(this, stream(data), this.requestResponse)
                 }
             }
@@ -189,6 +207,10 @@ class VerticalStepper extends React.Component {
         this.props.onClose()
     }
 
+    onEnter = ()=>{
+        this.body.current.scrollTop = this.body.current.scrollHeight
+    }
+
 
     render() {
         const { stepsArray } = this.state
@@ -202,7 +224,7 @@ class VerticalStepper extends React.Component {
                                     key={i}
                                     style={{ width: 400 }}
                                     anchorReference="anchorPosition"
-                                    onEnter={() => { this.body.current.scrollTop = this.body.current.scrollHeight }}
+                                    TransitionProps={{onEnter:this.onEnter}}
                                     anchorPosition={{ top: 0, left: window.innerWidth }}
                                     onClose={() => { this.onClose() }}
                                     open={this.props.uuid !== 0}
@@ -224,18 +246,24 @@ class VerticalStepper extends React.Component {
                                                                 let code = item.steps[stepperProps.icon - 1].code
                                                                 return (<div style={classes.root}>
                                                                     {
-                                                                        stepperProps.completed ?
-                                                                            code === CODE_FAILED ?
-                                                                                <ErrorIcon style={classes.error} /> :
-                                                                                <Check style={classes.success} /> :
+                                                                        code === CODE_REQUEST ?
                                                                             <div style={classes.wrapper}>
-                                                                                <p style={classes.iconLabel}>{stepperProps.icon}</p>
-                                                                                <CircularProgress style={classes.progress} size={25} thickness={3} />
-                                                                            </div>
+                                                                                <HourglassEmptyIcon />
+                                                                            </div> :
+                                                                            stepperProps.completed ?
+                                                                                code === CODE_FAILED ?
+                                                                                    <ErrorIcon style={classes.error} /> :
+                                                                                    <Check style={classes.success} /> :
+                                                                                <div style={classes.wrapper}>
+                                                                                    <p style={classes.iconLabel}>{stepperProps.icon}</p>
+                                                                                    <CircularProgress style={classes.progress} size={25} thickness={3} />
+                                                                                </div>
                                                                     }
                                                                 </div>)
 
-                                                            }}><p style={classes.label}>{step.message}</p></StepLabel>
+                                                            }} style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+                                                                <p style={classes.label}>{step.message}</p>
+                                                            </StepLabel>
                                                         </Step>
                                                         :
                                                         null
@@ -258,18 +286,18 @@ class VerticalStepper extends React.Component {
         if (this.body.current && this.props.uuid !== 0) {
             this.body.current.scrollTop = this.body.current.scrollHeight;
         }
-        if (!isEqual(prevProps.dataList,  this.props.dataList)) {
-            this.streamProgress()
+        if (!equal(prevProps.progressData, this.props.progressData)) {
+            this.streamProgress(this.props.progressData)
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this._isMounted = true
     }
 
-    componentWillUnmount(){
-        this._isMounted = false   
+    componentWillUnmount() {
+        this._isMounted = false
     }
 }
 
-export default VerticalStepper;
+export default MexMessageStream;

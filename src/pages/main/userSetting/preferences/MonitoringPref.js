@@ -107,7 +107,7 @@ class MonitoringPreferences extends React.Component {
                                         childForm.parentIndex = i
                                         return (
                                             <React.Fragment key={j}>
-                                                <CheckBoxArray postion={j} form={childForm} onChange={this.onValueChange} />
+                                                <CheckBoxArray position={j} form={childForm} onChange={this.onValueChange} />
                                             </React.Fragment>
                                         )
                                     })}
@@ -115,7 +115,7 @@ class MonitoringPreferences extends React.Component {
                             </Accordion> :
                             <React.Fragment key={i}>
                                 <div style={{ padding: 15, marginTop: 10 }}>
-                                    <CheckBoxArray postion={i} form={form} onChange={this.onValueChange} />
+                                    <CheckBoxArray position={i} form={form} onChange={this.onValueChange} />
                                 </div>
                             </React.Fragment> :null
                 ))}

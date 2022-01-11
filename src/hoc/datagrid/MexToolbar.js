@@ -1,14 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { Toolbar, Input, InputAdornment, Switch, makeStyles, Box, Menu, ListItem, ListItemText, Tooltip, Divider, Typography } from '@material-ui/core'
+import { Toolbar, Input, InputAdornment, Switch, makeStyles, Box, Tooltip, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import SelectMenu from '../selectMenu/SelectMenu'
 import { redux_org } from '../../helper/reduxData'
 import Picker from '../mexui/Picker'
-import { lightGreen } from '@material-ui/core/colors';
 import { Icon, IconButton } from '../mexui';
 import { prefixSearchPref } from '../../utils/sharedPreferences_util';
+import { ICON_COLOR } from '../../helper/constant/colors';
 
 export const REGION_ALL = 1;
 export const ACTION_REGION = 1
@@ -21,8 +21,6 @@ export const ACTION_CLEAR = 7;
 export const ACTION_BACK = 8;
 export const ACTION_GROUP = 9;
 export const ACTION_PICKER = 10;
-
-const iconColor = lightGreen['A700']
 
 const useStyles = makeStyles((theme) => ({
     inputRoot: {
@@ -104,7 +102,7 @@ const MexToolbar = (props) => {
                 onChange={handleSearch}
                 startAdornment={
                     <InputAdornment style={{ fontSize: 17, pointerEvents: "none", cursor: 'pointer' }} position="start" >
-                        <Icon style={{ color: iconColor }}>search</Icon>
+                        <Icon style={{ color: ICON_COLOR }}>search</Icon>
                     </InputAdornment>
                 }
                 value={search}
@@ -118,7 +116,7 @@ const MexToolbar = (props) => {
         requestInfo.onAdd && (!redux_org.isViewer(this) || requestInfo.viewerEdit) ?
             <MBox order={order} style={{ marginTop: -5 }}>
                 <IconButton aria-label="new" onClick={(e) => { props.onAction(ACTION_NEW) }}>
-                    <Icon style={{ color: iconColor }}>add</Icon>
+                    <Icon style={{ color: ICON_COLOR }}>add</Icon>
                 </IconButton>
             </MBox> : null
     )
@@ -172,7 +170,7 @@ const MexToolbar = (props) => {
     const refreshForm = (order) => (
         <MBox order={order}  style={{ marginTop: -5 }}>
             <IconButton aria-label="refresh" onClick={(e) => { props.onAction(ACTION_REFRESH) }}>
-                <Icon style={{ color: iconColor }}>refresh</Icon>
+                <Icon style={{ color: ICON_COLOR }}>refresh</Icon>
             </IconButton>
         </MBox>
     )
@@ -181,7 +179,7 @@ const MexToolbar = (props) => {
     const getDetailView = (props) => (
         <div style={{ right: 0, position: 'absolute' }}>
             <IconButton aria-label="detail-view" onClick={(e) => { props.onAction(ACTION_CLOSE) }}>
-                <Icon style={{ color: iconColor }}>close</Icon>
+                <Icon style={{ color: ICON_COLOR }}>close</Icon>
             </IconButton>
         </div>
     )
@@ -191,7 +189,7 @@ const MexToolbar = (props) => {
             <MBox order={order}>
                 <Tooltip title={<strong style={{ fontSize: 13 }}>Back</strong>}>
                     <IconButton aria-label="back" style={{ marginTop: -3, marginLeft: -20 }} onClick={(e) => { props.requestInfo.back() }}>
-                        <ArrowBackIosIcon style={{ color: iconColor }} />
+                        <ArrowBackIosIcon style={{ color: ICON_COLOR }} />
                     </IconButton>
                 </Tooltip>
             </MBox> : null
