@@ -1137,7 +1137,7 @@ class AppReg extends Component {
                     }
                     routeForm.rules.disabled = false
                 }
-                forms.splice(20, 0, this.getServerlessConfig(routeForms))
+                forms.splice(22, 0, this.getServerlessConfig(routeForms))
             }
 
         }
