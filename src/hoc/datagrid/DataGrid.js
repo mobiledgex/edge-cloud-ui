@@ -339,7 +339,7 @@ class DataGrid extends React.Component {
                     iconKeys={iconKeys}
                     viewerEdit={this.requestInfo.viewerEdit}>
                     <MexFilterBar keys={iconKeys} onClick={this.onIconFilter} />
-                    <GridAction length={dataList.length} numSelected={selected.length} groupActionMenu={groupActionMenu} groupActionClose={this.groupActionClose}/>
+                    <GridAction actualLength={dataList.length} filterLength={filterList.length} numSelected={selected.length} groupActionMenu={groupActionMenu} groupActionClose={this.groupActionClose}/>
                 </MexTable>
             </div>)
     }
