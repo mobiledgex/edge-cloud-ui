@@ -42,16 +42,23 @@ const icons = (action) => {
     return icon ? <Icon outlined={true} color='white'>{icon}</Icon> : undefined
 }
 
-const selectionLabel = (props)=>{
-    const { numSelected, length } = props;
-    let label = `Total Rows: ${length}` 
-    label = numSelected > 0 ? `Rows Selected: ${numSelected}/${length}` : label
+const selectionLabel = (props) => {
+    const { numSelected, actualLength, filterLength } = props;
+    let isFiltered = filterLength !== actualLength
+    let totalrows = isFiltered ? `${filterLength}/${actualLength}` : actualLength
+    let label = `Visible Rows: ${totalrows}`
+    label = (
+        <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+            <span style={{ backgroundColor: 'rgba(255,255,255, 0.2)', borderRadius: 5, padding: '0 5px 0 5px' }}>{label}</span>
+            {numSelected > 0 ? <span style={{ backgroundColor: 'rgba(255,255,255, 0.2)', borderRadius: 5, padding: '0 5px 0 5px', marginLeft: 10 }}>{`Rows Selected: ${numSelected}`}</span> : null}
+        </div>
+    )
     return label
 }
 
 const GridAction = (props) => {
     const classes = useToolbarStyles();
-    const { numSelected, length } = props;
+    const { numSelected } = props;
     return (
         <React.Fragment>
             <Toolbar className={clsx(classes.root)}>
