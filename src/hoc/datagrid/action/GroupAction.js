@@ -46,11 +46,11 @@ const selectionLabel = (props) => {
     const { numSelected, actualLength, filterLength } = props;
     let isFiltered = filterLength !== actualLength
     let totalrows = isFiltered ? `${filterLength}/${actualLength}` : actualLength
-    let label = `${isFiltered ? 'Filtered Rows' : 'Total Rows'}: ${totalrows}`
+    let label = `Visible Rows: ${totalrows}`
     label = (
         <div style={{ display: 'inline-flex', alignItems: 'center' }}>
             <span style={{ backgroundColor: 'rgba(255,255,255, 0.2)', borderRadius: 5, padding: '0 5px 0 5px' }}>{label}</span>
-            {numSelected > 0 ? <span style={{ backgroundColor: 'rgba(255,255,255, 0.2)', borderRadius: 5, padding: '0 5px 0 5px', marginLeft: 10 }}>{`Selected: ${numSelected}/${actualLength}`}</span> : null}
+            {numSelected > 0 ? <span style={{ backgroundColor: 'rgba(255,255,255, 0.2)', borderRadius: 5, padding: '0 5px 0 5px', marginLeft: 10 }}>{`Rows Selected: ${numSelected}`}</span> : null}
         </div>
     )
     return label
