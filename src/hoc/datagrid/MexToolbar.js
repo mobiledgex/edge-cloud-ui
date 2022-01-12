@@ -225,7 +225,7 @@ const MexToolbar = (props) => {
 
     return (
         <Toolbar>
-            <div style={{ width: '100%' }}>
+            <div style={{ width: '100%', marginTop:4 }}>
                 <Box display="flex" flexWrap="wrap">
                     <Box flexGrow={1}>
                         <Box display="flex">

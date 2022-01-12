@@ -154,7 +154,7 @@ class MexMessageStream extends React.Component {
         if (stream) {
             let valid = false
             let state = data[fields.state];
-            if (state === serverFields.READY || state === serverFields.CREATING || state === serverFields.UPDATE_REQUESTED || state === serverFields.UPDATING || state === serverFields.DELETE_REQUESTED || state === serverFields.DELETING || state === serverFields.DELETE_PREPARE || state === serverFields.CRM_INITOK || state === serverFields.CREATING_DEPENDENCIES) {
+            if (state === serverFields.READY || state === serverFields.CREATING || state === serverFields.CREATE_REQUESTED || state === serverFields.UPDATE_REQUESTED || state === serverFields.UPDATING || state === serverFields.DELETE_REQUESTED || state === serverFields.DELETING || state === serverFields.DELETE_PREPARE || state === serverFields.CRM_INITOK || state === serverFields.CREATING_DEPENDENCIES) {
                 valid = true
             }
             else if (data[fields.powerState]) {
