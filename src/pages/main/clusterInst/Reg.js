@@ -377,7 +377,7 @@ class ClusterInstReg extends React.Component {
                         let cloudlet = cloudlets[i];
                         newData[fields.cloudletName] = cloudlet;
                         newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
-                        newData[fields.network] = [network[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]]
+                        newData[fields.network] = network ? [network[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]] : undefined
                         this.props.handleLoadingSpinner(true)
                         createClusterInst(this, Object.assign({}, newData), this.onCreateResponse)
                     }

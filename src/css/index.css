@@ -865,7 +865,7 @@
 
 .round_panel {
     background-color: #292c33;
-    height: calc(100vh - 53px);
+    height: calc(100vh - 55px);
     padding: 10px;
     overflow-y: auto;
     overflow-x: hidden;

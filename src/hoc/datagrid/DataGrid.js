@@ -339,7 +339,7 @@ class DataGrid extends React.Component {
                     iconKeys={iconKeys}
                     viewerEdit={this.requestInfo.viewerEdit}>
                     <MexFilterBar keys={iconKeys} onClick={this.onIconFilter} />
-                    <GridAction length={dataList.length} numSelected={selected.length} groupActionMenu={groupActionMenu} groupActionClose={this.groupActionClose}/>
+                    <GridAction actualLength={dataList.length} filterLength={filterList.length} numSelected={selected.length} groupActionMenu={groupActionMenu} groupActionClose={this.groupActionClose}/>
                 </MexTable>
             </div>)
     }
@@ -579,13 +579,12 @@ class DataGrid extends React.Component {
                     this.updateState({ filterList: this.onFilterValue(undefined) })
                 })
             }
-
-            if (this.count === 0) {
-                this.updateState({ loading: false })
-            }
             if (handleListViewClick && type === ACTION_REFRESH) {
                 handleListViewClick({ type, data: newDataList })
             }
+        }
+        if (this.count === 0) {
+            this.updateState({ loading: false })
         }
     }
 
