@@ -966,10 +966,11 @@ class AppReg extends Component {
             { field: fields.autoProvPolicies, showField: fields.autoPolicyName, label: 'Auto Provisioning Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policies', rules: { required: false }, visible: true, update: { id: ['32'] }, multiple: true, tip: 'Auto provisioning policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
             { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: { id: ['16'] }, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
             { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: SWITCH, visible: this.isUpdate, value: false, update: { edit: true }, tip: 'Upgrade App Instances running in the cloudlets' },
+            { field: fields.trusted, label: 'Trusted', formType: SWITCH, visible: true, value: false, update: { id: ['37'] }, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
+            { field: fields.allowServerless, label: 'Allow Serverless', formType: SWITCH, value: false, tip: 'App is allowed to deploy as serverless containers', visible: false, rules: { disabled: false }, update: { id: ['39'] } },
             { field: fields.accessPorts, label: 'Ports', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], update: { id: ['7'], ignoreCase: true }, visible: true, tip: 'Ports:</b>Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443\nHealth Check:</b> Periodically tests the health of applications as TCP packets are generated from the load balancer to the application and its associated port. This information is useful for Developers to manage and mitigate issues.' },
             { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, update: { id: ['21', '21.1', '21.2'] }, tip: 'Customization files passed through to implementing services' },
             { field: fields.annotations, label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, update: { id: ['14'] }, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
-            { field: fields.trusted, label: 'Trusted', formType: SWITCH, visible: true, value: false, update: { id: ['37'] }, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
             { field: fields.requiredOutboundConnections, label: 'Required Outbound Connections', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Connections', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getOutboundConnectionsForm }], visible: false, update: { id: ['38', '38.1', '38.2', '38.4'] }, tip: 'Connections this app require to determine if the app is compatible with a trust policy' },
             { field: fields.allowServerless, label: 'Allow Serverless', formType: SWITCH, value: false, tip: 'App is allowed to deploy as serverless containers', visible: false, rules: { disabled: false }, update: { id: ['39'] } },
             { label: SERVERCONFIG_HEADER, formType: HEADER, visible: false, tip: 'MinReplicas:</b>Minimum number of replicas when serverless.\nVcpu:</b>Virtual CPUs allocation per container when serverless, may be decimal in increments of 0.001\nRAM:</b>RAM allocation in megabytes per container when serverless.', serverless: false, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.serverLessConfigMenu }] },
@@ -1070,7 +1071,7 @@ class AppReg extends Component {
                             portForm.value = !skipHCPort
                         }
                     }
-                    forms.splice(14 + multiFormCount, 0, this.getPortForm(portForms))
+                    forms.splice(16 + multiFormCount, 0, this.getPortForm(portForms))
                     multiFormCount += 1
                 }
             }
@@ -1092,7 +1093,7 @@ class AppReg extends Component {
                             annotationForm.value = value
                         }
                     }
-                    forms.splice(15 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
+                    forms.splice(17 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
                     multiFormCount += 1
                 }
             }
@@ -1111,7 +1112,7 @@ class AppReg extends Component {
                             configForm.value = config[fields.config]
                         }
                     }
-                    forms.splice(16 + multiFormCount, 0, this.getConfigForm(configForms))
+                    forms.splice(18 + multiFormCount, 0, this.getConfigForm(configForms))
                     multiFormCount += 1
                 }
             }
@@ -1138,7 +1139,7 @@ class AppReg extends Component {
                             outboundConnectionsForm.value = requiredOutboundConnection['port_range_max']
                         }
                     }
-                    forms.splice(18 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
+                    forms.splice(19 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
                     multiFormCount += 1
                 }
             }
