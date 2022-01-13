@@ -29,7 +29,7 @@ import { endpoint, perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 
 const MexFlow = lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
-
+const SERVERCONFIG_HEADER = 'ServerLess Config'
 class AppReg extends Component {
     constructor(props) {
         super(props);
@@ -53,6 +53,7 @@ class AppReg extends Component {
         this.configOptions = [perpetual.CONFIG_ENV_VAR, perpetual.CONFIG_HELM_CUST]
         this.originalData = undefined
         this.expandAdvanceMenu = false
+        this.serverLessConfigList = false
         this.tlsCount = 0
         this.updateFlowDataList = []
         this.imagePathTyped = false
@@ -134,6 +135,13 @@ class AppReg extends Component {
         manifestForm.value = undefined;
         this.reloadForms()
     }
+    clearServerLessData = (e, form) => {
+        let serverLessForm = form.parent.form.forms[0]
+        let serverLessForm1 = form.parent.form.forms[1]
+        let serverLessForm2 = form.parent.form.forms[2]
+        serverLessForm.value = undefined, serverLessForm1.value = undefined, serverLessForm2.value = undefined
+        this.reloadForms()
+    }
 
     onManifestLoad = (data, extra) => {
         let form = extra.form
@@ -153,10 +161,15 @@ class AppReg extends Component {
     ])
 
     serverlessConfigForm = () => ([
-        { field: fields.serverlessMinReplicas, label: 'Min Replicas', formType: INPUT, placeholder: 'Enter min replicas', rules: { required: true, type: 'number' }, visible: true, width: 5, update: { edit: true } },
-        { field: fields.serverlessVcpu, label: 'Virtual CPU', formType: INPUT, placeholder: 'Enter vCPUs per container', rules: { required: true }, visible: true, width: 5, update: { edit: true }, dataValidateFunc: this.validateDecimalInteger },
-        { field: fields.serverlessRam, label: 'RAM', formType: INPUT, placeholder: 'Enter RAM allocation per container', rules: { required: true, type: 'number' }, visible: true, width: 5, update: { edit: true } },
+        { field: fields.serverlessMinReplicas, label: 'Min Replicas', formType: INPUT, placeholder: 'Enter min replicas', rules: { required: true, type: 'number' }, visible: true, width: 5, update: { edit: true }, tip: 'Minimum number of replicas when serverless' },
+        { field: fields.serverlessVcpu, label: 'Virtual CPU', formType: INPUT, placeholder: 'Enter vCPUs per container', rules: { required: true }, visible: true, width: 5, update: { edit: true }, dataValidateFunc: this.validateDecimalInteger, tip: 'Virtual CPUs allocation per container when serverless, may be decimal in increments of 0.001' },
+        { field: fields.serverlessRam, label: 'RAM', formType: INPUT, placeholder: 'Enter RAM allocation per container', rules: { required: true, type: 'number' }, visible: true, width: 5, update: { edit: true }, tip: 'RAM allocation in megabytes per container when serverless' },
+        { icon: 'clear', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearServerLessData }
     ])
+
+    getServerlessConfig = (form) => {
+        return ({ uuid: uuid(), field: fields.serverlessConfig, formType: MULTI_FORM, forms: form ? form : this.serverlessConfigForm(), width: 3, visible: true })
+    }
     /**Deployment manifest block */
 
     portForm = () => ([
@@ -216,9 +229,6 @@ class AppReg extends Component {
 
     getOutboundConnectionsForm = (form) => {
         return ({ uuid: uuid(), field: fields.requiredOutboundConnectionmulti, formType: MULTI_FORM, forms: form ? form : this.outboundConnectionsForm(), width: 3, visible: true })
-    }
-    getServerlessConfig = (form) => {
-        return ({ uuid: uuid(), field: fields.serverlessConfig, formType: MULTI_FORM, forms: form ? form : this.serverlessConfigForm(), width: 3, visible: true })
     }
 
     removeMultiForm = (e, form) => {
@@ -280,6 +290,7 @@ class AppReg extends Component {
     }
 
     deploymentValueChange = (currentForm, forms, isInit) => {
+        let allowServerlessvalue;
         forms = forms.filter((form) => {
             if (form.field === fields.imageType) { 
                 form.value = currentForm.value === perpetual.DEPLOYMENT_TYPE_HELM ? perpetual.IMAGE_TYPE_HELM :
@@ -319,16 +330,18 @@ class AppReg extends Component {
                 form.value = deployTypeVM ? form.value : undefined
                 return form
             }
-            else if (currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
-                form.field === fields.allowServerless ? form.visible = true : null
-                form.field === fields.serverlessConfig ? form.visible = true : null
-                form.field === fields.serverless ? form.visible = true : null
+            else if (form.field === fields.allowServerless) {
+                form.visible = currentForm.value !== perpetual.DEPLOYMENT_TYPE_KUBERNETES ? false : true
+                allowServerlessvalue = form.value ? true : false
                 return form
             }
+            else if (form.label === SERVERCONFIG_HEADER) {
+                form.visible = currentForm.value !== perpetual.DEPLOYMENT_TYPE_KUBERNETES ? false : allowServerlessvalue ? true : false
+                return form
+            }
+
             else if (currentForm.value !== perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
-                form.field === fields.allowServerless ? form.visible = false : null
-                form.field === fields.serverlessConfig ? form.visible = false : null
-                form.field === fields.serverless ? form.visible = false : null
+                this.resetAllowServerLess(false)
                 return form
             }
             else {
@@ -487,6 +500,25 @@ class AppReg extends Component {
         }
     }
 
+    allowServerLess = (currentForm, forms, isInit) => {
+        forms = forms.filter((form) => {
+            if (form.label === SERVERCONFIG_HEADER) {
+                form.visible = currentForm.value
+                return form
+            }
+            if (form.field === fields.allowServerless) {
+                form.value ? null : this.resetAllowServerLess(false)
+                return form
+            }
+            else {
+                return form
+            }
+        })
+
+        if (!isInit) {
+            this.updateState({ forms })
+        }
+    }
     ocProtcolValueChange = (currentForm, forms, isInit) => {
         let parentForm = currentForm.parent.form
         for (let i = 0; i < forms.length; i++) {
@@ -576,22 +608,6 @@ class AppReg extends Component {
             }
         }
     }
-    allowServerLess = (currentForm, forms, isInit) => {
-        forms = forms.filter((form) => {
-            if (form.field === fields.accessServerlessConfig || form.serverless !== undefined || form.field === fields.serverlessConfig) {
-                form.visible = currentForm.value
-                form.serverless = currentForm.value
-                form.serverLessConfig = currentForm.value
-                return form
-            }
-            else {
-                return form
-            }
-        })
-        if (!isInit) {
-            this.updateState({ forms })
-        }
-    }
 
     validateDecimalInteger = (form) => {
         if (form.value && form.value.length > 0) {
@@ -624,15 +640,21 @@ class AppReg extends Component {
         this.reloadForms()
     }
 
-    serverLessConfig = (e, form) => {
-        let forms = this.state.forms    
+    serverLessConfigMenu = (e, form) => {
+        this.serverLessConfigList = !this.serverLessConfigList
+        form.icon = this.serverLessConfigList ? 'expand_more' : 'expand_less'
+        this.resetAllowServerLess(this.serverLessConfigList)
+        this.reloadForms()
+    }
+
+    resetAllowServerLess = (show) => {
+        let forms = this.state.forms
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.serverlessMinReplicas || form.field === fields.serverlessVcpu || form.field === fields.serverlessRam) {
-                form.visible = true
+            if (form.field === fields.serverlessConfig || form.field === fields.accessServerlessConfig) {
+                form.visible = show
             }
         }
-        this.reloadForms()
     }
     onUpgradeResponse = (mc) => {
         this.props.handleLoadingSpinner(false)
@@ -950,8 +972,8 @@ class AppReg extends Component {
             { field: fields.trusted, label: 'Trusted', formType: SWITCH, visible: true, value: false, update: { id: ['37'] }, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
             { field: fields.requiredOutboundConnections, label: 'Required Outbound Connections', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Connections', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getOutboundConnectionsForm }], visible: false, update: { id: ['38', '38.1', '38.2', '38.4'] }, tip: 'Connections this app require to determine if the app is compatible with a trust policy' },
             { field: fields.allowServerless, label: 'Allow Serverless', formType: SWITCH, value: false, tip: 'App is allowed to deploy as serverless containers', visible: false, rules: { disabled: false }, update: { id: ['39'] } },
-            { label: 'ServerLess Config', formType: HEADER, visible: false, serverless: false },
-            { uuid: uuid(), field: fields.accessServerlessConfig, label: 'ServerLess Configuration', formType: MULTI_FORM, visible: false, forms: !this.isUpdate && this.serverlessConfigForm(), update: { id: ['40', '40.1', '40.2', '40.3'] } },
+            { label: SERVERCONFIG_HEADER, formType: HEADER, visible: false, tip: 'MinReplicas:</b>Minimum number of replicas when serverless.\nVcpu:</b>Virtual CPUs allocation per container when serverless, may be decimal in increments of 0.001\nRAM:</b>RAM allocation in megabytes per container when serverless.', serverless: false, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.serverLessConfigMenu }] },
+            { uuid: uuid(), field: fields.accessServerlessConfig, label: 'ServerLess Configuration', formType: MULTI_FORM, visible: false, forms: this.serverlessConfigForm(), update: { id: ['40', '40.1', '40.2', '40.3'] }, serverless: false },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
             { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: { id: ['12'] }, tip: 'public key used for authentication', advance: false },
             { field: fields.alertPolicies, showField: fields.alertPolicyName, label: 'Alert Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Alert Policies', rules: { required: false }, visible: true, update: { id: ['42'] }, multiple: true, tip: 'Alert policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false },
@@ -1130,14 +1152,14 @@ class AppReg extends Component {
                         routeForm.value = vcpus
                     }
                     else if (routeForm.field === fields.serverlessRam) {
-                        routeForm.value = ram
+                        routeForm.value = ram  
                     }
                     else if (routeForm.field === fields.serverlessMinReplicas) {
                         routeForm.value = min_replicas
                     }
-                    routeForm.rules.disabled = false
                 }
-                forms.splice(20, 0, this.getServerlessConfig(routeForms))
+                forms.splice(21, 0, this.getServerlessConfig(routeForms))
+                forms.splice(22, 1);
             }
 
         }
