@@ -7,7 +7,6 @@ import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
 import { customize } from '../../modules/clusterInst';
 import { generateUUID } from '../../format/shared';
-import { developerRoles } from '../../../constant';
 
 let fields = formatter.fields;
 
@@ -33,8 +32,7 @@ export const keys = () => ([
     { field: fields.reservedBy, serverField: 'reserved_by', label: 'Reserved By', roles: [perpetual.ADMIN_MANAGER] },
     { field: fields.resources, serverField: 'resources', label: 'Resources', dataType: perpetual.TYPE_JSON },
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: developerRoles }
+    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } }
 ])
 
 export const multiDataRequest = (keys, mcRequestList, specific) => {
@@ -172,6 +170,9 @@ export const clusterKey = (data, isCreate) => {
         }
         if (data[fields.fields]) {
             clusterinst.fields = data[fields.fields]
+        }
+        if (data[fields.network]) {
+            clusterinst.networks = data[fields.network]
         }
     }
     return ({

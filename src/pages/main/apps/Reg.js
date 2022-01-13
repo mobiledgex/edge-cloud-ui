@@ -18,7 +18,7 @@ import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/m
 import { getAlertPolicyList, showAlertPolicy } from '../../../services/modules/alertPolicy';
 import { createApp, updateApp } from '../../../services/modules/app';
 import { refreshAllAppInst, showAppInsts } from '../../../services/modules/appInst';
-import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/mexMessageMultiStream'
+import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/MexMessageMultiStream'
 import { HELP_APP_REG } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'
 import { validateRemoteCIDR } from '../../../helper/constant/shared'
@@ -841,12 +841,12 @@ class AppReg extends Component {
                                 regions.splice(0, 1)
                             }
                             regions.map(region => {
-                                let requestData = JSON.parse(JSON.stringify(data))
+                                let requestData = cloneDeep(data)
                                 requestData[fields.region] = region
                                 requestData[fields.flavorName] = undefined
                                 for (let i = 0; i < data[fields.flavorName].length; i++) {
                                     let flavor = data[fields.flavorName][i]
-                                    if (flavor && flavor.parent === region) {
+                                    if (flavor && flavor.parent.includes(region)) {
                                         requestData[fields.flavorName] = flavor.value
                                         break;
                                     }

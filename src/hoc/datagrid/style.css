@@ -1,0 +1,14 @@
+#mex-list-view .MuiPaper-rounded {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+#mex-data-grid {
+    border-radius: 5px;
+}
+
+#mex-data-grid .ReactVirtualized__Grid__innerScrollContainer {
+    margin-bottom: 40px;
+}

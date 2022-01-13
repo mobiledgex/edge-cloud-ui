@@ -43,8 +43,7 @@ export const keys = () => ([
   { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: perpetual.TYPE_JSON },
   { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true, format:true },
   { field: fields.autoPolicyName, label: 'Auto Prov Policy', visible: false },
-  { field: fields.trusted, label: 'Trusted', visible: false, sortable: true, format:true },
-  { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles:[perpetual.ADMIN, perpetual.DEVELOPER] }
+  { field: fields.trusted, label: 'Trusted', visible: false, sortable: true, format:true }
 ])
 
 const getClusterOrg = (data) => {

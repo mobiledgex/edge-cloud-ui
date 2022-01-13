@@ -25,7 +25,8 @@ class Reporter extends React.Component {
         this.state = {
             currentView: undefined,
             open: false,
-            orgList: []
+            orgList: [],
+            loading:true
         }
         this._isMounted = false
         this.keys = keys()
@@ -99,12 +100,12 @@ class Reporter extends React.Component {
     }
 
     render() {
-        const { currentView, open, orgList } = this.state
+        const { currentView, open, orgList, loading } = this.state
         return (
             (
-                redux_org.isOperator(this) || orgList.length > 0) ?
+                redux_org.isOperator(this) || !loading) ?
                 <React.Fragment>
-                    <DataView id={perpetual.PAGE_REPORTER} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} toolbarAction={this.toolbarAction} customToolbar={this.customToolbar} tableHeight={272} />
+                    <DataView id={perpetual.PAGE_REPORTER} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} actionRoles={[perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER]} requestInfo={this.requestInfo} toolbarAction={this.toolbarAction} customToolbar={this.customToolbar} tableHeight={263} />
                     <Generated open={open} orgList={orgList} close={() => { this.updateState({ open: false }) }} />
                 </React.Fragment> : <LogoSpinner />
         )
@@ -115,7 +116,7 @@ class Reporter extends React.Component {
         if (service.responseValid(mc)) {
             const dataList = mc.response.data
             const orgList = dataList.map(data => (data[fields.organizationName]))
-            this.updateState({ orgList })
+            this.updateState({ orgList, loading: false })
         }
     }
 

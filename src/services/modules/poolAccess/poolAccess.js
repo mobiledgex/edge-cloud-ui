@@ -8,8 +8,7 @@ export const keys = () => ([
     { field: fields.operatorOrg, serverField: 'CloudletPoolOrg', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
     { field: fields.developerOrg, serverField: 'Org', label: 'Developer', sortable: true, visible: true, key: true },
     { field: fields.decision, serverField: 'Decision', label: 'Status', visible: true, format: true },
-    { field: fields.confirm, label: 'Accepted', detailView: false },
-    { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true }
+    { field: fields.confirm, label: 'Accepted', detailView: false }
 ])
 
 const getRequestData = (data) => {

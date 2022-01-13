@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { Item, Step, Card, Form, Button } from 'semantic-ui-react';
 //Mex
 import MexForms, { SELECT, INPUT, SWITCH, MAIN_HEADER } from '../../../hoc/forms/MexForms';
-import MexDetailViewer from '../../../container/detail/DetailViewer'
+import MexDetailViewer from '../../../hoc/datagrid/detail/DetailViewer'
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';

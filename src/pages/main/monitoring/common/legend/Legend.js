@@ -36,24 +36,25 @@ class Legend extends React.Component {
                 }
             })
         }
-
         if (dataList.length > 0) {
             if (groupBy) {
                 dataList = _orderBy(dataList, groupBy);
-                let group = { version: 'v1' }
+                let group = {}
                 let groupList = []
                 dataList.forEach((item, i) => {
-                    let valid = groupBy.some(field => {
+                    let valid = groupBy.map(field => {
                         if (group[field] !== item[field]) {
                             group[field] = item[field]
                             return true
                         }
+                        return false
                     })
-                    if (valid) {
+                    if (valid.includes(true)) {
                         groupList.push({ ...item, group: true })
                     }
                     groupList.push(item)
                 })
+
                 dataList = groupList
             }
             else {

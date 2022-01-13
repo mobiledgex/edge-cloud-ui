@@ -170,7 +170,7 @@ const Organization = (props) => {
     }
 
     return (
-        dataList.length > 0 ? <MonitoringMenu order={order} data={dataList} onChange={onChange} labelKey={fields.organizationName} placeHolder={'Select Org'} disableDefault={true} search={true} large={true} /> : null
+        dataList && dataList.length > 0 ? <MonitoringMenu order={order} data={dataList} onChange={onChange} labelKey={fields.organizationName} placeHolder={'Select Org'} disableDefault={true} search={true} large={true} /> : null
     )
 }
 

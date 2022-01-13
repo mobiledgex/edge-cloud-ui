@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import MexAlert from '../../hoc/alert/AlertDialog';
 import Menu from './Menu'
-import '../../css/introjs.css';
-import '../../css/introjs-dark.css';
 import { pages } from '../../constant';
 import { role } from '../../helper/constant';
 import { withRouter } from 'react-router-dom';
@@ -34,10 +32,10 @@ class Main extends React.Component {
     render() {
         const { loadMain } = this.props
         return (
-            loadMain ? <div className='view_body'>
+            loadMain ? <React.Fragment >
                 <Menu />
                 {this.state.mexAlertMessage ? <MexAlert data={this.state.mexAlertMessage} onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
-            </div> : null
+            </React.Fragment> : null
         );
     }
 

@@ -1,29 +1,31 @@
 import React from 'react';
-import { Card } from '@material-ui/core';
-
-import './styles.css';
-import { fields } from '../services/model/format';
-import * as serverData from '../services/model/serverData';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import * as actions from '../../actions';
+import { Card } from '@material-ui/core';
+import { fields } from '../../services/model/format';
+import * as serverData from '../../services/model/serverData';
 
 import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH, ACTION_GROUP, ACTION_PICKER } from './MexToolbar';
-import MexDetailViewer from './detail/DetailViewer';
-import MexListViewer from '../hoc/listView/ListViewer';
-import MexMessageStream from '../hoc/stepper/mexMessageStream';
-import MexMessageMultiNorm from '../hoc/stepper/mexMessageMultiNormal';
-import MexMultiStepper, { updateStepper } from '../hoc/stepper/mexMessageMultiStream'
-import { prefixSearchPref, showMapPref } from '../utils/sharedPreferences_util';
-import MexMessageDialog from '../hoc/dialog/mexWarningDialog'
-import ListMexMap from './map/ListMexMap'
+import DetailViewer from './detail/DetailViewer';
+import MexMessageStream from '../stepper/MexMessageStream';
+import MexMessageMultiNorm from '../stepper/MexMessageMultiNormal';
+import MexMultiStepper, { updateStepper } from '../stepper/MexMessageMultiStream'
+import { prefixSearchPref, showMapPref } from '../../utils/sharedPreferences_util';
+import MexMessageDialog from '../dialog/mexWarningDialog'
 import cloneDeep from 'lodash/cloneDeep';
-import { operators, shared, perpetual } from '../helper/constant';
-import { fetchDataFromServer } from './service';
-import { service } from '../services';
-import { timeRangeInMin } from '../hoc/mexui/Picker';
+import { operators, shared, perpetual } from '../../helper/constant';
+import { fetchDataFromServer } from './services/service';
+import { service } from '../../services';
+import { timeRangeInMin } from '../mexui/Picker';
+import MexTable from './MexTable';
+import { redux_org } from '../../helper/reduxData';
+import MexFilterBar from './MexFilterBar';
+import GridAction from './action/GroupAction';
+import ListMexMap from './map/ListMexMap';
+import './style.css'
 
-class MexListView extends React.Component {
+class DataGrid extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -41,6 +43,7 @@ class MexListView extends React.Component {
             resetStream: false,
             deleteMultiple: [],
             iconKeys: undefined,
+            progressData:undefined,
             loading: false
         };
         this._isMounted = false
@@ -69,10 +72,9 @@ class MexListView extends React.Component {
         let additionalDetail = this.requestInfo.additionalDetail
         this.props.handleViewMode(null)
         return (
-            <Card style={{ height: 'calc(100vh - 116px)', backgroundColor: '#292c33', borderRadius: 5, overflowY: 'auto' }}>
-                <MexDetailViewer detailData={data} keys={this.keys} formatData={this.requestInfo.formatData} detailAction={detailAction} />
+            <DetailViewer detailData={data} keys={this.keys} formatData={this.requestInfo.formatData} detailAction={detailAction}>
                 {additionalDetail ? additionalDetail(data) : null}
-            </Card>
+            </DetailViewer>
         )
     }
 
@@ -80,10 +82,10 @@ class MexListView extends React.Component {
         this.selectedRow = row
         let data = row
 
-        if (key.field === fields.state) {
+        if (key && key.field === fields.state) {
             this.onProgress(data)
         }
-        else if (key.clickable) {
+        else if (key && key.clickable) {
             if (this.props.onClick) {
                 this.props.onClick(key, data)
             }
@@ -297,8 +299,8 @@ class MexListView extends React.Component {
         this.updateState({ filterList })
     }
 
-    groupActionClose = (action, dataList) => {
-        this.onWarning(action, action.warning, true, dataList)
+    groupActionClose = (action) => {
+        this.onWarning(action, action.warning, true, this.state.selected)
     }
 
     onIconFilter = (iconKeys) => {
@@ -310,30 +312,35 @@ class MexListView extends React.Component {
     /*Action Block*/
     listView = () => {
         let isMap = this.requestInfo.isMap && this.state.showMap
+        const {formatData} = this.requestInfo
+        const {loading, dataList, filterList, dropList, selected, iconKeys} = this.state
+        const {groupActionMenu} = this.props
         return (
-            <div className="mexListView">
+            <div id="data-grid">
                 {isMap ?
                     <div className='panel_worldmap' style={{ height: 400 }}>
-                        <ListMexMap onClick={this.onMapMarkerClick} id={this.requestInfo.id} dataList={this.state.filterList} region={this.selectedRegion} />
+                        <ListMexMap onClick={this.onMapMarkerClick} id={this.requestInfo.id} dataList={filterList} region={this.selectedRegion} />
                     </div> : null
                 }
-                <MexListViewer keys={this.keys} dataList={this.state.filterList}
-                    loading={this.state.loading}
-                    selected={this.state.selected}
-                    setSelected={this.setSelected}
-                    actionMenu={this.props.actionMenu}
-                    cellClick={this.getCellClick}
-                    actionClose={this.onActionClose}
-                    isMap={isMap} requestInfo={this.requestInfo}
-                    groupActionMenu={this.props.groupActionMenu}
-                    groupActionClose={this.groupActionClose}
-                    dropList={this.state.dropList}
-                    iconKeys={this.state.iconKeys}
-                    onIconFilter={this.onIconFilter}
-                    viewerEdit={this.requestInfo.viewerEdit}
-                    tableHeight={this.props.tableHeight}
+                <MexTable loading={loading} keys={this.keys}
                     searchValue={this.filterText}
-                />
+                    groupBy={dropList}
+                    dataList={filterList}
+                    actionMenu={this.props.actionMenu}
+                    onActionClose={this.onActionClose}
+                    cellClick={this.getCellClick}
+                    formatter={formatData}
+                    selected={selected}
+                    selection = {this.requestInfo.selection}
+                    sortBy = {this.requestInfo.sortBy}
+                    setSelected={this.setSelected}
+                    isMap={isMap}
+                    tableHeight={this.props.tableHeight}
+                    iconKeys={iconKeys}
+                    viewerEdit={this.requestInfo.viewerEdit}>
+                    <MexFilterBar keys={iconKeys} onClick={this.onIconFilter} />
+                    <GridAction actualLength={dataList.length} filterLength={filterList.length} numSelected={selected.length} groupActionMenu={groupActionMenu} groupActionClose={this.groupActionClose}/>
+                </MexTable>
             </div>)
     }
 
@@ -355,6 +362,7 @@ class MexListView extends React.Component {
     }
 
     onProgress(data) {
+        this.setState({progressData:data})
         if (this._isMounted) {
             this.updateState({
                 uuid: data.uuid
@@ -453,21 +461,25 @@ class MexListView extends React.Component {
     }
 
     render() {
-        const { resetStream, deleteMultiple, showMap } = this.state
+        const { resetStream, deleteMultiple, showMap, progressData } = this.state
         const { regions, toolbarAction } = this.props
         return (
-            <Card style={{ width: '100%', height: 'calc(100vh - 55px)', backgroundColor: '#292c33', color: 'white', paddingTop: 10 }}>
-                <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
-                <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} dataList={this.state.newDataList} generateRequestData={this.specificDataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
-                <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} uuid={this.state.uuid} />
-                <MexToolbar requestInfo={this.requestInfo} regions={regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} toolbarAction={toolbarAction} />
-                {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
-                {this.state.currentView ? this.state.currentView : this.listView()}
-                <MexMessageMultiNorm data={deleteMultiple} close={this.onDeleteMulClose} />
-            </Card>
+            <div id="mex-list-view">
+                <Card className='container'>
+                    <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
+                    <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} progressData={progressData} generateRequestData={this.specificDataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
+                    <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} uuid={this.state.uuid} />
+                    <MexToolbar requestInfo={this.requestInfo} regions={regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} toolbarAction={toolbarAction} />
+                    {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
+                    {this.state.currentView ? this.state.currentView : this.listView()}
+                    <MexMessageMultiNorm data={deleteMultiple} close={this.onDeleteMulClose} />
+                </Card>
+            </div>
         );
 
     }
+
+    
 
     onToolbarAction = (type, value) => {
         switch (type) {
@@ -493,10 +505,11 @@ class MexListView extends React.Component {
                 break;
             case ACTION_GROUP:
                 this.setState({ dropList: value })
+                break;
             case ACTION_PICKER:
                 this.range = value
                 this.generateRequestData(this.selectedRegion)
-            default:
+                break;
         }
     }
 
@@ -566,13 +579,12 @@ class MexListView extends React.Component {
                     this.updateState({ filterList: this.onFilterValue(undefined) })
                 })
             }
-
-            if (this.count === 0) {
-                this.updateState({ loading: false })
-            }
             if (handleListViewClick && type === ACTION_REFRESH) {
                 handleListViewClick({ type, data: newDataList })
             }
+        }
+        if (this.count === 0) {
+            this.updateState({ loading: false })
         }
     }
 
@@ -624,6 +636,17 @@ class MexListView extends React.Component {
         this._isMounted = true
         this.generateRequestData(REGION_ALL)
         this.props.handleViewMode(this.requestInfo.viewMode);
+        const { iconKeys } = this.props.requestInfo
+        if (iconKeys) {
+            let keys = iconKeys.filter(icon => {
+                let valid = true
+                valid = icon.roles ? icon.roles.includes(redux_org.role(this)) : valid
+                return valid
+            })
+            if (keys.length > 0) {
+                this.updateState({ iconKeys: keys })
+            }
+        }
     }
 
     componentWillUnmount() {
@@ -646,4 +669,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(MexListView));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(DataGrid));

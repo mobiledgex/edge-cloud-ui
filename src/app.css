@@ -1,3 +1,14 @@
+html {
+    height: 100%;
+}
+body {
+    min-height: 100%;
+    background: #202125 !important;
+    color: rgba(255,255,255,.5) !important;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
 
 .ui.selection.visible.dropdown>.text:not(.default) {
     color: rgba(255,255,255,.4) !important;
@@ -121,6 +132,11 @@ h6 {
     }
   }
 
-  /* input[type=number]::-webkit-inner-spin-button {
-    opacity: 1;
-} */
+
+#mex-side-nav .MuiPaper-elevation4{
+    box-shadow: none !important;
+}
+
+#mex-side-nav .MuiDrawer-paperAnchorDockedLeft{
+    border-right: none !important;
+}

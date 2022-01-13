@@ -8,9 +8,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -21,7 +19,7 @@ import RoleLegend from './RoleLegend'
 import { showLogsPref } from '../../../utils/sharedPreferences_util';
 
 import { Collapse, LinearProgress, Tooltip } from '@material-ui/core';
-import { Icon } from '../../../hoc/mexui';
+import { IconButton, Icon } from '../../../hoc/mexui';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { role } from '../../../helper/constant';
 
@@ -34,7 +32,7 @@ const drawerWidth = 250;
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        display: 'flex',
+        display: 'flex'
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
@@ -64,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
     },
     drawerOpen: {
         width: drawerWidth,
-        height:'calc(100vh - 2px)',
+        height: 'calc(100vh - 2px)',
         overflowX: 'hidden',
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
@@ -76,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        height:'calc(100vh - 2px)',
+        height: 'calc(100vh - 2px)',
         overflowX: 'hidden',
         width: theme.spacing(7) + 1,
         [theme.breakpoints.up('sm')]: {
@@ -85,10 +83,12 @@ const useStyles = makeStyles((theme) => ({
     },
     toolbar: {
         display: 'flex',
-        alignItems: 'right',
-        justifyContent: 'flex-end',
+        alignItems: 'center',
+        height: 50,
+        justifyContent: 'center',
+        backgroundColor: '#3B3F47',
         padding: theme.spacing(0.7, 0, 0, 1),
-        boxShadow:'0px 1px 5px #000'
+        boxShadow: '0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)'
     },
     content: {
         flexGrow: 1,
@@ -107,6 +107,9 @@ const useStyles = makeStyles((theme) => ({
         marginTop: 5,
         marginRight: 10
     },
+    drawerControl: {
+        marginBottom: 5
+    },
     grow: {
         flexGrow: 1,
     },
@@ -121,17 +124,16 @@ const useStyles = makeStyles((theme) => ({
         top: theme.spacing(0.7),
         right: -20,
         borderRadius: '200px 0px 0px 200px',
-        border:'none',
-        height:40,
+        border: 'none',
+        height: 40,
         width: 25,
         backgroundColor: lightGreen['600'],
         boxShadow: 'default',
-        cursor:'pointer'
+        cursor: 'pointer'
     },
     sub: {
-        backgroundColor: props => props.sub ? '#1E2123' : 'default',
-        boxShadow: props => props.sub ? '0px 2px 8px #1E2123' : 'none',
-        borderRadius: props => props.sub ? '0 0 5px 5px' : 0,
+        backgroundColor: props => props.sub ? '#181a1f' : 'default',
+        boxShadow: props => props.sub ? '0px 2px 8px #181a1f' : 'none',
         "&:hover": {
             backgroundColor: 'default'
         }
@@ -179,7 +181,7 @@ const Options = (props) => {
         return (
             <ListItem button onClick={() => { optionClick(item) }} className={classes.sub}>
                 <ListItemIcon>
-                    {isSVG ? <img src='/assets/icons/gpu.svg' width={24}/> : <Icon outlined={true}>{item.icon}</Icon>}
+                    {isSVG ? <img src='/assets/icons/gpu.svg' width={24} /> : <Icon outlined={true}>{item.icon}</Icon>}
                 </ListItemIcon>
                 <ListItemText primary={item.label} />
                 {item.sub ? pageId === item.id ? <ExpandLess /> : <ExpandMore /> : null}
@@ -188,17 +190,6 @@ const Options = (props) => {
     }
 
     const renderPopover = (item) => {
-        // if (!drawerOpen && item.sub) {
-        //     return (
-        //         <List component='div' disablePadding>
-        //             {item.options.map(option => (
-        //                 <React.Fragment key={option.id}>
-        //                     {renderItem(option)}
-        //                 </React.Fragment>
-        //             ))}
-        //         </List>
-        //     )
-        // }
         return drawerOpen ? '' : item.label
     }
 
@@ -246,14 +237,13 @@ const SideNav = (props) => {
     };
 
     const onHoverDrawer = (flag) => {
-        if(hardOpen === false)
-        {
+        if (hardOpen === false) {
             setOpen(flag)
         }
     }
 
     return (
-        <div className={classes.root}>
+        <div id="mex-side-nav" className={classes.root}>
             <CssBaseline />
             <AppBar
                 position="fixed"
@@ -261,7 +251,7 @@ const SideNav = (props) => {
                     [classes.appBarShift]: open,
                 })}
             >
-                {loading ? <LinearProgress style={{ postion: 'absolute', width: '100%' }} /> : null}
+                {loading ? <LinearProgress style={{ position: 'absolute', width: '100%', top: 49 }} /> : null}
                 <Toolbar style={{ backgroundColor: '#3B3F47' }}>
                     <About className={clsx(classes.xLogo, { [classes.hide]: open, })} src='/assets/brand/X_Logo_green.svg' />
                     <IconButton
@@ -276,7 +266,7 @@ const SideNav = (props) => {
                         <MenuIcon />
                     </IconButton>
                     <Header />
-                    <LogsButton onClick={()=>{setOpenLogs(!openLogs)}} open={openLogs}/>
+                    <LogsButton onClick={() => { setOpenLogs(!openLogs) }} open={openLogs} />
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -291,13 +281,13 @@ const SideNav = (props) => {
                         [classes.drawerClose]: !open,
                     }),
                 }}
-                onMouseEnter={()=>{onHoverDrawer(true)}}
-                onMouseLeave={()=>{onHoverDrawer(false)}}
+                onMouseEnter={() => { onHoverDrawer(true) }}
+                onMouseLeave={() => { onHoverDrawer(false) }}
             >
                 <div className={classes.toolbar}>
                     <About className={classes.logo} src='/assets/brand/logo_mex.svg' />
-                    <IconButton onClick={handleDrawerClose} aria-label='drawer-control'>
-                        <ChevronLeftIcon />
+                    <IconButton onClick={handleDrawerClose} aria-label='drawer-control' className={classes.drawerControl}>
+                        <Icon>chevron_left</Icon>
                     </IconButton>
                 </div>
                 {open ? <Divider /> : null}
@@ -307,7 +297,7 @@ const SideNav = (props) => {
             <main className={classes.content}>
                 {props.children}
             </main>
-            <EventMenu open={openLogs}/>
+            <EventMenu open={openLogs} />
         </div>
     );
 }

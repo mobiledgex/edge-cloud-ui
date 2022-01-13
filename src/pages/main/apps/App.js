@@ -10,6 +10,7 @@ import AppInstReg from '../appInst/Reg';
 import { HELP_APP_LIST } from "../../../tutorial";
 import { perpetual } from '../../../helper/constant';
 import { labelFormatter } from '../../../helper/formatter';
+import { developerRoles } from '../../../constant';
 class AppList extends React.Component {
     constructor(props) {
         super(props);
@@ -97,7 +98,7 @@ class AppList extends React.Component {
     render() {
         const { currentView } = this.state
         return (
-            <DataView id={perpetual.PAGE_APPS} resetView={this.resetView} actionMenu={this.actionMenu} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
+            <DataView id={perpetual.PAGE_APPS} resetView={this.resetView} actionMenu={this.actionMenu} actionRoles={developerRoles} currentView={currentView} requestInfo={this.requestInfo} groupActionMenu={this.groupActionMenu} />
         )
     }
 

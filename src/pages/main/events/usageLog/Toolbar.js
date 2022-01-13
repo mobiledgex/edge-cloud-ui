@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/styles';
 import { Icon, IconButton, Picker } from '../../../../hoc/mexui';
 import { DEFAULT_DURATION_MINUTES } from './constant';
 import SearchFilter from '../../../../hoc/filter/SearchFilter';
+import { ICON_COLOR } from '../../../../helper/constant/colors';
 
 export const ACION_SEARCH = 0
 export const ACTION_PICKER = 1
@@ -71,11 +72,11 @@ const LeftView = (props) => {
                         </Box>
                         <Box>
                             <IconButton tooltip={'Refresh data'} onClick={() => { onChange(ACTION_REFRESH) }}>
-                                <Icon style={{ color: lightGreen['A700'] }}>refresh</Icon>
+                                <Icon color={ICON_COLOR}>refresh</Icon>
                             </IconButton>
                         </Box>
                         <Box>
-                            <Help data={tip} color={lightGreen['A700']} />
+                            <Help data={tip} color={ICON_COLOR} />
                         </Box>
                         <Box>
                             <IconButton tooltip={'Close'} onClick={() => { onChange(ACTION_CLOSE) }}>
