@@ -9,7 +9,7 @@ import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
     container: {
-        height: 'calc(100vh - 110px)',
+        maxHeight: 'calc(100vh - 110px)',
         backgroundColor: '#292c33',
         borderRadius: 5,
         overflowY: 'auto',

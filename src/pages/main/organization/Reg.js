@@ -45,8 +45,6 @@ class OrganizationReg extends React.Component {
         this.organizationInfo = null
     }
 
-
-
     makeCardContent = (i, key, roles) => {
         return (
             <Grid container key={i}>
@@ -162,6 +160,7 @@ class OrganizationReg extends React.Component {
                             <br />
                             <MexDetailViewer detailData={this.organizationInfo} keys={keys()} />
                             {additionalDetail(this.organizationInfo)}
+                            <br/><br/>
                             <Form.Group className='orgButton' style={{ width: '100%' }}>
                                 <Button className="newOrg3-4" onClick={(e) => { this.props.onClose() }} type='submit' positive style={{ width: '100%' }}>Return to Organizations</Button>
                             </Form.Group>
@@ -183,7 +182,7 @@ class OrganizationReg extends React.Component {
                             <Step.Group stackable='tablet' style={{ width: '100%' }}>
                                 {
                                     stepData.map((item, i) => (
-                                        <Step active={this.state.step === i} key={i} >
+                                        <Step active={this.state.step === i} key={i}>
                                             <Step.Content>
                                                 <Step.Title>{item.step}</Step.Title>
                                                 <Step.Description>{item.description}</Step.Description>
