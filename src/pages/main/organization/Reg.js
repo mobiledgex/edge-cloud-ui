@@ -158,7 +158,7 @@ class OrganizationReg extends React.Component {
                     <Grid item xs={10}>
                         <Form>
                             <br />
-                            <MexDetailViewer detailData={this.organizationInfo} keys={keys()} />
+                            <MexDetailViewer detailData={this.organizationInfo} keys={keys()} compact={true}/>
                             {additionalDetail(this.organizationInfo)}
                             <br/><br/>
                             <Form.Group className='orgButton' style={{ width: '100%' }}>

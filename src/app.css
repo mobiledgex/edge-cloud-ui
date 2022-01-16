@@ -155,6 +155,9 @@ h6 {
 
 /* semanctic step */
 
+.round_panel .steps {
+    border: 1px solid hsla(0,0%,100%,.2);
+}
 .round_panel .step, .round_panel .step:after {
     background-color: #202125 !important;
     border: 1px solid #929395;
@@ -170,14 +173,12 @@ h6 {
 }
 
 .round_panel .steps .step, .round_panel .steps .step.active {
-    border-right: 1px solid hsla(0,0%,100%,.2) !important;
-    border-top: 1px solid hsla(0,0%,100%,.2) !important;
-    border-bottom: 1px solid hsla(0,0%,100%,.2) !important;
+    border-right: 1px solid hsla(0,0%,100%,.2);
 }
 
 .round_panel .steps .step:after {
-    border-right: 1px solid hsla(0,0%,100%,.2) !important;
-    border-bottom: 1px solid hsla(0,0%,100%,.2) !important;
+    border-right: 1px solid hsla(0,0%,100%,.2);
+    border-bottom: 1px solid hsla(0,0%,100%,.2);
 }
 
 .round_panel .step.active, .round_panel .step.active:after {
