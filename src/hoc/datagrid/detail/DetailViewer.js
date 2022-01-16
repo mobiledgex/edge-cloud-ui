@@ -9,7 +9,14 @@ import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
     container: {
-        height: 'calc(100vh - 110px)',
+        height: 'calc(100vh - 109px)',
+        backgroundColor: '#292c33',
+        borderRadius: 5,
+        overflowY: 'auto',
+        marginTop: 5
+    },
+    compactcontainer: {
+        maxHeight: 'calc(100vh - 109px)',
         backgroundColor: '#292c33',
         borderRadius: 5,
         overflowY: 'auto',
@@ -21,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
             boxShadow: '0px 2px 8px #181a1f'
         }
     },
-    main_label:{
-        marginLeft:10
+    main_label: {
+        marginLeft: 10
     },
     table_cell_label: {
         borderBottom: "none",
@@ -107,6 +114,7 @@ const getArrayRow = (id, item, dataList, classes) => {
 
 
 const MexDetailViewer = (props) => {
+    const { compact } = props
     const classes = useStyles()
     const orgInfo = useSelector(state => state.organizationInfo.data)
     let detailData = props.detailData;
@@ -180,7 +188,7 @@ const MexDetailViewer = (props) => {
     return (
         <React.Fragment>
             <Divider />
-            <Card className={classes.container}>
+            <Card className={compact ? classes.compactcontainer : classes.container}>
                 <Table >
                     <TableBody>
                         {props.keys.map((item, i) => {
