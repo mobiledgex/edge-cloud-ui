@@ -8,22 +8,35 @@ import { redux_org } from '../../../helper/reduxData'
 //model
 import { service, fields, updateFieldData } from '../../../services';
 import { HELP_FEDERATION_REG_1, HELP_FEDERATION_REG_2 } from "../../../tutorial";
-import { Item, Step, Card, Form, Button } from 'semantic-ui-react';
+import { Item, Step, Card, Form, Button, ListItem } from 'semantic-ui-react';
 import { createFederator, updateFederator } from "../../../services/modules/federator"
 import { createFederation } from '../../../services/modules/federation'
-import { Grid, Dialog, DialogTitle, List, DialogActions } from '@material-ui/core';
+import { Grid, Dialog, DialogTitle, List, DialogActions, makeStyles } from '@material-ui/core';
 import { perpetual } from '../../../helper/constant';
 import { showCloudlets } from '../../../services/modules/cloudlet';
 import uuid from 'uuid';
-import { validateRemoteCIDR, validateRemoteIP } from '../../../helper/constant/shared';
 import { Icon } from 'semantic-ui-react';
 
+const stepData = [
+    {
+        step: "Step 1",
+        description: "Create Self Operator"
+    },
+    {
+        step: "Step 2",
+        description: "Create Partner Operator"
+    }]
+// const useStyles = makeStyles((theme) => ({
+
+
+// }));
 class FederationReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             forms: [],
-            open: false
+            open: false,
+            step: 0
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
@@ -33,6 +46,7 @@ class FederationReg extends React.Component {
         this.routesList = [];
         this.federationId = undefined
         this.federatorData = undefined
+        this.apiKey = undefined
     }
 
     updateState = (data) => {
@@ -119,25 +133,25 @@ class FederationReg extends React.Component {
     // };
 
     render() {
-        const { open } = this.state
-        console.log(this.state.forms, "forms", this.federationId, this.cloudletList, this.isUpdate)
+        const { open, step } = this.state
+        console.log(this.state.forms, "forms", this.federationId, this.cloudletList, this.isUpdate, step)
         return (
             <div className="round_panel">
                 <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
                     {this.props.action || this.isUpdate ? null :
                         <div>
-                            {/* <Step.Group stackable='tablet' style={{ width: '100%' }}>
+                            <Step.Group stackable='tablet' style={{ width: '100%' }}>
                                 {
-                                    // stepData.map((item, i) => (
-                                    <Step  >
+                                    stepData.map((item, i) => (
+                                        <Step active={step === i} key={i}>
                                         <Step.Content>
-                                            <Step.Title>adc</Step.Title>
-                                            <Step.Description>wdaw</Step.Description>
+                                                <Step.Title>{item.step}</Step.Title>
+                                                <Step.Description>{item.description}</Step.Description>
                                         </Step.Content>
                                     </Step>
-                                    // ))
+                                    ))
                                 }
-                            </Step.Group> */}
+                            </Step.Group>
                             <br />
                         </div>}
 
@@ -159,14 +173,16 @@ class FederationReg extends React.Component {
                     {/* {loading ? <LinearProgress /> : null} */}
                     <DialogTitle id="profile">
                         <div style={{ float: "left", display: 'inline-block' }}>
-                            <h3 style={{ fontWeight: 700 }}>Self Federation ID</h3>
+                            <h3 style={{ fontWeight: 700 }}>One Time ID</h3>
                         </div>
-
                     </DialogTitle>
-                    <List style={{ marginLeft: 10 }}>
-                        <Grid item xs={12}>
-                            Federation ID : <div id="federationID">{this.federationId}1212121</div> <Icon name="copy outline"></Icon>
-                        </Grid>
+                    <List style={{ width: 400, padding: '0 2rem 0 2rem' }}>
+                        <ListItem style={{ padding: '0 0 1rem 0' }}>
+                            <h5>Federation ID </h5> <span id="federationID">72c2d0b8-4988-483d-a4ec-73b093181621</span> <Icon name="copy outline"></Icon>
+                        </ListItem>
+                        <ListItem>
+                            <h5>Api Key</h5> <span id="apikey">570fc515-5d07-4014-9324-a1e63eaa4b2b</span> <Icon name="copy outline"></Icon>
+                        </ListItem>
                     </List>
                     <DialogActions>
                         <Button onClick={this.handleClose} style={{ backgroundColor: 'rgba(118, 255, 3, 0.7)' }} size='small'>
@@ -200,30 +216,12 @@ class FederationReg extends React.Component {
                         case fields.region:
                             form.options = this.props.regions;
                             break;
-                        case fields.cloudletName:
-                            form.options = this.cloudletList
-                            break;
-                        case fields.connectionType:
-                            form.options = [perpetual.CONNECT_TO_ALL, perpetual.CONNECT_TO_CLUSTER_NODES, perpetual.CONNECT_TO_LOAD_BALANCER];
-                            break;
                         default:
                             form.options = undefined;
                     }
                 }
             }
         }
-    }
-
-    formKeys = () => {
-        return [
-            { label: `${this.isUpdate ? 'Update' : 'Create'} Network`, formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to Network.', update: { key: true } },
-            { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), dependentData: [{ index: 1, field: fields.region }], tip: 'Organization of the cloudlet site', update: { key: true } },
-            { field: fields.cloudletName, label: 'Cloudlet Name', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true }, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.operatorName }] },
-            { field: fields.networkName, label: 'Network Name', formType: INPUT, placeholder: 'Enter Network Name', rules: { required: true }, visible: true, update: { key: true } },
-            { field: fields.connectionType, label: 'Connection Type', formType: SELECT, placeholder: 'Enter Connection Type', rules: { required: true }, update: { id: ['4'] }, visible: true },
-            { field: fields.accessRoutes, label: 'Routes', formType: HEADER, update: { id: ['3', '3.1', '3.2'] }, forms: [{ formType: ICON_BUTTON, label: 'Add Connections', icon: 'add', visible: true, onClick: this.addForm, Form: this.getRoutesForm }], visible: true }
-        ]
     }
 
     addForm = (e, form) => {
@@ -249,7 +247,7 @@ class FederationReg extends React.Component {
         }
     }
 
-    step2 = (data) => {
+    step2 = () => {
         return [
             { label: 'Define Partner', formType: MAIN_HEADER, visible: true },
             { field: fields.partnerOperatorName, label: 'Operator', formType: INPUT, placeholder: 'Enter Partner Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Globally unique string to identify an operator platform' },
@@ -266,10 +264,10 @@ class FederationReg extends React.Component {
             { label: `${this.isUpdate ? 'Update' : 'Define'} Self`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), dependentData: [{ index: 1, field: fields.region }], tip: 'Organization of the federation site', update: { key: true } },
-            { field: fields.countryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true }, visible: true, update: { edit: true }, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
-            { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, update: { key: true } },
-            { field: fields.locatorendpoint, label: 'Locator End point', formType: INPUT, placeholder: 'Enter Locator Endpoint', visible: true, update: { key: true }, tip: 'IP and Port of discovery service URL of operator platform' },
-            { field: fields.mcc, label: 'MCC', formType: INPUT, placeholder: 'Enter MCC Code', rules: { required: true }, visible: true, update: { key: true }, tip: 'Mobile country code of operator sending the request' },
+            { field: fields.countryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
+            { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true },
+            { field: fields.locatorendpoint, label: 'Locator End point', formType: INPUT, placeholder: 'Enter Locator Endpoint', visible: true, update: { edit: true }, tip: 'IP and Port of discovery service URL of operator platform' },
+            { field: fields.mcc, label: 'MCC', formType: INPUT, placeholder: 'Enter MCC Code', rules: { required: true }, visible: true, update: { edit: true }, tip: 'Mobile country code of operator sending the request' },
             { field: fields.mnc, label: 'MNC', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'List of mobile network codes of operator sending the request', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getMnc }], visible: true, update: { id: ['39', '39.1', '39.2', '39.3'] }, tip: 'List of mobile network codes of operator sending the request' },
         ]
     }
@@ -290,13 +288,13 @@ class FederationReg extends React.Component {
         }
     }
 
-    getMncForm = () => ([
-        { field: fields.mnc, label: '', formType: INPUT, placeholder: 'Enter Mnc code', rules: { required: true }, width: 7, visible: true },
+    mncForm = () => ([
+        { field: fields.mnc, label: '', formType: INPUT, placeholder: 'Enter Mnc code', rules: { required: true }, width: 7, visible: true, update: { edit: true } },
         { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     getMnc = (form) => {
-        return ({ uuid: uuid(), field: fields.mnc, formType: MULTI_FORM, forms: form ? form : this.getMncForm(), width: 3, visible: true })
+        return ({ uuid: uuid(), field: fields.mnc, formType: MULTI_FORM, forms: form ? form : this.mncForm(), width: 3, visible: true })
     }
 
     removeMultiForm = (e, form) => {
@@ -316,7 +314,6 @@ class FederationReg extends React.Component {
     }
     onCreateFederator = async (data) => {
         console.log(data, "data")
-        // this.addUserForm(data)
         let mncList = []
         let forms = this.state.forms
         for (let i = 0; i < forms.length; i++) {
@@ -337,60 +334,24 @@ class FederationReg extends React.Component {
         if (mncList.length > 0) {
             data[fields.mnc] = mncList
         }
-        // if (this.props.isUpdate) {
-        //     let updateData = updateFieldData(this, forms, data, this.props.data)
-        //     if (updateData[fields.gpuConfig]) {
-        //         updateData[fields.gpuDriverName] = data[fields.gpuDriverName]
-        //         updateData[fields.gpuORG] = data[fields.gpuORG]
-        //     }
-        //     if ((updateData[fields.kafkaUser] || updateData[fields.kafkaPassword]) && !updateData[fields.kafkaCluster]) {
-        //         updateData[fields.kafkaCluster] = data[fields.kafkaCluster]
-        //         updateData.fields.push('42')
-        //     }
-        //     if (updateData.fields.length > 0) {
-        //         this.props.handleLoadingSpinner(true)
-        //         updateFederator(this, updateData, this.onCreateResponse)
-        //     }
-        // }
-        // else {
-        if (data) {
-            console.log(data, "data")
-            let mcRequest = this.isUpdate ? await updateFederator(this, data) : await createFederator(this, data)
-            console.log(mcRequest, "mcRequest")
-            if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                this.props.handleAlertInfo('success', `Federator ${this.isUpdate ? 'updated' : 'created'} successfully`)
-                this.updateState({ open: true })
-                this.federationId = mcRequest.response.data.federationid
-                this.isUpdate ? this.props.onClose() : this.addUserForm(data)
-            }
+        let mcRequest = this.isUpdate ? await updateFederator(this, data) : await createFederator(this, data)
+        if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+            this.props.handleAlertInfo('success', `Federator ${this.isUpdate ? 'updated' : 'created'} successfully`)
+            this.updateState({ open: true })
+            this.federationId = mcRequest.response.data.federationid
+            this.apiKey = mcRequest.response.data.apikey
+            this.isUpdate ? this.props.onClose() : this.addUserForm(data)
+            this.props.onClose(true)
         }
-        // }
     }
-    // onCreateResponse = async (mc) => {
-    //     if (mc) {
-    //         this.props.handleLoadingSpinner(false)
-    //         if (mc.close && this.state.stepsArray.length === 0) {
-    //             this.props.handleAlertInfo('success', 'Cloudlet updated successfully')
-    //             this.props.onClose(true)
-    //         }
-    //         else {
-    //             let responseData = undefined;
-    //             let request = mc.request;
-    //             if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-    //                 this.props.handleAlertInfo('success', `Organization ${data[fields.organizationName]} ${this.isUpdate ? 'updated' : 'created'} successfully`)
-    //                 this.isUpdate ? this.props.onClose() : this.addUserForm(data)
-    //             }
-    //         }
-    //     }
-    // }
 
-    onAddCancel = () => {
+    onCancel = async () => {
         this.props.onClose(false)
     }
 
     addUserForm = (data) => {
         let forms = this.step2(data)
-        this.federatorData = data
+        this.federatorData = data[fields.operatorName]
         console.log(data, "data")
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
@@ -402,38 +363,52 @@ class FederationReg extends React.Component {
         }
         forms.push(
             { label: 'Create', formType: 'Button', onClick: this.onCreateFederation, validate: true },
-            { label: 'Register', formType: 'Button', onClick: this.onRegister, validate: true },
-            { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel, validate: true })
+            { label: 'Cancel', formType: 'Button', onClick: this.onCancel })
         this.setState({
             step: 1,
             forms: forms
         })
         this.props.handleViewMode(HELP_FEDERATION_REG_2);
     }
+
     onCreateFederation = async (data) => {
-        console.log(this.federatorData, "federatorData")
-        console.log(data, this.federationId, this.state.forms)
         if (data) {
-            let mcRequest = await createFederation(this, data, this.federatorData, this.federationId)
-            console.log(mcRequest, "mcRequest")
+            const requestData = { ...data, ...{ [fields.federationId]: this.federationId, [fields.operatorName]: this.federatorData } }
+            let mcRequest = await createFederation(this, requestData)
             if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                this.props.handleAlertInfo('success', `Federation ${this.isUpdate ? 'updated' : 'created'} successfully`)
-                this.federationId = mcRequest.response.data.federationid
-                this.isUpdate ? this.props.onClose() : this.addUserForm(data)
+                this.props.handleAlertInfo('success', `Federation Created successfully`)
+                this.props.onClose(true)
             }
         }
     }
-    loadDefaultData = (data) => {
-        console.log(data, "data")
+    loadDefaultData = (forms, data) => {
+        if (data[fields.mnc]) {
+            let multiFormCount = 0;
+            let mncArray = data[fields.mnc]
+            for (let i = 0; i < mncArray.length; i++) {
+                let mncArr = mncArray
+                let mncForms = this.mncForm()
+                for (let j = 0; j < mncForms.length; j++) {
+                    let mncForm = mncForms[j];
+                    if (mncForm.field === fields.mnc) {
+                        mncForm.value = mncArr[j]
+                    }
+                }
+                forms.splice(8 + multiFormCount, 0, this.getMnc(mncForms))
+                multiFormCount = +1
+            }
+        }
 
     }
 
     getFormData = (data) => {
+        let forms = this.step1()
         if (data) {
             if (this.isUpdate) {
-                this.loadDefaultData(data)
+                this.loadDefaultData(forms, data)
             }
             else {
+                this.federationId = data.federationId 
                 this.organizationInfo = data
                 this.addUserForm(data)
                 this.setState({ step: 1 })
@@ -441,26 +416,26 @@ class FederationReg extends React.Component {
                 return
             }
         }
-
-        let forms = this.step1()
+        this.updateFormData(forms, data)
+        this.updateState({
+            forms
+        })
         forms.push(
             { label: `${this.isUpdate ? 'Update' : 'Create'}`, formType: 'Button', onClick: this.onCreateFederator, validate: true },
-            { label: 'Cancel', formType: 'Button', onClick: this.onCreateFederator })
+            { label: 'Cancel', formType: 'Button', onClick: this.onCancel }
+        )
 
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            this.updateUI(form)
-            if (data) {
-                form.value = data[form.field]
-                this.checkForms(form, forms, true)
-            }
-        }
-
+        // for (let i = 0; i < forms.length; i++) {
+        //     let form = forms[i]
+        //     this.updateUI(form)
+        //     if (data) {
+        //         form.value = data[form.field]
+        //         this.checkForms(form, forms, true)
+        //     }
+        // }
         this.setState({
             forms: forms
         })
-
-
     }
 
     componentDidMount() {

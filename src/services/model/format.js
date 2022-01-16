@@ -290,5 +290,8 @@ export const fields = {
     partnerOperatorName: 'partnerOperator',
     partnerFederationid: 'partnerFederationid',
     partnerCountryCode: 'partnerCountryCode',
-    federationAddr: 'federationAddr'
+    federationAddr: 'federationAddr',
+    zoneCount: 'zoneCount',
+    partnerRoleShareZonesWithSelf: 'partnerRoleShareZonesWithSelf',
+    PartnerRoleAccessToSelfZones: 'PartnerRoleAccessToSelfZones'
 }

@@ -1,11 +1,12 @@
 import { customize } from './custom'
-import { keys, iconKeys, showFederator, showFederatorSelfZone, createFederator, updateFederator } from './federator'
+import { keys, showFederator, showFederatorSelfZone, createFederator, updateFederator, deleteFederator, generateApiKey } from './federator'
 export {
     customize,
     keys,
-    iconKeys,
     showFederator,
     showFederatorSelfZone,
     createFederator,
-    updateFederator
+    updateFederator,
+    deleteFederator,
+    generateApiKey
 }

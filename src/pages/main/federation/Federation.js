@@ -3,42 +3,26 @@ import { withRouter } from 'react-router-dom';
 import { Form, Button } from 'semantic-ui-react';
 import DataView from '../../../container/DataView';
 //Mex
-import { SELECT, INPUT, SWITCH, MAIN_HEADER } from '../../../hoc/forms/MexForms';
+import MexForms, { INPUT, BUTTON, POPUP_INPUT } from "../../../hoc/forms/MexForms";
 import MexDetailViewer from '../../../hoc/datagrid/detail/DetailViewer'
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
-import { Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core';
+import { Grid, Dialog, DialogTitle, List, DialogActions, makeStyles, Box, Card, IconButton, Typography, CardHeader, ListItem, Icon, DialogContent } from '@material-ui/core';
 import { lightGreen } from '@material-ui/core/colors';
 //model
 import { addUser } from '../../../services/modules/users';
 import { HELP_FEDERATION_LIST } from "../../../tutorial";
-import { Grid, List } from "@material-ui/core";
 import { splitByCaps, toFirstUpperCase } from "../../../utils/string_utils";
 import { perpetual } from "../../../helper/constant";
-import { showFederation, showFederationPartnerZone, multiDataRequest, iconKeys, keys } from "../../../services/modules/federation"
-import { showFederator, showFederatorSelfZone, createFederator } from "../../../services/modules/federator"
+import { showFederation, showFederationPartnerZone, multiDataRequest, iconKeys, keys, deleteFederation, registerFederation, deregisterFederation, setApiKey } from "../../../services/modules/federation"
+import { showFederator, showFederatorSelfZone, deleteFederator, generateApiKey } from "../../../services/modules/federator"
 import FederationReg from "./Reg"
-import { uiFormatter } from '../../../helper/formatter'
 import { redux_org } from '../../../helper/reduxData';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
-// const stepData = [
-//     {
-//         step: "Step 1",
-//         description: "Create Organization"
-//     },
-//     {
-//         step: "Step 2",
-//         description: "Add User"
-//     },
-//     {
-//         step: "Step 3",
-//         description: "Review Organization"
-//     }
-// ]
 class FederationList extends React.Component {
     constructor(props) {
         super(props);
@@ -46,12 +30,14 @@ class FederationList extends React.Component {
             step: 0,
             forms: [],
             currentView: null,
+            open: false,
         },
             this.isUpdate = this.props.isUpdate
         this.type = undefined
         this.roles = constant.legendRoles
         this.organizationInfo = null
         this.keys = keys()
+        this.apiKey = undefined
     }
 
     resetView = () => {
@@ -155,21 +141,6 @@ class FederationList extends React.Component {
         this.props.handleViewMode(HELP_FEDERATION_LIST);
     }
 
-
-    onCreateFederator = async (data) => {
-        this.addUserForm()
-        // if (data) {
-        //     this.organizationInfo = data
-        //     this.type = toFirstUpperCase(data[fields.type])
-        //     data[fields.type] = data[fields.type]
-        //     let mcRequest = this.isUpdate ? await updateFederator(this, data) : await createFederator(this, data)
-        //     if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-        //         this.props.handleAlertInfo('success', `Federator ${data[fields.organizationName]} ${this.isUpdate ? 'updated' : 'created'} successfully`)
-        //         this.isUpdate ? this.props.onClose() : this.addUserForm(data)
-        //     }
-        // }
-    }
-
     /*Required*/
     reloadForms = () => {
         this.setState({
@@ -201,12 +172,11 @@ class FederationList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: perpetual.PAGE_ORGANIZATIONS,
+            id: perpetual.PAGE_FEDERATION,
             headerLabel: 'Partner Federation',
             requestType: [showFederation, showFederatorSelfZone, showFederator, showFederationPartnerZone],
-            sortBy: [fields.federationName],
+            sortBy: [fields.region, fields.federationName],
             keys: this.keys,
-            iconKeys: iconKeys(),
             isRegion: true,
             // additionalDetail: shared.additionalDetail,
             viewMode: HELP_FEDERATION_LIST,
@@ -214,7 +184,6 @@ class FederationList extends React.Component {
             // formatData: this.dataFormatter
         })
     }
-
     customToolbar = () =>
     (
         redux_org.isViewer(this) ? null : <Box display='flex'>
@@ -266,39 +235,123 @@ class FederationList extends React.Component {
         console.log(data, "data")
         this.updateState({ currentView: <FederationReg data={data} isUpdate={true} onClose={this.onRegClose} /> });
     }
-    actionMenu = () => {
-        return [
-            { id: perpetual.ACTION_UPDATE, label: 'Update', visible: this.onUpdateVisible, onClick: this.onUpdate, type: 'Udate' },
-            { id: perpetual.ACTION_UPDATE, label: 'Delete', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Delete' },
-            { id: perpetual.ACTION_UPDATE, label: 'Register', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Register' },
-            { id: perpetual.ACTION_UPDATE, label: 'Generate API Key', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Generate API Key' },
-            { id: perpetual.ACTION_UPDATE, label: 'Add Partner Details', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Add Partner Details' },
-            { id: perpetual.ACTION_UPDATE, label: 'Update Partner API Key', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Update Partner API Key' },
-            { id: perpetual.ACTION_UPDATE, label: 'Register Partner API Key', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Register Partner API Key' },
-            { id: perpetual.ACTION_UPDATE, label: 'DeRegister Partner API Key', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'DeRegister Partner API Key' },
+    onDeleteRow = (action, data) => {
+        console.log(data, "data")
+        data.federationName ? deleteFederation(this, data) : deleteFederator(this, data)
+    }
+    onCreateFederation = (action, data) => {
+        console.log(data, "data")
+        this.updateState({ currentView: <FederationReg data={data} onClose={this.onRegClose} /> })
+    }
+    createVisible = (data) => {
+        return data[fields.federationName] === undefined
+    }
+    registerVisible = (data) => {
+        return data[fields.partnerRoleShareZonesWithSelf] !== perpetual.SELF_SHARE && data[fields.partnerRoleShareZonesWithSelf] !== perpetual.PARTNER_SHARE
+    }
+    deregisterVisible = (data) => {
+        return data[fields.partnerRoleShareZonesWithSelf] === perpetual.SELF_SHARE && data[fields.partnerRoleShareZonesWithSelf] === perpetual.PARTNER_SHARE
+    }
+    setApiKeyVisible = (data) => {
+        return data[fields.federationName] !== undefined
+    }
+    onGenerateApiKey = async (action, data) => {
+        let mcRequest = await generateApiKey(this, data)
+        if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+            this.props.handleAlertInfo('success', 'Api Key generated successfully')
+            this.apiKey = mcRequest.response.data.apikey
+            this.updateState({
+                open: true
+            })
+        }
+    }
+    setApiKey = async (action, data) => {
+        let mcRequest = await setApiKey(this, data)
+        if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
+            this.props.handleAlertInfo('success', 'Api Key updated successfully')
+            this.apiKey = mcRequest.response.data.apikey
+            this.updateState({
+                open: false
+            })
+        }
+    }
+    onSetApiKey = (action, data) => {
+        this.updateState({
+            open: true
+        })
+        this.forms(data)
+    }
 
+    forms = (data) => {
+        console.log(data)
+        return [
+            { field: fields.operatorName, label: 'Operator', formType: INPUT, placeholder: 'Enter Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Organization of the federation site' },
+            { field: fields.apiKey, label: 'Api Key', formType: INPUT, placeholder: 'Enter Partner Api Key', rules: { required: true }, visible: true, tip: 'API Key used for authentication (stored in secure storage)' },
+            { field: fields.federationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Fderation Name', rules: { required: true }, visible: true, tip: 'Name to uniquely identify a federation' }
         ]
     }
+    handleClose = () => {
+        this.updateState({
+            open: false
+        })
+        this.apiKey = undefined // to reset when there is no page reload
+    }
+    actionMenu = () => {
+        return [
+            { id: perpetual.ACTION_CREATE, label: 'Create Federation', visible: this.createVisible, onClick: this.onCreateFederation, type: 'Create' },
+            { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Udate', edit: true },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: this.onDeleteRow, type: 'Delete' },
+            { id: perpetual.ACTION_REGISTER, label: 'Register', visible: this.registerVisible, onClick: registerFederation, type: 'Register' },
+            { id: perpetual.ACTION_DEREGISTER, label: 'DeRegister', visible: this.deregisterVisible, onClick: deregisterFederation, type: 'DeRegister' },
+            { id: perpetual.ACTION_GENERATE_API_KEY, label: 'Generate API Key', onClick: this.onGenerateApiKey, type: 'Generate API Key' },
+            { id: perpetual.ACTION_UPDATE, label: 'Add Partner Details', onClick: this.onAdd, type: 'Add Partner Details' },
+            { id: perpetual.ACTION_SET_API_KEY, label: 'Update Partner API Key', visible: this.setApiKeyVisible, onClick: this.onSetApiKey, type: 'Update Partner API Key' },
+            { id: perpetual.ACTION_UPDATE, label: 'Register Partner API Key', onClick: this.onAdd, type: 'Register Partner API Key' },
+        ]
+    }
+    onValueChange = (form) => {
+
+    }
+
+
+
+    renderSetApiForms = () => (
+        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
+    )
+
+    reloadForms = () => {
+        this.updateState({
+            forms: this.state.forms
+        })
+    }
+
     render() {
-        const { tableHeight, currentView } = this.state
+        const { tableHeight, currentView, open } = this.state
         return (
             <div style={{ width: '100%', height: '100%' }}>
                 <DataView id={perpetual.PAGE_FEDERATION} multiDataRequest={multiDataRequest} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} customToolbar={this.customToolbar} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} />
+                <Dialog open={true} onClose={this.onClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
+                    {/* {loading ? <LinearProgress /> : null} */}
+                    <DialogTitle id="profile">
+                        <div style={{ float: "left", display: 'inline-block' }}>
+                            <h3 style={{ fontWeight: 700 }}>{this.apiKey ? 'API Key' : 'Set API Key'}</h3>
+                        </div>
+                    </DialogTitle>
+                    <DialogContent style={{ width: 600 }}>
+                        {this.apiKey ? (<><h5>Api Key : </h5> <span id="apikey">{this.apiKey}</span> <Icon name="copy outline"></Icon></>) : this.renderSetApiForms()}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleClose} style={{ backgroundColor: 'rgba(118, 255, 3, 0.7)' }} size='small'>
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         )
     }
 
     onAddCancel = () => {
         this.props.onClose(false)
-    }
-
-    getOptions = (dataList, form) => {
-        if (dataList && dataList.length > 0) {
-            return dataList.map(data => {
-                let info = form ? data[form.field] : data
-                return { key: info, value: info, text: info }
-            })
-        }
     }
 
     resetFormValue = (form) => {
@@ -332,12 +385,20 @@ class FederationList extends React.Component {
 
 
     onAdd = (type) => {
-        console.log(type, "type")
         this.updateState({ currentView: <FederationReg onClose={this.onRegClose} /> });
     }
+    getFormData = () => {
 
+        let forms = this.forms()
+        forms.push({ label: 'Set', formType: BUTTON, onClick: this.onCreate, validate: true })
+        forms.push({ label: 'Cancel', formType: BUTTON, onClick: this.handleClose })
+        this.updateState({
+            forms: forms
+        })
+    }
     componentDidMount() {
         this._isMounted = true
+        this.getFormData()
         this.props.handleViewMode(HELP_FEDERATION_LIST)
     }
 

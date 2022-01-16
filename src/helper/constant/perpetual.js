@@ -91,6 +91,8 @@ export const YES = 'Yes'
 export const NO = 'No'
 export const RUN_COMMAND = 'Run Command';
 export const SHOW_LOGS = 'Show Logs';
+export const REGISTER = 'Register'
+export const DE_REGISTER = 'De Register'
 
 export const PLATFORM_TYPE_FAKE = 'Fake'
 export const PLATFORM_TYPE_DIND = 'DIND'
@@ -252,3 +254,9 @@ export const PAGE_FEDERATION = 'Federation'
 export const PAGE_PARTNER_FEDERATION = 'PartnerFederation'
 export const SHARE_ZONES_WITH_PARTNER = 'ShareZonesWithPartner'
 export const ADD_ZONES_FROM_PARTNER = 'AddZonesFromPartner'
+export const ACTION_GENERATE_API_KEY = 'GenerateApiKey'
+export const ACTION_SET_API_KEY = 'SetApiKey'
+
+export const PARTNER_SHARE = 'partner shares zones'
+export const SELF_SHARE = 'self shares zones'
+
