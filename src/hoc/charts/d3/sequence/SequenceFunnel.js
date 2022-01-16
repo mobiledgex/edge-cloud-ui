@@ -87,7 +87,7 @@ class Sequence extends React.Component {
     return (
       <React.Fragment>
         <div align="center">
-          <div id='sequence' ref={this.sbRef} style={{width:'10vw', marginTop:-20}}></div>
+          <div id='sequence' ref={this.sbRef} style={{width:'12vw', marginTop:-20}}></div>
         </div>
       </React.Fragment>
     );

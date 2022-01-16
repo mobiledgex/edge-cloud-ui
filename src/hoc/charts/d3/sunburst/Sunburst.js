@@ -100,12 +100,12 @@ const Sunburst = (props) => {
                 .attrTween("transform", d => () => labelTransform(d.current));
 
 
-            icon.transition(t)
-                .attr("fill-opacity", d => {
-                    return +(iconVisible(d.target) && Boolean(d.data.alertType))
-                })
-                .text(d => { return alertTypeIndicator(d.data, 'iconCode') })
-                .attrTween("transform", d => () => labelTransform(d.current));
+            // icon.transition(t)
+            //     .attr("fill-opacity", d => {
+            //         return +(iconVisible(d.target) && Boolean(d.data.alertType))
+            //     })
+            //     .text(d => { return alertTypeIndicator(d.data, 'iconCode') })
+            //     .attrTween("transform", d => () => labelTransform(d.current));
         }
 
         const arc = d3.arc()
@@ -194,18 +194,18 @@ const Sunburst = (props) => {
             .style('font-size', 14)
             .style('fill', 'white')
 
-        const icon = labelData
-            .join("text")
-            .attr("dy", "-0.5em")
-            .attr("dx", "-1.9em")
-            .attr("fill-opacity", d => +(iconVisible(d) && Boolean(d.data.alertType)))
-            .attr("transform", d => labelTransform(d))
-            .attr('font-size', '20px')
-            .text(d => { return alertTypeIndicator(d.data, 'iconCode') })
-            .attr("class", "material-icons")
-            .attr('x', 45)
-            .attr('y', 50)
-            .attr("fill", "white");
+        // const icon = labelData
+        //     .join("text")
+        //     .attr("dy", "-0.5em")
+        //     .attr("dx", "-1.9em")
+        //     .attr("fill-opacity", d => +(iconVisible(d) && Boolean(d.data.alertType)))
+        //     .attr("transform", d => labelTransform(d))
+        //     .attr('font-size', '20px')
+        //     .text(d => { return alertTypeIndicator(d.data, 'iconCode') })
+        //     .attr("class", "material-icons")
+        //     .attr('x', 45)
+        //     .attr('y', 50)
+        //     .attr("fill", "white");
 
 
         const parent = svg.append("circle")
@@ -236,7 +236,7 @@ const Sunburst = (props) => {
 
     return (
         <React.Fragment>
-            <Card style={{ marginBottom: 2 }}>
+            {/* <Card style={{ marginBottom: 2 }}>
                 <div style={{ height:50, display: 'inline-flex', alignItems:'center', fontSize:15 }}>
                     {Object.keys(alertTypes).map(item => (
                         <div key={item} style={{display:'inline-flex', marginLeft:10}}>
@@ -245,7 +245,7 @@ const Sunburst = (props) => {
                         </div>
                     ))}
                 </div>
-            </Card>
+            </Card> */}
             <Card>
                 <div className='sunburst' style={{ padding: 10, borderRadius: 5, position: 'relative' }} ref={sbRef}>
                     <div className={classes.action}>

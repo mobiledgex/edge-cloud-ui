@@ -1,4 +1,3 @@
-import { Card, ImageList, ImageListItem } from '@material-ui/core'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import Control from './control/Control'
@@ -14,7 +13,9 @@ class Dashboard extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <Control></Control>
+                <div id="mex-dashboard" style={{ display: 'flex' }}>
+                    <Control></Control>
+                </div>
             </React.Fragment>
         )
     }
