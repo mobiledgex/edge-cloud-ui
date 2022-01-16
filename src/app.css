@@ -152,3 +152,35 @@ h6 {
 #mex-side-nav .MuiDrawer-paperAnchorDockedLeft{
     border-right: none !important;
 }
+
+/* semanctic step */
+
+.round_panel .steps {
+    border: 1px solid hsla(0,0%,100%,.2);
+}
+.round_panel .step, .round_panel .step:after {
+    background-color: #202125 !important;
+    border: 1px solid #929395;
+    color: #929395;
+}
+
+.round_panel .step .content .description, .round_panel .step .content .title {
+    color:#929395;
+}
+
+.round_panel .step.active .content .description, .round_panel .step.active .content .title {
+    color:#FFF;
+}
+
+.round_panel .steps .step, .round_panel .steps .step.active {
+    border-right: 1px solid hsla(0,0%,100%,.2);
+}
+
+.round_panel .steps .step:after {
+    border-right: 1px solid hsla(0,0%,100%,.2);
+    border-bottom: 1px solid hsla(0,0%,100%,.2);
+}
+
+.round_panel .step.active, .round_panel .step.active:after {
+    background-color: #470 !important;
+}
