@@ -27,8 +27,10 @@ import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from '@material-ui/core';
 import { endpoint, perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
+import { responseValid } from '../../../services/service';
 
 const MexFlow = lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
+const SERVERCONFIG_HEADER = 'ServerLess Config'
 
 class AppReg extends Component {
     constructor(props) {
@@ -52,6 +54,7 @@ class AppReg extends Component {
         this.appInstanceList = []
         this.configOptions = [perpetual.CONFIG_ENV_VAR, perpetual.CONFIG_HELM_CUST]
         this.originalData = undefined
+        this.serverlessMenu = false
         this.expandAdvanceMenu = false
         this.tlsCount = 0
         this.updateFlowDataList = []
@@ -134,6 +137,13 @@ class AppReg extends Component {
         manifestForm.value = undefined;
         this.reloadForms()
     }
+    clearServerLessData = (e, form) => {
+        let serverLessForm = form.parent.form.forms[0]
+        let serverLessForm1 = form.parent.form.forms[1]
+        let serverLessForm2 = form.parent.form.forms[2]
+        serverLessForm.value = undefined, serverLessForm1.value = undefined, serverLessForm2.value = undefined
+        this.reloadForms()
+    }
 
     onManifestLoad = (data, extra) => {
         let form = extra.form
@@ -152,6 +162,9 @@ class AppReg extends Component {
         { icon: 'clear', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
     ])
 
+    getServerlessConfig = (form) => {
+        return ({ uuid: uuid(), field: fields.serverlessConfig, formType: MULTI_FORM, forms: form ? form : this.serverlessConfigForm(), width: 3, visible: true })
+    }
     /**Deployment manifest block */
 
     portForm = () => ([
@@ -273,7 +286,7 @@ class AppReg extends Component {
 
     deploymentValueChange = (currentForm, forms, isInit) => {
         forms = forms.filter((form) => {
-            if (form.field === fields.imageType) {
+            if (form.field === fields.imageType) { 
                 form.value = currentForm.value === perpetual.DEPLOYMENT_TYPE_HELM ? perpetual.IMAGE_TYPE_HELM :
                     currentForm.value === perpetual.DEPLOYMENT_TYPE_VM ? perpetual.IMAGE_TYPE_QCOW : perpetual.IMAGE_TYPE_DOCKER
                 return form
@@ -309,6 +322,12 @@ class AppReg extends Component {
                 const deployTypeVM = currentForm.value === perpetual.DEPLOYMENT_TYPE_VM
                 form.visible = deployTypeVM
                 form.value = deployTypeVM ? form.value : undefined
+                return form
+            }
+            else if (form.field === fields.allowServerless) {
+                form.visible = currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES
+                form.value = false
+                this.allowServerLess(form, forms, isInit)
                 return form
             }
             else {
@@ -467,6 +486,26 @@ class AppReg extends Component {
         }
     }
 
+    allowServerLess = (currentForm, forms, isInit) => {
+        this.serverlessMenu = false
+        forms = forms.filter((form) => {
+            if (form.label === SERVERCONFIG_HEADER) {
+                form.visible = currentForm.value
+                //reset button icon
+                form.forms[0].icon = 'expand_less'
+                form.value = undefined
+            }
+            else if (form.serverless) {
+                form.visible = false
+                form.value = undefined
+            }
+            return form
+        })
+        if (!isInit) {
+            this.updateState({ forms })
+        }
+    }
+
     ocProtcolValueChange = (currentForm, forms, isInit) => {
         let parentForm = currentForm.parent.form
         for (let i = 0; i < forms.length; i++) {
@@ -541,6 +580,9 @@ class AppReg extends Component {
         else if (form.field === fields.trusted) {
             this.trustedChange(form, forms, isInit)
         }
+        else if (form.field === fields.allowServerless) {
+            this.allowServerLess(form, forms, isInit)
+        }
         else if (form.field === fields.qosSessionProfile) {
             this.qosSessionProfileChange(form, forms, isInit)
         }
@@ -554,8 +596,18 @@ class AppReg extends Component {
         }
     }
 
+    validateDecimalInteger = (form) => {
+        if (form.value && form.value.length > 0) {
+            if (!/^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$/.test(form.value) && !Number.isInteger(form.value)) {
+                form.error = 'vcpus must be in decimal or integer'
+                return false;
+            }
+        }
+        form.error = undefined;
+        return true;
+    }
     /**Required */
-    /*Trigged when form value changes */
+    /*Trigged when form value changes */        
     onValueChange = (form) => {
         let forms = this.state.forms;
         this.checkForms(form, forms)
@@ -570,6 +622,19 @@ class AppReg extends Component {
             let form = forms[i]
             if (form.advance !== undefined) {
                 form.advance = this.expandAdvanceMenu
+            }
+        }
+        this.reloadForms()
+    }
+
+    serverlessConfigMenu = (e, form) => {
+        this.serverlessMenu = !this.serverlessMenu
+        form.icon = this.serverlessMenu ? 'expand_more' : 'expand_less'
+        let forms = this.state.forms
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.serverless) {
+                form.visible = this.serverlessMenu
             }
         }
         this.reloadForms()
@@ -730,7 +795,7 @@ class AppReg extends Component {
                             }
                             if (updateData.fields.length > 0) {
                                 let mc = await updateApp(this, updateData)
-                                if (mc && mc.response && mc.response.status === 200) {
+                                if (responseValid(mc)) {
                                     this.props.handleAlertInfo('success', `App ${data[fields.appName]} updated successfully`)
                                     if (data[fields.refreshAppInst]) {
                                         serverData.sendWSRequest(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
@@ -779,6 +844,7 @@ class AppReg extends Component {
                                         }
                                     }
                                 }
+                                requestData[fields.serverLessConfig] = data[fields.serverLessConfig]
                                 requestList.push(createApp(requestData))
                             })
 
@@ -874,10 +940,15 @@ class AppReg extends Component {
             { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: { id: ['16'] }, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
             { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: SWITCH, visible: this.isUpdate, value: false, update: { edit: true }, tip: 'Upgrade App Instances running in the cloudlets' },
             { field: fields.trusted, label: 'Trusted', formType: SWITCH, visible: true, value: false, update: { id: ['37'] }, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
+            { field: fields.allowServerless, label: 'Allow Serverless', formType: SWITCH, value: false, tip: 'App is allowed to deploy as serverless containers', visible: false, rules: { disabled: false }, update: { id: ['39'] } },
             { field: fields.accessPorts, label: 'Ports', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], update: { id: ['7'], ignoreCase: true }, visible: true, tip: 'Ports:</b>Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443\nHealth Check:</b> Periodically tests the health of applications as TCP packets are generated from the load balancer to the application and its associated port. This information is useful for Developers to manage and mitigate issues.' },
-            { field: fields.annotations, label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, update: { id: ['14'] }, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
             { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, update: { id: ['21', '21.1', '21.2'] }, tip: 'Customization files passed through to implementing services' },
+            { field: fields.annotations, label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, update: { id: ['14'] }, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
             { field: fields.requiredOutboundConnections, label: 'Required Outbound Connections', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Connections', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getOutboundConnectionsForm }], visible: false, update: { id: ['38', '38.1', '38.2', '38.4'] }, tip: 'Connections this app require to determine if the app is compatible with a trust policy' },
+            { label: SERVERCONFIG_HEADER, formType: HEADER, visible: false, forms: [{ formType: ICON_BUTTON, icon: 'expand_less', visible: true, onClick: this.serverlessConfigMenu }], visible: false },
+            { field: fields.serverlessVcpu, label: 'Virtual CPU', formType: INPUT, placeholder: 'Enter vCPUs per container', rules: { required: false }, visible: false, update: { id: ['40', '40.1'] }, dataValidateFunc: this.validateDecimalInteger, serverless: true, tip: 'Virtual CPUs allocation per container when serverless, may be decimal in increments of 0.001' },
+            { field: fields.serverlessRam, label: 'RAM', formType: INPUT, placeholder: 'Enter RAM allocation per container', rules: { required: false, type: 'number' }, visible: false, update: { id: ['40', '40.2'] }, serverless: true, tip: 'RAM allocation in megabytes per container when serverless' },
+            { field: fields.serverlessMinReplicas, label: 'Min Replicas', formType: INPUT, placeholder: 'Enter min replicas', rules: { required: false, type: 'number' }, visible: false, update: { id: ['40', '40.3'] }, serverless: true, tip: 'Minimum number of replicas when serverless' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
             { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: { id: ['12'] }, tip: 'public key used for authentication', advance: false },
             { field: fields.alertPolicies, showField: fields.alertPolicyName, label: 'Alert Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Alert Policies', rules: { required: false }, visible: true, update: { id: ['42'] }, multiple: true, tip: 'Alert policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false },
@@ -906,7 +977,6 @@ class AppReg extends Component {
                 requestList.push(showAutoProvPolicies(this, { region: region }))
                 requestList.push(showAlertPolicy(this, { region: region }))
             }
-
             let mcList = await service.multiAuthSyncRequest(this, requestList)
             if (mcList && mcList.length > 0) {
                 for (const mc of mcList) {
@@ -931,6 +1001,7 @@ class AppReg extends Component {
                 this.configOptions = [perpetual.CONFIG_ENV_VAR]
             }
             let multiFormCount = 0
+
             if (data[fields.accessPorts]) {
                 let portArray = data[fields.accessPorts].split(',')
                 let skipHCPortArray = data[fields.skipHCPorts] ? data[fields.skipHCPorts].split(',') : []
@@ -974,7 +1045,7 @@ class AppReg extends Component {
                             portForm.value = !skipHCPort
                         }
                     }
-                    forms.splice(17 + multiFormCount, 0, this.getPortForm(portForms))
+                    forms.splice(16 + multiFormCount, 0, this.getPortForm(portForms))
                     multiFormCount += 1
                 }
             }
@@ -996,10 +1067,11 @@ class AppReg extends Component {
                             annotationForm.value = value
                         }
                     }
-                    forms.splice(18 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
+                    forms.splice(17 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
                     multiFormCount += 1
                 }
             }
+
             if (data[fields.configs]) {
                 let configs = data[fields.configs]
                 for (let i = 0; i < configs.length; i++) {
@@ -1014,10 +1086,11 @@ class AppReg extends Component {
                             configForm.value = config[fields.config]
                         }
                     }
-                    forms.splice(19 + multiFormCount, 0, this.getConfigForm(configForms))
+                    forms.splice(18 + multiFormCount, 0, this.getConfigForm(configForms))
                     multiFormCount += 1
                 }
             }
+
             if (data[fields.requiredOutboundConnections]) {
                 let requiredOutboundConnections = data[fields.requiredOutboundConnections]
                 for (let i = 0; i < requiredOutboundConnections.length; i++) {
@@ -1040,7 +1113,7 @@ class AppReg extends Component {
                             outboundConnectionsForm.value = requiredOutboundConnection['port_range_max']
                         }
                     }
-                    forms.splice(20 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
+                    forms.splice(19 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
                     multiFormCount += 1
                 }
             }
@@ -1088,6 +1161,11 @@ class AppReg extends Component {
     getFormData = async (data) => {
         let forms = this.formKeys()
         if (data) {
+            if (data[fields.accessServerlessConfig]) {
+                data[fields.serverlessVcpu] = data[fields.accessServerlessConfig]['vcpus']
+                data[fields.serverlessRam] = data[fields.accessServerlessConfig]['ram']
+                data[fields.serverlessMinReplicas] = data[fields.accessServerlessConfig]['min_replicas']
+            }
             this.tlsCount = data[fields.accessPorts] ? (data[fields.accessPorts].match(/tls/g) || []).length : 0;
             this.updateFlowDataList.push(appFlow.portFlow(this.tlsCount))
             this.originalData = cloneDeep(data)
