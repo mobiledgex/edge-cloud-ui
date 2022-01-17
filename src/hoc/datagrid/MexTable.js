@@ -172,7 +172,7 @@ class MuiVirtualizedTable extends React.PureComponent {
     };
 
     headerRenderer = ({ label, columnIndex }) => {
-        const { headerHeight, columns, classes, order, orderBy, onSortClick } = this.props;
+        const { headerHeight, columns, classes, order, orderBy, onSortClick, selected, rowCount } = this.props;
         let column = columns[columnIndex]
         return (
             <TableCell
@@ -184,7 +184,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                 align={column.numeric || false ? 'right' : 'left'}
             >
                 {
-                    column.type === ELE_CHECKBOX ? <IconButton onClick={this.onSelectAll}><Icon className={classes.checkbox}>{`${this.selectAll ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton> :
+                    column.type === ELE_CHECKBOX ? <IconButton onClick={this.onSelectAll}><Icon className={classes.checkbox}>{`${selected.length === rowCount ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton> :
                         <span className={classes.textHeader}>{label}</span>
                 }
                 {
