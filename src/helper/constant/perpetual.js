@@ -2,6 +2,8 @@
 export const MOBILEDGEX = 'MobiledgeX'
 export const STATUS_UNDER_MAINTAINANCE = 999
 
+export const BOOLEAN = 'boolean'
+
 export const COLOR_GREEN = '#388E3C'
 export const COLOR_RED = '#ab2424'
 

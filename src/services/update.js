@@ -1,7 +1,10 @@
-import { operators } from "../helper/constant"
+import { operators, perpetual } from "../helper/constant"
 
 const compareObjects = (newData, oldData, ignoreCase) => {
-    if ((newData === undefined || newData.length === 0) && (oldData === undefined || oldData.length === 0)) {
+    if ((typeof newData === perpetual.BOOLEAN) && newData === oldData) {
+        return true
+    }
+    else if ((newData === undefined || newData.length === 0) && (oldData === undefined || oldData.length === 0)) {
         return true
     }
     else if (newData !== undefined && newData.length > 0 && oldData === undefined) {
@@ -41,6 +44,6 @@ export const updateFieldData = (self, forms, data, orgData) => {
     if (updateFields.length === 0) {
         self.props.handleAlertInfo('error', 'Nothing to update')
     }
-    updateData.fields = updateFields
+    updateData.fields = Array.from(new Set(updateFields))
     return updateData
 }

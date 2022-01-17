@@ -73,6 +73,9 @@ class AppList extends React.Component {
         else if (key.field === fields.trusted) {
             return labelFormatter.showYesNo(data[key.field])
         }
+        else if (key.field === fields.allowServerless) {
+            return labelFormatter.showYesNo(data[key.field])
+        }
     }
 
     requestInfo = () => {
