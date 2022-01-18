@@ -707,7 +707,7 @@ class CloudletReg extends React.Component {
                             envForm.value = value
                         }
                     }
-                    forms.splice(16 + multiFormCount, 0, this.getEnvForm(envForms))
+                    forms.splice(17 + multiFormCount, 0, this.getEnvForm(envForms))
                     multiFormCount += 1
                 })
             }
