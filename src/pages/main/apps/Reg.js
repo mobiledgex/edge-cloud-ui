@@ -137,13 +137,6 @@ class AppReg extends Component {
         manifestForm.value = undefined;
         this.reloadForms()
     }
-    clearServerLessData = (e, form) => {
-        let serverLessForm = form.parent.form.forms[0]
-        let serverLessForm1 = form.parent.form.forms[1]
-        let serverLessForm2 = form.parent.form.forms[2]
-        serverLessForm.value = undefined, serverLessForm1.value = undefined, serverLessForm2.value = undefined
-        this.reloadForms()
-    }
 
     onManifestLoad = (data, extra) => {
         let form = extra.form
@@ -161,11 +154,6 @@ class AppReg extends Component {
         { icon: 'browse', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.addManifestData },
         { icon: 'clear', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
     ])
-
-    getServerlessConfig = (form) => {
-        return ({ uuid: uuid(), field: fields.serverlessConfig, formType: MULTI_FORM, forms: form ? form : this.serverlessConfigForm(), width: 3, visible: true })
-    }
-    /**Deployment manifest block */
 
     portForm = () => ([
         { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 7, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
