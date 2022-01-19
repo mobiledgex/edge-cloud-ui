@@ -781,6 +781,7 @@ class AppReg extends Component {
                                     updateData[fields.fields].push("38", "38.1", "38.2", "38.4")
                                 }
                             }
+                            updateData[fields.allowServerless] = data[fields.allowServerless]
                             if (updateData.fields.length > 0) {
                                 let mc = await updateApp(this, updateData)
                                 if (responseValid(mc)) {
