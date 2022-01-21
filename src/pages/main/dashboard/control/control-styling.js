@@ -2,11 +2,11 @@ import { makeStyles } from "@material-ui/core";
 
 export const controlStyles = (theme => ({
     widgets: {
-        height: 210,
-        marginLeft: '0.1em',
+        marginRight: '0.1em',
+        height:'30%',
         padding:5
     },
-    widgets1: {
-        height: 250
+    sunburst: {
+        height: '70%'
     }
 }));

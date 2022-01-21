@@ -1,13 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { Card, IconButton } from '@material-ui/core';
-import {Icon} from '../../../mexui'
-// import Tooltip from '../Tooltip'
 import { useStyles } from './sunburst-styling';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import SequenceHorizontal from './SequenceHorizontal'
+import { uniqueId } from '../../../../helper/constant/shared';
 
 const width = 732;
 const radius = width / 6
+
+
+const color = d3.scaleOrdinal(d3.schemePastel1)
+
+export const fetchColor = (d) => {
+    return iconVisible(d.target) && Boolean(d.data.alertType) ? alertTypeIndicator(d.data, 'color') : color(d.data.name)
+}
 
 const arcVisible = (d) => {
     return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
@@ -36,7 +41,7 @@ const partition = data => {
         (root);
 }
 
-const alertTypes = { error: { label:'Error', color: '#CC4643', iconCode: '\ue888', icon: 'highlight_off' }, warning: { label:'Warning', color: '#FFB74D', iconCode: '\uf083', icon:'warning_amber' } }
+const alertTypes = { error: { label: 'Error', color: '#CC4643', iconCode: '\ue888', icon: 'highlight_off' }, warning: { label: 'Warning', color: '#FFB74D', iconCode: '\uf083', icon: 'warning_amber' } }
 
 
 const alertTypeIndicator = (d, code) => {
@@ -47,12 +52,12 @@ const alertTypeIndicator = (d, code) => {
 const Sunburst = (props) => {
     const { toggle, sequence, dataset, onMore } = props
     const [data, setData] = useState(undefined)
+    const [dataFlow, setDataFlow] = useState([])
     const classes = useStyles({ btnVisibility: Boolean(data) })
     const sbRef = useRef(null)
 
     const sunburstChart = (sequence, dataset) => {
         const format = d3.format(",d")
-        const color = d3.scaleOrdinal(d3.schemePastel1)
         const root = partition(dataset);
 
         //on click
@@ -77,6 +82,14 @@ const Sunburst = (props) => {
             parentLabel.text(p.data.name).style('fill', 'white')
             setData(p.depth > 0 ? p.data : undefined)
 
+            var flow = [];
+            var current = p;
+            while (current.parent) {
+                flow.unshift(current);
+                current = current.parent;
+            }
+            setDataFlow(flow)
+
             const t = svg.transition().duration(750);
 
             path.transition(t)
@@ -88,7 +101,7 @@ const Sunburst = (props) => {
                     return +this.getAttribute("fill-opacity") || arcVisible(d.target);
                 })
                 .attr("fill", d => {
-                    return iconVisible(d.target) && Boolean(d.data.alertType) ? alertTypeIndicator(d.data, 'color') : color(d.data.name)
+                    return fetchColor(d)
                 })
                 .attr("fill-opacity", d => arcVisible(d.target) ? (d.children ? 0.9 : 0.9) : 0)
                 .attrTween("d", d => () => arc(d.current));
@@ -98,14 +111,6 @@ const Sunburst = (props) => {
             }).transition(t)
                 .attr("fill-opacity", d => +labelVisible(d.target))
                 .attrTween("transform", d => () => labelTransform(d.current));
-
-
-            // icon.transition(t)
-            //     .attr("fill-opacity", d => {
-            //         return +(iconVisible(d.target) && Boolean(d.data.alertType))
-            //     })
-            //     .text(d => { return alertTypeIndicator(d.data, 'iconCode') })
-            //     .attrTween("transform", d => () => labelTransform(d.current));
         }
 
         const arc = d3.arc()
@@ -145,7 +150,6 @@ const Sunburst = (props) => {
                 let value = color(data.name)
                 if (iconVisible(d) && Boolean(data.alertType)) {
                     value = alertTypeIndicator(data, 'color')
-                    console.log(data, value)
                 }
                 else if (data.color) {
                     value = data.color;
@@ -171,7 +175,7 @@ const Sunburst = (props) => {
                 tooltip.style("visibility", "visible");
             }
         })
-            .on("mousemove", function (e, d) { return tooltip.style("top", (e.pageY - 40) + "px").style("left", (e.pageX - 240) + "px"); })
+            .on("mousemove", function (e, d) { return tooltip.style("top", (e.pageY + 20) + "px").style("left", (e.pageX + 10) + "px"); })
             .on("mouseout", function (e, d) { return tooltip.style("visibility", "hidden"); });
 
         /**********
@@ -194,20 +198,6 @@ const Sunburst = (props) => {
             .style('font-size', 14)
             .style('fill', 'white')
 
-        // const icon = labelData
-        //     .join("text")
-        //     .attr("dy", "-0.5em")
-        //     .attr("dx", "-1.9em")
-        //     .attr("fill-opacity", d => +(iconVisible(d) && Boolean(d.data.alertType)))
-        //     .attr("transform", d => labelTransform(d))
-        //     .attr('font-size', '20px')
-        //     .text(d => { return alertTypeIndicator(d.data, 'iconCode') })
-        //     .attr("class", "material-icons")
-        //     .attr('x', 45)
-        //     .attr('y', 50)
-        //     .attr("fill", "white");
-
-
         const parent = svg.append("circle")
             .datum(root)
             .attr("r", radius)
@@ -218,7 +208,7 @@ const Sunburst = (props) => {
         const parentLabel = svg.append("text")
             .attr("class", "total")
             .attr("text-anchor", "middle")
-            .attr('font-size', '3em')
+            .attr('font-size', '2em')
             .attr('y', 12)
             .attr('x', 1)
 
@@ -236,23 +226,10 @@ const Sunburst = (props) => {
 
     return (
         <React.Fragment>
-            {/* <Card style={{ marginBottom: 2 }}>
-                <div style={{ height:50, display: 'inline-flex', alignItems:'center', fontSize:15 }}>
-                    {Object.keys(alertTypes).map(item => (
-                        <div key={item} style={{display:'inline-flex', marginLeft:10}}>
-                            <Icon size={17} oultined color={alertTypes[item].color}>{alertTypes[item].icon}</Icon>
-                            <span variant='button' style={{ marginLeft: 10 }}>{alertTypes[item].label}</span>
-                        </div>
-                    ))}
-                </div>
-            </Card> */}
-            <Card>
-                <div className='sunburst' style={{ padding: 10, borderRadius: 5, position: 'relative' }} ref={sbRef}>
-                    <div className={classes.action}>
-                        <IconButton className={classes.tooltipBtn} onClick={() => { onMore(true) }} size='small'><MoreHorizIcon /></IconButton>
-                    </div>
-                </div>
-            </Card>
+            <div style={{ width: '100%', marginTop: 10, marginBottom:-25 }} align='center'>
+                <SequenceHorizontal key={uniqueId()} dataset={dataFlow} colors={color} />
+            </div>
+            <div className='sunburst' style={{ padding: '0px 20px 20px 20px', borderRadius: 5 }} ref={sbRef} />
         </React.Fragment>
     )
 }

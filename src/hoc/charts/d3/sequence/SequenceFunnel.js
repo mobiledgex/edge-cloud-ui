@@ -1,7 +1,8 @@
 import React from 'react';
 import * as d3 from 'd3';
+import { uniqueId } from '../../../../helper/constant/shared';
 
-const width = 310
+const CON_WIDTH = 310
 
 /***********
 **w:width;**
@@ -81,15 +82,12 @@ class Sequence extends React.Component {
     this.state = {
     }
     this.sbRef = React.createRef();
+    this.width = props.width ? props.width : CON_WIDTH
   }
 
   render() {
     return (
-      <React.Fragment>
-        <div align="center">
-          <div id='sequence' ref={this.sbRef} style={{width:'12vw', marginTop:-20}}></div>
-        </div>
-      </React.Fragment>
+      <div id='sequencefunnel' key={uniqueId()} ref={this.sbRef} style={{ width: this.width }}></div>
     );
   }
 
@@ -97,7 +95,11 @@ class Sequence extends React.Component {
     d3.select(this.sbRef.current)
       .append('svg')
       .attr("id", "trail")
-      .attr("viewBox", [0, 0, width, width]);
+      .style('margin-left', 15)
+      .style('margin-top', -25)
+      .style('margin-bottom', 15)
+      .attr("viewBox", [0, 0, this.width, this.width])
+      .attr('align', 'center')
   }
 
   sequenceDiagram = () => {

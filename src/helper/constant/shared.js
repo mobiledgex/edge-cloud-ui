@@ -1,5 +1,9 @@
 import { perpetual } from "."
+import uuid from 'uuid'
 
+export const uniqueId = ()=>{
+    return uuid()
+}
 export const isPathOrg = (self)=>{
     return self.props.history.location.pathname.includes(perpetual.PAGE_ORGANIZATIONS.toLowerCase())
 }
