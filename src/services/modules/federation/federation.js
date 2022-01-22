@@ -19,6 +19,8 @@ export const keys = () => ([
     { field: fields.partnerFederationid, serverField: 'federationid', label: 'Partner Federation ID' },
     { field: fields.apiKey, serverField: 'apikey', label: 'Api Key' },
     { field: fields.federationId, serverField: 'selffederationid', label: 'Federation ID' },
+    { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
+    { field: fields.zoneId, label: 'Zone id', serverField: 'zoneid', dataType: perpetual.TYPE_ARRAY }
 ])
 
 // export const iconKeys = () => ([
@@ -60,7 +62,6 @@ export const createFederation = (self, data) => {
 
 export const deleteFederation = (self, data) => {
     let requestData = getKey(data)
-    console.log(requestData)
     return { method: endpoint.DELETE_FEDERATION, data: requestData, success: `Federation ${data[fields.federationName]} deleted successfully` }
 }
 
@@ -71,7 +72,7 @@ export const setApiKey = async (self, data) => {
     return await authSyncRequest(self, request)
 }
 export const multiDataRequest = (keys, mcRequestList, specific) => {
-    let federationList = [], federatorList = [], federationPartnerZone = [], federatorSelfZone = [];
+    let federationList = [], federatorList = [], zonesList = [];
     for (let i = 0; i < mcRequestList.length; i++) {
         let mcRequest = mcRequestList[i];
         let request = mcRequest.request;
@@ -81,35 +82,41 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
         else if (request.method === endpoint.SHOW_FEDERATOR) {
             federatorList = mcRequest.response.data
         }
-    }
-    let federationFedaratorList = []
-    for (let i = 0; i < federatorList.length; i++) {
-        let obj = {}
-        for (let j = 0; j < federationList.length; j++) {
-            if (federatorList[i].federationId === federationList[j].federationId) {
-                obj['federationId'] = federationList[j].federationId
-                obj['region'] = federatorList[i].region ? federatorList[i].region : undefined
-                obj['federationName'] = federationList[j].federationName ? federationList[j].federationName : undefined
-                obj['countryCode'] = federatorList[i].countryCode ? federatorList[i].countryCode : undefined
-                obj['partnerOperator'] = federationList[j].partnerOperator ? federationList[j].partnerOperator : undefined
-                obj['partnerCountryCode'] = federationList[j].partnerCountryCode ? federationList[j].partnerCountryCode : undefined
-                obj['operatorName'] = federatorList[i].operatorName
-                obj['mcc'] = federatorList[i].mcc
-                obj['mnc'] = federatorList[i].mnc
-                federationFedaratorList.push(obj)
-            } 
+        else if (request.method === endpoint.SHOW_SELF_ZONES) {
+            zonesList = mcRequest.response.data
         }
     }
-    const filterByReference = (federatorList, federationFedaratorList) => {
-        let res = [];
-        res = federatorList.filter(el => {
-            return !federationFedaratorList.find(element => {
-                return element.federationId === el.federationId;
-            });
-        });
-        return res;
+
+    if (federatorList && federatorList.length > 0) {
+        for (let i = 0; i < federatorList.length; i++) {
+            let federator = federatorList[i]
+            for (let j = 0; j < federationList.length; j++) {
+                let federation = federationList[j]
+                if (federator[fields.federationId] === federation.federationId) {
+                    federator[fields.region] = federator[fields.region] ? federator[fields.region] : undefined
+                    federator[fields.federationId] = federation[fields.federationId]
+                    federator[fields.partnerOperatorName] = federation[fields.partnerOperatorName] ? federation[fields.partnerOperatorName] : undefined
+                    federator[fields.countryCode] = federator[fields.countryCode] ? federator[fields.countryCode] : undefined
+                    federator[fields.partnerCountryCode] = federation[fields.partnerCountryCode] ? federation[fields.partnerCountryCode] : undefined
+                    federator[fields.operatorName] = federator[fields.operatorName]
+                    federator[fields.mcc] = federator[fields.mcc]
+                    federator[fields.mnc] = federator[fields.mnc]
+                    federator[fields.federationName] = federation[fields.federationName] ? federation[fields.federationName] : undefined
+                }
+            }
+            let zone = []
+            for (let j = 0; j < zonesList.length; j++) {
+                let zones = zonesList[j]
+                if (federator[fields.federationName] && zones[fields.operatorName] === federator[fields.operatorName]) {
+                    zone.push(zones[fields.zoneId])
+                    federator[fields.zoneId] = zone
+                    federator[fields.cloudlets] = zones[fields.cloudlets]
+                    federator[fields.geolocation] = zones[fields.geolocation]
+                    federator[fields.state] = zones[fields.state] ? zones[fields.state] : undefined
+                    federator[fields.city] = zones[fields.city] ? zones[fields.city] : undefined
+                }
+            }
+        }
     }
-    const filterData = filterByReference(federatorList, federationFedaratorList)
-    const result = [...federationFedaratorList, ...filterData]
-    return result
+    return federatorList;
 }

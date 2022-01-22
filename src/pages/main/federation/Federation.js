@@ -13,9 +13,9 @@ import { HELP_FEDERATION_LIST } from "../../../tutorial";
 import { perpetual } from "../../../helper/constant";
 import { showFederation, multiDataRequest, keys, deleteFederation } from "../../../services/modules/federation"
 import { showFederator, deleteFederator, generateApiKey } from "../../../services/modules/federator"
+import { showSelfZone } from "../../../services/modules/zones"
 import FederationReg from "./Reg"
 import { codeHighLighter } from '../../../hoc/highLighter/highLighter';
-
 class FederationList extends React.Component {
     constructor(props) {
         super(props);
@@ -71,7 +71,7 @@ class FederationList extends React.Component {
         return ({
             id: perpetual.PAGE_LOCAL_FEDERATION,
             headerLabel: 'Local Federation',
-            requestType: [showFederation, showFederator],
+            requestType: [showFederation, showFederator, showSelfZone],
             sortBy: [fields.region, fields.federationName],
             keys: this.keys,
             onAdd: this.onAdd,
@@ -88,10 +88,15 @@ class FederationList extends React.Component {
     }
 
     onAddPartnerData = (action, data) => {
-        this.updateState({ currentView: <FederationReg data={data} partnerData={true} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <FederationReg data={data} step={2} onClose={this.onRegClose} /> });
     }
+
     onCreateFederation = (action, data) => {
         this.updateState({ currentView: <FederationReg data={data} onClose={this.onRegClose} /> })
+    }
+
+    onShareZones = (action, data) => {
+        this.updateState({ currentView: <FederationReg step={3} action={action} data={data} onClose={this.onRegClose} /> })
     }
     createVisible = (data) => {
         return data[fields.federationName] === undefined
@@ -122,6 +127,8 @@ class FederationList extends React.Component {
     }
     actionMenu = () => {
         return [
+            { id: perpetual.ACTION_SHARE_ZONES, label: 'Share Zones', onClick: this.onShareZones, type: 'Delete' },
+            { id: perpetual.ACTION_UNSHARE_ZONES, label: 'Unshare Zones', onClick: deleteFederation, type: 'Delete' },
             { id: perpetual.ACTION_UPDATE, label: 'Add Partner Data', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
             { id: perpetual.ACTION_GENERATE_API_KEY, label: 'Generate API Key', onClick: this.onGenerateApiKey, type: 'Generate API Key' },
             { id: perpetual.ACTION_UPDATE, label: 'Update Self Data', onClick: this.onUpdate, type: 'Add Partner Data' },
@@ -132,7 +139,6 @@ class FederationList extends React.Component {
     onValueChange = (form) => {
 
     }
-
 
     reloadForms = () => {
         this.updateState({

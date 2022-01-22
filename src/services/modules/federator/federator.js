@@ -12,7 +12,7 @@ export const keys = () => ([
     { field: fields.federationId, label: 'federationid', serverField: 'federationid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.mcc, label: 'mcc', serverField: 'mcc', sortable: true, filter: true, key: true },
     { field: fields.mnc, label: 'mnc', serverField: 'mnc', sortable: true, filter: true, key: true, dataType: perpetual.TYPE_ARRAY },
-    { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true, dataType: perpetual.TYPE_ARRAY },
+    { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true }
 ])
 
 
@@ -41,7 +41,6 @@ export const createFederator = async (self, data) => {
 }
 export const updateFederator = (self, data) => {
     const requestData = getKey(data, true)
-    console.log(requestData)
     return { method: endpoint.UPDATE_FEDERATOR, data: requestData, keys: keys() }
 }
 

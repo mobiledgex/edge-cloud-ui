@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 //Mex
-import MexForms, { SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON, DUALLIST } from '../../../hoc/forms/MexForms';
 import { redux_org } from '../../../helper/reduxData'
 //model
 import { service, updateFieldData, fields } from '../../../services'
@@ -25,7 +25,12 @@ const stepData = [
     {
         step: "Step 2",
         description: "Create Partner Operator"
-    }]
+    },
+    {
+        step: "Step 3",
+        description: "Share Zones with Partner"
+    }
+]
 // const useStyles = makeStyles((theme) => ({
 
 
@@ -85,7 +90,7 @@ class FederationReg extends React.Component {
         return (
             <div className="round_panel">
                 <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
-                    {this.props.action || this.isUpdate || this.props.partnerData ? null :
+                    {this.props.action || this.isUpdate || this.props.step ? null :
                         <div>
                             <Step.Group stackable='tablet' style={{ width: '100%' }}>
                                 {
@@ -101,14 +106,11 @@ class FederationReg extends React.Component {
                             </Step.Group>
                             <br />
                         </div>}
-
-                    {this.state.step === 2 ?
-                        this.getStep3() :
                         <Grid container>
                             <Grid item xs={this.state.step === 1 ? 9 : 12}>
                                 <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} actionMenu={this.actionMenu} />
                             </Grid>
-                        </Grid>}
+                    </Grid>
                 </Item>
                 <Dialog open={open} onClose={this.onClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
                     <DialogTitle id="profile">
@@ -148,13 +150,16 @@ class FederationReg extends React.Component {
         if (form) {
             this.resetFormValue(form)
             if (form.field) {
-                if (form.formType === SELECT) {
+                if (form.formType === SELECT || form.formType === DUALLIST) {
                     switch (form.field) {
                         case fields.operatorName:
                             form.options = this.operatorList
                             break;
                         case fields.region:
                             form.options = this.props.regions;
+                            break;
+                        case fields.zonesList:
+                            form.options = this.props.data[fields.zoneId]
                             break;
                         default:
                             form.options = undefined;
@@ -180,6 +185,18 @@ class FederationReg extends React.Component {
             })
         }
     }
+    step1 = () => {
+        return [
+            { label: `${this.isUpdate ? 'Update' : 'Define'} Self`, formType: MAIN_HEADER, visible: true },
+            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
+            { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
+            { field: fields.countryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
+            { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true },
+            { field: fields.locatorendpoint, label: 'Locator End point', formType: INPUT, placeholder: 'Enter Locator Endpoint', visible: true, update: { edit: true }, tip: 'IP and Port of discovery service URL of operator platform' },
+            { field: fields.mcc, label: 'MCC', formType: INPUT, placeholder: 'Enter MCC Code', rules: { required: true }, visible: true, update: { edit: true }, tip: 'Mobile country code of operator sending the request' },
+            { field: fields.mnc, label: 'List of MNC', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'List of mobile network codes of operator sending the request', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getMnc }], visible: true, tip: 'List of mobile network codes of operator sending the request' },
+        ]
+    }
 
     step2 = () => {
         return [
@@ -198,16 +215,14 @@ class FederationReg extends React.Component {
         ]
     }
 
-    step1 = () => {
+    step3 = () => {
         return [
-            { label: `${this.isUpdate ? 'Update' : 'Define'} Self`, formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
-            { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
-            { field: fields.countryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
-            { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true },
-            { field: fields.locatorendpoint, label: 'Locator End point', formType: INPUT, placeholder: 'Enter Locator Endpoint', visible: true, update: { edit: true }, tip: 'IP and Port of discovery service URL of operator platform' },
-            { field: fields.mcc, label: 'MCC', formType: INPUT, placeholder: 'Enter MCC Code', rules: { required: true }, visible: true, update: { edit: true }, tip: 'Mobile country code of operator sending the request' },
-            { field: fields.mnc, label: 'List of MNC', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'List of mobile network codes of operator sending the request', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getMnc }], visible: true, tip: 'List of mobile network codes of operator sending the request' },
+            { label: 'Share Zones with Partner', formType: MAIN_HEADER, visible: true },
+            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true, disabled: true }, visible: true, update: { key: true } },
+            { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: true }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
+            { field: fields.federationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Fderation Name', rules: { required: true, disabled: true }, visible: true, tip: 'Name to uniquely identify a federation' },
+            { field: fields.partnerOperatorName, label: 'Partner operator', formType: INPUT, placeholder: 'Enter Partner Operator', rules: { required: true, disabled: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Globally unique string to identify an operator platform' },
+            { field: fields.zonesList, label: 'Zones', formType: DUALLIST, visible: true }
         ]
     }
 
@@ -273,10 +288,8 @@ class FederationReg extends React.Component {
         if (mncList.length > 0) {
             data[fields.mnc] = mncList
         }
-        console.log(this.props.isUpdate)
         if (this.props.isUpdate) {
             let updateData = updateFieldData(this, forms, data, this.props.data)
-            console.log(updateData.fields.length)
             if (updateData.fields.length > 0) {
                 mc = await updateFederator(this, updateData)
             }
@@ -298,7 +311,7 @@ class FederationReg extends React.Component {
     }
 
     addUserForm = (data) => {
-        let forms = this.step2(data)
+        let forms = this.props.step === 3 ? this.step3(data) : this.step2(data)
         this.federatorData = data[fields.operatorName]
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
@@ -308,13 +321,24 @@ class FederationReg extends React.Component {
                 this.checkForms(form, forms, true)
             }
         }
-        forms.push(
-            { label: 'Create', formType: 'Button', onClick: this.onCreateFederation, validate: true },
-            { label: 'Cancel', formType: 'Button', onClick: this.onCancel })
-        this.setState({
-            step: 1,
-            forms: forms
-        })
+        if (this.props.step === 3) {
+            forms.push(
+                { label: 'share', formType: 'Button', onClick: this.onCreateFederation, validate: true },
+                { label: 'Cancel', formType: 'Button', onClick: this.onCancel })
+            this.setState({
+                step: 3,
+                forms: forms
+            })
+        } else {
+            forms.push(
+                { label: 'Create', formType: 'Button', onClick: this.onCreateFederation, validate: true },
+                { label: 'Cancel', formType: 'Button', onClick: this.onCancel })
+            this.setState({
+                step: 1,
+                forms: forms
+            })
+        }
+
         this.props.handleViewMode(HELP_FEDERATION_REG_2);
     }
 
@@ -349,16 +373,29 @@ class FederationReg extends React.Component {
     }
 
     getFormData = async (data) => {
-        let forms = this.props.partnerData ? this.step2() : this.step1()
+        console.log(this.props.step, this.props.step === 3)
+        let forms
+        if (this.props.step === 2) {
+            forms = this.step2()
+        }
+        else if (this.props.step === 3) {
+            forms = this.step3()
+        }
+        else {
+            forms = this.step1()
+        }
+        console.log(data)
         if (data) {
+            console.log(data)
             if (this.isUpdate) {
                 this.loadDefaultData(forms, data)
             }
             else {
+                console.log("hello")
                 this.federationId = data.federationId 
                 this.organizationInfo = data
                 this.addUserForm(data)
-                this.setState({ step: 1 })
+                this.setState({ step: this.props.step ? 3 : 1 })
                 this.props.handleViewMode(HELP_FEDERATION_REG_2);
                 return
             }
@@ -368,12 +405,12 @@ class FederationReg extends React.Component {
             this.operatorList = _sort(orgList.map(org => {
                 return org[fields.organizationName]
             }))
-        }
 
+        }
         forms.push(
             { label: `${this.isUpdate ? 'Update' : 'Create'}`, formType: 'Button', onClick: this.onCreateFederator, validate: true },
             { label: 'Cancel', formType: 'Button', onClick: this.onCancel }
-        )  
+        ) 
         this.updateFormData(forms, data)
         this.updateState({
             forms

@@ -302,5 +302,6 @@ export const fields = {
     state: 'state',
     city: 'city',
     zoneLocation: 'zoneLocation',
-    locality: 'locality'
+    locality: 'locality',
+    zonesList: 'zonesList'
 }
