@@ -1,22 +1,3 @@
-html {
-    height: 100%;
-}
-body {
-    min-height: 100%;
-    background: radial-gradient( #222a38, #080b0f ) !important;
-    color: rgba(255,255,255,.5) !important;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
-
-/* font */
-body, button, input, textarea, optgroup, select, textarea,
-.header, .menu,
-.legendtext {
-    font-family: 'Helvetica, 'Helvetica Neue', Arial', sans-serif !important;
-}
-
 #root {
     margin: 0;
     padding: 0;
@@ -884,7 +865,7 @@ body, button, input, textarea, optgroup, select, textarea,
 
 .round_panel {
     background-color: #292c33;
-    height: calc(100vh - 53px);
+    height: calc(100vh - 55px);
     padding: 10px;
     overflow-y: auto;
     overflow-x: hidden;

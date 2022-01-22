@@ -40,7 +40,9 @@ export const keys = () => ([
     { field: fields.qosSessionProfile, serverField: 'qos_session_profile', label: 'QOS Network Prioritization' },
     { field: fields.qosSessionDuration, serverField: 'qos_session_duration', label: 'QOS Session Duration' },
     { field: fields.trusted, serverField: 'trusted', label: 'Trusted', visible: false, sortable: true, format: true },
+    { field: fields.allowServerless, serverField: 'allow_serverless', label: 'Allow Serverless', format: true },
     { field: fields.configs, serverField: 'configs', label: 'Configs', keys: configs() },
+    { field: fields.accessServerlessConfig, serverField: 'serverless_config', label: 'Serverless Config', dataType: perpetual.TYPE_JSON },
     { field: fields.annotations, serverField: 'annotations', label: 'Annotations', visible: false },
     { field: fields.requiredOutboundConnections, serverField: 'required_outbound_connections', label: 'Required Outbound Connections', visible: false, dataType: perpetual.TYPE_JSON },
     { field: fields.templateDelimiter, serverField: 'template_delimiter', label: 'Template Delimiter' },
@@ -80,8 +82,14 @@ export const getKey = (data, isCreate) => {
             app.required_outbound_connections = data[fields.requiredOutboundConnections]
         }
 
-        app.default_flavor = { name: data[fields.flavorName] }
+        app.default_flavor = data[fields.flavorName] ? { name: data[fields.flavorName] } : undefined
         app.auth_public_key = data[fields.authPublicKey]
+        app.allow_serverless = data[fields.allowServerless]
+        app.serverless_config = data[fields.allowServerless] ? {
+            vcpus: data[fields.serverlessVcpu] ? parseInt(data[fields.serverlessVcpu]) : undefined,
+            ram: data[fields.serverlessRam] ? parseInt(data[fields.serverlessRam]) : undefined,
+            min_replicas: data[fields.serverlessMinReplicas] ? parseInt(data[fields.serverlessMinReplicas]) : undefined
+        } : undefined
         if (data[fields.officialFQDN]) {
             app.official_fqdn = data[fields.officialFQDN]
         }
@@ -129,7 +137,7 @@ export const getKey = (data, isCreate) => {
         }
 
         if (data[fields.fields]) {
-            app.fields = data[fields.fields]
+            app.fields = Array.from(new Set(data[fields.fields]))
         }
     }
     return ({

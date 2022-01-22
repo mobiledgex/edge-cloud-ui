@@ -61,7 +61,6 @@ const MBox = (props) => {
     style = { ...style, display: 'flex', alignItems: 'center' }
     return (
         <React.Fragment>
-            {/* <Box order={props.order}><Divider orientation='vertical' style={{ height: 25, marginTop:7 }} /></Box> */}
             <Box order={props.order} style={style} p={props.p}>
                 {props.children}
             </Box>
@@ -85,7 +84,7 @@ const MexToolbar = (props) => {
     }
 
     const searchForm = (order) => (
-        <MBox order={order} style={{ marginTop: `${focused ? '-10px' : '-3px'}`, paddingLeft:10 }}>
+        <MBox order={order} style={{ marginTop: `${focused ? '-10px' : '2px'}`, paddingLeft:10 }}>
             <Input
                 onFocus={() => {
                     setFocused(true)
@@ -114,7 +113,7 @@ const MexToolbar = (props) => {
     /*Add Block*/
     const addForm = (order) => (
         requestInfo.onAdd && (!redux_org.isViewer(this) || requestInfo.viewerEdit) ?
-            <MBox order={order} style={{ marginTop: -5 }}>
+            <MBox order={order}>
                 <IconButton aria-label="new" onClick={(e) => { props.onAction(ACTION_NEW) }}>
                     <Icon style={{ color: ICON_COLOR }}>add</Icon>
                 </IconButton>
@@ -168,7 +167,7 @@ const MexToolbar = (props) => {
 
     /*Refresh Block*/
     const refreshForm = (order) => (
-        <MBox order={order}  style={{ marginTop: -5 }}>
+        <MBox order={order}>
             <IconButton aria-label="refresh" onClick={(e) => { props.onAction(ACTION_REFRESH) }}>
                 <Icon style={{ color: ICON_COLOR }}>refresh</Icon>
             </IconButton>
@@ -177,11 +176,11 @@ const MexToolbar = (props) => {
     /*Refresh Block*/
 
     const getDetailView = (props) => (
-        <div style={{ right: 0, position: 'absolute' }}>
-            <IconButton aria-label="detail-view" onClick={(e) => { props.onAction(ACTION_CLOSE) }}>
+        <MBox>
+            <IconButton aria-label="data-grid-detail-view" onClick={(e) => { props.onAction(ACTION_CLOSE) }}>
                 <Icon style={{ color: ICON_COLOR }}>close</Icon>
             </IconButton>
-        </div>
+        </MBox  >
     )
 
     const renderBack = () => (
@@ -225,22 +224,20 @@ const MexToolbar = (props) => {
 
     return (
         <Toolbar>
-            <div style={{ width: '100%' }}>
+            <div style={{ width: '100%'}}>
                 <Box display="flex" flexWrap="wrap">
                     <Box flexGrow={1}>
                         <Box display="flex">
                             {renderBack()}
                             <Box>
-                                <Typography component='h4' variant='h5' style={{marginTop:8}}>{requestInfo.headerLabel}</Typography>
+                                <Typography component='h4' variant='h5' style={{ marginTop: 6 }}>{requestInfo.headerLabel}</Typography>
                             </Box>
                         </Box>
                     </Box>
                     {
                         props.isDetail ?
-                            <div style={{ right: 0, position: 'absolute' }}>
-                                {getDetailView(props)}
-                            </div> :
-                            <React.Fragment>
+                            getDetailView(props) :
+                            <div style={{display:'flex', alignItems:'center'}}>
                                 {customAction()}
                                 {renderGroup(1)}
                                 {regionForm(2)}
@@ -249,7 +246,7 @@ const MexToolbar = (props) => {
                                 {addForm(5)}
                                 {picker(6)}
                                 {refreshForm(7)}
-                            </React.Fragment>
+                            </div>
                     }
                 </Box></div>
         </Toolbar>

@@ -134,6 +134,9 @@ export const formatData = (request, response, self = null) => {
         case endpoint.SHOW_BILLING_ORG:
             data = formatShowData(request, response, billingorg)
             break;
+        case endpoint.SHOW_NETWORKS:
+            data = formatShowData(request, response, network)
+            break;
         case endpoint.SHOW_POOL_ACCESS_CONFIRMATION:
         case endpoint.SHOW_POOL_ACCESS_INVITATION:
         case endpoint.SHOW_POOL_ACCESS_GRANTED:

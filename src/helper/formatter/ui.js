@@ -126,7 +126,7 @@ export const healthCheck = (key, data, isDetail) => {
             case serverFields.OK:
                 return <MTooltip title={label}><Icon color={ICON_COLOR} size={14}>done</Icon></MTooltip>
             default:
-                return <MTooltip title={label}><Icon color={ICON_COLOR} size={14}>close</Icon></MTooltip>
+                return <MTooltip title={label}><Icon color={'red'} size={14}>close</Icon></MTooltip>
         }
     }
 }

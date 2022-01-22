@@ -33,10 +33,10 @@ const styles = (theme) => ({
             backgroundColor: '#181a1f',
         },
     },
-    tableHeader:{
+    tableHeader: {
         "&:hover #sort-icon": {
             visibility: 'visible'
-          }
+        }
     },
     tableCell: {
         flex: 1
@@ -60,8 +60,6 @@ const styles = (theme) => ({
         cursor: 'pointer'
     },
     sortIcon: {
-        marginLeft: 5,
-        fontSize: 14,
         transition: theme.transitions.create(["transform"], {
             duration: theme.transitions.duration.short
         })
@@ -150,10 +148,10 @@ class MuiVirtualizedTable extends React.PureComponent {
                             </React.Fragment>
                         )
                     }) :
-                        column.type === ELE_BUTTON ? <IconButton ><Icon style={{height: 18 }} color={ICON_COLOR}>list</Icon></IconButton> :
-                            column.type === ELE_CHECKBOX ? <IconButton ><Icon className={classes.checkbox} style={{ color: rowData.color }}>{`${selected.includes(rowData.uuid) ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton> :
-                                // column.format ? formatter(column, rowData) :
-                                    <span className={classes.textBody}>{cellData}</span>
+                        column.type === ELE_BUTTON ? <IconButton id={`mex-data-grid-row-${column.field}`}><Icon style={{ height: 18 }} color={ICON_COLOR}>list</Icon></IconButton> :
+                            column.type === ELE_CHECKBOX ? <IconButton id={`mex-data-grid-row-${column.field}`}><Icon className={classes.checkbox} style={{ color: rowData.color }}>{`${selected.includes(rowData.uuid) ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton> :
+                                column.format ? formatter(column, rowData) :
+                                    <span id={`mex-data-grid-row-${column.field}`} className={classes.textBody}>{cellData}</span>
                 }
             </TableCell>
         );
@@ -174,7 +172,7 @@ class MuiVirtualizedTable extends React.PureComponent {
     };
 
     headerRenderer = ({ label, columnIndex }) => {
-        const { headerHeight, columns, classes, order, orderBy, onSortClick } = this.props;
+        const { headerHeight, columns, classes, order, orderBy, onSortClick, selected, rowCount } = this.props;
         let column = columns[columnIndex]
         return (
             <TableCell
@@ -186,11 +184,11 @@ class MuiVirtualizedTable extends React.PureComponent {
                 align={column.numeric || false ? 'right' : 'left'}
             >
                 {
-                    column.type === ELE_CHECKBOX ? <IconButton onClick={this.onSelectAll}><Icon className={classes.checkbox}>{`${this.selectAll ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton> :
+                    column.type === ELE_CHECKBOX ? <IconButton onClick={this.onSelectAll}><Icon className={classes.checkbox}>{`${selected.length === rowCount ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton> :
                         <span className={classes.textHeader}>{label}</span>
                 }
                 {
-                    column.sortable ? <Icon id='sort-icon' className={clsx(classes.sortIcon, order === 'asc' ? classes.arrowDown : classes.arrowUp, {[classes.sortIconVisible] : column.field !== orderBy})}>{'arrow_upward'}</Icon> : null
+                    column.sortable ? <Icon id='sort-icon' className={clsx(classes.sortIcon, order === 'asc' ? classes.arrowDown : classes.arrowUp, { [classes.sortIconVisible]: column.field !== orderBy })}>{'arrow_drop_up'}</Icon> : null
                 }
             </TableCell>
         );
@@ -261,7 +259,7 @@ const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
 const getHeight = (props, table) => {
     const { tableHeight, isMap, iconKeys, groupBy } = props
-    let height = isMap ? 552 : 152
+    let height = isMap ? 553 : 153
     height = tableHeight ? tableHeight : height
     height = iconKeys ? height + 40 : height
     height = table && groupBy.length > 0 ? height + 50 : height
@@ -274,7 +272,7 @@ export default function MexTable(props) {
     const [itemList, setList] = React.useState([])
     const [groupList, setGroupList] = React.useState([])
     const [order, setOrder] = React.useState('asc')
-    const [orderBy, setOrderBy] = React.useState((sortBy && sortBy.length > 0)  ? sortBy[0] : undefined)
+    const [orderBy, setOrderBy] = React.useState((sortBy && sortBy.length > 0) ? sortBy[0] : undefined)
     const [select, setSelect] = React.useState(undefined)
     const [anchorEl, setAnchorEl] = React.useState(undefined)
 
@@ -290,6 +288,10 @@ export default function MexTable(props) {
         }
     };
 
+    const sortData = (list, order, orderBy) => {
+        setList(stableSort(list, getComparator(order, orderBy)))
+    }
+
     const groupClick = (group) => {
         if (select) {
             setSelect(undefined)
@@ -297,7 +299,17 @@ export default function MexTable(props) {
         }
         else {
             setSelect(group.value)
-            setList(group.data)
+            sortData(group.data, order, orderBy)
+        }
+    }
+
+    const onSortClick = (column) => {
+        if (column.sortable) {
+            let isAsc = orderBy === column.field && order === 'asc'
+            let newOrder = isAsc ? 'desc' : 'asc'
+            setOrderBy(column.field)
+            setOrder(newOrder)
+            sortData(itemList, newOrder, column.field)
         }
     }
 
@@ -322,13 +334,13 @@ export default function MexTable(props) {
         }
         else {
             setGroupList([])
-            setList(dataList)
+            sortData(dataList, order, orderBy)
             setSelect(undefined)
         }
     }, [groupBy]);
 
     useEffect(() => {
-        setList(dataList)
+        sortData(dataList, order, orderBy)
         updateGroupList()
     }, [dataList]);
 
@@ -385,23 +397,12 @@ export default function MexTable(props) {
         setAnchorEl(undefined)
     }
 
-    const onSortClick = (column) => {
-        if (column.sortable) {
-            let isAsc = orderBy === column.field && order === 'asc'
-            let newOrder = isAsc ? 'desc' : 'asc'
-            let list = stableSort(itemList, getComparator(newOrder, column.field))
-            setOrderBy(column.field)
-            setOrder(newOrder)
-            setList(list)
-        }
-    }
-
     return (
         <div id='mex-data-grid'>
             {props.children}
             {
                 groupList.length > 0 ?
-                    <div style={{height: `${select ? '50px' : getHeight(props)}`, overflow:'auto'}}>
+                    <div style={{ height: `${select ? '50px' : getHeight(props)}`, overflow: 'auto' }}>
                         <Divider />
                         {
                             groupList.map((group, i) => (
@@ -420,7 +421,7 @@ export default function MexTable(props) {
             {
                 itemList.length === 0 && groupList.length === 0 ? <div style={{ height: getHeight(props, true) }}><NoData search={searchValue} loading={loading} style={{ width: '100%' }} /></div> :
                     itemList.length > 0 && (groupList.length === 0 || select !== undefined) ?
-                        <Paper id='table-container' style={{ height: `${getHeight(props, true)}`}}>
+                        <Paper id='table-container' style={{ height: `${getHeight(props, true)}` }}>
                             <VirtualizedTable
                                 rowCount={itemList.length}
                                 rowGetter={({ index }) => itemList[index]}
@@ -429,7 +430,7 @@ export default function MexTable(props) {
                                 formatter={formatter}
                                 onRowClick={onRowClick}
                                 onCellClick={onCellClick}
-                                onSortClick ={onSortClick}
+                                onSortClick={onSortClick}
                                 iconKeys={iconKeys}
                                 selection={selection}
                                 selected={selected}
