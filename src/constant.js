@@ -14,7 +14,8 @@ export const pages = [
     { label: 'Cloudlet Pools', icon: 'cloud_circle', id: perpetual.PAGE_POOL_ACCESS, path: 'pool-access', roles: [perpetual.DEVELOPER_MANAGER], visible: true },
     {
         label: 'Federation', icon: 'track_changes', id: perpetual.PAGE_FEDERATION, sub: true, visible: true, options: [
-            { label: 'Partner Federation', icon: 'group_work', id: perpetual.PAGE_PARTNER_FEDERATION, path: 'partner-federation', visible: true },
+            { label: 'Local', icon: 'group_work', id: perpetual.PAGE_LOCAL_FEDERATION, path: 'local-federation', visible: true },
+            { label: 'Zones', icon: 'group_work', id: perpetual.PAGE_ZONES, path: 'zones', visible: true },
         ]
     },
     // { label: 'Partner Federation', icon: 'group_work', id: perpetual.PAGE_PARTNER_FEDERATION, path: 'partner-federation', visible: true },

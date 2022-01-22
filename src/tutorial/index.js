@@ -33,6 +33,8 @@ export const HELP_NETWORK_LIST = 'NetworkList'
 export const HELP_FEDERATION_LIST = 'FederationList'
 export const HELP_FEDERATION_REG_1 = 'FederationListREG_1'
 export const HELP_FEDERATION_REG_2 = 'FederationListREG_2'
+export const HELP_ZONES_LIST = 'ZonesList'
+export const HELP_ZONES_REG = 'ZonesReg'
 
 export const userRoles = (org, type, isDoc) => {
     if (isDoc) {

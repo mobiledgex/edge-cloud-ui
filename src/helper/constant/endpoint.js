@@ -181,8 +181,13 @@ export const SET_API_KEY = 'auth/federation/partner/setapikey'
 
 //Federator
 export const SHOW_FEDERATOR = 'auth/federator/self/show'
-export const SHOW_FEDERATOR_SELF_ZONE = 'auth/federation/self/zone/show'
 export const CREATE_FEDERATOR = 'auth/federator/self/create'
 export const UPDATE_FEDERATOR = 'auth/federator/self/update'
 export const DELETE_FEDERATOR = 'auth/federator/self/delete'
 export const GENERATE_API_KEY = 'auth/federator/self/generateapikey'
+
+//Zones
+export const SHOW_SELF_ZONES = 'auth/federator/self/zone/show'
+export const SHOW_FEDERATOR_SELF_ZONE = 'auth/federation/self/zone/show'
+export const CREATE_FEDERATOR_SELF_ZONE = 'auth/federator/self/zone/create'
+export const DELETE_FEDERATOR_SELF_ZONE = 'auth/federator/self/zone/delete'

@@ -1,0 +1,396 @@
+import React from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as actions from '../../../actions';
+import uuid from 'uuid';
+//Mex
+import MexForms, { SELECT, MULTI_SELECT, INPUT, ICON_BUTTON, MAIN_HEADER, HEADER, MULTI_FORM } from '../../../hoc/forms/MexForms';
+import ListMexMap from '../../../hoc/datagrid/map/ListMexMap';
+import MexTab from '../../../hoc/forms/tab/MexTab';
+import { redux_org } from '../../../helper/reduxData'
+import { perpetual } from '../../../helper/constant';
+//model
+import { service, fields } from '../../../services';
+import { createSelfZone } from '../../../services/modules/zones';
+import { Grid } from '@material-ui/core';
+import { showCloudlets } from '../../../services/modules/cloudlet';
+import { HELP_ZONES_REG } from '../../../tutorial';
+
+class ZoneReg extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            step: 0,
+            forms: [],
+            mapData: [],
+            activeIndex: 0,
+            region: undefined
+        }
+        this._isMounted = false
+        this.isUpdate = this.props.isUpdate
+        //To avoid refeching data from server
+        this.requestedRegionList = [];
+        this.operatorList = [];
+        this.cloudletList = [];
+    }
+
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
+
+    locationChange = (currentForm, forms, isInit) => {
+        if (!isInit) {
+            let parentForm = currentForm.parent.form
+            let childForms = parentForm.forms
+            let latitude = undefined
+            let longitude = undefined
+            for (let i = 0; i < childForms.length; i++) {
+                let form = childForms[i]
+                if (form.field === fields.latitude) {
+                    latitude = form.value
+                }
+                else if (form.field === fields.longitude) {
+                    longitude = form.value
+                }
+            }
+            if (latitude && longitude) {
+                let zone = {}
+                zone.zoneLocation = { latitude, longitude }
+                this.updateState({ mapData: [zone] })
+            }
+            else {
+                this.updateState({ mapData: [] })
+            }
+        }
+    }
+    getCloudletInfo = async (region, form, forms) => {
+        if (!this.requestedRegionList.includes(region)) {
+            this.cloudletList = [...this.cloudletList, ...await service.showAuthSyncRequest(this, showCloudlets(this, { region }))]
+        }
+        this.updateUI(form)
+        if (redux_org.isOperator(this)) {
+            for (let form of forms) {
+                if (form.field === fields.cloudletName) {
+                    this.updateUI(form)
+                    break;
+                }
+            }
+        }
+        this.updateState({ forms })
+    }
+
+    getCloudletInfo = async (region, form, forms) => {
+        if (!this.requestedRegionList.includes(region)) {
+            this.cloudletList = [...this.cloudletList, ...await service.showAuthSyncRequest(this, showCloudlets(this, { region }))]
+        }
+        this.updateUI(form)
+        if (redux_org.isOperator(this)) {
+            for (let form of forms) {
+                if (form.field === fields.cloudletName) {
+                    this.updateUI(form)
+                    break;
+                }
+            }
+        }
+        this.updateState({ forms })
+    }
+
+    operatorValueChange = (currentForm, forms, isInit) => {
+        for (let form of forms) {
+            if (form.field === fields.cloudletName) {
+                this.updateUI(form)
+                if (!isInit) {
+                    this.updateState({ forms })
+                }
+                break;
+            }
+        }
+    }
+
+    regionValueChange = (currentForm, forms, isInit) => {
+        let region = currentForm.value;
+        if (region) {
+            for (let form of forms) {
+                if (form.field === fields.operatorName) {
+                    if (!isInit) {
+                        this.getCloudletInfo(region, form, forms)
+                    }
+                    break;
+                }
+            }
+            this.requestedRegionList.includes(region) ? this.requestedRegionList : this.requestedRegionList.push(region)
+        }
+    }
+
+    checkForms = (form, forms, isInit = false) => {
+        if (form.field === fields.region) {
+            this.regionValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.operatorName) {
+            this.operatorValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.latitude || form.field === fields.longitude) {
+            this.locationChange(form, forms, isInit)
+        }
+
+    }
+
+    /**Required */
+    /*Trigged when form value changes */
+    onValueChange = (form) => {
+        let forms = this.state.forms;
+        this.checkForms(form, forms)
+    }
+
+    onCreateZones = async (data) => {
+        if (data) {
+            let mc;
+            let forms = this.state.forms;
+            let stateList = [];
+            let cityList = [];
+            for (let i = 0; i < forms.length; i++) {
+                let form = forms[i];
+                if (form.uuid) {
+                    let uuid = form.uuid;
+                    let multiFormData = data[uuid]
+                    if (multiFormData) {
+                        if (form.field === fields.zoneLocation) {
+                            data[fields.zoneLocation] = multiFormData.latitude + ',' + multiFormData.longitude
+                        }
+                        else if (form.field === fields.city) {
+                            cityList.push(multiFormData[fields.city])
+                        }
+                        else if (form.field === fields.state) {
+                            stateList.push(multiFormData[fields.state])
+                        }
+                    }
+                    data[uuid] = undefined
+                }
+            }
+            cityList.length > 0 && (data[fields.city] = cityList)
+            stateList.length > 0 && (data[fields.state] = stateList)
+            mc = await createSelfZone(this, data)
+            if (service.responseValid(mc)) {
+                this.props.handleAlertInfo('success', `Zone ${data[fields.zoneId]} created successfully`)
+                this.props.onClose(true)
+            }
+        }
+    }
+
+    onMapClick = (location) => {
+        let forms = this.state.forms
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.zoneLocation && !form.rules.disabled) {
+                let zone = {}
+                zone.zoneLocation = { latitude: location.lat, longitude: location.long }
+                this.updateState({ mapData: [zone] })
+                let childForms = form.forms;
+                for (let j = 0; j < childForms.length; j++) {
+                    let childForm = childForms[j]
+                    if (childForm.field === fields.latitude) {
+                        childForm.value = location.lat
+                    }
+                    else if (childForm.field === fields.longitude) {
+                        childForm.value = location.long
+                    }
+                }
+                break;
+            }
+        }
+        this.reloadForms()
+    }
+
+    /**
+     * Tab block
+     */
+
+
+    getMap = () =>
+    (
+        <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
+            <ListMexMap dataList={this.state.mapData} id={perpetual.PAGE_ZONES} onMapClick={this.onMapClick} region={this.state.region} register={true} />
+        </div>
+    )
+
+    getPanes = () => ([
+        { label: 'Zone Location', tab: this.getMap(), onClick: () => { this.updateState({ activeIndex: 0 }) } }
+    ])
+
+    /*Required*/
+    reloadForms = () => {
+        this.updateState({
+            forms: this.state.forms
+        })
+    }
+
+    render() {
+        const { forms, activeIndex } = this.state
+        return (
+            <div>
+                <Grid container>
+                    <Grid item xs={7}>
+                        <div className="round_panel">
+                            <MexForms forms={forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                        </div>
+                    </Grid>
+                    <Grid item xs={5} style={{ backgroundColor: '#2A2C34', padding: 5 }}>
+                        <MexTab form={{ panes: this.getPanes() }} activeIndex={activeIndex} />
+                    </Grid>
+                </Grid>
+            </div>
+        )
+    }
+
+    onCancel = () => {
+        this.props.onClose(false)
+    }
+
+    resetFormValue = (form) => {
+        let rules = form.rules
+        if (rules) {
+            let disabled = rules.disabled ? rules.disabled : false
+            if (!disabled) {
+                form.value = undefined;
+            }
+        }
+    }
+
+    updateUI(form) {
+        if (form) {
+            this.resetFormValue(form)
+            if (form.field) {
+                if (form.formType === SELECT || form.formType === MULTI_SELECT) {
+                    switch (form.field) {
+                        case fields.operatorName:
+                            form.options = this.cloudletList
+                            break;
+                        case fields.region:
+                            form.options = this.props.regions;
+                            break;
+                        case fields.cloudletName:
+                            form.options = this.cloudletList
+                            break;
+                        default:
+                            form.options = undefined;
+                    }
+                }
+            }
+        }
+    }
+
+
+    locationForm = () => ([
+        { field: fields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } },
+        { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } }
+    ])
+
+    /*Multi Form*/
+    cityForm = () => ([
+        { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City Name', rules: { required: true }, width: 7, visible: true },
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
+    ])
+
+    stateForm = () => ([
+        { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter state Name', rules: { required: true }, width: 5, visible: true, update: { edit: true } },
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
+    ])
+
+    getCityForm = (form) => {
+        return ({ uuid: uuid(), field: fields.city, formType: MULTI_FORM, forms: form ? form : this.cityForm(), width: 3, visible: true })
+    }
+
+    getStateForm = (form) => {
+        return ({ uuid: uuid(), field: fields.state, formType: MULTI_FORM, forms: form ? form : this.stateForm(), width: 3, visible: true })
+    }
+
+    removeMultiForm = (e, form) => {
+        if (form.parent) {
+            let updateForms = Object.assign([], this.state.forms)
+            updateForms.splice(form.parent.id, 1);
+            this.updateState({
+                forms: updateForms
+            })
+        }
+    }
+
+    addMultiForm = (e, form) => {
+        let parent = form.parent;
+        let forms = this.state.forms;
+        forms.splice(parent.id + 1, 0, form.multiForm());
+        this.updateState({ forms })
+    }
+    formKeys = () => {
+        return [
+            { label: 'Create Zones', formType: MAIN_HEADER, visible: true },
+            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to deploy.', update: { key: true } },
+            { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), dependentData: [{ index: 1, field: fields.region }], tip: 'Organization of the cloudlet site', update: { key: true } },
+            { field: fields.cloudletName, label: 'Cloudlet Name', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true }, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.operatorName }] },
+            { field: fields.zoneId, label: 'Zone ID', formType: INPUT, placeholder: 'Enter Zone Name', rules: { required: true }, visible: true, tip: ' Globally unique string used to authenticate operations over federation interface', update: { key: true } },
+            { field: fields.countryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
+            { uuid: uuid(), field: fields.zoneLocation, label: 'Zone Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS co-ordinates associated with the zone', update: { id: ['5', '5.1', '5.2'] } },
+            { field: fields.locality, label: 'Locality', formType: INPUT, placeholder: 'Enter Locality', visible: true, tip: 'Type of locality eg rural, urban etc.' },
+            { field: fields.state, label: 'List of State', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add State', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getStateForm }], visible: true, update: { id: ['39', '39.1', '39.2', '39.3'] }, tip: 'list of states under this zone' },
+            { field: fields.city, label: 'List of City', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add State', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getCityForm }], visible: true, update: { id: ['39', '39.1', '39.2', '39.3'] }, tip: 'list of cities under this zone' },
+        ]
+    }
+
+
+    updateFormData = (forms, data) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            this.updateUI(form)
+            if (data) {
+                if (form.forms && form.formType !== HEADER && form.formType !== MULTI_FORM) {
+                    this.updateFormData(form.forms, data)
+                }
+                else {
+                    form.value = data[form.field]
+                    this.checkForms(form, forms, true, data)
+                }
+            }
+        }
+
+    }
+
+    getFormData = async (data) => {
+        let forms = this.formKeys()
+        forms.push(
+            { label: 'Create', formType: 'Button', onClick: this.onCreateZones, validate: true },
+            { label: 'Cancel', formType: 'Button', onClick: this.onCancel }
+        )
+        this.updateFormData(forms, data)
+        this.updateState({
+            forms
+        })
+    }
+
+    componentDidMount() {
+        this._isMounted = true
+        this.getFormData(this.props.data)
+        this.props.handleViewMode(HELP_ZONES_REG)
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
+    }
+};
+
+const mapStateToProps = (state) => {
+    return {
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
+    }
+};
+
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+        handleViewMode: (data) => { dispatch(actions.viewMode(data)) }
+    };
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(ZoneReg));

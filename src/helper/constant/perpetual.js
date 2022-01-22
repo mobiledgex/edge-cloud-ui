@@ -251,12 +251,8 @@ export const QOS_THROUGHPUT_DOWN_M = 'Throughput Down M'
 export const QOS_THROUGHPUT_DOWN_L = 'Throughput Down L'
 
 export const PAGE_FEDERATION = 'Federation'
-export const PAGE_PARTNER_FEDERATION = 'PartnerFederation'
-export const SHARE_ZONES_WITH_PARTNER = 'ShareZonesWithPartner'
-export const ADD_ZONES_FROM_PARTNER = 'AddZonesFromPartner'
+export const PAGE_LOCAL_FEDERATION = 'LocalFederation'
 export const ACTION_GENERATE_API_KEY = 'GenerateApiKey'
-export const ACTION_SET_API_KEY = 'SetApiKey'
 
-export const PARTNER_SHARE = 'partner shares zones'
-export const SELF_SHARE = 'self shares zones'
+export const PAGE_ZONES = 'self shares zones'
 
