@@ -49,6 +49,11 @@ function makeMultipleWebworkersWork(config){
 }
 
 module.exports = {
+    resolve: {
+        alias: {
+            'react-dom': '@hot-loader/react-dom'
+        }
+    },
     optimization: {
         minimize: true,
         minimizer: [new TerserPlugin()],
