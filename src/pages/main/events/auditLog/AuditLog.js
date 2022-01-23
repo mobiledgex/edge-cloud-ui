@@ -85,16 +85,6 @@ class AuditLog extends Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        // this.isPrivate = this.props.privateAccess
-        // if (this.props.showAuditLogWithOrg && prevProps.showAuditLogWithOrg !== this.props.showAuditLogWithOrg) {
-        //     if (this.type === this.props.showAuditLogWithOrg.type && this.type === 'audit') {
-        //         this.getDataAudit(this.starttime, this.endtime, 25, {}, this.props.showAuditLogWithOrg.org)
-        //     }
-        //     this.props.handleShowAuditLog(null)
-        // }
-    }
-
     orgResponse = (mc) => {
         if (responseValid(mc)) {
             const organizationList = sortBy(mc.response.data, [item => item[fields.organizationName]], ['asc']);

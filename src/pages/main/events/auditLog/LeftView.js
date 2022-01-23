@@ -73,7 +73,7 @@ class AuditLogView extends Component {
 
     onFilter = (filterText) => {
         const keys = this.isAudit ? auditKeys : eventKeys
-        filterText = filterText ? filterText.toLowerCase() : this.state.filterText
+        filterText = filterText !== undefined ? filterText.toLowerCase() : this.state.filterText
         let dataList = this.props.dataList.filter(data => {
             let valid = false
             let filterCount = 0
