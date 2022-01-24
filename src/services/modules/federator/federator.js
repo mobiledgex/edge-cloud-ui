@@ -45,14 +45,7 @@ export const updateFederator = (self, data) => {
 }
 
 export const showFederator = (self, data) => {
-    let requestData = {}
-    let organization = data.org ? data.org : redux_org.orgName(self)
-    if (organization) {
-        if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
-            requestData.operatorid = organization
-        }
-    }
-    return { method: endpoint.SHOW_FEDERATOR, data: requestData, keys: keys() }
+    return { method: endpoint.SHOW_FEDERATOR, data: data, keys: keys() }
 }
 
 export const deleteFederator = (self, data) => {

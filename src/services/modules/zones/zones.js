@@ -18,10 +18,11 @@ export const keys = () => ([
 export const getKey = (data, isCreate) => {
     let selfZone = {}
     selfZone.operatorid = data[fields.operatorName]
-    selfZone.countryCode = data[fields.countryCode]
+    data[fields.countryCode] ? selfZone.countryCode = data[fields.countryCode] : null
+    data[fields.federationName] ? selfZone.federationName = data[fields.federationName] : null
     selfZone.zoneId = data[fields.zoneId]
     if (isCreate) {
-        selfZone.geolocation = data[fields.zoneLocation].toString()
+        selfZone.geolocation = data[fields.cloudletLocation].toString()
         selfZone.region = data[fields.region]
         selfZone.cloudlets = data[fields.cloudletName]
     }
@@ -36,16 +37,26 @@ export const getKey = (data, isCreate) => {
     }
     return selfZone
 }
+export const showSelfFederatorZone = (self, data) => {
+    return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, keys: keys() }
 
+}
 export const showSelfZone = (self, data) => {
-    let requestData = {}
-    let organization = data.org ? data.org : redux_org.orgName(self)
-    if (organization) {
-        if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
-            requestData.operatorid = organization
-        }
-    }
-    return { method: endpoint.SHOW_SELF_ZONES, data: requestData, keys: keys() }
+    return { method: endpoint.SHOW_SELF_ZONES, data: data, keys: keys() }
+}
+
+export const shareSelfZones = (data) => {
+    let requestData = getKey(data)
+    requestData.selfoperatorid = requestData.operatorid
+    delete requestData.operatorid
+    return { method: endpoint.SELF_ZONES_SHARE, data: requestData, success: 'Zones Shared Successfully' }
+}
+
+export const unShareSelfZones = (data) => {
+    let requestData = getKey(data)
+    requestData.selfoperatorid = requestData.operatorid
+    delete requestData.operatorid
+    return { method: endpoint.SELF_ZONES_UNSHARE, data: requestData, success: 'Zones UnShared Successfully' }
 }
 
 export const createSelfZone = async (self, data) => {
@@ -57,4 +68,3 @@ export const deleteSelfZone = (self, data) => {
     let requestData = getKey(data);
     return { method: endpoint.DELETE_FEDERATOR_SELF_ZONE, data: requestData, success: `Zone ${data[fields.zoneId]} removed successfully` }
 }
-

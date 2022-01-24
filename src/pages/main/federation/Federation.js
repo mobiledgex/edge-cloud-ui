@@ -13,9 +13,10 @@ import { HELP_FEDERATION_LIST } from "../../../tutorial";
 import { perpetual } from "../../../helper/constant";
 import { showFederation, multiDataRequest, keys, deleteFederation } from "../../../services/modules/federation"
 import { showFederator, deleteFederator, generateApiKey } from "../../../services/modules/federator"
-import { showSelfZone } from "../../../services/modules/zones"
+import { showSelfFederatorZone } from "../../../services/modules/zones"
 import FederationReg from "./Reg"
 import { codeHighLighter } from '../../../hoc/highLighter/highLighter';
+import { deRegisterFederation, registerFederation } from '../../../services/modules/federation'
 class FederationList extends React.Component {
     constructor(props) {
         super(props);
@@ -71,8 +72,9 @@ class FederationList extends React.Component {
         return ({
             id: perpetual.PAGE_LOCAL_FEDERATION,
             headerLabel: 'Local Federation',
-            requestType: [showFederation, showFederator, showSelfZone],
+            requestType: [showFederation, showFederator, showSelfFederatorZone],
             sortBy: [fields.region, fields.federationName],
+            isRegion: true,
             keys: this.keys,
             onAdd: this.onAdd,
             nameField: fields.federationName,
@@ -88,7 +90,7 @@ class FederationList extends React.Component {
     }
 
     onAddPartnerData = (action, data) => {
-        this.updateState({ currentView: <FederationReg data={data} step={2} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <FederationReg data={data} action={action.id} onClose={this.onRegClose} /> });
     }
 
     onCreateFederation = (action, data) => {
@@ -96,7 +98,7 @@ class FederationList extends React.Component {
     }
 
     onShareZones = (action, data) => {
-        this.updateState({ currentView: <FederationReg step={3} action={action} data={data} onClose={this.onRegClose} /> })
+        data[fields.zoneId] || action.id === perpetual.ACTION_SHARE_ZONES ? this.updateState({ currentView: <FederationReg action={action.id} data={data} onClose={this.onRegClose} /> }) : this.props.handleAlertInfo('error', 'No Zones to Share !')
     }
     createVisible = (data) => {
         return data[fields.federationName] === undefined
@@ -111,6 +113,7 @@ class FederationList extends React.Component {
         })
         this.apiKey = undefined // to reset when there is no page reload
     }
+
     onGenerateApiKey = async (action, data) => {
         let mcRequest = await generateApiKey(this, data)
         if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
@@ -122,18 +125,33 @@ class FederationList extends React.Component {
         }
     }
 
+    onRegisterFederation = async (action, data) => {
+        let text = action === perpetual.ACTION_REGISTER_FEDERATION ? 'Registered' : 'Deregistered'
+        let requestCall = action.id === perpetual.ACTION_REGISTER_FEDERATION ? registerFederation : deRegisterFederation
+        let mc = await requestCall(this, data)
+        if (service.responseValid(mc)) {
+            this.props.handleAlertInfo('success', `Federation ${text} successfully !`)
+        }
+    }
+
     getDeleteActionMessage = (action, data) => {
         return `Are you sure you want to remove self Data ?`
     }
+    registerVisible = (action, data) => {
+        console.log(data)
+    }
+
     actionMenu = () => {
         return [
-            { id: perpetual.ACTION_SHARE_ZONES, label: 'Share Zones', onClick: this.onShareZones, type: 'Delete' },
-            { id: perpetual.ACTION_UNSHARE_ZONES, label: 'Unshare Zones', onClick: deleteFederation, type: 'Delete' },
-            { id: perpetual.ACTION_UPDATE, label: 'Add Partner Data', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
+            { id: perpetual.ACTION_SHARE_ZONES, label: 'Share Zones', onClick: this.onShareZones, visible: this.federationNameVisible, type: 'edit' },
+            { id: perpetual.ACTION_UNSHARE_ZONES, label: 'Unshare Zones', onClick: this.onShareZones, visible: this.federationNameVisible, type: 'edit' },
+            { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Data', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
             { id: perpetual.ACTION_GENERATE_API_KEY, label: 'Generate API Key', onClick: this.onGenerateApiKey, type: 'Generate API Key' },
-            { id: perpetual.ACTION_UPDATE, label: 'Update Self Data', onClick: this.onUpdate, type: 'Add Partner Data' },
-            { id: perpetual.ACTION_DELETE, label: 'Delete Self Data', visible: this.createVisible, onClick: deleteFederator, type: 'Delete', dialogMessage: this.getDeleteActionMessage },
-            { id: perpetual.ACTION_DELETE, label: 'Delete Federation', visible: this.federationNameVisible, onClick: deleteFederation, type: 'Delete' },
+            { id: perpetual.ACTION_REGISTER_FEDERATION, label: 'Register Federation', onClick: this.onRegisterFederation, type: 'Register Federation' },
+            { id: perpetual.ACTION_DEREGISTER_FEDERATION, label: 'Deregister Federation', onClick: this.onRegisterFederation, type: 'Register Federation' },
+            { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Add Partner Data' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.createVisible, onClick: deleteFederator, type: 'Delete', dialogMessage: this.getDeleteActionMessage },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.federationNameVisible, onClick: deleteFederation, type: 'Delete' },
         ]
     }
     onValueChange = (form) => {
@@ -173,10 +191,6 @@ class FederationList extends React.Component {
     onAddCancel = () => {
         this.props.onClose(false)
     }
-
-
-
-
 
     componentDidMount() {
         this._isMounted = true

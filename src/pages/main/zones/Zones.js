@@ -12,7 +12,7 @@ import { HELP_ZONES_LIST } from "../../../tutorial";
 import { perpetual } from "../../../helper/constant";
 import ZoneReg from "./Reg"
 import { codeHighLighter } from '../../../hoc/highLighter/highLighter';
-import { showSelfZone, keys } from "../../../services/modules/zones"
+import { showSelfZone, keys, showSelfFederatorZone } from "../../../services/modules/zones"
 import { deleteSelfZone } from "../../../services/modules/zones/zones";
 
 class ZoneList extends React.Component {
@@ -45,8 +45,9 @@ class ZoneList extends React.Component {
         return ({
             id: perpetual.PAGE_ZONES,
             headerLabel: 'Zones',
-            requestType: [showSelfZone],
+            requestType: [showSelfZone, showSelfFederatorZone],
             sortBy: [fields.region],
+            isRegion: true,
             keys: this.keys,
             onAdd: this.onAdd,
             nameField: fields.zoneId,

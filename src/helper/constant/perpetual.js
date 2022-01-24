@@ -44,6 +44,11 @@ export const ACTION_TRACK_DEVICES = 'TrackDevices'
 export const ACTION_SHOW_NODE = 'ShowNode'
 export const ACTION_ADD_ALLIANCE_ORG = 'AddAllianceOrg'
 export const ACTION_REMOVE_ALLIANCE_ORG = 'RemoveAllianceOrg'
+export const ACTION_SHARE_ZONES = 'ShareZones'
+export const ACTION_UNSHARE_ZONES = 'UnShareZones'
+export const ACTION_UPDATE_PARTNER = 'updatePartner'
+export const ACTION_REGISTER_FEDERATION = 'RegisterFederation'
+export const ACTION_DEREGISTER_FEDERATION = 'DeRegisterFederation'
 
 export const CLOUDLET_COMPAT_VERSION_2_4 = 0
 export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1
