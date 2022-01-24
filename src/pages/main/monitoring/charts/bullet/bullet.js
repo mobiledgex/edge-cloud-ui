@@ -1,3 +1,6 @@
+import { onlyNumeric } from '../../../../../utils/string_utils';
+import { convertUnit } from '../../helper/unitConvertor';
+
 const d3 = require('d3')
 
 export default (function () {
@@ -18,9 +21,9 @@ export default (function () {
                 var rangez = ranges.call(this, d, i).slice().sort(d3.descending),
                     markerz = markers.call(this, d, i).slice().sort(d3.descending),
                     measurez = measures.call(this, d, i).slice(),
+                    unit = d.unit,
                     g = d3.select(this),
                     allZero = true
-
                 // Compute the new x-scale.
                 var x1 = d3.scaleLinear()
                     .domain([0, Math.max(rangez[0], markerz[0], measurez[0])])
@@ -133,7 +136,7 @@ export default (function () {
                         .attr("dy", "1em")
                         .attr("y", height * 7 / 6)
                         .style('fill', '#CECECE')
-                        .text(format);
+                        .text(function (d) { console.log(d); return format(unit ? onlyNumeric(convertUnit(unit, d)) : d) });
 
                     // Transition the entering ticks to the new scale, x1.
                     tickEnter.transition()
