@@ -56,7 +56,6 @@ class Monitoring extends React.Component {
             }
         }
         setTimeout(() => { this.updateState({ tools, refresh }) }, wait)
-
     }
 
     render() {
