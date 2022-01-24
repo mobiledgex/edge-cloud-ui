@@ -136,7 +136,7 @@ export default (function () {
                         .attr("dy", "1em")
                         .attr("y", height * 7 / 6)
                         .style('fill', '#CECECE')
-                        .text(function (d) { console.log(d); return format(unit ? onlyNumeric(convertUnit(unit, d)) : d) });
+                        .text(function (d) { return format(unit ? onlyNumeric(convertUnit(unit, d)) : d) });
 
                     // Transition the entering ticks to the new scale, x1.
                     tickEnter.transition()
