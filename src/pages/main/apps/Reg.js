@@ -1160,6 +1160,11 @@ class AppReg extends Component {
             if (this.isClone) {
                 this.requestedRegionList.push(data[fields.region])
                 data[fields.region] = [data[fields.region]]
+                //clear manifest if auto generated
+                if(data[fields.deploymentGenerator] === 'kubernetes-basic')
+                {
+                    data[fields.deploymentManifest] = undefined 
+                }
             }
         }
         else {
