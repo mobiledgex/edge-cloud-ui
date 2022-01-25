@@ -101,7 +101,13 @@ class LogoLoader extends React.Component {
     }
 
     componentDidMount() {
-        this.loadDefault()
+        if (localStorage.getItem(perpetual.LS_THASH)) {
+            this.loadDefault()
+        }
+        else
+        {
+            this.props.history.push('/logout');
+        }
     }
 
 

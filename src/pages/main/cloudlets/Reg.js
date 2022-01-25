@@ -2,7 +2,6 @@ import React, { Suspense } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import uuid from 'uuid';
 //Mex
 import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA, ICON_BUTTON, formattedData, MAIN_HEADER, HEADER, MULTI_FORM } from '../../../hoc/forms/MexForms';
 import ListMexMap from '../../../hoc/datagrid/map/ListMexMap';
@@ -23,6 +22,7 @@ import { componentLoader } from '../../../hoc/loader/componentLoader';
 import { showGPUDrivers } from '../../../services/modules/gpudriver';
 import { showAuthSyncRequest } from '../../../services/service';
 import { _sort } from '../../../helper/constant/operators';
+import { uniqueId } from '../../../helper/constant/shared';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const CloudletManifest = React.lazy(() => componentLoader(import('./CloudletManifest')));
@@ -764,11 +764,11 @@ class CloudletReg extends React.Component {
     ])
 
     getEnvForm = (form) => {
-        return ({ uuid: uuid(), field: fields.envVar, formType: MULTI_FORM, forms: form ? form : this.envForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: fields.envVar, formType: MULTI_FORM, forms: form ? form : this.envForm(), width: 3, visible: true })
     }
 
     getResoureQuotaForm = (form) => {
-        return ({ uuid: uuid(), field: fields.resourceQuota, formType: MULTI_FORM, forms: form ? form : this.resourceQuotaForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: fields.resourceQuota, formType: MULTI_FORM, forms: form ? form : this.resourceQuotaForm(), width: 3, visible: true })
     }
 
     removeMultiForm = (e, form) => {
@@ -794,7 +794,7 @@ class CloudletReg extends React.Component {
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to deploy.', update: { key: true } },
             { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, placeholder: 'Enter cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the cloudlet site', update: { key: true } },
-            { uuid: uuid(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS Location', update: { id: ['5', '5.1', '5.2'] } },
+            { uuid: uniqueId(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS Location', update: { id: ['5', '5.1', '5.2'] } },
             { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, tip: 'Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
             { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, update: { id: ['8'] }, tip: 'Number of dynamic IPs available for dynamic IP support.' },
             { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, tip: 'Physical infrastructure cloudlet name.' },
