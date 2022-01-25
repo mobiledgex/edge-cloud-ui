@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import * as serverData from '../../services/model/serverData';
 import MexAlert from '../../hoc/alert/AlertDialog';
-import PublicIP from 'public-ip';
+import publicIp from 'public-ip';
 import UAParser from 'ua-parser-js';
 import { Container } from 'semantic-ui-react';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -114,7 +114,7 @@ class Landing extends Component {
             var parser = new UAParser();
             let resultPs = parser.getResult();
             let clientSysInfo = { os: resultPs.os, browser: resultPs.browser };
-            let IPAddress = await PublicIP.v4()
+            let IPAddress = await publicIp.v4()
             clientSysInfo['clientIP'] = IPAddress ? IPAddress : '127.0.0.1';
             this.setState({ clientSysInfo })
         }

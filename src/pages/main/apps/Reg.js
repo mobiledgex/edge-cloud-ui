@@ -1,6 +1,5 @@
 import React, { Suspense, Component, lazy, Fragment } from 'react';
 import cloneDeep from 'lodash/cloneDeep';
-import uuid from 'uuid';
 import { withRouter } from 'react-router-dom';
 //Mex
 import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, SWITCH, TEXT_AREA, ICON_BUTTON, SELECT_RADIO_TREE, formattedData, HEADER, MULTI_FORM, MAIN_HEADER, TIME_COUNTER } from '../../../hoc/forms/MexForms';
@@ -21,7 +20,7 @@ import { refreshAllAppInst, showAppInsts } from '../../../services/modules/appIn
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/MexMessageMultiStream'
 import { HELP_APP_REG } from "../../../tutorial";
 import { uploadData } from '../../../utils/file_util'
-import { validateRemoteCIDR } from '../../../helper/constant/shared'
+import { uniqueId, validateRemoteCIDR } from '../../../helper/constant/shared'
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from '@material-ui/core';
@@ -164,7 +163,7 @@ class AppReg extends Component {
     ])
 
     getPortForm = (form) => {
-        return ({ uuid: uuid(), field: fields.ports, formType: MULTI_FORM, forms: form ? form : this.portForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: fields.ports, formType: MULTI_FORM, forms: form ? form : this.portForm(), width: 3, visible: true })
     }
 
     annotationForm = () => ([
@@ -174,7 +173,7 @@ class AppReg extends Component {
     ])
 
     getAnnotationForm = (form) => {
-        return ({ uuid: uuid(), field: fields.annotationmulti, formType: MULTI_FORM, forms: form ? form : this.annotationForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: fields.annotationmulti, formType: MULTI_FORM, forms: form ? form : this.annotationForm(), width: 3, visible: true })
     }
 
     multiPortForm = () => ([
@@ -188,7 +187,7 @@ class AppReg extends Component {
     ])
 
     getMultiPortForm = (form) => {
-        return ({ uuid: uuid(), field: fields.ports, formType: MULTI_FORM, forms: form ? form : this.multiPortForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: fields.ports, formType: MULTI_FORM, forms: form ? form : this.multiPortForm(), width: 3, visible: true })
     }
 
     configForm = () => ([
@@ -198,7 +197,7 @@ class AppReg extends Component {
     ])
 
     getConfigForm = (form) => {
-        return ({ uuid: uuid(), field: fields.configmulti, formType: MULTI_FORM, forms: form ? form : this.configForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: fields.configmulti, formType: MULTI_FORM, forms: form ? form : this.configForm(), width: 3, visible: true })
     }
 
     outboundConnectionsForm = () => ([
@@ -211,7 +210,7 @@ class AppReg extends Component {
     ])
 
     getOutboundConnectionsForm = (form) => {
-        return ({ uuid: uuid(), field: fields.requiredOutboundConnectionmulti, formType: MULTI_FORM, forms: form ? form : this.outboundConnectionsForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: fields.requiredOutboundConnectionmulti, formType: MULTI_FORM, forms: form ? form : this.outboundConnectionsForm(), width: 3, visible: true })
     }
 
     removeMultiForm = (e, form) => {
@@ -925,7 +924,7 @@ class AppReg extends Component {
             { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: { id: ['4'] }, tip: 'URI of where image resides' },
             { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, update: { id: ['9.1'] }, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
             { field: fields.autoProvPolicies, showField: fields.autoPolicyName, label: 'Auto Provisioning Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policies', rules: { required: false }, visible: true, update: { id: ['32'] }, multiple: true, tip: 'Auto provisioning policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
-            { uuid: uuid(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: { id: ['16'] }, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
+            { uuid: uniqueId(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: { id: ['16'] }, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
             { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: SWITCH, visible: this.isUpdate, value: false, update: { edit: true }, tip: 'Upgrade App Instances running in the cloudlets' },
             { field: fields.trusted, label: 'Trusted', formType: SWITCH, visible: true, value: false, update: { id: ['37'] }, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
             { field: fields.allowServerless, label: 'Allow Serverless', formType: SWITCH, value: false, tip: 'App is allowed to deploy as serverless containers', visible: false, rules: { disabled: false }, update: { id: ['39'] } },
@@ -1161,6 +1160,11 @@ class AppReg extends Component {
             if (this.isClone) {
                 this.requestedRegionList.push(data[fields.region])
                 data[fields.region] = [data[fields.region]]
+                //clear manifest if auto generated
+                if(data[fields.deploymentGenerator] === 'kubernetes-basic')
+                {
+                    data[fields.deploymentManifest] = undefined 
+                }
             }
         }
         else {

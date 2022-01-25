@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import { withRouter } from 'react-router-dom';
-import uuid from 'uuid';
 //Mex
 import MexForms, { SELECT, MULTI_SELECT, BUTTON, SWITCH, ICON_BUTTON, TEXT_AREA, MAIN_HEADER, HEADER, SELECT_RADIO_TREE_GROUP, MULTI_FORM } from '../../../hoc/forms/MexForms';
 //redux
@@ -28,6 +27,7 @@ import { endpoint, perpetual } from '../../../helper/constant';
 import { service, updateFieldData } from '../../../services';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 import cloneDeep from 'lodash/cloneDeep';
+import { uniqueId } from '../../../helper/constant/shared';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 
@@ -352,7 +352,7 @@ class AppInstReg extends React.Component {
     ])
 
     getConfigForm = (form) => (
-        { uuid: uuid(), field: fields.configmulti, formType: MULTI_FORM, forms: form, width: 3, visible: true }
+        { uuid: uniqueId(), field: fields.configmulti, formType: MULTI_FORM, forms: form, width: 3, visible: true }
     )
 
     addConfigs = () => {

@@ -1,5 +1,9 @@
 import { perpetual } from "."
-import uuid from 'uuid'
+import { v1 as uuidv1 } from 'uuid';
+
+export const uniqueId = ()=>{
+    return uuidv1()
+}
 
 export const uniqueId = ()=>{
     return uuid()
