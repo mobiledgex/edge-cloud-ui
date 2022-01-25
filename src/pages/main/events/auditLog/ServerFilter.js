@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import { Button, Icon, IconButton, Picker } from '../../../../hoc/mexui';
 import { Box, Divider, Grid, Input, Typography } from '@material-ui/core';
-import uuid from 'uuid'
 import Tags from './Tags'
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
 import { DEFAULT_DURATION_MINUTES } from '../helper/constant';
@@ -15,6 +14,7 @@ import { fetchObject, storeObject } from '../../../../helper/ls';
 import { filterData } from '../../../../constant';
 import { alertInfo } from '../../../../actions';
 import { useDispatch } from 'react-redux';
+import { uniqueId } from '../../../../helper/constant/shared';
 
 export const ACTION_FILTER = 101
 
@@ -85,7 +85,7 @@ const Filter = (props) => {
     }
 
     const setTagForms = () => {
-        setRenderTags(x => [...x, uuid()])
+        setRenderTags(x => [...x, uniqueId()])
     }
 
     const onTagsChange = (uuid, key, value) => {

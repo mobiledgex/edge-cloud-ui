@@ -14,7 +14,7 @@ import { service, updateFieldData } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';
 import { createAlertPolicy, updateAlertPolicy } from '../../../../services/modules/alertPolicy';
 import { responseValid } from '../../../../services/service';
-import uuid from 'uuid';
+import { uniqueId } from '../../../../helper/constant/shared';
 
 const ALERT_SEVERITY = [perpetual.INFO, perpetual.WARNING, perpetual.ERROR]
 class Reg extends React.Component {
@@ -131,11 +131,11 @@ class Reg extends React.Component {
     ])
 
     getLabelsForm = (form) => {
-        return ({ uuid: uuid(), field: fields.labels, formType: MULTI_FORM, forms: form ? form : this.labelsForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: fields.labels, formType: MULTI_FORM, forms: form ? form : this.labelsForm(), width: 3, visible: true })
     }
 
     getAnnotationForm = (form) => {
-        return ({ uuid: uuid(), field: fields.annotations, formType: MULTI_FORM, forms: form ? form : this.labelsForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: fields.annotations, formType: MULTI_FORM, forms: form ? form : this.labelsForm(), width: 3, visible: true })
     }
 
     getForms = () => ([

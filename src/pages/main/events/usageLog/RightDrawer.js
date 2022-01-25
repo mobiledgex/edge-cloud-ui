@@ -1,7 +1,6 @@
 import React from 'react'
 import { Divider, Grid, Tooltip, Tabs, Tab, Paper } from '@material-ui/core';
 import * as dateUtil from '../../../../utils/date_util'
-import uuid from 'uuid'
 import MexCalendar from '../../../../hoc/calendar/MexCalendar'
 import { fields } from '../../../../services/model/format';
 import { FixedSizeList } from 'react-window';
@@ -12,6 +11,7 @@ import { DEFAULT_DURATION_MINUTES } from '../helper/constant';
 import { withStyles } from '@material-ui/styles';
 import { NoData } from '../../../../helper/formatter/ui';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import { uniqueId } from '../../../../helper/constant/shared';
 
 const tip = [
     <code>Default view is day</code>,
@@ -61,7 +61,7 @@ const formatCalendarData = (dataList, columns) => {
                     color = color ? color : colorSelector
 
                     let calendar = {
-                        id: uuid(),
+                        id: uniqueId(),
                         group: k,
                         title: data[k],
                         className: "item-weekend",

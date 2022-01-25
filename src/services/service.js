@@ -46,12 +46,10 @@ const showMessage = (self, request, message) => {
  */
 export const fetchWSToken = async (self) => {
     let mc = await authSyncRequest(self, { method: WS_TOKEN })
-    if(responseValid(mc))
-    {
+    if (responseValid(mc)) {
         return mc.response.data.token
     }
-    else
-    {
+    else {
         if (self && self.props && self.props.history) {
             self.props.history.push('/logout');
         }
@@ -157,22 +155,40 @@ export const responseValid = (mc) => {
 }
 
 /**
+ * Validate if token exist or token flag is true
+ * @param {*} self - current component object
+ * @returns boolean
+ */
+const userLoggedIn = (self, auth = true) => {
+    if (localStorage.getItem(LS_THASH) || !auth) {
+        return true
+    }
+    else {
+        if (self && self.props && self.props.history) {
+            self.props.history.push('/logout');
+        }
+    }
+}
+
+/**
  * @param {*} self: current class object
  * @param {*} request: method, data, format 
  * @param {*} auth: token is required if auth true 
  */
 const sendSyncRequest = async (self, request, auth = true) => {
     let mc = {}
-    try {
-        showProgress(self, request)
-        const response = await instance(self, request, auth).post(fetchHttpURL(request), request.data)
-        mc = formatter(request, response)
+    if (userLoggedIn(self, auth)) {
+        try {
+            showProgress(self, request)
+            const response = await instance(self, request, auth).post(fetchHttpURL(request), request.data)
+            mc = formatter(request, response)
+        }
+        catch (error) {
+            errorResponse(self, request, error, undefined, auth)
+            mc = { request, error }
+        }
+        showProgress(self)
     }
-    catch (error) {
-        errorResponse(self, request, error, undefined, auth)
-        mc = { request, error }
-    }
-    showProgress(self)
     return mc
 }
 
@@ -193,7 +209,7 @@ export const syncRequest = async (self, request) => {
  * @returns list of request, response object
  */
 export const multiAuthRequest = (self, requestList, callback, format = true, single = false) => {
-    if (requestList && requestList.length > 0) {
+    if (userLoggedIn(self) && requestList && requestList.length > 0) {
         let promise = [];
         requestList.forEach((request) => {
             promise.push(instance(self, request, true).post(fetchHttpURL(request), request.data))
@@ -230,22 +246,24 @@ export const authRequest = (self, request, callback, format) => {
 export const multiAuthSyncRequest = async (self, requestList, format = true) => {
     let resResults = [];
     if (requestList && requestList.length > 0) {
-        showProgress(self, requestList[0])
-        let promise = [];
-        requestList.forEach((request) => {
-            promise.push(instance(self, request, true).post(fetchHttpURL(request), request.data))
-        })
-
-        try {
-            let responseList = await axios.all(promise)
-            responseList.forEach((response, i) => {
-                resResults.push(formatter(requestList[i], response, format));
+        if (userLoggedIn(self)) {
+            showProgress(self, requestList[0])
+            let promise = [];
+            requestList.forEach((request) => {
+                promise.push(instance(self, request, true).post(fetchHttpURL(request), request.data))
             })
+
+            try {
+                let responseList = await axios.all(promise)
+                responseList.forEach((response, i) => {
+                    resResults.push(formatter(requestList[i], response, format));
+                })
+            }
+            catch (error) {
+                errorResponse(self, requestList[0], error)
+            }
+            showProgress(self)
         }
-        catch (error) {
-            errorResponse(self, requestList[0], error)
-        }
-        showProgress(self)
         return resResults
     }
 }

@@ -2,7 +2,6 @@ import React from 'react'
 import { Line } from 'react-chartjs-2'
 import * as dateUtil from '../../../../../utils/date_util'
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
-import uuid from 'uuid'
 import { Box, Dialog } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import CloseIcon from '@material-ui/icons/Close';
@@ -10,6 +9,7 @@ import { convertUnit } from '../../helper/unitConvertor';
 import { LS_LINE_GRAPH_FULL_SCREEN } from '../../../../../helper/constant/perpetual';
 import { IconButton } from '../../../../../hoc/mexui';
 import { ICON_COLOR } from '../../../../../helper/constant/colors';
+import { uniqueId } from '../../../../../helper/constant/shared';
 
 const formatData = (props) => {
     const { data, search, selection, disableSelection } = props
@@ -173,7 +173,7 @@ class MexLineChart extends React.Component {
                             <CircularProgress size={100} thickness={3} />
                         </div> :
                         <div style={{ padding: 20, height: '100vh' }}>
-                            <Line id={`${id}-fs`} datasetKeyProvider={() => (uuid())} options={optionsGenerator(this.header, this.unit, fullscreen, this.range)} data={{ datasets }} height={200} />
+                            <Line id={`${id}-fs`} datasetKeyProvider={() => (uniqueId())} options={optionsGenerator(this.header, this.unit, fullscreen, this.range)} data={{ datasets }} height={200} />
                         </div>
                 }
             </Dialog>
@@ -183,7 +183,7 @@ class MexLineChart extends React.Component {
     render() {
         const { fullscreen, datasets } = this.state
         const { selection, search, data } = this.props
-        let id = this.props.id ? this.props.id.toLowerCase() : uuid()
+        let id = this.props.id ? this.props.id.toLowerCase() : uniqueId()
         return (
             data ? <div style={{ padding: 5, marginTop: 5, marginRight: 10 }} mex-test="component-line-chart">
                 <div>
@@ -209,7 +209,7 @@ class MexLineChart extends React.Component {
                     {
                         datasets.length === 0 && (selection.count > 0 || search.length > 0) ?
                             <div className='chart-no-data' align='center'>No Data</div> : datasets.length > 0 ?
-                                <Line id={id} datasetKeyProvider={() => (uuid())} options={this.options} data={{ datasets }} height={200} /> : null
+                                <Line id={id} datasetKeyProvider={() => (uniqueId())} options={this.options} data={{ datasets }} height={200} /> : null
                     }
                 </div>
                 {this.renderFullScreen()}

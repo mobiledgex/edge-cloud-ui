@@ -1,5 +1,5 @@
+import { uniqueId } from "../../helper/constant/shared";
 import { toJson } from "../../utils/json_util";
-import uuid from 'uuid'
 import { generateUUID, map } from "./shared";
 
 export const formatShowData = (request, response, customData, isUnique, self = null) => {
@@ -21,7 +21,7 @@ export const formatShowData = (request, response, customData, isUnique, self = n
                             value = data
                         }
                         if (requestData && value.region === undefined) { value.region = requestData.region }
-                        value.uuid = keys ? (isUnique) ? generateUUID(keys, value) : uuid() : undefined
+                        value.uuid = keys ? (isUnique) ? generateUUID(keys, value) : uniqueId() : undefined
                         let newValue = customData ? customData(request, value, self) : value
                         if (newValue) {
                             if (keys && keys.length === 1) {
