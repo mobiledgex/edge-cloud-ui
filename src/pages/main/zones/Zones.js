@@ -1,29 +1,24 @@
 import React from "react";
 import { withRouter } from 'react-router-dom';
-import { Button } from 'semantic-ui-react';
 import DataView from '../../../container/DataView';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { fields } from '../../../services/model/format';
-import { Dialog, DialogTitle, DialogActions, DialogContent } from '@material-ui/core';
 //model
 import { HELP_ZONES_LIST } from "../../../tutorial";
 import { perpetual } from "../../../helper/constant";
 import ZoneReg from "./Reg"
-import { codeHighLighter } from '../../../hoc/highLighter/highLighter';
-import { showSelfZone, keys, showSelfFederatorZone } from "../../../services/modules/zones"
+import { showSelfZone, keys, showSelfFederatorZone, iconKeys, multiDataRequest } from "../../../services/modules/zones"
 import { deleteSelfZone } from "../../../services/modules/zones/zones";
 
 class ZoneList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentView: null,
-            open: false,
+            currentView: null
         },
             this.keys = keys()
-        this.apiKey = undefined
     }
 
     resetView = () => {
@@ -52,7 +47,8 @@ class ZoneList extends React.Component {
             onAdd: this.onAdd,
             nameField: fields.zoneId,
             viewMode: HELP_ZONES_LIST,
-            grouping: true
+            grouping: true,
+            iconKeys: iconKeys()
         })
     }
 
@@ -60,16 +56,13 @@ class ZoneList extends React.Component {
         this.updateState({ currentView: <ZoneReg onClose={this.onRegClose} /> });
     }
 
-    handleClose = () => {
-        this.updateState({
-            open: false
-        })
-        this.apiKey = undefined // to reset when there is no page reload
+    registeredZones = (type, action, data) => {
+        return data[fields.zonesRegistered] === true ? true : false
     }
 
     actionMenu = () => {
         return [
-            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteSelfZone, type: 'Delete' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteSelfZone, type: 'Delete', disable: this.registeredZones },
         ]
     }
 
@@ -77,22 +70,7 @@ class ZoneList extends React.Component {
         const { tableHeight, currentView, open } = this.state
         return (
             <div style={{ width: '100%', height: '100%' }}>
-                <DataView id={perpetual.PAGE_ZONES} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} />
-                <Dialog open={open} onClose={this.onClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
-                    <DialogTitle id="profile">
-                        <div style={{ float: "left", display: 'inline-block' }}>
-                            <h3 style={{ fontWeight: 700 }}>API Key</h3>
-                        </div>
-                    </DialogTitle>
-                    <DialogContent style={{ width: 600 }}>
-                        <div style={{ display: 'inline' }}>{codeHighLighter(this.apiKey)}</div>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleClose} style={{ backgroundColor: 'rgba(118, 255, 3, 0.7)' }} size='small'>
-                            Close
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                <DataView id={perpetual.PAGE_ZONES} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} multiDataRequest={multiDataRequest} />
             </div>
         )
     }

@@ -1,5 +1,5 @@
 import { customize } from './custom'
-import { keys, showFederation, multiDataRequest, createFederation, deleteFederation, setApiKey, registerFederation, deRegisterFederation } from './federation'
+import { keys, showFederation, multiDataRequest, createFederation, deleteFederation, setApiKey, registerFederation, deRegisterFederation, iconKeys } from './federation'
 export {
     customize,
     keys,
@@ -9,5 +9,5 @@ export {
     deleteFederation,
     setApiKey,
     registerFederation,
-    deRegisterFederation
+    deRegisterFederation, iconKeys
 }

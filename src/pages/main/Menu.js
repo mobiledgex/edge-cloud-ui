@@ -25,7 +25,8 @@ import Invoices from './billing/invoices/Invoices';
 import Reporter from './reporter/Reporter';
 import GPUDriver from './gpudriver/GPUDriver';
 import Networks from './networks/Networks';
-import Federation from './federation/Federation';
+import Federation from './federation/outbound/outbound';
+// import Inbound from 
 import Zones from './zones/Zones'
 import * as constant from '../../constant';
 import { perpetual, role } from '../../helper/constant';
@@ -74,8 +75,10 @@ const renderPage = (id) => {
             return GPUDriver
         case perpetual.PAGE_NETWORKS:
             return Networks
-        case perpetual.PAGE_LOCAL_FEDERATION:
+        case perpetual.PAGE_OUTBOUND_FEDERATION:
             return Federation
+        // case perpetual.PAGE_INBOUND_FEDERATION:
+        //     return Inbound
         case perpetual.PAGE_ZONES:
             return Zones
     }

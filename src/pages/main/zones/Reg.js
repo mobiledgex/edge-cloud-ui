@@ -315,13 +315,13 @@ class ZoneReg extends React.Component {
             { label: 'Create Zones', formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to deploy.', update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), dependentData: [{ index: 1, field: fields.region }], tip: 'Organization of the cloudlet site', update: { key: true } },
-            { field: fields.cloudletName, label: 'Cloudlet Name', formType: this.isUpdate ? INPUT : MULTI_SELECT, placeholder: 'Select Cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true }, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.operatorName }] },
+            { field: fields.cloudletName, label: 'Cloudlet Name', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true }, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.operatorName }] },
             { field: fields.zoneId, label: 'Zone ID', formType: INPUT, placeholder: 'Enter Zone Name', rules: { required: true }, visible: true, tip: ' Globally unique string used to authenticate operations over federation interface', update: { key: true } },
             { field: fields.countryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
             { uuid: uuid(), field: fields.cloudletLocation, label: 'Zone Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS co-ordinates associated with the zone' },
             { field: fields.locality, label: 'Locality', formType: INPUT, placeholder: 'Enter Locality', visible: true, tip: 'Type of locality eg rural, urban etc.' },
-            { field: fields.state, label: 'List of State', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add State', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getStateForm }], visible: true, tip: 'list of states under this zone' },
-            { field: fields.city, label: 'List of City', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add State', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getCityForm }], visible: true, tip: 'list of cities under this zone' },
+            { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter state Name', width: 5, visible: true, update: { edit: true } },
+            { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City Name', width: 7, visible: true },
         ]
     }
 

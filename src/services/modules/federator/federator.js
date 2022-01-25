@@ -39,9 +39,10 @@ export const createFederator = async (self, data) => {
     let request = { method: endpoint.CREATE_FEDERATOR, data: requestData }
     return await authSyncRequest(self, request)
 }
-export const updateFederator = (self, data) => {
+export const updateFederator = async (self, data) => {
     const requestData = getKey(data, true)
-    return { method: endpoint.UPDATE_FEDERATOR, data: requestData, keys: keys() }
+    let request = { method: endpoint.UPDATE_FEDERATOR, data: requestData, keys: keys() }
+    return await authSyncRequest(self, request)
 }
 
 export const showFederator = (self, data) => {

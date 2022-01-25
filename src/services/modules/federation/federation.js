@@ -8,7 +8,7 @@ let fields = formatter.fields
 export const keys = () => ([
     { field: fields.region, label: 'Region', serverField: 'region', sortable: true, visible: true, filter: true, key: true },
     { field: fields.federationName, serverField: 'name', label: 'Federation Name', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.operatorName, serverField: 'selfoperatorid', label: 'Self Operator', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.operatorName, serverField: 'selfoperatorid', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
     { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true },
     { field: fields.federationAddr, serverField: 'federationaddr', label: 'Federation Address' },
     { field: fields.partnerOperatorName, serverField: 'operatorid', label: 'Partner Operator', visible: true, filter: true, key: true },
@@ -17,8 +17,9 @@ export const keys = () => ([
     { field: fields.apiKey, serverField: 'apikey', label: 'Api Key' },
     { field: fields.federationId, serverField: 'selffederationid', label: 'Federation ID' },
     { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
-    { field: fields.zoneId, label: 'Zone id', serverField: 'zoneid', dataType: perpetual.TYPE_ARRAY },
-    { field: fields.partnerRoleShareZoneWithSelf, serverField: 'partnerrolesharezoneswithself', label: 'partnerrolesharezoneswithself' },
+    { field: fields.zoneId, label: 'Shared Zone', serverField: 'zoneid', dataType: perpetual.TYPE_ARRAY },
+    { field: fields.partnerRoleShareZoneWithSelf, serverField: 'PartnerRoleShareZonesWithSelf', label: 'partnerrolesharezoneswithself',visible: false },
+    { field: fields.role, label: 'Registered Federation', icon: 'edgeboxonly.svg', detailView: false }
 ])
 
 export const getKey = (data, isCreate) => {
@@ -30,16 +31,19 @@ export const getKey = (data, isCreate) => {
     federation.countrycode = data[fields.partnerCountryCode]
     federation.federationaddr = data[fields.federationAddr]
     federation.federationid = data[fields.partnerFederationid]
-        federation.selffederationid = data[fields.federationId]
+    federation.selffederationid = data[fields.federationId]
     federation.operatorid = data[fields.partnerOperatorName]
     }
 
     return federation
 }
+export const iconKeys = () => ([
+    { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered Federation', icon: 'edgeboxonly.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER,perpetual.OPERATOR_MANAGER,perpetual.OPERATOR_VIEWER] },
+])
 
 export const showFederation = (self, data, specific) => {
     let requestData = {}
-    return { method: endpoint.SHOW_FEDERATION, data: requestData, keys: keys() }
+    return { method: endpoint.SHOW_FEDERATION, data: requestData, keys: keys(),iconKeys: iconKeys() }
 }
 
 export const createFederation = async (self, data, selffederationid) => {
@@ -93,7 +97,6 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             let federator = federatorList[i]
             for (let j = 0; j < federationList.length; j++) {
                 let federation = federationList[j]
-                console.log(federation.partnerrolesharezoneswithself)
                 if (federator[fields.federationId] === federation.federationId) {
                     federator[fields.region] = federator[fields.region] ? federator[fields.region] : undefined
                     federator[fields.federationId] = federation[fields.federationId]
@@ -104,7 +107,8 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
                     federator[fields.mcc] = federator[fields.mcc]
                     federator[fields.mnc] = federator[fields.mnc]
                     federator[fields.federationName] = federation[fields.federationName] ? federation[fields.federationName] : undefined
-                    federator[fields.register] = federation[fields.partnerRoleShareZoneWithSelf] ? federation[fields.partnerRoleShareZoneWithSelf] : false
+                    federator[fields.partnerRoleShareZoneWithSelf] = federation[fields.partnerRoleShareZoneWithSelf] ? federation[fields.partnerRoleShareZoneWithSelf] : false
+                    break
                 }
             }
             let zone = []
@@ -113,7 +117,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
                 if (federator[fields.federationName] === zones.federationname && federator[fields.operatorName] === zones.selfoperatorid) {
                     zone.push(zones[fields.zoneId])
                     federator[fields.zoneId] = zone
-                    federator[fields.register] = zones[fields.register]
+                    // federator[fields.register] = zones[fields.register]
                 }
             }
         }

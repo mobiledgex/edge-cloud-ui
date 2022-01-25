@@ -157,6 +157,7 @@ export const formatData = (request, response, self = null) => {
             break;
         case endpoint.SHOW_FEDERATION:
             data = formatShowData(request, response, federation)
+            console.log(data, "data")
             break;
         case endpoint.SHOW_FEDERATOR:
             data = formatShowData(request, response, federator)

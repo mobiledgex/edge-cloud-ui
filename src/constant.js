@@ -13,12 +13,12 @@ export const pages = [
     { label: 'Cloudlet Pools', icon: 'cloud_circle', id: perpetual.PAGE_CLOUDLET_POOLS, path: 'cloudlet-pools', roles: [perpetual.ADMIN, perpetual.OPERATOR], visible: true },
     { label: 'Cloudlet Pools', icon: 'cloud_circle', id: perpetual.PAGE_POOL_ACCESS, path: 'pool-access', roles: [perpetual.DEVELOPER_MANAGER], visible: true },
     {
-        label: 'Federation', icon: 'track_changes', id: perpetual.PAGE_FEDERATION, sub: true, visible: true, options: [
-            { label: 'Local', icon: 'group_work', id: perpetual.PAGE_LOCAL_FEDERATION, path: 'local-federation', visible: true },
-            { label: 'Zones', icon: 'group_work', id: perpetual.PAGE_ZONES, path: 'zones', visible: true },
+        label: 'Federation', icon: 'local_activity ', id: perpetual.PAGE_FEDERATION, sub: true, visible: true, options: [
+            { label: 'Outbound', icon: 'keyboard_double_arrow_left', id: perpetual.PAGE_OUTBOUND_FEDERATION, path: 'outbound-federation', visible: true },
+            { label: 'Inbound', icon: 'keyboard_double_arrow_right', id: perpetual.PAGE_INBOUND_FEDERATION, path: 'inbound-federation', visible: true },
+            { label: 'Zones', icon: 'flag_circle', id: perpetual.PAGE_ZONES, path: 'zones', visible: true },
         ]
     },
-    // { label: 'Partner Federation', icon: 'group_work', id: perpetual.PAGE_PARTNER_FEDERATION, path: 'partner-federation', visible: true },
     { label: 'Flavors', icon: 'free_breakfast', id: perpetual.PAGE_FLAVORS, path: 'flavors', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
     { label: 'GPU Drivers', icon: 'gpu.svg', id: perpetual.PAGE_GPU_DRIVER, path: 'gpu-driver', visible: true },
     { label: 'Cluster Instances', icon: 'storage', id: perpetual.PAGE_CLUSTER_INSTANCES, path: 'cluster-insts', roles: [perpetual.ADMIN, perpetual.DEVELOPER, perpetual.OPERATOR], visible: true },

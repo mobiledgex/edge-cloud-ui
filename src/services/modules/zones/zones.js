@@ -11,9 +11,12 @@ export const keys = () => ([
     { field: fields.zoneId, label: 'Zone id', serverField: 'zoneid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.cloudlets, label: 'cloudlets', serverField: 'cloudlets', sortable: true, filter: true, key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.operatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true }
+    { field: fields.operatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.zonesRegistered, label: 'Registered Zones', icon: 'edgeboxonly.svg', detailView: false }
 ])
-
+export const iconKeys = () => ([
+    { field: fields.zonesRegistered, label: 'Registered Zones', icon: 'edgeboxonly.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER] },
+])
 
 export const getKey = (data, isCreate) => {
     let selfZone = {}
@@ -38,9 +41,9 @@ export const getKey = (data, isCreate) => {
     return selfZone
 }
 export const showSelfFederatorZone = (self, data) => {
-    return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, keys: keys() }
-
+    return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, keys: keys(), iconKeys: iconKeys() }
 }
+
 export const showSelfZone = (self, data) => {
     return { method: endpoint.SHOW_SELF_ZONES, data: data, keys: keys() }
 }
@@ -64,7 +67,43 @@ export const createSelfZone = async (self, data) => {
     let request = { method: endpoint.CREATE_FEDERATOR_SELF_ZONE, data: requestData, keys: keys() }
     return await authSyncRequest(self, request)
 }
+
 export const deleteSelfZone = (self, data) => {
     let requestData = getKey(data);
-    return { method: endpoint.DELETE_FEDERATOR_SELF_ZONE, data: requestData, success: `Zone ${data[fields.zoneId]} removed successfully` }
+    // return { method: endpoint.DELETE_FEDERATOR_SELF_ZONE, data: requestData, success: `Zone ${data[fields.zoneId]} removed successfully` }
+}
+
+
+
+export const multiDataRequest = (keys, mcRequestList, specific) => {
+    let selfZoneList, federatorZoneList = []
+    for (let i = 0; i < mcRequestList.length; i++) {
+        let mcRequest = mcRequestList[i];
+        let request = mcRequest.request;
+        if (request.method === endpoint.SHOW_SELF_ZONES) {
+            selfZoneList = mcRequest.response.data
+        }
+        else if (request.method === endpoint.SHOW_FEDERATOR_SELF_ZONE) {
+            federatorZoneList = mcRequest.response.data
+        }
+    }
+    console.log(federatorZoneList)
+    if (selfZoneList && selfZoneList.length > 0) {
+        for (let i = 0; i < selfZoneList.length; i++) {
+            let selfZone = selfZoneList[i]
+            for (let j = 0; j < federatorZoneList.length; j++) {
+                let federatorZone = federatorZoneList[j]
+                console.log(federatorZone, selfZone)
+                console.log(selfZone[fields.operatorName], federatorZone[fields.selfOperatorId], selfZone[fields.zoneId], federatorZone[fields.zoneId])
+                if (selfZone[fields.operatorName] === federatorZone[fields.selfOperatorId] && selfZone[fields.zoneId] === federatorZone[fields.zoneId]) {
+                    console.log(federatorZone)
+                    selfZone[fields.federationName] = federatorZone[fields.federationName] ? federatorZone[fields.federationName] : undefined
+                    selfZone[fields.zonesRegistered] = federatorZone[fields.zonesRegistered] ? federatorZone[fields.zonesRegistered] : false
+                    break
+                }
+            }
+        }
+        console.log(selfZoneList)
+        return selfZoneList;
+    }
 }
