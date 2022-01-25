@@ -39,7 +39,7 @@ for (var m = moment(b); m.isBefore(a); m.add(1, 'days')) {
 const PassFail = (props) => {
     return (
         <React.Fragment>
-            <ImageList cols={6} rowHeight={'35'} gap={3} >
+            <ImageList cols={6} rowHeight={35} gap={3} >
                 {nlist.map((item, i) => (
                     <ImageListItem key={item.date}><PassFailBar level={Math.floor(Math.random() * 100)}>{item.date}</PassFailBar></ImageListItem>
                 ))}
