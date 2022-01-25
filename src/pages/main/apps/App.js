@@ -11,6 +11,7 @@ import { HELP_APP_LIST } from "../../../tutorial";
 import { perpetual } from '../../../helper/constant';
 import { labelFormatter } from '../../../helper/formatter';
 import { developerRoles } from '../../../constant';
+import { appendSpaceToLetter } from '../../../utils/string_utils';
 class AppList extends React.Component {
     constructor(props) {
         super(props);
@@ -78,7 +79,7 @@ class AppList extends React.Component {
         }
         else if(key.field === fields.qosSessionDuration)
         {
-            return isDetail ? data[key.field].replace(/[A-Za-z]/g, '$& ') : data[key.field]
+            return isDetail ? appendSpaceToLetter(data[key.field]) : data[key.field]
         }
     }
 
