@@ -38,7 +38,7 @@ export const keys = () => ([
     { field: fields.alertPolicies, serverField: 'alert_policies', label: 'Alert Policies', dataType: perpetual.TYPE_ARRAY },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
     { field: fields.qosSessionProfile, serverField: 'qos_session_profile', label: 'QOS Network Prioritization' },
-    { field: fields.qosSessionDuration, serverField: 'qos_session_duration', label: 'QOS Session Duration' },
+    { field: fields.qosSessionDuration, serverField: 'qos_session_duration', label: 'QOS Session Duration', format:true },
     { field: fields.trusted, serverField: 'trusted', label: 'Trusted', visible: false, sortable: true, format: true },
     { field: fields.allowServerless, serverField: 'allow_serverless', label: 'Allow Serverless', format: true },
     { field: fields.configs, serverField: 'configs', label: 'Configs', keys: configs() },
