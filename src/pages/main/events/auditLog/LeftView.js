@@ -14,9 +14,9 @@ import AuditView from './AuditView';
 import EventView from './EventView';
 import ServerFilter, { ACTION_FILTER } from './ServerFilter';
 import { toFirstUpperCase } from '../../../../utils/string_utils';
-import uuid from 'uuid'
 import { removeObject } from '../../../../helper/ls';
 import { fetchObject, storeObject } from '../../../../helper/ls';
+import { uniqueId } from '../../../../helper/constant/shared';
 
 const tip = [
     <p>By default audit/event log provides current logs with default limit of 25</p>,
@@ -57,7 +57,7 @@ class AuditLogView extends Component {
             activeIndex: 0,
             infiniteHeight: 200,
             filterText: '',
-            reactWindowId: uuid(),
+            reactWindowId: uniqueId(),
             refreshToolbar:false
         }
         this._isMounted = false
@@ -91,7 +91,7 @@ class AuditLogView extends Component {
             }
             return filterCount === 0 || valid
         })
-        this.updateState({ dataList, filterText, activeIndex: 0, reactWindowId: uuid() })
+        this.updateState({ dataList, filterText, activeIndex: 0, reactWindowId: uniqueId() })
     }
 
     onAuditClick = (activeIndex) => {

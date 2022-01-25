@@ -1,6 +1,5 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import uuid from 'uuid'
 //Mex
 import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, MAIN_HEADER } from '../../../../../hoc/forms/MexForms';
 //redux
@@ -21,6 +20,7 @@ import { Grid, LinearProgress } from '@material-ui/core'
 import { resetFormValue } from '../../../../../hoc/forms/helper/constant';
 import { endpoint, perpetual } from '../../../../../helper/constant';
 import { responseValid } from '../../../../../services/service';
+import { uniqueId } from '../../../../../helper/constant/shared';
 
 const RECEIVER_TYPE = [perpetual.RECEIVER_TYPE_EMAIL, perpetual.RECEIVER_TYPE_SLACK, perpetual.RECEIVER_TYPE_PAGER_DUTY]
 const RECEIVER_SEVERITY = [perpetual.INFO, perpetual.WARNING, perpetual.ERROR]
@@ -74,7 +74,7 @@ class FlavorReg extends React.Component {
             { label: 'Create Alert Receiver', formType: MAIN_HEADER, visible: true },
             { field: fields.alertname, label: 'Alert Name', formType: INPUT, placeholder: 'Enter Alert Name', rules: { required: true }, visible: true, tip: 'Unique name of this receiver' },
             { field: fields.type, label: 'Receiver Type', formType: SELECT, placeholder: 'Select Receiver Type', rules: { required: true }, visible: true, tip: 'Email\\Slack\\Pagerduty' },
-            { uuid: uuid(), field: fields.slack, label: 'Slack', formType: INPUT, rules: { required: true }, visible: false, forms: this.slackForm(), tip: 'Slack channel to be receiving the alert\nSlack webhook url' },
+            { uuid: uniqueId(), field: fields.slack, label: 'Slack', formType: INPUT, rules: { required: true }, visible: false, forms: this.slackForm(), tip: 'Slack channel to be receiving the alert\nSlack webhook url' },
             { field: fields.pagerDutyIntegrationKey, label: 'PagerDuty Integration Key', formType: INPUT, placeholder: 'Enter PagerDuty integration key', rules: { required: true }, visible: false, dataValidateFunc: this.validatePageDutyVersion },
             { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true, type: 'search' }, visible: false, tip: 'Email address receiving the alert (by default email associated with the account)' },
             { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true, firstCaps:true }, visible: true, tip: 'Alert severity level - one of "info", "warning", "error"' },
