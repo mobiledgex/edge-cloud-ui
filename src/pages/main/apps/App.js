@@ -76,6 +76,10 @@ class AppList extends React.Component {
         else if (key.field === fields.allowServerless) {
             return labelFormatter.showYesNo(data[key.field])
         }
+        else if(key.field === fields.qosSessionDuration)
+        {
+            return isDetail ? data[key.field].replace(/[A-Za-z]/g, '$& ') : data[key.field]
+        }
     }
 
     requestInfo = () => {
