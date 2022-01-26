@@ -8,7 +8,7 @@ import * as actions from '../../../../actions';
 // import { fields } from '../../../services/model/format';
 import { Dialog, DialogTitle, DialogActions, DialogContent, Button } from '@material-ui/core';
 //model
-import { HELP_FEDERATION_LIST } from "../../../../tutorial";
+import { HELP_OUTBOUND_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
 import { showFederation, multiDataRequest, keys, deleteFederation, iconKeys } from "../../../../services/modules/federation"
 import { showFederator, deleteFederator, generateApiKey } from "../../../../services/modules/federator"
@@ -78,7 +78,7 @@ class FederationList extends React.Component {
             keys: this.keys,
             onAdd: this.onAdd,
             nameField: fields.federationName,
-            viewMode: HELP_FEDERATION_LIST,
+            viewMode: HELP_OUTBOUND_LIST,
             grouping: true,
             iconKeys: iconKeys()
         })
@@ -150,7 +150,7 @@ class FederationList extends React.Component {
         return [
             { id: perpetual.ACTION_SHARE_ZONES, label: 'Share Zones', onClick: this.onShareZones, visible: this.federationNameVisible, type: 'edit' },
             { id: perpetual.ACTION_UNSHARE_ZONES, label: 'Unshare Zones', onClick: this.onShareZones, visible: this.federationNameVisible, type: 'edit' },
-            { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Data', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
+            { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Detail', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
             { id: perpetual.ACTION_GENERATE_API_KEY, label: 'Generate API Key', onClick: this.onGenerateApiKey, type: 'Generate API Key' },
             { id: perpetual.ACTION_REGISTER_FEDERATION, label: 'Register Federation', onClick: this.onRegisterFederation, visible: this.registerVisible, type: 'Register Federation' },
             { id: perpetual.ACTION_DEREGISTER_FEDERATION, label: 'Deregister Federation', onClick: this.onRegisterFederation, visible: this.deregisterVisible, type: 'Register Federation' },
@@ -191,6 +191,7 @@ class FederationList extends React.Component {
                     </DialogActions>
                 </Dialog>
             </div>
+
         )
     }
 
@@ -200,7 +201,7 @@ class FederationList extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
-        this.props.handleViewMode(HELP_FEDERATION_LIST)
+        this.props.handleViewMode(HELP_OUTBOUND_LIST)
     }
 };
 

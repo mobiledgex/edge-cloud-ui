@@ -183,7 +183,7 @@ const MexToolbar = (props) => {
         </MBox  >
     )
 
-    const renderBack = () => (
+    const renderBack = (order) => (
         props.requestInfo.back ?
             <MBox order={order}>
                 <Tooltip title={<strong style={{ fontSize: 13 }}>Back</strong>}>
@@ -240,11 +240,11 @@ const MexToolbar = (props) => {
                             <div style={{display:'flex', alignItems:'center'}}>
                                 {customAction()}
                                 {renderGroup(1)}
-                                {regionForm(2)}
+                                {/* {regionForm(2)} */}
                                 {mapForm(3)}
                                 {searchForm(4)}
                                 {addForm(5)}
-                                {picker(6)}
+                                {/* {picker(6)} */}
                                 {refreshForm(7)}
                             </div>
                     }

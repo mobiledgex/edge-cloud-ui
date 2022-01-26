@@ -262,5 +262,7 @@ export const PAGE_FEDERATION = 'Federation'
 export const PAGE_OUTBOUND_FEDERATION = 'Outbound'
 export const PAGE_INBOUND_FEDERATION = 'Inbound'
 export const ACTION_GENERATE_API_KEY = 'GenerateApiKey'
+export const HELP_PARTNER_ZONES = 'partnerZones'
+export const PAGE_PARTNER_ZONES = 'Page Partner Zones'
 
 

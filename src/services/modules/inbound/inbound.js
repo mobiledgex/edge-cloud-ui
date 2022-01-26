@@ -38,43 +38,13 @@ export const getKey = (data, isCreate) => {
     return federation
 }
 export const iconKeys = () => ([
-    { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered Federation', icon: 'edgeboxonly.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER,perpetual.OPERATOR_MANAGER,perpetual.OPERATOR_VIEWER] },
+    { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered Federation', icon: 'edgeboxonly.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_VIEWER] },
 ])
 
 export const showFederation = (self, data, specific) => {
     let requestData = {}
-    return { method: endpoint.SHOW_FEDERATION, data: requestData, keys: keys(),iconKeys: iconKeys() }
+    return { method: endpoint.SHOW_FEDERATION, data: requestData, keys: keys(), iconKeys: iconKeys() }
 }
-
-export const createFederation = async (self, data, selffederationid) => {
-    let requestData = getKey(data, true)
-    requestData['selffederationid'] = selffederationid ? selffederationid : data[fields.federationId]
-    let request = { method: endpoint.CREATE_FEDERATION, data: requestData }
-    return await authSyncRequest(self, request)
-}
-
-export const deleteFederation = (self, data) => {
-    let requestData = getKey(data)
-    return { method: endpoint.DELETE_FEDERATION, data: requestData, success: `Federation ${data[fields.federationName]} deleted successfully` }
-}
-
-export const setApiKey = async (self, data) => {
-    let requestData = getKey(data)
-    let request = { method: endpoint.SET_API_KEY, data: requestData }
-    return await authSyncRequest(self, request)
-}
-
-export const registerFederation = async (self, data) => {
-    let requestData = getKey(data)
-    let request = { method: endpoint.REGISTER_FEDERATION, data: requestData }
-    return await authSyncRequest(self, request)
-}
-
-export const deRegisterFederation = async (self, data) => {
-    let requestData = getKey(data)
-    let request = { method: endpoint.DEREGISTER_FEDERATION, data: requestData }
-    return await authSyncRequest(self, request)
-} 
 
 export const multiDataRequest = (keys, mcRequestList, specific) => {
     let federationList = [], federatorList = [], zonesList = [];
@@ -87,11 +57,10 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
         else if (request.method === endpoint.SHOW_FEDERATOR) {
             federatorList = mcRequest.response.data
         }
-        else if (request.method === endpoint.SHOW_FEDERATOR_SELF_ZONE) {
+        else if (request.method === endpoint.SHOW_FEDERATOR_PARTNER_ZONE) {
             zonesList = mcRequest.response.data
         }
     }
-
     if (federatorList && federatorList.length > 0) {
         for (let i = 0; i < federatorList.length; i++) {
             let federator = federatorList[i]
@@ -117,7 +86,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
                 if (federator[fields.federationName] === zones.federationname && federator[fields.operatorName] === zones.selfoperatorid) {
                     zone.push(zones[fields.zoneId])
                     federator[fields.zoneId] = zone
-                    // federator[fields.register] = zones[fields.register]
+                    federator[fields.register] = zones[fields.register]
                 }
             }
         }

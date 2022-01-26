@@ -54,7 +54,6 @@ export const deleteFederator = (self, data) => {
     return { method: endpoint.DELETE_FEDERATOR, data: requestData, success: `self data deleted successfully` }
 }
 
-
 export const generateApiKey = async (self, data) => {
     let requestData = getKey(data)
     let request = { method: endpoint.GENERATE_API_KEY, data: requestData }

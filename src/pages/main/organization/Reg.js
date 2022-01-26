@@ -313,8 +313,6 @@ class OrganizationReg extends React.Component {
         this.setState({
             forms: forms
         })
-
-
     }
 
     componentDidMount() {

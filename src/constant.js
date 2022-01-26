@@ -34,7 +34,7 @@ export const pages = [
     },
     { label: 'Monitoring', icon: 'tv', id: perpetual.PAGE_MONITORING, path: 'monitoring', visible: true },
     { label: 'Alert Receivers', icon: 'notification_important', id: perpetual.PAGE_ALERTS, path: 'alerts', visible: true },
-    // { label: 'Billing', icon: 'payment', id: perpetual.PAGE_BILLING_ORG, path: 'billing-org', roles: [perpetual.ADMIN], visible: true },
+    { label: 'Billing', icon: 'payment', id: perpetual.PAGE_BILLING_ORG, path: 'billing-org', roles: [perpetual.ADMIN], visible: true },
     { label: 'Invoices', icon: 'payment', id: perpetual.PAGE_INVOICES, path: 'invoices', roles: [perpetual.DEVELOPER_MANAGER] },
     { label: 'Reports', icon: 'assessment', id: perpetual.PAGE_REPORTER, path: 'reporter', roles: [perpetual.ADMIN, perpetual.OPERATOR_MANAGER], visible: true },
 ]

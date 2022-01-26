@@ -1,24 +1,24 @@
 import React, { useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as actions from '../../../../actions';
+import * as actions from '../../../../../actions';
 //Mex
-import MexForms, { SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON, DUALLIST } from '../../../../hoc/forms/MexForms';
-import { redux_org } from '../../../../helper/reduxData'
+import MexForms, { SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON, DUALLIST } from '../../../../../hoc/forms/MexForms';
+import { redux_org } from '../../../../../helper/reduxData'
 //model
-import { service, updateFieldData, fields } from '../../../../services'
-import { HELP_OUTBOUND_REG, HELP_OUTOUND_REG_1, HELP_OUTOUND_REG_2, HELP_OUTOUND_REG_3 } from "../../../../tutorial";
+import { service, updateFieldData, fields } from '../../../../../services'
+import { HELP_INBOUND_REG, HELP_INBOUND_REG_1, HELP_INBOUND_REG_2 } from "../../../../../tutorial";
 import { Item, Step, ListItem } from 'semantic-ui-react';
-import { createFederator, updateFederator } from "../../../../services/modules/federator"
-import { createFederation, registerFederation } from '../../../../services/modules/federation'
-import { Grid, Dialog, DialogTitle, List, DialogActions, DialogContent, Button } from '@material-ui/core';
-import { perpetual } from '../../../../helper/constant';
+import { createFederator, updateFederator } from "../../../../../services/modules/federator"
+import { createFederation, registerFederation } from '../../../../../services/modules/federation'
+import { Grid, Dialog, DialogTitle, DialogActions, DialogContent, Button, Typography } from '@material-ui/core';
+import { perpetual } from '../../../../../helper/constant';
 import uuid from 'uuid';
-import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
-import { _sort } from '../../../../helper/constant/operators';
-import { getOrganizationList } from '../../../../services/modules/organization';
-import { showSelfZone, shareSelfZones, unShareSelfZones } from "../../../../services/modules/zones"
-import { showAuthSyncRequest } from '../../../../services/service';
+import { codeHighLighter } from '../../../../../hoc/highLighter/highLighter';
+import { _sort } from '../../../../../helper/constant/operators';
+import { getOrganizationList } from '../../../../../services/modules/organization';
+import { ICON_COLOR } from '../../../../../helper/constant/colors';
+
 const stepData = [
     {
         step: "Step 1",
@@ -27,17 +27,13 @@ const stepData = [
     {
         step: "Step 2",
         description: "Create Partner Operator"
-    },
-    {
-        step: "Step 3",
-        description: "Share Zones with Partner"
     }
 ]
 // const useStyles = makeStyles((theme) => ({
 
 
 // }));
-class FederationReg extends React.Component {
+class InboundReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -91,7 +87,7 @@ class FederationReg extends React.Component {
 
     render() {
         const { open, step } = this.state
-        console.log(this.state.forms, "forms", this.federationId, this.cloudletList, this.isUpdate, step, open)
+        console.log(this.state.forms)
         return (
             <div className="round_panel">
                 <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
@@ -117,13 +113,13 @@ class FederationReg extends React.Component {
                         </Grid>
                     </Grid>
                 </Item>
-                <Dialog open={open} onClose={this.onClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
+                {this.federationId ? <Dialog open={open} onClose={this.onClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
                     <DialogTitle id="profile">
                         <div style={{ float: "left", display: 'inline-block' }}>
                             <h3 style={{ fontWeight: 700 }}>One time Key</h3>
                         </div>
                     </DialogTitle>
-                    <DialogContent style={{ width: 500, height: 200 }}>
+                    <DialogContent style={{ width: 500 }}>
                         <ListItem style={{ padding: '0 0 1rem 0' }}>
                             <h5>Self Federation ID </h5> <span id="federationID">{codeHighLighter(this.federationId)}</span>
                         </ListItem>
@@ -136,41 +132,37 @@ class FederationReg extends React.Component {
                             Close
                         </Button>
                     </DialogActions>
-                </Dialog>
+                </Dialog> : <Dialog open={open} aria-labelledby="profile" disableEscapeKeyDown={true}>
+                    <DialogContent style={{ width: 500 }}>
+                        <Typography style={{ marginTop: 20, fontSize: 16 }}>
+                            You can register later.Do you want to register Federation now ?
+                        </Typography>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => this.onRegisterFederation()} style={{ color: '#D3D3D3' }}>
+                            NO
+                        </Button>
+                        <Button onClick={() => this.onRegisterFederation(true)} style={{ color: ICON_COLOR }}>
+                            YES
+                        </Button>
+                    </DialogActions>
+                </Dialog>}
+
+
             </div>
         )
     }
 
-    shareZonePage = async (data) => {
-        let forms = this.step3(data)
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            this.updateUI(form)
-            if (data) {
-                form.value = data[form.field]
-                this.checkForms(form, forms, true)
+    onRegisterFederation = async (nextStep) => {
+        this.handleClose()
+        if (nextStep) {
+            console.log(this.federatorData)
+            let mc = await registerFederation(this, this.federatorData)
+            if (service.responseValid(mc)) {
+                this.props.handleAlertInfo('success', `Federation registered successfully !`)
             }
         }
-        let region = data[fields.region]
-        let operatorid = data[fields.operatorName]
-        let countryCode = data[fields.partnerCountryCode]
-        let zonesList = await showAuthSyncRequest(this, showSelfZone(this, { region, operatorid, countryCode }))
-        this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
-        forms.push(
-            { label: 'Share', formType: 'Button', onClick: this.onShareZones, validate: true },
-            { label: 'Cancel', formType: 'Button', onClick: this.onCancel })
-        this.setState({
-            step: 2,
-            forms: forms
-        })
-        // if (this.zoneList.length > 0) {
-        //     this.filterZones();
-        // } else {
-        //     this.props.handleAlertInfo('error', 'No Zones to Share!')
-        //     this.props.onClose(true)
-        //     return
-        // }
-        this.props.handleViewMode(HELP_OUTOUND_REG_2);
+        this.props.onClose(true)
     }
 
     resetFormValue = (form) => {
@@ -226,10 +218,10 @@ class FederationReg extends React.Component {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Define'} Self Data`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
-            { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
-            { field: fields.countryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
+            { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Enter Partner Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
+            { field: fields.countryCode, label: ' Country Code', formType: INPUT, placeholder: 'Enter Partner Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
             { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
-            { field: fields.locatorendpoint, label: 'Locator End point', formType: INPUT, placeholder: 'Enter Locator Endpoint', visible: true, update: { edit: true }, tip: 'IP and Port of discovery service URL of operator platform' },
+            { field: fields.locatorendpoint, label: 'Locator End point', formType: INPUT, placeholder: 'Enter Partner Locator Endpoint', visible: true, update: { edit: true }, tip: 'IP and Port of discovery service URL of operator platform' },
             { field: fields.mcc, label: 'MCC', formType: INPUT, placeholder: 'Enter MCC Code', rules: { required: true }, visible: true, update: { edit: true }, tip: 'Mobile country code of operator sending the request' },
             { field: fields.mnc, label: 'List of MNC', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'List of mobile network codes of operator sending the request', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getMnc }], visible: true, tip: 'List of mobile network codes of operator sending the request' },
         ]
@@ -241,24 +233,13 @@ class FederationReg extends React.Component {
             { field: fields.region, label: ' Self Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true, disabled: true }, visible: true, update: { key: true } },
             { field: fields.operatorName, label: 'Self Operator', formType: INPUT, placeholder: 'Select Operator', rules: { required: true, disabled: true }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
             { field: fields.countryCode, label: ' Self Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true, disabled: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
-            { field: fields.federationId, label: 'Self Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, rules: { required: true }, tip: 'Self federation ID', value: this.federationId },
-            { field: fields.partnerOperatorName, label: 'Operator', formType: INPUT, placeholder: 'Enter Partner Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Globally unique string to identify an operator platform' },
-            { field: fields.partnerCountryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Partner Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
-            { field: fields.partnerFederationid, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Partner Federation ID', visible: true, rules: { required: true }, tip: 'Globally unique string used to indentify a federation with partner federation' },
-            { field: fields.federationAddr, label: 'Federation Addr', formType: INPUT, placeholder: 'Enter Partner Federation Addr', rules: { required: true }, visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
-            { field: fields.apiKey, label: 'Api Key', formType: INPUT, placeholder: 'Enter Partner Api Key', rules: { required: true }, visible: true, tip: 'API Key used for authentication (stored in secure storage)' },
+            { field: fields.federationId, label: 'Self Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, rules: { required: true, disabled: this.isUpdate ? true : false }, tip: 'Self federation ID', value: this.federationId },
+            { field: fields.partnerOperatorName, label: 'Partner Operator', formType: INPUT, placeholder: 'Enter Partner Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Globally unique string to identify an operator platform' },
+            { field: fields.partnerCountryCode, label: 'Partner Country Code', formType: INPUT, placeholder: 'Enter Partner Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
+            { field: fields.partnerFederationid, label: 'Partner Federation ID', formType: INPUT, placeholder: 'Enter Partner Federation ID', visible: true, rules: { required: true }, tip: 'Globally unique string used to indentify a federation with partner federation' },
+            { field: fields.federationAddr, label: 'Partner Federation Addr', formType: INPUT, placeholder: 'Enter Partner Federation Addr', rules: { required: true }, visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
+            { field: fields.apiKey, label: 'Partner Api Key', formType: INPUT, placeholder: 'Enter Partner Api Key', rules: { required: true }, visible: true, tip: 'API Key used for authentication (stored in secure storage)' },
             { field: fields.federationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Fderation Name', rules: { required: true }, visible: true, tip: 'Name to uniquely identify a federation' }
-        ]
-    }
-
-    step3 = () => {
-        return [
-            { label: `${this.props.action === perpetual.ACTION_UNSHARE_ZONES ? 'Unshare' : 'share'} Zones`, formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true, disabled: true }, visible: true, update: { key: true } },
-            { field: fields.operatorName, label: 'Operator', formType: INPUT, placeholder: 'Select Operator', rules: { required: true, disabled: true }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
-            { field: fields.federationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Fderation Name', rules: { required: true, disabled: true }, visible: true, tip: 'Name to uniquely identify a federation' },
-            { field: fields.partnerOperatorName, label: 'Partner operator', formType: INPUT, placeholder: 'Enter Partner Operator', rules: { required: true, disabled: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Globally unique string to identify an operator platform' },
-            { field: fields.zonesList, label: 'Zones', formType: DUALLIST, visible: true, rules: { required: this.zoneList > 0 ? true : false } }
         ]
     }
 
@@ -387,6 +368,7 @@ class FederationReg extends React.Component {
             })
         }
     }
+
     onShareZones = async (data) => {
         let zonesList = data[fields.zonesList]
         console.log(zonesList)
@@ -408,10 +390,8 @@ class FederationReg extends React.Component {
         }
     }
 
-    addUserForm = async (data) => {
-        console.log(data)
-        const shareAction = this.props.action === perpetual.ACTION_SHARE_ZONES || this.props.action === perpetual.ACTION_UNSHARE_ZONES
-        let forms = shareAction ? this.step3(data) : this.step2(data)
+    addUserForm = (data) => {
+        let forms = this.step2(data)
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             this.updateUI(form)
@@ -420,34 +400,14 @@ class FederationReg extends React.Component {
                 this.checkForms(form, forms, true)
             }
         }
-        if (shareAction) {
-            let action = this.isZonesShare ? 'Share' : 'Unshare'
-            let region = data[fields.region]
-            let operatorid = data[fields.operatorName]
-            let countryCode = data[fields.partnerCountryCode]
-            let zonesList = await showAuthSyncRequest(this, showSelfZone(this, { region, operatorid, countryCode }))
-            this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
-            if (this.zoneList.length > 0) {
-                this.filterZones();
-            }
-            forms.push(
-                { label: `${action}`, formType: 'Button', onClick: this.onShareZones, validate: true },
-                { label: 'Cancel', formType: 'Button', onClick: this.onCancel })
-            this.setState({
-                step: 2,
-                forms: forms
-            })
-            this.props.handleViewMode(HELP_OUTOUND_REG_2);
-        } else {
-            forms.push(
-                { label: 'Create', formType: 'Button', onClick: this.onCreateFederation, validate: true },
-                { label: 'Cancel', formType: 'Button', onClick: this.onCancel })
-            this.setState({
-                step: 1,
-                forms: forms
-            })
-            this.props.handleViewMode(HELP_OUTOUND_REG_1);
-        }
+        forms.push(
+            { label: 'Create', formType: 'Button', onClick: this.onCreateFederation, validate: true },
+            { label: 'Cancel', formType: 'Button', onClick: this.onCancel })
+        this.setState({
+            step: 1,
+            forms: forms
+        })
+        this.props.handleViewMode(HELP_INBOUND_REG_1);
     }
 
     onCreateFederation = async (data) => {
@@ -457,7 +417,9 @@ class FederationReg extends React.Component {
                 this.props.handleAlertInfo('success', `Federation ${data[fields.federationName]} Created successfully !`)
                 this.federationId = undefined
                 this.federatorData = data
-                this.props.action === perpetual.ACTION_UPDATE_PARTNER ? this.props.onClose(true) : this.shareZonePage(data)
+                this.updateState({
+                    open: true
+                })
             }
         }
     }
@@ -482,25 +444,11 @@ class FederationReg extends React.Component {
 
     }
 
+
     getFormData = async (data) => {
         let forms
         if (this.props.action === perpetual.ACTION_UPDATE_PARTNER) {
             forms = this.step2(data)
-        }
-        else if (this.props.action === perpetual.ACTION_SHARE_ZONES || this.props.action === perpetual.ACTION_UNSHARE_ZONES) {
-            forms = this.step3()
-            let region = this.props.data[fields.region]
-            let operatorid = this.props.data[fields.operatorName]
-            let countryCode = this.props.data[fields.countryCode]
-            let zonesList = await showAuthSyncRequest(this, showSelfZone(this, { region, operatorid, countryCode }))
-            this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
-            if (this.zoneList.length > 0) {
-                this.filterZones();
-            }
-            else {
-                this.props.handleAlertInfo('error', 'No Zones to Share!')
-                this.props.onClose(true)
-            }
         }
         else {
             forms = this.step1()
@@ -512,8 +460,8 @@ class FederationReg extends React.Component {
             else {
                 this.organizationInfo = data
                 this.addUserForm(data)
-                this.setState({ step: this.props.action === perpetual.ACTION_SHARE_ZONES || this.props.action === perpetual.ACTION_UNSHARE_ZONES ? 3 : 1 })
-                this.props.handleViewMode(HELP_OUTOUND_REG_2);
+                this.setState({ step: 1 })
+                this.props.handleViewMode(HELP_INBOUND_REG_1);
                 return
             }
         }
@@ -536,7 +484,7 @@ class FederationReg extends React.Component {
     componentDidMount() {
         this._isMounted = true
         this.getFormData(this.props.data)
-        this.props.handleViewMode(HELP_OUTBOUND_REG)
+        this.props.handleViewMode(HELP_INBOUND_REG)
     }
 
     componentWillUnmount() {
@@ -559,4 +507,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(FederationReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(InboundReg));
