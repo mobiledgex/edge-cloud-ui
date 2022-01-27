@@ -49,16 +49,15 @@ class PartnerZones extends React.Component {
         return ({
             id: perpetual.PAGE_PARTNER_ZONES,
             headerLabel: 'Partner Zones',
-            nameField: fields.name,
+            nameField: fields.zoneId,
             requestType: [showPartnerFederatorZone],
-            sortBy: [fields.name],
+            sortBy: [fields.federationName],
             selection: false,
             keys: this.keys,
             onAdd: undefined,
             grouping: false,
-            picker: true,
-            // filter: { name: billingOrg[fields.name] },
-            back: redux_org.isAdmin(this) ? this.onBackClick : null,
+            filter: { federationname: this.props.data[fields.federationName], selfoperatorid: this.props.data[fields.operatorName], operatorid: this.props.data[fields.partnerOperatorName] },
+            back: this.onBackClick,
             iconKeys: iconKeys()
         })
     }

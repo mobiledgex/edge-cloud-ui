@@ -513,7 +513,6 @@ class CloudletReg extends React.Component {
     )
 
     getMap = () => {
-        console.log(this.state.mapData)
         return (<div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
             <ListMexMap dataList={this.state.mapData} id={perpetual.PAGE_CLOUDLETS} onMapClick={this.onMapClick} region={this.state.region} register={true} />
         </div>)

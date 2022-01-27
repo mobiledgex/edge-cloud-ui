@@ -2,6 +2,7 @@
 import * as formatter from '../../model/format'
 import { authSyncRequest } from '../../service';
 import { endpoint, perpetual } from '../../../helper/constant'
+import { redux_org } from '../../../helper/reduxData'
 
 let fields = formatter.fields
 
@@ -34,6 +35,7 @@ export const getKey = (data, isCreate) => {
         data[fields.federationId] ? federation.selffederationid = data[fields.federationId] : null
         data[fields.partnerOperatorName] ? federation.operatorid = data[fields.partnerOperatorName] : null
     }
+    data[fields.zonesList] ? federation.zones = data[fields.zonesList] : null
 
     return federation
 }
@@ -59,8 +61,7 @@ export const deleteFederation = (self, data) => {
 }
 
 export const setApiKey = async (self, data) => {
-    let requestData = getKey(data)
-    let request = { method: endpoint.SET_API_KEY, data: requestData }
+    let request = { method: endpoint.SET_API_KEY, data: data }
     return await authSyncRequest(self, request)
 }
 
@@ -75,6 +76,20 @@ export const deRegisterFederation = async (self, data) => {
     let request = { method: endpoint.DEREGISTER_FEDERATION, data: requestData }
     return await authSyncRequest(self, request)
 } 
+
+export const showRegisterPartnerZone = (data) => {
+    let requestData = getKey(data)
+    requestData.federationname = requestData.name
+    delete requestData.name
+    return { method: endpoint.REGISTER_FEDERATOR_PARTNER_ZONES, keys: keys(), data: requestData, iconKeys: iconKeys() }
+}
+
+export const showDeregisterPartnerZone = (data) => {
+    let requestData = getKey(data)
+    requestData.federationname = requestData.name
+    delete requestData.name
+    return { method: endpoint.DEREGISTER_FEDERATOR_PARTNER_ZONES, keys: keys(), data: requestData, iconKeys: iconKeys() }
+}
 
 export const multiDataRequest = (keys, mcRequestList, specific) => {
     let federationList = [], federatorList = [], zonesList = [];

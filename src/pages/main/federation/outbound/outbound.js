@@ -99,6 +99,7 @@ class FederationList extends React.Component {
     }
 
     onShareZones = (action, data) => {
+
         data[fields.zoneId] || action.id === perpetual.ACTION_SHARE_ZONES ? this.updateState({ currentView: <FederationReg action={action.id} data={data} onClose={this.onRegClose} /> }) : this.props.handleAlertInfo('error', 'No Zones to Share !')
     }
     createVisible = (data) => {

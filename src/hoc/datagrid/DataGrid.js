@@ -539,7 +539,6 @@ class DataGrid extends React.Component {
     }
 
     requestToFetch = async (type, requestInfo, filter) => {
-        console.log(requestInfo, "requestInfo")
         const { handleListViewClick } = this.props
         let mcList = await fetchDataFromServer(this, requestInfo.requestType, filter)
         this.count = this.count - 1

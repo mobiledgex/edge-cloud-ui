@@ -73,6 +73,7 @@ export const formattedData = (forms) => {
 }
 
 const MexForms = (props) => {
+    console.log(props.forms, "forms")
     let forms = props.forms
     const [error, setError] = React.useState(undefined)
     const orgInfo = useSelector(state => state.organizationInfo.data)

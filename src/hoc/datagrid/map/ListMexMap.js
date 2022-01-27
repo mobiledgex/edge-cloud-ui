@@ -149,7 +149,6 @@ class ListMexMap extends React.Component {
         const { mapData } = this.state
         const { id, register } = this.props
         let data = mapData
-        console.log(data)
         return data ?
             <div>
                 {Object.keys(data).map((key, i) => {

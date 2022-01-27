@@ -241,7 +241,6 @@ const SideNav = (props) => {
             setOpen(flag)
         }
     }
-    console.log(props.children, "props.children")
 
     return (
         <div id="mex-side-nav" className={classes.root}>

@@ -50,6 +50,9 @@ export const ACTION_UPDATE_PARTNER = 'updatePartner'
 export const ACTION_REGISTER_FEDERATION = 'RegisterFederation'
 export const ACTION_DEREGISTER_FEDERATION = 'DeRegisterFederation'
 
+export const ACTION_DEREGISTER_ZONES = 'DeregisterFederation'
+export const ACTION_REGISTER_ZONES = 'registerFederation'
+
 export const CLOUDLET_COMPAT_VERSION_2_4 = 0
 export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1
 

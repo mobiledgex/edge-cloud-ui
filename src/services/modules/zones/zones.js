@@ -11,8 +11,10 @@ export const keys = () => ([
     { field: fields.zoneId, label: 'Zone id', serverField: 'zoneid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.cloudlets, label: 'cloudlets', serverField: 'cloudlets', sortable: true, filter: true, key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.operatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.partnerOperatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.zonesRegistered, label: 'Registered Zones', icon: 'edgeboxonly.svg', detailView: false },
+    { field: fields.federationName, label: 'Federation Name', serverField: 'federationname' },
+    // { field: fields.operatorName, label: 'Operator Name', serverField: 'selfoperatorid', sortable: true, visible: true, filter: true, key: true },
 ])
 
 export const iconKeys = () => ([
@@ -21,7 +23,8 @@ export const iconKeys = () => ([
 
 export const getKey = (data, isCreate) => {
     let selfZone = {}
-    selfZone.operatorid = data[fields.operatorName]
+    console.log(data)
+    data[fields.operatorName] ? selfZone.operatorid = data[fields.operatorName] : null
     data[fields.countryCode] ? selfZone.countryCode = data[fields.countryCode] : null
     data[fields.federationName] ? selfZone.federationName = data[fields.federationName] : null
     selfZone.zoneId = data[fields.zoneId]
@@ -41,13 +44,29 @@ export const getKey = (data, isCreate) => {
     }
     return selfZone
 }
+
 export const showSelfFederatorZone = (self, data) => {
     return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, keys: keys(), iconKeys: iconKeys() }
 }
 
-export const showPartnerFederatorZone = (self, data) => {
-    return { method: endpoint.SHOW_FEDERATOR_PARTNER_ZONE, keys: keys(), iconKeys: iconKeys() }
+export const showPartnerFederatorZone = (self, data, specific) => {
+    console.log(specific)
+    let requestData = {}
+    if (specific) {
+        requestData = data
+    }
+    else {
+        let organization = data.org ? data.org : redux_org.isAdmin(self)
+        console.log(redux_org.isAdmin(self))
+        if (organization) {
+            if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
+                requestData.selfoperatorid = organization
+            }
+        }
+    }
+    return { method: endpoint.SHOW_FEDERATOR_PARTNER_ZONE, keys: keys(), data: requestData, iconKeys: iconKeys() }
 }
+
 
 export const showSelfZone = (self, data) => {
     return { method: endpoint.SHOW_SELF_ZONES, data: data, keys: keys() }
@@ -75,10 +94,8 @@ export const createSelfZone = async (self, data) => {
 
 export const deleteSelfZone = (self, data) => {
     let requestData = getKey(data);
-    // return { method: endpoint.DELETE_FEDERATOR_SELF_ZONE, data: requestData, success: `Zone ${data[fields.zoneId]} removed successfully` }
+    return { method: endpoint.DELETE_FEDERATOR_SELF_ZONE, data: requestData, success: `Zone ${data[fields.zoneId]} removed successfully` }
 }
-
-
 
 export const multiDataRequest = (keys, mcRequestList, specific) => {
     let selfZoneList, federatorZoneList = []

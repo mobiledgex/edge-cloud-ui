@@ -6,19 +6,19 @@ import DataView from '../../../../container/DataView';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 // import { fields } from '../../../services/model/format';
-import { Dialog, DialogTitle, DialogActions, DialogContent, Button } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogActions, DialogContent, Button, LinearProgress } from '@material-ui/core';
 //model
 import { HELP_INBOUND_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
-import { deleteFederation, showFederation } from "../../../../services/modules/federation"
+import { deleteFederation, showFederation, deRegisterFederation, registerFederation, setApiKey } from "../../../../services/modules/federation"
 import { showFederator, deleteFederator } from "../../../../services/modules/federator"
-import { multiDataRequest, iconKeys, keys } from "../../../../services/modules/inbound"
-import { showPartnerFederatorZone } from "../../../../services/modules/zones"
+import { multiDataRequest, iconKeys, keys, showPartnerFederatorZone } from "../../../../services/modules/inbound"
 import InboundReg from "./reg/Reg"
 import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
-import { deRegisterFederation, registerFederation, setApiKey } from '../../../../services/modules/federation'
 import { service, fields } from '../../../../services'
 import PartnerZones from './PartnerZone'
+import MexForms, { INPUT, BUTTON } from '../../../../hoc/forms/MexForms';
+import { redux_org } from '../../../../helper/reduxData';
 class InboundList extends React.Component {
     constructor(props) {
         super(props);
@@ -27,8 +27,8 @@ class InboundList extends React.Component {
             forms: [],
             currentView: null,
             open: false,
+            loading: false
         },
-            this.type = undefined
         this.keys = keys()
         this.apiKey = undefined
     }
@@ -45,9 +45,7 @@ class InboundList extends React.Component {
 
     updateState = (data) => {
         if (this._isMounted) {
-            this.setState({ ...data }, () => {
-                console.log(data)
-            })
+            this.setState({ ...data })
         }
     }
 
@@ -62,12 +60,21 @@ class InboundList extends React.Component {
         this.checkForms(form, forms)
     }
 
-
     /*Required*/
     reloadForms = () => {
         this.setState({
             forms: this.state.forms
         })
+    }
+
+    resetFormValue = (form) => {
+        let rules = form.rules
+        if (rules) {
+            let disabled = rules.disabled ? rules.disabled : false
+            if (!disabled) {
+                form.value = undefined;
+            }
+        }
     }
 
     requestInfo = () => {
@@ -101,9 +108,19 @@ class InboundList extends React.Component {
     }
 
     onViewPartner = (action, data) => {
-        this.updateState({ currentView: <PartnerZones data={data} onClose={this.onRegClose} /> })
+        data[fields.zoneCount] > 0 ? this.updateState({ currentView: <PartnerZones data={data} onClose={this.onRegClose} /> }) : this.props.handleAlertInfo('error', 'No Zones available for this federation !')
     }
 
+    onRegisterZones = (action, data) => {
+        this.updateState({ currentView: <InboundReg data={data} action={action.id} onClose={this.onRegClose} /> })
+    }
+
+    registerVisible = (data) => {
+        return data[fields.federationName] !== undefined && data[fields.partnerRoleShareZoneWithSelf] === false ? true : false
+    }
+    deregisterVisible = (data) => {
+        return data[fields.federationName] !== undefined && data[fields.partnerRoleShareZoneWithSelf] ? true : false
+    }
     onShareZones = (action, data) => {
         data[fields.zoneId] || action.id === perpetual.ACTION_SHARE_ZONES ? this.updateState({ currentView: <InboundReg action={action.id} data={data} onClose={this.onRegClose} /> }) : this.props.handleAlertInfo('error', 'No Zones to Share !')
     }
@@ -121,15 +138,27 @@ class InboundList extends React.Component {
         this.apiKey = undefined // to reset when there is no page reload
     }
 
-    onSetApiKey = async (action, data) => {
-        let mcRequest = await setApiKey(this, data)
-        if (service.responseValid(mcRequest)) {
-            this.props.handleAlertInfo('success', 'Api Key changed successfully !')
-            this.apiKey = mcRequest.response.data.apikey
-            this.updateState({
-                open: true
-            })
+    updateFormData = (forms, data) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (data) {
+                if (form.forms && form.formType !== HEADER) {
+                    this.updateFormData(form.forms, data)
+                }
+                else {
+                    form.value = data[form.field]
+                    this.checkForms(form, forms, true)
+                }
+            }
         }
+    }
+
+    onSetApiKey = async (action, data) => {
+        let forms = this.forms()
+        this.loadDefaultData(forms, data)
+        forms.push({ label: 'Set', formType: BUTTON, onClick: this.onCreateApiKey, validate: true, visible: true })
+        forms.push({ label: 'Cancel', formType: BUTTON, onClick: this.handleClose, visible: true })
+        this.updateState({ open: true, forms: forms })
     }
 
     onRegisterFederation = async (action, data) => {
@@ -141,25 +170,31 @@ class InboundList extends React.Component {
         }
     }
 
+    onCreateApiKey = async (data) => {
+        this.updateState({ loading: true })
+        let mc = await setApiKey(this, { selfoperatorid: data[fields.operatorName], name: data[fields.federationName], apikey: data[fields.apiKey] })
+        if (service.responseValid(mc)) {
+            this.props.handleAlertInfo('success', `api key changed for  ${data[fields.federationName]}`)
+        }
+        else {
+            this.props.handleAlertInfo('error', 'set Api key failed !')
+        }
+        this.updateState({ loading: false, open: false })
+    }
+
     getDeleteActionMessage = (action, data) => {
         return `Are you sure you want to remove self Data ?`
     }
 
-    // registerVisible = (data) => {
-    //     return data[fields.federationName] !== undefined && data[fields.partnerRoleShareZoneWithSelf] === false ? true : false
-    // }
-
-    // deregisterVisible = (data) => {
-    //     return data[fields.federationName] !== undefined && data[fields.partnerRoleShareZoneWithSelf] ? true : false
-    // }
-
     actionMenu = () => {
         return [
-            { id: perpetual.ACTION_REGISTER_ZONES, label: 'View Partner Zones', onClick: this.onViewPartner, visible: this.registerVisible, type: 'Register Federation' },
+            { id: perpetual.ACTION_REGISTER_ZONES, label: 'View Partner Zones', onClick: this.onViewPartner, type: 'Register Federation' },
             { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Data', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
             { id: perpetual.ACTION_SET_API_KEY, label: 'Set API Key', onClick: this.onSetApiKey, type: 'Generate API Key' },
-            { id: perpetual.ACTION_REGISTER_ZONES, label: 'Register Zones', onClick: this.onRegisterFederation, type: 'Register Federation' },
-            { id: perpetual.ACTION_DEREGISTER_ZONES, label: 'Deregister Zones', onClick: this.onRegisterFederation, type: 'Register Federation' },
+            { id: perpetual.ACTION_REGISTER_FEDERATION, label: 'Register Federation', onClick: this.onRegisterFederation, visible: this.registerVisible, type: 'Register Federation' },
+            { id: perpetual.ACTION_DEREGISTER_FEDERATION, label: 'Deregister Federation', onClick: this.onRegisterFederation, visible: this.deregisterVisible, type: 'Register Federation' },
+            { id: perpetual.ACTION_REGISTER_ZONES, label: 'Register Zones', onClick: this.onRegisterZones, type: 'Register Federation' },
+            { id: perpetual.ACTION_DEREGISTER_ZONES, label: 'Deregister Zones', onClick: this.onRegisterZones, type: 'Register Federation' },
             { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Add Partner Data' },
             { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.createVisible, onClick: deleteFederator, type: 'Delete', dialogMessage: this.getDeleteActionMessage },
             { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.federationNameVisible, onClick: deleteFederation, type: 'Delete' },
@@ -170,35 +205,77 @@ class InboundList extends React.Component {
 
     }
 
+    // onSettingApiKey = async(data) => {
+    //     let mc = await requestCall(this, data)
+    //     if (service.responseValid(mc)) {
+    //         this.props.handleAlertInfo('success', `Federation ${text} successfully !`)
+    //     }
+    // }
+
     reloadForms = () => {
         this.updateState({
             forms: this.state.forms
         })
     }
 
+    renderPasswordForm = () => (
+        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
+    )
+
+    forms = () => (
+        [
+            { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { required: true, disabled: true }, visible: true },
+            { field: fields.federationName, label: 'Federation Name', formType: INPUT, rules: { required: true, disabled: true }, visible: true },
+            { field: fields.apiKey, label: 'Api key', formType: INPUT, rules: { required: true }, visible: true },
+        ]
+    )
+
     render() {
-        const { tableHeight, currentView, open } = this.state
+        const { tableHeight, currentView, open, loading } = this.state
         return (
             <div style={{ width: '100%', height: '100%' }}>
                 <DataView id={perpetual.PAGE_INBOUND_FEDERATION} multiDataRequest={multiDataRequest} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} />
-                <Dialog open={open} onClose={this.onClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
+                {this.apiKey ? <Dialog open={open} onClose={this.onClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
                     <DialogTitle id="profile">
                         <div style={{ float: "left", display: 'inline-block' }}>
                             <h3 style={{ fontWeight: 700 }}>Set Key</h3>
                         </div>
                     </DialogTitle>
                     <DialogContent style={{ width: 600 }}>
-
                         <div style={{ display: 'inline' }}>{codeHighLighter(this.apiKey)}</div>
                     </DialogContent>
                     <DialogActions>
-                        {this.apiKey ? <Button onClick={this.handleClose} style={{ backgroundColor: 'rgba(118, 255, 3, 0.7)' }} size='small'>
+                        <Button onClick={this.handleClose} style={{ backgroundColor: 'rgba(118, 255, 3, 0.7)' }} size='small'>
                             Close
-                        </Button> : null}
+                        </Button> 
                     </DialogActions>
-                </Dialog>
+                </Dialog> : <Dialog open={open} onClose={this.onDialogClose} aria-labelledby="update_password" disableEscapeKeyDown={true}>
+                    <DialogTitle id="update_password">
+                        {loading ? <LinearProgress /> : null}
+                        <div style={{ float: "left", display: 'inline-block' }}>
+                            <h3>Set Api Key</h3>
+                        </div>
+                    </DialogTitle>
+                    <DialogContent style={{ width: 600 }}>
+                        {this.renderPasswordForm()}
+                    </DialogContent>
+                </Dialog>}
             </div>
         )
+    }
+    loadDefaultData = (forms, data) => {
+        console.log(data)
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (data) {
+                form.value = data[form.field]
+                this.checkForms(form, forms, true)
+            }
+        }
+    }
+    getFormData = () => {
+        let forms = this.forms()
+
     }
 
     onAddCancel = () => {
@@ -207,6 +284,7 @@ class InboundList extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
+        this.getFormData()
         this.props.handleViewMode(HELP_INBOUND_LIST)
     }
 };

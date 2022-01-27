@@ -58,7 +58,6 @@ class ZoneReg extends React.Component {
             if (latitude && longitude) {
                 let zone = {}
                 zone.cloudletLocation = { latitude, longitude }
-                console.log()
                 this.updateState({ mapData: [zone] })
             }
             else {
@@ -215,7 +214,6 @@ class ZoneReg extends React.Component {
 
     render() {
         const { forms, activeIndex } = this.state
-        console.log(this.state.mapData)
         return (
             <div>
                 <Grid container>

@@ -358,7 +358,6 @@ class FederationReg extends React.Component {
                     for (let j = 0; j < this.zoneList.length; j++) {
                         let zoneid = this.zoneList[j]
                         if (selectedZone === zoneid) {
-                            console.log(selectedZone)
                             if (this.props.action === perpetual.ACTION_SHARE_ZONES) {
                                 this.zoneList.splice(j, 1)
                             }

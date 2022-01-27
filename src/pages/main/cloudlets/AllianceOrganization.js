@@ -98,7 +98,6 @@ class AllianceOrganization extends React.Component {
 
     onCreate = async (data) => {
         let allianceOrgs = data[fields.allianceOrganization]
-        console.log(allianceOrgs)
         if (allianceOrgs && allianceOrgs.length > 0) {
             let requestList = []
             let requestCall = this.isAllianceCloudletAdd ? addClouldletAllianceOrgs : removeClouldletAllianceOrgs
@@ -118,9 +117,7 @@ class AllianceOrganization extends React.Component {
     filterAllianceCloudlets = () => {
         let removeList = []
         if (this.props.data) {
-            console.log("hello")
             let selectedAllianceOrgs = this.props.data[fields.allianceOrganization]
-            console.log(selectedAllianceOrgs)
             if (selectedAllianceOrgs && selectedAllianceOrgs.length > 0) {
                 for (let i = 0; i < selectedAllianceOrgs.length; i++) {
                     let selectedAllianceOrg = selectedAllianceOrgs[i];
