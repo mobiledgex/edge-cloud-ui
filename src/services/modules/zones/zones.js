@@ -14,7 +14,7 @@ export const keys = () => ([
     { field: fields.partnerOperatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.zonesRegistered, label: 'Registered Zones', icon: 'edgeboxonly.svg', detailView: false },
     { field: fields.federationName, label: 'Federation Name', serverField: 'federationname' },
-    // { field: fields.operatorName, label: 'Operator Name', serverField: 'selfoperatorid', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.operatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
 ])
 
 export const iconKeys = () => ([
@@ -46,7 +46,7 @@ export const getKey = (data, isCreate) => {
 }
 
 export const showSelfFederatorZone = (self, data) => {
-    return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, keys: keys(), iconKeys: iconKeys() }
+    return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, data: data, keys: keys(), iconKeys: iconKeys() }
 }
 
 export const showPartnerFederatorZone = (self, data, specific) => {

@@ -102,11 +102,10 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
         else if (request.method === endpoint.SHOW_FEDERATOR) {
             federatorList = mcRequest.response.data
         }
-        else if (request.method === endpoint.SHOW_FEDERATOR_SELF_ZONE) {
+        else if (request.method === endpoint.SHOW_SELF_ZONES) {
             zonesList = mcRequest.response.data
         }
     }
-
     if (federatorList && federatorList.length > 0) {
         for (let i = 0; i < federatorList.length; i++) {
             let federator = federatorList[i]
@@ -129,7 +128,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             let zone = []
             for (let j = 0; j < zonesList.length; j++) {
                 let zones = zonesList[j]
-                if (federator[fields.federationName] === zones.federationname && federator[fields.operatorName] === zones.selfoperatorid) {
+                if (federator[fields.countryCode] === zones[fields.countryCode] && federator[fields.operatorName] === zones[fields.operatorName]) {
                     zone.push(zones[fields.zoneId])
                     federator[fields.zoneId] = zone
                     // federator[fields.register] = zones[fields.register]

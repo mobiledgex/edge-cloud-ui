@@ -60,7 +60,7 @@ export const showPartnerFederatorZone = (self, data) => {
 }
 
 export const multiDataRequest = (keys, mcRequestList, specific) => {
-    let federationList = [], federatorList = [], zonesList = [];
+    let federationList = [], federatorList = [], zonesList = [], selfZones = [];
     for (let i = 0; i < mcRequestList.length; i++) {
         let mcRequest = mcRequestList[i];
         let request = mcRequest.request;
@@ -74,7 +74,6 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             zonesList = mcRequest.response.data
         }
     }
-    console.log(zonesList, 'zonelo')
     if (federatorList && federatorList.length > 0) {
         for (let i = 0; i < federatorList.length; i++) {
             let federator = federatorList[i]

@@ -189,7 +189,7 @@ class InboundList extends React.Component {
     actionMenu = () => {
         return [
             { id: perpetual.ACTION_REGISTER_ZONES, label: 'View Partner Zones', onClick: this.onViewPartner, type: 'Register Federation' },
-            { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Data', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
+            { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Detail', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
             { id: perpetual.ACTION_SET_API_KEY, label: 'Set API Key', onClick: this.onSetApiKey, type: 'Generate API Key' },
             { id: perpetual.ACTION_REGISTER_FEDERATION, label: 'Register Federation', onClick: this.onRegisterFederation, visible: this.registerVisible, type: 'Register Federation' },
             { id: perpetual.ACTION_DEREGISTER_FEDERATION, label: 'Deregister Federation', onClick: this.onRegisterFederation, visible: this.deregisterVisible, type: 'Register Federation' },

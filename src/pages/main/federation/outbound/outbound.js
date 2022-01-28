@@ -12,7 +12,7 @@ import { HELP_OUTBOUND_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
 import { showFederation, multiDataRequest, keys, deleteFederation, iconKeys } from "../../../../services/modules/federation"
 import { showFederator, deleteFederator, generateApiKey } from "../../../../services/modules/federator"
-import { showSelfFederatorZone } from "../../../../services/modules/zones"
+import { showSelfZone } from "../../../../services/modules/zones"
 import FederationReg from "./Reg"
 import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
 import { deRegisterFederation, registerFederation } from '../../../../services/modules/federation'
@@ -72,7 +72,7 @@ class FederationList extends React.Component {
         return ({
             id: perpetual.PAGE_OUTBOUND_FEDERATION,
             headerLabel: 'Outbound Federation',
-            requestType: [showFederation, showFederator, showSelfFederatorZone],
+            requestType: [showFederation, showFederator, showSelfZone],
             sortBy: [fields.region, fields.federationName],
             isRegion: true,
             keys: this.keys,
