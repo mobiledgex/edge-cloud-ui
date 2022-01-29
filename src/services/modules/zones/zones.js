@@ -1,6 +1,6 @@
 
 import * as formatter from '../../model/format'
-import { authSyncRequest, showAuthSyncRequest } from '../../service';
+import { authSyncRequest } from '../../service';
 import { endpoint, perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData'
 
@@ -11,19 +11,13 @@ export const keys = () => ([
     { field: fields.zoneId, label: 'Zone id', serverField: 'zoneid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.cloudlets, label: 'cloudlets', serverField: 'cloudlets', sortable: true, filter: true, key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.partnerOperatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.zonesRegistered, label: 'Registered Zones', icon: 'edgeboxonly.svg', detailView: false },
     { field: fields.federationName, label: 'Federation Name', serverField: 'federationname' },
     { field: fields.operatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
 ])
 
-export const iconKeys = () => ([
-    { field: fields.zonesRegistered, label: 'Registered Zones', icon: 'edgeboxonly.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER] },
-])
-
 export const getKey = (data, isCreate) => {
     let selfZone = {}
-    console.log(data)
     data[fields.operatorName] ? selfZone.operatorid = data[fields.operatorName] : null
     data[fields.countryCode] ? selfZone.countryCode = data[fields.countryCode] : null
     data[fields.federationName] ? selfZone.federationName = data[fields.federationName] : null
@@ -45,31 +39,47 @@ export const getKey = (data, isCreate) => {
     return selfZone
 }
 
-export const showSelfFederatorZone = (self, data) => {
-    return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, data: data, keys: keys(), iconKeys: iconKeys() }
-}
-
-export const showPartnerFederatorZone = (self, data, specific) => {
-    console.log(specific)
+export const showSelfFederatorZone = (self, data, specific) => {
     let requestData = {}
     if (specific) {
         requestData = data
     }
     else {
         let organization = data.org ? data.org : redux_org.isAdmin(self)
-        console.log(redux_org.isAdmin(self))
         if (organization) {
             if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
                 requestData.selfoperatorid = organization
             }
         }
     }
-    return { method: endpoint.SHOW_FEDERATOR_PARTNER_ZONE, keys: keys(), data: requestData, iconKeys: iconKeys() }
+    return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, data: requestData, keys: keys() }
+}
+
+export const showPartnerFederatorZone = (self, data) => {
+    let requestData = {}
+    let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
+    if (organization) {
+        if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
+            requestData = { operatorid: organization, region: data.region }
+        }
+    } else {
+        requestData = data
+    }
+    return { method: endpoint.SHOW_FEDERATOR_PARTNER_ZONE, keys: keys(), data: requestData }
 }
 
 
 export const showSelfZone = (self, data) => {
-    return { method: endpoint.SHOW_SELF_ZONES, data: data, keys: keys() }
+    let requestData = {}
+    let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
+    if (organization) {
+        if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
+            requestData = { operatorid: organization, region: data.region }
+        }
+    } else {
+        requestData = data
+    }
+    return { method: endpoint.SHOW_SELF_ZONES, data: requestData, keys: keys() }
 }
 
 export const shareSelfZones = (data) => {
@@ -116,11 +126,11 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
                 let federatorZone = federatorZoneList[j]
                 if (selfZone[fields.operatorName] === federatorZone[fields.selfOperatorId] && selfZone[fields.zoneId] === federatorZone[fields.zoneId]) {
                     selfZone[fields.federationName] = federatorZone[fields.federationName] ? federatorZone[fields.federationName] : undefined
-                    selfZone[fields.zonesRegistered] = federatorZone[fields.zonesRegistered] ? federatorZone[fields.zonesRegistered] : false
+                    selfZone[fields.zonesRegistered] = federatorZone[fields.register] ? federatorZone[fields.register] : false
                     break
                 }
             }
         }
-        return selfZoneList;
     }
+    return selfZoneList;
 }

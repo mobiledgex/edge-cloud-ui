@@ -9,7 +9,7 @@ import { fields } from '../../../services/model/format';
 import { HELP_ZONES_LIST } from "../../../tutorial";
 import { perpetual } from "../../../helper/constant";
 import ZoneReg from "./Reg"
-import { showSelfZone, keys, showSelfFederatorZone, iconKeys, multiDataRequest } from "../../../services/modules/zones"
+import { showSelfZone, keys, showSelfFederatorZone, multiDataRequest } from "../../../services/modules/zones"
 import { deleteSelfZone } from "../../../services/modules/zones/zones";
 
 class ZoneList extends React.Component {
@@ -47,8 +47,7 @@ class ZoneList extends React.Component {
             onAdd: this.onAdd,
             nameField: fields.zoneId,
             viewMode: HELP_ZONES_LIST,
-            grouping: true,
-            iconKeys: iconKeys()
+            grouping: true
         })
     }
 

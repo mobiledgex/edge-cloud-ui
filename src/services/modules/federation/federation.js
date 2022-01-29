@@ -19,6 +19,7 @@ export const keys = () => ([
     { field: fields.federationId, serverField: 'selffederationid', label: 'Federation ID' },
     { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.zoneId, label: 'Shared Zone', serverField: 'zoneid', dataType: perpetual.TYPE_ARRAY },
+    // { field: fields.zoneCount, label: 'Zone Count', sortable: true, visible: true, filter: true, key: true },
     { field: fields.partnerRoleShareZoneWithSelf, serverField: 'PartnerRoleShareZonesWithSelf' },
     { field: fields.role, label: 'Registered Federation', icon: 'edgeboxonly.svg', detailView: false }
 ])
@@ -43,8 +44,14 @@ export const iconKeys = () => ([
     { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered Federation', icon: 'edgeboxonly.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER,perpetual.OPERATOR_MANAGER,perpetual.OPERATOR_VIEWER] },
 ])
 
-export const showFederation = (self, data, specific) => {
+export const showFederation = (self, data) => {
     let requestData = {}
+    let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
+    if (organization) {
+        if (redux_org.isOperator(self)) {
+            requestData = { operatorid: organization }
+        }
+    }
     return { method: endpoint.SHOW_FEDERATION, data: requestData, keys: keys(),iconKeys: iconKeys() }
 }
 
@@ -102,10 +109,11 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
         else if (request.method === endpoint.SHOW_FEDERATOR) {
             federatorList = mcRequest.response.data
         }
-        else if (request.method === endpoint.SHOW_SELF_ZONES) {
+        else if (request.method === endpoint.SHOW_FEDERATOR_SELF_ZONE) {
             zonesList = mcRequest.response.data
         }
     }
+    console.log(federatorList, federationList, zonesList)
     if (federatorList && federatorList.length > 0) {
         for (let i = 0; i < federatorList.length; i++) {
             let federator = federatorList[i]
@@ -128,9 +136,10 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             let zone = []
             for (let j = 0; j < zonesList.length; j++) {
                 let zones = zonesList[j]
-                if (federator[fields.countryCode] === zones[fields.countryCode] && federator[fields.operatorName] === zones[fields.operatorName]) {
+                if (federator[fields.federationName] === zones[fields.federationName] && federator[fields.operatorName] === zones[fields.operatorName]) {
                     zone.push(zones[fields.zoneId])
                     federator[fields.zoneId] = zone
+                    // federator[fields.zoneCount] = zone.length
                     // federator[fields.register] = zones[fields.register]
                 }
             }

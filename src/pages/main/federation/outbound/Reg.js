@@ -224,7 +224,7 @@ class FederationReg extends React.Component {
     }
     step1 = () => {
         return [
-            { label: `${this.isUpdate ? 'Update' : 'Define'} Self Data`, formType: MAIN_HEADER, visible: true },
+            { label: `${this.isUpdate ? 'Update' : ''} Operator Detail`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
             { field: fields.countryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
@@ -348,7 +348,6 @@ class FederationReg extends React.Component {
     }
 
     filterZones = () => {
-        console.log(this.props.data)
         let removeList = []
         if (this.props.data) {
             let selectedZones = this.props.data[fields.zoneId]
@@ -370,6 +369,7 @@ class FederationReg extends React.Component {
                 }
             }
         }
+        console.log(this.zoneList, "this.zonelist")
         this.zoneList = removeList.length > 0 ? removeList : this.zoneList
     }
     onShareResponse = (mcList) => {
@@ -378,7 +378,6 @@ class FederationReg extends React.Component {
             mcList.map(mc => {
                 if (mc.response) {
                     let data = mc.request.data;
-                    console.log(data, "data")
                     let text = this.isZonesShare ? 'shared' : 'removed'
                     this.props.handleAlertInfo('success', `Zones shared for ${text} successfully !`)
                     this.props.onClose(true)
@@ -493,6 +492,7 @@ class FederationReg extends React.Component {
             let countryCode = this.props.data[fields.countryCode]
             let zonesList = await showAuthSyncRequest(this, showSelfZone(this, { region, operatorid, countryCode }))
             this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
+            console.log(this.zoneList, "zonelist")
             if (this.zoneList.length > 0) {
                 this.filterZones();
             }

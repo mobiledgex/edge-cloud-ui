@@ -1,5 +1,6 @@
 import { endpoint, perpetual } from '../../../helper/constant'
 import * as formatter from '../../model/format'
+import { redux_org } from '../../../helper/reduxData';
 
 let fields = formatter.fields
 
@@ -8,15 +9,23 @@ export const keys = () => ([
     { field: fields.federationName, label: 'Federation Name', serverField: 'federationname', visible: true, key: true, sortable: true },
     { field: fields.operatorName, serverField: 'selfoperatorid', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
     { field: fields.zoneId, label: 'Zones', serverField: 'zoneid', visible: true },
-    { field: fields.partnerOperatorName, label: 'Partner Operator', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', dataType: perpetual.TYPE_ARRAY, detailView: true },
     { field: fields.register, serverField: 'Registered', label: 'Registered Zones' },
-
 ])
+
 export const iconKeys = () => ([
     { field: fields.register, label: 'Registered Zones', icon: 'gpu_green.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_VIEWER] },
 ])
-export const showPartnerFederatorZone = (self, data) => {
-    return { method: endpoint.SHOW_FEDERATOR_PARTNER_ZONE, data: data, keys: keys(), iconKeys: iconKeys() }
+
+export const showSelfFederatorZone = (self, data) => {
+    let requestData = {}
+
+    let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
+    console.log(organization)
+    if (organization) {
+        if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
+            requestData = { selfoperatorid: organization }
+        }
+    }
+    console.log(requestData)
+    return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, data: requestData, keys: keys(), iconKeys: iconKeys() }
 }

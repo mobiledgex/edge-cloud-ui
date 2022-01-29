@@ -46,7 +46,16 @@ export const updateFederator = async (self, data) => {
 }
 
 export const showFederator = (self, data) => {
-    return { method: endpoint.SHOW_FEDERATOR, data: data, keys: keys() }
+    let requestData = {}
+    let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
+    if (organization) {
+        if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
+            requestData = { operatorid: organization, region: data.region }
+        }
+    } else {
+        requestData = data
+    }
+    return { method: endpoint.SHOW_FEDERATOR, data: requestData, keys: keys() }
 }
 
 export const deleteFederator = (self, data) => {

@@ -12,11 +12,12 @@ import { HELP_OUTBOUND_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
 import { showFederation, multiDataRequest, keys, deleteFederation, iconKeys } from "../../../../services/modules/federation"
 import { showFederator, deleteFederator, generateApiKey } from "../../../../services/modules/federator"
-import { showSelfZone } from "../../../../services/modules/zones"
+import { showSelfFederatorZone } from "../../../../services/modules/sharedZones"
 import FederationReg from "./Reg"
 import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
 import { deRegisterFederation, registerFederation } from '../../../../services/modules/federation'
 import { service, fields } from '../../../../services'
+import SharingZones from './SharingZones'
 class FederationList extends React.Component {
     constructor(props) {
         super(props);
@@ -72,7 +73,7 @@ class FederationList extends React.Component {
         return ({
             id: perpetual.PAGE_OUTBOUND_FEDERATION,
             headerLabel: 'Outbound Federation',
-            requestType: [showFederation, showFederator, showSelfZone],
+            requestType: [showFederation, showFederator, showSelfFederatorZone],
             sortBy: [fields.region, fields.federationName],
             isRegion: true,
             keys: this.keys,
@@ -99,7 +100,6 @@ class FederationList extends React.Component {
     }
 
     onShareZones = (action, data) => {
-
         data[fields.zoneId] || action.id === perpetual.ACTION_SHARE_ZONES ? this.updateState({ currentView: <FederationReg action={action.id} data={data} onClose={this.onRegClose} /> }) : this.props.handleAlertInfo('error', 'No Zones to Share !')
     }
     createVisible = (data) => {
@@ -139,16 +139,24 @@ class FederationList extends React.Component {
     getDeleteActionMessage = (action, data) => {
         return `Are you sure you want to remove self Data ?`
     }
+
     registerVisible = (data) => {
         console.log(data)
         return data[fields.federationName] !== undefined && data[fields.partnerRoleShareZoneWithSelf] === false ? true : false
     }
+
     deregisterVisible = (data) => {
         console.log(data)
         return data[fields.federationName] !== undefined && data[fields.partnerRoleShareZoneWithSelf] ? true : false
     }
+
+    showShareZones = (action, data) => {
+        data[fields.zoneCount] > 0 ? this.updateState({ currentView: <SharingZones data={data} onClose={this.onRegClose} /> }) : this.props.handleAlertInfo('error', 'No Zones available for this federation !')
+    }
+
     actionMenu = () => {
         return [
+            { id: perpetual.ACTION_VIEW_SHARE_ZONES, label: 'View Zones Shared', onClick: this.showShareZones, type: 'edit' },
             { id: perpetual.ACTION_SHARE_ZONES, label: 'Share Zones', onClick: this.onShareZones, visible: this.federationNameVisible, type: 'edit' },
             { id: perpetual.ACTION_UNSHARE_ZONES, label: 'Unshare Zones', onClick: this.onShareZones, visible: this.federationNameVisible, type: 'edit' },
             { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Detail', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },

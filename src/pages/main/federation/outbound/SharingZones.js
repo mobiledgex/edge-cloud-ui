@@ -7,9 +7,9 @@ import { withRouter } from 'react-router-dom';
 import { redux_org } from '../../../../helper/reduxData';
 import { connect } from 'react-redux';
 import { perpetual } from '../../../../helper/constant';
-import { showPartnerFederatorZone, keys, iconKeys } from '../../../../services/modules/partnerZones';
+import { keys, iconKeys, showSelfFederatorZone } from '../../../../services/modules/sharedZones';
 
-class PartnerZones extends React.Component {
+class SharingZones extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -30,6 +30,10 @@ class PartnerZones extends React.Component {
         this.updateState({ invoice: undefined })
     }
 
+    viewInvoice = (action, data) => {
+        this.updateState({ invoice: data })
+    }
+
     actionMenu = () => {
         // return [
         //     { label: 'View Invoice', onClick: this.viewInvoice },
@@ -41,32 +45,36 @@ class PartnerZones extends React.Component {
     }
 
     requestInfo = () => {
+        const { billingOrg } = this.state
         return ({
-            id: perpetual.PAGE_PARTNER_ZONES,
-            headerLabel: 'Partner Zones',
+            id: perpetual.PAGE_SHARED_ZONES,
+            headerLabel: 'Sharing Zones',
             nameField: fields.zoneId,
-            requestType: [showPartnerFederatorZone],
+            requestType: [showSelfFederatorZone],
             sortBy: [fields.federationName],
             selection: false,
             keys: this.keys,
             onAdd: undefined,
             grouping: false,
-            filter: { federationname: this.props.data[fields.federationName], selfoperatorid: this.props.data[fields.operatorName], operatorid: this.props.data[fields.partnerOperatorName] },
+            filter: { federationname: this.props.data[fields.federationName], selfoperatorid: this.props.data[fields.operatorName] },
             back: this.onBackClick,
             iconKeys: iconKeys()
         })
     }
 
     render() {
+        const { invoice, billingOrg } = this.state
         return (
             <React.Fragment>
-                <DataView id={perpetual.PAGE_PARTNER_ZONES} actionMenu={this.actionMenu} requestInfo={this.requestInfo} />
+                <DataView id={perpetual.PAGE_SHARED_ZONES} actionMenu={this.actionMenu} requestInfo={this.requestInfo} />
             </React.Fragment>
         )
     }
 
     componentDidMount() {
         console.log(this.props.data)
+        // let billingOrg = this.props.data ? this.props.data : this.props.location.state ? this.props.location.state.data : undefined
+        // billingOrg ? this.setState({ billingOrg }) : this.props.history.push(`/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)
         this._isMounted = true
     }
 
@@ -81,4 +89,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default withRouter(connect(mapStateToProps, null)(PartnerZones));
+export default withRouter(connect(mapStateToProps, null)(SharingZones));

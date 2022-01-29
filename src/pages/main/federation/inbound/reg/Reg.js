@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../../actions';
@@ -6,7 +6,7 @@ import * as actions from '../../../../../actions';
 import MexForms, { SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON, DUALLIST } from '../../../../../hoc/forms/MexForms';
 import { redux_org } from '../../../../../helper/reduxData'
 //model
-import { service, updateFieldData, fields } from '../../../../../services'
+import { service, fields } from '../../../../../services'
 import { HELP_INBOUND_REG, HELP_INBOUND_REG_1, HELP_INBOUND_REG_2 } from "../../../../../tutorial";
 import { Item, Step, ListItem } from 'semantic-ui-react';
 import { createFederator, updateFederator } from "../../../../../services/modules/federator"
@@ -88,7 +88,6 @@ class InboundReg extends React.Component {
     }
 
     render() {
-        console.log(this.state.forms, "forms")
         const { open, step } = this.state
         return (
             <div className="round_panel">
@@ -158,7 +157,6 @@ class InboundReg extends React.Component {
     onRegisterFederation = async (nextStep) => {
         this.handleClose()
         if (nextStep) {
-            console.log(this.federatorData)
             let mc = await registerFederation(this, this.federatorData)
             if (service.responseValid(mc)) {
                 this.props.handleAlertInfo('success', `Federation registered successfully !`)
@@ -218,7 +216,7 @@ class InboundReg extends React.Component {
     }
     step1 = () => {
         return [
-            { label: `${this.isUpdate ? 'Update' : 'Define'} Self Data`, formType: MAIN_HEADER, visible: true },
+            { label: `${this.isUpdate ? 'Update' : 'Define'} Operator Detail`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Enter Partner Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
             { field: fields.countryCode, label: ' Country Code', formType: INPUT, placeholder: 'Enter Partner Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
@@ -252,7 +250,7 @@ class InboundReg extends React.Component {
             { field: fields.operatorName, label: 'Operator', formType: INPUT, placeholder: 'Select Operator', rules: { required: true, disabled: true }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
             { field: fields.federationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Fderation Name', rules: { required: true, disabled: true }, visible: true, tip: 'Name to uniquely identify a federation' },
             { field: fields.partnerOperatorName, label: 'Partner operator', formType: INPUT, placeholder: 'Enter Partner Operator', rules: { required: true, disabled: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Globally unique string to identify an operator platform' },
-            { field: fields.zonesList, label: 'Zones', formType: DUALLIST, visible: true, rules: { required: this.zoneList > 0 ? true : false } }
+            { field: fields.zonesList, label: 'Zones', formType: DUALLIST, visible: true, rules: { required: true } }
         ]
     }
 
@@ -364,7 +362,6 @@ class InboundReg extends React.Component {
             }
         }
         this.zoneList = removeList.length > 0 ? removeList : this.zoneList
-        console.log(this.zoneList, "zoneList")
     }
     onRegisterResponse = (mcList) => {
         if (mcList && mcList.length > 0) {
@@ -389,7 +386,6 @@ class InboundReg extends React.Component {
             zonesList.forEach(zone => {
                 let requestData = { ...data }
                 requestData[fields.zoneId] = zone
-                console.log(requestData, "requestData")
                 requestList.push(requestCall(requestData))
             })
             if (requestList && requestList.length > 0) {
@@ -403,7 +399,6 @@ class InboundReg extends React.Component {
     }
 
     addUserForm = async (data) => {
-        console.log(data, "data")
         const registerAction = this.props.action === perpetual.ACTION_REGISTER_ZONES || this.props.action === perpetual.ACTION_DEREGISTER_ZONES
         let forms = registerAction ? this.step3(data) : this.step2(data)
         for (let i = 0; i < forms.length; i++) {
@@ -414,9 +409,6 @@ class InboundReg extends React.Component {
                 this.checkForms(form, forms, true)
             }
         }
-        // forms.push(
-        //     { label: 'Create', formType: 'Button', onClick: this.onCreateFederation, validate: true },
-        //     { label: 'Cancel', formType: 'Button', onClick: this.onCancel })
 
         if (registerAction) {
             let action = this.isZonesRegister ? 'Register' : 'Degister'
@@ -425,25 +417,20 @@ class InboundReg extends React.Component {
             let operatorid = data[fields.partnerOperatorName]
             let zonesList = await showAuthSyncRequest(this, showPartnerFederatorZone(this, { selfoperatorid, federationname, operatorid }, true))
             this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
-            console.log(this.zoneList)
             if (this.zoneList.length > 0) {
                 this.filterZones();
             }
             forms.push(
                 { label: `${action}`, formType: 'Button', onClick: this.onRegisterZones, validate: true },
                 { label: 'Cancel', formType: 'Button', onClick: this.onCancel })
-            // this.setState({
-            //     step: 2,
-            //     forms: forms
-            // })
-            this.updateFormData(forms, data)
+
+            // this.updateFormData(forms, data)
             this.updateState({
-                forms
+                forms,
+                step: 2
             })
-            console.log(this.state.forms)
-            // this.props.handleViewMode(HELP_INBOUND_REG_2);
+            this.props.handleViewMode(HELP_INBOUND_REG_2);
         } else {
-            console.log("jvjnfcjeceijeni")
             forms.push(
                 { label: 'Create', formType: 'Button', onClick: this.onCreateFederation, validate: true },
                 { label: 'Cancel', formType: 'Button', onClick: this.onCancel })
@@ -495,7 +482,7 @@ class InboundReg extends React.Component {
         if (this.props.action === perpetual.ACTION_UPDATE_PARTNER) {
             forms = this.step2(data)
         }
-        else if (this.props.action === perpetual.ACTION_REGISTER_ZONES) {
+        else if (this.props.action === perpetual.ACTION_REGISTER_ZONES || this.props.action === perpetual.ACTION_DEREGISTER_ZONES) {
             forms = this.step3(data)
         } else {
             forms = this.step1(data)

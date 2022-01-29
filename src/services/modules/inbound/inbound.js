@@ -50,10 +50,10 @@ export const iconKeys = () => ([
 
 export const showPartnerFederatorZone = (self, data) => {
     let requestData = {}
-    let organization = data.org ? data.org : redux_org.isAdmin(self)
+    let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
     if (organization) {
-        if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
-            requestData.selfoperatorid = organization
+        if (redux_org.isOperator(self)) {
+            requestData = { operatorid: organization, region: data.region }
         }
     }
     return { method: endpoint.SHOW_FEDERATOR_PARTNER_ZONE, data: requestData, keys: keys(), iconKeys: iconKeys() }

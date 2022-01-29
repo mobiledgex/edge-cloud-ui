@@ -273,6 +273,7 @@ export const multiDataRequest = (keys, mcList, specific) => {
 }
 
 export const showCloudlets = (self, data, specific) => {
+    console.log(data, "data")
     let requestData = {}
     let developer = redux_org.isDeveloper(self) || data.type === perpetual.DEVELOPER
     let method = developer ? endpoint.SHOW_ORG_CLOUDLET : endpoint.SHOW_CLOUDLET
@@ -296,6 +297,7 @@ export const showCloudlets = (self, data, specific) => {
             }
         }
     }
+    console.log(requestData)
     return { method, data: requestData, keys: keys(), iconKeys: iconKeys() }
 }
 

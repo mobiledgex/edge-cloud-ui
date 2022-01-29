@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import uuid from 'uuid';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, ICON_BUTTON, MAIN_HEADER, HEADER, MULTI_FORM } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM } from '../../../hoc/forms/MexForms';
 import ListMexMap from '../../../hoc/datagrid/map/ListMexMap';
 import MexTab from '../../../hoc/forms/tab/MexTab';
 import { redux_org } from '../../../helper/reduxData'
@@ -73,6 +73,14 @@ class ZoneReg extends React.Component {
         if (redux_org.isOperator(this)) {
             for (let form of forms) {
                 if (form.field === fields.cloudletName) {
+                    if (latitude && longitude) {
+                        let zone = {}
+                        zone.cloudletLocation = { latitude, longitude }
+                        this.updateState({ mapData: [zone] })
+                    }
+                    else {
+                        this.updateState({ mapData: [] })
+                    }
                     this.updateUI(form)
                     break;
                 }
@@ -85,6 +93,7 @@ class ZoneReg extends React.Component {
     operatorValueChange = (currentForm, forms, isInit) => {
         for (let form of forms) {
             if (form.field === fields.cloudletName) {
+                console.log(form)
                 this.updateUI(form)
                 if (!isInit) {
                     this.updateState({ forms })
@@ -119,7 +128,6 @@ class ZoneReg extends React.Component {
         else if (form.field === fields.latitude || form.field === fields.longitude) {
             this.locationChange(form, forms, isInit)
         }
-
     }
 
     /**Required */
@@ -131,7 +139,7 @@ class ZoneReg extends React.Component {
 
     onCreateZones = async (data) => {
         if (data) {
-            let mc;
+            let mc; x
             let forms = this.state.forms;
             let stateList = [];
             let cityList = [];
@@ -154,7 +162,6 @@ class ZoneReg extends React.Component {
                     data[uuid] = undefined
                 }
             }
-            console.log(data)
             cityList.length > 0 && (data[fields.city] = cityList)
             stateList.length > 0 && (data[fields.state] = stateList)
             mc = await createSelfZone(this, data)
@@ -267,47 +274,11 @@ class ZoneReg extends React.Component {
         }
     }
 
-
     locationForm = () => ([
         { field: fields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } },
         { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } }
     ])
 
-    /*Multi Form*/
-    cityForm = () => ([
-        { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City Name', rules: { required: true }, width: 7, visible: true },
-        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
-    ])
-
-    stateForm = () => ([
-        { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter state Name', rules: { required: true }, width: 5, visible: true, update: { edit: true } },
-        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
-    ])
-
-    getCityForm = (form) => {
-        return ({ uuid: uuid(), field: fields.city, formType: MULTI_FORM, forms: form ? form : this.cityForm(), width: 3, visible: true })
-    }
-
-    getStateForm = (form) => {
-        return ({ uuid: uuid(), field: fields.state, formType: MULTI_FORM, forms: form ? form : this.stateForm(), width: 3, visible: true })
-    }
-
-    removeMultiForm = (e, form) => {
-        if (form.parent) {
-            let updateForms = Object.assign([], this.state.forms)
-            updateForms.splice(form.parent.id, 1);
-            this.updateState({
-                forms: updateForms
-            })
-        }
-    }
-
-    addMultiForm = (e, form) => {
-        let parent = form.parent;
-        let forms = this.state.forms;
-        forms.splice(parent.id + 1, 0, form.multiForm());
-        this.updateState({ forms })
-    }
     formKeys = () => {
         return [
             { label: 'Create Zones', formType: MAIN_HEADER, visible: true },
@@ -322,7 +293,6 @@ class ZoneReg extends React.Component {
             { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City Name', width: 7, visible: true },
         ]
     }
-
 
     updateFormData = (forms, data) => {
         for (let i = 0; i < forms.length; i++) {

@@ -18,7 +18,6 @@ import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
 import { service, fields } from '../../../../services'
 import PartnerZones from './PartnerZone'
 import MexForms, { INPUT, BUTTON } from '../../../../hoc/forms/MexForms';
-import { redux_org } from '../../../../helper/reduxData';
 class InboundList extends React.Component {
     constructor(props) {
         super(props);
@@ -190,11 +189,11 @@ class InboundList extends React.Component {
         return [
             { id: perpetual.ACTION_REGISTER_ZONES, label: 'View Partner Zones', onClick: this.onViewPartner, type: 'Register Federation' },
             { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Detail', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
-            { id: perpetual.ACTION_SET_API_KEY, label: 'Set API Key', onClick: this.onSetApiKey, type: 'Generate API Key' },
+            { id: perpetual.ACTION_SET_API_KEY, label: 'Set API Key', onClick: this.onSetApiKey, visible: this.federationNameVisible, type: 'Generate API Key' },
             { id: perpetual.ACTION_REGISTER_FEDERATION, label: 'Register Federation', onClick: this.onRegisterFederation, visible: this.registerVisible, type: 'Register Federation' },
             { id: perpetual.ACTION_DEREGISTER_FEDERATION, label: 'Deregister Federation', onClick: this.onRegisterFederation, visible: this.deregisterVisible, type: 'Register Federation' },
-            { id: perpetual.ACTION_REGISTER_ZONES, label: 'Register Zones', onClick: this.onRegisterZones, type: 'Register Federation' },
-            { id: perpetual.ACTION_DEREGISTER_ZONES, label: 'Deregister Zones', onClick: this.onRegisterZones, type: 'Register Federation' },
+            { id: perpetual.ACTION_REGISTER_ZONES, label: 'Register Zones', onClick: this.onRegisterZones, visible: this.federationNameVisible, type: 'Register Federation' },
+            { id: perpetual.ACTION_DEREGISTER_ZONES, label: 'Deregister Zones', onClick: this.onRegisterZones, visible: this.federationNameVisible, type: 'Register Federation' },
             { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Add Partner Data' },
             { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.createVisible, onClick: deleteFederator, type: 'Delete', dialogMessage: this.getDeleteActionMessage },
             { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.federationNameVisible, onClick: deleteFederation, type: 'Delete' },
@@ -204,13 +203,6 @@ class InboundList extends React.Component {
     onValueChange = (form) => {
 
     }
-
-    // onSettingApiKey = async(data) => {
-    //     let mc = await requestCall(this, data)
-    //     if (service.responseValid(mc)) {
-    //         this.props.handleAlertInfo('success', `Federation ${text} successfully !`)
-    //     }
-    // }
 
     reloadForms = () => {
         this.updateState({
@@ -264,7 +256,6 @@ class InboundList extends React.Component {
         )
     }
     loadDefaultData = (forms, data) => {
-        console.log(data)
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (data) {
