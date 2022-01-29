@@ -32,6 +32,7 @@ class ZoneReg extends React.Component {
         this.requestedRegionList = [];
         this.operatorList = [];
         this.cloudletList = [];
+        this.locationCloudlet = [];
     }
 
     updateState = (data) => {
@@ -55,16 +56,9 @@ class ZoneReg extends React.Component {
                     longitude = form.value
                 }
             }
-            if (latitude && longitude) {
-                let zone = {}
-                zone.cloudletLocation = { latitude, longitude }
-                this.updateState({ mapData: [zone] })
-            }
-            else {
-                this.updateState({ mapData: [] })
-            }
         }
     }
+
     getCloudletInfo = async (region, form, forms) => {
         if (!this.requestedRegionList.includes(region)) {
             this.cloudletList = [...this.cloudletList, ...await service.showAuthSyncRequest(this, showCloudlets(this, { region }))]
@@ -88,7 +82,6 @@ class ZoneReg extends React.Component {
         }
         this.updateState({ forms })
     }
-
 
     operatorValueChange = (currentForm, forms, isInit) => {
         for (let form of forms) {
@@ -117,12 +110,33 @@ class ZoneReg extends React.Component {
         }
     }
 
+    cloudletValueChange = (currentForm, forms, isInit) => {
+        for (let form of forms) {
+            let cloudletName = currentForm.value;
+            this.locationCloudlet = this.cloudletList.filter(obj => obj.cloudletName === cloudletName);
+            let zone = {}
+            if (this.locationCloudlet[0] && (this.locationCloudlet[0].latitude || this.locationCloudlet[0].longitude)) {
+                zone.cloudletLocation = { latitude: this.locationCloudlet[0].latitude, longitude: this.locationCloudlet[0].longitude }
+                this.locationCloudlet = [zone]
+                this.updateState({ mapData: [zone] })
+            } else {
+                this.updateState({ mapData: [] })
+            }
+            if (form.field === fields.cloudletLocation) {
+                this.onMapClick(this.locationCloudlet)
+            }
+        }
+    }
+
     checkForms = (form, forms, isInit = false) => {
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
         }
         else if (form.field === fields.operatorName) {
             this.operatorValueChange(form, forms, isInit)
+        }
+        else if (form.field === fields.cloudletName) {
+            this.cloudletValueChange(form, forms, isInit)
         }
         else if (form.field === fields.latitude || form.field === fields.longitude) {
             this.locationChange(form, forms, isInit)
@@ -138,7 +152,7 @@ class ZoneReg extends React.Component {
 
     onCreateZones = async (data) => {
         if (data) {
-            let mc; x
+            let mc; 
             let forms = this.state.forms;
             let stateList = [];
             let cityList = [];
@@ -178,16 +192,15 @@ class ZoneReg extends React.Component {
             let form = forms[i]
             if (form.field === fields.cloudletLocation && !form.rules.disabled) {
                 let zone = {}
-                zone.cloudletLocation = { latitude: location.lat, longitude: location.long }
-                this.updateState({ mapData: [zone] })
+                zone.cloudletLocation = { latitude: location[0].cloudletLocation.latitude, longitude: location[0].cloudletLocation.longitude }
                 let childForms = form.forms;
                 for (let j = 0; j < childForms.length; j++) {
                     let childForm = childForms[j]
                     if (childForm.field === fields.latitude) {
-                        childForm.value = location.lat
+                        childForm.value = location[0].cloudletLocation.latitude
                     }
                     else if (childForm.field === fields.longitude) {
-                        childForm.value = location.long
+                        childForm.value = location[0].cloudletLocation.longitude
                     }
                 }
                 break;
