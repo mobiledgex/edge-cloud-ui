@@ -11,12 +11,12 @@ import { HELP_OUTBOUND_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
 import { showFederation, multiDataRequest, keys, deleteFederation, iconKeys } from "../../../../services/modules/federation"
 import { showFederator, deleteFederator, generateApiKey } from "../../../../services/modules/federator"
-import { showSelfFederatorZone } from "../../../../services/modules/sharedZones"
 import FederationReg from "./Reg"
 import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
 import { deRegisterFederation, registerFederation } from '../../../../services/modules/federation'
 import { service, fields } from '../../../../services'
 import SharingZones from './SharingZones'
+import { showSelfFederatorZone } from "../../../../services/modules/zones";
 class FederationList extends React.Component {
     constructor(props) {
         super(props);
@@ -145,7 +145,7 @@ class FederationList extends React.Component {
     }
 
     showShareZones = (action, data) => {
-        data[fields.zoneCount] > 0 ? this.updateState({ currentView: <SharingZones data={data} onClose={this.onRegClose} /> }) : this.props.handleAlertInfo('error', 'No Zones available for this federation !')
+        data[fields.zoneId] ? this.updateState({ currentView: <SharingZones data={data} onClose={this.onRegClose} /> }) : this.props.handleAlertInfo('error', 'No Zones available for this federation !')
     }
 
     actionMenu = () => {

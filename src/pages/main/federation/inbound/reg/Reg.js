@@ -29,6 +29,10 @@ const stepData = [
     {
         step: "Step 2",
         description: "Create Partner Operator"
+    },
+    {
+        step: "Step 3",
+        description: "Register Partner Zones"
     }
 ]
 // const useStyles = makeStyles((theme) => ({
@@ -148,8 +152,6 @@ class InboundReg extends React.Component {
                         </Button>
                     </DialogActions>
                 </Dialog>}
-
-
             </div>
         )
     }
@@ -162,7 +164,32 @@ class InboundReg extends React.Component {
                 this.props.handleAlertInfo('success', `Federation registered successfully !`)
             }
         }
-        this.props.onClose(true)
+        this.registerZones(this.federatorData)
+    }
+
+    registerZones = async (data) => {
+        let forms = this.step3(data)
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            this.updateUI(form)
+            if (data) {
+                form.value = data[form.field]
+                this.checkForms(form, forms, true)
+            }
+        }
+        let federationname = data[fields.federationName]
+        let selfoperatorid = data[fields.operatorName]
+        let operatorid = data[fields.partnerOperatorName]
+        let zonesList = await showAuthSyncRequest(this, showPartnerFederatorZone(this, { federationname, selfoperatorid, operatorid }, true))
+        this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
+        forms.push(
+            { label: 'Register', formType: 'Button', onClick: this.onRegisterZones, validate: true },
+            { label: 'Cancel', formType: 'Button', onClick: this.onCancel })
+        this.setState({
+            step: 2,
+            forms: forms
+        })
+        this.props.handleViewMode(HELP_INBOUND_REG_2);
     }
 
     resetFormValue = (form) => {
@@ -223,7 +250,7 @@ class InboundReg extends React.Component {
             { field: fields.countryCode, label: ' Country Code', formType: INPUT, placeholder: 'Enter Partner Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
             { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
             { field: fields.locatorendpoint, label: 'Locator End point', formType: INPUT, placeholder: 'Enter Partner Locator Endpoint', visible: true, update: { edit: true }, tip: 'IP and Port of discovery service URL of operator platform' },
-            { field: fields.mcc, label: 'MCC', formType: INPUT, placeholder: 'Enter MCC Code', rules: { required: true }, visible: true, update: { edit: true }, tip: 'Mobile country code of operator sending the request' },
+            { field: fields.mcc, label: 'MCC', formType: INPUT, placeholder: 'Enter MCC Code', rules: { required: true, type: 'number' }, visible: true, update: { edit: true }, tip: 'Mobile country code of operator sending the request' },
             { field: fields.mnc, label: 'List of MNC', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'List of mobile network codes of operator sending the request', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getMnc }], visible: true, tip: 'List of mobile network codes of operator sending the request' },
         ]
     }
@@ -246,7 +273,7 @@ class InboundReg extends React.Component {
 
     step3 = () => {
         return [
-            { label: `${this.props.action === perpetual.ACTION_REGISTER_ZONES ? 'Register' : 'Deregister'} Zones`, formType: MAIN_HEADER, visible: true },
+            { label: `${this.isZonesRegister ? 'Register' : 'Deregister'} Zones`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true, disabled: true }, visible: true, update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: INPUT, placeholder: 'Select Operator', rules: { required: true, disabled: true }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
             { field: fields.federationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Fderation Name', rules: { required: true, disabled: true }, visible: true, tip: 'Name to uniquely identify a federation' },
@@ -272,7 +299,7 @@ class InboundReg extends React.Component {
     }
 
     mncForm = () => ([
-        { field: fields.mnc, label: 'Mnc', formType: INPUT, placeholder: 'Enter Mnc code', rules: { required: true }, width: 7, visible: true, update: { edit: true } },
+        { field: fields.mnc, label: 'Mnc', formType: INPUT, placeholder: 'Enter Mnc code', rules: { required: true, type: 'number' }, width: 7, visible: true, update: { edit: true } },
         { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
@@ -319,10 +346,7 @@ class InboundReg extends React.Component {
             data[fields.mnc] = [...mncList]
         }
         if (this.props.isUpdate) {
-            // let updateData = updateFieldData(this, forms, data, this.props.data)
-            // if (updateData.fields.length > 0) {
             mc = await updateFederator(this, data)
-            // }
         }
         else {
             mc = await createFederator(this, data)
@@ -477,7 +501,30 @@ class InboundReg extends React.Component {
         }
 
     }
-
+    filterZones = () => {
+        let removeList = []
+        if (this.props.data) {
+            let selectedZones = this.props.data[fields.zoneId]
+            if (selectedZones && selectedZones.length > 0) {
+                for (let i = 0; i < selectedZones.length; i++) {
+                    let selectedZone = selectedZones[i];
+                    for (let j = 0; j < this.zoneList.length; j++) {
+                        let zoneid = this.zoneList[j]
+                        if (selectedZone === zoneid) {
+                            if (this.props.action === perpetual.ACTION_REGISTER_ZONES) {
+                                this.zoneList.splice(j, 1)
+                            }
+                            else if (this.props.action === perpetual.ACTION_DEREGISTER_ZONES) {
+                                removeList.push(zoneid)
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        this.zoneList = removeList.length > 0 ? removeList : this.zoneList
+    }
     getFormData = async (data) => {
         let forms
         if (this.props.action === perpetual.ACTION_UPDATE_PARTNER) {
@@ -485,6 +532,18 @@ class InboundReg extends React.Component {
         }
         else if (this.props.action === perpetual.ACTION_REGISTER_ZONES || this.props.action === perpetual.ACTION_DEREGISTER_ZONES) {
             forms = this.step3(data)
+            let federationname = data[fields.federationName]
+            let selfoperatorid = data[fields.operatorName]
+            let operatorid = data[fields.partnerOperatorName]
+            let zonesList = await showAuthSyncRequest(this, showPartnerFederatorZone(this, { federationname, selfoperatorid, operatorid }, true))
+            this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
+            if (this.zoneList.length > 0) {
+                this.filterZones();
+            }
+            else {
+                this.props.handleAlertInfo('error', `No Zones to available for ${data[fields.federationName]} !`)
+                this.props.onClose(true)
+            }
         } else {
             forms = this.step1(data)
         }

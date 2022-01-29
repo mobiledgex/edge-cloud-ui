@@ -19,7 +19,7 @@ export const keys = () => ([
     { field: fields.federationId, serverField: 'selffederationid', label: 'Federation ID' },
     { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.zoneId, label: 'Shared Zone', serverField: 'zoneid', dataType: perpetual.TYPE_ARRAY },
-    // { field: fields.zoneCount, label: 'Zone Count', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.zoneCount, label: 'Zone Count', sortable: true, visible: true, filter: true, key: true },
     { field: fields.partnerRoleShareZoneWithSelf, serverField: 'PartnerRoleShareZonesWithSelf' },
     { field: fields.role, label: 'Registered Federation', icon: 'edgeboxonly.svg', detailView: false }
 ])
@@ -40,6 +40,7 @@ export const getKey = (data, isCreate) => {
 
     return federation
 }
+
 export const iconKeys = () => ([
     { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered Federation', icon: 'edgeboxonly.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER,perpetual.OPERATOR_MANAGER,perpetual.OPERATOR_VIEWER] },
 ])
@@ -113,6 +114,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             zonesList = mcRequest.response.data
         }
     }
+
     if (federatorList && federatorList.length > 0) {
         for (let i = 0; i < federatorList.length; i++) {
             let federator = federatorList[i]
@@ -135,11 +137,10 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             let zone = []
             for (let j = 0; j < zonesList.length; j++) {
                 let zones = zonesList[j]
-                if (federator[fields.federationName] === zones[fields.federationName] && federator[fields.operatorName] === zones[fields.operatorName]) {
+                if (federator[fields.federationName] === zones[fields.federationName]) {
                     zone.push(zones[fields.zoneId])
                     federator[fields.zoneId] = zone
-                    // federator[fields.zoneCount] = zone.length
-                    // federator[fields.register] = zones[fields.register]
+                    federator[fields.zoneCount] = zone.length
                 }
             }
         }

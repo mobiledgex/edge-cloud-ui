@@ -60,7 +60,7 @@ export const showFederator = (self, data) => {
 
 export const deleteFederator = (self, data) => {
     let requestData = getKey(data)
-    return { method: endpoint.DELETE_FEDERATOR, data: requestData, success: `self data deleted successfully` }
+    return { method: endpoint.DELETE_FEDERATOR, data: requestData, success: `Federation deleted successfully` }
 }
 
 export const generateApiKey = async (self, data) => {

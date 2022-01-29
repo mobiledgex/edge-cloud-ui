@@ -90,9 +90,11 @@ class InboundList extends React.Component {
             iconKeys: iconKeys()
         })
     }
+
     onAdd = (type) => {
         this.updateState({ currentView: <InboundReg onClose={this.onRegClose} /> });
     }
+
     onUpdate = (action, data) => {
         this.updateState({ currentView: <InboundReg data={data} isUpdate={true} onClose={this.onRegClose} /> });
     }
@@ -116,15 +118,19 @@ class InboundList extends React.Component {
     registerVisible = (data) => {
         return data[fields.federationName] !== undefined && data[fields.partnerRoleShareZoneWithSelf] === false ? true : false
     }
+
     deregisterVisible = (data) => {
         return data[fields.federationName] !== undefined && data[fields.partnerRoleShareZoneWithSelf] ? true : false
     }
+
     onShareZones = (action, data) => {
         data[fields.zoneId] || action.id === perpetual.ACTION_SHARE_ZONES ? this.updateState({ currentView: <InboundReg action={action.id} data={data} onClose={this.onRegClose} /> }) : this.props.handleAlertInfo('error', 'No Zones to Share !')
     }
+
     createVisible = (data) => {
         return data[fields.federationName] === undefined
     }
+
     federationNameVisible = (data) => {
         return data[fields.federationName] !== undefined
     }
@@ -225,7 +231,7 @@ class InboundList extends React.Component {
                 {this.apiKey ? <Dialog open={open} onClose={this.onClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
                     <DialogTitle id="profile">
                         <div style={{ float: "left", display: 'inline-block' }}>
-                            <h3 style={{ fontWeight: 700 }}>Set Key</h3>
+                            <h3 style={{ fontWeight: 700 }}>Api key</h3>
                         </div>
                     </DialogTitle>
                     <DialogContent style={{ width: 600 }}>

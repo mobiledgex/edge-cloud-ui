@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -10,8 +10,8 @@ import { service, fields } from '../../../../services'
 import { HELP_OUTBOUND_REG, HELP_OUTOUND_REG_1, HELP_OUTOUND_REG_2 } from "../../../../tutorial";
 import { Item, Step, ListItem } from 'semantic-ui-react';
 import { createFederator, updateFederator } from "../../../../services/modules/federator"
-import { createFederation } from '../../../../services/modules/federation'
-import { Grid, Dialog, DialogTitle, List, DialogActions, DialogContent, Button } from '@material-ui/core';
+import { createFederation, registerFederation } from '../../../../services/modules/federation'
+import { Grid, Dialog, DialogTitle, DialogActions, DialogContent, Button, Typography } from '@material-ui/core';
 import { perpetual } from '../../../../helper/constant';
 import uuid from 'uuid';
 import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
@@ -19,6 +19,8 @@ import { _sort } from '../../../../helper/constant/operators';
 import { getOrganizationList } from '../../../../services/modules/organization';
 import { showSelfZone, shareSelfZones, unShareSelfZones } from "../../../../services/modules/zones"
 import { showAuthSyncRequest } from '../../../../services/service';
+import { ICON_COLOR } from '../../../../helper/constant/colors';
+
 const stepData = [
     {
         step: "Step 1",
@@ -116,7 +118,7 @@ class FederationReg extends React.Component {
                         </Grid>
                     </Grid>
                 </Item>
-                <Dialog open={open} onClose={this.onClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
+                {this.federationId ? <Dialog open={open} onClose={this.onClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
                     <DialogTitle id="profile">
                         <div style={{ float: "left", display: 'inline-block' }}>
                             <h3 style={{ fontWeight: 700 }}>One time Key</h3>
@@ -135,9 +137,38 @@ class FederationReg extends React.Component {
                             Close
                         </Button>
                     </DialogActions>
-                </Dialog>
+                </Dialog> : <Dialog open={open} aria-labelledby="profile" disableEscapeKeyDown={true}>
+                    <DialogContent style={{ width: 500 }}>
+                        <Typography style={{ marginTop: 20, fontSize: 16 }}>
+                            Do you want to register Federation?
+                        </Typography>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => this.onRegisterFederation()} style={{ color: '#D3D3D3' }}>
+                            NO
+                        </Button>
+                        <Button onClick={() => this.onRegisterFederation(true)} style={{ color: ICON_COLOR }}>
+                            YES
+                        </Button>
+                    </DialogActions>
+                </Dialog>}
+
             </div>
         )
+    }
+
+    onRegisterFederation = async (register) => {
+        this.updateState({
+            open: true
+        })
+        if (register) {
+            this.handleClose()
+            let mc = await registerFederation(this, this.federatorData)
+            if (service.responseValid(mc)) {
+                this.props.handleAlertInfo('success', `Federation registered successfully !`)
+            }
+        }
+        this.shareZonePage(this.federatorData)
     }
 
     shareZonePage = async (data) => {
@@ -153,7 +184,7 @@ class FederationReg extends React.Component {
         let region = data[fields.region]
         let operatorid = data[fields.operatorName]
         let countryCode = data[fields.partnerCountryCode]
-        let zonesList = await showAuthSyncRequest(this, showSelfZone(this, { region, operatorid, countryCode }))
+        let zonesList = await showAuthSyncRequest(this, showSelfZone(this, { region, operatorid, countryCode }, true))
         this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
         forms.push(
             { label: 'Share', formType: 'Button', onClick: this.onShareZones, validate: true },
@@ -162,13 +193,6 @@ class FederationReg extends React.Component {
             step: 2,
             forms: forms
         })
-        // if (this.zoneList.length > 0) {
-        //     this.filterZones();
-        // } else {
-        //     this.props.handleAlertInfo('error', 'No Zones to Share!')
-        //     this.props.onClose(true)
-        //     return
-        // }
         this.props.handleViewMode(HELP_OUTOUND_REG_2);
     }
 
@@ -451,7 +475,9 @@ class FederationReg extends React.Component {
                 this.props.handleAlertInfo('success', `Federation ${data[fields.federationName]} Created successfully !`)
                 this.federationId = undefined
                 this.federatorData = data
-                this.props.action === perpetual.ACTION_UPDATE_PARTNER ? this.props.onClose(true) : this.shareZonePage(data)
+                this.props.action === perpetual.ACTION_UPDATE_PARTNER ? this.props.onClose(true) : this.updateState({
+                    open: true
+                })
             }
         }
     }

@@ -45,9 +45,9 @@ export const showSelfFederatorZone = (self, data, specific) => {
         requestData = data
     }
     else {
-        let organization = data.org ? data.org : redux_org.isAdmin(self)
+        let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
         if (organization) {
-            if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
+            if (redux_org.isOperator(self)) {
                 requestData.selfoperatorid = organization
             }
         }
@@ -55,29 +55,36 @@ export const showSelfFederatorZone = (self, data, specific) => {
     return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, data: requestData, keys: keys() }
 }
 
-export const showPartnerFederatorZone = (self, data) => {
+export const showPartnerFederatorZone = (self, data, specific) => {
     let requestData = {}
-    let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
-    if (organization) {
-        if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
-            requestData = { operatorid: organization, region: data.region }
-        }
-    } else {
+    if (specific) {
         requestData = data
+    }
+    else {
+        let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
+        if (organization) {
+            if (redux_org.isOperator(self)) {
+                requestData.selfoperatorid = organization
+            }
+        }
     }
     return { method: endpoint.SHOW_FEDERATOR_PARTNER_ZONE, keys: keys(), data: requestData }
 }
 
 
-export const showSelfZone = (self, data) => {
+export const showSelfZone = (self, data, specific) => {
     let requestData = {}
-    let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
-    if (organization) {
-        if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
-            requestData = { operatorid: organization, region: data.region }
-        }
-    } else {
+    if (specific) {
         requestData = data
+    }
+    else {
+        requestData.region = data.region
+        let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
+        if (organization) {
+            if (redux_org.isOperator(self)) {
+                requestData = { operatorid: organization }
+            }
+        }
     }
     return { method: endpoint.SHOW_SELF_ZONES, data: requestData, keys: keys() }
 }
@@ -124,7 +131,8 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             let selfZone = selfZoneList[i]
             for (let j = 0; j < federatorZoneList.length; j++) {
                 let federatorZone = federatorZoneList[j]
-                if (selfZone[fields.operatorName] === federatorZone[fields.selfOperatorId] && selfZone[fields.zoneId] === federatorZone[fields.zoneId]) {
+                selfZone[fields.federationName] = federatorZone[fields.federationName]
+                if (selfZone[fields.operatorName] === federatorZone[fields.operatorName]) {
                     selfZone[fields.federationName] = federatorZone[fields.federationName] ? federatorZone[fields.federationName] : undefined
                     selfZone[fields.zonesRegistered] = federatorZone[fields.register] ? federatorZone[fields.register] : false
                     break

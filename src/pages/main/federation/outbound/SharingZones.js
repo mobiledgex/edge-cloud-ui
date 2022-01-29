@@ -22,7 +22,6 @@ class SharingZones extends React.Component {
         }
     }
 
-
     actionMenu = () => {
     }
 
