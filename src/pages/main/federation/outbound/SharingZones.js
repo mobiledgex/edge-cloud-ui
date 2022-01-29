@@ -12,10 +12,6 @@ import { keys, iconKeys, showSelfFederatorZone } from '../../../../services/modu
 class SharingZones extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {
-            invoice: undefined,
-            billingOrg: undefined
-        }
         this._isMounted = false
         this.keys = keys()
     }
@@ -26,18 +22,8 @@ class SharingZones extends React.Component {
         }
     }
 
-    onClose = () => {
-        this.updateState({ invoice: undefined })
-    }
-
-    viewInvoice = (action, data) => {
-        this.updateState({ invoice: data })
-    }
 
     actionMenu = () => {
-        // return [
-        //     { label: 'View Invoice', onClick: this.viewInvoice },
-        // ]
     }
 
     onBackClick = () => {
@@ -45,7 +31,6 @@ class SharingZones extends React.Component {
     }
 
     requestInfo = () => {
-        const { billingOrg } = this.state
         return ({
             id: perpetual.PAGE_SHARED_ZONES,
             headerLabel: 'Sharing Zones',
@@ -63,7 +48,6 @@ class SharingZones extends React.Component {
     }
 
     render() {
-        const { invoice, billingOrg } = this.state
         return (
             <React.Fragment>
                 <DataView id={perpetual.PAGE_SHARED_ZONES} actionMenu={this.actionMenu} requestInfo={this.requestInfo} />
@@ -72,9 +56,6 @@ class SharingZones extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props.data)
-        // let billingOrg = this.props.data ? this.props.data : this.props.location.state ? this.props.location.state.data : undefined
-        // billingOrg ? this.setState({ billingOrg }) : this.props.history.push(`/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)
         this._isMounted = true
     }
 

@@ -20,12 +20,10 @@ export const showSelfFederatorZone = (self, data) => {
     let requestData = {}
 
     let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
-    console.log(organization)
     if (organization) {
-        if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
+        if (redux_org.isOperator(self)) {
             requestData = { selfoperatorid: organization }
         }
     }
-    console.log(requestData)
     return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, data: requestData, keys: keys(), iconKeys: iconKeys() }
 }

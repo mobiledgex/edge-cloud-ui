@@ -214,6 +214,7 @@ class InboundReg extends React.Component {
             })
         }
     }
+
     step1 = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Define'} Operator Detail`, formType: MAIN_HEADER, visible: true },
@@ -363,6 +364,7 @@ class InboundReg extends React.Component {
         }
         this.zoneList = removeList.length > 0 ? removeList : this.zoneList
     }
+
     onRegisterResponse = (mcList) => {
         if (mcList && mcList.length > 0) {
             this.props.handleLoadingSpinner(false)
@@ -370,7 +372,7 @@ class InboundReg extends React.Component {
                 if (mc.response) {
                     let data = mc.request.data;
                     let text = this.isZonesRegister ? 'Registered' : 'Deregister'
-                    this.props.handleAlertInfo('success', `Zones shared for ${text} successfully !`)
+                    this.props.handleAlertInfo('success', `Zones ${text}  ${data} successfully !`)
                     this.props.onClose(true)
                 }
             })
@@ -475,7 +477,6 @@ class InboundReg extends React.Component {
         }
 
     }
-
 
     getFormData = async (data) => {
         let forms

@@ -4,7 +4,6 @@ import DataView from '../../../../container/DataView';
 import { fields } from '../../../../services/model/format';
 
 import { withRouter } from 'react-router-dom';
-import { redux_org } from '../../../../helper/reduxData';
 import { connect } from 'react-redux';
 import { perpetual } from '../../../../helper/constant';
 import { showPartnerFederatorZone, keys, iconKeys } from '../../../../services/modules/partnerZones';
@@ -12,10 +11,6 @@ import { showPartnerFederatorZone, keys, iconKeys } from '../../../../services/m
 class PartnerZones extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {
-            invoice: undefined,
-            billingOrg: undefined
-        }
         this._isMounted = false
         this.keys = keys()
     }
@@ -26,14 +21,8 @@ class PartnerZones extends React.Component {
         }
     }
 
-    onClose = () => {
-        this.updateState({ invoice: undefined })
-    }
-
     actionMenu = () => {
-        // return [
-        //     { label: 'View Invoice', onClick: this.viewInvoice },
-        // ]
+
     }
 
     onBackClick = () => {
@@ -66,7 +55,6 @@ class PartnerZones extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props.data)
         this._isMounted = true
     }
 

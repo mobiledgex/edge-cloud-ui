@@ -105,6 +105,5 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             }
         }
     }
-    console.log(federatorList)
     return federatorList;
 }

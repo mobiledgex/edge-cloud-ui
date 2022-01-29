@@ -5,7 +5,6 @@ import DataView from '../../../../container/DataView';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-// import { fields } from '../../../services/model/format';
 import { Dialog, DialogTitle, DialogActions, DialogContent, Button } from '@material-ui/core';
 //model
 import { HELP_OUTBOUND_LIST } from "../../../../tutorial";
@@ -27,7 +26,6 @@ class FederationList extends React.Component {
             currentView: null,
             open: false,
         },
-            this.type = undefined
         this.keys = keys()
         this.apiKey = undefined
     }
@@ -43,9 +41,7 @@ class FederationList extends React.Component {
     }
     updateState = (data) => {
         if (this._isMounted) {
-            this.setState({ ...data }, () => {
-                console.log(data)
-            })
+            this.setState({ ...data })
         }
     }
 
@@ -141,12 +137,10 @@ class FederationList extends React.Component {
     }
 
     registerVisible = (data) => {
-        console.log(data)
         return data[fields.federationName] !== undefined && data[fields.partnerRoleShareZoneWithSelf] === false ? true : false
     }
 
     deregisterVisible = (data) => {
-        console.log(data)
         return data[fields.federationName] !== undefined && data[fields.partnerRoleShareZoneWithSelf] ? true : false
     }
 

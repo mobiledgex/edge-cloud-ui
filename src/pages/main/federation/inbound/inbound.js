@@ -5,7 +5,6 @@ import DataView from '../../../../container/DataView';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-// import { fields } from '../../../services/model/format';
 import { Dialog, DialogTitle, DialogActions, DialogContent, Button, LinearProgress } from '@material-ui/core';
 //model
 import { HELP_INBOUND_LIST } from "../../../../tutorial";
@@ -200,10 +199,6 @@ class InboundList extends React.Component {
         ]
     }
 
-    onValueChange = (form) => {
-
-    }
-
     reloadForms = () => {
         this.updateState({
             forms: this.state.forms
@@ -255,6 +250,7 @@ class InboundList extends React.Component {
             </div>
         )
     }
+
     loadDefaultData = (forms, data) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
@@ -264,10 +260,6 @@ class InboundList extends React.Component {
             }
         }
     }
-    getFormData = () => {
-        let forms = this.forms()
-
-    }
 
     onAddCancel = () => {
         this.props.onClose(false)
@@ -275,7 +267,6 @@ class InboundList extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
-        this.getFormData()
         this.props.handleViewMode(HELP_INBOUND_LIST)
     }
 };

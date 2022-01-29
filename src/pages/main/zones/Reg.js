@@ -93,7 +93,6 @@ class ZoneReg extends React.Component {
     operatorValueChange = (currentForm, forms, isInit) => {
         for (let form of forms) {
             if (form.field === fields.cloudletName) {
-                console.log(form)
                 this.updateUI(form)
                 if (!isInit) {
                     this.updateState({ forms })

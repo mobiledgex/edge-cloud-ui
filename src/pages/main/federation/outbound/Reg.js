@@ -6,11 +6,11 @@ import * as actions from '../../../../actions';
 import MexForms, { SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON, DUALLIST } from '../../../../hoc/forms/MexForms';
 import { redux_org } from '../../../../helper/reduxData'
 //model
-import { service, updateFieldData, fields } from '../../../../services'
-import { HELP_OUTBOUND_REG, HELP_OUTOUND_REG_1, HELP_OUTOUND_REG_2, HELP_OUTOUND_REG_3 } from "../../../../tutorial";
+import { service, fields } from '../../../../services'
+import { HELP_OUTBOUND_REG, HELP_OUTOUND_REG_1, HELP_OUTOUND_REG_2 } from "../../../../tutorial";
 import { Item, Step, ListItem } from 'semantic-ui-react';
 import { createFederator, updateFederator } from "../../../../services/modules/federator"
-import { createFederation, registerFederation } from '../../../../services/modules/federation'
+import { createFederation } from '../../../../services/modules/federation'
 import { Grid, Dialog, DialogTitle, List, DialogActions, DialogContent, Button } from '@material-ui/core';
 import { perpetual } from '../../../../helper/constant';
 import uuid from 'uuid';
@@ -91,7 +91,6 @@ class FederationReg extends React.Component {
 
     render() {
         const { open, step } = this.state
-        console.log(this.state.forms, "forms", this.federationId, this.cloudletList, this.isUpdate, step, open)
         return (
             <div className="round_panel">
                 <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
@@ -369,7 +368,6 @@ class FederationReg extends React.Component {
                 }
             }
         }
-        console.log(this.zoneList, "this.zonelist")
         this.zoneList = removeList.length > 0 ? removeList : this.zoneList
     }
     onShareResponse = (mcList) => {
@@ -379,7 +377,7 @@ class FederationReg extends React.Component {
                 if (mc.response) {
                     let data = mc.request.data;
                     let text = this.isZonesShare ? 'shared' : 'removed'
-                    this.props.handleAlertInfo('success', `Zones shared for ${text} successfully !`)
+                    this.props.handleAlertInfo('success', `Zones ${text} ${data[fields.federationName]} successfully !`)
                     this.props.onClose(true)
                 }
             })
@@ -387,7 +385,6 @@ class FederationReg extends React.Component {
     }
     onShareZones = async (data) => {
         let zonesList = data[fields.zonesList]
-        console.log(zonesList)
         let requestCall = this.isZonesShare ? shareSelfZones : unShareSelfZones
         if (zonesList && zonesList.length > 0) {
             let requestList = []
@@ -407,7 +404,6 @@ class FederationReg extends React.Component {
     }
 
     addUserForm = async (data) => {
-        console.log(data)
         const shareAction = this.props.action === perpetual.ACTION_SHARE_ZONES || this.props.action === perpetual.ACTION_UNSHARE_ZONES
         let forms = shareAction ? this.step3(data) : this.step2(data)
         for (let i = 0; i < forms.length; i++) {
@@ -492,7 +488,6 @@ class FederationReg extends React.Component {
             let countryCode = this.props.data[fields.countryCode]
             let zonesList = await showAuthSyncRequest(this, showSelfZone(this, { region, operatorid, countryCode }))
             this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
-            console.log(this.zoneList, "zonelist")
             if (this.zoneList.length > 0) {
                 this.filterZones();
             }

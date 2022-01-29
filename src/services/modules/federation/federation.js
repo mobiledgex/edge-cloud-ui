@@ -113,7 +113,6 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             zonesList = mcRequest.response.data
         }
     }
-    console.log(federatorList, federationList, zonesList)
     if (federatorList && federatorList.length > 0) {
         for (let i = 0; i < federatorList.length; i++) {
             let federator = federatorList[i]
@@ -145,6 +144,5 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             }
         }
     }
-    console.log(federatorList)
     return federatorList;
 }
