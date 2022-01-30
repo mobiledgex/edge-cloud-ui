@@ -20,7 +20,7 @@ export const getKey = (data, isCreate) => {
     let federator = {}
     federator.operatorid = data[fields.operatorName]
     if (isCreate) {
-        federator.countryCode = data[fields.countryCode]
+        federator.countryCode = data[fields.countryCode].toUpperCase()
         federator.mcc = data[fields.mcc]
         federator.mnc = data[fields.mnc]
         federator.region = data[fields.region]

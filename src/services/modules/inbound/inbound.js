@@ -48,12 +48,17 @@ export const iconKeys = () => ([
     { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered Federation', icon: 'edgeboxonly.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_VIEWER] }
 ])
 
-export const showPartnerFederatorZone = (self, data) => {
+export const showPartnerFederatorZone = (self, data, specific) => {
     let requestData = {}
-    let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
-    if (organization) {
-        if (redux_org.isOperator(self)) {
-            requestData = { operatorid: organization, region: data.region }
+    if (specific) {
+        requestData = data
+    }
+    else {
+        let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
+        if (organization) {
+            if (redux_org.isOperator(self)) {
+                requestData.selfoperatorid = organization
+            }
         }
     }
     return { method: endpoint.SHOW_FEDERATOR_PARTNER_ZONE, data: requestData, keys: keys(), iconKeys: iconKeys() }

@@ -187,7 +187,7 @@ class InboundList extends React.Component {
     }
 
     getDeleteActionMessage = (action, data) => {
-        return `Are you sure you want to remove self Data ?`
+        return `Are you sure you want to remove federation ?`
     }
 
     actionMenu = () => {

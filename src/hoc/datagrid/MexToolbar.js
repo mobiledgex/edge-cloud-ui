@@ -180,7 +180,7 @@ const MexToolbar = (props) => {
             <IconButton aria-label="data-grid-detail-view" onClick={(e) => { props.onAction(ACTION_CLOSE) }}>
                 <Icon style={{ color: ICON_COLOR }}>close</Icon>
             </IconButton>
-        </MBox  >
+        </MBox>
     )
 
     const renderBack = (order) => (
@@ -240,11 +240,11 @@ const MexToolbar = (props) => {
                             <div style={{display:'flex', alignItems:'center'}}>
                                 {customAction()}
                                 {renderGroup(1)}
-                                {/* {regionForm(2)} */}
+                                {regionForm(2)}
                                 {mapForm(3)}
                                 {searchForm(4)}
                                 {addForm(5)}
-                                {/* {picker(6)} */}
+                                {picker(6)}
                                 {refreshForm(7)}
                             </div>
                     }

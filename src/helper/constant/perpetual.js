@@ -49,9 +49,9 @@ export const ACTION_UNSHARE_ZONES = 'UnShareZones'
 export const ACTION_UPDATE_PARTNER = 'updatePartner'
 export const ACTION_REGISTER_FEDERATION = 'RegisterFederation'
 export const ACTION_DEREGISTER_FEDERATION = 'DeRegisterFederation'
-
-export const ACTION_DEREGISTER_ZONES = 'DeregisterFederation'
-export const ACTION_REGISTER_ZONES = 'registerFederation'
+export const ACTION_GENERATE_API_KEY = 'GenerateApiKey'
+export const ACTION_DEREGISTER_ZONES = 'DeregisterFederationZones'
+export const ACTION_REGISTER_ZONES = 'registerFederationZones'
 
 export const CLOUDLET_COMPAT_VERSION_2_4 = 0
 export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1
@@ -264,7 +264,6 @@ export const PAGE_ZONES = 'self shares zones'
 export const PAGE_FEDERATION = 'Federation'
 export const PAGE_OUTBOUND_FEDERATION = 'Outbound'
 export const PAGE_INBOUND_FEDERATION = 'Inbound'
-export const ACTION_GENERATE_API_KEY = 'GenerateApiKey'
 export const HELP_PARTNER_ZONES = 'partnerZones'
 export const PAGE_PARTNER_ZONES = 'Partner Zones'
 export const PAGE_SHARED_ZONES = 'Shared Zones'

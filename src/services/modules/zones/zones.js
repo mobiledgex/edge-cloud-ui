@@ -19,7 +19,7 @@ export const keys = () => ([
 export const getKey = (data, isCreate) => {
     let selfZone = {}
     data[fields.operatorName] ? selfZone.operatorid = data[fields.operatorName] : null
-    data[fields.countryCode] ? selfZone.countryCode = data[fields.countryCode] : null
+    data[fields.countryCode] ? selfZone.countryCode = data[fields.countryCode].toUpperCase() : null
     data[fields.federationName] ? selfZone.federationName = data[fields.federationName] : null
     selfZone.zoneId = data[fields.zoneId]
     if (isCreate) {
@@ -86,6 +86,7 @@ export const showSelfZone = (self, data, specific) => {
             }
         }
     }
+    console.log(requestData, "requestdata")
     return { method: endpoint.SHOW_SELF_ZONES, data: requestData, keys: keys() }
 }
 

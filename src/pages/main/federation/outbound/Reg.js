@@ -59,7 +59,6 @@ class FederationReg extends React.Component {
         this.apiKey = undefined
         this.zoneList = []
         this.isZonesShare = (this.props.action === perpetual.ACTION_SHARE_ZONES);
-        this.step = undefined;
     }
 
     updateState = (data) => {
@@ -140,7 +139,7 @@ class FederationReg extends React.Component {
                 </Dialog> : <Dialog open={open} aria-labelledby="profile" disableEscapeKeyDown={true}>
                     <DialogContent style={{ width: 500 }}>
                         <Typography style={{ marginTop: 20, fontSize: 16 }}>
-                            Do you want to register Federation?
+                                You can register Later as well. Do you want to register Federation ?
                         </Typography>
                     </DialogContent>
                     <DialogActions>
@@ -245,6 +244,7 @@ class FederationReg extends React.Component {
             })
         }
     }
+
     step1 = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : ''} Operator Detail`, formType: MAIN_HEADER, visible: true },
@@ -346,19 +346,16 @@ class FederationReg extends React.Component {
             }
         }
         if (mncList.length > 0) {
-            data[fields.mnc] = [...mncList]
+            data[fields.mnc] = mncList
         }
         if (this.props.isUpdate) {
-            // let updateData = updateFieldData(this, forms, data, this.props.data)
-            // if (updateData.fields.length > 0) {
             mc = await updateFederator(this, data)
-            // }
         }
         else {
             mc = await createFederator(this, data)
         }
         if (service.responseValid(mc)) {
-            this.props.handleAlertInfo('success', `Self Data ${this.isUpdate ? 'updated' : 'created'} successfully !`)
+            this.props.handleAlertInfo('success', `Federation ${this.isUpdate ? 'updated' : 'created'} successfully !`)
             this.federationId = mc.response.data.federationid
             this.apiKey = mc.response.data.apikey
             this.updateState({ open: true })
@@ -394,6 +391,7 @@ class FederationReg extends React.Component {
         }
         this.zoneList = removeList.length > 0 ? removeList : this.zoneList
     }
+
     onShareResponse = (mcList) => {
         if (mcList && mcList.length > 0) {
             this.props.handleLoadingSpinner(false)
@@ -401,12 +399,13 @@ class FederationReg extends React.Component {
                 if (mc.response) {
                     let data = mc.request.data;
                     let text = this.isZonesShare ? 'shared' : 'removed'
-                    this.props.handleAlertInfo('success', `Zones ${text} ${data[fields.federationName]} successfully !`)
+                    this.props.handleAlertInfo('success', `Zones ${text} for ${data[fields.federationName]} successfully !`)
                     this.props.onClose(true)
                 }
             })
         }
     }
+
     onShareZones = async (data) => {
         let zonesList = data[fields.zonesList]
         let requestCall = this.isZonesShare ? shareSelfZones : unShareSelfZones
@@ -440,14 +439,6 @@ class FederationReg extends React.Component {
         }
         if (shareAction) {
             let action = this.isZonesShare ? 'Share' : 'Unshare'
-            let region = data[fields.region]
-            let operatorid = data[fields.operatorName]
-            let countryCode = data[fields.partnerCountryCode]
-            let zonesList = await showAuthSyncRequest(this, showSelfZone(this, { region, operatorid, countryCode }))
-            this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
-            if (this.zoneList.length > 0) {
-                this.filterZones();
-            }
             forms.push(
                 { label: `${action}`, formType: 'Button', onClick: this.onShareZones, validate: true },
                 { label: 'Cancel', formType: 'Button', onClick: this.onCancel })
@@ -492,35 +483,23 @@ class FederationReg extends React.Component {
                 for (let j = 0; j < mncForms.length; j++) {
                     let mncForm = mncForms[j];
                     if (mncForm.field === fields.mnc) {
-                        mncForm.value = mncArr[j]
+                        mncForm.value = mncArr[j][0]
                     }
                 }
                 forms.splice(8 + multiFormCount, 0, this.getMnc(mncForms))
                 multiFormCount = +1
             }
         }
-
     }
 
     getFormData = async (data) => {
         let forms
+        let actionShareZones = this.props.action === perpetual.ACTION_SHARE_ZONES || this.props.action === perpetual.ACTION_UNSHARE_ZONES
         if (this.props.action === perpetual.ACTION_UPDATE_PARTNER) {
             forms = this.step2(data)
         }
-        else if (this.props.action === perpetual.ACTION_SHARE_ZONES || this.props.action === perpetual.ACTION_UNSHARE_ZONES) {
+        else if (actionShareZones) {
             forms = this.step3()
-            let region = this.props.data[fields.region]
-            let operatorid = this.props.data[fields.operatorName]
-            let countryCode = this.props.data[fields.countryCode]
-            let zonesList = await showAuthSyncRequest(this, showSelfZone(this, { region, operatorid, countryCode }))
-            this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
-            if (this.zoneList.length > 0) {
-                this.filterZones();
-            }
-            else {
-                this.props.handleAlertInfo('error', 'No Zones to Share!')
-                this.props.onClose(true)
-            }
         }
         else {
             forms = this.step1()
@@ -530,9 +509,24 @@ class FederationReg extends React.Component {
                 this.loadDefaultData(forms, data)
             }
             else {
+                if (actionShareZones) {
+                    let region = this.props.data[fields.region]
+                    let operatorid = this.props.data[fields.operatorName]
+                    let countryCode = this.props.data[fields.countryCode]
+                    let zonesList = await showAuthSyncRequest(this, showSelfZone(this, { region, operatorid, countryCode }, true))
+                    this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
+                    if (this.zoneList.length > 0) {
+                        this.filterZones();
+                    }
+                    else {
+                        this.props.handleAlertInfo('error', 'No Zones to Share !')
+                        this.props.onClose(true)
+                    }
+                }
+
                 this.organizationInfo = data
                 this.addUserForm(data)
-                this.setState({ step: this.props.action === perpetual.ACTION_SHARE_ZONES || this.props.action === perpetual.ACTION_UNSHARE_ZONES ? 3 : 1 })
+                this.setState({ step: actionShareZones ? 3 : 1 })
                 this.props.handleViewMode(HELP_OUTOUND_REG_2);
                 return
             }

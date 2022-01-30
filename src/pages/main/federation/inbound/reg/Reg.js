@@ -18,7 +18,7 @@ import { codeHighLighter } from '../../../../../hoc/highLighter/highLighter';
 import { _sort } from '../../../../../helper/constant/operators';
 import { getOrganizationList } from '../../../../../services/modules/organization';
 import { ICON_COLOR } from '../../../../../helper/constant/colors';
-import { showPartnerFederatorZone } from "../../../../../services/modules/zones"
+import { showPartnerFederatorZone } from "../../../../../services/modules/inbound"
 import { showAuthSyncRequest } from '../../../../../services/service';
 
 const stepData = [
@@ -58,8 +58,7 @@ class InboundReg extends React.Component {
         this.federatorData = undefined
         this.apiKey = undefined
         this.zoneList = []
-        this.isZonesRegister = (this.props.action === perpetual.ACTION_REGISTER_ZONES) ? true : false
-        this.step = undefined;
+        this.isZonesRegister = (this.props.action === perpetual.ACTION_REGISTER_ZONES)
     }
 
     updateState = (data) => {
@@ -140,7 +139,7 @@ class InboundReg extends React.Component {
                 </Dialog> : <Dialog open={open} aria-labelledby="profile" disableEscapeKeyDown={true}>
                     <DialogContent style={{ width: 500 }}>
                         <Typography style={{ marginTop: 20, fontSize: 16 }}>
-                                Do you want to register Federation?
+                                You can register Later as well. Do you want to register Federation ?
                         </Typography>
                     </DialogContent>
                     <DialogActions>
@@ -330,7 +329,6 @@ class InboundReg extends React.Component {
         let forms = this.state.forms
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
-
             if (form.uuid) {
                 let uuid = form.uuid;
                 let multiFormData = data[uuid]
@@ -343,7 +341,7 @@ class InboundReg extends React.Component {
             }
         }
         if (mncList.length > 0) {
-            data[fields.mnc] = [...mncList]
+            data[fields.mnc] = mncList
         }
         if (this.props.isUpdate) {
             mc = await updateFederator(this, data)
@@ -352,7 +350,7 @@ class InboundReg extends React.Component {
             mc = await createFederator(this, data)
         }
         if (service.responseValid(mc)) {
-            this.props.handleAlertInfo('success', `Self Data ${this.isUpdate ? 'updated' : 'created'} successfully !`)
+            this.props.handleAlertInfo('success', `Federation ${this.isUpdate ? 'updated' : 'created'} successfully !`)
             this.federationId = mc.response.data.federationid
             this.apiKey = mc.response.data.apikey
             this.updateState({ open: true })
@@ -438,19 +436,10 @@ class InboundReg extends React.Component {
 
         if (registerAction) {
             let action = this.isZonesRegister ? 'Register' : 'Degister'
-            let selfoperatorid = data[fields.operatorName]
-            let federationname = data[fields.federationName]
-            let operatorid = data[fields.partnerOperatorName]
-            let zonesList = await showAuthSyncRequest(this, showPartnerFederatorZone(this, { selfoperatorid, federationname, operatorid }, true))
-            this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
-            if (this.zoneList.length > 0) {
-                this.filterZones();
-            }
             forms.push(
                 { label: `${action}`, formType: 'Button', onClick: this.onRegisterZones, validate: true },
                 { label: 'Cancel', formType: 'Button', onClick: this.onCancel })
 
-            // this.updateFormData(forms, data)
             this.updateState({
                 forms,
                 step: 2
@@ -492,7 +481,7 @@ class InboundReg extends React.Component {
                 for (let j = 0; j < mncForms.length; j++) {
                     let mncForm = mncForms[j];
                     if (mncForm.field === fields.mnc) {
-                        mncForm.value = mncArr[j]
+                        mncForm.value = mncArr[j][0]
                     }
                 }
                 forms.splice(8 + multiFormCount, 0, this.getMnc(mncForms))
@@ -526,24 +515,16 @@ class InboundReg extends React.Component {
         this.zoneList = removeList.length > 0 ? removeList : this.zoneList
     }
     getFormData = async (data) => {
-        let forms
+        console.log(data, "data")
+        let registerZones = this.props.action === perpetual.ACTION_REGISTER_ZONES || this.props.action === perpetual.ACTION_DEREGISTER_ZONES;
+        // setting forms
+        let forms;
         if (this.props.action === perpetual.ACTION_UPDATE_PARTNER) {
             forms = this.step2(data)
         }
-        else if (this.props.action === perpetual.ACTION_REGISTER_ZONES || this.props.action === perpetual.ACTION_DEREGISTER_ZONES) {
+        else if (registerZones) {
             forms = this.step3(data)
-            let federationname = data[fields.federationName]
-            let selfoperatorid = data[fields.operatorName]
-            let operatorid = data[fields.partnerOperatorName]
-            let zonesList = await showAuthSyncRequest(this, showPartnerFederatorZone(this, { federationname, selfoperatorid, operatorid }, true))
-            this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
-            if (this.zoneList.length > 0) {
-                this.filterZones();
-            }
-            else {
-                this.props.handleAlertInfo('error', `No Zones to available for ${data[fields.federationName]} !`)
-                this.props.onClose(true)
-            }
+
         } else {
             forms = this.step1(data)
         }
@@ -552,9 +533,23 @@ class InboundReg extends React.Component {
                 this.loadDefaultData(forms, data)
             }
             else {
+                if (registerZones) {
+                    let federationname = data[fields.federationName]
+                    let selfoperatorid = data[fields.operatorName]
+                    let operatorid = data[fields.partnerOperatorName]
+                    let zonesList = await showAuthSyncRequest(this, showPartnerFederatorZone(this, { federationname, selfoperatorid, operatorid }, true))
+                    this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
+                    if (this.zoneList.length > 0) {
+                        this.filterZones();
+                    }
+                    else {
+                        this.props.handleAlertInfo('error', `No Zones to available for ${data[fields.federationName]} !`)
+                        this.props.onClose(true)
+                    }
+                }
                 this.organizationInfo = data
                 this.addUserForm(data)
-                this.setState({ step: this.props.action === perpetual.ACTION_REGISTER_ZONES || this.props.action === perpetual.ACTION_DEREGISTER_ZONES ? 3 : 1 })
+                this.setState({ step: registerZones ? 3 : 1 })
                 this.props.handleViewMode(HELP_INBOUND_REG_2);
                 return
             }

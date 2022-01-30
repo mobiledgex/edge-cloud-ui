@@ -1,8 +1,6 @@
 import React from 'react'
-
 import DataView from '../../../../container/DataView';
 import { fields } from '../../../../services/model/format';
-
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { perpetual } from '../../../../helper/constant';

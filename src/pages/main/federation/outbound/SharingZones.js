@@ -4,7 +4,6 @@ import DataView from '../../../../container/DataView';
 import { fields } from '../../../../services/model/format';
 
 import { withRouter } from 'react-router-dom';
-import { redux_org } from '../../../../helper/reduxData';
 import { connect } from 'react-redux';
 import { perpetual } from '../../../../helper/constant';
 import { keys, iconKeys, showSelfFederatorZone } from '../../../../services/modules/sharedZones';
