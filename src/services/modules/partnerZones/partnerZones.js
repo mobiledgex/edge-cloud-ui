@@ -15,7 +15,7 @@ export const keys = () => ([
 
 ])
 export const iconKeys = () => ([
-    { field: fields.register, label: 'Registered Zones', icon: 'gpu_green.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_VIEWER] },
+    { field: fields.register, label: 'Registered Zones', icon: 'registered_zones.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_VIEWER] },
 ])
 export const showPartnerFederatorZone = (self, data) => {
     return { method: endpoint.SHOW_FEDERATOR_PARTNER_ZONE, data: data, keys: keys(), iconKeys: iconKeys() }

@@ -21,7 +21,7 @@ export const keys = () => ([
     { field: fields.zoneId, label: 'Shared Zone', serverField: 'zoneid', dataType: perpetual.TYPE_ARRAY },
     { field: fields.zoneCount, label: 'Zone Count', sortable: true, visible: true, filter: true, key: true },
     { field: fields.partnerRoleShareZoneWithSelf, serverField: 'PartnerRoleShareZonesWithSelf' },
-    { field: fields.role, label: 'Registered Federation', icon: 'edgeboxonly.svg', detailView: false }
+    { field: fields.role, label: 'Registered Federation', icon: 'federation_icon.svg', detailView: false }
 ])
 
 export const getKey = (data, isCreate) => {
@@ -42,7 +42,7 @@ export const getKey = (data, isCreate) => {
 }
 
 export const iconKeys = () => ([
-    { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered Federation', icon: 'edgeboxonly.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER,perpetual.OPERATOR_MANAGER,perpetual.OPERATOR_VIEWER] },
+    { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered Federation', icon: 'federation_icon.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_VIEWER] },
 ])
 
 export const showFederation = (self, data) => {
