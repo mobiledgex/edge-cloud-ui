@@ -14,6 +14,7 @@ export const keys = () => ([
     { field: fields.zonesRegistered, label: 'Registered Zones', icon: 'edgeboxonly.svg', detailView: false },
     { field: fields.federationName, label: 'Federation Name', serverField: 'federationname' },
     { field: fields.operatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.selfOperatorId, label: 'Operator Name', serverField: 'selfoperatorid' },
 ])
 
 export const getKey = (data, isCreate) => {
@@ -55,21 +56,6 @@ export const showSelfFederatorZone = (self, data, specific) => {
     return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, data: requestData, keys: keys() }
 }
 
-export const showPartnerFederatorZone = (self, data, specific) => {
-    let requestData = {}
-    if (specific) {
-        requestData = data
-    }
-    else {
-        let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
-        if (organization) {
-            if (redux_org.isOperator(self)) {
-                requestData.selfoperatorid = organization
-            }
-        }
-    }
-    return { method: endpoint.SHOW_FEDERATOR_PARTNER_ZONE, keys: keys(), data: requestData }
-}
 
 
 export const showSelfZone = (self, data, specific) => {

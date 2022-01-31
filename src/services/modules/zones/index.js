@@ -1,10 +1,10 @@
 
 
 import { customize } from './custom'
-import { keys, createSelfZone, showSelfZone, showSelfFederatorZone, shareSelfZones, unShareSelfZones, multiDataRequest, showPartnerFederatorZone } from './zones'
+import { keys, createSelfZone, showSelfZone, showSelfFederatorZone, shareSelfZones, unShareSelfZones, multiDataRequest } from './zones'
 export {
     createSelfZone,
     showSelfZone,
-    keys, customize, showSelfFederatorZone, shareSelfZones, unShareSelfZones, multiDataRequest, showPartnerFederatorZone
+    keys, customize, showSelfFederatorZone, shareSelfZones, unShareSelfZones, multiDataRequest
 }
 

@@ -20,7 +20,7 @@ export const keys = () => ([
     { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.zoneId, label: 'Shared Zone', serverField: 'zoneid', dataType: perpetual.TYPE_ARRAY },
     { field: fields.zoneCount, label: 'Zone Count', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.partnerRoleShareZoneWithSelf, serverField: 'PartnerRoleShareZonesWithSelf' },
+    { field: fields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf', detailView: true, key: true, filter: true },
     { field: fields.role, label: 'Registered Federation', icon: 'federation_icon.svg', detailView: false }
 ])
 
@@ -137,7 +137,8 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             let zone = []
             for (let j = 0; j < zonesList.length; j++) {
                 let zones = zonesList[j]
-                if (federator[fields.federationName] === zones[fields.federationName]) {
+                console.log(federator[fields.federationName], zones[fields.federationName], federator[fields.operatorName], zones)
+                if (federator[fields.federationName] === zones[fields.federationName] && federator[fields.operatorName] === zones[fields.selfOperatorId]) {
                     zone.push(zones[fields.zoneId])
                     federator[fields.zoneId] = zone
                     federator[fields.zoneCount] = zone.length
