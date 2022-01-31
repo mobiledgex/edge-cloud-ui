@@ -1,20 +1,20 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
+import * as actions from '../../../../actions';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM } from '../../../hoc/forms/MexForms';
-import ListMexMap from '../../../hoc/datagrid/map/ListMexMap';
-import MexTab from '../../../hoc/forms/tab/MexTab';
-import { redux_org } from '../../../helper/reduxData'
-import { perpetual } from '../../../helper/constant';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM } from '../../../../hoc/forms/MexForms';
+import ListMexMap from '../../../../hoc/datagrid/map/ListMexMap';
+import MexTab from '../../../../hoc/forms/tab/MexTab';
+import { redux_org } from '../../../../helper/reduxData'
+import { perpetual } from '../../../../helper/constant';
 //model
-import { service, fields } from '../../../services';
-import { createSelfZone } from '../../../services/modules/zones';
+import { service, fields } from '../../../../services';
+import { createSelfZone } from '../../../../services/modules/zones';
 import { Grid } from '@material-ui/core';
-import { showCloudlets } from '../../../services/modules/cloudlet';
-import { HELP_ZONES_REG } from '../../../tutorial';
-import { uniqueId } from '../../../helper/constant/shared';
+import { showCloudlets } from '../../../../services/modules/cloudlet';
+import { HELP_ZONES_REG } from '../../../../tutorial';
+import { uniqueId } from '../../../../helper/constant/shared';
 
 class ZoneReg extends React.Component {
     constructor(props) {

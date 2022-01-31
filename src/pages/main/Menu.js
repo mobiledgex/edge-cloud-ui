@@ -27,7 +27,7 @@ import GPUDriver from './gpudriver/GPUDriver';
 import Networks from './networks/Networks';
 import Outbound from './federation/outbound/outbound';
 import Inbound from './federation/inbound/inbound';
-import Zones from './zones/Zones'
+import Zones from './federation/zones/Zones'
 import * as constant from '../../constant';
 import { perpetual, role } from '../../helper/constant';
 
