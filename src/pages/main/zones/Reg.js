@@ -2,7 +2,6 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import uuid from 'uuid';
 //Mex
 import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM } from '../../../hoc/forms/MexForms';
 import ListMexMap from '../../../hoc/datagrid/map/ListMexMap';
@@ -15,6 +14,7 @@ import { createSelfZone } from '../../../services/modules/zones';
 import { Grid } from '@material-ui/core';
 import { showCloudlets } from '../../../services/modules/cloudlet';
 import { HELP_ZONES_REG } from '../../../tutorial';
+import { uniqueId } from '../../../helper/constant/shared';
 
 class ZoneReg extends React.Component {
     constructor(props) {
@@ -299,7 +299,7 @@ class ZoneReg extends React.Component {
             { field: fields.cloudletName, label: 'Cloudlet Name', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true }, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.operatorName }] },
             { field: fields.zoneId, label: 'Zone ID', formType: INPUT, placeholder: 'Enter Zone Name', rules: { required: true }, visible: true, tip: ' Globally unique string used to authenticate operations over federation interface', update: { key: true } },
             { field: fields.countryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
-            { uuid: uuid(), field: fields.cloudletLocation, label: 'Zone Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS co-ordinates associated with the zone' },
+            { uuid: uniqueId(), field: fields.cloudletLocation, label: 'Zone Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS co-ordinates associated with the zone' },
             { field: fields.locality, label: 'Locality', formType: INPUT, placeholder: 'Enter Locality', visible: true, tip: 'Type of locality eg rural, urban etc.' },
             { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter state Name', width: 5, visible: true, update: { edit: true } },
             { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City Name', width: 7, visible: true },

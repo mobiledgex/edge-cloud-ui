@@ -13,13 +13,13 @@ import { createFederator, updateFederator } from "../../../../../services/module
 import { createFederation, registerFederation, showRegisterPartnerZone, showDeregisterPartnerZone } from '../../../../../services/modules/federation'
 import { Grid, Dialog, DialogTitle, DialogActions, DialogContent, Button, Typography } from '@material-ui/core';
 import { perpetual } from '../../../../../helper/constant';
-import uuid from 'uuid';
 import { codeHighLighter } from '../../../../../hoc/highLighter/highLighter';
 import { _sort } from '../../../../../helper/constant/operators';
 import { getOrganizationList } from '../../../../../services/modules/organization';
 import { ICON_COLOR } from '../../../../../helper/constant/colors';
 import { showPartnerFederatorZone } from "../../../../../services/modules/inbound"
 import { showAuthSyncRequest } from '../../../../../services/service';
+import { uniqueId } from '../../../../../helper/constant/shared';
 
 const stepData = [
     {
@@ -303,7 +303,7 @@ class InboundReg extends React.Component {
     ])
 
     getMnc = (form) => {
-        return ({ uuid: uuid(), field: fields.mnc, formType: MULTI_FORM, forms: form ? form : this.mncForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: fields.mnc, formType: MULTI_FORM, forms: form ? form : this.mncForm(), width: 3, visible: true })
     }
 
     removeMultiForm = (e, form) => {
