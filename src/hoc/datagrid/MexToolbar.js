@@ -183,9 +183,9 @@ const MexToolbar = (props) => {
         </MBox>
     )
 
-    const renderBack = (order) => (
+    const renderBack = () => (
         props.requestInfo.back ?
-            <MBox order={order}>
+            <MBox>
                 <Tooltip title={<strong style={{ fontSize: 13 }}>Back</strong>}>
                     <IconButton aria-label="back" style={{ marginTop: -3, marginLeft: -20 }} onClick={(e) => { props.requestInfo.back() }}>
                         <ArrowBackIosIcon style={{ color: ICON_COLOR }} />
