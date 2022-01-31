@@ -13,8 +13,7 @@ import { HELP_NETWORK_LIST } from "../../../tutorial";
 import { Grid } from '@material-ui/core';
 import { perpetual } from '../../../helper/constant';
 import { showCloudlets } from '../../../services/modules/cloudlet';
-import uuid from 'uuid';
-import { validateRemoteCIDR, validateRemoteIP } from '../../../helper/constant/shared';
+import { uniqueId, validateRemoteCIDR, validateRemoteIP } from '../../../helper/constant/shared';
 
 class NetworkReg extends React.Component {
     constructor(props) {
@@ -214,7 +213,7 @@ class NetworkReg extends React.Component {
     }
 
     getRoutesForm = (form) => {
-        return ({ uuid: uuid(), field: fields.routes, formType: MULTI_FORM, forms: form ? form : this.routeFormArray(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: fields.routes, formType: MULTI_FORM, forms: form ? form : this.routeFormArray(), width: 3, visible: true })
     }
 
     routeFormArray = () => ([

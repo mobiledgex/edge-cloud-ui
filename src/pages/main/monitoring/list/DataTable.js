@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
-import {TableCell, Tooltip} from '@material-ui/core';
+import { TableCell } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { AutoSizer, Column, Table, defaultTableRowRenderer } from 'react-virtualized';
 import { Icon, IconButton } from '../../../../hoc/mexui';
@@ -43,7 +43,7 @@ const styles = (theme) => ({
 
 class MuiVirtualizedTable extends React.PureComponent {
 
-    constructor(props){
+    constructor(props) {
         super(props)
         this.isGroup = false
     }
@@ -61,7 +61,7 @@ class MuiVirtualizedTable extends React.PureComponent {
     };
 
     cellRenderer = ({ rowData, cellData, columnIndex, rowIndex }) => {
-        const { columns, classes, rowHeight, onRowClick, selection, formatter, onAction } = this.props;
+        const { columns, classes, rowHeight, onRowClick, selection, formatter, onAction, onHover } = this.props;
         let column = columns[columnIndex]
         return (
             <TableCell
@@ -77,7 +77,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                     column.type === 'button' ? <IconButton onClick={(e) => { onAction(e, rowData) }}><Icon color={ICON_COLOR} style={{ height: 18 }}>list</Icon></IconButton> :
                         column.type === 'checkbox' ? <Icon style={{ color: rowData.color }}>{`${selection[rowData.key] ? 'check_box' : 'check_box_outline_blank'}`}</Icon> :
                             column.format ? formatter(column, cellData) :
-                                <Tooltip title={<strong style={{ fontSize: 13 }}>{cellData}</strong>}><span style={{ width: column.width - 10, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{cellData}</span></Tooltip>
+                                <span style={{ width: column.width - 10, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }} onMouseEnter={(e) => { onHover(e, { type: 'Default', column, data: cellData }) }} onMouseLeave={() => { onHover() }}>{cellData}</span>
                 }
             </TableCell>
         );
@@ -192,7 +192,7 @@ MuiVirtualizedTable.propTypes = {
 const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
 export default function ReactVirtualizedTable(props) {
-    const { dataList, keys, formatter, handleAction, actionMenu, groupBy } = props
+    const { dataList, keys, formatter, handleAction, actionMenu, groupBy, onHover } = props
     const [selection, setSelection] = React.useState({ count: 0 })
     const [anchorEl, setAnchorEl] = React.useState(undefined)
     let fixedWidth = 50
@@ -211,7 +211,7 @@ export default function ReactVirtualizedTable(props) {
     ]
     if (actionMenu && actionMenu.length > 0) {
         fixedWidth = fixedWidth + 100
-        columns.push({ field: false, label: 'Actions', type: 'button', visible: true, width: 100, fixedWidth:true })
+        columns.push({ field: false, label: 'Actions', type: 'button', visible: true, width: 100, fixedWidth: true })
     }
 
     const onRowClick = (e) => {
@@ -230,8 +230,8 @@ export default function ReactVirtualizedTable(props) {
         setAnchorEl(undefined)
     }
 
-    const onActionMenu = (e, rowData, group)=>{
-        setAnchorEl({target:e.currentTarget, data:rowData, group})
+    const onActionMenu = (e, rowData, group) => {
+        setAnchorEl({ target: e.currentTarget, data: rowData, group })
         e.stopPropagation()
     }
 
@@ -248,11 +248,12 @@ export default function ReactVirtualizedTable(props) {
                     action={actionMenu && actionMenu.length > 0}
                     onAction={onActionMenu}
                     groupBy={groupBy}
-                    fixedWidth = {fixedWidth}
+                    onHover={onHover}
+                    fixedWidth={fixedWidth}
                     columnCount={columnCount}
                 />
             </Paper>
-            <Actions anchorEl={anchorEl && anchorEl.target} onClose={() => { setAnchorEl(undefined) }} onClick={onActionClick} actionMenu={actionMenu} group={anchorEl && anchorEl.group}/>
+            <Actions anchorEl={anchorEl && anchorEl.target} onClose={() => { setAnchorEl(undefined) }} onClick={onActionClick} actionMenu={actionMenu} group={anchorEl && anchorEl.group} />
         </React.Fragment>
     );
 }

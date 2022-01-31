@@ -1,5 +1,5 @@
+import { uniqueId } from "../../helper/constant/shared";
 import { map } from "./shared";
-import uuid from 'uuid'
 
 export const formatAlertData = (request, response, customData) => {
     let values = [];
@@ -11,7 +11,7 @@ export const formatAlertData = (request, response, customData) => {
                 let data = jsonData[i].data ? jsonData[i].data : jsonData[i];
                 let value = {}
                 map(value, data, keys)
-                value.uuid = uuid()
+                value.uuid = uniqueId()
                 let newValue = value && customData ? customData(request, value) : value
                 if (newValue) {
                     values.push(newValue)

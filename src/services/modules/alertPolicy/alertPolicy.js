@@ -6,7 +6,7 @@ import { authSyncRequest, showAuthSyncRequest } from '../../service';
 const fields = formatter.fields;
 
 const SF_CUL = 'cpu_utilization_limit'
-const SF_MUL= 'mem_utilization_limit'
+const SF_MUL = 'mem_utilization_limit'
 const SF_DUL = 'disk_utilization_limit'
 const SF_ACL = 'active_conn_limit'
 const SF_LABELS = 'labels'
@@ -21,7 +21,7 @@ export const keys = () => ([
   { field: fields.alertPolicyName, serverField: 'key#OS#name', label: 'Alert Policy Name', sortable: true, visible: true, filter: true, key: true },
   { field: fields.description, serverField: SF_DESCRIPTION, label: 'Description' },
   { field: fields.severity, serverField: SF_SEVERITY, label: 'Severity', sortable: true, visible: true, filter: true, format: true },
-  { field: fields.triggerTime, serverField: SF_TRIGGER_TIME, label: 'Trigger Time', sortable: true, visible: true, filter: true },
+  { field: fields.triggerTime, serverField: SF_TRIGGER_TIME, label: 'Trigger Time', sortable: true, visible: true, filter: true, format: true },
   { field: fields.cpuUtilizationLimit, serverField: SF_CUL, label: 'CPU Utilization Limit', type: 'number' },
   { field: fields.memUtilizationLimit, serverField: SF_MUL, label: 'Memory Utilization Limit', type: 'number' },
   { field: fields.diskUtilizationLimit, serverField: SF_DUL, label: 'Disk Utilization Limit', type: 'number' },

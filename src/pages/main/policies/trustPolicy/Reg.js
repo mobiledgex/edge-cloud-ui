@@ -4,7 +4,6 @@ import MexForms, { MAIN_HEADER, HEADER, SWITCH, INPUT, SELECT, MULTI_FORM, MULTI
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import uuid from 'uuid';
 import { fields } from '../../../../services/model/format';
 import { redux_org } from '../../../../helper/reduxData'
 //model
@@ -16,7 +15,7 @@ import { Grid } from '@material-ui/core';
 import { service, updateFieldData } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';
 import cloneDeep from 'lodash/cloneDeep';
-import { validateRemoteCIDR } from '../../../../helper/constant/shared';
+import { uniqueId, validateRemoteCIDR } from '../../../../helper/constant/shared';
 
 class TrustPolicyReg extends React.Component {
     constructor(props) {
@@ -134,7 +133,7 @@ class TrustPolicyReg extends React.Component {
     ])
 
     getOutboundSecurityForm = (outBoundRules) => (
-        { uuid: uuid(), field: fields.outboundSecurityRuleMulti, formType: MULTI_FORM, forms: outBoundRules, width: 3, visible: true }
+        { uuid: uniqueId(), field: fields.outboundSecurityRuleMulti, formType: MULTI_FORM, forms: outBoundRules, width: 3, visible: true }
     )
 
     getForms = () => ([

@@ -32,20 +32,11 @@ const timeRangeInMin = (range) => {
 * Refresh
 ********/
 const Refresh = (props) => {
-    const { onUpdate, value, refreshRange, setRefreshRange } = props
+    const { onUpdate, onInterval, value, refreshRange } = props
 
-    var refreshId = undefined
+
     const onRefreshRateChange = (rate) => {
-        setRefreshRange(rate)
-        let interval = rate.duration
-        if (refreshId) {
-            clearInterval(refreshId)
-        }
-        if (interval > 0) {
-            refreshId = setInterval(() => {
-                onUpdate({ range: timeRangeInMin(value.duration.duration) })
-            }, interval * 1000);
-        }
+        onInterval(rate)
     }
 
     return (
@@ -195,6 +186,7 @@ const MexToolbar = (props) => {
     const { onChange, organizations } = props
     const regions = useSelector(state => state.regionInfo.region)
     const orgInfo = useSelector(state => state.organizationInfo.data)
+    const [refreshId, setRefreshId] = React.useState(undefined)
     const [value, setValue] = React.useState()
     const [refreshRange, setRefreshRange] = React.useState(refreshRates[0])
 
@@ -216,8 +208,35 @@ const MexToolbar = (props) => {
         onChange(value)
     }, [value]);
 
-    const onUpdate = (out) => {
-        setValue({ ...value, ...out })
+    const updateInterval = (value) => {
+        clearInterval(refreshId)
+        setRefreshId(undefined)
+        let interval = refreshRange.duration
+        setRefreshId(setInterval((value) => {
+            setValue({ ...value, range: timeRangeInMin(value.duration.duration) }, false)
+        }, interval * 1000, value));
+    }
+
+    const onUpdate = (out, resetInterval = true) => {
+        let newValue = { ...value, ...out }
+        setValue(newValue)
+        if (resetInterval && refreshId) {
+            updateInterval(newValue)
+        }
+    }
+
+    const onInterval = (rate) => {
+        setRefreshRange(rate)
+        let interval = rate.duration
+        if (refreshId) {
+            clearInterval(refreshId)
+            setRefreshId(undefined)
+        }
+        if (interval > 0) {
+            setRefreshId(setInterval((value) => {
+                onUpdate({ range: timeRangeInMin(value.duration.duration) }, false)
+            }, interval * 1000, value));
+        }
     }
 
     return (
@@ -230,7 +249,7 @@ const MexToolbar = (props) => {
                             {value && value.organization ?
                                 <React.Fragment>
                                     <Box order={8}>
-                                        <Refresh onUpdate={onUpdate} value={value} refreshRange={refreshRange} setRefreshRange={setRefreshRange} />
+                                        <Refresh onUpdate={onUpdate} onInterval={onInterval} value={value} refreshRange={refreshRange} />
                                     </Box>
                                     <Box order={7} p={0.9}>
                                         <SearchFilter onFilter={(value) => { onUpdate({ search: value }) }} compact={true} insensitive={true} />
