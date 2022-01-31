@@ -137,7 +137,6 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             let zone = []
             for (let j = 0; j < zonesList.length; j++) {
                 let zones = zonesList[j]
-                console.log(federator[fields.federationName], zones[fields.federationName], federator[fields.operatorName], zones)
                 if (federator[fields.federationName] === zones[fields.federationName] && federator[fields.operatorName] === zones[fields.selfOperatorId]) {
                     zone.push(zones[fields.zoneId])
                     federator[fields.zoneId] = zone

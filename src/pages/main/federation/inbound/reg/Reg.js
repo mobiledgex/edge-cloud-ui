@@ -515,7 +515,6 @@ class InboundReg extends React.Component {
         this.zoneList = removeList.length > 0 ? removeList : this.zoneList
     }
     getFormData = async (data) => {
-        console.log(data, "data")
         let registerZones = this.props.action === perpetual.ACTION_REGISTER_ZONES || this.props.action === perpetual.ACTION_DEREGISTER_ZONES;
         // setting forms
         let forms;

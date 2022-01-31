@@ -72,7 +72,6 @@ export const showSelfZone = (self, data, specific) => {
             }
         }
     }
-    console.log(requestData, "requestdata")
     return { method: endpoint.SHOW_SELF_ZONES, data: requestData, keys: keys() }
 }
 
