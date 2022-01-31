@@ -211,7 +211,7 @@ class InboundList extends React.Component {
         })
     }
 
-    renderPasswordForm = () => (
+    renderSetApiForm = () => (
         <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
     )
 
@@ -250,7 +250,7 @@ class InboundList extends React.Component {
                         </div>
                     </DialogTitle>
                     <DialogContent style={{ width: 600 }}>
-                        {this.renderPasswordForm()}
+                            {this.renderSetApiForm()}
                     </DialogContent>
                 </Dialog>}
             </div>
