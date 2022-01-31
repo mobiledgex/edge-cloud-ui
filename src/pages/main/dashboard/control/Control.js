@@ -14,7 +14,6 @@ class Control extends React.Component {
         this.state = {
             dataset: formatData(sequence),
             toggle: false,
-            height: 0,
             showMore: false
         }
     }
@@ -32,19 +31,20 @@ class Control extends React.Component {
     }
 
     render() {
-        const { height, toggle, dataset } = this.state
-        const { classes } = this.props
+        const { toggle, dataset } = this.state
+        const { classes, height } = this.props
         return (
-            <div style={{ width: '100%' }}>
-                <Card style={{ width: 'inherit', display: 'inline-flex' }}>
-                    <div style={{ width: '47%' }}>
-                        <SequenceFunnel sequence={sequence} onChange={this.onSequenceChange} width={310} key={uniqueId()}></SequenceFunnel>
+            <div>
+                {/* <Card style={{height:'calc(20vh - 6px)', marginBottom:1, width: 'calc(80vh - 80px)'}}>
+                <SequenceFunnel sequence={sequence} onChange={this.onSequenceChange} width={300} key={uniqueId()}></SequenceFunnel>
+                </Card> */}
+                <Card style={{ width:'calc(80vh - 80px)'}}>
+                    {/* <div style={{ height: 200 }}>
+                        <SequenceFunnel sequence={sequence} onChange={this.onSequenceChange} width={200} key={uniqueId()}></SequenceFunnel>
                         <Divider style={{ height: 3, backgroundColor: '#202125' }} />
-                    </div>
-                    <div style={{ width: 3, backgroundColor: '#202125' }} />
-                    <div style={{ width: '53%' }}>
+                    </div> */}
+                    {/* <div style={{ width: 3, backgroundColor: '#202125' }} /> */}
                         <Sunburst sequence={sequence} dataset={dataset} toggle={toggle} onMore={this.onMore} />
-                    </div>
                 </Card>
             </div>
         )
@@ -52,10 +52,10 @@ class Control extends React.Component {
 
     componentDidUpdate() {
 
+        console.log(this.props.height)
     }
 
     componentDidMount() {
-        console.log(this.state.dataset)
     }
 }
 

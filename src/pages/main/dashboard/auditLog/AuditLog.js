@@ -13,13 +13,16 @@ class AuditLog extends React.Component {
 
     render() {
         return (
-            <Card id='mex-chart-heatmap' style={{height:'inherit'}}>
+            <Card style={{width:'inherit'}}>
                 <div style={{ paddingLeft: 10 }}>
                     <Header1 size={14}>Audit Logs</Header1>
                 </div>
                 <Divider />
                 <div style={{ padding: 10 }}>
                     <PassFail />
+                </div>
+                <div style={{height:50}}>
+
                 </div>
             </Card>
         )

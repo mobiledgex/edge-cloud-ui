@@ -9,11 +9,11 @@ const CON_WIDTH = 310
 **h:height**
 **s:space***
 **t:vertex**/
-const b = { w: 190, h: 30, s: 14, t: 12 };
+const b = { w: 160, h: 20, s: 6, t: 12 };
 
 const breadcrumbPoints = (d, i, j) => {
   var w = b.w + i * b.t
-  w = w + (3 * i)
+  w = w + (2 * i)
   var points = [];
   points.push(3 + j * b.t + ",0");
   points.push(w + b.t + ",0");
@@ -35,7 +35,7 @@ export const updateElements = (sequence, onSwap) => {
     .attr("points", (d, i) => { return breadcrumbPoints(d, i, sequence.length - i) })
     .style('display', 'inline')
     .attr("stroke-linejoin", "round")
-    .attr("stroke-width", '12px')
+    .attr("stroke-width", '5px')
     .attr("stroke", function (d, i) { return i < 2 ? '#388E3C' : '#757575' })
     .style("fill", function (d, i) { return i < 2 ? '#388E3C' : '#757575' })
 
@@ -45,8 +45,8 @@ export const updateElements = (sequence, onSwap) => {
     .attr("x", (b.w + b.t) / 2)
     .attr("y", b.h / 2)
     .attr("dy", "0.35em")
-    .attr("dx", "2.5em")
-    .style("font-size", "15px")
+    .attr("dx", "2.8em")
+    .style("font-size", "13px")
     .style("font-weight", "700")
     .attr("text-anchor", "middle")
     .text((d) => { return d.label; })

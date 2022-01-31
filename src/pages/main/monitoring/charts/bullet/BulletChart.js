@@ -3,30 +3,14 @@ import './style.css'
 export { default as bullet } from "./bullet";
 const d3 = require('d3')
 
-function randomizer(d) {
-    var k = d3.max(d.ranges) * .2;
-    return function (d) {
-        return Math.max(0, d + k * (Math.random() - .5));
-    };
-}
-
-function randomize(d) {
-    if (!d.randomizer) d.randomizer = randomizer(d);
-    d.ranges = d.ranges.map(d.randomizer);
-    d.markers = d.markers.map(d.randomizer);
-    d.measures = d.measures.map(d.randomizer);
-    return d;
-}
-
-
 
 const margin = { top: 7, right: 40, bottom: 12, left: 10 },
     width = 200 - margin.left - margin.right,
     height = 35 - margin.top - margin.bottom;
 
-//rangers - total used
+//rangers - total allotted
 //measures - used, allotted
-//markers - total allotted
+//markers - total used
 
 const bulletChart = (object, data) => {
     var chart = d3.bullet()
@@ -67,12 +51,11 @@ class BulletChart extends React.Component {
         this.myRef = React.createRef();
     }
 
-
-
     render() {
+        const { onHover, data, column } = this.props
         return (
             <React.Fragment>
-                <div ref={this.myRef} id={this.props.id}></div>
+                <div ref={this.myRef} id={this.props.id} onMouseEnter={(e) => { onHover(e, { type: 'Bullet', data: data[0], column }) }} onMouseLeave={() => { onHover() }}></div>
             </React.Fragment>
         );
     }
@@ -82,8 +65,6 @@ class BulletChart extends React.Component {
             bulletChart(this.myRef.current, this.props.data)
         }
     }
-
-
 
     componentDidMount() {
         bulletChart(this.myRef.current, this.props.data)

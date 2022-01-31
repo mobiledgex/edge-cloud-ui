@@ -11,12 +11,12 @@ import { Grid } from '@material-ui/core';
 import { redux_org } from '../../../../helper/reduxData';
 import { getOrganizationList } from '../../../../services/modules/organization';
 import { perpetual } from '../../../../helper/constant';
-import uuid from 'uuid';
 import { buildKey, createGPUDriver } from '../../../../services/modules/gpudriver';
 import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/MexMessageMultiStream'
 import { ACTION_UPDATE, OS_LINUX } from '../../../../helper/constant/perpetual';
 import { uploadData } from '../../../../utils/file_util';
 import { buildTip, osList } from './shared';
+import { uniqueId } from '../../../../helper/constant/shared';
 
 class GPUDriverReg extends React.Component {
     constructor(props) {
@@ -67,7 +67,7 @@ class GPUDriverReg extends React.Component {
     ])
 
     buildMultiForm = (form) => {
-        return ({ uuid: uuid(), field: fields.build, formType: MULTI_FORM, forms: form ? form : this.buildForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: fields.build, formType: MULTI_FORM, forms: form ? form : this.buildForm(), width: 3, visible: true })
     }
 
     propertyForm = () => ([
@@ -78,7 +78,7 @@ class GPUDriverReg extends React.Component {
     ])
 
     getPropertyForm = (form) => {
-        return ({ uuid: uuid(), field: fields.property, formType: MULTI_FORM, forms: form ? form : this.propertyForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: fields.property, formType: MULTI_FORM, forms: form ? form : this.propertyForm(), width: 3, visible: true })
     }
 
     onLicenseConfigLoad = (data, extra) => {
@@ -110,7 +110,7 @@ class GPUDriverReg extends React.Component {
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Region name' },
             { field: fields.gpuDriverName, label: 'GPU Driver Name', formType: INPUT, placeholder: 'Enter GPU Driver Name', rules: { required: true }, visible: true, tip: 'Name of the driver' },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: ' Organization to which the driver belongs to', update: { key: true } },
-            { uuid: uuid(), field: fields.licenseConfig, label: 'License Config', formType: TEXT_AREA, visible: true, update: { id: ['16'] }, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
+            { uuid: uniqueId(), field: fields.licenseConfig, label: 'License Config', formType: TEXT_AREA, visible: true, update: { id: ['16'] }, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
             { field: fields.builds, label: 'Builds', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Build', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.buildMultiForm }], update: { id: ['7'], ignoreCase: true }, visible: true, tip: buildTip },
             { field: fields.properties, label: 'Properties', formType: HEADER, forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getPropertyForm }], visible: true, tip: 'Additional properties associated with GPU driver build For example: license server information, driver release date, etc, specify properties:empty=true to clear' },
         ]

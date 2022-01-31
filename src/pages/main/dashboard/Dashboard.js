@@ -8,35 +8,34 @@ class Dashboard extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-
+            height: 0
         }
+        this.mainRef = React.createRef()
     }
 
     render() {
+        const { height } = this.state
         return (
-            <React.Fragment>
-                <div id="mex-dashboard" style={{ display: 'flex' }}>
-                    <Grid container>
-                        <Grid item xs={8}>
-                            <Control/>
-                        </Grid>
-                        <Grid item xs={4}>
-                            
-                        </Grid>
-                    </Grid>
-                </div>
+            <div id='mex-page-dashbaord' ref={this.mainRef} style={{ height: 'calc(100vh - 54px)', overflowY:'auto' , overflowX:'hidden'}}>
+                <Control />
+
+
                 <div style={{ marginTop: 3 }}>
                     <ImageList cols={2} rowHeight={306}>
                         <ImageListItem>
                             <AuditLog />
                         </ImageListItem>
                         <ImageListItem>
-                            <Card style={{height:'inherit'}}></Card>
+                            <Card style={{ height: 'inherit' }}></Card>
                         </ImageListItem>
                     </ImageList>
                 </div>
-            </React.Fragment>
+            </div>
         )
+    }
+
+    componentDidMount() {
+        this.setState({ height: this.mainRef.current.clientHeight })
     }
 }
 
