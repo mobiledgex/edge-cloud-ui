@@ -518,7 +518,6 @@ class CloudletReg extends React.Component {
         </div>
     )
 
-
     getPanes = () => ([
         { label: 'Cloudlet Location', tab: this.getMap(), onClick: () => { this.updateState({ activeIndex: 0 }) } },
         { label: 'Graph', tab: this.getGraph(), onClick: () => { this.updateState({ activeIndex: 1 }) } }
