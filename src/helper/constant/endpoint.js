@@ -171,7 +171,6 @@ export const DELETE_NETWORKS = 'auth/ctrl/DeleteNetwork'
 
 //Federation
 export const SHOW_FEDERATION = 'auth/federation/show';
-export const SHOW_FEDERATION_PARTNER_ZONE = 'auth/federation/partner/zone/show';
 export const CREATE_FEDERATION = 'auth/federation/create'
 export const DELETE_FEDERATION = 'auth/federation/delete'
 export const REGISTER_FEDERATION = 'auth/federation/register'
@@ -191,3 +190,8 @@ export const SHOW_SELF_ZONES = 'auth/federator/self/zone/show'
 export const SHOW_FEDERATOR_SELF_ZONE = 'auth/federation/self/zone/show'
 export const CREATE_FEDERATOR_SELF_ZONE = 'auth/federator/self/zone/create'
 export const DELETE_FEDERATOR_SELF_ZONE = 'auth/federator/self/zone/delete'
+export const SELF_ZONES_SHARE = 'auth/federator/self/zone/share'
+export const SELF_ZONES_UNSHARE = 'auth/federator/self/zone/unshare'
+export const SHOW_FEDERATOR_PARTNER_ZONE = 'auth/federation/partner/zone/show'
+export const REGISTER_FEDERATOR_PARTNER_ZONES = 'auth/federator/partner/zone/register'
+export const DEREGISTER_FEDERATOR_PARTNER_ZONES = 'auth/federator/partner/zone/deregister'

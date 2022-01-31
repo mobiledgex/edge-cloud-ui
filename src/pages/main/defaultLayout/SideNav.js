@@ -181,7 +181,7 @@ const Options = (props) => {
         return (
             <ListItem button onClick={() => { optionClick(item) }} className={classes.sub}>
                 <ListItemIcon>
-                    {isSVG ? <img src='/assets/icons/gpu.svg' width={24} /> : <Icon outlined={true}>{item.icon}</Icon>}
+                    {isSVG ? <img src={`/assets/icons/${item.icon}`} width={24} /> : <Icon outlined={true}>{item.icon}</Icon>}
                 </ListItemIcon>
                 <ListItemText primary={item.label} />
                 {item.sub ? pageId === item.id ? <ExpandLess /> : <ExpandMore /> : null}
@@ -241,7 +241,6 @@ const SideNav = (props) => {
             setOpen(flag)
         }
     }
-    console.log(props.children, "props.children")
 
     return (
         <div id="mex-side-nav" className={classes.root}>

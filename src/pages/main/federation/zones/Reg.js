@@ -1,20 +1,20 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
-import uuid from 'uuid';
+import * as actions from '../../../../actions';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, ICON_BUTTON, MAIN_HEADER, HEADER, MULTI_FORM } from '../../../hoc/forms/MexForms';
-import ListMexMap from '../../../hoc/datagrid/map/ListMexMap';
-import MexTab from '../../../hoc/forms/tab/MexTab';
-import { redux_org } from '../../../helper/reduxData'
-import { perpetual } from '../../../helper/constant';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM } from '../../../../hoc/forms/MexForms';
+import ListMexMap from '../../../../hoc/datagrid/map/ListMexMap';
+import MexTab from '../../../../hoc/forms/tab/MexTab';
+import { redux_org } from '../../../../helper/reduxData'
+import { perpetual } from '../../../../helper/constant';
 //model
-import { service, fields } from '../../../services';
-import { createSelfZone } from '../../../services/modules/zones';
+import { service, fields } from '../../../../services';
+import { createSelfZone } from '../../../../services/modules/zones';
 import { Grid } from '@material-ui/core';
-import { showCloudlets } from '../../../services/modules/cloudlet';
-import { HELP_ZONES_REG } from '../../../tutorial';
+import { showCloudlets } from '../../../../services/modules/cloudlet';
+import { HELP_ZONES_REG } from '../../../../tutorial';
+import { uniqueId } from '../../../../helper/constant/shared';
 
 class ZoneReg extends React.Component {
     constructor(props) {
@@ -32,6 +32,7 @@ class ZoneReg extends React.Component {
         this.requestedRegionList = [];
         this.operatorList = [];
         this.cloudletList = [];
+        this.locationCloudlet = [];
     }
 
     updateState = (data) => {
@@ -55,30 +56,7 @@ class ZoneReg extends React.Component {
                     longitude = form.value
                 }
             }
-            if (latitude && longitude) {
-                let zone = {}
-                zone.zoneLocation = { latitude, longitude }
-                this.updateState({ mapData: [zone] })
-            }
-            else {
-                this.updateState({ mapData: [] })
-            }
         }
-    }
-    getCloudletInfo = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.cloudletList = [...this.cloudletList, ...await service.showAuthSyncRequest(this, showCloudlets(this, { region }))]
-        }
-        this.updateUI(form)
-        if (redux_org.isOperator(this)) {
-            for (let form of forms) {
-                if (form.field === fields.cloudletName) {
-                    this.updateUI(form)
-                    break;
-                }
-            }
-        }
-        this.updateState({ forms })
     }
 
     getCloudletInfo = async (region, form, forms) => {
@@ -89,6 +67,14 @@ class ZoneReg extends React.Component {
         if (redux_org.isOperator(this)) {
             for (let form of forms) {
                 if (form.field === fields.cloudletName) {
+                    if (latitude && longitude) {
+                        let zone = {}
+                        zone.cloudletLocation = { latitude, longitude }
+                        this.updateState({ mapData: [zone] })
+                    }
+                    else {
+                        this.updateState({ mapData: [] })
+                    }
                     this.updateUI(form)
                     break;
                 }
@@ -124,6 +110,24 @@ class ZoneReg extends React.Component {
         }
     }
 
+    cloudletValueChange = (currentForm, forms, isInit) => {
+        for (let form of forms) {
+            let cloudletName = currentForm.value;
+            this.locationCloudlet = this.cloudletList.filter(obj => obj.cloudletName === cloudletName);
+            let zone = {}
+            if (this.locationCloudlet[0] && (this.locationCloudlet[0].latitude || this.locationCloudlet[0].longitude)) {
+                zone.cloudletLocation = { latitude: this.locationCloudlet[0].latitude, longitude: this.locationCloudlet[0].longitude }
+                this.locationCloudlet = [zone]
+                this.updateState({ mapData: [zone] })
+            } else {
+                this.updateState({ mapData: [] })
+            }
+            if (form.field === fields.cloudletLocation) {
+                this.onMapClick(this.locationCloudlet)
+            }
+        }
+    }
+
     checkForms = (form, forms, isInit = false) => {
         if (form.field === fields.region) {
             this.regionValueChange(form, forms, isInit)
@@ -131,10 +135,12 @@ class ZoneReg extends React.Component {
         else if (form.field === fields.operatorName) {
             this.operatorValueChange(form, forms, isInit)
         }
+        else if (form.field === fields.cloudletName) {
+            this.cloudletValueChange(form, forms, isInit)
+        }
         else if (form.field === fields.latitude || form.field === fields.longitude) {
             this.locationChange(form, forms, isInit)
         }
-
     }
 
     /**Required */
@@ -146,7 +152,7 @@ class ZoneReg extends React.Component {
 
     onCreateZones = async (data) => {
         if (data) {
-            let mc;
+            let mc; 
             let forms = this.state.forms;
             let stateList = [];
             let cityList = [];
@@ -156,8 +162,8 @@ class ZoneReg extends React.Component {
                     let uuid = form.uuid;
                     let multiFormData = data[uuid]
                     if (multiFormData) {
-                        if (form.field === fields.zoneLocation) {
-                            data[fields.zoneLocation] = multiFormData.latitude + ',' + multiFormData.longitude
+                        if (form.field === fields.cloudletLocation) {
+                            data[fields.cloudletLocation] = multiFormData.latitude + ',' + multiFormData.longitude
                         }
                         else if (form.field === fields.city) {
                             cityList.push(multiFormData[fields.city])
@@ -179,22 +185,22 @@ class ZoneReg extends React.Component {
         }
     }
 
+
     onMapClick = (location) => {
         let forms = this.state.forms
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.zoneLocation && !form.rules.disabled) {
+            if (form.field === fields.cloudletLocation && !form.rules.disabled) {
                 let zone = {}
-                zone.zoneLocation = { latitude: location.lat, longitude: location.long }
-                this.updateState({ mapData: [zone] })
+                zone.cloudletLocation = { latitude: location[0].cloudletLocation.latitude, longitude: location[0].cloudletLocation.longitude }
                 let childForms = form.forms;
                 for (let j = 0; j < childForms.length; j++) {
                     let childForm = childForms[j]
                     if (childForm.field === fields.latitude) {
-                        childForm.value = location.lat
+                        childForm.value = location[0].cloudletLocation.latitude
                     }
                     else if (childForm.field === fields.longitude) {
-                        childForm.value = location.long
+                        childForm.value = location[0].cloudletLocation.longitude
                     }
                 }
                 break;
@@ -206,7 +212,6 @@ class ZoneReg extends React.Component {
     /**
      * Tab block
      */
-
 
     getMap = () =>
     (
@@ -281,47 +286,11 @@ class ZoneReg extends React.Component {
         }
     }
 
-
     locationForm = () => ([
         { field: fields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } },
         { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } }
     ])
 
-    /*Multi Form*/
-    cityForm = () => ([
-        { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City Name', rules: { required: true }, width: 7, visible: true },
-        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
-    ])
-
-    stateForm = () => ([
-        { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter state Name', rules: { required: true }, width: 5, visible: true, update: { edit: true } },
-        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
-    ])
-
-    getCityForm = (form) => {
-        return ({ uuid: uuid(), field: fields.city, formType: MULTI_FORM, forms: form ? form : this.cityForm(), width: 3, visible: true })
-    }
-
-    getStateForm = (form) => {
-        return ({ uuid: uuid(), field: fields.state, formType: MULTI_FORM, forms: form ? form : this.stateForm(), width: 3, visible: true })
-    }
-
-    removeMultiForm = (e, form) => {
-        if (form.parent) {
-            let updateForms = Object.assign([], this.state.forms)
-            updateForms.splice(form.parent.id, 1);
-            this.updateState({
-                forms: updateForms
-            })
-        }
-    }
-
-    addMultiForm = (e, form) => {
-        let parent = form.parent;
-        let forms = this.state.forms;
-        forms.splice(parent.id + 1, 0, form.multiForm());
-        this.updateState({ forms })
-    }
     formKeys = () => {
         return [
             { label: 'Create Zones', formType: MAIN_HEADER, visible: true },
@@ -330,13 +299,12 @@ class ZoneReg extends React.Component {
             { field: fields.cloudletName, label: 'Cloudlet Name', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true }, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.operatorName }] },
             { field: fields.zoneId, label: 'Zone ID', formType: INPUT, placeholder: 'Enter Zone Name', rules: { required: true }, visible: true, tip: ' Globally unique string used to authenticate operations over federation interface', update: { key: true } },
             { field: fields.countryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
-            { uuid: uuid(), field: fields.zoneLocation, label: 'Zone Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS co-ordinates associated with the zone', update: { id: ['5', '5.1', '5.2'] } },
+            { uuid: uniqueId(), field: fields.cloudletLocation, label: 'Zone Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS co-ordinates associated with the zone' },
             { field: fields.locality, label: 'Locality', formType: INPUT, placeholder: 'Enter Locality', visible: true, tip: 'Type of locality eg rural, urban etc.' },
-            { field: fields.state, label: 'List of State', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add State', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getStateForm }], visible: true, update: { id: ['39', '39.1', '39.2', '39.3'] }, tip: 'list of states under this zone' },
-            { field: fields.city, label: 'List of City', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add State', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getCityForm }], visible: true, update: { id: ['39', '39.1', '39.2', '39.3'] }, tip: 'list of cities under this zone' },
+            { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter state Name', width: 5, visible: true, update: { edit: true } },
+            { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City Name', width: 7, visible: true },
         ]
     }
-
 
     updateFormData = (forms, data) => {
         for (let i = 0; i < forms.length; i++) {
