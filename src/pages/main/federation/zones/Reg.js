@@ -154,8 +154,6 @@ class ZoneReg extends React.Component {
         if (data) {
             let mc; 
             let forms = this.state.forms;
-            let stateList = [];
-            let cityList = [];
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
                 if (form.uuid) {
@@ -165,18 +163,10 @@ class ZoneReg extends React.Component {
                         if (form.field === fields.cloudletLocation) {
                             data[fields.cloudletLocation] = multiFormData.latitude + ',' + multiFormData.longitude
                         }
-                        else if (form.field === fields.city) {
-                            cityList.push(multiFormData[fields.city])
-                        }
-                        else if (form.field === fields.state) {
-                            stateList.push(multiFormData[fields.state])
-                        }
                     }
                     data[uuid] = undefined
                 }
             }
-            cityList.length > 0 && (data[fields.city] = cityList)
-            stateList.length > 0 && (data[fields.state] = stateList)
             mc = await createSelfZone(this, data)
             if (service.responseValid(mc)) {
                 this.props.handleAlertInfo('success', `Zone ${data[fields.zoneId]} created successfully`)
