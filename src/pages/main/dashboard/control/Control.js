@@ -52,7 +52,6 @@ class Control extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.state.dataset)
     }
 }
 
