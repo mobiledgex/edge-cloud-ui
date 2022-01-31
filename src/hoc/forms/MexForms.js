@@ -121,11 +121,11 @@ const MexForms = (props) => {
 
     const errorBanner = (form) => {
         setError(form.error)
-            let element = document.getElementById(form.field)
-            if (element) {
-                element.style.scrollMargin = '10px';
-                element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-            }
+        let element = document.getElementById(form.field)
+        if (element) {
+            element.style.scrollMargin = '10px';
+            element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+        }
     }
 
     const validateRules = (form, valid) => {

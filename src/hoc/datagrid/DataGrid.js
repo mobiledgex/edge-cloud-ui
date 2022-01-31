@@ -565,6 +565,7 @@ class DataGrid extends React.Component {
                     });
                 }
             }
+
             if (newDataList.length > 0) {
                 newDataList = operators._orderBy(newDataList, requestInfo.sortBy)
                 dataList = [...dataList, ...newDataList]

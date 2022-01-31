@@ -13,6 +13,7 @@ import { uiFormatter } from '../../../../helper/formatter';
 import { showApps } from '../../../../services/modules/app';
 import { redux_org } from '../../../../helper/reduxData';
 import { developerRoles } from '../../../../constant';
+import { appendSpaceToLetter } from '../../../../utils/string_utils';
 
 class AlertPolicy extends React.Component {
     constructor(props) {
@@ -76,6 +77,9 @@ class AlertPolicy extends React.Component {
     dataFormatter = (key, data, isDetail) => {
         if (key.field === fields.severity) {
             return uiFormatter.RenderSeverity(data, isDetail)
+        }
+        else if (key.field === fields.triggerTime) {
+            return isDetail ? appendSpaceToLetter(data[key.field]) : data[key.field]
         }
     }
 

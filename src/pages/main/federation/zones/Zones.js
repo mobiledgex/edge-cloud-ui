@@ -1,16 +1,16 @@
 import React from "react";
 import { withRouter } from 'react-router-dom';
-import DataView from '../../../container/DataView';
+import DataView from '../../../../container/DataView';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
-import { fields } from '../../../services/model/format';
+import * as actions from '../../../../actions';
+import { fields } from '../../../../services/model/format';
 //model
-import { HELP_ZONES_LIST } from "../../../tutorial";
-import { perpetual } from "../../../helper/constant";
+import { HELP_ZONES_LIST } from "../../../../tutorial";
+import { perpetual } from "../../../../helper/constant";
 import ZoneReg from "./Reg"
-import { showSelfZone, keys, showSelfFederatorZone, multiDataRequest } from "../../../services/modules/zones"
-import { deleteSelfZone } from "../../../services/modules/zones/zones";
+import { showSelfZone, keys, showSelfFederatorZone, multiDataRequest } from "../../../../services/modules/zones"
+import { deleteSelfZone } from "../../../../services/modules/zones/zones";
 
 class ZoneList extends React.Component {
     constructor(props) {
