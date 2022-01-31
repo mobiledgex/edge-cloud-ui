@@ -41,7 +41,6 @@ export const HELP_INBOUND_REG = 'InboundReg'
 export const HELP_INBOUND_REG_1 = 'InboundReg_1'
 export const HELP_INBOUND_REG_2 = 'InboundReg_2'
 export const HELP_OUTBOUND_REG = 'OutboundFederationListReG'
-export const HELP_PARTNER_ZONES = 'PartnerZones'
 
 export const userRoles = (org, type, isDoc) => {
     if (isDoc) {
