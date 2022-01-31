@@ -64,11 +64,10 @@ export const showSelfZone = (self, data, specific) => {
         requestData = data
     }
     else {
-        requestData.region = data.region
         let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
         if (organization) {
             if (redux_org.isOperator(self)) {
-                requestData = { operatorid: organization }
+                requestData = { operatorid: organization, region: data.region }
             }
         }
     }

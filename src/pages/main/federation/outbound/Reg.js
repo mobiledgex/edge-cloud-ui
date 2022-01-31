@@ -24,11 +24,11 @@ import { uniqueId } from '../../../../helper/constant/shared';
 const stepData = [
     {
         step: "Step 1",
-        description: "Create Self Operator"
+        description: "Generate Self Data"
     },
     {
         step: "Step 2",
-        description: "Create Partner Operator"
+        description: "Create Federation"
     },
     {
         step: "Step 3",
@@ -182,7 +182,7 @@ class FederationReg extends React.Component {
         }
         let region = data[fields.region]
         let operatorid = data[fields.operatorName]
-        let countryCode = data[fields.partnerCountryCode]
+        let countryCode = data[fields.partnerCountryCode].toUpperCase()
         let zonesList = await showAuthSyncRequest(this, showSelfZone(this, { region, operatorid, countryCode }, true))
         this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
         forms.push(
@@ -261,10 +261,10 @@ class FederationReg extends React.Component {
     step2 = () => {
         return [
             { label: 'Enter Partner Detail', formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: ' Self Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true, disabled: true }, visible: true, update: { key: true } },
-            { field: fields.operatorName, label: 'Self Operator', formType: INPUT, placeholder: 'Select Operator', rules: { required: true, disabled: true }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
-            { field: fields.countryCode, label: ' Self Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true, disabled: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
-            { field: fields.federationId, label: 'Self Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, rules: { required: true }, tip: 'Self federation ID', value: this.federationId },
+            { field: fields.region, label: ' Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true, disabled: true }, visible: true, update: { key: true } },
+            { field: fields.operatorName, label: 'Operator', formType: INPUT, placeholder: 'Select Operator', rules: { required: true, disabled: true }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
+            { field: fields.countryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true, disabled: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
+            { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, rules: { required: true, disabled: this.props.action === perpetual.ACTION_UPDATE_PARTNER ? true : false }, tip: 'Self federation ID' },
             { field: fields.partnerOperatorName, label: 'Operator', formType: INPUT, placeholder: 'Enter Partner Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Globally unique string to identify an operator platform' },
             { field: fields.partnerCountryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Partner Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
             { field: fields.partnerFederationid, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Partner Federation ID', visible: true, rules: { required: true }, tip: 'Globally unique string used to indentify a federation with partner federation' },
@@ -276,7 +276,7 @@ class FederationReg extends React.Component {
 
     step3 = () => {
         return [
-            { label: `${this.props.action === perpetual.ACTION_UNSHARE_ZONES ? 'Unshare' : 'share'} Zones`, formType: MAIN_HEADER, visible: true },
+            { label: `${this.props.action === perpetual.ACTION_UNSHARE_ZONES ? 'Unshare' : 'Share'} Zones`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true, disabled: true }, visible: true, update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: INPUT, placeholder: 'Select Operator', rules: { required: true, disabled: true }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
             { field: fields.federationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Fderation Name', rules: { required: true, disabled: true }, visible: true, tip: 'Name to uniquely identify a federation' },
@@ -512,7 +512,7 @@ class FederationReg extends React.Component {
                 if (actionShareZones) {
                     let region = this.props.data[fields.region]
                     let operatorid = this.props.data[fields.operatorName]
-                    let countryCode = this.props.data[fields.countryCode]
+                    let countryCode = this.props.data[fields.countryCode].toUpperCase()
                     let zonesList = await showAuthSyncRequest(this, showSelfZone(this, { region, operatorid, countryCode }, true))
                     this.zoneList = _sort(zonesList.map(zones => zones[fields.zoneId]))
                     if (this.zoneList.length > 0) {
