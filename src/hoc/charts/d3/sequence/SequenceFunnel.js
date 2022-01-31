@@ -2,14 +2,14 @@ import React from 'react';
 import * as d3 from 'd3';
 import { uniqueId } from '../../../../helper/constant/shared';
 
-const CON_WIDTH = 310
+const CON_WIDTH = 270
 
 /***********
 **w:width;**
 **h:height**
 **s:space***
 **t:vertex**/
-const b = { w: 190, h: 30, s: 14, t: 12 };
+const b = { w: 170, h: 20, s: 6, t: 12 };
 
 const breadcrumbPoints = (d, i, j) => {
   var w = b.w + i * b.t
@@ -35,9 +35,9 @@ export const updateElements = (sequence, onSwap) => {
     .attr("points", (d, i) => { return breadcrumbPoints(d, i, sequence.length - i) })
     .style('display', 'inline')
     .attr("stroke-linejoin", "round")
-    .attr("stroke-width", '12px')
-    .attr("stroke", function (d, i) { return i < 2 ? '#388E3C' : '#757575' })
-    .style("fill", function (d, i) { return i < 2 ? '#388E3C' : '#757575' })
+    .attr("stroke-width", '5px')
+    .attr("stroke", function (d, i) { return i < 2 ? '#43A56E' : '#757575' })
+    .style("fill", function (d, i) { return i < 2 ? '#43A56E' : '#757575' })
 
 
   //add label
@@ -45,8 +45,8 @@ export const updateElements = (sequence, onSwap) => {
     .attr("x", (b.w + b.t) / 2)
     .attr("y", b.h / 2)
     .attr("dy", "0.35em")
-    .attr("dx", "2.5em")
-    .style("font-size", "15px")
+    .attr("dx", "3em")
+    .style("font-size", "12px")
     .style("font-weight", "700")
     .attr("text-anchor", "middle")
     .text((d) => { return d.label; })
@@ -92,13 +92,12 @@ class Sequence extends React.Component {
   }
 
   initialize = () => {
+    const { sequence } = this.props
     d3.select(this.sbRef.current)
       .append('svg')
       .attr("id", "trail")
-      .style('margin-left', 15)
-      .style('margin-top', -25)
-      .style('margin-bottom', 15)
-      .attr("viewBox", [0, 0, this.width, this.width])
+      .attr("width", this.width)
+      .attr("height", (b.h + 15) * sequence.length)
       .attr('align', 'center')
   }
 

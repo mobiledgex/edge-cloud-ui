@@ -62,5 +62,6 @@ export const formatData = (order) => {
         let item = rawData[i]
         formatSequence(order, 0, item, data.children)
     }
+    console.log(data)
     return data
 }

@@ -31,7 +31,7 @@ export default function BasicTable(props) {
     const [height, setHeight] = useState(0);
 
     const classes = useStyles({ show, height });
-    
+
     useEffect(() => {
         setOpen(show)
     }, [show]);
@@ -64,13 +64,14 @@ export default function BasicTable(props) {
                 anchor="right"
             >
                 <CardHeader
-
                     action={
                         <IconButton onClick={() => { setOpen(false) }} className={classes.iconColor}>
                             <CloseIcon />
                         </IconButton>
                     } />
-                {props.children}
+                <div align='center'>
+                    {props.children}
+                </div>
             </Drawer>
         </div>
     );

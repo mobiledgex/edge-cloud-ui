@@ -7,7 +7,8 @@ import SequenceFunnel from '../../../../hoc/charts/d3/sequence/SequenceFunnel';
 import { withStyles } from '@material-ui/styles';
 import { controlStyles } from './control-styling'
 import { uniqueId } from '../../../../helper/constant/shared';
-
+import Tooltip from './Tooltip'
+import Doughnut from '../../../../hoc/charts/d3/doughnut/Doughnut';
 class Control extends React.Component {
     constructor(props) {
         super(props)
@@ -32,20 +33,16 @@ class Control extends React.Component {
     }
 
     render() {
-        const { height, toggle, dataset } = this.state
-        const { classes } = this.props
+        const { toggle, dataset } = this.state
+        const { classes, height } = this.props
         return (
-            <div style={{ width: '100%' }}>
-                <Card style={{ width: 'inherit', display: 'inline-flex' }}>
-                    <div style={{ width: '47%' }}>
-                        <SequenceFunnel sequence={sequence} onChange={this.onSequenceChange} width={310} key={uniqueId()}></SequenceFunnel>
-                        <Divider style={{ height: 3, backgroundColor: '#202125' }} />
-                    </div>
-                    <div style={{ width: 3, backgroundColor: '#202125' }} />
-                    <div style={{ width: '53%' }}>
+            <div id='mex-sunburst-container' className='mex-card'>
+                <div style={{display:'flex'}}>
+                    <div style={{ width: '70%' }}>
                         <Sunburst sequence={sequence} dataset={dataset} toggle={toggle} onMore={this.onMore} />
                     </div>
-                </Card>
+                    <SequenceFunnel sequence={sequence} onChange={this.onSequenceChange} key={uniqueId()}></SequenceFunnel>
+                </div>
             </div>
         )
     }
