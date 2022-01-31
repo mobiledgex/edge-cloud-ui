@@ -30,6 +30,7 @@ class ZoneList extends React.Component {
     onRegClose = (isEdited) => {
         this.resetView()
     }
+
     updateState = (data) => {
         if (this._isMounted) {
             this.setState({ ...data })
@@ -81,16 +82,10 @@ class ZoneList extends React.Component {
 
 };
 
-const mapStateToProps = (state) => {
-    return {
-        organizationInfo: state.organizationInfo.data
-    }
-};
-
 const mapDispatchProps = (dispatch) => {
     return {
         handleViewMode: (data) => { dispatch(actions.viewMode(data)) },
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(ZoneList));
+export default withRouter(connect(null, mapDispatchProps)(ZoneList));
