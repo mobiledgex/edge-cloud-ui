@@ -15,8 +15,9 @@ export const pages = [
     {
         label: 'Federation', icon: 'star_rate_outlined ', id: perpetual.PAGE_FEDERATION, sub: true, visible: true, options: [
             { label: 'Host', icon: 'flight_takeoff', id: perpetual.PAGE_OUTBOUND_FEDERATION, path: 'host-federation', visible: true },
+            { label: 'Host Zones', icon: 'assistant_photo', id: perpetual.PAGE_ZONES, path: 'zones', visible: true },
             { label: 'Guest', icon: 'flight_land', id: perpetual.PAGE_INBOUND_FEDERATION, path: 'guest-federation', visible: true },
-            { label: 'Zones', icon: 'assistant_photo', id: perpetual.PAGE_ZONES, path: 'zones', visible: true },
+            { label: 'Guest Zones', icon: 'flag_circle', id: perpetual.PAGE_GUEST_ZONES, path: 'guest-zones', visible: true },
         ]
     },
     { label: 'Flavors', icon: 'free_breakfast', id: perpetual.PAGE_FLAVORS, path: 'flavors', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },

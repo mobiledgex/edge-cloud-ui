@@ -219,6 +219,7 @@ class DataGrid extends React.Component {
         if (valid) {
             if (isMultiple) {
                 this.updateState({ selected: [] })
+                let selectionList = []
                 this.state.filterList.map(item => {
                     if (data.includes(item.uuid)) {
                         switch (action.label) {
@@ -231,9 +232,15 @@ class DataGrid extends React.Component {
                             case 'Delete':
                                 this.onDeleteMultiple(action, item)
                                 break;
+                            default:
+                                selectionList.push(item)
                         }
                     }
                 })
+                if(selectionList.length > 0)
+                {
+                    action.onClick(action, selectionList, () => { this.generateRequestData(this.selectedRegion) })
+                }
             }
             else {
                 let id = action.id ? action.id : action.label
@@ -252,11 +259,8 @@ class DataGrid extends React.Component {
                     case perpetual.ACTION_REBOOT:
                         action.onClick(action, data, this.onDeleteWSResponse)
                         break;
-                    case perpetual.ACTION_POOL_ACCESS_DEVELOPER:
-                    case perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT:
-                    case perpetual.ACTION_EDGE_BOX_ENABLE:
+                    default:
                         action.onClick(action, data, () => { this.generateRequestData(this.selectedRegion) })
-                        break;
                 }
             }
         }

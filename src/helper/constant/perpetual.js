@@ -260,6 +260,7 @@ export const QOS_THROUGHPUT_DOWN_S = 'Throughput Down S'
 export const QOS_THROUGHPUT_DOWN_M = 'Throughput Down M'
 export const QOS_THROUGHPUT_DOWN_L = 'Throughput Down L'
 
+export const PAGE_GUEST_ZONES = 'GuestZones'
 export const PAGE_ZONES = 'self shares zones'
 export const PAGE_FEDERATION = 'Federation'
 export const PAGE_OUTBOUND_FEDERATION = 'Outbound'
