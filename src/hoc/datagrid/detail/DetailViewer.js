@@ -67,9 +67,6 @@ const getURL = (data) => {
 
 const getDate = (data, item) => {
     let date = item.date
-    if (date.dataFormat === 'seconds') {
-        data = data * 1000
-    }
     return (
         time(date.format, data)
     )

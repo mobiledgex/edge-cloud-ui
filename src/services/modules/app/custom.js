@@ -14,8 +14,8 @@ export const customize = (request, value) => {
         value[fields.scaleWithCluster] = value[fields.scaleWithCluster] ? value[fields.scaleWithCluster] : false
         value[fields.allowServerless] = value[fields.allowServerless] ? value[fields.allowServerless] : false
     }
-    value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
-    value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
+    value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt] : undefined
+    value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt] : undefined
     value[fields.autoProvPolicies] = value[fields.autoPolicyName] ? [value[fields.autoPolicyName]] : value[fields.autoProvPolicies]
     value[fields.autoPolicyName] = undefined
     if (value[fields.configs]) {
