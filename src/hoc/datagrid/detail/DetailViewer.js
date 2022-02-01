@@ -88,7 +88,7 @@ const isArrayString = (item, data) => {
 const getArrayRow = (id, item, dataList, classes) => {
     return (
         <TableRow key={id}>
-            <TableCell className={classes.table_cell_label}>{item.label}</TableCell>
+            <TableCell className={classes.table_cell_label}><strong className={clsx(classes.main_label, classes.textColor)}>{item.label}</strong></TableCell>
             <TableCell className={classes.table_cell_value}>
                 <Table size='small'>
                     <TableBody>
@@ -96,7 +96,7 @@ const getArrayRow = (id, item, dataList, classes) => {
                             return (
                                 <TableRow key={i} style={{ backgroundColor: i % 2 === 0 ? '#181a1f' : 'transparent' }}>{(
                                     <TableCell className={classes.bottomBorder}>
-                                        <p style={{ wordBreak: 'break-all' }}>{data}</p>
+                                         <strong className={classes.textColor}>{data}</strong>
                                     </TableCell>)
                                 }
                                 </TableRow>)
