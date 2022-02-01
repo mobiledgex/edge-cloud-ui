@@ -68,7 +68,7 @@ class FederationList extends React.Component {
     requestInfo = () => {
         return ({
             id: perpetual.PAGE_OUTBOUND_FEDERATION,
-            headerLabel: 'Outbound Federation',
+            headerLabel: 'Federation - Host',
             requestType: [showFederation, showFederator, showSelfFederatorZone],
             sortBy: [fields.region, fields.federationName],
             isRegion: true,
