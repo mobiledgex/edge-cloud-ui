@@ -18,7 +18,7 @@ export const keys = () => ([
     { field: fields.federationId, serverField: 'selffederationid', label: 'Federation ID' },
     { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.zoneId, label: 'Partner  sharing Zones', serverField: 'zoneid', dataType: perpetual.TYPE_ARRAY },
-    { field: fields.zoneCount, label: 'Zone Count', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.zoneCount, label: 'Zone Count', sortable: true, visible: true, filter: true, key: true, detailView: false },
     { field: fields.federationName, serverField: 'federationname', label: 'Federation Name', detailView: false },
     { field: fields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf', format: true },
 ])
