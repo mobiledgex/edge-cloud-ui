@@ -312,5 +312,8 @@ export const fields = {
     selfFederationId: 'selffederationid',
     selfOperatorId: 'selfoperatorid',
     zonesRegistered: 'Registered',
-    zoneCount: 'zoneCount'
+    zoneCount: 'zoneCount',
+    sharedOperator: 'sharedOperator',
+    sharedZoned: 'sharedZoned',
+    autoGenerateFederationID: 'autoGenerateFederationID'
 }

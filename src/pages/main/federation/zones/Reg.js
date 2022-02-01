@@ -141,7 +141,9 @@ class ZoneReg extends React.Component {
         else if (form.field === fields.latitude || form.field === fields.longitude) {
             this.locationChange(form, forms, isInit)
         }
+
     }
+
 
     /**Required */
     /*Trigged when form value changes */
