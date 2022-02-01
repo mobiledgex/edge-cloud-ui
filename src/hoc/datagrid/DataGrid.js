@@ -375,6 +375,11 @@ class DataGrid extends React.Component {
             this.filterText = value.toLowerCase()
         }
 
+        let iconKeys = cloneDeep(this.state.iconKeys)
+        iconKeys && iconKeys.forEach(iconKey => {
+            iconKey.count = 0
+        })
+
         let dataList = cloneDeep(this.state.dataList)
         let filterCount = 0
         let filterList = dataList.filter(data => {
@@ -395,11 +400,14 @@ class DataGrid extends React.Component {
                     }
                 })
             }
+            if (valid && iconKeys) {
+                iconKeys.forEach(iconKey => {
+                    iconKey.count = iconKey.count + (data[iconKey.field] ? 1 : 0)
+                })
+            }
             return valid
         })
-
-        this.updateState({ filterList })
-
+        this.updateState({ filterList, iconKeys })
         return filterList
     }
 
