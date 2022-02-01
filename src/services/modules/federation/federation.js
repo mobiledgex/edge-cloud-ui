@@ -19,8 +19,9 @@ export const keys = () => ([
     { field: fields.federationId, serverField: 'selffederationid', label: 'Federation ID' },
     { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.zoneId, label: 'Shared Zone', serverField: 'zoneid', dataType: perpetual.TYPE_ARRAY },
-    { field: fields.zoneCount, label: 'Zone Shared', sortable: true, visible: true, filter: true, key: true, detailView: false },
-    { field: fields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf', detailView: true, key: true, filter: true },
+    { field: fields.zoneCount, label: 'Zone Count', sortable: true, visible: true, filter: true, key: true, detailView: false },
+    { field: fields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf', format: true },
+    { field: fields.partnerRoleAccessToSelfZones, label: 'Partner Has registered', serverField: 'PartnerRoleAccessToSelfZones', format: true },
 ])
 
 export const iconKeys = () => ([
@@ -128,7 +129,8 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
                     federator[fields.mcc] = federator[fields.mcc]
                     federator[fields.mnc] = federator[fields.mnc]
                     federator[fields.federationName] = federation[fields.federationName] ? federation[fields.federationName] : undefined
-                    federator[fields.partnerRoleShareZoneWithSelf] = federation[fields.partnerRoleShareZoneWithSelf] === perpetual.YES ? true : false
+                    federator[fields.partnerRoleShareZoneWithSelf] = federation[fields.partnerRoleShareZoneWithSelf] ? true : false
+                    federator[fields.partnerRoleAccessToSelfZones] = federation[fields.partnerRoleAccessToSelfZones] ? true : false
                     break
                 }
             }

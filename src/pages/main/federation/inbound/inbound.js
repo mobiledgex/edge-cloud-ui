@@ -17,6 +17,7 @@ import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
 import { service, fields } from '../../../../services'
 import PartnerZones from './PartnerZone'
 import MexForms, { INPUT, BUTTON } from '../../../../hoc/forms/MexForms';
+import { uiFormatter } from '../../../../helper/formatter';
 class InboundList extends React.Component {
     constructor(props) {
         super(props);
@@ -87,8 +88,15 @@ class InboundList extends React.Component {
             nameField: fields.federationName,
             viewMode: HELP_INBOUND_LIST,
             grouping: true,
-            iconKeys: iconKeys()
+            iconKeys: iconKeys(),
+            formatData: this.dataFormatter
         })
+    }
+
+    dataFormatter = (key, data, isDetail) => {
+        if (key.field === fields.partnerRoleShareZoneWithSelf) {
+            return uiFormatter.renderYesNo(key, data[key.field], isDetail)
+        }
     }
 
     onAdd = (type) => {

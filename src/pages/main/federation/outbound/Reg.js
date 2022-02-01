@@ -143,7 +143,7 @@ class FederationReg extends React.Component {
                         </Typography>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => this.onRegisterFederation()} style={{ color: '#D3D3D3' }}>
+                            <Button onClick={() => this.onRegisterFederation()} style={{ color: '#D3D3D3' }}>
                             NO
                         </Button>
                         <Button onClick={() => this.onRegisterFederation(true)} style={{ color: ICON_COLOR }}>

@@ -308,6 +308,7 @@ export const fields = {
     zonesList: 'zonesList',
     register: 'register',
     partnerRoleShareZoneWithSelf: 'PartnerRoleShareZonesWithSelf',
+    partnerRoleAccessToSelfZones: 'PartnerRoleAccessToSelfZones',
     selfFederationId: 'selffederationid',
     selfOperatorId: 'selfoperatorid',
     zonesRegistered: 'Registered',

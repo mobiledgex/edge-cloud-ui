@@ -1,6 +1,5 @@
 
 import * as formatter from '../../model/format'
-import { authSyncRequest } from '../../service';
 import { endpoint, perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData'
 
@@ -21,7 +20,7 @@ export const keys = () => ([
     { field: fields.zoneId, label: 'Partner  sharing Zones', serverField: 'zoneid', dataType: perpetual.TYPE_ARRAY },
     { field: fields.zoneCount, label: 'Zone Count', sortable: true, visible: true, filter: true, key: true },
     { field: fields.federationName, serverField: 'federationname', label: 'Federation Name', detailView: false },
-    { field: fields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf', detailView: true, key: true, filter: true },
+    { field: fields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf', format: true },
 ])
 
 export const iconKeys = () => ([
@@ -95,7 +94,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
                     federator[fields.mcc] = federator[fields.mcc]
                     federator[fields.mnc] = federator[fields.mnc]
                     federator[fields.federationName] = federation[fields.federationName] ? federation[fields.federationName] : undefined
-                    federator[fields.partnerRoleShareZoneWithSelf] = federation[fields.partnerRoleShareZoneWithSelf] === perpetual.YES ? true : false
+                    federator[fields.partnerRoleShareZoneWithSelf] = federation[fields.partnerRoleShareZoneWithSelf] ? true : false
                     break
                 }
             }

@@ -17,6 +17,7 @@ import { deRegisterFederation, registerFederation } from '../../../../services/m
 import { service, fields } from '../../../../services'
 import SharingZones from './SharingZones'
 import { showSelfFederatorZone } from "../../../../services/modules/zones";
+import { uiFormatter } from '../../../../helper/formatter';
 class FederationList extends React.Component {
     constructor(props) {
         super(props);
@@ -77,12 +78,24 @@ class FederationList extends React.Component {
             nameField: fields.federationName,
             viewMode: HELP_OUTBOUND_LIST,
             grouping: true,
-            iconKeys: iconKeys()
+            iconKeys: iconKeys(),
+            formatData: this.dataFormatter
         })
     }
+
+    dataFormatter = (key, data, isDetail) => {
+        if (key.field === fields.partnerRoleShareZoneWithSelf) {
+            return uiFormatter.renderYesNo(key, data[key.field], isDetail)
+        }
+        if (key.field === fields.partnerRoleAccessToSelfZones) {
+            return uiFormatter.renderYesNo(key, data[key.field], isDetail)
+        }
+    }
+
     onAdd = (type) => {
         this.updateState({ currentView: <FederationReg onClose={this.onRegClose} /> });
     }
+
     onUpdate = (action, data) => {
         this.updateState({ currentView: <FederationReg data={data} isUpdate={true} onClose={this.onRegClose} /> });
     }
@@ -98,9 +111,11 @@ class FederationList extends React.Component {
     onShareZones = (action, data) => {
         data[fields.zoneId] || action.id === perpetual.ACTION_SHARE_ZONES ? this.updateState({ currentView: <FederationReg action={action.id} data={data} onClose={this.onRegClose} /> }) : this.props.handleAlertInfo('error', 'No Zones to Share !')
     }
+
     createVisible = (data) => {
         return data[fields.federationName] === undefined
     }
+
     federationNameVisible = (data) => {
         return data[fields.federationName] !== undefined
     }
