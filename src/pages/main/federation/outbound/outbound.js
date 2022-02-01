@@ -17,6 +17,7 @@ import { deRegisterFederation, registerFederation } from '../../../../services/m
 import { service, fields } from '../../../../services'
 import SharingZones from './SharingZones'
 import { showSelfFederatorZone } from "../../../../services/modules/zones";
+import { uiFormatter } from '../../../../helper/formatter';
 class FederationList extends React.Component {
     constructor(props) {
         super(props);
@@ -68,7 +69,7 @@ class FederationList extends React.Component {
     requestInfo = () => {
         return ({
             id: perpetual.PAGE_OUTBOUND_FEDERATION,
-            headerLabel: 'Outbound Federation',
+            headerLabel: 'Federation - Host',
             requestType: [showFederation, showFederator, showSelfFederatorZone],
             sortBy: [fields.region, fields.federationName],
             isRegion: true,
@@ -77,12 +78,24 @@ class FederationList extends React.Component {
             nameField: fields.federationName,
             viewMode: HELP_OUTBOUND_LIST,
             grouping: true,
-            iconKeys: iconKeys()
+            iconKeys: iconKeys(),
+            formatData: this.dataFormatter
         })
     }
+
+    dataFormatter = (key, data, isDetail) => {
+        if (key.field === fields.partnerRoleShareZoneWithSelf) {
+            return uiFormatter.renderYesNo(key, data[key.field], isDetail)
+        }
+        if (key.field === fields.partnerRoleAccessToSelfZones) {
+            return uiFormatter.renderYesNo(key, data[key.field], isDetail)
+        }
+    }
+
     onAdd = (type) => {
         this.updateState({ currentView: <FederationReg onClose={this.onRegClose} /> });
     }
+
     onUpdate = (action, data) => {
         this.updateState({ currentView: <FederationReg data={data} isUpdate={true} onClose={this.onRegClose} /> });
     }
@@ -98,9 +111,11 @@ class FederationList extends React.Component {
     onShareZones = (action, data) => {
         data[fields.zoneId] || action.id === perpetual.ACTION_SHARE_ZONES ? this.updateState({ currentView: <FederationReg action={action.id} data={data} onClose={this.onRegClose} /> }) : this.props.handleAlertInfo('error', 'No Zones to Share !')
     }
+
     createVisible = (data) => {
         return data[fields.federationName] === undefined
     }
+
     federationNameVisible = (data) => {
         return data[fields.federationName] !== undefined
     }
@@ -155,8 +170,8 @@ class FederationList extends React.Component {
             { id: perpetual.ACTION_UNSHARE_ZONES, label: 'Unshare Zones', onClick: this.onShareZones, visible: this.federationNameVisible, type: 'edit' },
             { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Detail', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
             { id: perpetual.ACTION_GENERATE_API_KEY, label: 'Generate API Key', onClick: this.onGenerateApiKey, type: 'Generate API Key' },
-            { id: perpetual.ACTION_REGISTER_FEDERATION, label: 'Register Federation', onClick: this.onRegisterFederation, visible: this.registerVisible, type: 'Register Federation' },
-            { id: perpetual.ACTION_DEREGISTER_FEDERATION, label: 'Deregister Federation', onClick: this.onRegisterFederation, visible: this.deregisterVisible, type: 'Register Federation' },
+            { id: perpetual.ACTION_REGISTER_FEDERATION, label: 'Register', onClick: this.onRegisterFederation, visible: this.registerVisible, type: 'Register Federation' },
+            { id: perpetual.ACTION_DEREGISTER_FEDERATION, label: 'Deregister', onClick: this.onRegisterFederation, visible: this.deregisterVisible, type: 'Register Federation' },
             { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Add Partner Data' },
             { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.createVisible, onClick: deleteFederator, type: 'Delete', dialogMessage: this.getDeleteActionMessage },
             { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.federationNameVisible, onClick: deleteFederation, type: 'Delete' },

@@ -1,6 +1,5 @@
 
 import * as formatter from '../../model/format'
-import { authSyncRequest } from '../../service';
 import { endpoint, perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData'
 
@@ -20,9 +19,12 @@ export const keys = () => ([
     { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.zoneId, label: 'Partner  sharing Zones', serverField: 'zoneid', dataType: perpetual.TYPE_ARRAY },
     { field: fields.zoneCount, label: 'Zone Count', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.role, label: 'Registered Federation', icon: 'federation_icon.svg', detailView: false },
     { field: fields.federationName, serverField: 'federationname', label: 'Federation Name', detailView: false },
-    { field: fields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf', detailView: true, key: true, filter: true },
+    { field: fields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf', format: true },
+])
+
+export const iconKeys = () => ([
+    { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered', icon: 'bookmark_added', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_VIEWER] }
 ])
 
 export const partnerKey = () => ([
@@ -44,9 +46,7 @@ export const getKey = (data, isCreate) => {
 
     return federation
 }
-export const iconKeys = () => ([
-    { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered Federation', icon: 'federation_icon.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_VIEWER] }
-])
+
 
 export const showPartnerFederatorZone = (self, data, specific) => {
     let requestData = {}
@@ -94,7 +94,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
                     federator[fields.mcc] = federator[fields.mcc]
                     federator[fields.mnc] = federator[fields.mnc]
                     federator[fields.federationName] = federation[fields.federationName] ? federation[fields.federationName] : undefined
-                    federator[fields.partnerRoleShareZoneWithSelf] = federation[fields.partnerRoleShareZoneWithSelf] ? federation[fields.partnerRoleShareZoneWithSelf] : false
+                    federator[fields.partnerRoleShareZoneWithSelf] = federation[fields.partnerRoleShareZoneWithSelf] ? true : false
                     break
                 }
             }

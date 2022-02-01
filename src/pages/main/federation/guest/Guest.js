@@ -12,12 +12,13 @@ import { perpetual } from "../../../../helper/constant";
 import { deleteFederation, showFederation, deRegisterFederation, registerFederation, setApiKey } from "../../../../services/modules/federation"
 import { showFederator, deleteFederator } from "../../../../services/modules/federator"
 import { multiDataRequest, iconKeys, keys, showPartnerFederatorZone } from "../../../../services/modules/inbound"
-import InboundReg from "./reg/Reg"
+import InboundReg from "./Reg"
 import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
 import { service, fields } from '../../../../services'
-import PartnerZones from './PartnerZone'
 import MexForms, { INPUT, BUTTON } from '../../../../hoc/forms/MexForms';
-class InboundList extends React.Component {
+import { uiFormatter } from '../../../../helper/formatter';
+
+class Guest extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -78,7 +79,7 @@ class InboundList extends React.Component {
     requestInfo = () => {
         return ({
             id: perpetual.PAGE_INBOUND_FEDERATION,
-            headerLabel: 'Inbound Federation',
+            headerLabel: 'Federation - Guest',
             requestType: [showFederation, showFederator, showPartnerFederatorZone],
             sortBy: [fields.region, fields.federationName],
             isRegion: true,
@@ -87,8 +88,15 @@ class InboundList extends React.Component {
             nameField: fields.federationName,
             viewMode: HELP_INBOUND_LIST,
             grouping: true,
-            iconKeys: iconKeys()
+            iconKeys: iconKeys(),
+            formatData: this.dataFormatter
         })
+    }
+
+    dataFormatter = (key, data, isDetail) => {
+        if (key.field === fields.partnerRoleShareZoneWithSelf) {
+            return uiFormatter.renderYesNo(key, data[key.field], isDetail)
+        }
     }
 
     onAdd = (type) => {
@@ -107,24 +115,12 @@ class InboundList extends React.Component {
         this.updateState({ currentView: <InboundReg data={data} onClose={this.onRegClose} /> })
     }
 
-    onViewPartner = (action, data) => {
-        data[fields.zoneCount] > 0 ? this.updateState({ currentView: <PartnerZones data={data} onClose={this.onRegClose} /> }) : this.props.handleAlertInfo('error', 'No Zones available for this federation !')
-    }
-
-    onRegisterZones = (action, data) => {
-        this.updateState({ currentView: <InboundReg data={data} action={action.id} onClose={this.onRegClose} /> })
-    }
-
     registerVisible = (data) => {
         return data[fields.federationName] !== undefined && data[fields.partnerRoleShareZoneWithSelf] === false ? true : false
     }
 
     deregisterVisible = (data) => {
         return data[fields.federationName] !== undefined && data[fields.partnerRoleShareZoneWithSelf] ? true : false
-    }
-
-    onShareZones = (action, data) => {
-        data[fields.zoneId] || action.id === perpetual.ACTION_SHARE_ZONES ? this.updateState({ currentView: <InboundReg action={action.id} data={data} onClose={this.onRegClose} /> }) : this.props.handleAlertInfo('error', 'No Zones to Share !')
     }
 
     createVisible = (data) => {
@@ -192,13 +188,10 @@ class InboundList extends React.Component {
 
     actionMenu = () => {
         return [
-            { id: perpetual.ACTION_REGISTER_ZONES, label: 'View Partner Zones', onClick: this.onViewPartner, type: 'Register Federation' },
-            { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Detail', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
+            { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Details', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
             { id: perpetual.ACTION_SET_API_KEY, label: 'Set API Key', onClick: this.onSetApiKey, visible: this.federationNameVisible, type: 'Generate API Key' },
-            { id: perpetual.ACTION_REGISTER_FEDERATION, label: 'Register Federation', onClick: this.onRegisterFederation, visible: this.registerVisible, type: 'Register Federation' },
-            { id: perpetual.ACTION_DEREGISTER_FEDERATION, label: 'Deregister Federation', onClick: this.onRegisterFederation, visible: this.deregisterVisible, type: 'Register Federation' },
-            { id: perpetual.ACTION_REGISTER_ZONES, label: 'Register Zones', onClick: this.onRegisterZones, visible: this.federationNameVisible, type: 'Register Federation' },
-            { id: perpetual.ACTION_DEREGISTER_ZONES, label: 'Deregister Zones', onClick: this.onRegisterZones, visible: this.federationNameVisible, type: 'Register Federation' },
+            { id: perpetual.ACTION_REGISTER_FEDERATION, label: 'Register', onClick: this.onRegisterFederation, visible: this.registerVisible, type: 'Register Federation' },
+            { id: perpetual.ACTION_DEREGISTER_FEDERATION, label: 'Deregister', onClick: this.onRegisterFederation, visible: this.deregisterVisible, type: 'Register Federation' },
             { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Add Partner Data' },
             { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.createVisible, onClick: deleteFederator, type: 'Delete', dialogMessage: this.getDeleteActionMessage },
             { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.federationNameVisible, onClick: deleteFederation, type: 'Delete' },
@@ -291,4 +284,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(InboundList));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(Guest));

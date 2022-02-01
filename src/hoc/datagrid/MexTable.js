@@ -142,9 +142,10 @@ class MuiVirtualizedTable extends React.PureComponent {
             >
                 {
                     column.type === ELE_ICON ? iconKeys.map((key, j) => {
+                        const isSVG = key.icon.includes('.svg')
                         return (
                             <React.Fragment key={j}>
-                                {rowData[key.field] ? <img src={`/assets/icons/${key.icon}`} width={24} style={{ marginTop: 5 }} /> : null}
+                                {rowData[key.field] ? isSVG ? <img src={`/assets/icons/${key.icon}`} width={24} style={{ marginTop: 5 }} /> : <Icon color={'#388E3C'} size={24} outlined={true}>{key.icon}</Icon> : null}
                             </React.Fragment>
                         )
                     }) :
@@ -199,7 +200,7 @@ class MuiVirtualizedTable extends React.PureComponent {
         return (
             <AutoSizer>
                 {({ height, width, rowData }) => {
-                    let reservedWidth = (selection ? 80 : 0) + (action ? 100 : 0) + (iconKeys && iconKeys.length > 0 ? 70 : 0)
+                    let reservedWidth = (selection ? 60 : 0) + (action ? 100 : 0) + (iconKeys && iconKeys.length > 0 ? 37 * iconKeys.length  : 0)
                     let columnWidth = (width - reservedWidth) / columnCount
                     return (
                         <Table
@@ -345,11 +346,11 @@ export default function MexTable(props) {
     }, [dataList]);
 
     let columns = []
-    if (selection) { columns.push({ field: fields.checkbox, label: false, type: ELE_CHECKBOX, visible: true, width: 80, fixedWidth: true, clickable: true }) }
+    if (selection) { columns.push({ field: fields.checkbox, label: false, type: ELE_CHECKBOX, visible: true, width: 60, fixedWidth: true, clickable: true }) }
     let columnCount = 0
 
     if (iconKeys && iconKeys.length > 0) {
-        columns.push({ field: fields.listFilter, label: '', type: ELE_ICON, visible: true, width: 70, fixedWidth: true })
+        columns.push({ field: fields.listFilter, label: '', type: ELE_ICON, visible: true, width: 37 * iconKeys.length , fixedWidth: true })
     }
     columns = [...columns, ...keys.filter(key => {
         let valid = key.visible

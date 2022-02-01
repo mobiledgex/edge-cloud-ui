@@ -19,9 +19,13 @@ export const keys = () => ([
     { field: fields.federationId, serverField: 'selffederationid', label: 'Federation ID' },
     { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.zoneId, label: 'Shared Zone', serverField: 'zoneid', dataType: perpetual.TYPE_ARRAY },
-    { field: fields.zoneCount, label: 'Zone Count', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf', detailView: true, key: true, filter: true },
-    { field: fields.role, label: 'Registered Federation', icon: 'federation_icon.svg', detailView: false }
+    { field: fields.zoneCount, label: 'Zone Count', sortable: true, visible: true, filter: true, key: true, detailView: false },
+    { field: fields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf', format: true },
+    { field: fields.partnerRoleAccessToSelfZones, label: 'Partner Has registered', serverField: 'PartnerRoleAccessToSelfZones', format: true },
+])
+
+export const iconKeys = () => ([
+    { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered', icon: 'bookmark_added', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER, perpetual.OPERATOR] },
 ])
 
 export const getKey = (data, isCreate) => {
@@ -30,7 +34,7 @@ export const getKey = (data, isCreate) => {
     federation.name = data[fields.federationName]
     if (isCreate) {
         data[fields.apiKey] ? (federation.apikey = data[fields.apiKey]) : null
-        data[fields.partnerCountryCode] ? (federation.countrycode = data[fields.partnerCountryCode]) : null
+        data[fields.partnerCountryCode] ? (federation.countrycode = data[fields.partnerCountryCode].toUpperCase()) : null
         data[fields.federationAddr] ? (federation.federationaddr = data[fields.federationAddr]) : null
         data[fields.partnerFederationid] ? federation.federationid = data[fields.partnerFederationid] : null
         data[fields.federationId] ? federation.selffederationid = data[fields.federationId] : null
@@ -41,16 +45,12 @@ export const getKey = (data, isCreate) => {
     return federation
 }
 
-export const iconKeys = () => ([
-    { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered Federation', icon: 'federation_icon.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_VIEWER] },
-])
-
 export const showFederation = (self, data) => {
     let requestData = {}
     let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
     if (organization) {
         if (redux_org.isOperator(self)) {
-            requestData = { operatorid: organization }
+            requestData = { selfoperatorid: organization }
         }
     }
     return { method: endpoint.SHOW_FEDERATION, data: requestData, keys: keys(),iconKeys: iconKeys() }
@@ -114,7 +114,6 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             zonesList = mcRequest.response.data
         }
     }
-
     if (federatorList && federatorList.length > 0) {
         for (let i = 0; i < federatorList.length; i++) {
             let federator = federatorList[i]
@@ -130,7 +129,8 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
                     federator[fields.mcc] = federator[fields.mcc]
                     federator[fields.mnc] = federator[fields.mnc]
                     federator[fields.federationName] = federation[fields.federationName] ? federation[fields.federationName] : undefined
-                    federator[fields.partnerRoleShareZoneWithSelf] = federation[fields.partnerRoleShareZoneWithSelf] ? federation[fields.partnerRoleShareZoneWithSelf] : false
+                    federator[fields.partnerRoleShareZoneWithSelf] = federation[fields.partnerRoleShareZoneWithSelf] ? true : false
+                    federator[fields.partnerRoleAccessToSelfZones] = federation[fields.partnerRoleAccessToSelfZones] ? true : false
                     break
                 }
             }

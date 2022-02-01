@@ -11,8 +11,7 @@ export const keys = () => ([
     { field: fields.zoneId, label: 'Zone id', serverField: 'zoneid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.cloudlets, label: 'cloudlets', serverField: 'cloudlets', sortable: true, filter: true, key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.zonesRegistered, label: 'Registered Zones', icon: 'edgeboxonly.svg', detailView: false },
-    { field: fields.federationName, label: 'Federation Name', serverField: 'federationname' },
+    { field: fields.federationName, label: 'Federation Name', serverField: 'federationname', detailView: false },
     { field: fields.operatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.selfOperatorId, label: 'Operator Name', serverField: 'selfoperatorid' },
 ])
@@ -64,12 +63,13 @@ export const showSelfZone = (self, data, specific) => {
         requestData = data
     }
     else {
-        requestData.region = data.region
         let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
         if (organization) {
             if (redux_org.isOperator(self)) {
-                requestData = { operatorid: organization }
+                requestData = { operatorid: organization, region: data.region }
             }
+        } else {
+            requestData = { region: data.region }
         }
     }
     return { method: endpoint.SHOW_SELF_ZONES, data: requestData, keys: keys() }

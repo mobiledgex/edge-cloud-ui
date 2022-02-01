@@ -1,44 +1,41 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as actions from '../../../../../actions';
+import * as actions from '../../../../actions';
 //Mex
-import MexForms, { SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON, DUALLIST } from '../../../../../hoc/forms/MexForms';
-import { redux_org } from '../../../../../helper/reduxData'
+import MexForms, { SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON, DUALLIST } from '../../../../hoc/forms/MexForms';
+import { redux_org } from '../../../../helper/reduxData'
 //model
-import { service, fields } from '../../../../../services'
-import { HELP_INBOUND_REG, HELP_INBOUND_REG_1, HELP_INBOUND_REG_2 } from "../../../../../tutorial";
+import { service, fields } from '../../../../services'
+import { HELP_INBOUND_REG, HELP_INBOUND_REG_1, HELP_INBOUND_REG_2 } from "../../../../tutorial";
 import { Item, Step, ListItem } from 'semantic-ui-react';
-import { createFederator, updateFederator } from "../../../../../services/modules/federator"
-import { createFederation, registerFederation, showRegisterPartnerZone, showDeregisterPartnerZone } from '../../../../../services/modules/federation'
+import { createFederator, updateFederator } from "../../../../services/modules/federator"
+import { createFederation, registerFederation, showRegisterPartnerZone, showDeregisterPartnerZone } from '../../../../services/modules/federation'
 import { Grid, Dialog, DialogTitle, DialogActions, DialogContent, Button, Typography } from '@material-ui/core';
-import { perpetual } from '../../../../../helper/constant';
-import { codeHighLighter } from '../../../../../hoc/highLighter/highLighter';
-import { _sort } from '../../../../../helper/constant/operators';
-import { getOrganizationList } from '../../../../../services/modules/organization';
-import { ICON_COLOR } from '../../../../../helper/constant/colors';
-import { showPartnerFederatorZone } from "../../../../../services/modules/inbound"
-import { showAuthSyncRequest } from '../../../../../services/service';
-import { uniqueId } from '../../../../../helper/constant/shared';
+import { perpetual } from '../../../../helper/constant';
+import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
+import { _sort } from '../../../../helper/constant/operators';
+import { getOrganizationList } from '../../../../services/modules/organization';
+import { ICON_COLOR } from '../../../../helper/constant/colors';
+import { showPartnerFederatorZone } from "../../../../services/modules/inbound"
+import { showAuthSyncRequest } from '../../../../services/service';
+import { uniqueId } from '../../../../helper/constant/shared';
 
 const stepData = [
     {
         step: "Step 1",
-        description: "Create Self Operator"
+        description: "Enter Operator Details"
     },
     {
         step: "Step 2",
-        description: "Create Partner Operator"
+        description: "Enter Partner Details"
     },
     {
         step: "Step 3",
         description: "Register Partner Zones"
     }
 ]
-// const useStyles = makeStyles((theme) => ({
 
-
-// }));
 class InboundReg extends React.Component {
     constructor(props) {
         super(props);
@@ -243,12 +240,12 @@ class InboundReg extends React.Component {
 
     step1 = () => {
         return [
-            { label: `${this.isUpdate ? 'Update' : 'Define'} Operator Detail`, formType: MAIN_HEADER, visible: true },
+            { label: `${this.isUpdate ? 'Update' : 'Enter'} Operator Details`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Enter Partner Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
             { field: fields.countryCode, label: ' Country Code', formType: INPUT, placeholder: 'Enter Partner Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
             { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
-            { field: fields.locatorendpoint, label: 'Locator End point', formType: INPUT, placeholder: 'Enter Partner Locator Endpoint', visible: true, update: { edit: true }, tip: 'IP and Port of discovery service URL of operator platform' },
+            { field: fields.locatorendpoint, label: 'Locator End Point', formType: INPUT, placeholder: 'Enter Partner Locator Endpoint', visible: true, update: { edit: true }, tip: 'IP and Port of discovery service URL of operator platform' },
             { field: fields.mcc, label: 'MCC', formType: INPUT, placeholder: 'Enter MCC Code', rules: { required: true, type: 'number' }, visible: true, update: { edit: true }, tip: 'Mobile country code of operator sending the request' },
             { field: fields.mnc, label: 'List of MNC', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'List of mobile network codes of operator sending the request', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getMnc }], visible: true, tip: 'List of mobile network codes of operator sending the request' },
         ]
@@ -256,11 +253,11 @@ class InboundReg extends React.Component {
 
     step2 = () => {
         return [
-            { label: 'Enter Partner Detail', formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: ' Self Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true, disabled: true }, visible: true, update: { key: true } },
-            { field: fields.operatorName, label: 'Self Operator', formType: INPUT, placeholder: 'Select Operator', rules: { required: true, disabled: true }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
-            { field: fields.countryCode, label: ' Self Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true, disabled: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
-            { field: fields.federationId, label: 'Self Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, rules: { required: true, disabled: this.isUpdate ? true : false }, tip: 'Self federation ID', value: this.federationId },
+            { label: 'Enter Partner Details', formType: MAIN_HEADER, visible: true },
+            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true, disabled: true }, visible: true, update: { key: true } },
+            { field: fields.operatorName, label: 'Operator', formType: INPUT, placeholder: 'Select Operator', rules: { required: true, disabled: true }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
+            { field: fields.countryCode, label: ' Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true, disabled: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
+            { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, rules: { required: true, disabled: this.isUpdate ? true : false }, tip: 'Self federation ID', value: this.federationId },
             { field: fields.partnerOperatorName, label: 'Partner Operator', formType: INPUT, placeholder: 'Enter Partner Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Globally unique string to identify an operator platform' },
             { field: fields.partnerCountryCode, label: 'Partner Country Code', formType: INPUT, placeholder: 'Enter Partner Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
             { field: fields.partnerFederationid, label: 'Partner Federation ID', formType: INPUT, placeholder: 'Enter Partner Federation ID', visible: true, rules: { required: true }, tip: 'Globally unique string used to indentify a federation with partner federation' },
@@ -298,7 +295,7 @@ class InboundReg extends React.Component {
     }
 
     mncForm = () => ([
-        { field: fields.mnc, label: 'Mnc', formType: INPUT, placeholder: 'Enter Mnc code', rules: { required: true, type: 'number' }, width: 7, visible: true, update: { edit: true } },
+        { field: fields.mnc, label: 'MNC', formType: INPUT, placeholder: 'Enter MNC code', rules: { required: true, type: 'number' }, width: 7, visible: true, update: { edit: true } },
         { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
