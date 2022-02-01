@@ -47,6 +47,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const ValueLabel = (props)=>{
+    const {children} = props
+    const classes = useStyles()
+    return <strong className={classes.textColor}>{children}</strong>
+}
+
 const checkRole = (selectedRole, form) => {
     return form.roles ? form.roles.includes(selectedRole) : true
 }
@@ -96,7 +102,7 @@ const getArrayRow = (id, item, dataList, classes) => {
                             return (
                                 <TableRow key={i} style={{ backgroundColor: i % 2 === 0 ? '#181a1f' : 'transparent' }}>{(
                                     <TableCell className={classes.bottomBorder}>
-                                         <strong className={classes.textColor}>{data}</strong>
+                                        <ValueLabel>{data}</ValueLabel>
                                     </TableCell>)
                                 }
                                 </TableRow>)
@@ -107,8 +113,6 @@ const getArrayRow = (id, item, dataList, classes) => {
         </TableRow>
     )
 }
-
-
 
 const MexDetailViewer = (props) => {
     const { compact } = props
@@ -144,7 +148,7 @@ const MexDetailViewer = (props) => {
                         {
                             keys.map((item, i) => {
                                 const visible = item.roles ? item.roles.includes(redux_org.roleType(orgInfo)) : true
-                                return visible ? <TableCell key={i}><strong className={classes.textColor}>{item.label}</strong></TableCell> : null
+                                return visible ? <TableCell key={i}><ValueLabel>{item.label}</ValueLabel></TableCell> : null
                             })
                         }
                         {detailAction ? <TableCell></TableCell> : null}
@@ -158,7 +162,7 @@ const MexDetailViewer = (props) => {
                                     const visible = item.roles ? item.roles.includes(redux_org.roleType(orgInfo)) : true
                                     return (
                                         visible ? <TableCell key={j} className={classes.bottomBorder}>
-                                            <strong className={classes.textColor}>{getData(data, item)}</strong>
+                                            <ValueLabel>{getData(data, item)}</ValueLabel>
                                         </TableCell> : null
                                     )
                                 }))
@@ -176,7 +180,7 @@ const MexDetailViewer = (props) => {
             <TableRow key={id} className={subView ? '' : classes.table_row}>
                 <TableCell className={classes.table_cell_label}><strong className={clsx(classes.main_label, classes.textColor)}>{item.label}</strong></TableCell>
                 <TableCell className={classes.table_cell_value}>
-                    <strong className={classes.textColor}>{subView ? info : getData(info, item)}</strong>
+                    <ValueLabel>{subView ? info : getData(info, item)}</ValueLabel>
                 </TableCell>
             </TableRow>
         )
