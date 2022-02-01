@@ -13,10 +13,10 @@ export const pages = [
     { label: 'Cloudlet Pools', icon: 'cloud_circle', id: perpetual.PAGE_CLOUDLET_POOLS, path: 'cloudlet-pools', roles: [perpetual.ADMIN, perpetual.OPERATOR], visible: true },
     { label: 'Cloudlet Pools', icon: 'cloud_circle', id: perpetual.PAGE_POOL_ACCESS, path: 'pool-access', roles: [perpetual.DEVELOPER_MANAGER], visible: true },
     {
-        label: 'Federation', icon: 'local_activity ', id: perpetual.PAGE_FEDERATION, sub: true, visible: true, options: [
-            { label: 'Outbound', icon: 'keyboard_double_arrow_left', id: perpetual.PAGE_OUTBOUND_FEDERATION, path: 'outbound-federation', visible: true },
-            { label: 'Inbound', icon: 'keyboard_double_arrow_right', id: perpetual.PAGE_INBOUND_FEDERATION, path: 'inbound-federation', visible: true },
-            { label: 'Zones', icon: 'flag_circle', id: perpetual.PAGE_ZONES, path: 'zones', visible: true },
+        label: 'Federation', icon: 'star_rate_outlined ', id: perpetual.PAGE_FEDERATION, sub: true, visible: true, options: [
+            { label: 'Host', icon: 'flight_takeoff', id: perpetual.PAGE_OUTBOUND_FEDERATION, path: 'host-federation', visible: true },
+            { label: 'Guest', icon: 'flight_land', id: perpetual.PAGE_INBOUND_FEDERATION, path: 'guest-federation', visible: true },
+            { label: 'Zones', icon: 'assistant_photo', id: perpetual.PAGE_ZONES, path: 'zones', visible: true },
         ]
     },
     { label: 'Flavors', icon: 'free_breakfast', id: perpetual.PAGE_FLAVORS, path: 'flavors', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },

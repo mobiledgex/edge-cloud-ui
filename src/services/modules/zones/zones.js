@@ -11,7 +11,6 @@ export const keys = () => ([
     { field: fields.zoneId, label: 'Zone id', serverField: 'zoneid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.cloudlets, label: 'cloudlets', serverField: 'cloudlets', sortable: true, filter: true, key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.zonesRegistered, label: 'Registered Zones', icon: 'edgeboxonly.svg', detailView: false },
     { field: fields.federationName, label: 'Federation Name', serverField: 'federationname', detailView: false },
     { field: fields.operatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.selfOperatorId, label: 'Operator Name', serverField: 'selfoperatorid' },

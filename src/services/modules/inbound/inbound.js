@@ -25,7 +25,7 @@ export const keys = () => ([
 ])
 
 export const iconKeys = () => ([
-    { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered Federation', icon: 'federation_icon.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_VIEWER] }
+    { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered', icon: 'bookmark_added', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_VIEWER] }
 ])
 
 export const partnerKey = () => ([

@@ -19,12 +19,12 @@ export const keys = () => ([
     { field: fields.federationId, serverField: 'selffederationid', label: 'Federation ID' },
     { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.zoneId, label: 'Shared Zone', serverField: 'zoneid', dataType: perpetual.TYPE_ARRAY },
-    { field: fields.zoneCount, label: 'Zone Count', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.zoneCount, label: 'Zone Shared', sortable: true, visible: true, filter: true, key: true, detailView: false },
     { field: fields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf', detailView: true, key: true, filter: true },
 ])
 
 export const iconKeys = () => ([
-    { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered Federation', icon: 'federation_icon.svg', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_VIEWER] },
+    { field: fields.partnerRoleShareZoneWithSelf, label: 'Registered', icon: 'bookmark_added', clicked: false, count: 0, roles: [perpetual.ADMIN_MANAGER, perpetual.OPERATOR] },
 ])
 
 export const getKey = (data, isCreate) => {
