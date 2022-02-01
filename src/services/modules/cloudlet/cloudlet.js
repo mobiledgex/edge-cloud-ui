@@ -15,6 +15,7 @@ const fields = formatter.fields;
 export const keys = () => ([
     { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
     { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group: true, key: true },
+    { field: fields.partnerOperator, serverField: 'key#OS#federated_organization', label: 'Partner Operator' },
     { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet', sortable: true, visible: true, filter: true, key: true },
     { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: perpetual.TYPE_JSON },
     { field: fields.latitude, serverField: 'location#OS#latitude', label: 'Longitude', detailView: false },
@@ -53,7 +54,8 @@ export const keys = () => ([
 
 export const iconKeys = () => ([
     { field: fields.gpuExist, label: 'GPU', icon: 'gpu_green.svg', clicked: false, count: 0 },
-    { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', clicked: false, count: 0 }
+    { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', clicked: false, count: 0 },
+    { field: fields.partnerOperator, label: 'Federation', icon: 'star_rate_outlined', clicked: false, count: 0 }
 ])
 
 export const getCloudletKey = (data) => {
