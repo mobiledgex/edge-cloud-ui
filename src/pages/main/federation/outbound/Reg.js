@@ -134,14 +134,16 @@ class FederationReg extends React.Component {
                 </Item>
                 {this.federationId ? <Dialog open={open} onClose={this.onClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
                     {loading ? <LinearProgress /> : null}
-                    <DialogContent style={{ width: 500, height: 270 }}>
+                    <DialogContent style={{ width: 500, height: 290 }}>
                         <ListItem style={{ padding: '0 0 1rem 0' }}>
                             <h4>Federation ID</h4>
                             <h5>Globally unique string used to identify the federation with partner operator</h5><span id="federationID">{codeHighLighter(this.federationId)}</span>
                         </ListItem>
                         <ListItem>
                             <h4>API Key:</h4>
-                            <h5>One-time generated key used for authenticating federation requests from partner operator</h5><span id="apikey">{codeHighLighter(this.apiKey)}</span>
+                            <h5>One-time generated key used for authenticating federation requests from partner operator</h5>
+                            <h5>Make sure to copy API key now. You won't be able to see it again !</h5>
+                            <span id="apikey">{codeHighLighter(this.apiKey)}</span>
                         </ListItem>
                     </DialogContent>
                     <DialogActions>
@@ -441,7 +443,7 @@ class FederationReg extends React.Component {
             }
         } else {
             this.props.onClose(true)
-            this.props.handleAlertInfo('error', 'No Zones to Available !')
+            this.props.handleAlertInfo('error', 'No Zones Available !')
         }
     }
 

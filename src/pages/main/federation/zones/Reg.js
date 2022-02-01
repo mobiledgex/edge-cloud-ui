@@ -65,6 +65,8 @@ class ZoneReg extends React.Component {
         }
         this.updateUI(form)
         if (redux_org.isOperator(this)) {
+            let latitude = undefined
+            let longitude = undefined
             for (let form of forms) {
                 if (form.field === fields.cloudletName) {
                     if (latitude && longitude) {
