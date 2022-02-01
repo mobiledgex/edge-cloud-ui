@@ -3,8 +3,8 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 //Mex
-import MexForms, { SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON, DUALLIST, SWITCH } from '../../../../../hoc/forms/MexForms';
-import { redux_org } from '../../../../../helper/reduxData'
+import MexForms, { SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON, DUALLIST, SWITCH } from '../../../../hoc/forms/MexForms';
+import { redux_org } from '../../../../helper/reduxData'
 //model
 import { service, fields } from '../../../../services'
 import { HELP_INBOUND_REG, HELP_INBOUND_REG_1, HELP_INBOUND_REG_2 } from "../../../../tutorial";
