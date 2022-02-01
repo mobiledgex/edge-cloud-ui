@@ -79,7 +79,7 @@ class InboundList extends React.Component {
     requestInfo = () => {
         return ({
             id: perpetual.PAGE_INBOUND_FEDERATION,
-            headerLabel: 'Inbound Federation',
+            headerLabel: 'Federation - Guest',
             requestType: [showFederation, showFederator, showPartnerFederatorZone],
             sortBy: [fields.region, fields.federationName],
             isRegion: true,
