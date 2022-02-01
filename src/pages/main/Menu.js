@@ -26,7 +26,8 @@ import Reporter from './reporter/Reporter';
 import GPUDriver from './gpudriver/GPUDriver';
 import Networks from './networks/Networks';
 import Outbound from './federation/outbound/outbound';
-import Inbound from './federation/inbound/inbound';
+import Guest from './federation/guest/Guest';
+import GuestZones from './federation/guestZones/GuestZones'
 import Zones from './federation/zones/Zones'
 import * as constant from '../../constant';
 import { perpetual, role } from '../../helper/constant';
@@ -78,7 +79,9 @@ const renderPage = (id) => {
         case perpetual.PAGE_OUTBOUND_FEDERATION:
             return Outbound
         case perpetual.PAGE_INBOUND_FEDERATION:
-            return Inbound
+            return Guest
+        case perpetual.PAGE_GUEST_ZONES:
+            return GuestZones
         case perpetual.PAGE_ZONES:
             return Zones
     }
