@@ -186,15 +186,16 @@ class ZoneReg extends React.Component {
             let form = forms[i]
             if (form.field === fields.cloudletLocation && !form.rules.disabled) {
                 let zone = {}
-                zone.cloudletLocation = { latitude: location[0].cloudletLocation.latitude, longitude: location[0].cloudletLocation.longitude }
+                zone.cloudletLocation = { latitude: location[0] ? location[0].cloudletLocation.latitude : location.lat, longitude: location[0] ? location[0].cloudletLocation.longitude : location.long }
+                this.updateState({ mapData: [zone] })
                 let childForms = form.forms;
                 for (let j = 0; j < childForms.length; j++) {
                     let childForm = childForms[j]
                     if (childForm.field === fields.latitude) {
-                        childForm.value = location[0].cloudletLocation.latitude
+                        childForm.value = location[0] ? location[0].cloudletLocation.latitude : location.lat
                     }
                     else if (childForm.field === fields.longitude) {
-                        childForm.value = location[0].cloudletLocation.longitude
+                        childForm.value = location[0] ? location[0].cloudletLocation.longitude : location.long
                     }
                 }
                 break;

@@ -63,7 +63,7 @@ class ListMexMap extends React.Component {
     renderIconMarker = (id, register, dataList) => {
 
         let colorKey = 0
-        if (register || id === perpetual.PAGE_GUEST_ZONES) {
+        if (register || id === perpetual.PAGE_GUEST_ZONES || id === perpetual.PAGE_ZONES) {
             colorKey = 1
         }
         else {
@@ -101,7 +101,7 @@ class ListMexMap extends React.Component {
 
         return (
             L.divIcon({
-                html: `<div style="width:28px; height:28px">${id === perpetual.PAGE_GUEST_ZONES ? renderFlagSVG(colorKey, cost) : renderSVG(colorKey, cost)}</div>`,
+                html: `<div style="width:28px; height:28px">${id === perpetual.PAGE_GUEST_ZONES || id === perpetual.PAGE_ZONES ? renderFlagSVG(colorKey, cost) : renderSVG(colorKey, cost)}</div>`,
                 iconSize: [28, 28],
                 iconAnchor: [14, 14],
                 className: 'map-marker'

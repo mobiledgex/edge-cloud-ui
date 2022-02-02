@@ -58,20 +58,17 @@ class ZoneList extends React.Component {
     }
 
     registeredZones = (type, action, data) => {
-        return data[fields.zonesRegistered] === true ? true : false
+        return data[fields.zonesRegistered]
     }
 
     actionMenu = () => {
-        return [
-            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteSelfZone, type: 'Delete', disable: this.registeredZones },
-        ]
     }
 
     render() {
         const { tableHeight, currentView, open } = this.state
         return (
             <div style={{ width: '100%', height: '100%' }}>
-                <DataView id={perpetual.PAGE_ZONES} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} multiDataRequest={multiDataRequest} />
+                <DataView id={perpetual.PAGE_ZONES} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
             </div>
         )
     }

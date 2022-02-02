@@ -99,6 +99,7 @@ class FederationReg extends React.Component {
             forms: this.state.forms
         })
     }
+
     handleClose = () => {
         this.updateState({
             open: false
@@ -132,7 +133,7 @@ class FederationReg extends React.Component {
                         </Grid>
                     </Grid>
                 </Item>
-                {this.federationId ? <Dialog open={open} onClose={this.onClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
+                <Dialog open={open} onClose={this.onClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
                     {loading ? <LinearProgress /> : null}
                     <DialogContent style={{ width: 500, height: 290 }}>
                         <ListItem style={{ padding: '0 0 1rem 0' }}>
@@ -142,7 +143,7 @@ class FederationReg extends React.Component {
                         <ListItem>
                             <h4>API Key:</h4>
                             <h5>One-time generated key used for authenticating federation requests from partner operator</h5>
-                            <h5>Make sure to copy API key now. You won't be able to see it again !</h5>
+                            <h5>Make sure to copy the API key now. You won't be able to see it again !</h5>
                             <span id="apikey">{codeHighLighter(this.apiKey)}</span>
                         </ListItem>
                     </DialogContent>
@@ -151,46 +152,12 @@ class FederationReg extends React.Component {
                             Close
                         </Button>
                     </DialogActions>
-                </Dialog> : <Dialog open={open} aria-labelledby="profile" disableEscapeKeyDown={true}>
-                    <DialogContent style={{ width: 500 }}>
-                        <Typography style={{ marginTop: 20, fontSize: 16 }}>
-                                You can register Later as well. Do you want to register Federation ?
-                        </Typography>
-                    </DialogContent>
-                    <DialogActions>
-                            <Button onClick={() => this.onRegisterFederation()} style={{ color: '#D3D3D3' }}>
-                            NO
-                        </Button>
-                        <Button onClick={() => this.onRegisterFederation(true)} style={{ color: ICON_COLOR }}>
-                            YES
-                        </Button>
-                    </DialogActions>
-                </Dialog>}
-
+                </Dialog>
             </div>
         )
     }
 
-    onRegisterFederation = async (register = null) => {
-        this.updateState({
-            open: true,
-            loading: true
-        })
-        if (register) {
-            let mc = await registerFederation(this, this.federatorData)
-            if (service.responseValid(mc)) {
-                this.props.handleAlertInfo('success', `Federation registered successfully !`)
-            }
-        }
-        this.updateState({
-            loading: true
-        })
-        this.handleClose()
-        this.shareZonePage(this.federatorData)
-    }
-
     shareZonePage = async (data) => {
-        this.handleClose()
         let forms = this.step3(data)
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
@@ -271,7 +238,7 @@ class FederationReg extends React.Component {
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
             { field: fields.countryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
-            { field: fields.autoGenerateFederationID, label: 'Autogenerate federation id', formType: SWITCH, visible: true, value: false, width: 1, update: { edit: true } },
+            { field: fields.autoGenerateFederationID, label: 'Autogenerate Federation id', formType: SWITCH, visible: true, value: false, width: 1, update: { edit: true } },
             { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
             { field: fields.locatorendpoint, label: 'Locator End point', formType: INPUT, placeholder: 'Enter Locator Endpoint', visible: true, update: { edit: true }, tip: 'IP and Port of discovery service URL of operator platform' },
             { field: fields.mcc, label: 'MCC', formType: INPUT, placeholder: 'Enter MCC Code', rules: { required: true }, visible: true, update: { edit: true }, tip: 'Mobile country code of operator sending the request' },
@@ -376,7 +343,7 @@ class FederationReg extends React.Component {
             mc = await createFederator(this, data)
         }
         if (service.responseValid(mc)) {
-            this.props.handleAlertInfo('success', `Federation ${this.isUpdate ? 'updated' : 'created'} successfully !`)
+            this.props.handleAlertInfo('success', `Operator Detail Created ${this.isUpdate ? 'updated' : 'created'} successfully !`)
             this.federationId = mc.response.data.federationid
             this.apiKey = mc.response.data.apikey
             this.updateState({ open: true })
@@ -492,9 +459,7 @@ class FederationReg extends React.Component {
                 this.props.handleAlertInfo('success', `Federation ${data[fields.federationName]} Created successfully !`)
                 this.federationId = undefined
                 this.federatorData = data
-                this.props.action === perpetual.ACTION_UPDATE_PARTNER ? this.props.onClose(true) : this.updateState({
-                    open: true
-                })
+                this.props.action === perpetual.ACTION_UPDATE_PARTNER ? this.props.onClose(true) : this.shareZonePage(this.federatorData)
             }
         }
     }
