@@ -14,7 +14,7 @@ export const keys = () => ([
     { field: fields.partnerOperatorName, serverField: 'operatorid', label: 'Partner Operator', visible: true, filter: true, key: true },
     { field: fields.partnerCountryCode, serverField: 'countrycode', label: 'Partner Country Code', filter: true, key: true },
     { field: fields.partnerFederationid, serverField: 'federationid', label: 'Partner Federation ID' },
-    { field: fields.apiKey, serverField: 'apikey', label: 'Api Key' },
+    { field: fields.apiKey, serverField: 'apikey', label: 'API Key' },
     { field: fields.federationId, serverField: 'selffederationid', label: 'Federation ID' },
     { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.zoneId, label: 'Partner  sharing Zones', serverField: 'zoneid', dataType: perpetual.TYPE_STRING },

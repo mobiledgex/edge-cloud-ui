@@ -30,7 +30,7 @@ class RegisterPartner extends React.Component {
             { field: fields.partnerCountryCode, label: 'Partner Country Code', formType: INPUT, placeholder: 'Enter Partner Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
             { field: fields.partnerFederationid, label: 'Partner Federation ID', formType: INPUT, placeholder: 'Enter Partner Federation ID', visible: true, rules: { required: true }, tip: 'Globally unique string used to indentify a federation with partner federation' },
             { field: fields.federationAddr, label: 'Partner Federation Addr', formType: INPUT, placeholder: 'Enter Partner Federation Addr', rules: { required: true }, visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
-            { field: fields.apiKey, label: 'Partner Api Key', formType: INPUT, placeholder: 'Enter Partner Api Key', rules: { required: true }, visible: true, tip: 'API Key used for authentication (stored in secure storage)' },
+            { field: fields.apiKey, label: 'Partner API Key', formType: INPUT, placeholder: 'Enter Partner API Key', rules: { required: true }, visible: true, tip: 'API Key used for authentication (stored in secure storage)' },
             { field: fields.federationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Fderation Name', rules: { required: true }, visible: true, tip: 'Name to uniquely identify a federation' }
         ]
     }

@@ -10,15 +10,14 @@ import { service, fields } from '../../../../services'
 import { HELP_OUTBOUND_REG, HELP_OUTOUND_REG_1, HELP_OUTOUND_REG_2 } from "../../../../tutorial";
 import { Item, Step, ListItem } from 'semantic-ui-react';
 import { createFederator, updateFederator } from "../../../../services/modules/federator"
-import { createFederation, registerFederation } from '../../../../services/modules/federation'
-import { Grid, Dialog, DialogActions, DialogContent, Button, Typography, LinearProgress } from '@material-ui/core';
+import { createFederation } from '../../../../services/modules/federation'
+import { Grid, Dialog, DialogActions, DialogContent, Button, LinearProgress } from '@material-ui/core';
 import { perpetual } from '../../../../helper/constant';
 import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
 import { _sort } from '../../../../helper/constant/operators';
 import { getOrganizationList } from '../../../../services/modules/organization';
 import { showSelfZone, shareSelfZones, unShareSelfZones } from "../../../../services/modules/zones"
 import { showAuthSyncRequest } from '../../../../services/service';
-import { ICON_COLOR } from '../../../../helper/constant/colors';
 import { uniqueId } from '../../../../helper/constant/shared';
 
 const stepData = [
@@ -257,7 +256,7 @@ class FederationReg extends React.Component {
             { field: fields.partnerCountryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Partner Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
             { field: fields.partnerFederationid, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Partner Federation ID', visible: true, rules: { required: true }, tip: 'Globally unique string used to indentify a federation with partner federation' },
             { field: fields.federationAddr, label: 'Federation Addr', formType: INPUT, placeholder: 'Enter Partner Federation Addr', rules: { required: true }, visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
-            { field: fields.apiKey, label: 'Api Key', formType: INPUT, placeholder: 'Enter Partner Api Key', rules: { required: true }, visible: true, tip: 'API Key used for authentication (stored in secure storage)' },
+            { field: fields.apiKey, label: 'API Key', formType: INPUT, placeholder: 'Enter Partner API Key', rules: { required: true }, visible: true, tip: 'API Key used for authentication (stored in secure storage)' },
             { field: fields.federationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Fderation Name', rules: { required: true }, visible: true, tip: 'Name to uniquely identify a federation' }
         ]
     }

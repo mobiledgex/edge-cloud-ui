@@ -18,7 +18,8 @@ import { service, fields } from '../../../../services'
 import SharingZones from './SharingZones'
 import { showSelfFederatorZone } from "../../../../services/modules/zones";
 import { uiFormatter } from '../../../../helper/formatter';
-class FederationList extends React.Component {
+
+class Host extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -130,7 +131,7 @@ class FederationList extends React.Component {
     onGenerateApiKey = async (action, data) => {
         let mcRequest = await generateApiKey(this, data)
         if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-            this.props.handleAlertInfo('success', 'Api Key generated successfully !')
+            this.props.handleAlertInfo('success', 'API Key generated successfully !')
             this.apiKey = mcRequest.response.data.apikey
             this.updateState({
                 open: true
@@ -237,4 +238,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(FederationList));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(Host));

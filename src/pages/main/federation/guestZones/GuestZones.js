@@ -86,7 +86,7 @@ class PartnerZones extends React.Component {
     requestInfo = () => {
         return ({
             id: perpetual.PAGE_GUEST_ZONES,
-            headerLabel: 'Partner Zones',
+            headerLabel: 'Guest Zones',
             nameField: fields.zoneId,
             requestType: [showPartnerFederatorZone],
             sortBy: [fields.federationName],

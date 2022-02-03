@@ -25,10 +25,10 @@ import Invoices from './billing/invoices/Invoices';
 import Reporter from './reporter/Reporter';
 import GPUDriver from './gpudriver/GPUDriver';
 import Networks from './networks/Networks';
-import Outbound from './federation/outbound/outbound';
+import Host from './federation/host/Host';
 import Guest from './federation/guest/Guest';
 import GuestZones from './federation/guestZones/GuestZones'
-import Zones from './federation/zones/Zones'
+import HostZones from './federation/zones/Zones'
 import * as constant from '../../constant';
 import { perpetual, role } from '../../helper/constant';
 
@@ -77,13 +77,13 @@ const renderPage = (id) => {
         case perpetual.PAGE_NETWORKS:
             return Networks
         case perpetual.PAGE_OUTBOUND_FEDERATION:
-            return Outbound
+            return Host
         case perpetual.PAGE_INBOUND_FEDERATION:
             return Guest
         case perpetual.PAGE_GUEST_ZONES:
             return GuestZones
         case perpetual.PAGE_ZONES:
-            return Zones
+            return HostZones
     }
 }
 

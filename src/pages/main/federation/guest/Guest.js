@@ -14,6 +14,7 @@ import { multiDataRequest, iconKeys, keys, showPartnerFederatorZone } from "../.
 import { service, fields } from '../../../../services'
 import MexForms, { INPUT } from '../../../../hoc/forms/MexForms';
 import { uiFormatter } from '../../../../helper/formatter';
+
 import RegisterOperator from "./reg/RegisterOperator";
 import RegisterPartner from "./reg/RegisterPartner";
 import Reg from "./reg/Reg"
@@ -188,7 +189,7 @@ class Guest extends React.Component {
         [
             { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { required: true, disabled: true }, visible: true },
             { field: fields.federationName, label: 'Federation Name', formType: INPUT, rules: { required: true, disabled: true }, visible: true },
-            { field: fields.apiKey, label: 'Api key', formType: INPUT, rules: { required: true }, visible: true },
+            { field: fields.apiKey, label: 'API key', formType: INPUT, rules: { required: true }, visible: true },
         ]
     )
 
