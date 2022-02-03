@@ -1,20 +1,18 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as actions from '../../../../../actions';
-import { redux_org } from '../../../../../helper/reduxData'
-import MexForms, { BUTTON, INPUT, MAIN_HEADER } from '../../../../../hoc/forms/MexForms'
-import { createFederation, registerFederation } from '../../../../../services/modules/federation'
-import { fields } from '../../../../../services'
-import { responseValid } from '../../../../../services/service';
-import MexMessageDialog from '../../../../../hoc/dialog/mexWarningDialog';
+import * as actions from '../../../../actions';
+import { redux_org } from '../../../../helper/reduxData'
+import MexForms, { BUTTON, INPUT, MAIN_HEADER } from '../../../../hoc/forms/MexForms'
+import { createFederation } from '../../../../services/modules/federation'
+import { fields } from '../../../../services'
+import { responseValid } from '../../../../services/service';
 
 class RegisterPartner extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            forms: [],
-            dialogMessageInfo: {}
+            forms: []
         }
         this._isMounted = false
     }
@@ -55,35 +53,21 @@ class RegisterPartner extends React.Component {
 
     }
 
-    onDialogClose = async (flag, data) => {
-        this.updateState({ dialogMessageInfo: {} })
-
-        console.log('ddddddddd', flag, data)
-        if (flag) {
-            let mc = await registerFederation(this, data)
-            console.log('11', mc)
-            if (responseValid(mc)) {
-                this.props.handleAlertInfo('success', `Partner federation registered successfully !`)
-                this.props.onClose(data)
-            }
-        }
-    }
-
     render() {
-        const { forms, dialogMessageInfo } = this.state
+        const { forms } = this.state
         return (
             < React.Fragment >
                 <MexForms forms={forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-                <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} />
             </React.Fragment >
         )
     }
 
     onCreate = async (data) => {
+        const {onDialogOpen, onClose, handleAlertInfo} = this.props
         let mc = await createFederation(this, data)
         if (responseValid(mc)) {
-            this.props.handleAlertInfo('success', `Partner federation ${data[fields.federationName]} created successfully !`)
-            this.setState({ dialogMessageInfo: { message: 'Register partner federation', data } })
+            handleAlertInfo('success', `Partner federation ${data[fields.federationName]} created successfully !`)
+            onDialogOpen ? onDialogOpen(data) : onClose(data)
         }
     }
 
@@ -125,19 +109,6 @@ class RegisterPartner extends React.Component {
     getFormData = () => {
         const { data } = this.props
         let forms = this.elements()
-        // let default2 = {}
-        // default2[fields.partnerOperatorName] = 'SGT-1234-xyz'
-        // default2[fields.partnerFederationid] = '85fff032-des3-58g8-jf83-sgt38ds87b9'
-        // default2[fields.federationName] = 'access-singtel-zones'
-        // default2[fields.apiKey] = 'L3EDPsNiNY6nplzX6RrAI8BLjmlvHsCn1fYb87ml'
-        // default2[fields.federationAddr] = 'https://api.rh.bridgealliance.com/v6'
-        // default2[fields.partnerCountryCode] = 'SG'
-        if (data) {
-
-        }
-        else {
-
-        }
 
         forms.push(
             { label: 'Create', formType: BUTTON, onClick: this.onCreate, validate: true },

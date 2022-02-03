@@ -6,13 +6,13 @@ import { redux_org } from '../../../helper/reduxData'
 
 let fields = formatter.fields
 
-export const keys = () => ([
+const keys = () => ([
     { field: fields.region, label: 'region', serverField: 'region', sortable: true, visible: true, filter: true, key: true },
     { field: fields.operatorName, label: 'Operator', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true },
     { field: fields.federationId, label: 'federationid', serverField: 'federationid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.mcc, label: 'mcc', serverField: 'mcc', sortable: true, filter: true, key: true },
-    { field: fields.mnc, label: 'mnc', serverField: 'mnc', sortable: true, filter: true, key: true, dataType: perpetual.TYPE_ARRAY },
-    { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true }
+    { field: fields.mnc, label: 'mnc', serverField: 'mnc', sortable: true, filter: true, key: true, dataType: perpetual.TYPE_ARRAY }
 ])
 
 

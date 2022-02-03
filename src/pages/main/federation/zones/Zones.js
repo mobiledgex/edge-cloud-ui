@@ -9,7 +9,7 @@ import { fields } from '../../../../services/model/format';
 import { HELP_ZONES_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
 import ZoneReg from "./Reg"
-import { showSelfZone, keys, showSelfFederatorZone, multiDataRequest } from "../../../../services/modules/zones"
+import { showZones, keys, showFederatorZones, multiDataRequest } from "../../../../services/modules/zones"
 import { deleteSelfZone } from "../../../../services/modules/zones/zones";
 import { showFederation } from "../../../../services/modules/federation";
 
@@ -42,7 +42,7 @@ class ZoneList extends React.Component {
         return ({
             id: perpetual.PAGE_ZONES,
             headerLabel: 'Host - Zones',
-            requestType: [showSelfZone, showSelfFederatorZone, showFederation],
+            requestType: [showZones, showFederatorZones, showFederation],
             sortBy: [fields.region],
             isRegion: true,
             keys: this.keys,

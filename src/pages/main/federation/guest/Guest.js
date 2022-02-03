@@ -12,11 +12,10 @@ import { deleteFederation, showFederation, deRegisterFederation, registerFederat
 import { showFederator, deleteFederator } from "../../../../services/modules/federator"
 import { multiDataRequest, iconKeys, keys, showPartnerFederatorZone } from "../../../../services/modules/guest"
 import { service, fields } from '../../../../services'
-import MexForms, { INPUT } from '../../../../hoc/forms/MexForms';
 import { uiFormatter } from '../../../../helper/formatter';
 
-import RegisterOperator from "./reg/RegisterOperator";
-import RegisterPartner from "./reg/RegisterPartner";
+import RegisterOperator from "../reg/Federator";
+import RegisterPartner from "../reg/Fedaration";
 import Reg from "./reg/Reg"
 import APIKey from "./reg/APIKey";
 
@@ -24,13 +23,17 @@ class Guest extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            step: 0,
-            forms: [],
             currentView: null,
-            APIKeyForm: undefined,
-            loading: false
-        },
-            this.keys = keys()
+            APIKeyForm: undefined
+        }
+        this.keys = keys()
+        this._isMounted = false
+    }
+
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
     }
 
     resetView = () => {
@@ -43,63 +46,9 @@ class Guest extends React.Component {
         this.resetView()
     }
 
-    updateState = (data) => {
-        if (this._isMounted) {
-            this.setState({ ...data })
-        }
-    }
-
-    checkForms = (form, forms, isInit) => {
-
-    }
-
-    /**Required */
-    /*Trigged when form value changes */
-    onValueChange = (form) => {
-        let forms = this.state.forms;
-        this.checkForms(form, forms)
-    }
-
-    /*Required*/
-
-
-    resetFormValue = (form) => {
-        let rules = form.rules
-        if (rules) {
-            let disabled = rules.disabled ? rules.disabled : false
-            if (!disabled) {
-                form.value = undefined;
-            }
-        }
-    }
-
-    requestInfo = () => {
-        return ({
-            id: perpetual.PAGE_INBOUND_FEDERATION,
-            headerLabel: 'Federation - Guest',
-            requestType: [showFederation, showFederator, showPartnerFederatorZone],
-            sortBy: [fields.region, fields.federationName],
-            isRegion: true,
-            keys: this.keys,
-            onAdd: this.onAdd,
-            nameField: fields.federationName,
-            viewMode: HELP_FEDERATION_GUEST_LIST,
-            grouping: true,
-            iconKeys: iconKeys(),
-            formatData: this.dataFormatter
-        })
-    }
-
-    dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.partnerRoleShareZoneWithSelf) {
-            return uiFormatter.renderYesNo(key, data[key.field], isDetail)
-        }
-    }
-
     onAPIKeyForm = async (action, data) => {
         this.updateState({ APIKeyForm: data });
     }
-
 
     onAdd = (type) => {
         this.updateState({ currentView: <Reg onClose={this.onRegClose} /> });
@@ -139,21 +88,6 @@ class Guest extends React.Component {
         })
     }
 
-    updateFormData = (forms, data) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            if (data) {
-                if (form.forms && form.formType !== HEADER) {
-                    this.updateFormData(form.forms, data)
-                }
-                else {
-                    form.value = data[form.field]
-                    this.checkForms(form, forms, true)
-                }
-            }
-        }
-    }
-
     onRegisterFederation = async (action, data) => {
         let text = action === perpetual.ACTION_REGISTER_FEDERATION ? 'Registered' : 'Deregistered'
         let requestCall = action.id === perpetual.ACTION_REGISTER_FEDERATION ? registerFederation : deRegisterFederation
@@ -175,24 +109,6 @@ class Guest extends React.Component {
         ]
     }
 
-    reloadForms = () => {
-        this.updateState({
-            forms: this.state.forms
-        })
-    }
-
-    renderSetApiForm = () => (
-        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
-    )
-
-    forms = () => (
-        [
-            { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { required: true, disabled: true }, visible: true },
-            { field: fields.federationName, label: 'Federation Name', formType: INPUT, rules: { required: true, disabled: true }, visible: true },
-            { field: fields.apiKey, label: 'API key', formType: INPUT, rules: { required: true }, visible: true },
-        ]
-    )
-
     render() {
         const { tableHeight, currentView, APIKeyForm } = this.state
         return (
@@ -203,23 +119,36 @@ class Guest extends React.Component {
         )
     }
 
-    loadDefaultData = (forms, data) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            if (data) {
-                form.value = data[form.field]
-                this.checkForms(form, forms, true)
-            }
+    dataFormatter = (key, data, isDetail) => {
+        if (key.field === fields.partnerRoleShareZoneWithSelf) {
+            return uiFormatter.renderYesNo(key, data[key.field], isDetail)
         }
     }
 
-    onAddCancel = () => {
-        this.props.onClose(false)
+    requestInfo = () => {
+        return ({
+            id: perpetual.PAGE_INBOUND_FEDERATION,
+            headerLabel: 'Federation - Guest',
+            requestType: [showFederation, showFederator, showPartnerFederatorZone],
+            sortBy: [fields.region, fields.federationName],
+            isRegion: true,
+            keys: this.keys,
+            onAdd: this.onAdd,
+            nameField: fields.federationName,
+            viewMode: HELP_FEDERATION_GUEST_LIST,
+            grouping: true,
+            iconKeys: iconKeys(),
+            formatData: this.dataFormatter
+        })
     }
 
     componentDidMount() {
         this._isMounted = true
         this.props.handleViewMode(HELP_FEDERATION_GUEST_LIST)
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
     }
 };
 

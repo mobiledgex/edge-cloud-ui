@@ -367,7 +367,7 @@ export default function MexTable(props) {
 
     const onRowClick = (e) => {
         const { rowData, index } = e
-        cellClick(undefined, rowData)
+        cellClick && cellClick(undefined, rowData)
     }
 
     const onCellClick = (e, column, data) => {
@@ -389,7 +389,7 @@ export default function MexTable(props) {
             setSelected(newSelected);
         }
         else if (column.clickable) {
-            cellClick(column, data)
+            cellClick && cellClick(column, data)
         }
     }
 

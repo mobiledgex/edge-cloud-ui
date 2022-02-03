@@ -1,17 +1,13 @@
 import React from 'react'
-import { Button, Dialog, DialogActions, DialogContent } from '@material-ui/core'
-import { codeHighLighter } from '../../../../../hoc/highLighter/highLighter'
+import { codeHighLighter } from '../../../../hoc/highLighter/highLighter'
+import { InfoDialog } from '../../../../hoc/mexui'
 
 export const FederationKey = (props) => {
     const { data, onClose } = props
     return (
-        <Dialog keepMounted={false} open={Boolean(data)} onClose={onClose} aria-labelledby="profile" disableEscapeKeyDown={true} PaperProps={{
-            style: {
-                backgroundColor: '#202125',
-            },
-        }}>
-            <DialogContent style={{ width: 500 }} style={{ fontSize: 12, color: '#AEAEAE' }}>
-                {data ? <React.Fragment>
+        <InfoDialog open={Boolean(data)} title={'Federation ID & API Key'} onClose={onClose} note={'Make sure to copy your API key now. You won\'t be able to see it again!'}>
+            {
+                data ? <React.Fragment >
                     <div >
                         <p style={{ fontSize: 16, fontWeight: 900 }}>Federation ID</p>
                         <strong variant='caption'>Globally unique string used to identify the federation with partner operator</strong>
@@ -25,14 +21,8 @@ export const FederationKey = (props) => {
                         <br /><br />
                         <div style={{ display: 'flex', alignItems: 'center' }}>{codeHighLighter(data.federationAPIKey)}</div>
                     </div>
-                </React.Fragment> : null}
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose} style={{ backgroundColor: 'rgba(118, 255, 3, 0.5)' }} size='small'>
-                    Close
-                </Button>
-            </DialogActions>
-        </Dialog>
+                </React.Fragment > : null}
+        </InfoDialog >
     )
 }
 

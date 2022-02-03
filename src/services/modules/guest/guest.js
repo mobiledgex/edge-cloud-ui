@@ -7,9 +7,9 @@ let fields = formatter.fields
 
 export const keys = () => ([
     { field: fields.region, label: 'Region', serverField: 'region', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.federationName, serverField: 'name', label: 'Federation Name', sortable: true, visible: true, filter: true, key: true },
     { field: fields.operatorName, serverField: 'selfoperatorid', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
     { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, filter: true, key: true },
+    { field: fields.federationName, serverField: 'name', label: 'Federation Name', sortable: true, visible: true, filter: true, key: true },
     { field: fields.federationAddr, serverField: 'federationaddr', label: 'Federation Address' },
     { field: fields.partnerOperatorName, serverField: 'operatorid', label: 'Partner Operator', visible: true, filter: true, key: true },
     { field: fields.partnerCountryCode, serverField: 'countrycode', label: 'Partner Country Code', filter: true, key: true },

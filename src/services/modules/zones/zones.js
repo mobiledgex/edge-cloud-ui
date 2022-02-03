@@ -9,12 +9,12 @@ let fields = formatter.fields
 export const keys = () => ([
     { field: fields.region, label: 'Region', serverField: 'region', sortable: true, visible: true, filter: true, key: true },
     { field: fields.zoneId, label: 'Zone id', serverField: 'zoneid', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.cloudlets, label: 'cloudlets', serverField: 'cloudlets', sortable: true, filter: true, key: true, dataType: perpetual.TYPE_ARRAY },
+    { field: fields.cloudlets, label: 'cloudlets', serverField: 'cloudlets', sortable: true, filter: true, key: true, dataType: perpetual.TYPE_STRING },
     { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true },
     { field: fields.federationName, label: 'Federation Name', serverField: 'federationname', detailView: false },
     { field: fields.operatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.selfOperatorId, label: 'Operator Name', serverField: 'selfoperatorid' },
-    { field: fields.sharedOperator, label: 'Zones Shared With ', detailView: true, dataType: perpetual.TYPE_ARRAY },
+    { field: fields.sharedOperator, label: 'Zones Shared ', detailView: true, dataType: perpetual.TYPE_STRING },
 ])
 
 export const getKey = (data, isCreate) => {
@@ -40,7 +40,7 @@ export const getKey = (data, isCreate) => {
     return selfZone
 }
 
-export const showSelfFederatorZone = (self, data, specific) => {
+export const showFederatorZones = (self, data, specific) => {
     let requestData = {}
     if (specific) {
         requestData = data
@@ -58,7 +58,7 @@ export const showSelfFederatorZone = (self, data, specific) => {
 
 
 
-export const showSelfZone = (self, data, specific) => {
+export const showZones = (self, data, specific) => {
     let requestData = {}
     if (specific) {
         requestData = data
@@ -76,18 +76,12 @@ export const showSelfZone = (self, data, specific) => {
     return { method: endpoint.SHOW_SELF_ZONES, data: requestData, keys: keys() }
 }
 
-export const shareSelfZones = (data) => {
-    let requestData = getKey(data)
-    requestData.selfoperatorid = requestData.operatorid
-    delete requestData.operatorid
-    return { method: endpoint.SELF_ZONES_SHARE, data: requestData, success: 'Zones Shared Successfully' }
-}
-
-export const unShareSelfZones = (data) => {
-    let requestData = getKey(data)
-    requestData.selfoperatorid = requestData.operatorid
-    delete requestData.operatorid
-    return { method: endpoint.SELF_ZONES_UNSHARE, data: requestData, success: 'Zones UnShared Successfully' }
+export const shareZones = (self, data, unshare=false) => {
+    let requestData = {}
+    requestData['zoneid'] = data[fields.zoneId]
+    requestData['selfoperatorid'] = data[fields.operatorName]
+    requestData['federationname'] = data[fields.federationName]
+    return { method: unshare ? endpoint.SELF_ZONES_UNSHARE : endpoint.SELF_ZONES_SHARE, data: requestData, success: 'Zones Shared Successfully' }
 }
 
 export const createSelfZone = async (self, data) => {

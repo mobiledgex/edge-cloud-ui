@@ -6,9 +6,12 @@ import { Item, Step } from 'semantic-ui-react';
 import { Grid } from '@material-ui/core';
 import { _sort } from '../../../../../helper/constant/operators';
 import ReviewZones from './ReviewZones';
-import RegisterOperator from './RegisterOperator';
-import RegisterPartner from './RegisterPartner';
+import RegisterPartner from '../../reg/Fedaration';
 import { HELP_FEDERATION_GUEST_REG } from "../../../../../tutorial";
+import RegisterOperator from '../../reg/Federator';
+import MexMessageDialog from '../../../../../hoc/dialog/mexWarningDialog';
+import { registerFederation } from '../../../../../services/modules/federation';
+import { responseValid } from '../../../../../services/service';
 
 const stepData = [
     {
@@ -30,6 +33,7 @@ class GuestReg extends React.Component {
         super(props);
         this.state = {
             step: 0,
+            dialogMessageInfo: {},
             defaultData: undefined
         }
         this._isMounted = false
@@ -44,7 +48,6 @@ class GuestReg extends React.Component {
 
     onFinish = (data) => {
         let step = this.state.step
-        console.log(step, data)
         if (step === 0 && data) {
             this.updateState({ step: 1, defaultData: data })
         }
@@ -56,8 +59,23 @@ class GuestReg extends React.Component {
         }
     }
 
+    onDialogOpen = (data)=>{
+        this.setState({ dialogMessageInfo: { message: 'Register partner federation', data } })
+    }
+
+    onDialogClose = async (flag, data) => {
+        this.updateState({ dialogMessageInfo: {} })
+        if (flag) {
+            let mc = await registerFederation(this, data)
+            if (responseValid(mc)) {
+                this.props.handleAlertInfo('success', `Partner federation registered successfully !`)
+                this.onFinish(data)
+            }
+        }
+    }
+
     render() {
-        const { step, defaultData } = this.state
+        const { step, defaultData, dialogMessageInfo } = this.state
         return (
             <div className="round_panel">
                 <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
@@ -86,6 +104,7 @@ class GuestReg extends React.Component {
                         </Grid>
                     </Grid>
                 </Item>
+                <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} onDialogOpen={this.onDialogOpen}/>
             </div>
         )
     }
