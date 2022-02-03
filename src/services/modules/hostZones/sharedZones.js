@@ -15,5 +15,5 @@ export const iconKeys = () => ([
 ])
 
 export const showSelfFederatorZone = (self, data) => {
-    return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, data: data, keys: keys(), iconKeys: iconKeys() }
+    return { method: endpoint.SHOW_FEDERATION_SELF_ZONE, data: data, keys: keys(), iconKeys: iconKeys() }
 }

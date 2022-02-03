@@ -96,7 +96,7 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
         else if (request.method === endpoint.SHOW_FEDERATOR) {
             federatorList = mcRequest.response.data
         }
-        else if (request.method === endpoint.SHOW_FEDERATOR_SELF_ZONE) {
+        else if (request.method === endpoint.SHOW_FEDERATION_SELF_ZONE) {
             zonesList = mcRequest.response.data
         }
     }

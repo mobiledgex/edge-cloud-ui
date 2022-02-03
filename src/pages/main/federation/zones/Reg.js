@@ -10,7 +10,7 @@ import { redux_org } from '../../../../helper/reduxData'
 import { perpetual } from '../../../../helper/constant';
 //model
 import { service, fields } from '../../../../services';
-import { createSelfZone } from '../../../../services/modules/zones';
+import { createFederatorZone } from '../../../../services/modules/zones';
 import { Grid } from '@material-ui/core';
 import { showCloudlets } from '../../../../services/modules/cloudlet';
 import { HELP_ZONES_REG } from '../../../../tutorial';
@@ -171,7 +171,7 @@ class ZoneReg extends React.Component {
                     data[uuid] = undefined
                 }
             }
-            mc = await createSelfZone(this, data)
+            mc = await createFederatorZone(this, data)
             if (service.responseValid(mc)) {
                 this.props.handleAlertInfo('success', `Zone ${data[fields.zoneId]} created successfully`)
                 this.props.onClose(true)

@@ -13,7 +13,7 @@ import { showFederator, deleteFederator, generateApiKey } from "../../../../serv
 import FederationReg from "./Reg"
 import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
 import { fields } from '../../../../services'
-import { showFederatorZones } from "../../../../services/modules/zones";
+import { showFederationZones } from "../../../../services/modules/zones";
 import { uiFormatter } from '../../../../helper/formatter';
 import ShareZones from "./reg/ShareZones";
 import { InfoDialog } from "../../../../hoc/mexui";
@@ -118,7 +118,7 @@ class Host extends React.Component {
         return ({
             id: perpetual.PAGE_OUTBOUND_FEDERATION,
             headerLabel: 'Federation - Host',
-            requestType: [showFederation, showFederator, showFederatorZones],
+            requestType: [showFederation, showFederator, showFederationZones],
             sortBy: [fields.region, fields.federationName],
             // isRegion: true,
             keys: this.keys,

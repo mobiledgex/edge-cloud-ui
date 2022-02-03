@@ -3,23 +3,22 @@ import { withRouter } from 'react-router-dom';
 import DataView from '../../../../container/DataView';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../../../../actions';
 import { fields } from '../../../../services/model/format';
 //model
 import { HELP_ZONES_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
+import { showFederatorZones, keys, showFederationZones, multiDataRequest } from "../../../../services/modules/zones"
 import ZoneReg from "./Reg"
-import { showZones, keys, showFederatorZones, multiDataRequest } from "../../../../services/modules/zones"
-import { deleteSelfZone } from "../../../../services/modules/zones/zones";
-import { showFederation } from "../../../../services/modules/federation";
+import { deleteFederatorZone } from "../../../../services/modules/zones/zones";
 
 class ZoneList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentView: null
-        },
-            this.keys = keys()
+        }
+        this._isMounted = false
+        this.keys = keys()
     }
 
     resetView = () => {
@@ -42,14 +41,13 @@ class ZoneList extends React.Component {
         return ({
             id: perpetual.PAGE_ZONES,
             headerLabel: 'Host - Zones',
-            requestType: [showZones, showFederatorZones, showFederation],
-            sortBy: [fields.region],
-            isRegion: true,
+            requestType: [showFederatorZones, showFederationZones],
+            sortBy: [fields.zoneId],
             keys: this.keys,
             onAdd: this.onAdd,
+            formatData:this.dataFormatter,
             nameField: fields.zoneId,
-            viewMode: HELP_ZONES_LIST,
-            grouping: true
+            viewMode: HELP_ZONES_LIST
         })
     }
 
@@ -58,14 +56,17 @@ class ZoneList extends React.Component {
     }
 
     registeredZones = (type, action, data) => {
-        return data[fields.zonesRegistered]
+        return data[fields.registered]
     }
 
     actionMenu = () => {
+        return [
+            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteFederatorZone, disable: this.registeredZones },
+        ]
     }
 
     render() {
-        const { tableHeight, currentView, open } = this.state
+        const { tableHeight, currentView } = this.state
         return (
             <div style={{ width: '100%', height: '100%' }}>
                 <DataView id={perpetual.PAGE_ZONES} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
@@ -75,15 +76,20 @@ class ZoneList extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
-        this.props.handleViewMode(HELP_ZONES_LIST)
+    }
+
+    componentWillUnmount(){
+        this._isMounted = false
     }
 
 };
 
-const mapDispatchProps = (dispatch) => {
+const mapStateToProps = (state) => {
     return {
-        handleViewMode: (data) => { dispatch(actions.viewMode(data)) },
-    };
+        organizationInfo: state.organizationInfo.data
+    }
 };
 
-export default withRouter(connect(null, mapDispatchProps)(ZoneList));
+
+
+export default withRouter(connect(mapStateToProps, null)(ZoneList));

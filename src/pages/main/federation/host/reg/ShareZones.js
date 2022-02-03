@@ -4,7 +4,7 @@ import * as actions from '../../../../../actions';
 import { Button, Typography } from '@material-ui/core'
 import MexTable from '../../../../../hoc/datagrid/MexTable'
 import { fields } from '../../../../../services'
-import { showZones } from '../../../../../services/modules/zones';
+import { showFederatorZones } from '../../../../../services/modules/zones';
 import { multiAuthSyncRequest, responseValid, showAuthSyncRequest } from '../../../../../services/service'
 import { withRouter } from 'react-router-dom';
 import { shareZones } from '../../../../../services/modules/zones/zones';
@@ -97,7 +97,7 @@ class ShareZones extends React.Component {
         }
         else if (data) {
             this.updateState({ loading: true })
-            zones = await showAuthSyncRequest(this, showZones(this, data, true))
+            zones = await showAuthSyncRequest(this, showFederatorZones(this, data, true))
             this.updateState({ loading: false })
         }
         if (zones && zones.length > 0) {

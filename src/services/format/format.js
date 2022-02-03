@@ -162,14 +162,14 @@ export const formatData = (request, response, self = null) => {
         case endpoint.SHOW_FEDERATOR:
             data = formatShowData(request, response, federator)
             break;
-        case endpoint.SHOW_SELF_ZONES:
+        case endpoint.SHOW_FEDERATOR_SELF_ZONES:
             data = formatShowData(request, response, selfZone)
             break;
         case endpoint.SHOW_FEDERATOR_PARTNER_ZONE:
             data = formatShowData(request, response, partnerZones)
             break;
-        case endpoint.SHOW_FEDERATOR_SELF_ZONE:
-            data = formatShowData(request, response, sharedSelfZones)
+        case endpoint.SHOW_FEDERATION_SELF_ZONE:
+            data = formatShowData(request, response, selfZone)
             break;
         default:
             data = response && response.data ? response.data : [];

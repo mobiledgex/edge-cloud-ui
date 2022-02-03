@@ -1,10 +1,13 @@
 
 
 import { customize } from './custom'
-import { keys, createSelfZone, showZones, showFederatorZones, multiDataRequest } from './zones'
+import { keys, createFederatorZone, showFederatorZones, showFederationZones, multiDataRequest } from './zones'
 export {
-    createSelfZone,
-    showZones,
-    keys, customize, showFederatorZones, multiDataRequest
+    createFederatorZone,
+    showFederatorZones,
+    keys, 
+    customize, 
+    showFederationZones, 
+    multiDataRequest
 }
 
