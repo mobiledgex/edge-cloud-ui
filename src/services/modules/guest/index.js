@@ -1,5 +1,5 @@
 import { customize } from './custom'
-import { keys, multiDataRequest, iconKeys, showPartnerFederatorZone } from './inbound'
+import { keys, multiDataRequest, iconKeys, showPartnerFederatorZone } from './guest'
 export {
     customize,
     keys,

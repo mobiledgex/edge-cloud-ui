@@ -36,10 +36,8 @@ export const HELP_OUTOUND_REG_2 = 'OutboundFederationListReG_2'
 export const HELP_OUTOUND_REG_3 = 'OutboundFederationListReG_3'
 export const HELP_ZONES_LIST = 'ZonesList'
 export const HELP_ZONES_REG = 'ZonesReg'
-export const HELP_INBOUND_LIST = 'InboundList'
-export const HELP_INBOUND_REG = 'InboundReg'
-export const HELP_INBOUND_REG_1 = 'InboundReg_1'
-export const HELP_INBOUND_REG_2 = 'InboundReg_2'
+export const HELP_FEDERATION_GUEST_LIST = 'InboundList'
+export const HELP_FEDERATION_GUEST_REG = 'GuestReg'
 export const HELP_OUTBOUND_REG = 'OutboundFederationListReG'
 
 export const userRoles = (org, type, isDoc) => {

@@ -9,6 +9,5 @@ export {
     deleteFederation,
     setApiKey,
     registerFederation,
-    deRegisterFederation, iconKeys,
-    showRegisterPartnerZone, showDeregisterPartnerZone
+    deRegisterFederation, iconKeys
 }

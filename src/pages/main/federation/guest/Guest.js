@@ -5,18 +5,19 @@ import DataView from '../../../../container/DataView';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { Dialog, DialogTitle, DialogActions, DialogContent, Button, LinearProgress } from '@material-ui/core';
 //model
-import { HELP_INBOUND_LIST } from "../../../../tutorial";
+import { HELP_FEDERATION_GUEST_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
-import { deleteFederation, showFederation, deRegisterFederation, registerFederation, setApiKey } from "../../../../services/modules/federation"
+import { deleteFederation, showFederation, deRegisterFederation, registerFederation } from "../../../../services/modules/federation"
 import { showFederator, deleteFederator } from "../../../../services/modules/federator"
-import { multiDataRequest, iconKeys, keys, showPartnerFederatorZone } from "../../../../services/modules/inbound"
-import InboundReg from "./Reg"
-import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
+import { multiDataRequest, iconKeys, keys, showPartnerFederatorZone } from "../../../../services/modules/guest"
 import { service, fields } from '../../../../services'
-import MexForms, { INPUT, BUTTON } from '../../../../hoc/forms/MexForms';
+import MexForms, { INPUT } from '../../../../hoc/forms/MexForms';
 import { uiFormatter } from '../../../../helper/formatter';
+import RegisterOperator from "./reg/RegisterOperator";
+import RegisterPartner from "./reg/RegisterPartner";
+import Reg from "./reg/Reg"
+import APIKey from "./reg/APIKey";
 
 class Guest extends React.Component {
     constructor(props) {
@@ -25,11 +26,10 @@ class Guest extends React.Component {
             step: 0,
             forms: [],
             currentView: null,
-            open: false,
+            APIKeyForm: undefined,
             loading: false
         },
-        this.keys = keys()
-        this.apiKey = undefined
+            this.keys = keys()
     }
 
     resetView = () => {
@@ -60,11 +60,7 @@ class Guest extends React.Component {
     }
 
     /*Required*/
-    reloadForms = () => {
-        this.setState({
-            forms: this.state.forms
-        })
-    }
+
 
     resetFormValue = (form) => {
         let rules = form.rules
@@ -86,7 +82,7 @@ class Guest extends React.Component {
             keys: this.keys,
             onAdd: this.onAdd,
             nameField: fields.federationName,
-            viewMode: HELP_INBOUND_LIST,
+            viewMode: HELP_FEDERATION_GUEST_LIST,
             grouping: true,
             iconKeys: iconKeys(),
             formatData: this.dataFormatter
@@ -99,20 +95,25 @@ class Guest extends React.Component {
         }
     }
 
+    onAPIKeyForm = async (action, data) => {
+        this.updateState({ APIKeyForm: data });
+    }
+
+
     onAdd = (type) => {
-        this.updateState({ currentView: <InboundReg onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <Reg onClose={this.onRegClose} /> });
     }
 
     onUpdate = (action, data) => {
-        this.updateState({ currentView: <InboundReg data={data} isUpdate={true} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <div className="round_panel"><RegisterOperator data={data} isUpdate={true} onClose={this.onRegClose} /></div> });
     }
 
     onAddPartnerData = (action, data) => {
-        this.updateState({ currentView: <InboundReg data={data} action={action.id} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <div className="round_panel"><RegisterPartner data={data} onClose={this.onRegClose} /></div> });
     }
 
     onCreateFederation = (action, data) => {
-        this.updateState({ currentView: <InboundReg data={data} onClose={this.onRegClose} /> })
+        this.updateState({ currentView: <Reg data={data} onClose={this.onRegClose} /> })
     }
 
     registerVisible = (data) => {
@@ -135,7 +136,6 @@ class Guest extends React.Component {
         this.updateState({
             open: false
         })
-        this.apiKey = undefined // to reset when there is no page reload
     }
 
     updateFormData = (forms, data) => {
@@ -153,14 +153,6 @@ class Guest extends React.Component {
         }
     }
 
-    onSetApiKey = async (action, data) => {
-        let forms = this.forms()
-        this.loadDefaultData(forms, data)
-        forms.push({ label: 'Set', formType: BUTTON, onClick: this.onCreateApiKey, validate: true, visible: true })
-        forms.push({ label: 'Cancel', formType: BUTTON, onClick: this.handleClose, visible: true })
-        this.updateState({ open: true, forms: forms })
-    }
-
     onRegisterFederation = async (action, data) => {
         let text = action === perpetual.ACTION_REGISTER_FEDERATION ? 'Registered' : 'Deregistered'
         let requestCall = action.id === perpetual.ACTION_REGISTER_FEDERATION ? registerFederation : deRegisterFederation
@@ -170,30 +162,14 @@ class Guest extends React.Component {
         }
     }
 
-    onCreateApiKey = async (data) => {
-        this.updateState({ loading: true })
-        let mc = await setApiKey(this, { selfoperatorid: data[fields.operatorName], name: data[fields.federationName], apikey: data[fields.apiKey] })
-        if (service.responseValid(mc)) {
-            this.props.handleAlertInfo('success', `api key changed for  ${data[fields.federationName]}`)
-        }
-        else {
-            this.props.handleAlertInfo('error', 'set Api key failed !')
-        }
-        this.updateState({ loading: false, open: false })
-    }
-
-    getDeleteActionMessage = (action, data) => {
-        return `Are you sure you want to remove federation ?`
-    }
-
     actionMenu = () => {
         return [
-            { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Details', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
-            { id: perpetual.ACTION_SET_API_KEY, label: 'Set API Key', onClick: this.onSetApiKey, visible: this.federationNameVisible, type: 'Generate API Key' },
-            { id: perpetual.ACTION_REGISTER_FEDERATION, label: 'Register', onClick: this.onRegisterFederation, visible: this.registerVisible, type: 'Register Federation' },
-            { id: perpetual.ACTION_DEREGISTER_FEDERATION, label: 'Deregister', onClick: this.onRegisterFederation, visible: this.deregisterVisible, type: 'Register Federation' },
             { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Add Partner Data' },
-            { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.createVisible, onClick: deleteFederator, type: 'Delete', dialogMessage: this.getDeleteActionMessage },
+            { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Details', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
+            { id: perpetual.ACTION_SET_API_KEY, label: 'Update API Key', onClick: this.onAPIKeyForm, visible: this.federationNameVisible, type: 'Generate API Key' },
+            { id: perpetual.ACTION_REGISTER_FEDERATION, label: 'Register', onClick: this.onRegisterFederation, visible: this.registerVisible, warning: 'register federation' },
+            { id: perpetual.ACTION_DEREGISTER_FEDERATION, label: 'Deregister', onClick: this.onRegisterFederation, visible: this.deregisterVisible, warning: 'deregister federation' },
+            { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.createVisible, onClick: deleteFederator, type: 'Delete', warning: true },
             { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.federationNameVisible, onClick: deleteFederation, type: 'Delete' },
         ]
     }
@@ -217,35 +193,11 @@ class Guest extends React.Component {
     )
 
     render() {
-        const { tableHeight, currentView, open, loading } = this.state
+        const { tableHeight, currentView, APIKeyForm } = this.state
         return (
             <div style={{ width: '100%', height: '100%' }}>
                 <DataView id={perpetual.PAGE_INBOUND_FEDERATION} multiDataRequest={multiDataRequest} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} />
-                {this.apiKey ? <Dialog open={open} onClose={this.onClose} aria-labelledby="profile" disableEscapeKeyDown={true}>
-                    <DialogTitle id="profile">
-                        <div style={{ float: "left", display: 'inline-block' }}>
-                            <h3 style={{ fontWeight: 700 }}>Api key</h3>
-                        </div>
-                    </DialogTitle>
-                    <DialogContent style={{ width: 600 }}>
-                        <div style={{ display: 'inline' }}>{codeHighLighter(this.apiKey)}</div>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleClose} style={{ backgroundColor: 'rgba(118, 255, 3, 0.7)' }} size='small'>
-                            Close
-                        </Button> 
-                    </DialogActions>
-                </Dialog> : <Dialog open={open} onClose={this.onDialogClose} aria-labelledby="update_password" disableEscapeKeyDown={true}>
-                    <DialogTitle id="update_password">
-                        {loading ? <LinearProgress /> : null}
-                        <div style={{ float: "left", display: 'inline-block' }}>
-                            <h3>Set Api Key</h3>
-                        </div>
-                    </DialogTitle>
-                    <DialogContent style={{ width: 600 }}>
-                            {this.renderSetApiForm()}
-                    </DialogContent>
-                </Dialog>}
+                {APIKeyForm ? <APIKey data={APIKeyForm} onClose={() => { this.updateState({ APIKeyForm: undefined }) }} /> : null}
             </div>
         )
     }
@@ -266,7 +218,7 @@ class Guest extends React.Component {
 
     componentDidMount() {
         this._isMounted = true
-        this.props.handleViewMode(HELP_INBOUND_LIST)
+        this.props.handleViewMode(HELP_FEDERATION_GUEST_LIST)
     }
 };
 

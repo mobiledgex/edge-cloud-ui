@@ -1,6 +1,6 @@
 
 import * as formatter from '../../model/format'
-import { authSyncRequest, showAuthSyncRequest } from '../../service';
+import { authSyncRequest } from '../../service';
 import { endpoint, perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData'
 

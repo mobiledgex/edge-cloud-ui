@@ -290,6 +290,8 @@ export const fields = {
     qosSessionDuration: 'qosSessionDuration',
     federationName: 'federationName',
     countryCode: 'countryCode',
+    mncs:'mncs',
+    code:'code',
     mnc: 'mnc',
     mcc: 'mcc',
     locatorendpoint: 'locatorEndPoint',

@@ -10,7 +10,7 @@ export const isPathOrg = (self)=>{
 }
 
 export const tokenRequired = ()=>{
-    const list = ['localhost', 'kubernetes.docker.internal']
+    const list = ['localhost', 'kubernetes.docker.internal', '192.168.0.100']
     return list.includes(window.location.hostname)
 }
 

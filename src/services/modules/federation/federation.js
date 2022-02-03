@@ -18,10 +18,10 @@ export const keys = () => ([
     { field: fields.apiKey, serverField: 'apikey', label: 'Api Key' },
     { field: fields.federationId, serverField: 'selffederationid', label: 'Federation ID' },
     { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
-    { field: fields.zoneId, label: 'Shared Zone', serverField: 'zoneid', dataType: perpetual.TYPE_ARRAY },
-    { field: fields.zoneCount, label: 'Zone Count', sortable: true, visible: true, filter: true, key: true, detailView: false },
+    { field: fields.zoneId, label: 'Shared Zone', serverField: 'zoneid', dataType: perpetual.TYPE_STRING },
+    { field: fields.zoneCount, label: 'Zones Shared', sortable: true, visible: true, filter: true, key: true, detailView: false },
     { field: fields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf', format: true },
-    { field: fields.partnerRoleAccessToSelfZones, label: 'Partner Has registered', serverField: 'PartnerRoleAccessToSelfZones', format: true },
+    { field: fields.partnerRoleAccessToSelfZones, label: 'Partner Registered', serverField: 'PartnerRoleAccessToSelfZones', format: true },
 ])
 
 export const iconKeys = () => ([
@@ -84,20 +84,6 @@ export const deRegisterFederation = async (self, data) => {
     let request = { method: endpoint.DEREGISTER_FEDERATION, data: requestData }
     return await authSyncRequest(self, request)
 } 
-
-export const showRegisterPartnerZone = (data) => {
-    let requestData = getKey(data)
-    requestData.federationname = requestData.name
-    delete requestData.name
-    return { method: endpoint.REGISTER_FEDERATOR_PARTNER_ZONES, keys: keys(), data: requestData, iconKeys: iconKeys() }
-}
-
-export const showDeregisterPartnerZone = (data) => {
-    let requestData = getKey(data)
-    requestData.federationname = requestData.name
-    delete requestData.name
-    return { method: endpoint.DEREGISTER_FEDERATOR_PARTNER_ZONES, keys: keys(), data: requestData, iconKeys: iconKeys() }
-}
 
 export const multiDataRequest = (keys, mcRequestList, specific) => {
     let federationList = [], federatorList = [], zonesList = [];
