@@ -148,7 +148,7 @@ class FederationList extends React.Component {
     }
 
     getDeleteActionMessage = (action, data) => {
-        return `Are you sure you want to remove self Data ?`
+        return `Are you sure you want to remove Host Federation ?`
     }
 
     registerVisible = (data) => {
@@ -168,11 +168,11 @@ class FederationList extends React.Component {
             { id: perpetual.ACTION_VIEW_SHARE_ZONES, label: 'View Zones Shared', onClick: this.showShareZones, type: 'edit' },
             { id: perpetual.ACTION_SHARE_ZONES, label: 'Share Zones', onClick: this.onShareZones, visible: this.federationNameVisible, type: 'edit' },
             { id: perpetual.ACTION_UNSHARE_ZONES, label: 'Unshare Zones', onClick: this.onShareZones, visible: this.federationNameVisible, type: 'edit' },
-            { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Detail', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
+            { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Details', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
             { id: perpetual.ACTION_GENERATE_API_KEY, label: 'Generate API Key', onClick: this.onGenerateApiKey, type: 'Generate API Key' },
             { id: perpetual.ACTION_REGISTER_FEDERATION, label: 'Register', onClick: this.onRegisterFederation, visible: this.registerVisible, type: 'Register Federation' },
             { id: perpetual.ACTION_DEREGISTER_FEDERATION, label: 'Deregister', onClick: this.onRegisterFederation, visible: this.deregisterVisible, type: 'Register Federation' },
-            { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Add Partner Data' },
+            { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Add Partner Details' },
             { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.createVisible, onClick: deleteFederator, type: 'Delete', dialogMessage: this.getDeleteActionMessage },
             { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.federationNameVisible, onClick: deleteFederation, type: 'Delete' },
         ]

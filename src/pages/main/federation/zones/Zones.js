@@ -11,6 +11,7 @@ import { perpetual } from "../../../../helper/constant";
 import ZoneReg from "./Reg"
 import { showSelfZone, keys, showSelfFederatorZone, multiDataRequest } from "../../../../services/modules/zones"
 import { deleteSelfZone } from "../../../../services/modules/zones/zones";
+import { showFederation } from "../../../../services/modules/federation";
 
 class ZoneList extends React.Component {
     constructor(props) {
@@ -40,8 +41,8 @@ class ZoneList extends React.Component {
     requestInfo = () => {
         return ({
             id: perpetual.PAGE_ZONES,
-            headerLabel: 'Zones',
-            requestType: [showSelfZone, showSelfFederatorZone],
+            headerLabel: 'Host - Zones',
+            requestType: [showSelfZone, showSelfFederatorZone, showFederation],
             sortBy: [fields.region],
             isRegion: true,
             keys: this.keys,
@@ -57,20 +58,17 @@ class ZoneList extends React.Component {
     }
 
     registeredZones = (type, action, data) => {
-        return data[fields.zonesRegistered] === true ? true : false
+        return data[fields.zonesRegistered]
     }
 
     actionMenu = () => {
-        return [
-            { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteSelfZone, type: 'Delete', disable: this.registeredZones },
-        ]
     }
 
     render() {
         const { tableHeight, currentView, open } = this.state
         return (
             <div style={{ width: '100%', height: '100%' }}>
-                <DataView id={perpetual.PAGE_ZONES} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} multiDataRequest={multiDataRequest} />
+                <DataView id={perpetual.PAGE_ZONES} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
             </div>
         )
     }

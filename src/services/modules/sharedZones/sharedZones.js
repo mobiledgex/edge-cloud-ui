@@ -6,7 +6,8 @@ let fields = formatter.fields
 export const keys = () => ([
     { field: fields.federationName, label: 'Federation Name', serverField: 'federationname', visible: true, key: true, sortable: true },
     { field: fields.operatorName, serverField: 'selfoperatorid', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.zoneId, label: 'Zones', serverField: 'zoneid', visible: true }
+    { field: fields.zoneId, label: 'Zones', serverField: 'zoneid', visible: true },
+    { field: fields.register, serverField: 'Registered', label: 'Registered', format: true },
 ])
 
 export const iconKeys = () => ([

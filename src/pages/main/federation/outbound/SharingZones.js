@@ -31,7 +31,7 @@ class SharingZones extends React.Component {
     requestInfo = () => {
         return ({
             id: perpetual.PAGE_SHARED_ZONES,
-            headerLabel: 'Sharing Zones',
+            headerLabel: 'Shared Zones',
             nameField: fields.zoneId,
             requestType: [showSelfFederatorZone],
             sortBy: [fields.federationName],

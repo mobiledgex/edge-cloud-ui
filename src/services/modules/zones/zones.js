@@ -14,6 +14,7 @@ export const keys = () => ([
     { field: fields.federationName, label: 'Federation Name', serverField: 'federationname', detailView: false },
     { field: fields.operatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.selfOperatorId, label: 'Operator Name', serverField: 'selfoperatorid' },
+    { field: fields.sharedOperator, label: 'Zones Shared With ', detailView: true, dataType: perpetual.TYPE_ARRAY },
 ])
 
 export const getKey = (data, isCreate) => {
@@ -101,7 +102,7 @@ export const deleteSelfZone = (self, data) => {
 }
 
 export const multiDataRequest = (keys, mcRequestList, specific) => {
-    let selfZoneList, federatorZoneList = []
+    let selfZoneList, federatorZoneList, federationList = [];
     for (let i = 0; i < mcRequestList.length; i++) {
         let mcRequest = mcRequestList[i];
         let request = mcRequest.request;
@@ -111,6 +112,9 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
         else if (request.method === endpoint.SHOW_FEDERATOR_SELF_ZONE) {
             federatorZoneList = mcRequest.response.data
         }
+        else if (request.method === endpoint.SHOW_FEDERATION) {
+            federationList = mcRequest.response.data
+        }
     }
     if (selfZoneList && selfZoneList.length > 0) {
         for (let i = 0; i < selfZoneList.length; i++) {
@@ -118,9 +122,16 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
             for (let j = 0; j < federatorZoneList.length; j++) {
                 let federatorZone = federatorZoneList[j]
                 selfZone[fields.federationName] = federatorZone[fields.federationName]
-                if (selfZone[fields.operatorName] === federatorZone[fields.operatorName]) {
-                    selfZone[fields.federationName] = federatorZone[fields.federationName] ? federatorZone[fields.federationName] : undefined
-                    selfZone[fields.zonesRegistered] = federatorZone[fields.register] ? federatorZone[fields.register] : false
+                if (selfZone[fields.operatorName] === federatorZone[fields.selfOperatorId] && selfZone[fields.zoneId] === federatorZone[fields.zoneId]) {
+                    let sharedoperator = []
+                    for (let k = 0; k < federationList.length; k++) {
+                        let federation = federationList[k]
+                        if (selfZone[fields.operatorName] === federation[fields.operatorName] && selfZone[fields.federationName] === federation[fields.federationName]) {
+                            sharedoperator.push(federation[fields.partnerOperatorName])
+                            selfZone[fields.sharedOperator] = sharedoperator
+                        }
+                    }
+                    selfZone[fields.zonesRegistered] = federatorZone[fields.register]
                     break
                 }
             }
