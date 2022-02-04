@@ -6,6 +6,7 @@ import { ICON_COLOR } from '../../helper/constant/colors';
 import { serverFields } from '../../helper/formatter';
 import { IconButton, Icon } from '../../hoc/mexui';
 import {fields} from './format';
+import { redux_org } from '../../helper/reduxData';
 
 export const additionalDetail = (data) => {
     return (
@@ -81,7 +82,7 @@ const getStateStatus = (id) => {
     }
 }
 
-export const showProgress = (data, isDetailView) => {
+export const showProgress = (data, isDetailView, orgInfo = null) => {
     let state = data[fields.state]
     if (isDetailView) {
         return getStateStatus(state)
@@ -90,7 +91,9 @@ export const showProgress = (data, isDetailView) => {
         let icon = null;
         switch (state) {
             case serverFields.READY:
-                icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon color={ICON_COLOR} size={16}>check</Icon></IconButton>
+                redux_org.isDeveloper(orgInfo) ?
+                    icon = <IconButton disabled tooltip={'In Progress'}><Icon color={ICON_COLOR} size={16}>check</Icon></IconButton> :
+                    icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon color={ICON_COLOR} size={16}>check</Icon></IconButton>
                 break;
             case serverFields.CREATE_REQUESTED:
             case serverFields.CREATING:
@@ -98,12 +101,16 @@ export const showProgress = (data, isDetailView) => {
             case serverFields.UPDATING:
             case serverFields.CREATING_DEPENDENCIES:
             case serverFields.CRM_INITOK:
-                icon = <IconButton tooltip={'View Progress'}><CircularProgress size={14} style={{ color: ICON_COLOR }} /></IconButton>
+                redux_org.isDeveloper(orgInfo) ?
+                    icon = <IconButton disabled tooltip={'In Progress'}><CircularProgress size={14} style={{ color: ICON_COLOR }} /></IconButton> :
+                    icon = <IconButton tooltip={'View Progress'}><CircularProgress size={14} style={{ color: ICON_COLOR }} /></IconButton>
                 break;
             case serverFields.DELETE_REQUESTED:
             case serverFields.DELETING:
             case serverFields.DELETE_PREPARE:
-                icon = <IconButton tooltip={'View Progress'}><CircularProgress size={14} style={{ color: 'red' }} /></IconButton>
+                redux_org.isDeveloper(orgInfo) ?
+                    icon = <IconButton disabled tooltip={'In Progress'}><CircularProgress size={14} style={{ color: 'red' }} /></IconButton> :
+                    icon = <IconButton tooltip={'View Progress'}><CircularProgress size={14} style={{ color: 'red' }} /></IconButton>
                 break;
             default:
                 icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon color='red' size={16}>close</Icon></IconButton>
