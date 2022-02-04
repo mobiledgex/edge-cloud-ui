@@ -30,7 +30,6 @@ import { customize as gpuDriver } from '../modules/gpudriver/custom';
 import { customize as alertPolicy } from '../modules/alertPolicy/custom';
 import { customize as network } from '../modules/network/custom';
 import { customize as federation } from '../modules/federation/custom';
-import { customize as federator } from '../modules/federator/custom';
 import { customize as selfZone } from '../modules/zones/custom';
 import { customize as partnerZones } from '../modules/partnerZones/custom'
 import { formatShowData } from './show';
@@ -160,7 +159,7 @@ export const formatData = (request, response, self = null) => {
             data = formatShowData(request, response, federation)
             break;
         case endpoint.SHOW_FEDERATOR:
-            data = formatShowData(request, response, federator)
+            data = formatShowData(request, response, federation)
             break;
         case endpoint.SHOW_FEDERATOR_SELF_ZONES:
             data = formatShowData(request, response, selfZone)

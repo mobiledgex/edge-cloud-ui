@@ -288,7 +288,6 @@ export const fields = {
     accessRoutes: 'accessRoutes',
     qosSessionProfile:'qosSessionProfile',
     qosSessionDuration: 'qosSessionDuration',
-    federationName: 'federationName',
     countryCode: 'countryCode',
     mncs:'mncs',
     code:'code',
@@ -298,7 +297,8 @@ export const fields = {
     federationId: 'federationId',
     apiKey: 'apiKey',
     partnerOperatorName: 'partnerOperator',
-    partnerFederationid: 'federationid',
+    partnerFederationId: 'partnerFederationId',
+    partnerFederationName:'partnerFederationName',
     partnerCountryCode: 'partnerCountryCode',
     federationAddr: 'federationAddr',
     cloudletCount: 'cloudletCount',
@@ -309,6 +309,7 @@ export const fields = {
     locality: 'locality',
     zonesList: 'zonesList',
     zonesShared:'zonesShared',
+    zonesReceived:'zonesReceived',
     sharedCount:'sharedCount',
     register: 'register',
     partnerRoleShareZoneWithSelf: 'partnerRoleShareZonesWithSelf',
@@ -318,6 +319,6 @@ export const fields = {
     registered: 'registered',
     zoneCount: 'zoneCount',
     sharedOperator: 'sharedOperator',
-    sharedZoned: 'sharedZoned',
-    autoGenerateFederationID: 'autoGenerateFederationID'
+    autoGenerateFederationID: 'autoGenerateFederationID',
+    zones:'zones'
 }

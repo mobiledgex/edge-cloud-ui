@@ -1,14 +1,14 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as actions from '../../../../actions';
+import * as actions from '../../../../../actions';
 import { Item, Step } from 'semantic-ui-react';
 import { Grid } from '@material-ui/core';
-import { _sort } from '../../../../helper/constant/operators';
-import { HELP_FEDERATION_GUEST_REG } from "../../../../tutorial";
-import Federator from '../reg/Federator';
-import Fedaration from '../reg/Fedaration';
-import ShareZones from './reg/ShareZones';
+import { _sort } from '../../../../../helper/constant/operators';
+import { HELP_FEDERATION_GUEST_REG } from "../../../../../tutorial";
+import Federator from '../../reg/Federator';
+import Fedaration from '../../reg/Fedaration';
+import ShareZones from './ShareZones';
 
 const stepData = [
     {

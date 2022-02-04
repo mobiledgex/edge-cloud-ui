@@ -22,7 +22,7 @@ class APIKey extends React.Component {
     elements = () => (
         [
             { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { required: true, disabled: true }, visible: true },
-            { field: fields.federationName, label: 'Federation Name', formType: INPUT, rules: { required: true, disabled: true }, visible: true },
+            { field: fields.partnerFederationName, label: 'Federation Name', formType: INPUT, rules: { required: true, disabled: true }, visible: true },
             { field: fields.apiKey, label: 'API Key', placeholder: 'Enter API Key', formType: INPUT, rules: { required: true }, visible: true },
         ]
     )
@@ -55,10 +55,10 @@ class APIKey extends React.Component {
 
     onCreate = async (data) => {
         this.updateState({ loading: true })
-        let mc = await setApiKey(this, { selfoperatorid: data[fields.operatorName], name: data[fields.federationName], apikey: data[fields.apiKey] })
+        let mc = await setApiKey(this, { selfoperatorid: data[fields.operatorName], name: data[fields.partnerFederationName], apikey: data[fields.apiKey] })
         this.updateState({ loading: false })
         if (responseValid(mc)) {
-            this.props.handleAlertInfo('success', `API key changed for  ${data[fields.federationName]}`)
+            this.props.handleAlertInfo('success', `API key changed for  ${data[fields.partnerFederationName]}`)
             this.props.onClose()
         }
     }

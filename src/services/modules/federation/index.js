@@ -1,13 +1,18 @@
 import { customize } from './custom'
-import { keys, showFederation, multiDataRequest, createFederation, deleteFederation, setApiKey, registerFederation, deRegisterFederation, iconKeys, showRegisterPartnerZone, showDeregisterPartnerZone } from './federation'
+import { keys, iconKeys, createFederator, updateFederator, deleteFederator, generateApiKey, showFederator, showFederation, setApiKey, createFederation, registerFederation, deRegisterFederation, multiDataRequest } from './federation'
 export {
-    customize,
     keys,
-    showFederation,
-    multiDataRequest,
-    createFederation,
-    deleteFederation,
+    iconKeys,
+    customize,
+    showFederator,
+    createFederator,
+    updateFederator,
+    deleteFederator,
+    generateApiKey,
     setApiKey,
+    showFederation,
+    createFederation,
     registerFederation,
-    deRegisterFederation, iconKeys
+    deRegisterFederation,
+    multiDataRequest
 }

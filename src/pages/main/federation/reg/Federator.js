@@ -9,7 +9,7 @@ import { _sort } from '../../../../helper/constant/operators';
 import { getOrganizationList } from '../../../../services/modules/organization';
 import { perpetual } from '../../../../helper/constant';
 import { responseValid } from '../../../../services/service';
-import { createFederator, updateFederator } from '../../../../services/modules/federator';
+import { createFederator, updateFederator } from '../../../../services/modules/federation';
 import { uniqueId } from '../../../../helper/constant/shared';
 import FederationKey from './FederatorKey';
 
@@ -197,7 +197,15 @@ class RegisterOperator extends React.Component {
     }
 
     getFormData = async () => {
-        const { data } = this.props
+        // const { data } = this.props
+        let data = {}
+        data[fields.federationId] = '58ufic22-hfj9-8ghv-85uj-tfk2vh32sks'
+        data[fields.region] = 'EU'
+        data[fields.countryCode] = 'ES'
+        data[fields.operatorName] = 'TFK-4455-jgl'
+        data[fields.mnc] = '05'
+        data[fields.mcc] = "214"
+
         let forms = this.elements()
         if (data) {
             this.loadDefaultData(forms, data)

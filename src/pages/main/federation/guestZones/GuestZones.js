@@ -5,8 +5,7 @@ import * as actions from '../../../../actions';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { perpetual } from '../../../../helper/constant';
-import { showPartnerFederatorZone, keys, iconKeys } from '../../../../services/modules/partnerZones';
-import { deregisterPartnerZone, registerPartnerZone } from '../../../../services/modules/partnerZones/partnerZones';
+import { showPartnerFederatorZone, keys, iconKeys, deregisterPartnerZone, registerPartnerZone } from '../../../../services/modules/partnerZones';
 import { authSyncRequest, multiAuthSyncRequest, responseValid } from '../../../../services/service';
 import { uiFormatter } from '../../../../helper/formatter';
 
@@ -24,14 +23,14 @@ class PartnerZones extends React.Component {
     }
 
     onPreRegisterZone = (type, action, data) => {
-        return action.id === perpetual.ACTION_REGISTER_ZONES ? !data[fields.register] : data[fields.register]
+        return action.id === perpetual.ACTION_REGISTER_ZONES ? !data[fields.registered] : data[fields.registered]
     }
 
     onRegisterZone = async (action, data, callback) => {
-        let request = data[fields.register] ? deregisterPartnerZone : registerPartnerZone
+        let request = data[fields.registered] ? deregisterPartnerZone : registerPartnerZone
         let mc = await authSyncRequest(this, request(data))
         if (responseValid(mc)) {
-            this.props.handleAlertInfo('success', `Partner zone ${data[fields.zoneId]} ${data[fields.register] ? 'de' : ''}registered successfully`)
+            this.props.handleAlertInfo('success', `Partner zone ${data[fields.zoneId]} ${data[fields.registered] ? 'de' : ''}registered successfully`)
             callback()
         }
     }
@@ -40,19 +39,17 @@ class PartnerZones extends React.Component {
         let requestList = []
         let request = action.id === perpetual.ACTION_DEREGISTER_ZONES ? deregisterPartnerZone : registerPartnerZone
         dataList.forEach(item => {
-            if ((!item[fields.register] && action.id === perpetual.ACTION_REGISTER_ZONES) || (item[fields.register] && action.id === perpetual.ACTION_DEREGISTER_ZONES)) {
+            if ((!item[fields.registered] && action.id === perpetual.ACTION_REGISTER_ZONES) || (item[fields.registered] && action.id === perpetual.ACTION_DEREGISTER_ZONES)) {
                 requestList.push(request(item))
             }
         })
         if (requestList.length > 0) {
             let mcList = await multiAuthSyncRequest(this, requestList)
-            if(mcList && mcList.length > 0)
-            {
-                let valid = mcList.every(mc=>{
+            if (mcList && mcList.length > 0) {
+                let valid = mcList.every(mc => {
                     return responseValid(mc)
                 })
-                if(valid)
-                {
+                if (valid) {
                     this.props.handleAlertInfo('success', `Partner zones ${action.id === perpetual.ACTION_DEREGISTER_ZONES ? 'de' : ''}registered successfully`)
                     callback()
                 }
@@ -78,8 +75,8 @@ class PartnerZones extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.register) {
-            return uiFormatter.renderYesNo(key, data, isDetail)
+        if (key.field === fields.registered) {
+            return uiFormatter.renderYesNo(key, data[key.field], isDetail)
         }
     }
 
@@ -89,7 +86,7 @@ class PartnerZones extends React.Component {
             headerLabel: 'Guest Zones',
             nameField: fields.zoneId,
             requestType: [showPartnerFederatorZone],
-            sortBy: [fields.federationName],
+            sortBy: [fields.partnerFederationName],
             selection: false,
             keys: this.keys,
             onAdd: undefined,

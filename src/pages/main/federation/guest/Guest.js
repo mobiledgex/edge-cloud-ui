@@ -8,16 +8,16 @@ import * as actions from '../../../../actions';
 //model
 import { HELP_FEDERATION_GUEST_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
-import { deleteFederation, showFederation, deRegisterFederation, registerFederation } from "../../../../services/modules/federation"
-import { showFederator, deleteFederator } from "../../../../services/modules/federator"
-import { multiDataRequest, iconKeys, keys, showPartnerFederatorZone } from "../../../../services/modules/guest"
-import { service, fields } from '../../../../services'
+import { showFederator, showFederation, deleteFederator, multiDataRequest, keys, iconKeys, deRegisterFederation, registerFederation } from "../../../../services/modules/federation"
+import { fields } from '../../../../services'
 import { uiFormatter } from '../../../../helper/formatter';
 
 import RegisterOperator from "../reg/Federator";
 import RegisterPartner from "../reg/Fedaration";
 import Reg from "./reg/Reg"
 import APIKey from "./reg/APIKey";
+import { responseValid } from "../../../../services/service";
+import { showPartnerFederatorZone } from "../../../../services/modules/partnerZones/partnerZones";
 
 class Guest extends React.Component {
     constructor(props) {
@@ -66,20 +66,20 @@ class Guest extends React.Component {
         this.updateState({ currentView: <Reg data={data} onClose={this.onRegClose} /> })
     }
 
-    registerVisible = (data) => {
-        return data[fields.federationName] !== undefined && data[fields.partnerRoleShareZoneWithSelf] === false ? true : false
+    registerVisible = (type, action, data) => {
+        return !data[fields.partnerRoleShareZoneWithSelf]
     }
 
-    deregisterVisible = (data) => {
-        return data[fields.federationName] !== undefined && data[fields.partnerRoleShareZoneWithSelf] ? true : false
+    deregisterVisible = (type, action, data) => {
+        return data[fields.partnerRoleShareZoneWithSelf]
     }
 
-    createVisible = (data) => {
-        return data[fields.federationName] === undefined
+    createVisible = (type, action, data) => {
+        return data[fields.partnerFederationName] === undefined
     }
 
-    federationNameVisible = (data) => {
-        return data[fields.federationName] !== undefined
+    federationNameVisible = (type, action, data) => {
+        return data[fields.partnerFederationName] !== undefined
     }
 
     handleClose = () => {
@@ -88,24 +88,32 @@ class Guest extends React.Component {
         })
     }
 
-    onRegisterFederation = async (action, data) => {
-        let text = action === perpetual.ACTION_REGISTER_FEDERATION ? 'Registered' : 'Deregistered'
-        let requestCall = action.id === perpetual.ACTION_REGISTER_FEDERATION ? registerFederation : deRegisterFederation
+    onRegisterFederation = async (action, data, callback) => {
+        let isRegister = action.id === perpetual.ACTION_REGISTER_FEDERATION
+        let requestCall = isRegister ? registerFederation : deRegisterFederation
         let mc = await requestCall(this, data)
-        if (service.responseValid(mc)) {
-            this.props.handleAlertInfo('success', `Federation ${text} successfully !`)
+        if (responseValid(mc)) {
+            this.props.handleAlertInfo('success', `Federation ${data[fields.partnerFederationName]} ${isRegister ? 'R' : 'Der'}egistered successfully !`)
+            callback()
+        }
+    }
+
+    onDeleteHost = async (action, data, callback) => {
+        let mc = await deleteFederator(this, data)
+        if (responseValid(mc)) {
+            this.props.handleAlertInfo('success', 'Federation host deleted successfully')
+            callback()
         }
     }
 
     actionMenu = () => {
         return [
             { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate, type: 'Add Partner Data' },
-            { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Details', visible: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
-            { id: perpetual.ACTION_SET_API_KEY, label: 'Update API Key', onClick: this.onAPIKeyForm, visible: this.federationNameVisible, type: 'Generate API Key' },
-            { id: perpetual.ACTION_REGISTER_FEDERATION, label: 'Register', onClick: this.onRegisterFederation, visible: this.registerVisible, warning: 'register federation' },
-            { id: perpetual.ACTION_DEREGISTER_FEDERATION, label: 'Deregister', onClick: this.onRegisterFederation, visible: this.deregisterVisible, warning: 'deregister federation' },
-            { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.createVisible, onClick: deleteFederator, type: 'Delete', warning: true },
-            { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.federationNameVisible, onClick: deleteFederation, type: 'Delete' },
+            { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Details', visibility: this.createVisible, onClick: this.onAddPartnerData, type: 'Add Partner Data' },
+            { id: perpetual.ACTION_SET_API_KEY, label: 'Update API Key', onClick: this.onAPIKeyForm, visibility: this.federationNameVisible, type: 'Generate API Key' },
+            { id: perpetual.ACTION_REGISTER_FEDERATION, label: 'Register', onClick: this.onRegisterFederation, visibility: this.registerVisible, warning: 'register federation' },
+            { id: perpetual.ACTION_DEREGISTER_FEDERATION, label: 'Deregister', onClick: this.onRegisterFederation, visibility: this.deregisterVisible, warning: 'deregister federation' },
+            { id: perpetual.ACTION_HOST_DELETE, label: 'Delete', disable: this.deregisterVisible, onClick: this.onDeleteHost, warning: 'delete' }
         ]
     }
 
@@ -130,13 +138,12 @@ class Guest extends React.Component {
             id: perpetual.PAGE_INBOUND_FEDERATION,
             headerLabel: 'Federation - Guest',
             requestType: [showFederation, showFederator, showPartnerFederatorZone],
-            sortBy: [fields.region, fields.federationName],
-            isRegion: true,
+            sortBy: [fields.operatorName],
+            // isRegion: true,
             keys: this.keys,
             onAdd: this.onAdd,
-            nameField: fields.federationName,
+            nameField: fields.partnerFederationName,
             viewMode: HELP_FEDERATION_GUEST_LIST,
-            grouping: true,
             iconKeys: iconKeys(),
             formatData: this.dataFormatter
         })

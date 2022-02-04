@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import { redux_org } from '../../../../helper/reduxData'
 import MexForms, { BUTTON, INPUT, MAIN_HEADER } from '../../../../hoc/forms/MexForms'
-import { createFederation } from '../../../../services/modules/federation'
 import { fields } from '../../../../services'
 import { responseValid } from '../../../../services/service';
+import { createFederation } from '../../../../services/modules/federation';
 
 class RegisterPartner extends React.Component {
     constructor(props) {
@@ -26,10 +26,10 @@ class RegisterPartner extends React.Component {
             { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, rules: { required: true, disabled: true }, tip: 'Self federation ID' },
             { field: fields.partnerOperatorName, label: 'Partner Operator', formType: INPUT, placeholder: 'Enter Partner Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Globally unique string to identify an operator platform' },
             { field: fields.partnerCountryCode, label: 'Partner Country Code', formType: INPUT, placeholder: 'Enter Partner Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
-            { field: fields.partnerFederationid, label: 'Partner Federation ID', formType: INPUT, placeholder: 'Enter Partner Federation ID', visible: true, rules: { required: true }, tip: 'Globally unique string used to indentify a federation with partner federation' },
+            { field: fields.partnerFederationId, label: 'Partner Federation ID', formType: INPUT, placeholder: 'Enter Partner Federation ID', visible: true, rules: { required: true }, tip: 'Globally unique string used to indentify a federation with partner federation' },
             { field: fields.federationAddr, label: 'Partner Federation Addr', formType: INPUT, placeholder: 'Enter Partner Federation Addr', rules: { required: true }, visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
             { field: fields.apiKey, label: 'Partner API Key', formType: INPUT, placeholder: 'Enter Partner API Key', rules: { required: true }, visible: true, tip: 'API Key used for authentication (stored in secure storage)' },
-            { field: fields.federationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Fderation Name', rules: { required: true }, visible: true, tip: 'Name to uniquely identify a federation' }
+            { field: fields.partnerFederationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Fderation Name', rules: { required: true }, visible: true, tip: 'Name to uniquely identify a federation' }
         ]
     }
 
@@ -66,7 +66,7 @@ class RegisterPartner extends React.Component {
         const {onDialogOpen, onClose, handleAlertInfo} = this.props
         let mc = await createFederation(this, data)
         if (responseValid(mc)) {
-            handleAlertInfo('success', `Partner federation ${data[fields.federationName]} created successfully !`)
+            handleAlertInfo('success', `Partner federation ${data[fields.partnerFederationName]} created successfully !`)
             onDialogOpen ? onDialogOpen(data) : onClose(data)
         }
     }
@@ -107,7 +107,21 @@ class RegisterPartner extends React.Component {
     }
 
     getFormData = () => {
-        const { data } = this.props
+        // const { data } = this.props
+        let data = {}
+        data[fields.federationId] = '58ufic22-hfj9-8ghv-85uj-tfk2vh32sks'
+        data[fields.region] = 'EU'
+        data[fields.countryCode] = 'ES'
+        data[fields.operatorName] = 'TFK-4455-jgl'
+        data[fields.mnc] = ['05']
+        data[fields.mcc] = 214
+        data[fields.partnerOperatorName] = 'SGT-1234-xyz'
+        data[fields.partnerFederationId] = '85fff032-des3-58g8-jf83-sgt38ds87b9'
+        data[fields.partnerFederationName] = 'access-singtel-zones'
+        data[fields.federationAddr] = 'https://api.rh.bridgealliance.com/v6'
+        data[fields.apiKey] = 'L3EDPsNiNY6nplzX6RrAI8BLjmlvHsCn1fYb87ml'
+        data[fields.partnerCountryCode] = 'SG'
+
         let forms = this.elements()
 
         forms.push(

@@ -296,7 +296,7 @@ class ZoneReg extends React.Component {
             { field: fields.countryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
             { uuid: uniqueId(), field: fields.cloudletLocation, label: 'Zone Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS co-ordinates associated with the zone' },
             { field: fields.locality, label: 'Locality', formType: INPUT, placeholder: 'Enter Locality', visible: true, tip: 'Type of locality eg rural, urban etc.' },
-            { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter state Name', width: 5, visible: true, update: { edit: true } },
+            { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter State Name', width: 5, visible: true, update: { edit: true } },
             { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City Name', width: 7, visible: true },
         ]
     }

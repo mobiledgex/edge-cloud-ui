@@ -8,26 +8,25 @@ import * as actions from '../../../../actions';
 //model
 import { HELP_OUTBOUND_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
-import { showFederation, multiDataRequest, keys, deleteFederation, iconKeys } from "../../../../services/modules/federation"
-import { showFederator, deleteFederator, generateApiKey } from "../../../../services/modules/federator"
-import FederationReg from "./Reg"
 import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
 import { fields } from '../../../../services'
+import { showFederator, showFederation, keys, iconKeys, deleteFederator, generateApiKey, multiDataRequest } from "../../../../services/modules/federation"
 import { showFederationZones } from "../../../../services/modules/zones";
 import { uiFormatter } from '../../../../helper/formatter';
+import Reg from "./reg/Reg"
 import ShareZones from "./reg/ShareZones";
 import { InfoDialog } from "../../../../hoc/mexui";
+import { responseValid } from "../../../../services/service";
 
 class Host extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            step: 0,
             forms: [],
             currentView: null,
             open: false,
         },
-            this.keys = keys()
+        this.keys = keys(true)
         this.apiKey = undefined
     }
 
@@ -48,19 +47,19 @@ class Host extends React.Component {
     }
 
     onAdd = (type) => {
-        this.updateState({ currentView: <FederationReg onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <Reg onClose={this.onRegClose} /> });
     }
 
     onUpdate = (action, data) => {
-        this.updateState({ currentView: <FederationReg data={data} isUpdate={true} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <Reg data={data} isUpdate={true} onClose={this.onRegClose} /> });
     }
 
     onAddPartnerData = (action, data) => {
-        this.updateState({ currentView: <FederationReg data={data} action={action.id} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <Reg data={data} action={action.id} onClose={this.onRegClose} /> });
     }
 
     onCreateFederation = (action, data) => {
-        this.updateState({ currentView: <FederationReg data={data} onClose={this.onRegClose} /> })
+        this.updateState({ currentView: <Reg data={data} onClose={this.onRegClose} /> })
     }
 
     onShareZones = (action, data) => {
@@ -68,11 +67,11 @@ class Host extends React.Component {
     }
 
     createVisible = (data) => {
-        return data[fields.federationName] === undefined
+        return data[fields.partnerFederationId] === undefined
     }
 
-    federationNameVisible = (data) => {
-        return data[fields.federationName] !== undefined
+    federationNameVisible = (type, action, data) => {
+        return true//data[fields.partnerFederationId] !== undefined
     }
 
     onDialogClose = () => {
@@ -85,7 +84,7 @@ class Host extends React.Component {
     onGenerateApiKey = async (action, data) => {
         let mcRequest = await generateApiKey(this, data)
         if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-            this.props.handleAlertInfo('success', 'API Key generated successfully !')
+            this.props.handleAlertInfo('success', 'API Key generated successfully!')
             this.apiKey = mcRequest.response.data.apikey
             this.updateState({
                 open: true
@@ -93,15 +92,22 @@ class Host extends React.Component {
         }
     }
 
+    onDeleteHost = async (action, data, callback) => {
+        let mc = await deleteFederator(this, data)
+        if (responseValid(mc)) {
+            this.props.handleAlertInfo('success', 'Federation host deleted successfully')
+            callback()
+        }
+    }
+
     actionMenu = () => {
         return [
             { id: perpetual.ACTION_UPDATE, label: 'Update', onClick: this.onUpdate },
-            { id: perpetual.ACTION_SHARE_ZONES, label: 'Share Zones', onClick: this.onShareZones, visible: this.federationNameVisible, type: 'edit' },
-            { id: perpetual.ACTION_UNSHARE_ZONES, label: 'Unshare Zones', onClick: this.onShareZones, visible: this.federationNameVisible, type: 'edit' },
+            { id: perpetual.ACTION_SHARE_ZONES, label: 'Share Zones', onClick: this.onShareZones, visibility: this.federationNameVisible, type: 'edit' },
+            { id: perpetual.ACTION_UNSHARE_ZONES, label: 'Unshare Zones', onClick: this.onShareZones, visibility: this.federationNameVisible, type: 'edit' },
             { id: perpetual.ACTION_UPDATE_PARTNER, label: 'Enter Partner Details', visible: this.createVisible, onClick: this.onAddPartnerData },
             { id: perpetual.ACTION_GENERATE_API_KEY, label: 'Generate API Key', onClick: this.onGenerateApiKey, type: 'Generate API Key' },
-            { id: perpetual.ACTION_DELETE, label: 'Delete', visible: this.createVisible, onClick: deleteFederator, warning: true },
-            { id: perpetual.ACTION_DELETE, label: 'Delete Partner', visible: this.federationNameVisible, onClick: deleteFederation },
+            { id: perpetual.ACTION_HOST_DELETE, label: 'Delete', onClick: this.onDeleteHost, warning: 'delete' }
         ]
     }
 
@@ -119,14 +125,13 @@ class Host extends React.Component {
             id: perpetual.PAGE_OUTBOUND_FEDERATION,
             headerLabel: 'Federation - Host',
             requestType: [showFederation, showFederator, showFederationZones],
-            sortBy: [fields.region, fields.federationName],
+            sortBy: [fields.region],
             // isRegion: true,
             keys: this.keys,
             onAdd: this.onAdd,
-            nameField: fields.federationName,
+            nameField: fields.partnerFederationName,
             viewMode: HELP_OUTBOUND_LIST,
-            grouping: true,
-            iconKeys: iconKeys(),
+            iconKeys: iconKeys(true),
             formatData: this.dataFormatter
         })
     }

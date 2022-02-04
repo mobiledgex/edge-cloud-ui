@@ -52,6 +52,7 @@ export const ACTION_DEREGISTER_FEDERATION = 'DeRegisterFederation'
 export const ACTION_GENERATE_API_KEY = 'GenerateApiKey'
 export const ACTION_DEREGISTER_ZONES = 'DeregisterFederationZones'
 export const ACTION_REGISTER_ZONES = 'registerFederationZones'
+export const ACTION_HOST_DELETE = 'federationFederatorDelete'
 
 export const CLOUDLET_COMPAT_VERSION_2_4 = 0
 export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1

@@ -1,7 +1,7 @@
 import { fields } from "../.."
 
 export const customize = (request, value) => {
-    value[fields.register] = value[fields.register]
+    value[fields.registered] = value[fields.registered] ? value[fields.registered] : false
     let location = value[fields.cloudletLocation]
     if (location) {
         location = location.split(',')

@@ -4,13 +4,12 @@ import * as actions from '../../../../../actions';
 import { Button, Typography } from '@material-ui/core'
 import MexTable from '../../../../../hoc/datagrid/MexTable'
 import { fields } from '../../../../../services'
-import { showPartnerFederatorZone } from '../../../../../services/modules/guest'
-import { registerPartnerZone } from '../../../../../services/modules/partnerZones/partnerZones'
+import { registerPartnerZone, showPartnerFederatorZone } from '../../../../../services/modules/partnerZones/partnerZones'
 import { authSyncRequest, showAuthSyncRequest } from '../../../../../services/service'
 import { withRouter } from 'react-router-dom';
 
 export const zoneKeys = () => ([
-    { field: fields.federationName, label: 'Federation Name', visible: true },
+    { field: fields.partnerFederationName, label: 'Federation Name', visible: true },
     { field: fields.operatorName, label: 'Operator', visible: true },
     { field: fields.partnerOperatorName, label: 'Partner Operator', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.zoneId, label: 'Zone', serverField: 'zoneid', visible: true },
@@ -49,7 +48,7 @@ class ReviewZones extends React.Component {
             let requestData = {
                 zoneid: selections,
                 operatorName: data[fields.operatorName],
-                federationName: data[fields.federationName]
+                partnerFederationName: data[fields.partnerFederationName]
             }
             let mc = await authSyncRequest(this, registerPartnerZone(requestData))
             if (mc && mc.response && mc.response.status === 200) {

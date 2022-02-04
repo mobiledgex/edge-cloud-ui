@@ -97,14 +97,14 @@ class GuestReg extends React.Component {
                     <Grid container>
                         <Grid item xs={12}>
                             {
-                                step === 1 ? <RegisterPartner data={defaultData} onClose={this.onFinish} /> :
+                                step === 1 ? <RegisterPartner data={defaultData} onDialogOpen={this.onDialogOpen} onClose={this.onFinish} /> :
                                     step === 2 ? <ReviewZones data={defaultData} onClose={this.onFinish} /> :
                                         <RegisterOperator onClose={this.onFinish} />
                             }
                         </Grid>
                     </Grid>
                 </Item>
-                <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} onDialogOpen={this.onDialogOpen}/>
+                <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose}/>
             </div>
         )
     }

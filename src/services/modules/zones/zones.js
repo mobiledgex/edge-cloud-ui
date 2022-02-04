@@ -3,6 +3,7 @@ import * as formatter from '../../model/format'
 import { authSyncRequest } from '../../service';
 import { endpoint, perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData'
+import { TYPE_JSON } from '../../../helper/constant/perpetual';
 
 let fields = formatter.fields
 
@@ -12,14 +13,14 @@ export const keys = () => ([
     { field: fields.operatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true },
     { field: fields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets', dataType: perpetual.TYPE_STRING },
     { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true },
-    { field: fields.location, label: 'Zone Location', serverField: 'geolocation' },
+    { field: fields.cloudletLocation, label: 'Zone Location', serverField: 'geolocation', dataType:TYPE_JSON },
     { field: fields.locality, label: 'Locality', serverField: 'locality' },
     { field: fields.city, label: 'City', serverField: 'city' },
     { field: fields.state, label: 'State', serverField: 'state' },
     {
         field: fields.zonesShared, label: 'Zones Shared',
         keys: [
-            { field: fields.federationName, label: 'Federation Name' },
+            { field: fields.partnerFederationName, label: 'Federation Name' },
             { field: fields.registered, label: 'Registered' }
         ]
     },
@@ -29,16 +30,16 @@ export const keys = () => ([
 export const sharedkeys = () => ([
     { field: fields.zoneId, label: 'Zone Id', serverField: 'zoneid', sortable: true, visible: true, filter: true },
     { field: fields.operatorName, label: 'Operator Name', serverField: 'selfoperatorid', sortable: true, visible: true, filter: true },
-    { field: fields.federationName, label: 'Operator Name', serverField: 'federationname', sortable: true, visible: true, filter: true },
+    { field: fields.partnerFederationName, label: 'Operator Name', serverField: 'federationname', sortable: true, visible: true, filter: true },
     { field: fields.registered, label: 'Operator Name', serverField: 'Registered', sortable: true, visible: true },
     { field: fields.revision, label: 'Revision', serverField: 'revision' }
 ])
 
-export const getKey = (data, isCreate) => {
+export const getKey = (data, isCreate = false) => {
     let selfZone = {}
     data[fields.operatorName] ? selfZone.operatorid = data[fields.operatorName] : null
     data[fields.countryCode] ? selfZone.countryCode = data[fields.countryCode].toUpperCase() : null
-    data[fields.federationName] ? selfZone.federationName = data[fields.federationName] : null
+    selfZone.federationId = data[fields.federationId] ? data[fields.federationId] : null
     selfZone.zoneId = data[fields.zoneId]
     if (isCreate) {
         selfZone.geolocation = data[fields.cloudletLocation].toString()
@@ -95,7 +96,7 @@ export const shareZones = (self, data, unshare = false) => {
     let requestData = {}
     requestData['zoneid'] = data[fields.zoneId]
     requestData['selfoperatorid'] = data[fields.operatorName]
-    requestData['federationname'] = data[fields.federationName]
+    requestData['federationname'] = data[fields.partnerFederationName]
     return { method: unshare ? endpoint.SELF_ZONES_UNSHARE : endpoint.SELF_ZONES_SHARE, data: requestData, success: 'Zones Shared Successfully' }
 }
 
@@ -130,7 +131,7 @@ export const multiDataRequest = (keys, mcList) => {
                 if (sharedZoneList.length > 0) {
                     for (let sharedZone of sharedZoneList) {
                         if (sharedZone[fields.zoneId] === zone[fields.zoneId]) {
-                            zone[fields.zonesShared].push({...sharedZone, registered : sharedZone[fields.registered] ? perpetual.YES : perpetual.NO})
+                            zone[fields.zonesShared].push({ ...sharedZone, registered: sharedZone[fields.registered] ? perpetual.YES : perpetual.NO })
                         }
                     }
                 }

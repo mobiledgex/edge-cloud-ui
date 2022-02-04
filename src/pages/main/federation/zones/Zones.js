@@ -44,8 +44,9 @@ class ZoneList extends React.Component {
             requestType: [showFederatorZones, showFederationZones],
             sortBy: [fields.zoneId],
             keys: this.keys,
+            isMap: true,
             onAdd: this.onAdd,
-            formatData:this.dataFormatter,
+            formatData: this.dataFormatter,
             nameField: fields.zoneId,
             viewMode: HELP_ZONES_LIST
         })
@@ -78,7 +79,7 @@ class ZoneList extends React.Component {
         this._isMounted = true
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         this._isMounted = false
     }
 
