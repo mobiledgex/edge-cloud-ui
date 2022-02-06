@@ -137,6 +137,16 @@ const useStyles = makeStyles((theme) => ({
         "&:hover": {
             backgroundColor: 'default'
         }
+    },
+    subSelect: {
+        backgroundColor: '#5C9F5F',
+        boxShadow: props => props.sub ? '0px 2px 8px #181a1f' : 'none',
+        "&:hover": {
+            backgroundColor: 'default'
+        }
+    },
+    pad:{
+        padding:10
     }
 }));
 
@@ -155,12 +165,12 @@ const LogsButton = (props) => {
 
 const Options = (props) => {
     const { options, sub, drawerOpen } = props
-    const classes = useStyles({ sub });
     const orgInfo = useSelector(state => state.organizationInfo.data)
     const [pageId, setPageId] = useState(0)
     const childRef = createRef(null)
     let { url } = useRouteMatch();
     const history = useHistory()
+    const classes = useStyles({ sub, pageId });
     useEffect(() => {
         setPageId(0)
     }, [drawerOpen])
@@ -177,9 +187,14 @@ const Options = (props) => {
     }
 
     const renderItem = (item) => {
-        const isSVG = item.icon.includes('.svg')
+        const isSVG = item.icon && item.icon.includes('.svg')
         return (
-            <ListItem button onClick={() => { optionClick(item) }} className={classes.sub}>
+            item.type === 'header' ? 
+            <React.Fragment>
+                <div className={clsx(classes.pad, classes.sub)}><strong>{item.label}</strong></div>
+                <Divider/>
+            </React.Fragment> :
+            <ListItem button onClick={() => { optionClick(item) }} className={history.location.pathname.includes(item.path) ? classes.subSelect : classes.sub}>
                 <ListItemIcon>
                     {isSVG ? <img src={`/assets/icons/${item.icon}`} width={24} /> : <Icon outlined={true}>{item.icon}</Icon>}
                 </ListItemIcon>

@@ -186,7 +186,7 @@ export const DELETE_FEDERATOR = 'auth/federator/self/delete'
 export const GENERATE_API_KEY = 'auth/federator/self/generateapikey'
 
 //Zones
-export const SHOW_FEDERATOR_SELF_ZONES = 'auth/federator/self/zone/show'
+export const SHOW_FEDERATOR_SELF_ZONE = 'auth/federator/self/zone/show'
 export const SHOW_FEDERATION_SELF_ZONE = 'auth/federation/self/zone/show'
 export const SHOW_FEDERATOR_PARTNER_ZONE = 'auth/federation/partner/zone/show'
 export const CREATE_FEDERATOR_SELF_ZONE = 'auth/federator/self/zone/create'

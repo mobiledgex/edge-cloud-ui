@@ -45,7 +45,7 @@ export const keys = (host = false) => {
 }
 
 export const iconKeys = (host = false) => ([
-    { field: host ? fields.partnerRoleAccessToSelfZones : fields.partnerRoleShareZoneWithSelf, label: 'Registered', icon: 'bookmark_added', count: 0, roles: operatorRoles }
+    { field: host ? fields.partnerRoleAccessToSelfZones : fields.partnerRoleShareZoneWithSelf, label: 'Registered', icon: 'bookmark_added', count: 0}
 ])
 
 export const multiDataRequest = (keys, mcList) => {

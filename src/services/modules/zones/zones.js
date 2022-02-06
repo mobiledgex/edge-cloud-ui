@@ -17,6 +17,7 @@ export const keys = () => ([
     { field: fields.locality, label: 'Locality', serverField: 'locality' },
     { field: fields.city, label: 'City', serverField: 'city' },
     { field: fields.state, label: 'State', serverField: 'state' },
+    { field: fields.zoneCount, label: 'Shared With', visible:true, sortable: true, detailView: false },
     {
         field: fields.zonesShared, label: 'Zones Shared',
         keys: [
@@ -25,6 +26,10 @@ export const keys = () => ([
         ]
     },
     { field: fields.revision, label: 'Revision', serverField: 'revision' }
+])
+
+export const iconKeys = () => ([
+    { field:  fields.zoneCount, label: 'Shared', icon: 'share', count: 0}
 ])
 
 export const sharedkeys = () => ([
@@ -58,38 +63,20 @@ export const getKey = (data, isCreate = false) => {
     return selfZone
 }
 
-export const showFederationZones = (self, data, specific) => {
+export const showFederationZones = (self) => {
     let requestData = {}
-    if (specific) {
-        requestData = data
-    }
-    else {
-        let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
-        if (organization) {
-            if (redux_org.isOperator(self)) {
-                requestData['selfoperatorid'] = organization
-            }
-        }
+    if (redux_org.isOperator(self)) {
+        requestData['selfoperatorid'] = redux_org.nonAdminOrg(self)
     }
     return { method: endpoint.SHOW_FEDERATION_SELF_ZONE, data: requestData, keys: sharedkeys() }
 }
 
-export const showFederatorZones = (self, data, specific) => {
+export const showFederatorZones = (self) => {
     let requestData = {}
-    if (specific) {
-        requestData = data
+    if (redux_org.isOperator(self)) {
+        requestData['operatorid'] = redux_org.nonAdminOrg(self)
     }
-    else {
-        let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
-        if (organization) {
-            if (redux_org.isOperator(self)) {
-                requestData = { operatorid: organization, region: data.region }
-            }
-        } else {
-            requestData = { region: data.region }
-        }
-    }
-    return { method: endpoint.SHOW_FEDERATOR_SELF_ZONES, data: requestData, keys: keys() }
+    return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, data: requestData, keys: keys() }
 }
 
 export const shareZones = (self, data, unshare = false) => {
@@ -117,7 +104,7 @@ export const multiDataRequest = (keys, mcList) => {
         for (const mc of mcList) {
             const method = mc.request.method
             const data = mc.response.data
-            if (method === endpoint.SHOW_FEDERATOR_SELF_ZONES) {
+            if (method === endpoint.SHOW_FEDERATOR_SELF_ZONE) {
                 zoneList = data
             }
             else if (method === endpoint.SHOW_FEDERATION_SELF_ZONE) {
@@ -135,6 +122,7 @@ export const multiDataRequest = (keys, mcList) => {
                         }
                     }
                 }
+                zone[fields.zoneCount] = zone[fields.zonesShared].length
             }
         }
     }

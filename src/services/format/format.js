@@ -161,7 +161,7 @@ export const formatData = (request, response, self = null) => {
         case endpoint.SHOW_FEDERATOR:
             data = formatShowData(request, response, federation)
             break;
-        case endpoint.SHOW_FEDERATOR_SELF_ZONES:
+        case endpoint.SHOW_FEDERATOR_SELF_ZONE:
             data = formatShowData(request, response, selfZone)
             break;
         case endpoint.SHOW_FEDERATOR_PARTNER_ZONE:

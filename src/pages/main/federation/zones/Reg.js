@@ -211,7 +211,7 @@ class ZoneReg extends React.Component {
     getMap = () =>
     (
         <div className='panel_worldmap' style={{ width: '100%', height: '100%' }}>
-            <ListMexMap dataList={this.state.mapData} id={perpetual.PAGE_ZONES} onMapClick={this.onMapClick} region={this.state.region} register={true} />
+            <ListMexMap dataList={this.state.mapData} id={perpetual.PAGE_HOST_ZONES} onMapClick={this.onMapClick} region={this.state.region} register={true} />
         </div>
     )
 

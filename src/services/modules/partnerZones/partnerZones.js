@@ -1,4 +1,3 @@
-import { operatorRoles } from '../../../constant';
 import { endpoint, perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData';
 import * as formatter from '../../model/format'
@@ -22,7 +21,7 @@ export const keys = () => {
 }
 
 export const iconKeys = () => ([
-    { field: fields.registered, label: 'Registered', icon: 'bookmark_added', count: 0, roles: operatorRoles },
+    { field: fields.registered, label: 'Registered', icon: 'bookmark_added', count: 0 },
 ])
 
 export const getKey = (data) => {
@@ -45,17 +44,14 @@ export const deregisterPartnerZone = (data) => {
 
 export const showPartnerFederatorZone = (self, data, specific) => {
     let requestData = {}
+    let organization = undefined
     if (specific) {
         requestData['federationname'] = data[fields.partnerFederationName]
-        requestData['selfoperatorid'] = data[fields.operatorName]
+        organization = data[fields.operatorName]
     }
-    else {
-        let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
-        if (organization) {
-            if (redux_org.isOperator(self)) {
-                requestData.selfoperatorid = organization
-            }
-        }
+    else if (redux_org.isOperator(self)) {
+        organization = redux_org.nonAdminOrg(self)
     }
+    requestData['selfoperatorid'] = organization
     return { method: endpoint.SHOW_FEDERATOR_PARTNER_ZONE, data: requestData, keys: keys(), iconKeys: iconKeys() }
 }

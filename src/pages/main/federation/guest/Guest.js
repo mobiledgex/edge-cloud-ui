@@ -136,7 +136,7 @@ class Guest extends React.Component {
     requestInfo = () => {
         return ({
             id: perpetual.PAGE_INBOUND_FEDERATION,
-            headerLabel: 'Federation - Guest',
+            headerLabel: 'Guest - Federation',
             requestType: [showFederation, showFederator, showPartnerFederatorZone],
             sortBy: [fields.operatorName],
             // isRegion: true,

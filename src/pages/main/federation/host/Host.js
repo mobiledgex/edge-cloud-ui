@@ -123,7 +123,7 @@ class Host extends React.Component {
     requestInfo = () => {
         return ({
             id: perpetual.PAGE_OUTBOUND_FEDERATION,
-            headerLabel: 'Federation - Host',
+            headerLabel: 'Host - Federation',
             requestType: [showFederation, showFederator, showFederationZones],
             sortBy: [fields.region],
             // isRegion: true,

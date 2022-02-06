@@ -7,7 +7,7 @@ import { fields } from '../../../../services/model/format';
 //model
 import { HELP_ZONES_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
-import { showFederatorZones, keys, showFederationZones, multiDataRequest } from "../../../../services/modules/zones"
+import { showFederatorZones, keys, iconKeys, showFederationZones, multiDataRequest } from "../../../../services/modules/zones"
 import ZoneReg from "./Reg"
 import { deleteFederatorZone } from "../../../../services/modules/zones/zones";
 
@@ -39,7 +39,7 @@ class ZoneList extends React.Component {
 
     requestInfo = () => {
         return ({
-            id: perpetual.PAGE_ZONES,
+            id: perpetual.PAGE_HOST_ZONES,
             headerLabel: 'Host - Zones',
             requestType: [showFederatorZones, showFederationZones],
             sortBy: [fields.zoneId],
@@ -48,7 +48,8 @@ class ZoneList extends React.Component {
             onAdd: this.onAdd,
             formatData: this.dataFormatter,
             nameField: fields.zoneId,
-            viewMode: HELP_ZONES_LIST
+            viewMode: HELP_ZONES_LIST,
+            iconKeys:iconKeys()
         })
     }
 
@@ -70,7 +71,7 @@ class ZoneList extends React.Component {
         const { tableHeight, currentView } = this.state
         return (
             <div style={{ width: '100%', height: '100%' }}>
-                <DataView id={perpetual.PAGE_ZONES} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
+                <DataView id={perpetual.PAGE_HOST_ZONES} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} multiDataRequest={multiDataRequest} groupActionMenu={this.groupActionMenu} />
             </div>
         )
     }

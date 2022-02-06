@@ -320,5 +320,6 @@ export const fields = {
     zoneCount: 'zoneCount',
     sharedOperator: 'sharedOperator',
     autoGenerateFederationID: 'autoGenerateFederationID',
-    zones:'zones'
+    zones:'zones',
+    mncmulti:'mncmulti'
 }

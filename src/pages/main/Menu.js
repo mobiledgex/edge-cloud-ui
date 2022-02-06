@@ -82,7 +82,7 @@ const renderPage = (id) => {
             return Guest
         case perpetual.PAGE_GUEST_ZONES:
             return GuestZones
-        case perpetual.PAGE_ZONES:
+        case perpetual.PAGE_HOST_ZONES:
             return HostZones
     }
 }

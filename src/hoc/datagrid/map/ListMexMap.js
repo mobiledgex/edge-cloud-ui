@@ -48,6 +48,7 @@ class ListMexMap extends React.Component {
     }
 
     renderLabel = (id, data) => {
+        console.log(id)
         switch (id) {
             case perpetual.PAGE_CLOUDLETS:
                 return data[fields.cloudletName]
@@ -56,6 +57,7 @@ class ListMexMap extends React.Component {
             case perpetual.PAGE_APP_INSTANCES:
                 return `${data[fields.appName]} [${data[fields.version]}]`
             case perpetual.PAGE_GUEST_ZONES:
+            case perpetual.PAGE_HOST_ZONES:
                 return data[fields.zoneId]
         }
     }
@@ -63,7 +65,7 @@ class ListMexMap extends React.Component {
     renderIconMarker = (id, register, dataList) => {
 
         let colorKey = 0
-        if (register || id === perpetual.PAGE_GUEST_ZONES || id === perpetual.PAGE_ZONES) {
+        if (register || id === perpetual.PAGE_GUEST_ZONES || id === perpetual.PAGE_HOST_ZONES) {
             colorKey = 1
         }
         else {
@@ -101,7 +103,7 @@ class ListMexMap extends React.Component {
 
         return (
             L.divIcon({
-                html: `<div style="width:28px; height:28px">${id === perpetual.PAGE_GUEST_ZONES || id === perpetual.PAGE_ZONES ? renderFlagSVG(colorKey, cost) : renderSVG(colorKey, cost)}</div>`,
+                html: `<div style="width:28px; height:28px">${id === perpetual.PAGE_GUEST_ZONES || id === perpetual.PAGE_HOST_ZONES ? renderFlagSVG(colorKey, cost) : renderSVG(colorKey, cost)}</div>`,
                 iconSize: [28, 28],
                 iconAnchor: [14, 14],
                 className: 'map-marker'

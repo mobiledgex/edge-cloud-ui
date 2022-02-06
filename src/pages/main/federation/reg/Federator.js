@@ -48,7 +48,7 @@ class RegisterOperator extends React.Component {
     ])
 
     getMNC = (form) => {
-        return ({ uuid: uniqueId(), field: fields.mnc, formType: MULTI_FORM, forms: form ? form : this.mncElements(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: fields.mncmulti, formType: MULTI_FORM, forms: form ? form : this.mncElements(), width: 3, visible: true })
     }
 
     elements = () => {
@@ -168,7 +168,7 @@ class RegisterOperator extends React.Component {
         for (let form of forms) {
             this.updateUI(form)
             if (data) {
-                if (form.forms && form.formType !== HEADER) {
+                if (form.forms && form.formType !== HEADER && form.formType !== MULTI_FORM) {
                     this.updateFormData(form.forms, data)
                 }
                 else {
@@ -203,7 +203,7 @@ class RegisterOperator extends React.Component {
         data[fields.region] = 'EU'
         data[fields.countryCode] = 'ES'
         data[fields.operatorName] = 'TFK-4455-jgl'
-        data[fields.mnc] = '05'
+        data[fields.mnc] = ['05']
         data[fields.mcc] = "214"
 
         let forms = this.elements()
