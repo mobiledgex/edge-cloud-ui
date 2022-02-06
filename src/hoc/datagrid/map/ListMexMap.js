@@ -2,7 +2,7 @@ import React from 'react'
 import { Marker, Popup } from "react-leaflet";
 import { fields } from '../../../services/model/format';
 import Legend from './MapLegend'
-import { mapLegendColor, renderSVG } from '../../mexmap/constant';
+import { mapLegendColor, renderFlagSVG, renderSVG } from '../../mexmap/constant';
 import { serverFields } from '../../../helper/formatter';
 import { perpetual } from '../../../helper/constant';
 import MexMap from '../../mexmap/MexMap'
@@ -48,6 +48,7 @@ class ListMexMap extends React.Component {
     }
 
     renderLabel = (id, data) => {
+        console.log(id)
         switch (id) {
             case perpetual.PAGE_CLOUDLETS:
                 return data[fields.cloudletName]
@@ -55,13 +56,16 @@ class ListMexMap extends React.Component {
                 return data[fields.clusterName]
             case perpetual.PAGE_APP_INSTANCES:
                 return `${data[fields.appName]} [${data[fields.version]}]`
+            case perpetual.PAGE_GUEST_ZONES:
+            case perpetual.PAGE_HOST_ZONES:
+                return data[fields.zoneId]
         }
     }
 
     renderIconMarker = (id, register, dataList) => {
 
         let colorKey = 0
-        if (register) {
+        if (register || id === perpetual.PAGE_GUEST_ZONES || id === perpetual.PAGE_HOST_ZONES) {
             colorKey = 1
         }
         else {
@@ -99,7 +103,7 @@ class ListMexMap extends React.Component {
 
         return (
             L.divIcon({
-                html: `<div style="width:28px; height:28px">${renderSVG(colorKey, cost)}</div>`,
+                html: `<div style="width:28px; height:28px">${id === perpetual.PAGE_GUEST_ZONES || id === perpetual.PAGE_HOST_ZONES ? renderFlagSVG(colorKey, cost) : renderSVG(colorKey, cost)}</div>`,
                 iconSize: [28, 28],
                 iconAnchor: [14, 14],
                 className: 'map-marker'

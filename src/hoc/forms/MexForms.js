@@ -63,7 +63,6 @@ export const formattedData = (forms) => {
                         data[form.uuid][subForm.field] = subForm.value;
                     }
                 }
-
             }
             else {
                 data[form.field] = form.value;
@@ -77,7 +76,6 @@ const MexForms = (props) => {
     let forms = props.forms
     const [error, setError] = React.useState(undefined)
     const orgInfo = useSelector(state => state.organizationInfo.data)
-
     const getIcon = (id) => {
         switch (id) {
             case 'delete':
@@ -123,11 +121,11 @@ const MexForms = (props) => {
 
     const errorBanner = (form) => {
         setError(form.error)
-            let element = document.getElementById(form.field)
-            if (element) {
-                element.style.scrollMargin = '10px';
-                element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-            }
+        let element = document.getElementById(form.field)
+        if (element) {
+            element.style.scrollMargin = '10px';
+            element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+        }
     }
 
     const validateRules = (form, valid) => {

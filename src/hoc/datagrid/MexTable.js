@@ -263,13 +263,13 @@ const getHeight = (props, table) => {
     let height = isMap ? 553 : 153
     height = tableHeight ? tableHeight : height
     height = iconKeys ? height + 40 : height
-    height = table && groupBy.length > 0 ? height + 50 : height
+    height = table && (groupBy && groupBy.length > 0) ? height + 50 : height
     return `calc(100vh - ${height}px)`
 }
 
 
 export default function MexTable(props) {
-    const { loading, groupBy, searchValue, dataList, keys, formatter, actionMenu, cellClick, selected, setSelected, selection, onActionClose, iconKeys, viewerEdit, sortBy } = props
+    const { loading, groupBy, searchValue, dataList, keys, formatter, actionMenu, cellClick, selected, setSelected, selection, onActionClose, iconKeys, viewerEdit, sortBy, style } = props
     const [itemList, setList] = React.useState([])
     const [groupList, setGroupList] = React.useState([])
     const [order, setOrder] = React.useState('asc')
@@ -367,7 +367,7 @@ export default function MexTable(props) {
 
     const onRowClick = (e) => {
         const { rowData, index } = e
-        cellClick(undefined, rowData)
+        cellClick && cellClick(undefined, rowData)
     }
 
     const onCellClick = (e, column, data) => {
@@ -389,7 +389,7 @@ export default function MexTable(props) {
             setSelected(newSelected);
         }
         else if (column.clickable) {
-            cellClick(column, data)
+            cellClick && cellClick(column, data)
         }
     }
 
@@ -422,7 +422,7 @@ export default function MexTable(props) {
             {
                 itemList.length === 0 && groupList.length === 0 ? <div style={{ height: getHeight(props, true) }}><NoData search={searchValue} loading={loading} style={{ width: '100%' }} /></div> :
                     itemList.length > 0 && (groupList.length === 0 || select !== undefined) ?
-                        <Paper id='table-container' style={{ height: `${getHeight(props, true)}` }}>
+                        <Paper id='table-container' style={style ? style : { height: `${getHeight(props, true)}` }}>
                             <VirtualizedTable
                                 rowCount={itemList.length}
                                 rowGetter={({ index }) => itemList[index]}
