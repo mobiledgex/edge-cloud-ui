@@ -48,7 +48,6 @@ class ListMexMap extends React.Component {
     }
 
     renderLabel = (id, data) => {
-        console.log(id)
         switch (id) {
             case perpetual.PAGE_CLOUDLETS:
                 return data[fields.cloudletName]
