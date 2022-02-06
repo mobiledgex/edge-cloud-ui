@@ -84,7 +84,7 @@ const MexToolbar = (props) => {
     }
 
     const searchForm = (order) => (
-        <MBox order={order} style={{ marginTop: `${focused ? '-10px' : '2px'}`, paddingLeft:10 }}>
+        <MBox order={order} style={{ marginTop: `${focused ? '-10px' : '2px'}`, paddingLeft: 10 }}>
             <Input
                 onFocus={() => {
                     setFocused(true)
@@ -157,7 +157,7 @@ const MexToolbar = (props) => {
 
     const mapForm = (order) => (
         requestInfo.isMap ?
-            <MBox order={order} p={1} style={{marginTop:1}}>
+            <MBox order={order} p={1} style={{ marginTop: 1 }}>
                 <strong>Map:</strong>
                 <CustomSwitch size="small" color="primary" checked={map} onChange={onMapChange} />
             </MBox> :
@@ -180,12 +180,12 @@ const MexToolbar = (props) => {
             <IconButton aria-label="data-grid-detail-view" onClick={(e) => { props.onAction(ACTION_CLOSE) }}>
                 <Icon style={{ color: ICON_COLOR }}>close</Icon>
             </IconButton>
-        </MBox  >
+        </MBox>
     )
 
     const renderBack = () => (
         props.requestInfo.back ?
-            <MBox order={order}>
+            <MBox>
                 <Tooltip title={<strong style={{ fontSize: 13 }}>Back</strong>}>
                     <IconButton aria-label="back" style={{ marginTop: -3, marginLeft: -20 }} onClick={(e) => { props.requestInfo.back() }}>
                         <ArrowBackIosIcon style={{ color: ICON_COLOR }} />
@@ -224,7 +224,7 @@ const MexToolbar = (props) => {
 
     return (
         <Toolbar>
-            <div style={{ width: '100%'}}>
+            <div style={{ width: '100%' }}>
                 <Box display="flex" flexWrap="wrap">
                     <Box flexGrow={1}>
                         <Box display="flex">
@@ -237,7 +237,7 @@ const MexToolbar = (props) => {
                     {
                         props.isDetail ?
                             getDetailView(props) :
-                            <div style={{display:'flex', alignItems:'center'}}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
                                 {customAction()}
                                 {renderGroup(1)}
                                 {regionForm(2)}

@@ -21,26 +21,27 @@ const DialogActions = withStyles(theme => ({
 }))(MuiDialogActions);
 
 const MexMessageDialog = (props) => {
-    let message = props.messageInfo.message;
-    let action = props.messageInfo.action;
-    let data = props.messageInfo.data;
+    const { messageInfo, onClick } = props
+    let message = messageInfo.message;
+    let action = messageInfo.action;
+    let data = messageInfo.data;
     return (
         message ?
             <Dialog open={message.length > 0}>
-                <DialogContent style={{  width: 500 }}>
+                <DialogContent style={{ width: 500 }}>
                     <Typography style={{ color: '#FFF' }}>
                         {message}
                     </Typography>
                     {action && action.dialogNote ?
                         <Typography style={{ color: '#FFC107', marginTop: 20, fontSize: 13 }}>
-                            {action.dialogNote(props.messageInfo.data)}
+                            {action.dialogNote(data)}
                         </Typography> : null}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => { props.onClick(false) }} style={{color:'#D3D3D3'}}>
+                    <Button onClick={() => { onClick(false) }} style={{ color: '#D3D3D3' }}>
                         NO
                     </Button>
-                    <Button onClick={() => { props.onClick(true, data) }} style={{color:ICON_COLOR}}>
+                    <Button onClick={() => { onClick(true, data) }} style={{ color: ICON_COLOR }}>
                         YES
                     </Button>
                 </DialogActions>

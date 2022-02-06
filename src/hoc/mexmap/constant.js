@@ -16,6 +16,18 @@ export const renderSVG = (key, cost) => {
     }
 }
 
+export const renderFlagSVG = (key, cost) => {
+    let color = mapLegendColor[key]
+    let path = `<path filter="url(#inner${key})" d="M12 2C8.13 2 5 5 5 9c0 5 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />`
+    let gradient = gradientFilter(key, color);
+    if (cost && cost > 0) {
+        return `<svg viewBox="0 0 24 24" width="34"><g fill=rgba(10,10,10,.7) stroke="#fff" stroke-width="0"> ${gradient} ${path} </g><p style="position:absolute; top: 0; font-size:11px; width: 33px; line-height: 30px; text-align: center;">${cost}</p></svg>`
+    }
+    else {
+        return `<svg viewBox="0 0 24 24"><g fill=rgba(10,10,10,.7) stroke="#fff" stroke-width="0"> ${gradient} ${path} </g></svg>`
+    }
+}
+
 export const renderColorSVG = (key, color, cost) => {
     //key 0 not working shows default color green
     key = key + 2
