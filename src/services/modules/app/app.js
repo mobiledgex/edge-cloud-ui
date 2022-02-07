@@ -54,6 +54,7 @@ export const keys = () => ([
 export const getKey = (data, isCreate) => {
 
     let app = {}
+    let serverless_config = {}
 
     app.key = {
         organization: data[fields.organizationName],
@@ -85,11 +86,17 @@ export const getKey = (data, isCreate) => {
         app.default_flavor = data[fields.flavorName] ? { name: data[fields.flavorName] } : undefined
         app.auth_public_key = data[fields.authPublicKey]
         app.allow_serverless = data[fields.allowServerless]
-        app.serverless_config = data[fields.allowServerless] ? {
-            vcpus: data[fields.serverlessVcpu] ? parseInt(data[fields.serverlessVcpu]) : undefined,
-            ram: data[fields.serverlessRam] ? parseInt(data[fields.serverlessRam]) : undefined,
-            min_replicas: data[fields.serverlessMinReplicas] ? parseInt(data[fields.serverlessMinReplicas]) : undefined
-        } : undefined
+        if (data[fields.serverlessRam]) {
+            serverless_config.ram = parseInt(data[fields.serverlessRam])
+        }
+        if (data[fields.serverlessVcpu]) {
+            serverless_config.vcpus = parseInt(data[fields.serverlessVcpu])
+        }
+        if (data[fields.serverlessMinReplicas]) {
+            serverless_config.min_replicas = parseInt(data[fields.serverlessMinReplicas])
+        }
+        Object.keys(serverless_config).length === 0 ? null : (app.serverless_config = serverless_config)
+
         if (data[fields.officialFQDN]) {
             app.official_fqdn = data[fields.officialFQDN]
         }
