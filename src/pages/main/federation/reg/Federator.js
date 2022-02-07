@@ -55,7 +55,7 @@ class RegisterOperator extends React.Component {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Enter'} Operator Details`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
-            { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Enter Partner Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
+            { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
             { field: fields.countryCode, label: ' Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
             { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
             { field: fields.locatorendpoint, label: 'Locator End Point', formType: INPUT, placeholder: 'Enter Locator Endpoint', visible: true, update: { edit: true }, tip: 'IP and Port of discovery service URL of operator platform' },
@@ -106,7 +106,7 @@ class RegisterOperator extends React.Component {
                 let uuid = form.uuid;
                 let multiFormData = data[uuid]
                 if (multiFormData) {
-                    if (form.field === fields.mnc) {
+                    if (form.field === fields.mncmulti) {
                         mncList.push(multiFormData[fields.mnc])
                     }
                 }
@@ -197,15 +197,7 @@ class RegisterOperator extends React.Component {
     }
 
     getFormData = async () => {
-        // const { data } = this.props
-        let data = {}
-        data[fields.federationId] = '58ufic22-hfj9-8ghv-85uj-tfk2vh32sks'
-        data[fields.region] = 'EU'
-        data[fields.countryCode] = 'ES'
-        data[fields.operatorName] = 'TFK-4455-jgl'
-        data[fields.mnc] = ['05']
-        data[fields.mcc] = "214"
-
+        const { data } = this.props
         let forms = this.elements()
         if (data) {
             this.loadDefaultData(forms, data)
