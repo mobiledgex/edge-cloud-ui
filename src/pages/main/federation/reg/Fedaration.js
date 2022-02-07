@@ -29,7 +29,7 @@ class RegisterPartner extends React.Component {
             { field: fields.partnerFederationId, label: 'Partner Federation ID', formType: INPUT, placeholder: 'Enter Partner Federation ID', visible: true, rules: { required: true }, tip: 'Globally unique string used to indentify a federation with partner federation' },
             { field: fields.federationAddr, label: 'Partner Federation Addr', formType: INPUT, placeholder: 'Enter Partner Federation Addr', rules: { required: true }, visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
             { field: fields.apiKey, label: 'Partner API Key', formType: INPUT, placeholder: 'Enter Partner API Key', rules: { required: true }, visible: true, tip: 'API Key used for authentication (stored in secure storage)' },
-            { field: fields.partnerFederationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Fderation Name', rules: { required: true }, visible: true, tip: 'Name to uniquely identify a federation' }
+            { field: fields.partnerFederationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Federation Name', rules: { required: true }, visible: true, tip: 'Name to uniquely identify a federation' }
         ]
     }
 
@@ -107,21 +107,7 @@ class RegisterPartner extends React.Component {
     }
 
     getFormData = () => {
-        // const { data } = this.props
-        let data = {}
-        data[fields.federationId] = '58ufic22-hfj9-8ghv-85uj-tfk2vh32sks'
-        data[fields.region] = 'EU'
-        data[fields.countryCode] = 'ES'
-        data[fields.operatorName] = 'TFK-4455-jgl'
-        data[fields.mnc] = ['05']
-        data[fields.mcc] = 214
-        data[fields.partnerOperatorName] = 'SGT-1234-xyz'
-        data[fields.partnerFederationId] = '85fff032-des3-58g8-jf83-sgt38ds87b9'
-        data[fields.partnerFederationName] = 'access-singtel-zones'
-        data[fields.federationAddr] = 'https://api.rh.bridgealliance.com/v6'
-        data[fields.apiKey] = 'L3EDPsNiNY6nplzX6RrAI8BLjmlvHsCn1fYb87ml'
-        data[fields.partnerCountryCode] = 'SG'
-
+        const { data } = this.props
         let forms = this.elements()
 
         forms.push(
