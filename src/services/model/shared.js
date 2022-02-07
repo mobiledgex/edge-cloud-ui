@@ -91,8 +91,6 @@ export const showProgress = (data, isDetailView, orgInfo = null) => {
         let icon = null;
         switch (state) {
             case serverFields.READY:
-                redux_org.isDeveloper(orgInfo) ?
-                    icon = <IconButton disabled tooltip={'In Progress'}><Icon color={ICON_COLOR} size={16}>check</Icon></IconButton> :
                     icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon color={ICON_COLOR} size={16}>check</Icon></IconButton>
                 break;
             case serverFields.CREATE_REQUESTED:
