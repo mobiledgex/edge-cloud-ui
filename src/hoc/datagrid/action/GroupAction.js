@@ -37,6 +37,8 @@ const icons = (action) => {
         case ICON_REFRESH:
             icon = 'refresh'
             break;
+        default:
+            icon = action
 
     }
     return icon ? <Icon outlined={true} color='white'>{icon}</Icon> : undefined
