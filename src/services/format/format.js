@@ -29,7 +29,9 @@ import { customize as clusterInstUsage } from '../modules/clusterInstUsage/custo
 import { customize as gpuDriver } from '../modules/gpudriver/custom';
 import { customize as alertPolicy } from '../modules/alertPolicy/custom';
 import { customize as network } from '../modules/network/custom';
-
+import { customize as federation } from '../modules/federation/custom';
+import { customize as selfZone } from '../modules/zones/custom';
+import { customize as partnerZones } from '../modules/partnerZones/custom'
 import { formatShowData } from './show';
 import { formatChargifyData } from './chargify';
 import { formatAlertData } from './alert';
@@ -152,6 +154,21 @@ export const formatData = (request, response, self = null) => {
             break;
         case endpoint.SHOW_NETWORKS:
             data = formatShowData(request, response, network)
+            break;
+        case endpoint.SHOW_FEDERATION:
+            data = formatShowData(request, response, federation)
+            break;
+        case endpoint.SHOW_FEDERATOR:
+            data = formatShowData(request, response, federation)
+            break;
+        case endpoint.SHOW_FEDERATOR_SELF_ZONE:
+            data = formatShowData(request, response, selfZone)
+            break;
+        case endpoint.SHOW_FEDERATOR_PARTNER_ZONE:
+            data = formatShowData(request, response, partnerZones)
+            break;
+        case endpoint.SHOW_FEDERATION_SELF_ZONE:
+            data = formatShowData(request, response, selfZone)
             break;
         default:
             data = response && response.data ? response.data : [];

@@ -1,11 +1,16 @@
 import { perpetual } from "."
+import { v1 as uuidv1 } from 'uuid';
+
+export const uniqueId = ()=>{
+    return uuidv1()
+}
 
 export const isPathOrg = (self)=>{
     return self.props.history.location.pathname.includes(perpetual.PAGE_ORGANIZATIONS.toLowerCase())
 }
 
 export const tokenRequired = ()=>{
-    const list = ['localhost', 'kubernetes.docker.internal']
+    const list = ['localhost', 'kubernetes.docker.internal', '192.168.0.100']
     return list.includes(window.location.hostname)
 }
 

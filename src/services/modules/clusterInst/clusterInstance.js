@@ -31,8 +31,8 @@ export const keys = () => ([
     { field: fields.reservable, serverField: 'reservable', label: 'Reservable', roles: [perpetual.ADMIN_MANAGER], format: true },
     { field: fields.reservedBy, serverField: 'reserved_by', label: 'Reserved By', roles: [perpetual.ADMIN_MANAGER] },
     { field: fields.resources, serverField: 'resources', label: 'Resources', dataType: perpetual.TYPE_JSON },
-    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } }
+    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
+    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } }
 ])
 
 export const multiDataRequest = (keys, mcRequestList, specific) => {

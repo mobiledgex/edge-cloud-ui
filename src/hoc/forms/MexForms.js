@@ -1,6 +1,5 @@
 import React from 'react'
 import cloneDeep from 'lodash/cloneDeep';
-import uuid from 'uuid';
 import MexSelect from './MexSelect';
 import MexMultiSelect from './MexMultiSelect'
 import MexInput from './MexInput';
@@ -26,6 +25,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddToPhotosOutlinedIcon from '@material-ui/icons/AddToPhotosOutlined';
 import { useSelector } from 'react-redux';
 import { redux_org } from '../../helper/reduxData';
+import { uniqueId } from '../../helper/constant/shared';
 import './style.css'
 
 export const MAIN_HEADER = 'MainHeader'
@@ -63,7 +63,6 @@ export const formattedData = (forms) => {
                         data[form.uuid][subForm.field] = subForm.value;
                     }
                 }
-
             }
             else {
                 data[form.field] = form.value;
@@ -77,7 +76,6 @@ const MexForms = (props) => {
     let forms = props.forms
     const [error, setError] = React.useState(undefined)
     const orgInfo = useSelector(state => state.organizationInfo.data)
-
     const getIcon = (id) => {
         switch (id) {
             case 'delete':
@@ -123,11 +121,11 @@ const MexForms = (props) => {
 
     const errorBanner = (form) => {
         setError(form.error)
-            let element = document.getElementById(form.field)
-            if (element) {
-                element.style.scrollMargin = '10px';
-                element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-            }
+        let element = document.getElementById(form.field)
+        if (element) {
+            element.style.scrollMargin = '10px';
+            element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+        }
     }
 
     const validateRules = (form, valid) => {
@@ -273,7 +271,7 @@ const MexForms = (props) => {
         form.id = { id: index }
         let subForms = form.forms
         return (
-            <React.Fragment key={uuid() + '' + index}>
+            <React.Fragment key={uniqueId() + '' + index}>
                 <Grid.Row className={'formHeader-' + index} columns={2} style={{ height: 40 }}>
                     <Grid.Column width={15}>
                         <h3 style={{ color: "white", display: 'inline' }}>{form.label}
@@ -387,7 +385,7 @@ const MexForms = (props) => {
         }
         return (
             form.field ?
-                <Grid.Row columns={3} key={uuid() + '' + index} className={'formRow-' + index}>
+                <Grid.Row columns={3} key={uniqueId() + '' + index} className={'formRow-' + index}>
                     <Grid.Column width={4} className='detail_item'>
                         {form.labelIcon ?
                             <IconButton disabled={true}>{form.labelIcon}<sup style={{ color: requiredColor }}>{required ? ' *' : ''}</sup></IconButton> :

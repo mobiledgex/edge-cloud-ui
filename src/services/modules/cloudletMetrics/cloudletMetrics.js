@@ -30,8 +30,8 @@ export const cloudletMetricsListKeys = [
     { field: fields.cloudletLocation, label: 'Location', visible: false },
     { field: fields.resourceQuotas, label: 'Resource Quotas', visible: false },
     { field: 'cpu', label: 'CPU', resourceLabel: 'vCPUs', format: true, sortable: false, visible: true },
-    { field: 'disk', label: 'Disk', resourceLabel: 'Disk', format: true, sortable: false, visible: true },
-    { field: 'memory', label: 'Memory', resourceLabel: 'RAM', format: true, sortable: false, visible: true }
+    { field: 'disk', label: 'Disk', resourceLabel: 'Disk', format: true, sortable: false, unit: UNIT_GB, visible: true },
+    { field: 'memory', label: 'Memory', resourceLabel: 'RAM', format: true, sortable: false, unit: UNIT_MB, visible: true }
 ]
 
 export const utilizationMetricType = [

@@ -8,6 +8,7 @@ import {copyData} from '../../utils/file_util'
 
 import { IconButton, Tooltip } from '@material-ui/core';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
+import { Icon } from '../mexui';
 
 SyntaxHighlighter.registerLanguage('yaml', yaml);
 SyntaxHighlighter.registerLanguage('json', json);
@@ -20,15 +21,15 @@ export const syntaxHighLighter = (language, data) => (
 )
 
 export const codeHighLighter = (data) => (
-    <div style={{ backgroundColor: '#2B2B2B', borderRadius: 5, position: 'relative', color:'#E8E8E8' }}>
+    <div style={{ width: '100%', backgroundColor: '#2B2B2B', borderRadius: 1, position: 'relative', color: '#E8E8E8' }}>
         <div style={{ overflowY: 'auto', maxHeight: 200 }}>
-            <div style={{ width: '93%', padding:12 }}>
+            <div style={{ width: '93%', padding: 12 }}>
                 <code style={{ wordBreak: 'break-all' }}>{data}</code>
             </div>
         </div>
-        <div style={{ position: 'absolute', right: 7, top: 1 }}>
+        <div style={{ position: 'absolute', right: 7, top: 5 }}>
             <Tooltip title={'copy'} aria-label="copy">
-                <IconButton onClick={(e) => copyData(data)}><FileCopyOutlinedIcon fontSize='small' /></IconButton>
+                <div style={{ cursor: 'pointer' }} onClick={(e) => copyData(data)}><Icon outlined={true} size={15}>file_copy</Icon></div>
             </Tooltip>
         </div>
     </div>

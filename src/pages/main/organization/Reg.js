@@ -158,9 +158,9 @@ class OrganizationReg extends React.Component {
                     <Grid item xs={10}>
                         <Form>
                             <br />
-                            <MexDetailViewer detailData={this.organizationInfo} keys={keys()} compact={true}/>
+                            <MexDetailViewer detailData={this.organizationInfo} keys={keys()} compact={true} />
                             {additionalDetail(this.organizationInfo)}
-                            <br/><br/>
+                            <br /><br />
                             <Form.Group className='orgButton' style={{ width: '100%' }}>
                                 <Button className="newOrg3-4" onClick={(e) => { this.props.onClose() }} type='submit' positive style={{ width: '100%' }}>Return to Organizations</Button>
                             </Form.Group>
@@ -215,8 +215,6 @@ class OrganizationReg extends React.Component {
         this.props.onClose(false)
     }
 
-
-
     getOptions = (dataList, form) => {
         if (dataList && dataList.length > 0) {
             return dataList.map(data => {
@@ -225,7 +223,6 @@ class OrganizationReg extends React.Component {
             })
         }
     }
-
 
     resetFormValue = (form) => {
         let rules = form.rules
@@ -313,8 +310,6 @@ class OrganizationReg extends React.Component {
         this.setState({
             forms: forms
         })
-
-
     }
 
     componentDidMount() {
@@ -329,7 +324,6 @@ const mapStateToProps = (state) => {
         organizationInfo: state.organizationInfo.data
     }
 };
-
 
 const mapDispatchProps = (dispatch) => {
     return {

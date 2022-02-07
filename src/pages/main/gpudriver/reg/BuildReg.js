@@ -9,13 +9,13 @@ import { fields } from '../../../../services/model/format';
 //model
 import { Grid } from '@material-ui/core';
 import { redux_org } from '../../../../helper/reduxData';
-import uuid from 'uuid';
 import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/MexMessageMultiStream'
 import { ACTION_UPDATE, OS_LINUX } from '../../../../helper/constant/perpetual';
 import { buildTip, osList } from './shared';
 import { buildKey, removeBuild } from '../../../../services/modules/gpudriver';
 import { addbuild } from '../../../../services/modules/gpudriver/gpudriver';
 import { sendWSRequest } from '../../../../services/model/serverData';
+import { uniqueId } from '../../../../helper/constant/shared';
 
 class GPUDriverReg extends React.Component {
     constructor(props) {
@@ -73,7 +73,7 @@ class GPUDriverReg extends React.Component {
     ])
 
     buildMultiForm = (form) => {
-        return ({ uuid: uuid(), field: fields.build, formType: MULTI_FORM, forms: form ? form : this.buildForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: fields.build, formType: MULTI_FORM, forms: form ? form : this.buildForm(), width: 3, visible: true })
     }
 
     formKeys = () => {

@@ -142,9 +142,10 @@ class MuiVirtualizedTable extends React.PureComponent {
             >
                 {
                     column.type === ELE_ICON ? iconKeys.map((key, j) => {
+                        const isSVG = key.icon.includes('.svg')
                         return (
                             <React.Fragment key={j}>
-                                {rowData[key.field] ? <img src={`/assets/icons/${key.icon}`} width={24} style={{ marginTop: 5 }} /> : null}
+                                {rowData[key.field] ? isSVG ? <img src={`/assets/icons/${key.icon}`} width={24} style={{ marginTop: 5 }} /> : <Icon color={'#388E3C'} size={24} outlined={true}>{key.icon}</Icon> : null}
                             </React.Fragment>
                         )
                     }) :
@@ -199,7 +200,7 @@ class MuiVirtualizedTable extends React.PureComponent {
         return (
             <AutoSizer>
                 {({ height, width, rowData }) => {
-                    let reservedWidth = (selection ? 80 : 0) + (action ? 100 : 0) + (iconKeys && iconKeys.length > 0 ? 70 : 0)
+                    let reservedWidth = (selection ? 60 : 0) + (action ? 100 : 0) + (iconKeys && iconKeys.length > 0 ? 37 * iconKeys.length  : 0)
                     let columnWidth = (width - reservedWidth) / columnCount
                     return (
                         <Table
@@ -262,13 +263,13 @@ const getHeight = (props, table) => {
     let height = isMap ? 553 : 153
     height = tableHeight ? tableHeight : height
     height = iconKeys ? height + 40 : height
-    height = table && groupBy.length > 0 ? height + 50 : height
+    height = table && (groupBy && groupBy.length > 0) ? height + 50 : height
     return `calc(100vh - ${height}px)`
 }
 
 
 export default function MexTable(props) {
-    const { loading, groupBy, searchValue, dataList, keys, formatter, actionMenu, cellClick, selected, setSelected, selection, onActionClose, iconKeys, viewerEdit, sortBy } = props
+    const { loading, groupBy, searchValue, dataList, keys, formatter, actionMenu, cellClick, selected, setSelected, selection, onActionClose, iconKeys, viewerEdit, sortBy, style } = props
     const [itemList, setList] = React.useState([])
     const [groupList, setGroupList] = React.useState([])
     const [order, setOrder] = React.useState('asc')
@@ -345,11 +346,11 @@ export default function MexTable(props) {
     }, [dataList]);
 
     let columns = []
-    if (selection) { columns.push({ field: fields.checkbox, label: false, type: ELE_CHECKBOX, visible: true, width: 80, fixedWidth: true, clickable: true }) }
+    if (selection) { columns.push({ field: fields.checkbox, label: false, type: ELE_CHECKBOX, visible: true, width: 60, fixedWidth: true, clickable: true }) }
     let columnCount = 0
 
     if (iconKeys && iconKeys.length > 0) {
-        columns.push({ field: fields.listFilter, label: '', type: ELE_ICON, visible: true, width: 70, fixedWidth: true })
+        columns.push({ field: fields.listFilter, label: '', type: ELE_ICON, visible: true, width: 37 * iconKeys.length , fixedWidth: true })
     }
     columns = [...columns, ...keys.filter(key => {
         let valid = key.visible
@@ -366,7 +367,7 @@ export default function MexTable(props) {
 
     const onRowClick = (e) => {
         const { rowData, index } = e
-        cellClick(undefined, rowData)
+        cellClick && cellClick(undefined, rowData)
     }
 
     const onCellClick = (e, column, data) => {
@@ -388,7 +389,7 @@ export default function MexTable(props) {
             setSelected(newSelected);
         }
         else if (column.clickable) {
-            cellClick(column, data)
+            cellClick && cellClick(column, data)
         }
     }
 
@@ -421,7 +422,7 @@ export default function MexTable(props) {
             {
                 itemList.length === 0 && groupList.length === 0 ? <div style={{ height: getHeight(props, true) }}><NoData search={searchValue} loading={loading} style={{ width: '100%' }} /></div> :
                     itemList.length > 0 && (groupList.length === 0 || select !== undefined) ?
-                        <Paper id='table-container' style={{ height: `${getHeight(props, true)}` }}>
+                        <Paper id='table-container' style={style ? style : { height: `${getHeight(props, true)}` }}>
                             <VirtualizedTable
                                 rowCount={itemList.length}
                                 rowGetter={({ index }) => itemList[index]}
