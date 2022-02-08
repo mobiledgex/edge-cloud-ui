@@ -17,7 +17,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import MexOTPRegistration from '../otp/MexOTPRegistration';
 import { Link, useHistory } from 'react-router-dom';
 import { endpoint } from "../../../helper/constant";
-import { authSyncRequest } from "../../../services/service";
+import { authSyncRequest, responseValid, syncRequest } from "../../../services/service";
 
 
 
@@ -327,8 +327,9 @@ class RegistryUserForm extends React.Component {
     }
 
     render() {
-        const { totp, success } = this.state
+        const { totp, success, forms } = this.state
         const { onVerificationEmail } = this.props
+        console.log(forms)
         return (
             success ? <Success data={success} onVerificationEmail={onVerificationEmail} /> :
                 totp ? <MexOTPRegistration onComplete={this.onOTPComplete} data={totp} showDone={true} /> :
@@ -336,7 +337,7 @@ class RegistryUserForm extends React.Component {
                         <Grid.Row>
                             <span className='title'>Create New Account</span>
                         </Grid.Row>
-                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
+                        <MexForms forms={forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
                         <Grid.Row style={{ marginTop: 40, marginLeft: 25 }}>
                             <ReCAPTCHA
                                 sitekey={process.env.REACT_APP_CAPTCHA_V2_KEY}
@@ -357,13 +358,14 @@ class RegistryUserForm extends React.Component {
         let forms = this.forms()
         forms.push({ label: 'Sign Up', formType: BUTTON, onClick: this.onCreate, validate: true, style: { width: 320, marginLeft: 65, marginTop: 20, position: 'absolute', zIndex: 9999, backgroundColor: 'rgba(0, 85, 255, .25)', border: 'solid 1px rgba(128, 170, 255, .5) !important', color: 'white' } })
         this.setState({
-            forms: forms
+            forms
         })
     }
 
     publicConfig = async () => {
-        let mc = await authSyncRequest(this, { method: endpoint.PUBLIC_CONFIG })
-        if (mc && mc.response && mc.response.status === 200) {
+        let mc = await syncRequest(this, { method: endpoint.PUBLIC_CONFIG })
+        console.log(mc, 111)
+        if (responseValid(mc)) {
             this.passwordMinCrackTimeSec = mc.response.data.PasswordMinCrackTimeSec
             this.getFormData()
         }
