@@ -831,6 +831,9 @@ class AppReg extends Component {
                                         }
                                     }
                                 }
+
+                                requestData[fields.accessPorts] = this.removeDuplicatesPort(ports)
+                                requestData[fields.skipHCPorts] = skipHCPorts.length > 0 ? this.removeDuplicatesPort(skipHCPorts) : undefined
                                 requestData[fields.serverLessConfig] = data[fields.serverLessConfig]
                                 requestList.push(createApp(requestData))
                             })
@@ -851,6 +854,10 @@ class AppReg extends Component {
         }
     }
 
+    removeDuplicatesPort = (ports) => {
+        let arr = ports.split(',')
+        return [...new Set(arr)].toString()
+    }
 
     /*Required*/
     reloadForms = () => {
