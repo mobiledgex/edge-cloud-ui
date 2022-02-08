@@ -364,7 +364,6 @@ class RegistryUserForm extends React.Component {
 
     publicConfig = async () => {
         let mc = await syncRequest(this, { method: endpoint.PUBLIC_CONFIG })
-        console.log(mc, 111)
         if (responseValid(mc)) {
             this.passwordMinCrackTimeSec = mc.response.data.PasswordMinCrackTimeSec
             this.getFormData()
