@@ -79,6 +79,14 @@ class CloudletReg extends React.Component {
         }
     }
 
+    // load dynamic tooltip for environments variables
+    loadEnvTip = (data) => {
+        const { key, name, value, description } = data
+        if (description) {
+            return `${name ? 'Name' : ''}:</b> ${name ? name : ''}\n${description ? 'Description' : ''}</b> ${description ? description : ''}`
+        }
+    }
+
     fetchRegionDependentData = async (region, platformType) => {
         let requestList = []
         if (region) {
@@ -141,11 +149,14 @@ class CloudletReg extends React.Component {
                     else if (envForm.field === fields.value) {
                         envForm.value = value
                     }
+                    else if (envForm.formType === TIP) {
+                        envForm.tip = this.loadEnvTip(item)
+                    }
                     else {
                         envForm.visible = false
                     }
                 }
-                forms.splice(16 + count, 0, this.getEnvForm(envForms))
+                forms.splice(17 + count, 0, this.getEnvForm(envForms))
                 count++
             }
         })
@@ -291,31 +302,17 @@ class CloudletReg extends React.Component {
             for (let form of forms) {
                 if (form.uuid === parentForm.uuid) {
                     for (let childForm of form.forms) {
-                        if (childForm.field === fields.key) {
-                            this.envTip(forms, parentForm, keyData) // setting the dynamic tooltip for environments variables
-                        } 
                         if (childForm.field === fields.value) {
                             childForm.value = keyData.value
-                            break;
+                        }
+                        else if (childForm.formType === TIP) {
+                            childForm.tip = this.loadEnvTip(keyData)
                         }
                     }
                     break;
                 }
             }
             this.updateState({ forms })
-        }
-    }
-
-    envTip = (forms, parentForm, keyData) => {
-        for (let form of forms) {
-            if (form.uuid === parentForm.uuid) {
-                for (let childForm of form.forms) {
-                    if (childForm.formType === TIP) {
-                        childForm.tip = `${keyData.key}:\n${keyData.name ? 'Name' : ''}:</b> ${keyData.name ? keyData.name : ''}\n${keyData.description ? 'Description' : ''}</b> ${keyData.description ? keyData.description : ''}\n${keyData.value ? 'Value:' : ''}</b>${keyData.value ? keyData.value : ''} `
-                        break;
-                    }
-                }
-            }
         }
     }
 
@@ -660,7 +657,7 @@ class CloudletReg extends React.Component {
         }
     }
 
-    
+
 
     loadDefaultData = async (forms, data) => {
         if (data) {
@@ -682,9 +679,8 @@ class CloudletReg extends React.Component {
                     if (mc && mc.response && mc.response.data) {
                         let responseData = mc.response.data
                         let request = mc.request;
-                        if(request.method === endpoint.SHOW_ORG)
-                        {
-                            this.operatorList = _sort(responseData.map(data=>(data[fields.organizationName])))
+                        if (request.method === endpoint.SHOW_ORG) {
+                            this.operatorList = _sort(responseData.map(data => (data[fields.organizationName])))
                         }
                         else if (request.method === endpoint.SHOW_TRUST_POLICY) {
                             this.trustPolicyList = responseData
@@ -823,8 +819,8 @@ class CloudletReg extends React.Component {
             { field: fields.envVars, label: 'Environment Variable', formType: HEADER, forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getEnvForm }], visible: true, tip: 'Single Key-Value pair of env var to be passed to CRM' },
             { field: fields.resourceQuotas, label: 'Resource Quota', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Resource Quota', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getResoureQuotaForm }], visible: true, update: { id: ['39', '39.1', '39.2', '39.3'] }, tip: 'Alert Threshold:</b> Generate alert when more than threshold percentage of resource is used\nName:</b> Resource name on which to set quota\nValue:</b> Quota value of the resource' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
-            { field: fields.trustPolicyName, label: 'Trust Policy', formType: SELECT, placeholder: 'Select Trust Policy', visible: true, update: { id: ['37'] }, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.operatorName }], advance: false, tip: 'Optional Trust Policy' },
-            { field: fields.gpuConfig, label: 'GPU Driver', formType: SELECT, placeholder: 'Select GPU Driver', visible: true, update: { id: ['45', '45.1', '45.1.1', '45.1.2'] }, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.operatorName, value: 'MobiledgeX' }], advance: false, tip: 'Name of the driver' },
+            { field: fields.trustPolicyName, label: 'Trust Policy', formType: SELECT, placeholder: 'Select Trust Policy', visible: true, update: { id: ['37'] }, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.operatorName }], advance: false, tip: 'Allow you to control the outbound connections your instances are permitted to make' },
+            { field: fields.gpuConfig, label: 'GPU Driver', formType: SELECT, placeholder: 'Select GPU Driver', visible: true, update: { id: ['45', '45.1', '45.1.1', '45.1.2'] }, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.operatorName, value: 'MobiledgeX' }], advance: false, tip: 'GPU Configuration associated with cloudlet' },
             { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version', advance: false },
             { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },
             { field: fields.maintenanceState, label: 'Maintenance State', formType: SELECT, placeholder: 'Select Maintenance State', rules: { required: false }, visible: this.isUpdate, update: { id: ['30'] }, tip: 'Maintenance allows for planned downtimes of Cloudlets. These states involve message exchanges between the Controller, the AutoProv service, and the CRM. Certain states are only set by certain actors', advance: false },
@@ -876,9 +872,8 @@ class CloudletReg extends React.Component {
         else {
             let organizationList = await showAuthSyncRequest(self, showOrganizations(self, { type: perpetual.OPERATOR }))
             this.operatorList = _sort(organizationList.map(org => (org[fields.organizationName])))
-            if(redux_org.isOperator(this))
-            {
-                this.allianceList = this.operatorList.filter(org=>(org !== redux_org.nonAdminOrg(this)))
+            if (redux_org.isOperator(this)) {
+                this.allianceList = this.operatorList.filter(org => (org !== redux_org.nonAdminOrg(this)))
             }
         }
 

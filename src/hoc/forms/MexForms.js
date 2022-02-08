@@ -338,7 +338,7 @@ const MexForms = (props) => {
                                             <div key={i} style={{ display: 'flex', alignItems: 'center', textAlign: 'center', verticalAlign: 'middle', height: 55 }}>{loadButton(form, i)}</div> :
                                             form.formType === TIP && form.tip ?
                                                 <div key={i} style={{ display: 'flex', height: 55, paddingTop: '1.7rem' }}>{showTip(form)}</div> :
-                                            null
+                                                null
                         }
                     </Grid.Column> : null
             )
