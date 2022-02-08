@@ -45,6 +45,7 @@ export const SELECT_RADIO_TREE = 'SelectRadioTree'
 export const SELECT_RADIO_TREE_GROUP = 'SelectRadioTreeGroup'
 export const DATE_PICKER = 'DatePicker'
 export const TIME_COUNTER = 'TimeCounter'
+export const TIP = 'Tip'
 
 /***
 * Map values from form to field
@@ -335,6 +336,8 @@ const MexForms = (props) => {
                                         <div style={{ marginTop: 5 }}><MexSwitch horizontal={true} form={form} onChange={onValueSelect} /></div> :
                                         form.formType === ICON_BUTTON || form.formType === BUTTON ?
                                             <div key={i} style={{ display: 'flex', alignItems: 'center', textAlign: 'center', verticalAlign: 'middle', height: 55 }}>{loadButton(form, i)}</div> :
+                                            form.formType === TIP && form.tip ?
+                                                <div key={i} style={{ display: 'flex', height: 55, paddingTop: '1.7rem' }}>{showTip(form)}</div> :
                                             null
                         }
                     </Grid.Column> : null
