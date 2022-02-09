@@ -15,12 +15,10 @@ export const pages = [
     { label: 'Cloudlet Pools', icon: 'cloud_circle', id: perpetual.PAGE_POOL_ACCESS, path: 'pool-access', roles: [perpetual.DEVELOPER_MANAGER], visible: true },
     {
         label: 'Federation', icon: 'star_rate_outlined ', id: perpetual.PAGE_FEDERATION, sub: true, visible: true, roles: [perpetual.ADMIN, perpetual.OPERATOR], options: [
-            { label: 'Host', type:'header', visible:true },
-            { label: 'Federation', icon: 'federation_out.svg', id: perpetual.PAGE_OUTBOUND_FEDERATION, path: 'host-federation', visible: true },
-            { label: 'Zones', icon: 'pin_drop', id: perpetual.PAGE_HOST_ZONES, path: 'host-zones', visible: true },
-            { label: 'Guest', type:'header', visible:true },
-            { label: 'Federation', icon: 'federation_in.svg', id: perpetual.PAGE_INBOUND_FEDERATION, path: 'guest-federation', visible: true },
-            { label: 'Zones', icon: 'pin_drop', id: perpetual.PAGE_GUEST_ZONES, path: 'guest-zones', visible: true },
+            { label: 'Host Federation', icon: 'federation_out.svg', id: perpetual.PAGE_OUTBOUND_FEDERATION, path: 'host-federation', visible: true },
+            { label: 'Host Zones', icon: 'pin_drop', id: perpetual.PAGE_HOST_ZONES, path: 'host-zones', visible: true },
+            { label: 'Guest Federation', icon: 'federation_in.svg', id: perpetual.PAGE_INBOUND_FEDERATION, path: 'guest-federation', visible: true },
+            { label: 'Guest Zones', icon: 'pin_drop', id: perpetual.PAGE_GUEST_ZONES, path: 'guest-zones', visible: true },
         ]
     },
     { label: 'Flavors', icon: 'free_breakfast', id: perpetual.PAGE_FLAVORS, path: 'flavors', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
