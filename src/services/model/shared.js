@@ -5,8 +5,7 @@ import { perpetual } from '../../helper/constant';
 import { ICON_COLOR } from '../../helper/constant/colors';
 import { serverFields } from '../../helper/formatter';
 import { IconButton, Icon } from '../../hoc/mexui';
-import {fields} from './format';
-import { redux_org } from '../../helper/reduxData';
+import { fields } from './format';
 
 export const additionalDetail = (data) => {
     return (
@@ -99,14 +98,14 @@ export const showProgress = (data, isDetailView, orgInfo = null) => {
             case serverFields.UPDATING:
             case serverFields.CREATING_DEPENDENCIES:
             case serverFields.CRM_INITOK:
-                redux_org.isDeveloper(orgInfo) ?
+                orgInfo && orgInfo[fields.type] && orgInfo[fields.type] === perpetual.DEVELOPER ?
                     icon = <IconButton disabled tooltip={'In Progress'}><CircularProgress size={14} style={{ color: ICON_COLOR }} /></IconButton> :
                     icon = <IconButton tooltip={'View Progress'}><CircularProgress size={14} style={{ color: ICON_COLOR }} /></IconButton>
                 break;
             case serverFields.DELETE_REQUESTED:
             case serverFields.DELETING:
             case serverFields.DELETE_PREPARE:
-                redux_org.isDeveloper(orgInfo) ?
+                orgInfo && orgInfo[fields.type] && orgInfo[fields.type] === perpetual.DEVELOPER ?
                     icon = <IconButton disabled tooltip={'In Progress'}><CircularProgress size={14} style={{ color: 'red' }} /></IconButton> :
                     icon = <IconButton tooltip={'View Progress'}><CircularProgress size={14} style={{ color: 'red' }} /></IconButton>
                 break;
