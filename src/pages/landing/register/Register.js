@@ -329,7 +329,6 @@ class RegistryUserForm extends React.Component {
     render() {
         const { totp, success, forms } = this.state
         const { onVerificationEmail } = this.props
-        console.log(forms)
         return (
             success ? <Success data={success} onVerificationEmail={onVerificationEmail} /> :
                 totp ? <MexOTPRegistration onComplete={this.onOTPComplete} data={totp} showDone={true} /> :
