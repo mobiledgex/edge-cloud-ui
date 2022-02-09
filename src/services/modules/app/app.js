@@ -85,11 +85,15 @@ export const getKey = (data, isCreate) => {
         app.default_flavor = data[fields.flavorName] ? { name: data[fields.flavorName] } : undefined
         app.auth_public_key = data[fields.authPublicKey]
         app.allow_serverless = data[fields.allowServerless]
-        app.serverless_config = data[fields.allowServerless] ? {
-            vcpus: data[fields.serverlessVcpu] ? parseInt(data[fields.serverlessVcpu]) : undefined,
-            ram: data[fields.serverlessRam] ? parseInt(data[fields.serverlessRam]) : undefined,
-            min_replicas: data[fields.serverlessMinReplicas] ? parseInt(data[fields.serverlessMinReplicas]) : undefined
-        } : undefined
+
+        if (data[fields.allowServerless] || data[fields.serverlessRam] || data[fields.serverlessVcpu] || data[fields.serverlessMinReplicas]) {
+            app.serverless_config = {
+                vcpus: data[fields.serverlessVcpu] ? parseInt(data[fields.serverlessVcpu]) : undefined,
+                ram: data[fields.serverlessRam] ? parseInt(data[fields.serverlessRam]) : undefined,
+                min_replicas: data[fields.serverlessMinReplicas] ? parseInt(data[fields.serverlessMinReplicas]) : undefined
+            }
+        }
+
         if (data[fields.officialFQDN]) {
             app.official_fqdn = data[fields.officialFQDN]
         }
