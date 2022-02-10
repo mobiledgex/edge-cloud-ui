@@ -5,7 +5,7 @@ import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 import { fields } from '../../../services/model/format';
-import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst, requestAppInstLatency } from '../../../services/modules/appInst';
+import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst } from '../../../services/modules/appInst';
 import { showApps } from '../../../services/modules/app';
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import AppInstReg from './Reg';
@@ -17,7 +17,6 @@ import * as serverData from '../../../services/model/serverData'
 import { idFormatter, labelFormatter, serverFields, uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
 import { developerRoles } from '../../../constant';
-import { DEPLOYMENT_TYPE_VM } from '../../../helper/constant/perpetual';
 import TerminalViewer from '../../../hoc/terminal/TerminalViewer';
 
 class AppInstList extends React.Component {
@@ -57,7 +56,7 @@ class AppInstList extends React.Component {
 
     }
 
-    onTerminalVisible = (data) => {
+    onTerminalVisible = (type, action ,data) => {
         let visible = false;
         if (data) {
             if (data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_VM) {
@@ -97,11 +96,15 @@ class AppInstList extends React.Component {
         return visible
     }
 
-    onUpgradeVisible = (data) => {
+    onUpgradeVisible = (type, action ,data) => {
         return data[fields.updateAvailable]
     }
 
-    onUpdateVisible = (data) => {
+    onRefreshAction = (type, action, data)=>{
+        return data[fields.deployment] !== perpetual.DEPLOYMENT_TYPE_VM && !data[fields.updateAvailable]
+    }
+
+    onUpdateVisible = (type, action ,data) => {
         return data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES || data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_HELM
     }
 
@@ -140,17 +143,13 @@ class AppInstList extends React.Component {
         return 'Note: This will restart all the containers'
     }
 
-    onRefreshAction = (type, action, data)=>{
-        return data[fields.deployment] !== perpetual.DEPLOYMENT_TYPE_VM
-    }
-
     actionMenu = () => {
         return [
-            { id: perpetual.ACTION_UPDATE, label: 'Update', visible: this.onUpdateVisible, onClick: this.onAdd, type: 'Edit' },
-            { id: perpetual.ACTION_UPGRADE, label: 'Upgrade', visible: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, type: 'Edit', warning: 'upgrade' },
+            { id: perpetual.ACTION_UPDATE, label: 'Update', visibility: this.onUpdateVisible, onClick: this.onAdd, type: 'Edit' },
+            { id: perpetual.ACTION_UPGRADE, label: 'Upgrade', visibility: this.onUpgradeVisible, onClick: refreshAppInst, multiStepperHeader: this.multiStepperHeader, type: 'Edit', warning: 'upgrade' },
             { id: perpetual.ACTION_REFRESH, label: 'Refresh', onClick: refreshAppInst, visibility: this.onRefreshAction, multiStepperHeader: this.multiStepperHeader, warning: 'refresh', dialogNote: this.refreshNote },
             { id: perpetual.ACTION_DELETE, label: 'Delete', onClick: deleteAppInst, ws: true, dialogMessage: this.getDeleteActionMessage, multiStepperHeader: this.multiStepperHeader, type: 'Edit', dialogNote: this.getDialogNote },
-            { id: perpetual.ACTION_TERMINAL, label: 'Terminal', visible: this.onTerminalVisible, onClick: this.onTerminal },
+            { id: perpetual.ACTION_TERMINAL, label: 'Terminal', visibility: this.onTerminalVisible, onClick: this.onTerminal },
             { id: perpetual.ACTION_POWER_ON, label: 'Power On', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power on' },
             { id: perpetual.ACTION_POWER_OFF, label: 'Power Off', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'power off' },
             { id: perpetual.ACTION_REBOOT, label: 'Reboot', visibility: this.onPrePowerState, onClick: this.onPowerState, warning: 'reboot' },
