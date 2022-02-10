@@ -101,13 +101,9 @@ export const getKey = (data, isCreate) => {
             cloudlet.infra_api_access = idFormatter.infraApiAccess(data[fields.infraApiAccess])
         }
         let accessvars = {}
-        if (data[fields.openRCData]) {
-            accessvars.OPENRC_DATA = data[fields.openRCData]
-        }
-        if (data[fields.caCertdata]) {
-            accessvars.CACERT_DATA = data[fields.caCertdata]
-        }
-        if (data[fields.openRCData]) {
+        if (data[fields.openRCData] || data[fields.caCertdata]) {
+            data[fields.openRCData] ? accessvars.OPENRC_DATA = data[fields.openRCData] : null
+            data[fields.caCertdata] ? accessvars.CACERT_DATA = data[fields.caCertdata] : null
             cloudlet.access_vars = accessvars
         }
         if (data[fields.containerVersion]) {
