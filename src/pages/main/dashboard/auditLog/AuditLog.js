@@ -13,7 +13,7 @@ class AuditLog extends React.Component {
 
     render() {
         return (
-            <Card style={{width:'inherit'}}>
+            <Card id='mex-chart-heatmap'>
                 <div style={{ paddingLeft: 10 }}>
                     <Header1 size={14}>Audit Logs</Header1>
                 </div>

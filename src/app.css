@@ -2,19 +2,7 @@ html {
     height: 100%;
 }
 body {
-    min-height: 100%;
-    background: #202125 !important;
-    color: rgba(255,255,255,.5) !important;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
-
-html {
     height: 100%;
-}
-body {
-    min-height: 100%;
     background: #202125 !important;
     color: rgba(255,255,255,.5) !important;
     margin: 0;
@@ -183,4 +171,18 @@ h6 {
 
 .round_panel .step.active, .round_panel .step.active:after {
     background-color: #470 !important;
+}
+
+.mex-card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #2c2d34;
+    background-clip: border-box;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
 }

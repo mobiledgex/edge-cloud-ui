@@ -4,7 +4,11 @@
             "name": "EU"
         },
         "cloudlet": {
-            "name": "Demo4"
+            "name": "Demo4",
+            "cpu" : "100",
+            "disk" : "100",
+            "mem" : "100",
+            "cpu quota": "200"
         },
         "operator": {
             "name": "TDG"
