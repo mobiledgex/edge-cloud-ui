@@ -2,14 +2,14 @@ import React from 'react';
 import * as d3 from 'd3';
 import { uniqueId } from '../../../../helper/constant/shared';
 
-const CON_WIDTH = 270
+const CON_WIDTH = 170
 
 /***********
 **w:width;**
 **h:height**
 **s:space***
 **t:vertex**/
-const b = { w: 170, h: 20, s: 6, t: 12 };
+const b = { w: 100, h: 20, s: 6, t: 12 };
 
 const breadcrumbPoints = (d, i, j) => {
   var w = b.w + i * b.t
@@ -45,7 +45,7 @@ export const updateElements = (sequence, onSwap) => {
     .attr("x", (b.w + b.t) / 2)
     .attr("y", b.h / 2)
     .attr("dy", "0.35em")
-    .attr("dx", "3em")
+    .attr("dx", "1.5em")
     .style("font-size", "12px")
     .style("font-weight", "700")
     .attr("text-anchor", "middle")
@@ -97,7 +97,7 @@ class Sequence extends React.Component {
       .append('svg')
       .attr("id", "trail")
       .attr("width", this.width)
-      .attr("height", (b.h + 15) * sequence.length)
+      .attr("height", 36 * sequence.length)
       .attr('align', 'center')
   }
 

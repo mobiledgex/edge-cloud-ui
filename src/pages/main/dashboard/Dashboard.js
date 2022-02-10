@@ -5,7 +5,7 @@ import { showAppInsts } from '../../../services/modules/appInst'
 import { showCloudlets } from '../../../services/modules/cloudlet'
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo'
 import { showClusterInsts } from '../../../services/modules/clusterInst'
-import { multiAuthSyncRequest } from '../../../services/service'
+import { multiAuthSyncRequest, responseValid } from '../../../services/service'
 import DashbordWorker from './services/dashboard.worker.js'
 // import AuditLog from './auditLog/AuditLog'
 import Control from './control/Control'
@@ -17,16 +17,18 @@ class Dashboard extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            chartData:undefined
         }
         this.worker = new DashbordWorker()
     }
 
     render() {
+        const {chartData} = this.state
         return (
             <div style={{height:'calc(100vh - 55px)', overflowY: 'auto', overflowX: 'hidden', padding:7}}>
                 <Grid container columns={{ xs: 4, sm: 8, md: 12 }} spacing={1}>
                     <Grid item xs={7}>
-                        <Control />
+                        <Control chartData={chartData}/>
                     </Grid>
                     <Grid item xs={5}>
                         <Grid container style={{ marginBottom: 3 }} spacing={1}>
@@ -50,16 +52,20 @@ class Dashboard extends React.Component {
     fetchData = async () => {
         let requestList = [];
         [showCloudlets, showCloudletInfoData, showClusterInsts, showAppInsts].forEach(requestType => {
-            let request = requestType(this, Object.assign({}, { region: 'EU' }))
+            let request = requestType(this, Object.assign({}, { region: 'US' }))
             requestList.push(request)
         })
         if (requestList.length > 0) {
             let mcList = await multiAuthSyncRequest(this, requestList, false)
             let response = await processWorker(this.worker, {
-                region:'EU',
+                region:'US',
                 sequence,
                 rawList : mcList
             })
+            if(response.status === 200)
+            {
+                this.setState({chartData:response.data})
+            }
         }
     }
 
