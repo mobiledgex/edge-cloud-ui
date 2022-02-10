@@ -228,11 +228,7 @@ const Sunburst = (props) => {
 
     return (
         <React.Fragment>
-<<<<<<< HEAD
-            <div style={{ width: 'inherit', marginTop: 10, marginBottom:-25 }} align='center'>
-=======
             <div style={{ marginTop: 10, marginBottom:-25 }} align='center'>
->>>>>>> be4a43a67aa983aaf4e2da3d225141ec2ce1b3d4
                 <SequenceHorizontal key={uniqueId()} dataset={dataFlow} colors={color} />
             </div>
             <div className='sunburst' style={{ padding: '0px 20px 20px 20px', borderRadius: 5 }} ref={sbRef}/>
