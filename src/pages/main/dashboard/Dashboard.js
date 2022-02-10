@@ -5,41 +5,43 @@ import { showAppInsts } from '../../../services/modules/appInst'
 import { showCloudlets } from '../../../services/modules/cloudlet'
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo'
 import { showClusterInsts } from '../../../services/modules/clusterInst'
-import { multiAuthSyncRequest, responseValid } from '../../../services/service'
+import { multiAuthSyncRequest } from '../../../services/service'
 import DashbordWorker from './services/dashboard.worker.js'
 // import AuditLog from './auditLog/AuditLog'
 import Control from './control/Control'
 import Total from './total/Total'
 import { processWorker } from '../../../services/worker/interceptor'
 import { sequence } from './control/format'
+import { fields } from '../../../services'
 
 class Dashboard extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            chartData:undefined
+            chartData:undefined,
+            total:undefined
         }
         this.worker = new DashbordWorker()
     }
 
     render() {
-        const {chartData} = this.state
+        const {chartData, total} = this.state
         return (
             <div style={{height:'calc(100vh - 55px)', overflowY: 'auto', overflowX: 'hidden', padding:7}}>
                 <Grid container columns={{ xs: 4, sm: 8, md: 12 }} spacing={1}>
                     <Grid item xs={7}>
-                        <Control chartData={chartData}/>
+                        <Control chartData={chartData} />
                     </Grid>
                     <Grid item xs={5}>
                         <Grid container style={{ marginBottom: 3 }} spacing={1}>
                             <Grid item xs={4}>
-                                <Total label='Cloudlet' />
+                                {total ? <Total label='Cloudlet' data={total[fields.cloudletName]} /> : null}
                             </Grid>
                             <Grid item xs={4}>
-                                <Total label='Cluster Instances' />
+                                {total ? <Total label='Cluster Instances' data={total[fields.clusterName]} /> : null}
                             </Grid>
                             <Grid item xs={4}>
-                                <Total label='App Instances' />
+                                {total ? <Total label='App Instances' data={total[fields.appName]} /> : null}
                             </Grid>
                         </Grid>
                         {/* <AuditLog /> */}
@@ -64,7 +66,7 @@ class Dashboard extends React.Component {
             })
             if(response.status === 200)
             {
-                this.setState({chartData:response.data})
+                this.setState({chartData:response.data, total:response.total})
             }
         }
     }

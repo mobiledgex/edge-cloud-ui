@@ -34,7 +34,6 @@ class Control extends React.Component {
     render() {
         const { toggle, dataset } = this.state
         const { chartData, classes, height } = this.props
-        console.log(chartData, dataset)
         return (
             chartData ? <div id='mex-sunburst-container' className='mex-card'>
                 <div style={{ display: 'flex' }}>
@@ -49,7 +48,6 @@ class Control extends React.Component {
 
     componentDidUpdate() {
 
-        console.log(this.props.height)
     }
 
     componentDidMount() {

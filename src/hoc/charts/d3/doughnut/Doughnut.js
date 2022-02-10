@@ -14,7 +14,7 @@ class Doughnut extends React.Component {
     }
 
     draw = () => {
-        const {size} = this.props
+        const {size, data} = this.props
         const width = size ? size : 40
         const height = width
 
@@ -30,7 +30,7 @@ class Doughnut extends React.Component {
             .attr("transform", `translate(${width / 2},${height / 2})`);
 
         // Create dummy data
-        const data = { a: 10, b: 50, c: 50 }
+        const values = data
 
         // set the color scale
         const color = d3.scaleOrdinal()
@@ -40,7 +40,7 @@ class Doughnut extends React.Component {
         const pie = d3.pie()
             .value(d => d[1])
 
-        const data_ready = pie(Object.entries(data))
+        const data_ready = pie(Object.entries(values))
 
         // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
         svg
