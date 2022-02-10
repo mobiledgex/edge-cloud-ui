@@ -38,7 +38,7 @@ export const keys = () => ([
     { field: fields.alertPolicies, serverField: 'alert_policies', label: 'Alert Policies', dataType: perpetual.TYPE_ARRAY },
     { field: fields.autoPolicyName, serverField: 'auto_prov_policy', label: 'Auto Provisioning Policy' },
     { field: fields.qosSessionProfile, serverField: 'qos_session_profile', label: 'QOS Network Prioritization' },
-    { field: fields.qosSessionDuration, serverField: 'qos_session_duration', label: 'QOS Session Duration', format:true },
+    { field: fields.qosSessionDuration, serverField: 'qos_session_duration', label: 'QOS Session Duration', format: true },
     { field: fields.trusted, serverField: 'trusted', label: 'Trusted', visible: false, sortable: true, format: true },
     { field: fields.allowServerless, serverField: 'allow_serverless', label: 'Allow Serverless', format: true },
     { field: fields.configs, serverField: 'configs', label: 'Configs', keys: configs() },
@@ -47,8 +47,8 @@ export const keys = () => ([
     { field: fields.requiredOutboundConnections, serverField: 'required_outbound_connections', label: 'Required Outbound Connections', visible: false, dataType: perpetual.TYPE_JSON },
     { field: fields.templateDelimiter, serverField: 'template_delimiter', label: 'Template Delimiter' },
     { field: fields.revision, serverField: 'revision', label: 'Revision' },
-    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
-    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } }
+    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
+    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } }
 ])
 
 export const getKey = (data, isCreate) => {
@@ -85,11 +85,15 @@ export const getKey = (data, isCreate) => {
         app.default_flavor = data[fields.flavorName] ? { name: data[fields.flavorName] } : undefined
         app.auth_public_key = data[fields.authPublicKey]
         app.allow_serverless = data[fields.allowServerless]
-        app.serverless_config = data[fields.allowServerless] ? {
-            vcpus: data[fields.serverlessVcpu] ? parseInt(data[fields.serverlessVcpu]) : undefined,
-            ram: data[fields.serverlessRam] ? parseInt(data[fields.serverlessRam]) : undefined,
-            min_replicas: data[fields.serverlessMinReplicas] ? parseInt(data[fields.serverlessMinReplicas]) : undefined
-        } : undefined
+
+        if (data[fields.allowServerless] || data[fields.serverlessRam] || data[fields.serverlessVcpu] || data[fields.serverlessMinReplicas]) {
+            app.serverless_config = {
+                vcpus: data[fields.serverlessVcpu] ? parseInt(data[fields.serverlessVcpu]) : undefined,
+                ram: data[fields.serverlessRam] ? parseInt(data[fields.serverlessRam]) : undefined,
+                min_replicas: data[fields.serverlessMinReplicas] ? parseInt(data[fields.serverlessMinReplicas]) : undefined
+            }
+        }
+
         if (data[fields.officialFQDN]) {
             app.official_fqdn = data[fields.officialFQDN]
         }

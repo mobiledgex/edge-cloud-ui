@@ -9,8 +9,8 @@ export const customize = (request, value, self = null) => {
     }
     else {
         value[fields.liveness] = value[fields.liveness]
-        value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt][fields.seconds] : undefined
-        value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt][fields.seconds] : undefined
+        value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt] : undefined
+        value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt] : undefined
         value[fields.ipAccess] = value[fields.ipAccess] ? ipAccess(value[fields.ipAccess]) : undefined
         value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
         value[fields.healthCheck] = value[fields.healthCheck] ? value[fields.healthCheck] : 0

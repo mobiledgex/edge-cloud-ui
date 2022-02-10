@@ -44,6 +44,15 @@ export const ACTION_TRACK_DEVICES = 'TrackDevices'
 export const ACTION_SHOW_NODE = 'ShowNode'
 export const ACTION_ADD_ALLIANCE_ORG = 'AddAllianceOrg'
 export const ACTION_REMOVE_ALLIANCE_ORG = 'RemoveAllianceOrg'
+export const ACTION_SHARE_ZONES = 'ShareZones'
+export const ACTION_UNSHARE_ZONES = 'UnShareZones'
+export const ACTION_UPDATE_PARTNER = 'updatePartner'
+export const ACTION_REGISTER_FEDERATION = 'RegisterFederation'
+export const ACTION_DEREGISTER_FEDERATION = 'DeRegisterFederation'
+export const ACTION_GENERATE_API_KEY = 'GenerateApiKey'
+export const ACTION_DEREGISTER_ZONES = 'DeregisterFederationZones'
+export const ACTION_REGISTER_ZONES = 'registerFederationZones'
+export const ACTION_HOST_DELETE = 'federationFederatorDelete'
 
 export const CLOUDLET_COMPAT_VERSION_2_4 = 0
 export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1
@@ -93,6 +102,8 @@ export const YES = 'Yes'
 export const NO = 'No'
 export const RUN_COMMAND = 'Run Command';
 export const SHOW_LOGS = 'Show Logs';
+export const REGISTER = 'Register'
+export const DE_REGISTER = 'De Register'
 
 export const PLATFORM_TYPE_FAKE = 'Fake'
 export const PLATFORM_TYPE_DIND = 'DIND'
@@ -250,3 +261,13 @@ export const QOS_LOW_LATENCY = 'Low Latency'
 export const QOS_THROUGHPUT_DOWN_S = 'Throughput Down S'
 export const QOS_THROUGHPUT_DOWN_M = 'Throughput Down M'
 export const QOS_THROUGHPUT_DOWN_L = 'Throughput Down L'
+
+export const PAGE_GUEST_ZONES = 'GuestZones'
+export const PAGE_HOST_ZONES = 'HostZones'
+export const PAGE_FEDERATION = 'Federation'
+export const PAGE_OUTBOUND_FEDERATION = 'Outbound'
+export const PAGE_INBOUND_FEDERATION = 'Inbound'
+export const PAGE_PARTNER_ZONES = 'Partner Zones'
+export const PAGE_SHARED_ZONES = 'Shared Zones'
+
+
