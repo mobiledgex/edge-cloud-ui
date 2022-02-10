@@ -1,7 +1,7 @@
 import { Card, Checkbox, Divider, Grid, Typography } from '@material-ui/core';
 import React from 'react'
 import Sunburst from '../../../../hoc/charts/d3/sunburst/Sunburst';
-import { formatData, sequence } from './format';
+import { formatData, sequence, sequence1 } from './format';
 import './style.css'
 import SequenceFunnel from '../../../../hoc/charts/d3/sequence/SequenceFunnel';
 import { withStyles } from '@material-ui/styles';
@@ -13,7 +13,7 @@ class Control extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            dataset: formatData(sequence),
+            dataset: formatData(sequence1),
             toggle: false,
             showMore: false
         }
@@ -33,16 +33,17 @@ class Control extends React.Component {
 
     render() {
         const { toggle, dataset } = this.state
-        const { classes, height } = this.props
+        const { chartData, classes, height } = this.props
+        console.log(chartData, dataset)
         return (
-            <div id='mex-sunburst-container' className='mex-card'>
-                <div style={{display:'flex'}}>
+            chartData ? <div id='mex-sunburst-container' className='mex-card'>
+                <div style={{ display: 'flex' }}>
                     <div style={{ width: '70%' }}>
-                        <Sunburst sequence={sequence} dataset={dataset} toggle={toggle} onMore={this.onMore} />
+                        <Sunburst sequence={sequence} dataset={chartData} toggle={toggle} onMore={this.onMore} />
                     </div>
                     <SequenceFunnel sequence={sequence} onChange={this.onSequenceChange} key={uniqueId()}></SequenceFunnel>
                 </div>
-            </div>
+            </div> : null
         )
     }
 

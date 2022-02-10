@@ -1,6 +1,11 @@
+import { SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_APP_INST } from '../../../../helper/constant/endpoint'
+import { HEALTH_CHECK_OK } from '../../../../helper/constant/perpetual'
+import { READY } from '../../../../helper/formatter/serverFields'
+import { fields } from '../../../../services'
+
 const rawData = require('./cloudlet.json')
 
-export const sequence = [
+export const sequence1 = [
     { label: 'Region', active: true, field: 'region' },
     { label: 'Cloudlet Status', active: true, field: 'cloudletStatus' },
     { label: 'Operator Name', active: false, field: 'operator' },
@@ -8,6 +13,12 @@ export const sequence = [
     { label: 'Cluster Name', active: false, field: 'cluster' },
     { label: 'App Name', active: false, field: 'app' },
 ]
+export const sequence = [
+    { label: 'Cloudlet', active: false, field:fields.cloudletName, fields: [fields.cloudletName, fields.operatorName], method: SHOW_CLOUDLET, status: [{ field: fields.state, value: READY }] },
+    { label: 'Cluster', active: false, field:fields.clusterName, fields: [fields.clusterName], method: SHOW_CLUSTER_INST , status: [{ field: fields.state, value: READY }]},
+    { label: 'App', active: false, field:fields.appName, method: SHOW_APP_INST, status: [{ field: fields.healthCheck, value: HEALTH_CHECK_OK }] },
+]
+
 export const color = { 'Ready': '#00C851', "Delete": '#ff4444', 'Maintainance': '#ffbb33' }
 
 const formatSequence = (order, index, inp, output) => {
@@ -28,7 +39,7 @@ const formatSequence = (order, index, inp, output) => {
             }
         }
         if (exist === false) {
-            newout = { ...data }
+            newout = {  ...data }
             // if (order[index].field === 'cloudletStatus') {
             //     newout.color = color[data.name]
             // }
@@ -62,6 +73,5 @@ export const formatData = (order) => {
         let item = rawData[i]
         formatSequence(order, 0, item, data.children)
     }
-    console.log(data)
     return data
 }
