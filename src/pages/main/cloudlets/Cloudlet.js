@@ -160,7 +160,7 @@ class CloudletList extends React.Component {
             headerLabel: 'Cloudlets',
             nameField: fields.cloudletName,
             requestType: [showCloudlets, showCloudletInfoData],
-            streamType: streamCloudlet,
+            streamType: !redux_org.isDeveloper(this) && streamCloudlet,
             customStream: this.customStream,
             isRegion: true,
             isMap: true,
@@ -183,7 +183,7 @@ class CloudletList extends React.Component {
             progressRender = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading color={ICON_COLOR} name='circle notch' />} />
         }
         else {
-            progressRender = shared.showProgress(data, isDetailView)
+            progressRender = shared.showProgress(data, isDetailView, redux_org.isDeveloper(this))
         }
         return progressRender
     }
