@@ -81,7 +81,7 @@ const getStateStatus = (id) => {
     }
 }
 
-export const showProgress = (data, isDetailView, orgInfo = null) => {
+export const showProgress = (data, isDetailView, disableProgress = false) => {
     let state = data[fields.state]
     if (isDetailView) {
         return getStateStatus(state)
@@ -90,7 +90,7 @@ export const showProgress = (data, isDetailView, orgInfo = null) => {
         let icon = null;
         switch (state) {
             case serverFields.READY:
-                    icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon color={ICON_COLOR} size={16}>check</Icon></IconButton>
+                icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon color={ICON_COLOR} size={16}>check</Icon></IconButton>
                 break;
             case serverFields.CREATE_REQUESTED:
             case serverFields.CREATING:
@@ -98,16 +98,12 @@ export const showProgress = (data, isDetailView, orgInfo = null) => {
             case serverFields.UPDATING:
             case serverFields.CREATING_DEPENDENCIES:
             case serverFields.CRM_INITOK:
-                orgInfo && orgInfo[fields.type] && orgInfo[fields.type] === perpetual.DEVELOPER ?
-                    icon = <IconButton disabled tooltip={'In Progress'}><CircularProgress size={14} style={{ color: ICON_COLOR }} /></IconButton> :
-                    icon = <IconButton tooltip={'View Progress'}><CircularProgress size={14} style={{ color: ICON_COLOR }} /></IconButton>
+                icon = <IconButton disabled tooltip={`${disableProgress ? 'In' : 'View'} Progress`}><CircularProgress size={14} style={{ color: ICON_COLOR }} /></IconButton>
                 break;
             case serverFields.DELETE_REQUESTED:
             case serverFields.DELETING:
             case serverFields.DELETE_PREPARE:
-                orgInfo && orgInfo[fields.type] && orgInfo[fields.type] === perpetual.DEVELOPER ?
-                    icon = <IconButton disabled tooltip={'In Progress'}><CircularProgress size={14} style={{ color: 'red' }} /></IconButton> :
-                    icon = <IconButton tooltip={'View Progress'}><CircularProgress size={14} style={{ color: 'red' }} /></IconButton>
+                icon = <IconButton disabled tooltip={`${disableProgress ? 'In' : 'View'} Progress`}><CircularProgress size={14} style={{ color: 'red' }} /></IconButton>
                 break;
             default:
                 icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon color='red' size={16}>close</Icon></IconButton>
