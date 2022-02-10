@@ -98,12 +98,12 @@ export const showProgress = (data, isDetailView, disableProgress = false) => {
             case serverFields.UPDATING:
             case serverFields.CREATING_DEPENDENCIES:
             case serverFields.CRM_INITOK:
-                icon = <IconButton disabled tooltip={`${disableProgress ? 'In' : 'View'} Progress`}><CircularProgress size={14} style={{ color: ICON_COLOR }} /></IconButton>
+                icon = <IconButton disabled={disableProgress} tooltip={`${disableProgress ? 'In' : 'View'} Progress`}><CircularProgress size={14} style={{ color: ICON_COLOR }} /></IconButton>
                 break;
             case serverFields.DELETE_REQUESTED:
             case serverFields.DELETING:
             case serverFields.DELETE_PREPARE:
-                icon = <IconButton disabled tooltip={`${disableProgress ? 'In' : 'View'} Progress`}><CircularProgress size={14} style={{ color: 'red' }} /></IconButton>
+                icon = <IconButton disabled={disableProgress} tooltip={`${disableProgress ? 'In' : 'View'} Progress`}><CircularProgress size={14} style={{ color: 'red' }} /></IconButton>
                 break;
             default:
                 icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon color='red' size={16}>close</Icon></IconButton>
