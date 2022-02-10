@@ -102,8 +102,8 @@ export const getKey = (data, isCreate) => {
         }
         let accessvars = {}
         if (data[fields.openRCData] || data[fields.caCertdata]) {
-            data[fields.openRCData] && (accessvars.OPENRC_DATA = data[fields.openRCData])
-            data[fields.caCertdata] && (accessvars.CACERT_DATA = data[fields.caCertdata])
+            accessvars.OPENRC_DATA = data[fields.openRCData] ? data[fields.openRCData] : undefined
+            accessvars.CACERT_DATA = data[fields.caCertdata] ? data[fields.caCertdata] : undefined
             cloudlet.access_vars = accessvars
         }
         if (data[fields.containerVersion]) {
