@@ -267,7 +267,7 @@ const getHeight = (props, table) => {
     let height = isMap ? 553 : 153
     height = tableHeight ? tableHeight : height
     height = iconKeys ? height + 40 : height
-    height = table && groupBy.length > 0 ? height + 50 : height
+    height = table && (groupBy && groupBy.length > 0) ? height + 50 : height
     return `calc(100vh - ${height}px)`
 }
 
