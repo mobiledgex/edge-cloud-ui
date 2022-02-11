@@ -2,14 +2,16 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
-import { TableCell, Divider, Typography } from '@material-ui/core';
+import { TableCell, Divider, Typography, Checkbox } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { AutoSizer, Column, Table } from 'react-virtualized';
 import { Icon, IconButton } from '../mexui';
 import Actions from './action/Action';
 import { fields } from '../../services';
 import { NoData } from '../../helper/formatter/ui';
-import { ICON_COLOR } from '../../helper/constant/colors';
+import { ICON_COLOR } from '../../helper/constant/colors'; 
+import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
+import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined';
 
 const styles = (theme) => ({
     flexContainer: {
@@ -57,7 +59,9 @@ const styles = (theme) => ({
         cursor: 'initial',
     },
     checkbox: {
-        cursor: 'pointer'
+        "&&:hover": {
+            backgroundColor: "#3E4046",
+        }
     },
     sortIcon: {
         transition: theme.transitions.create(["transform"], {
@@ -137,7 +141,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                 })}
                 onClick={(e) => { this.onCellClick(e, column, rowData) }}
                 variant="body"
-                style={{ height: rowHeight }}
+                style={{ height: rowHeight, width:column.width }}
                 align={(columnIndex != null && columns[columnIndex].numeric) || false ? 'right' : 'left'}
             >
                 {
@@ -150,7 +154,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                         )
                     }) :
                         column.type === ELE_BUTTON ? <IconButton id={`mex-data-grid-row-${column.field}`}><Icon style={{ height: 18 }} color={ICON_COLOR}>list</Icon></IconButton> :
-                            column.type === ELE_CHECKBOX ? <IconButton id={`mex-data-grid-row-${column.field}`}><Icon className={classes.checkbox} style={{ color: rowData.color }}>{`${selected.includes(rowData.uuid) ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton> :
+                            column.type === ELE_CHECKBOX ? <Checkbox className={classes.checkbox} checked={selected.includes(rowData.uuid)} checkedIcon={<CheckBoxOutlinedIcon/>} icon={<CheckBoxOutlineBlankOutlinedIcon/>}/> :
                                 column.format ? formatter(column, rowData) :
                                     <span id={`mex-data-grid-row-${column.field}`} className={classes.textBody}>{cellData}</span>
                 }
@@ -180,12 +184,12 @@ class MuiVirtualizedTable extends React.PureComponent {
                 component="div"
                 className={clsx(classes.tableHeader, classes.tableCell, classes.flexContainer, { [classes.noClick]: !column.sortable })}
                 variant="head"
-                style={{ height: headerHeight }}
+                style={{ height: headerHeight, width:column.width }}
                 onClick={() => { onSortClick(column) }}
                 align={column.numeric || false ? 'right' : 'left'}
             >
                 {
-                    column.type === ELE_CHECKBOX ? <IconButton onClick={this.onSelectAll}><Icon className={classes.checkbox}>{`${selected.length === rowCount ? 'check_box' : 'check_box_outline_blank'}`}</Icon></IconButton> :
+                    column.type === ELE_CHECKBOX ? <Checkbox className={classes.checkbox} onChange={this.onSelectAll} checked={selected.length === rowCount} checkedIcon={<CheckBoxOutlinedIcon/>} icon={<CheckBoxOutlineBlankOutlinedIcon/>}/> :
                         <span className={classes.textHeader}>{label}</span>
                 }
                 {
