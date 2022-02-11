@@ -273,7 +273,7 @@ class AppReg extends Component {
 
     deploymentValueChange = (currentForm, forms, isInit) => {
         forms = forms.filter((form) => {
-            if (form.field === fields.imageType) { 
+            if (form.field === fields.imageType) {
                 form.value = currentForm.value === perpetual.DEPLOYMENT_TYPE_HELM ? perpetual.IMAGE_TYPE_HELM :
                     currentForm.value === perpetual.DEPLOYMENT_TYPE_VM ? perpetual.IMAGE_TYPE_QCOW : perpetual.IMAGE_TYPE_DOCKER
                 return form
@@ -594,7 +594,7 @@ class AppReg extends Component {
         return true;
     }
     /**Required */
-    /*Trigged when form value changes */        
+    /*Trigged when form value changes */
     onValueChange = (form) => {
         let forms = this.state.forms;
         this.checkForms(form, forms)
@@ -1158,16 +1158,17 @@ class AppReg extends Component {
             this.originalData = cloneDeep(data)
             await this.loadDefaultData(forms, data)
             if (this.isClone) {
+
                 this.requestedRegionList.push(data[fields.region])
                 data[fields.region] = [data[fields.region]]
                 //clear manifest if auto generated
-                if(data[fields.deploymentGenerator] === 'kubernetes-basic')
-                {
-                    data[fields.deploymentManifest] = undefined 
+                if (data[fields.deploymentGenerator] === 'kubernetes-basic') {
+                    data[fields.deploymentManifest] = undefined
                 }
             }
         }
-        else {
+
+        if (!this.isUpdate) {
             this.organizationList = await getOrganizationList(this, { type: perpetual.DEVELOPER })
         }
 
