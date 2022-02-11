@@ -156,7 +156,7 @@ class CloudletReg extends React.Component {
                         envForm.visible = false
                     }
                 }
-                forms.splice(17 + count, 0, this.getEnvForm(envForms))
+                forms.splice(18 + count, 0, this.getEnvForm(envForms))
                 count++
             }
         })
@@ -179,6 +179,9 @@ class CloudletReg extends React.Component {
             else if (form.field === fields.vmPool) {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_VMPOOL
                 form.rules.required = currentForm.value === perpetual.PLATFORM_TYPE_VMPOOL
+            }
+            else if (form.field === fields.singleKubernetesClusterOwner) {
+                form.visible = currentForm.value === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
             }
             return valid
         })
@@ -717,7 +720,7 @@ class CloudletReg extends React.Component {
                             envForm.value = value
                         }
                     }
-                    forms.splice(17 + multiFormCount, 0, this.getEnvForm(envForms))
+                    forms.splice(18 + multiFormCount, 0, this.getEnvForm(envForms))
                     multiFormCount += 1
                 })
             }
@@ -739,7 +742,7 @@ class CloudletReg extends React.Component {
                             resourceQuotaForm.value = item['alert_threshold'] ? item['alert_threshold'] : data[fields.defaultResourceAlertThreshold]
                         }
                     }
-                    forms.splice(18 + multiFormCount, 0, this.getResoureQuotaForm(resourceQuotaForms))
+                    forms.splice(19 + multiFormCount, 0, this.getResoureQuotaForm(resourceQuotaForms))
                     multiFormCount += 1
                 })
             }
@@ -816,6 +819,7 @@ class CloudletReg extends React.Component {
             { field: fields.infraFlavorName, label: 'Infra Flavor Name', formType: 'Input', placeholder: 'Enter Infra Flavor Name', rules: { required: false }, visible: true, tip: 'Infra specific flavor name' },
             { field: fields.infraExternalNetworkName, label: 'Infra External Network Name', formType: 'Input', placeholder: 'Enter Infra External Network Name', rules: { required: false }, visible: true, tip: 'Infra specific external network name' },
             { field: fields.allianceOrganization, label: 'Alliance Organization', formType: MULTI_SELECT, placeholder: 'Select Alliance Operator', visible: true, tip: 'Alliance Organization of the cloudlet site', update: { id: ['47'] } },
+            { field: fields.singleKubernetesClusterOwner, formType: INPUT, placeholder: 'Enter Single Kubernetes Cluster Owner', label: 'Single K8S Owner', visible: false, tip: 'single kubernetes cluster cloudlet platforms, cluster is owned by this organization instead of multi-tenant.', update: { id: ['48'] } },
             { field: fields.envVars, label: 'Environment Variable', formType: HEADER, forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getEnvForm }], visible: true, tip: 'Single Key-Value pair of env var to be passed to CRM' },
             { field: fields.resourceQuotas, label: 'Resource Quota', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Resource Quota', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getResoureQuotaForm }], visible: true, update: { id: ['39', '39.1', '39.2', '39.3'] }, tip: 'Alert Threshold:</b> Generate alert when more than threshold percentage of resource is used\nName:</b> Resource name on which to set quota\nValue:</b> Quota value of the resource' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },

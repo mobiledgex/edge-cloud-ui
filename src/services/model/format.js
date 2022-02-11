@@ -321,5 +321,6 @@ export const fields = {
     sharedOperator: 'sharedOperator',
     autoGenerateFederationID: 'autoGenerateFederationID',
     zones:'zones',
-    mncmulti:'mncmulti'
+    mncmulti: 'mncmulti',
+    singleKubernetesClusterOwner: 'single_kubernetes_cluster_owner'
 }
