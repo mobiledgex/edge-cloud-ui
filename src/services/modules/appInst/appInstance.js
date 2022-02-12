@@ -43,6 +43,7 @@ export const keys = () => ([
   { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: perpetual.TYPE_JSON },
   { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true, format: true },
   { field: fields.autoPolicyName, label: 'Auto Prov Policy', visible: false },
+  { field: fields.dedicatedIp, label: 'Dedicated IP', serverFields: 'dedicated_ip', visible: false, sortable: true, format: true },
   { field: fields.trusted, label: 'Trusted', visible: false, sortable: true, format: true }
 ])
 
@@ -86,6 +87,9 @@ export const getKey = (data, isCreate) => {
 
     if (data[fields.fields]) {
       appinst.fields = data[fields.fields]
+    }
+    if (data[fields.dedicatedIp]) {
+      appinst.dedicated_ip = data[fields.dedicatedIp]
     }
 
   }

@@ -30,6 +30,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import { uniqueId } from '../../../helper/constant/shared';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
+const QA_ANTHOS = 'qa-anthos'
 
 class AppInstReg extends React.Component {
     constructor(props) {
@@ -317,6 +318,9 @@ class AppInstReg extends React.Component {
     cloudletValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
+            if (form.field === fields.dedicatedIp) {
+                form.visible = currentForm.value.includes(QA_ANTHOS)
+            }
             if (form.field === fields.clusterName) {
                 this.updateUI(form)
             }
@@ -371,6 +375,7 @@ class AppInstReg extends React.Component {
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], update: { key: true } },
             { field: fields.cloudletName, label: 'Cloudlet', formType: MULTI_SELECT, placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 5, field: fields.operatorName }], update: { key: true } },
             { field: fields.flavorName, label: 'Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE_GROUP, placeholder: 'Select Flavor', rules: { required: false, copy: true }, visible: true, tip: 'FlavorKey uniquely identifies a Flavor' },
+            { field: fields.dedicatedIp, label: 'Dedicated IP', formType: SWITCH, visible: false, value: false, update: { id: ['39'] }, tip: 'Dedicated IP assigns an IP for this AppInst but requires platform support' },
             { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: SWITCH, visible: false, value: false, update: { edit: true } },
             { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }, { index: 5, field: fields.operatorName }, { index: 6, field: fields.cloudletName }], update: { key: true } },
             { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, onClick: this.addConfigs, style: { color: 'white' } }], visible: false, update: { id: ['27', '27.1', '27.2'] } },
@@ -479,6 +484,7 @@ class AppInstReg extends React.Component {
                     for (let i = 0; i < cloudlets.length; i++) {
                         let newData = cloneDeep(data)
                         let cloudlet = cloudlets[i];
+                        newData[fields.dedicatedIp] = cloudlet === QA_ANTHOS ? data[fields.dedicatedIp] : undefined
                         newData[fields.cloudletName] = cloudlet;
                         newData[fields.compatibilityVersion] = this.fetchCompabilityVersion(data, cloudlet)
                         if (flavors) {
