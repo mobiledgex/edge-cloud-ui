@@ -177,7 +177,7 @@ const Sunburst = (props) => {
                 tooltip.style("visibility", "visible");
             }
         })
-            .on("mousemove", function (e, d) { return tooltip.style("top", (e.pageY + 20) + "px").style("left", (e.pageX + 10) + "px"); })
+            .on("mousemove", function (e, d) { return tooltip.style("top", (0) + "px").style("left", (0) + "px"); })
             .on("mouseout", function (e, d) { return tooltip.style("visibility", "hidden"); });
 
         /**********

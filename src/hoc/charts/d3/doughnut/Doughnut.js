@@ -1,5 +1,7 @@
 import React from 'react'
 import * as d3 from 'd3';
+import { size } from 'lodash';
+import { uniqueId } from '../../../../helper/constant/shared';
 
 class Doughnut extends React.Component {
     constructor(props) {
@@ -8,8 +10,9 @@ class Doughnut extends React.Component {
     }
 
     render() {
+        const {size, data} = this.props
         return (
-            <div ref={this.chart}></div>
+            <div ref={this.chart} style={{position:'relative'}}></div>
         )
     }
 
@@ -43,8 +46,8 @@ class Doughnut extends React.Component {
         const data_ready = pie(Object.entries(values))
 
         // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
-        svg
-            .selectAll('whatever')
+        var path = svg
+            .selectAll('g')
             .data(data_ready)
             .join('path')
             .attr('d', d3.arc()
@@ -53,6 +56,30 @@ class Doughnut extends React.Component {
             )
             .attr('fill', d => color(d.data[0]))
             .style("opacity", 1)
+
+
+        var tooltip = d3.select(this.chart.current)
+            .append("div")
+            .style("position", "absolute")
+            .style("visibility", "hidden")
+            .style("background-color", "white")
+            .style("border", "solid")
+            .style("color", "black")
+            .style("border-radius", "5px")
+            .style("border", "none")
+            .style("width", "60px")
+            .style("height", "70px")
+            .html("<p>I'm a tooltip written in HTML</p>");
+
+
+        path.on("mouseover", (e, d) => { 
+            tooltip.html(`<div>
+                <p>${d.data[0]}</p>
+            </div>`)
+            return tooltip.style("visibility", "visible"); 
+        })
+            .on("mousemove", (e, d) => { return tooltip.style("top", (e.offsetY - 20) + "px").style("left", (e.offsetX + 100) + "px"); })
+            .on("mouseout", (e, d) => { return tooltip.style("visibility", "hidden"); });
     }
 
     componentDidMount() {

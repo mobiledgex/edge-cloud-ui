@@ -8,27 +8,25 @@ import { MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION } from "../../../../helper/
 import * as serverFields from "../../../../helper/formatter/serverFields";
 
 export const sequence = [ 
-    { label: 'Cloudlet Name', active: false, field: fields.cloudletName, filters: { 'appName': [fields.cloudletName, fields.operatorName], 'clusterName': [fields.cloudletName, fields.operatorName]}, method: SHOW_CLOUDLET, total: [{ field: fields.state, values: [serverFields.READY] }] },
+    { label: 'Cloudlet Name', active: false, field: fields.cloudletName, filters: { 'appName': [fields.cloudletName, fields.operatorName], 'clusterName': [fields.cloudletName, fields.operatorName]}, method: SHOW_CLOUDLET, total: [{ field: fields.state, values: [serverFields.READY] }, { type:'Transient', field: fields.state, values: [serverFields.CREATING] }] },
     { label: 'Cluster Name', active: false, field: fields.clusterName, filters: { 'appName': [fields.clusterName], 'cloudletName': [fields.cloudletName, fields.operatorName] }, method: SHOW_CLUSTER_INST, total: [{ field: fields.state, values: [serverFields.READY] }] },
     { label: 'App Name', active: false, field: fields.appName, method: SHOW_APP_INST, skip: [{ field: fields.appName, values: [MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION] }], filters: { 'cloudletName': [fields.cloudletName, fields.operatorName], 'clusterName': [fields.clusterName] }, total: [{ field: fields.healthCheck, values: [serverFields.OK] }] },
 ]
 
-const calculateTotal = (order, parent, total, data) => {
+const calculateTotal = (order, total, data) => {
     let attTotal = order.total
     if (attTotal) {
         total[order.field] = total[order.field] ? total[order.field] : {}
+        let type = 'error'
         attTotal.forEach(item => {
             let field = item.field
             let values = item.values
-            let type = item.type ? item.type : 'success'
-            if (!values.includes(data[field])) {
-                type = 'error'
+            if (values.includes(data[field])) {
+                type = item.type ? item.type : 'success'
             }
-            parent.count[type] = parent.count[type] ? parent.count[type] : 0
-            parent.count[type] = parent.count[type] + 1
-            total[order.field][type] = total[order.field][type] ? total[order.field][type] : 0
-            total[order.field][type] = total[order.field][type] + 1
         })
+        total[order.field][type] = total[order.field][type] ? total[order.field][type] : 0
+        total[order.field][type] = total[order.field][type] + 1
     }
 }
 
@@ -51,10 +49,19 @@ const createBurst = (orderList, index, dataObject, parent, total) => {
     let filters = index - 1 >= 0 ? orderList[index - 1].filters[order.field] : undefined
     let nextExist = Boolean(orderList[nextIndex])
     const { dataList, keys } = dataObject[order.method]
-    for (let item of dataList) {
-        let value = map({}, item.data, keys)
-        if (skipData(order, value)) {
-            continue;
+    for (let i = 0; i < dataList.length; i++) {
+        let value = dataList[i]
+        if (!value.calculated) {
+            value = map({}, value.data, keys)
+            if (skipData(order, value)) {
+                dataList.splice(i, 1)
+                continue;
+            }
+            else {
+                dataList[i] = value
+                dataList[i].calculated = true
+                calculateTotal(order, total, value)
+            }
         }
         if ((filters ? filters.every(field => parent.data[field] === value[field]) : true)) {
             let temp = { name: value[order.field], data: value, value: 1 }
@@ -64,7 +71,7 @@ const createBurst = (orderList, index, dataObject, parent, total) => {
             }
             parent.children = parent.children ? parent.children : []
             parent.children.push(temp)
-            calculateTotal(order, parent, total, value)
+            // calculateTotal(order, parent, total, value)
         }
     }
 }
