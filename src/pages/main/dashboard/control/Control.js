@@ -1,7 +1,7 @@
 import { Card, Checkbox, Divider, Grid, Typography } from '@material-ui/core';
 import React from 'react'
 import Sunburst from '../../../../hoc/charts/d3/sunburst/Sunburst';
-import { formatData, sequence1 } from './format';
+import { formatData } from './format';
 import './style.css'
 import SequenceFunnel from '../../../../hoc/charts/d3/sequence/SequenceFunnel';
 import { withStyles } from '@material-ui/styles';
@@ -14,7 +14,7 @@ class Control extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            dataset: formatData(sequence1),
+            dataset: formatData(sequence),
             toggle: false,
             showMore: false
         }

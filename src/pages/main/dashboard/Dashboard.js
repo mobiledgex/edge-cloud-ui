@@ -11,7 +11,6 @@ import DashbordWorker from './services/dashboard.worker.js'
 import Control from './control/Control'
 import Total from './total/Total'
 import { processWorker } from '../../../services/worker/interceptor'
-import { sequence } from './control/format'
 import { fields } from '../../../services'
 import { showOrganizations } from '../../../services/modules/organization/organization'
 import { perpetual } from '../../../helper/constant'
@@ -59,12 +58,11 @@ class Dashboard extends React.Component {
             let request = requestType(this, Object.assign({}, { region: 'US' }))
             requestList.push(request)
         })
-        requestList.push(showOrganizations(this, { type: perpetual.OPERATOR }, true))
+        // requestList.push(showOrganizations(this, { type: perpetual.OPERATOR }, true))
         if (requestList.length > 0) {
             let mcList = await multiAuthSyncRequest(this, requestList, false)
             let response = await processWorker(this.worker, {
                 region: 'US',
-                sequence,
                 rawList: mcList
             })
             if (response.status === 200) {

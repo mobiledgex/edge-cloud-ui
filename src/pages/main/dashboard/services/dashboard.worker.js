@@ -1,12 +1,11 @@
 /* eslint-disable */
 
-import { SHOW_CLOUDLET, SHOW_ORG } from "../../../../helper/constant/endpoint"
+import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLOUDLET_INFO, SHOW_CLUSTER_INST } from "../../../../helper/constant/endpoint"
 import { toJson } from "../../../../utils/json_util"
 import { map } from "../../../../services/format/shared";
 import { sequence } from "../sequence";
 import { fields } from "../../../../services";
-import { platformType } from "../../../../helper/formatter/label";
-
+import { MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION } from "../../../../helper/constant/perpetual";
 
 const calculateTotal = (order, total, data) => {
     let attTotal = order.total
@@ -25,130 +24,135 @@ const calculateTotal = (order, total, data) => {
     }
 }
 
-const skipData = (order, data) => {
-    let attSkip = order.skip
-    let valid = false
-    if (attSkip) {
-        valid = attSkip.every(item => {
-            let field = item.field
-            let values = item.values
-            return values.includes(data[field])
-        })
-    }
-    return valid
-}
-
-const validateData = (filters, parent, value) => {
-    return filters ? filters.every((field) => {
-        let field1 = field
-        let field2 = field1
-        if (Array.isArray(field)) {
-            field1 = field[0]
-            field2 = field[1]
-        }
-        return parent.data[field1] === value[field2]
-    }) : true
-}
-
-const rec = (data, order, index, output)=>{
+const formatSequence = (order, index, inp, output) => {
+    let data = inp[order[index].field]
     let nextIndex = index + 1
-    let field = data[order[index]]
-    output[field] = output[field] ? output[field] : order[nextIndex] ? {} : []
-    if(order[nextIndex])
-    {
-        rec(data, order, nextIndex,  output[field]) 
-    }
-    else
-    {
-        output[field]= output[field] ? [...output[field], data] : [data] 
-    }
-}
-
-const inlineCompress = (output) => {
-    let keys = Array.isArray(output) ? undefined : Object.keys(output)
-    if (keys && keys.length > 0) {
-        let dataList = []
-        keys.map(key => {
-            let data = {name: key}
-            let children = inlineCompress(output[key])
-            if(children)
-            {
-                data.children = children 
-            }
-            else
-            {
-                data.data = output[key][0]
-            }
-            dataList.push(data)
-        })
-        return dataList
-    }
-    return null
-}
-
-const inlineGrouping = (orderList, rawListObject) => {
-    const se = [fields.operatorName, fields.platformType, fields.cloudletName]
-    const { dataList, keys } = rawListObject[SHOW_CLOUDLET]
-    let output = {}
-    dataList.map(data => {
-        rec(data, se, 0, output)
-    })
-    let vv = {children:[]}
-    vv.children = inlineCompress(output)
-    console.log(vv)
-}
-
-const createBurst = (orderList, index, dataObject, parent, total) => {
-    let nextIndex = index + 1
-    let order = orderList[index]
-    let filters = index - 1 >= 0 ? orderList[index - 1].filters[order.field] : undefined
-    let nextExist = Boolean(orderList[nextIndex])
-    const { dataList, keys } = dataObject[order.method]
-    for (let i = 0; i < dataList.length; i++) {
-        let value = dataList[i]
-        if (!value.calculated) {
-            value = order.format ? map({}, value.data, keys) : value
-            if (skipData(order, value)) {
-                dataList.splice(i, 1)
-                continue;
-            }
-            else {
-                dataList[i] = value
-                dataList[i].calculated = true
-                calculateTotal(order, total, value)
+    if (data) {
+        let alertType = data.alert && data.alert.type
+        let exist = false
+        let nextsequence = (nextIndex < order.length) && inp[order[nextIndex].field] !== undefined
+        let newout = undefined
+        if (output && output.length > 0) {
+            for (let i = 0; i < output.length; i++) {
+                if (output[i].name === inp[order[index].field].name) {
+                    exist = true
+                    newout = output[i]
+                    break;
+                }
             }
         }
-        if (validateData(filters, parent, value)) {
-            let temp = { name: value[order.fieldAlt ? order.fieldAlt : order.field], data: value, value: 1, childrenMust:order.childrenMust }
-            if (nextExist) {
-                temp.count = {}
-                createBurst(orderList, nextIndex, dataObject, temp, total)
-            }
-            parent.children = parent.children ? parent.children : []
-            parent.children.push(temp)
-            // calculateTotal(order, parent, total, value)
+        if (exist === false) {
+            newout = { ...data }
+            // if (order[index].field === 'cloudletStatus') {
+            //     newout.color = color[data.name]
+            // }
         }
+
+        //if sequence exist and children is undefined
+        if (nextsequence) {
+            if (newout.children === undefined) {
+                newout.children = []
+                newout.value = undefined
+            }
+            alertType = formatSequence(order, nextIndex, inp, newout.children)
+        }
+        else {
+            //assign value if no children
+            newout.value = 1
+        }
+
+        if (exist === false) {
+            output.push(newout)
+        }
+
+        newout.alertType = newout.alert ? newout.alert : newout.alertType ? newout.alertType : alertType
+        return newout.alertType
     }
+
+}
+export const formatData = (order, rawData) => {
+    let data = { name: '', children: [] }
+    for (let i = 0; i < rawData.length; i++) {
+        let item = rawData[i]
+        formatSequence(order, 0, item, data.children)
+    }
+    return data
 }
 
 const format = (worker) => {
-    const { rawList } = worker
+    let start = new Date().getTime()
+    const { region, rawList } = worker
     let rawListObject = {}
     rawList.map(item => {
         const { request, response } = item
         let dataArray = toJson(response.data);
-        if (request.method === SHOW_ORG) {
-            rawListObject[request.data.type] = { dataList: dataArray, keys: request.keys }
+        rawListObject[request.method] = { dataList: dataArray, keys: request.keys }
+    })
+    let finalList = []
+
+    let keys = rawListObject[SHOW_APP_INST].keys
+    let rawDataList = rawListObject[SHOW_APP_INST].dataList
+    rawDataList.map(item => {
+        let data = map({}, item.data, keys)
+        if ([MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION].includes(data[fields.appName])) {
+
         }
         else {
-            rawListObject[request.method] = { dataList: dataArray, keys: request.keys }
+            let final = {}
+            final[fields.region] = { name: region }
+            final[fields.cloudletName] = { name: data[fields.cloudletName] }
+            final[fields.operatorName] = { name: data[fields.operatorName] }
+            final[fields.appName] = { name: data[fields.appName], healthCheck: data[fields.healthCheck], state: data[fields.state] }
+            final[fields.clusterName] = { name: data[fields.clusterName] }
+            final[fields.clusterdeveloper] = { name: data[fields.clusterdeveloper] }
+            final[fields.appDeveloper] = { name: data[fields.organizationName] }
+            finalList.push(final)
         }
     })
-    let total = {}
-    let output = { name: '', children: [], count: {} }
-    createBurst(sequence, 0, rawListObject, output, total)
-    // inlineGrouping(sequence, rawListObject)
-    self.postMessage({ status: 200, data: output, total }) 
+
+    keys = rawListObject[SHOW_CLUSTER_INST].keys
+    rawDataList = rawListObject[SHOW_CLUSTER_INST].dataList
+    rawDataList.map(item => {
+        let data = map({}, item.data, keys)
+        let exist = false
+        finalList.map(final => {
+            if (final[fields.clusterName].name === data[fields.clusterName] && final[fields.clusterdeveloper].name === data[fields.organizationName]) {
+                final[fields.clusterName].state = data[fields.state]
+                exist = true
+            }
+        })
+        if (!exist) {
+            let final = {}
+            final[fields.cloudletName] = { name: data[fields.cloudletName] }
+            final[fields.operatorName] = { name: data[fields.operatorName] }
+            final[fields.clusterName] = { name: data[fields.clusterName], state: data[fields.state] }
+            final[fields.clusterdeveloper] = { name: data[fields.organizationName] }
+            finalList.push(final)
+        }
+    })
+
+    keys = rawListObject[SHOW_CLOUDLET].keys
+    rawDataList = rawListObject[SHOW_CLOUDLET].dataList
+    rawDataList.map(item => {
+        let data = map({}, item.data, keys)
+        let exist = false
+        finalList.map(item1 => {
+            if (item1[fields.cloudletName].name === data[fields.cloudletName] && item1[fields.operatorName].name === data[fields.operatorName]) {
+                item1[fields.cloudletName].state = data[fields.state]
+                exist = true
+            }
+        })
+        if (!exist) {
+            let final = {}
+            final[fields.cloudletName] = { name: data[fields.cloudletName] }
+            final[fields.operatorName] = { name: data[fields.operatorName], state: data[fields.state] }
+            finalList.push(final)
+        }
+    })
+
+    let dd = formatData(sequence, finalList)
+    console.log('new', (new Date().getTime()) - start)
+    self.postMessage({ status: 200, data: dd })
 }
 
 self.addEventListener("message", (event) => {
