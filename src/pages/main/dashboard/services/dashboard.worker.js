@@ -1,17 +1,12 @@
 /* eslint-disable */
 
-import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLOUDLET_INFO, SHOW_CLUSTER_INST } from "../../../../helper/constant/endpoint"
+import { SHOW_CLOUDLET, SHOW_ORG } from "../../../../helper/constant/endpoint"
 import { toJson } from "../../../../utils/json_util"
 import { map } from "../../../../services/format/shared";
+import { sequence } from "../sequence";
 import { fields } from "../../../../services";
-import { MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION } from "../../../../helper/constant/perpetual";
-import * as serverFields from "../../../../helper/formatter/serverFields";
+import { platformType } from "../../../../helper/formatter/label";
 
-export const sequence = [ 
-    { label: 'Cloudlet Name', active: false, field: fields.cloudletName, filters: { 'appName': [fields.cloudletName, fields.operatorName], 'clusterName': [fields.cloudletName, fields.operatorName]}, method: SHOW_CLOUDLET, total: [{ field: fields.state, values: [serverFields.READY] }, { type:'Transient', field: fields.state, values: [serverFields.CREATING] }] },
-    { label: 'Cluster Name', active: false, field: fields.clusterName, filters: { 'appName': [fields.clusterName], 'cloudletName': [fields.cloudletName, fields.operatorName] }, method: SHOW_CLUSTER_INST, total: [{ field: fields.state, values: [serverFields.READY] }] },
-    { label: 'App Name', active: false, field: fields.appName, method: SHOW_APP_INST, skip: [{ field: fields.appName, values: [MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION] }], filters: { 'cloudletName': [fields.cloudletName, fields.operatorName], 'clusterName': [fields.clusterName] }, total: [{ field: fields.healthCheck, values: [serverFields.OK] }] },
-]
 
 const calculateTotal = (order, total, data) => {
     let attTotal = order.total
@@ -43,6 +38,66 @@ const skipData = (order, data) => {
     return valid
 }
 
+const validateData = (filters, parent, value) => {
+    return filters ? filters.every((field) => {
+        let field1 = field
+        let field2 = field1
+        if (Array.isArray(field)) {
+            field1 = field[0]
+            field2 = field[1]
+        }
+        return parent.data[field1] === value[field2]
+    }) : true
+}
+
+const rec = (data, order, index, output)=>{
+    let nextIndex = index + 1
+    let field = data[order[index]]
+    output[field] = output[field] ? output[field] : order[nextIndex] ? {} : []
+    if(order[nextIndex])
+    {
+        rec(data, order, nextIndex,  output[field]) 
+    }
+    else
+    {
+        output[field]= output[field] ? [...output[field], data] : [data] 
+    }
+}
+
+const inlineCompress = (output) => {
+    let keys = Array.isArray(output) ? undefined : Object.keys(output)
+    if (keys && keys.length > 0) {
+        let dataList = []
+        keys.map(key => {
+            let data = {name: key}
+            let children = inlineCompress(output[key])
+            if(children)
+            {
+                data.children = children 
+            }
+            else
+            {
+                data.data = output[key][0]
+            }
+            dataList.push(data)
+        })
+        return dataList
+    }
+    return null
+}
+
+const inlineGrouping = (orderList, rawListObject) => {
+    const se = [fields.operatorName, fields.platformType, fields.cloudletName]
+    const { dataList, keys } = rawListObject[SHOW_CLOUDLET]
+    let output = {}
+    dataList.map(data => {
+        rec(data, se, 0, output)
+    })
+    let vv = {children:[]}
+    vv.children = inlineCompress(output)
+    console.log(vv)
+}
+
 const createBurst = (orderList, index, dataObject, parent, total) => {
     let nextIndex = index + 1
     let order = orderList[index]
@@ -52,7 +107,7 @@ const createBurst = (orderList, index, dataObject, parent, total) => {
     for (let i = 0; i < dataList.length; i++) {
         let value = dataList[i]
         if (!value.calculated) {
-            value = map({}, value.data, keys)
+            value = order.format ? map({}, value.data, keys) : value
             if (skipData(order, value)) {
                 dataList.splice(i, 1)
                 continue;
@@ -63,8 +118,8 @@ const createBurst = (orderList, index, dataObject, parent, total) => {
                 calculateTotal(order, total, value)
             }
         }
-        if ((filters ? filters.every(field => parent.data[field] === value[field]) : true)) {
-            let temp = { name: value[order.field], data: value, value: 1 }
+        if (validateData(filters, parent, value)) {
+            let temp = { name: value[order.fieldAlt ? order.fieldAlt : order.field], data: value, value: 1, childrenMust:order.childrenMust }
             if (nextExist) {
                 temp.count = {}
                 createBurst(orderList, nextIndex, dataObject, temp, total)
@@ -82,13 +137,18 @@ const format = (worker) => {
     rawList.map(item => {
         const { request, response } = item
         let dataArray = toJson(response.data);
-        rawListObject[request.method] = { dataList: dataArray, keys: request.keys }
+        if (request.method === SHOW_ORG) {
+            rawListObject[request.data.type] = { dataList: dataArray, keys: request.keys }
+        }
+        else {
+            rawListObject[request.method] = { dataList: dataArray, keys: request.keys }
+        }
     })
-    // console.log(rawListObject[SHOW_APP_INST].dataList.filter(item=>![MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION].includes(item.data.key.app_key.name)))
     let total = {}
-    let output = { name: '', children: [], count: { } }
+    let output = { name: '', children: [], count: {} }
     createBurst(sequence, 0, rawListObject, output, total)
-    self.postMessage({ status: 200, data: output, total })
+    // inlineGrouping(sequence, rawListObject)
+    self.postMessage({ status: 200, data: output, total }) 
 }
 
 self.addEventListener("message", (event) => {

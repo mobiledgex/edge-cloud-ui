@@ -1,5 +1,6 @@
 import { SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_APP_INST } from '../../../../helper/constant/endpoint'
-import { HEALTH_CHECK_OK } from '../../../../helper/constant/perpetual'
+import { HEALTH_CHECK_OK, MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION } from '../../../../helper/constant/perpetual'
+import { serverFields } from '../../../../helper/formatter'
 import { READY } from '../../../../helper/formatter/serverFields'
 import { fields } from '../../../../services'
 
@@ -13,10 +14,12 @@ export const sequence1 = [
     { label: 'Cluster Name', active: false, field: 'cluster' },
     { label: 'App Name', active: false, field: 'app' },
 ]
-export const sequence = [
-    { label: 'Cloudlet', active: false, field:fields.cloudletName, fields: [fields.cloudletName, fields.operatorName], method: SHOW_CLOUDLET, status: [{ field: fields.state, value: READY }] },
-    { label: 'Cluster', active: false, field:fields.clusterName, fields: [fields.clusterName], method: SHOW_CLUSTER_INST , status: [{ field: fields.state, value: READY }]},
-    { label: 'App', active: false, field:fields.appName, method: SHOW_APP_INST, status: [{ field: fields.healthCheck, value: HEALTH_CHECK_OK }] },
+
+export const sequence = [ 
+    { label: 'Operator', active: false, field: fields.operatorName, filters: { 'cloudletName':[fields.cloudletName], 'appName': [fields.clusterName], 'clusterName': [fields.cloudletName, fields.operatorName] }, method: SHOW_CLOUDLET },
+    { label: 'Cloudlet', active: false, field: fields.cloudletName, filters: { 'appName': [fields.cloudletName, fields.operatorName], 'clusterName': [fields.cloudletName, fields.operatorName]}, method: SHOW_CLOUDLET, total: [{ field: fields.state, values: [serverFields.READY] }, { type:'Transient', field: fields.state, values: [serverFields.CREATING] }] },
+    { label: 'Cluster', active: false, field: fields.clusterName, filters: { 'appName': [fields.clusterName], 'cloudletName': [fields.cloudletName, fields.operatorName] }, method: SHOW_CLUSTER_INST, total: [{ field: fields.state, values: [serverFields.READY] }] },
+    { label: 'App', active: false, field: fields.appName, method: SHOW_APP_INST, skip: [{ field: fields.appName, values: [MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION] }], filters: { 'cloudletName': [fields.cloudletName, fields.operatorName], 'clusterName': [fields.clusterName] }, total: [{ field: fields.healthCheck, values: [serverFields.OK] }] },
 ]
 
 export const color = { 'Ready': '#00C851', "Delete": '#ff4444', 'Maintainance': '#ffbb33' }

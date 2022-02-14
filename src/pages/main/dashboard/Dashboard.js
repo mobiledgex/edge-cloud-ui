@@ -1,4 +1,4 @@
-import { Grid} from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { showAppInsts } from '../../../services/modules/appInst'
@@ -13,21 +13,23 @@ import Total from './total/Total'
 import { processWorker } from '../../../services/worker/interceptor'
 import { sequence } from './control/format'
 import { fields } from '../../../services'
+import { showOrganizations } from '../../../services/modules/organization/organization'
+import { perpetual } from '../../../helper/constant'
 
 class Dashboard extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            chartData:undefined,
-            total:undefined
+            chartData: undefined,
+            total: undefined
         }
         this.worker = new DashbordWorker()
     }
 
     render() {
-        const {chartData, total} = this.state
+        const { chartData, total } = this.state
         return (
-            <div style={{height:'calc(100vh - 55px)', overflowY: 'auto', overflowX: 'hidden', padding:7}}>
+            <div style={{ height: 'calc(100vh - 55px)', overflowY: 'auto', overflowX: 'hidden', padding: 7 }}>
                 <Grid container columns={{ xs: 4, sm: 8, md: 12 }} spacing={1}>
                     <Grid item xs={7}>
                         <Control chartData={chartData} />
@@ -57,16 +59,16 @@ class Dashboard extends React.Component {
             let request = requestType(this, Object.assign({}, { region: 'US' }))
             requestList.push(request)
         })
+        requestList.push(showOrganizations(this, { type: perpetual.OPERATOR }, true))
         if (requestList.length > 0) {
             let mcList = await multiAuthSyncRequest(this, requestList, false)
             let response = await processWorker(this.worker, {
-                region:'US',
+                region: 'US',
                 sequence,
-                rawList : mcList
+                rawList: mcList
             })
-            if(response.status === 200)
-            {
-                this.setState({chartData:response.data, total:response.total})
+            if (response.status === 200) {
+                this.setState({ chartData: response.data, total: response.total })
             }
         }
     }

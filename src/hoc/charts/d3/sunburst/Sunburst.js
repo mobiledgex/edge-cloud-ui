@@ -36,7 +36,7 @@ const labelTransform = (d) => {
 
 const partition = data => {
     const root = d3.hierarchy(data)
-        .sum(d => d.value)
+        .sum(d => (!d.childrenMust || (d.childrenMust && d.children)) && d.value)
         .sort((a, b) => b.value - a.value);
     return d3.partition()
         .size([2 * Math.PI, root.height + 1])
@@ -105,7 +105,7 @@ const Sunburst = (props) => {
                 .attr("fill", d => {
                     return fetchColor(d)
                 })
-                .attr("fill-opacity", d => arcVisible(d.target) ? (d.children ? 0.9 : 0.9) : 0)
+                .attr("fill-opacity", d => arcVisible(d.target) ? (d.children ? 0.8 : 0.4) : 0)
                 .attrTween("d", d => () => arc(d.current));
 
             label.filter(function (d) {

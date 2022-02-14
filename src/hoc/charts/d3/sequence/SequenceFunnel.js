@@ -44,11 +44,12 @@ export const updateElements = (sequence, onSwap) => {
   entering.append('svg:text')
     .attr("x", (b.w + b.t) / 2)
     .attr("y", b.h / 2)
-    .attr("dy", "0.35em")
-    .attr("dx", "1.5em")
+    .attr("dy", "0em")
+    .attr("dx", 6 * sequence.length)
     .style("font-size", "12px")
     .style("font-weight", "700")
     .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "central") 
     .text((d) => { return d.label; })
     .attr('fill', 'white');
 
