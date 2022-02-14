@@ -471,6 +471,7 @@ class AppInstReg extends React.Component {
                 if (updateData.fields.length > 0) {
                     this.props.handleLoadingSpinner(true)
                     updateData[fields.clusterdeveloper] = this.clusterInstList[0][fields.clusterdeveloper]
+                    updateData[fields.federatedOrg] = this.props.data[fields.federatedOrg]
                     updateAppInst(this, updateData, this.onCreateResponse)
                 }
             }
@@ -480,6 +481,7 @@ class AppInstReg extends React.Component {
                         let newData = cloneDeep(data)
                         let cloudlet = cloudlets[i];
                         newData[fields.cloudletName] = cloudlet;
+                        newData[fields.federatedOrg] = this.filterFederatorCloudlet(cloudlet)[0][fields.partnerOperator]
                         newData[fields.compatibilityVersion] = this.fetchCompabilityVersion(data, cloudlet)
                         if (flavors) {
                             newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
@@ -491,6 +493,10 @@ class AppInstReg extends React.Component {
                 }
             }
         }
+    }
+
+    filterFederatorCloudlet = (cloudletName) => {
+        return this.cloudletList.filter((item) => item.cloudletName === cloudletName)
     }
 
     /*Required*/

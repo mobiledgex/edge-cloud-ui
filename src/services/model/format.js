@@ -8,7 +8,7 @@ export const fields = {
     org: 'org',
     billingOrgName: 'billingOrgName',
     operatorName: 'operatorName',
-    partnerOperator:'partnerOperator',
+    federatedOrgpartnerOperator: 'partnerOperator',
     cloudletName: 'cloudletName',
     flavorName: 'flavorName',
     gpuDriverName: 'gpuDriverName',
@@ -321,5 +321,6 @@ export const fields = {
     sharedOperator: 'sharedOperator',
     autoGenerateFederationID: 'autoGenerateFederationID',
     zones:'zones',
-    mncmulti:'mncmulti'
+    mncmulti: 'mncmulti',
+    federatedOrg: 'federatedOrg'
 }

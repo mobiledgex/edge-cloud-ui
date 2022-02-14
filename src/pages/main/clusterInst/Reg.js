@@ -367,6 +367,7 @@ class ClusterInstReg extends React.Component {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
                 if (updateData.fields.length > 0) {
                     this.props.handleLoadingSpinner(true)
+                    updateData[fields.federatedOrg] = this.props.data[fields.federatedOrg]
                     updateClusterInst(this, updateData, this.onCreateResponse)
                 }
             }
@@ -376,6 +377,7 @@ class ClusterInstReg extends React.Component {
                         let newData = cloneDeep(data)
                         let cloudlet = cloudlets[i];
                         newData[fields.cloudletName] = cloudlet;
+                        newData[fields.federatedOrg] = this.filterFederatorCloudlet(cloudlet)[0][fields.partnerOperator]
                         newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
                         newData[fields.network] = network ? [network[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]] : undefined
                         this.props.handleLoadingSpinner(true)
@@ -387,6 +389,9 @@ class ClusterInstReg extends React.Component {
         }
     }
 
+    filterFederatorCloudlet = (cloudletName) => {
+        return this.cloudletList.filter((item) => item.cloudletName === cloudletName)
+    }
     /**
      * Tab block
      */
