@@ -40,6 +40,7 @@ class AutoProvPolicyReg extends React.Component {
                 dualFormat[fields.cloudletName] = cloudletName
                 dualFormat[fields.operatorName] = data[fields.operatorName]
                 dualFormat[fields.cloudletLocation] = data[fields.cloudletLocation]
+                dualFormat[fields.partnerOperator] = data[fields.partnerOperator]
                 return { value: JSON.stringify(dualFormat), label: cloudletName }
             })
     }
@@ -222,7 +223,7 @@ class AutoProvPolicyReg extends React.Component {
         return cloudletList
     }
 
-    onCreateAutoProvPolicy = async (data) => {
+    onCreate = async (data) => {
         if (data[fields.deployClientCount] || data[fields.minActiveInstances]) {
             let mcRequest = undefined
             data[fields.cloudlets] = this.getCloudletList(data)
@@ -253,6 +254,7 @@ class AutoProvPolicyReg extends React.Component {
                 let cloudlet = JSON.parse(cloudletList[i])
                 data.cloudletName = cloudlet[fields.cloudletName]
                 data.operatorName = cloudlet[fields.operatorName]
+                data.partnerOperator = cloudlet[fields.partnerOperator]
                 if (this.props.action === perpetual.DELETE_CLOUDLET) {
                     requestList.push(deleteAutoProvCloudletKey(data))
                 }
@@ -440,7 +442,7 @@ class AutoProvPolicyReg extends React.Component {
             let forms = this.formKeys()
 
             forms.push(
-                { label: this.isUpdate ? 'Update' : 'Create', formType: 'Button', onClick: this.onCreateAutoProvPolicy, validate: true },
+                { label: this.isUpdate ? 'Update' : 'Create', formType: 'Button', onClick: this.onCreate, validate: true },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
 
             this.updateFormData(forms, data)

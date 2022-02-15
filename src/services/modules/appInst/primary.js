@@ -1,5 +1,5 @@
 import { fields } from "../../model/format"
-import { primaryKeys as cloudletKeys } from "../../modules/cloudlet/primary"
+import { cloudletKeys } from "../../modules/cloudlet/primary"
 
 const initialize = (parent, field, value) => {
   if (value) {
@@ -18,7 +18,7 @@ export const AIK_CLUSTER = 5
 export const AIK_APP_ALL = 6
 export const AIK_APP_ORG = 7
 
-export const primaryKeys = (data, include) => {
+export const appInstKeys = (data, include) => {
   include = include !== undefined ? include : AIK_APP_ALL
   let appKey = undefined
 

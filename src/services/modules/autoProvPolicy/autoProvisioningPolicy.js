@@ -1,8 +1,8 @@
 import { showAuthSyncRequest } from '../../service';
-import { getCloudletKey } from '../../modules/cloudlet'
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant'
 import { fields } from '../../model/format';
+import { cloudletKeys } from '../cloudlet';
 
 export const keys = () => ([
   { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key:true },
@@ -19,6 +19,7 @@ export const keys = () => ([
     field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets',
     keys: [{ field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name' },
     { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator' },
+    { field: fields.partnerOperator, serverField: 'key#OS#federated_organization', label: 'Partner Operator' },
     { field: fields.cloudletLocation, serverField: 'loc', label: 'Location', dataType: perpetual.TYPE_JSON }]
   }
 ])
@@ -31,7 +32,7 @@ const getAutoProvCloudletKey = (data, isCreate) => {
   let autoProvPolicyCloudlet = {}
   autoProvPolicyCloudlet.key = getKey(data)
   if (isCreate) {
-    autoProvPolicyCloudlet.cloudlet_key = { name: data[fields.cloudletName], organization: data[fields.operatorName] }
+    autoProvPolicyCloudlet.cloudlet_key = cloudletKeys(data)
   }
   return ({
     region: data[fields.region],
@@ -44,7 +45,7 @@ const getCloudletList = (cloudlets) => {
   if (cloudlets && cloudlets.length > 0) {
     cloudletList = []
     for (let i = 0; i < cloudlets.length; i++) {
-      cloudletList.push({ key: getCloudletKey(cloudlets[i]) })
+      cloudletList.push({ key: cloudletKeys(cloudlets[i]) })
     }
   }
   return cloudletList
