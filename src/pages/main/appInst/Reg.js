@@ -30,7 +30,6 @@ import cloneDeep from 'lodash/cloneDeep';
 import { uniqueId } from '../../../helper/constant/shared';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
-const QA_ANTHOS = 'qa-anthos'
 
 class AppInstReg extends React.Component {
     constructor(props) {
@@ -126,7 +125,7 @@ class AppInstReg extends React.Component {
             await Promise.all(cloudletList.map(async (cloudletName) => {
                 let key = `${region}>${operatorName}>${cloudletName}`
                 if (this.flavorOrgList[key] === undefined) {
-                    let flavorList = await fetchCloudletFlavors(this, { region: region, cloudletName, operatorName, partnerOperator: fetchPartnerOperator(this.cloudletList, {operatorName, cloudletName}) })
+                    let flavorList = await fetchCloudletFlavors(this, { region: region, cloudletName, operatorName, partnerOperator: fetchPartnerOperator(this.cloudletList, { operatorName, cloudletName }, fields.partnerOperator) })
                     if (flavorList && flavorList.length > 0) {
                         this.flavorOrgList[key] = flavorList
                     }
@@ -318,8 +317,12 @@ class AppInstReg extends React.Component {
     cloudletValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
+            let operator = undefined;
+            if (form.field === fields.operatorName) {
+                operator = form.value
+            }
             if (form.field === fields.dedicatedIp) {
-                form.visible = currentForm.value.includes(QA_ANTHOS)
+                form.visible = fetchPartnerOperator(this.cloudletList, { operatorName: operator, cloudletName: currentForm.value }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
             }
             if (form.field === fields.clusterName) {
                 this.updateUI(form)
@@ -485,9 +488,9 @@ class AppInstReg extends React.Component {
                     for (let i = 0; i < cloudlets.length; i++) {
                         let newData = cloneDeep(data)
                         let cloudlet = cloudlets[i];
-                        newData[fields.dedicatedIp] = cloudlet === QA_ANTHOS ? data[fields.dedicatedIp] : undefined
+                        newData[fields.dedicatedIp] = fetchPartnerOperator(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL ? data[fields.dedicatedIp] : undefined
                         newData[fields.cloudletName] = cloudlet;
-                        newData[fields.partnerOperator] = fetchPartnerOperator(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet })
+                        newData[fields.partnerOperator] = fetchPartnerOperator(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet }, fields.partnerOperator)
                         newData[fields.compatibilityVersion] = this.fetchCompabilityVersion(data, cloudlet)
                         if (flavors) {
                             newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]

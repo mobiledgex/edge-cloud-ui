@@ -121,7 +121,7 @@ class NetworkReg extends React.Component {
                 }
             }
             else {
-                data[fields.partnerOperator] = fetchPartnerOperator(this.cloudletList, data)
+                data[fields.partnerOperator] = fetchPartnerOperator(this.cloudletList, data, fields.partnerOperator)
                 mc = await createNetwork(this, data)
             }
             if (service.responseValid(mc)) {
