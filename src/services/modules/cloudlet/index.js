@@ -1,11 +1,11 @@
 import { customize } from './custom'
-import { keys, iconKeys, showCloudlets, cloudletWithInfo, fetchCloudletData, deleteCloudlet, streamCloudlet, multiDataRequest, getCloudletManifest, revokeAccessKey, createCloudlet, updateCloudlet, cloudletResourceQuota, cloudletProps, getCloudletKey, fetchShowNode } from './cloudlet'
-import { primaryKeys } from './primary'
+import { keys, iconKeys, showCloudlets, cloudletWithInfo, fetchCloudletData, deleteCloudlet, streamCloudlet, multiDataRequest, getCloudletManifest, revokeAccessKey, createCloudlet, updateCloudlet, cloudletResourceQuota, cloudletProps, fetchShowNode, fetchPartnerOperator } from './cloudlet'
+import { cloudletKeys } from './primary'
 export {
     customize,
     keys,
     iconKeys,
-    primaryKeys,
+    cloudletKeys,
     showCloudlets,
     cloudletWithInfo,
     fetchCloudletData,
@@ -18,7 +18,7 @@ export {
     updateCloudlet,
     cloudletResourceQuota,
     cloudletProps,
-    getCloudletKey,
-    fetchShowNode
+    fetchShowNode,
+    fetchPartnerOperator
 }
 

@@ -14,9 +14,14 @@ import { processFlavorData, processFlavorSelection } from './flavor';
 
 const processLineChartData = (chartDataList, values, worker) => {
     const { legends, timezone } = worker
-    chartDataList.forEach(chartData => {
-        chartData['datasets'] = generateDataset(chartData, values, legends, timezone, undefined)
+    chartDataList = chartDataList.filter(chartData => {
+        let datasets = generateDataset(chartData, values, legends, timezone, undefined)
+        if (Object.keys(datasets).length > 0) {
+            chartData.datasets = datasets
+            return true
+        }
     })
+    return chartDataList
 }
 
 const avgCalculator = (values, metric, legends) => {
@@ -49,7 +54,7 @@ const processData = (worker) => {
             chartList.push(chartData)
         })
     }
-    processLineChartData(chartList, dataList.values, worker)
+    chartList = processLineChartData(chartList, dataList.values, worker)
     self.postMessage({ status: 200, data: chartList, resources })
 }
 
