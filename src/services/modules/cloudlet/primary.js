@@ -1,9 +1,10 @@
 import { fields } from "../../model/format"
 
 
-export const CK_ORG_NAME = 0
+export const CK_ORG_NAME_FEDERATOR = 0
 export const CK_ORG = 1
 export const CK_NAME = 2
+export const CK_FEDERATOR = 3
 
 const initialize = (parent, field, value) => {
   if (value) {
@@ -15,12 +16,15 @@ const initialize = (parent, field, value) => {
 
 export const primaryKeys = (data, include) => {
   let cloudletKey = undefined
-  include = include !== undefined ? include : CK_ORG_NAME
-  if (include === CK_ORG_NAME || include === CK_NAME) {
+  include = Boolean(include) ? include : CK_ORG_NAME_FEDERATOR
+  if (include === CK_ORG_NAME_FEDERATOR || include === CK_NAME) {
     cloudletKey = initialize(cloudletKey, 'name', data[fields.cloudletName])
   }
-  if (include === CK_ORG_NAME || include === CK_ORG) {
+  if (include === CK_ORG_NAME_FEDERATOR || include === CK_ORG) {
     cloudletKey = initialize(cloudletKey, 'organization', data[fields.operatorName] ? data[fields.operatorName] : data[fields.organizationName])
+  }
+  if (include === CK_ORG_NAME_FEDERATOR || include === CK_FEDERATOR) {
+    cloudletKey = initialize(cloudletKey, 'federated_organization', data[fields.partnerOperator])
   }
   return cloudletKey
 }

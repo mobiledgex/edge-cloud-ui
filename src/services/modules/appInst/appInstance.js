@@ -7,7 +7,8 @@ import { endpoint, perpetual } from '../../../helper/constant'
 import { customize } from '.'
 import { generateUUID } from '../../format/shared'
 import { REQUEST_APP_INST_LATENCY } from '../../../helper/constant/endpoint';
-import { AIK_APP_CLOUDLET_CLUSTER, primaryKeys } from './primary';
+import { AIK_APP_CLOUDLET_CLUSTER, primaryKeys as appInstKeys } from './primary';
+import { primaryKeys as cloudletKeys } from '../cloudlet';
 import { serverFields } from '../../../helper/formatter';
 
 let fields = formatter.fields;
@@ -21,7 +22,7 @@ export const keys = () => ([
   { field: fields.cloudlet_name_operator, label: 'Cloudlet [Operator]', sortable: true, visible: true, detailView: false },
   { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: false, filter: true, group: true, key: true },
   { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: false, filter: true, group: true, key: true },
-  { field: fields.federatedOrg, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#federated_organization', label: 'Federation organization', visible: false, key: true },
+  { field: fields.partnerOperator, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#federated_organization', label: 'Federation organization', visible: false, key: true },
   { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: perpetual.TYPE_JSON },
   { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false, key: true },
   { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true, filter: true, group: true, key: true },
@@ -60,7 +61,7 @@ export const getAppInstanceKey = (data) => {
   return {
     app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
     cluster_inst_key: {
-      cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName], federated_organization: data[fields.federatedOrg] },
+      cloudlet_key: cloudletKeys(data),
       cluster_key: { name: data[fields.clusterName] ? data[fields.clusterName] : 'DefaultVMCluster' },
       organization: getClusterOrg(data)
     }
@@ -242,7 +243,7 @@ export const refreshAppInst = (data) => {
 export const requestAppInstLatency = async (self, data) => {
   let requestData = {
     region: data[fields.region],
-    appInstLatency: { key: primaryKeys(data, AIK_APP_CLOUDLET_CLUSTER) }
+    appInstLatency: { key: appInstKeys(data, AIK_APP_CLOUDLET_CLUSTER) }
   }
   return await authSyncRequest(self, { method: REQUEST_APP_INST_LATENCY, data: requestData })
 }

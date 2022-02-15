@@ -42,6 +42,7 @@ export const showFlavors = (self, data) => {
 }
 
 export const fetchCloudletFlavors = async (self, data) => {
+    console.log(data)
     const keys = [{ label: 'Name', field: 'flavorName', serverField: 'name' }]
     const requestData = {
         cloudletKey: cloudletKeys(data),
