@@ -52,10 +52,6 @@ class NetworkReg extends React.Component {
         this.updateState({ forms })
     }
 
-    cloudletValueChange = (currentForm, forms, isInit) => {
-        console.log(currentForm)
-    }
-
     operatorValueChange = (currentForm, forms, isInit) => {
         for (let form of forms) {
             if (form.field === fields.cloudletName) {
@@ -89,9 +85,6 @@ class NetworkReg extends React.Component {
         }
         else if (form.field === fields.operatorName) {
             this.operatorValueChange(form, forms, isInit)
-        }
-        else if (form.field === fields.cloudletName) {
-            this.cloudletValueChange(form, forms, isInit)
         }
     }
 
