@@ -2,7 +2,7 @@
 import * as formatter from '../../model/format'
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import { endpoint, perpetual } from '../../../helper/constant'
-import { primaryKeys as cloudletKeys } from '../cloudlet/primary';
+import { cloudletKeys } from '../cloudlet/primary';
 
 let fields = formatter.fields
 

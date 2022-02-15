@@ -1,5 +1,5 @@
 import { endpoint } from '../../../helper/constant'
-import { primaryKeys as cloudletKeys } from '../cloudlet/primary'
+import { cloudletKeys } from '../cloudlet/primary'
 import { fields } from '../../model/format'
 
 export const cloudletEventKeys = [
