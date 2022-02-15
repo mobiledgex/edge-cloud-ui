@@ -37,7 +37,7 @@ export const fetchFlavorBySelection = async (data) => {
 }
 
 export const fetchResourceData = async (self, moduleId, data) => {
-    const { region, legends, metricRequestData, resourceKey, range, worker, selection } = data
+    const { region, organization, legends, metricRequestData, resourceKey, range, worker, selection } = data
     if (resourceKey.serverRequest && metricRequestData && metricRequestData.length > 0) {
         let data = {}
         data[fields.region] = region
@@ -45,7 +45,7 @@ export const fetchResourceData = async (self, moduleId, data) => {
         data[fields.endtime] = range.endtime
         data[fields.selector] = resourceKey.serverField
         data[fields.numsamples] = 50
-        let request = resourceAPIs(self, resourceKey.serverRequest, data, metricRequestData, redux_org.nonAdminOrg(self))
+        let request = resourceAPIs(self, resourceKey.serverRequest, data, metricRequestData, organization ? organization[fields.organizationName] : redux_org.nonAdminOrg(self))
         let mc = await authSyncRequest(this, { ...request, format: false })
         if (responseValid(mc)) {
             let response = await processWorker(worker, {
@@ -56,7 +56,7 @@ export const fetchResourceData = async (self, moduleId, data) => {
                 region,
                 metric: resourceKey,
                 legends: legends,
-                selection : selection,
+                selection: selection,
                 timezone: timezonePref()
             })
             if (response.status === 200) {

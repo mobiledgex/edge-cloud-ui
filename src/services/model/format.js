@@ -8,7 +8,7 @@ export const fields = {
     org: 'org',
     billingOrgName: 'billingOrgName',
     operatorName: 'operatorName',
-    partnerOperator:'partnerOperator',
+    partnerOperator: 'partnerOperator',
     cloudletName: 'cloudletName',
     flavorName: 'flavorName',
     gpuDriverName: 'gpuDriverName',
