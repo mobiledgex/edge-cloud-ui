@@ -269,4 +269,6 @@ export const PAGE_INBOUND_FEDERATION = 'Inbound'
 export const PAGE_PARTNER_ZONES = 'Partner Zones'
 export const PAGE_SHARED_ZONES = 'Shared Zones'
 
+export const QA_ANTHOS = 'qa-anthos'
+
 
