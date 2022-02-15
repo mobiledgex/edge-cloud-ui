@@ -9,7 +9,6 @@ export default function userInfo(state = initialState, action) {
             return Object.assign({}, state, {
                 data: action.data
             })
-            break;
         default:
             return state
     }
