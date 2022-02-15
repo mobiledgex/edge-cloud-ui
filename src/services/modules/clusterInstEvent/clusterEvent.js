@@ -21,13 +21,13 @@ export const clusterEventKeys = [
     { label: 'Status', serverField: 'status', visible: true, detailedView: true }
 ]
 
-export const clusterEventLogs = (self, data) => {
+export const clusterEventLogs = (self, data, isOperator=false) => {
     let requestData = {
         region: data[fields.region],
         starttime: data[fields.starttime],
         endtime: data[fields.endtime]
     }
-    if (redux_org.isOperator(self)) {
+    if (isOperator) {
         requestData.clusterinst = {
             cloudlet_key: cloudletKeys(data)
         }

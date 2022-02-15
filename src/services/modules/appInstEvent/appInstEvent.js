@@ -17,13 +17,13 @@ export const appEventKeys = [
     { label: 'Status', serverField: 'status', visible: true, detailedView: true }
 ]
 
-export const appInstEventLogs = (self, data) => {
+export const appInstEventLogs = (self, data, isOperator = false) => {
     let requestData = {
         region: data[fields.region],
         starttime: data[fields.starttime],
         endtime: data[fields.endtime]
     }
-    if (redux_org.isOperator(self)) {
+    if (isOperator) {
         requestData.appinst = appInstKeys(data, AIK_CLOUDLET)
     }
     else {
