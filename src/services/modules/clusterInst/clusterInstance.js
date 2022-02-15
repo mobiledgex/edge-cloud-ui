@@ -7,6 +7,7 @@ import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
 import { customize } from '../../modules/clusterInst';
 import { generateUUID } from '../../format/shared';
+import { cloudletKeys } from '../cloudlet';
 
 let fields = formatter.fields;
 
@@ -15,6 +16,7 @@ export const keys = () => ([
     { field: fields.organizationName, serverField: 'key#OS#organization', sortable: true, label: 'Organization', visible: true, filter: true, group: true, key: true },
     { field: fields.clusterName, serverField: 'key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster', visible: true, filter: true, key: true, key: true },
     { field: fields.operatorName, serverField: 'key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: false, filter: true, group: true, key: true },
+    { field: fields.partnerOperator, serverField: 'key#OS#cloudlet_key#OS#federated_organization', label: 'Partner Operator', visible: false, key: true },
     { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: false, filter: true, group: true, key: true },
     { field: fields.cloudlet_name_operator, sortable: true, label: 'Cloudlet [Operator]', visible: true, filter: false, detailView: false },
     { field: fields.flavorName, serverField: 'flavor#OS#name', sortable: true, label: 'Flavor', visible: true, filter: true, group: true },
@@ -135,7 +137,7 @@ export const showClusterInsts = (self, data, specific) => {
 export const clusterInstanceKey = (data) => {
     return {
         cluster_key: { name: data[fields.clusterName] },
-        cloudlet_key: { organization: data[fields.operatorName], name: data[fields.cloudletName] },
+        cloudlet_key: cloudletKeys(data),
         organization: data[fields.organizationName]
     }
 }

@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, SWITCH, ICON_BUTTON, TEXT_AREA, MAIN_HEADER, HEADER, SELECT_RADIO_TREE_GROUP, MULTI_FORM } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, SWITCH, ICON_BUTTON, TEXT_AREA, MAIN_HEADER, HEADER, SELECT_RADIO_TREE_GROUP, MULTI_FORM, INPUT } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -10,7 +10,7 @@ import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../services/modules/organization';
-import { cloudletWithInfo, showCloudlets } from '../../../services/modules/cloudlet';
+import { cloudletWithInfo, fetchPartnerOperator, showCloudlets } from '../../../services/modules/cloudlet';
 import { sendRequests } from '../../../services/model/serverWorker'
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import { getClusterInstList, showClusterInsts } from '../../../services/modules/clusterInst';
@@ -126,7 +126,7 @@ class AppInstReg extends React.Component {
             await Promise.all(cloudletList.map(async (cloudletName) => {
                 let key = `${region}>${operatorName}>${cloudletName}`
                 if (this.flavorOrgList[key] === undefined) {
-                    let flavorList = await fetchCloudletFlavors(this, { region, cloudletName, operatorName })
+                    let flavorList = await fetchCloudletFlavors(this, { region: region, cloudletName, operatorName, partnerOperator: fetchPartnerOperator(this.cloudletList, {operatorName, cloudletName}) })
                     if (flavorList && flavorList.length > 0) {
                         this.flavorOrgList[key] = flavorList
                     }
@@ -373,6 +373,7 @@ class AppInstReg extends React.Component {
             { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], update: { key: true } },
             { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }], update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], update: { key: true } },
+            { field: fields.partnerOperator, label: 'Partner Operator', formType: INPUT, visible: false, update: { key: true }},
             { field: fields.cloudletName, label: 'Cloudlet', formType: MULTI_SELECT, placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 5, field: fields.operatorName }], update: { key: true } },
             { field: fields.flavorName, label: 'Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE_GROUP, placeholder: 'Select Flavor', rules: { required: false, copy: true }, visible: true, tip: 'FlavorKey uniquely identifies a Flavor' },
             { field: fields.dedicatedIp, label: 'Dedicated IP', formType: SWITCH, visible: false, value: false, update: { id: ['39'] }, tip: 'Dedicated IP assigns an IP for this AppInst but requires platform support' },
@@ -486,6 +487,7 @@ class AppInstReg extends React.Component {
                         let cloudlet = cloudlets[i];
                         newData[fields.dedicatedIp] = cloudlet === QA_ANTHOS ? data[fields.dedicatedIp] : undefined
                         newData[fields.cloudletName] = cloudlet;
+                        newData[fields.partnerOperator] = fetchPartnerOperator(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet })
                         newData[fields.compatibilityVersion] = this.fetchCompabilityVersion(data, cloudlet)
                         if (flavors) {
                             newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
