@@ -1,6 +1,6 @@
 import { endpoint } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData'
-import { primaryKeys as cloudletKeys } from '../cloudlet'
+import { cloudletKeys } from '../cloudlet'
 import { fields } from '../../model/format'
 
 export const clusterEventKeys = [

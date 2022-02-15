@@ -2,7 +2,7 @@
 import * as formatter from '../../model/format'
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import { endpoint, perpetual } from '../../../helper/constant'
-import { primaryKeys as cloudletKeys } from '../cloudlet/primary';
+import { cloudletKeys } from '../cloudlet/primary';
 
 let fields = formatter.fields
 
@@ -42,7 +42,6 @@ export const showFlavors = (self, data) => {
 }
 
 export const fetchCloudletFlavors = async (self, data) => {
-    console.log(data)
     const keys = [{ label: 'Name', field: 'flavorName', serverField: 'name' }]
     const requestData = {
         cloudletKey: cloudletKeys(data),

@@ -7,8 +7,8 @@ import { endpoint, perpetual } from '../../../helper/constant'
 import { customize } from '.'
 import { generateUUID } from '../../format/shared'
 import { REQUEST_APP_INST_LATENCY } from '../../../helper/constant/endpoint';
-import { AIK_APP_CLOUDLET_CLUSTER, primaryKeys as appInstKeys } from './primary';
-import { primaryKeys as cloudletKeys } from '../cloudlet';
+import { AIK_APP_CLOUDLET_CLUSTER,  appInstKeys } from './primary';
+import {  cloudletKeys } from '../cloudlet';
 import { serverFields } from '../../../helper/formatter';
 
 let fields = formatter.fields;

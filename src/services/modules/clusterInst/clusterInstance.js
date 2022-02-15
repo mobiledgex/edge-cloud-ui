@@ -7,7 +7,7 @@ import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
 import { customize } from '../../modules/clusterInst';
 import { generateUUID } from '../../format/shared';
-import { primaryKeys as cloudletKeys } from '../cloudlet';
+import { cloudletKeys } from '../cloudlet';
 
 let fields = formatter.fields;
 

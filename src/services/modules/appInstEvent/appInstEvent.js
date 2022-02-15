@@ -1,7 +1,6 @@
-import * as dateUtil from '../../../utils/date_util'
 import { endpoint } from '../../../helper/constant'
 import { fields } from '../../model/format'
-import { AIK_CLOUDLET, primaryKeys as appInstKeys } from '../appInst/primary'
+import { AIK_CLOUDLET, appInstKeys } from '../appInst/primary'
 import { redux_org } from '../../../helper/reduxData'
 
 export const appEventKeys = [
@@ -10,9 +9,9 @@ export const appEventKeys = [
     { field: fields.appName, label: 'App', serverField: 'app', visible: true, detailedView: false, groupBy: true, filter: true, format: true },
     { label: 'App Developer', serverField: 'apporg', visible: false, detailedView: false, groupBy: true },
     { label: 'Version', serverField: 'ver', visible: false, detailedView: false, groupBy: true },
-    { field: fields.clusterName, label: 'Cluster', serverField: 'cluster', visible: true, detailedView: false, groupBy: true, format: true  },
+    { field: fields.clusterName, label: 'Cluster', serverField: 'cluster', visible: true, detailedView: false, groupBy: true, format: true },
     { label: 'Cluster Developer', serverField: 'clusterorg', visible: false, detailedView: false, groupBy: true },
-    { field: fields.cloudletName, label: 'Cloudlet', serverField: 'cloudlet', visible: true, detailedView: false, groupBy: true, format: true  },
+    { field: fields.cloudletName, label: 'Cloudlet', serverField: 'cloudlet', visible: true, detailedView: false, groupBy: true, format: true },
     { label: 'Operator', serverField: 'cloudletorg', visible: false, detailedView: false, groupBy: true },
     { label: 'Action', serverField: 'event', visible: true, detailedView: true },
     { label: 'Status', serverField: 'status', visible: true, detailedView: true }

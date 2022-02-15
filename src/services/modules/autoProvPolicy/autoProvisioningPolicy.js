@@ -1,8 +1,8 @@
 import { showAuthSyncRequest } from '../../service';
-import { getCloudletKey } from '../../modules/cloudlet'
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant'
 import { fields } from '../../model/format';
+import { cloudletKeys } from '../cloudlet';
 
 export const keys = () => ([
   { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key:true },
@@ -44,7 +44,7 @@ const getCloudletList = (cloudlets) => {
   if (cloudlets && cloudlets.length > 0) {
     cloudletList = []
     for (let i = 0; i < cloudlets.length; i++) {
-      cloudletList.push({ key: getCloudletKey(cloudlets[i]) })
+      cloudletList.push({ key: cloudletKeys(cloudlets[i]) })
     }
   }
   return cloudletList

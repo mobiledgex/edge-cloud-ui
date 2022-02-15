@@ -10,7 +10,7 @@ import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../services/modules/organization';
-import { cloudletWithInfo, showCloudlets } from '../../../services/modules/cloudlet';
+import { cloudletWithInfo, fetchPartnerOperator, showCloudlets } from '../../../services/modules/cloudlet';
 import { sendRequests } from '../../../services/model/serverWorker'
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import { getClusterInstList, showClusterInsts } from '../../../services/modules/clusterInst';
@@ -125,7 +125,7 @@ class AppInstReg extends React.Component {
             await Promise.all(cloudletList.map(async (cloudletName) => {
                 let key = `${region}>${operatorName}>${cloudletName}`
                 if (this.flavorOrgList[key] === undefined) {
-                    let flavorList = await fetchCloudletFlavors(this, { region, cloudletName, operatorName })
+                    let flavorList = await fetchCloudletFlavors(this, { region: region, cloudletName, operatorName, partnerOperator: fetchPartnerOperator({operatorName, cloudletName}) })
                     if (flavorList && flavorList.length > 0) {
                         this.flavorOrgList[key] = flavorList
                     }
@@ -481,7 +481,7 @@ class AppInstReg extends React.Component {
                         let newData = cloneDeep(data)
                         let cloudlet = cloudlets[i];
                         newData[fields.cloudletName] = cloudlet;
-                        newData[fields.partnerOperator] = this.filterFederatorCloudlet(cloudlet)[0][fields.partnerOperator]
+                        newData[fields.partnerOperator] = fetchPartnerOperator({ operatorName: data[fields.operatorName], cloudletName: cloudlet })
                         newData[fields.compatibilityVersion] = this.fetchCompabilityVersion(data, cloudlet)
                         if (flavors) {
                             newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
@@ -493,10 +493,6 @@ class AppInstReg extends React.Component {
                 }
             }
         }
-    }
-
-    filterFederatorCloudlet = (cloudletName) => {
-        return this.cloudletList.filter((item) => item.cloudletName === cloudletName)
     }
 
     /*Required*/

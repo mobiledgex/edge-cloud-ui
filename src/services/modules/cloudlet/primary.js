@@ -14,7 +14,7 @@ const initialize = (parent, field, value) => {
   return parent
 }
 
-export const primaryKeys = (data, include) => {
+export const cloudletKeys = (data, include) => {
   let cloudletKey = undefined
   include = Boolean(include) ? include : CK_ORG_NAME_FEDERATOR
   if (include === CK_ORG_NAME_FEDERATOR || include === CK_NAME) {
