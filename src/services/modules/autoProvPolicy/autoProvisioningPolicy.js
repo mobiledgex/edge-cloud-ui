@@ -19,6 +19,7 @@ export const keys = () => ([
     field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets',
     keys: [{ field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name' },
     { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator' },
+    { field: fields.partnerOperator, serverField: 'key#OS#federated_organization', label: 'Partner Operator' },
     { field: fields.cloudletLocation, serverField: 'loc', label: 'Location', dataType: perpetual.TYPE_JSON }]
   }
 ])
@@ -31,7 +32,7 @@ const getAutoProvCloudletKey = (data, isCreate) => {
   let autoProvPolicyCloudlet = {}
   autoProvPolicyCloudlet.key = getKey(data)
   if (isCreate) {
-    autoProvPolicyCloudlet.cloudlet_key = { name: data[fields.cloudletName], organization: data[fields.operatorName] }
+    autoProvPolicyCloudlet.cloudlet_key = cloudletKeys(data)
   }
   return ({
     region: data[fields.region],
