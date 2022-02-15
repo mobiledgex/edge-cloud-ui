@@ -79,10 +79,8 @@ export const cloudletMetrics = (data, list, org) => {
 
 export const cloudletUsageMetrics = (data, org) => {
     let requestData = { ...data }
-    if (org || data.cloudlet) {
-        requestData.cloudlet = data.cloudlet ? data.cloudlet : {
-            organization: org
-        }
+    requestData.cloudlet = data.cloudlet ? data.cloudlet : {
+        organization: org
     }
     let keys = data.selector === 'flavorusage' ? cloudletFlavorMetricsKeys : cloudletMetricsKeys
     return { method: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, data: requestData, keys }
