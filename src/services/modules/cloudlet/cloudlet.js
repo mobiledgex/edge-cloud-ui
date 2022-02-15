@@ -168,8 +168,8 @@ export const getKey = (data, isCreate) => {
     })
 }
 
-export const fetchPartnerOperator = (data) => {
-    for (const item of this.cloudletList) {
+export const fetchPartnerOperator = (cloudletList, data) => {
+    for (const item of cloudletList) {
         if (item[fields.cloudletName] === data[fields.cloudletName] && item[fields.operatorName] === data[fields.operatorName]) {
             return item[fields.partnerOperator]
         }

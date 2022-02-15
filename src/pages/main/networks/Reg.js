@@ -12,7 +12,7 @@ import { HELP_NETWORK_LIST } from "../../../tutorial";
 
 import { Grid } from '@material-ui/core';
 import { perpetual } from '../../../helper/constant';
-import { showCloudlets } from '../../../services/modules/cloudlet';
+import { fetchPartnerOperator, showCloudlets } from '../../../services/modules/cloudlet';
 import { uniqueId, validateRemoteCIDR, validateRemoteIP } from '../../../helper/constant/shared';
 
 class NetworkReg extends React.Component {
@@ -23,7 +23,7 @@ class NetworkReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
-        //To avoid refeching data from server
+        //To avoid refetching data from server
         this.requestedRegionList = []
         this.cloudletList = []
         this.routesList = [];
@@ -50,6 +50,10 @@ class NetworkReg extends React.Component {
             }
         }
         this.updateState({ forms })
+    }
+
+    cloudletValueChange = (currentForm, forms, isInit) => {
+        console.log(currentForm)
     }
 
     operatorValueChange = (currentForm, forms, isInit) => {
@@ -86,6 +90,9 @@ class NetworkReg extends React.Component {
         else if (form.field === fields.operatorName) {
             this.operatorValueChange(form, forms, isInit)
         }
+        else if (form.field === fields.cloudletName) {
+            this.cloudletValueChange(form, forms, isInit)
+        }
     }
 
     /**Required */
@@ -121,6 +128,7 @@ class NetworkReg extends React.Component {
                 }
             }
             else {
+                data[fields.partnerOperator] = fetchPartnerOperator(this.cloudletList, data)
                 mc = await createNetwork(this, data)
             }
             if (service.responseValid(mc)) {
@@ -198,6 +206,7 @@ class NetworkReg extends React.Component {
             { label: `${this.isUpdate ? 'Update' : 'Create'} Network`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want Network.', update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), dependentData: [{ index: 1, field: fields.region }], tip: 'Organization of the cloudlet site', update: { key: true } },
+            { field: fields.partnerOperator, label: 'Partner Operator', formType: INPUT, visible: false, update: { key: true }},
             { field: fields.cloudletName, label: 'Cloudlet Name', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true }, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.operatorName }] },
             { field: fields.networkName, label: 'Network Name', formType: INPUT, placeholder: 'Enter Network Name', rules: { required: true }, visible: true, update: { key: true }, tip: 'Name of the network.' },
             { field: fields.connectionType, label: 'Connection Type', formType: SELECT, placeholder: 'Enter Connection Type', rules: { required: true }, update: { id: ['4'] }, visible: true, tip: 'Network connection type.' },
@@ -247,6 +256,7 @@ class NetworkReg extends React.Component {
             }
         }
     }
+    
     loadDefaultData = (forms, data) => {
             let multiFormCount = 0
             if (data[fields.accessRoutes]) {
