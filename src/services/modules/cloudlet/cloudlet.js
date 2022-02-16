@@ -171,10 +171,14 @@ export const getKey = (data, isCreate) => {
     })
 }
 
-export const fetchPartnerOperator = (cloudletList, data) => {
-    for (const item of cloudletList) {
-        if (item[fields.cloudletName] === data[fields.cloudletName] && item[fields.operatorName] === data[fields.operatorName]) {
-            return item[fields.partnerOperator]
+export const fetchCloudletField = (cloudletList, data, field) => {
+    const { cloudletName, operatorName } = data
+    let isFieldArray = Array.isArray(field)
+    if (cloudletName && operatorName) {
+        for (const item of cloudletList) {
+            if (item[fields.cloudletName] === cloudletName && item[fields.operatorName] === operatorName) {
+                return isFieldArray ? field.map(item => item[item]) : item[field]
+            }
         }
     }
 }
