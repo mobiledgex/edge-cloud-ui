@@ -494,11 +494,7 @@ class AppInstReg extends React.Component {
                     for (let i = 0; i < cloudlets.length; i++) {
                         let newData = cloneDeep(data)
                         let cloudlet = cloudlets[i];
-<<<<<<< HEAD
                         newData[fields.dedicatedIp] = fetchPartnerOperator(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL ? data[fields.dedicatedIp] : undefined
-=======
-                        newData[fields.dedicatedIp] = cloudlet === perpetual.QA_ANTHOS ? data[fields.dedicatedIp] : undefined
->>>>>>> 2e5e22bebd53dc7804d0f26cf58098172cb182e7
                         newData[fields.cloudletName] = cloudlet;
                         newData[fields.partnerOperator] = fetchPartnerOperator(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet }, fields.partnerOperator)
                         newData[fields.compatibilityVersion] = this.fetchCompabilityVersion(data, cloudlet)
