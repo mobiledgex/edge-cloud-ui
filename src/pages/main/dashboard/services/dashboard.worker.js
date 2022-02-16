@@ -3,15 +3,89 @@
 import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLOUDLET_INFO, SHOW_CLUSTER_INST } from "../../../../helper/constant/endpoint"
 import { toJson } from "../../../../utils/json_util"
 import { map } from "../../../../services/format/shared";
+import { sequence, dataForms } from "../sequence";
 import { fields } from "../../../../services";
-import { MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION } from "../../../../helper/constant/perpetual";
-import * as serverFields from "../../../../helper/formatter/serverFields";
 
-export const sequence = [ 
-    { label: 'Cloudlet Name', active: false, field: fields.cloudletName, filters: { 'appName': [fields.cloudletName, fields.operatorName], 'clusterName': [fields.cloudletName, fields.operatorName]}, method: SHOW_CLOUDLET, total: [{ field: fields.state, values: [serverFields.READY] }, { type:'Transient', field: fields.state, values: [serverFields.CREATING] }] },
-    { label: 'Cluster Name', active: false, field: fields.clusterName, filters: { 'appName': [fields.clusterName], 'cloudletName': [fields.cloudletName, fields.operatorName] }, method: SHOW_CLUSTER_INST, total: [{ field: fields.state, values: [serverFields.READY] }] },
-    { label: 'App Name', active: false, field: fields.appName, method: SHOW_APP_INST, skip: [{ field: fields.appName, values: [MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION] }], filters: { 'cloudletName': [fields.cloudletName, fields.operatorName], 'clusterName': [fields.clusterName] }, total: [{ field: fields.healthCheck, values: [serverFields.OK] }] },
-]
+const formatSequence = (order, index, inp, output) => {
+    let data = inp[order[index].field]
+    let nextIndex = index + 1
+    if (data) {
+        let alertType = data.alert && data.alert.type
+        let exist = false
+        let nextsequence = (nextIndex < order.length) && inp[order[nextIndex].field] !== undefined
+        let newout = undefined
+        if (output && output.length > 0) {
+            for (let i = 0; i < output.length; i++) {
+                if (output[i].name === inp[order[index].field].name) {
+                    exist = true
+                    newout = output[i]
+                    break;
+                }
+            }
+        }
+        if (exist === false) {
+            newout = { ...data }
+            // if (order[index].field === 'cloudletStatus') {
+            //     newout.color = color[data.name]
+            // }
+        }
+
+        //if sequence exist and children is undefined
+        if (nextsequence) {
+            if (newout.children === undefined) {
+                newout.children = []
+                newout.value = undefined
+            }
+            alertType = formatSequence(order, nextIndex, inp, newout.children)
+        }
+        else {
+            //assign value if no children
+            newout.value = 1
+        }
+
+        if (exist === false) {
+            output.push(newout)
+        }
+
+        newout.alertType = newout.alert ? newout.alert : newout.alertType ? newout.alertType : alertType
+        return newout.alertType
+    }
+
+}
+
+export const formatData = (order, rawData) => {
+    let data = { name: '', children: [] }
+    for (let i = 0; i < rawData.length; i++) {
+        let item = rawData[i]
+        formatSequence(order, 0, item, data.children)
+    }
+    return data
+}
+
+const skipData = (form, data) => {
+    let skip = form.skip
+    let valid = false
+    if (skip) {
+        valid = skip.every(item => {
+            let field = item.field
+            let values = item.values
+            return values.includes(data[field])
+        })
+    }
+    return valid
+}
+
+const validateData = (filters, parent, value) => {
+    return filters ? filters.every((field) => {
+        let field1 = field
+        let field2 = field1
+        if (Array.isArray(field)) {
+            field1 = field[0]
+            field2 = field[1]
+        }
+        return parent.data[field1] === value[field2]
+    }) : true
+}
 
 const calculateTotal = (order, total, data) => {
     let attTotal = order.total
@@ -30,65 +104,67 @@ const calculateTotal = (order, total, data) => {
     }
 }
 
-const skipData = (order, data) => {
-    let attSkip = order.skip
-    let valid = false
-    if (attSkip) {
-        valid = attSkip.every(item => {
-            let field = item.field
-            let values = item.values
-            return values.includes(data[field])
-        })
-    }
-    return valid
-}
-
-const createBurst = (orderList, index, dataObject, parent, total) => {
-    let nextIndex = index + 1
-    let order = orderList[index]
-    let filters = index - 1 >= 0 ? orderList[index - 1].filters[order.field] : undefined
-    let nextExist = Boolean(orderList[nextIndex])
-    const { dataList, keys } = dataObject[order.method]
-    for (let i = 0; i < dataList.length; i++) {
-        let value = dataList[i]
-        if (!value.calculated) {
-            value = map({}, value.data, keys)
-            if (skipData(order, value)) {
-                dataList.splice(i, 1)
-                continue;
-            }
-            else {
-                dataList[i] = value
-                dataList[i].calculated = true
-                calculateTotal(order, total, value)
-            }
-        }
-        if ((filters ? filters.every(field => parent.data[field] === value[field]) : true)) {
-            let temp = { name: value[order.field], data: value, value: 1 }
-            if (nextExist) {
-                temp.count = {}
-                createBurst(orderList, nextIndex, dataObject, temp, total)
-            }
-            parent.children = parent.children ? parent.children : []
-            parent.children.push(temp)
-            // calculateTotal(order, parent, total, value)
-        }
-    }
-}
-
 const format = (worker) => {
-    const { rawList } = worker
+    let start = new Date().getTime()
+    const { region, rawList } = worker
     let rawListObject = {}
     rawList.map(item => {
         const { request, response } = item
         let dataArray = toJson(response.data);
         rawListObject[request.method] = { dataList: dataArray, keys: request.keys }
     })
-    // console.log(rawListObject[SHOW_APP_INST].dataList.filter(item=>![MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION].includes(item.data.key.app_key.name)))
+
+    let dataList = []
     let total = {}
-    let output = { name: '', children: [], count: { } }
-    createBurst(sequence, 0, rawListObject, output, total)
-    self.postMessage({ status: 200, data: output, total })
+    dataForms.forEach((form, index) => {
+        let keys = rawListObject[form.method].keys
+        let rawDataList = rawListObject[form.method].dataList
+        let tempFields = form.fields
+        for (const item of rawDataList) {
+            let data = map({}, item.data, keys)
+            calculateTotal(form, total, data)
+            let exist = false
+            if (form.skip && skipData(form, data)) {
+                continue;
+            }
+            if (index > 0) {
+                if (form.method === SHOW_CLUSTER_INST) {
+                    dataList.forEach(final => {
+                        if (final[fields.clusterName].name === data[fields.clusterName] && final[fields.clusterdeveloper].name === data[fields.organizationName]) {
+                            final[fields.clusterName].state = data[fields.state]
+                            exist = true
+                        }
+                    })
+                }
+                else if (form.method === SHOW_CLOUDLET) {
+                    dataList.forEach(final => {
+                        if (final[fields.cloudletName].name === data[fields.cloudletName] && final[fields.operatorName].name === data[fields.operatorName]) {
+                            final[fields.cloudletName].state = data[fields.state]
+                            exist = true
+                        }
+                    })
+                }
+            }
+            if (!exist) {
+                let final = {}
+                final[fields.region] = { name: region }
+                tempFields.forEach(field => {
+                    final[field] = { name: data[field] }
+                })
+                if (form.method === SHOW_APP_INST) {
+                    final[fields.appDeveloper] = final[fields.organizationName]
+                }
+                else if (form.method === SHOW_CLUSTER_INST) {
+                    final[fields.clusterdeveloper] = final[fields.organizationName]
+                }
+                dataList.push(final)
+            }
+        }
+    })
+
+    let sunburstData = formatData(sequence, dataList)
+    console.log('new', (new Date().getTime()) - start)
+    self.postMessage({ status: 200, data: sunburstData, total })
 }
 
 self.addEventListener("message", (event) => {

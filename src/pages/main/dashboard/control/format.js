@@ -1,22 +1,18 @@
 import { SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_APP_INST } from '../../../../helper/constant/endpoint'
-import { HEALTH_CHECK_OK } from '../../../../helper/constant/perpetual'
+import { HEALTH_CHECK_OK, MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION } from '../../../../helper/constant/perpetual'
+import { serverFields } from '../../../../helper/formatter'
 import { READY } from '../../../../helper/formatter/serverFields'
 import { fields } from '../../../../services'
 
 const rawData = require('./cloudlet.json')
 
 export const sequence1 = [
-    { label: 'Region', active: true, field: 'region' },
-    { label: 'Cloudlet Status', active: true, field: 'cloudletStatus' },
+    // { label: 'Region', active: true, field: 'region' },
+    // { label: 'Cloudlet Status', active: true, field: 'cloudletStatus' },
     { label: 'Operator Name', active: false, field: 'operator' },
     { label: 'Cloudlet Name', active: false, field: 'cloudlet' },
     { label: 'Cluster Name', active: false, field: 'cluster' },
     { label: 'App Name', active: false, field: 'app' },
-]
-export const sequence = [
-    { label: 'Cloudlet', active: false, field:fields.cloudletName, fields: [fields.cloudletName, fields.operatorName], method: SHOW_CLOUDLET, status: [{ field: fields.state, value: READY }] },
-    { label: 'Cluster', active: false, field:fields.clusterName, fields: [fields.clusterName], method: SHOW_CLUSTER_INST , status: [{ field: fields.state, value: READY }]},
-    { label: 'App', active: false, field:fields.appName, method: SHOW_APP_INST, status: [{ field: fields.healthCheck, value: HEALTH_CHECK_OK }] },
 ]
 
 export const color = { 'Ready': '#00C851', "Delete": '#ff4444', 'Maintainance': '#ffbb33' }

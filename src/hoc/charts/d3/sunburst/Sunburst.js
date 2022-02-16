@@ -105,7 +105,7 @@ const Sunburst = (props) => {
                 .attr("fill", d => {
                     return fetchColor(d)
                 })
-                .attr("fill-opacity", d => arcVisible(d.target) ? (d.children ? 0.9 : 0.9) : 0)
+                .attr("fill-opacity", d => arcVisible(d.target) ? (d.children ? 0.8 : 0.4) : 0)
                 .attrTween("d", d => () => arc(d.current));
 
             label.filter(function (d) {

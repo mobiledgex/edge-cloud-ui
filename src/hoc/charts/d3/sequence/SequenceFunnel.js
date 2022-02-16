@@ -1,18 +1,18 @@
 import React from 'react';
 import * as d3 from 'd3';
 import { uniqueId } from '../../../../helper/constant/shared';
+import { sequence } from '../../../../pages/main/dashboard/sequence';
 
-const CON_WIDTH = 170
-
+const CON_WIDTH = 34
 /***********
 **w:width;**
 **h:height**
 **s:space***
 **t:vertex**/
-const b = { w: 100, h: 20, s: 6, t: 12 };
+const b = { w: 20, h: 20, s: 6, t: 12 };
 
 const breadcrumbPoints = (d, i, j) => {
-  var w = b.w + i * b.t
+  var w = (b.w * sequence.length) + i * b.t
   w = w + (2 * i)
   var points = [];
   points.push(3 + j * b.t + ",0");
@@ -42,13 +42,14 @@ export const updateElements = (sequence, onSwap) => {
 
   //add label
   entering.append('svg:text')
-    .attr("x", (b.w + b.t) / 2)
+    .attr("x", ((b.w * sequence.length) + b.t) / 2)
     .attr("y", b.h / 2)
-    .attr("dy", "0.35em")
-    .attr("dx", "1.5em")
+    .attr("dy", "0em")
+    .attr("dx", 6 * sequence.length)
     .style("font-size", "12px")
     .style("font-weight", "700")
     .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "central") 
     .text((d) => { return d.label; })
     .attr('fill', 'white');
 
@@ -82,7 +83,7 @@ class Sequence extends React.Component {
     this.state = {
     }
     this.sbRef = React.createRef();
-    this.width = props.width ? props.width : CON_WIDTH
+    this.width = props.width ? props.width : CON_WIDTH * props.sequence.length
   }
 
   render() {
