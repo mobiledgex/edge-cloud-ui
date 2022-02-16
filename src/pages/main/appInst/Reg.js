@@ -314,14 +314,22 @@ class AppInstReg extends React.Component {
     }
 
     cloudletValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            let operator = undefined;
+        let operator = undefined
+        for(const form of forms)
+        {
             if (form.field === fields.operatorName) {
                 operator = form.value
-            }
+                break;
+            } 
+        }
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
             if (form.field === fields.dedicatedIp) {
-                form.visible = fetchCloudletField(this.cloudletList, { operatorName: operator, cloudletName: currentForm.value }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
+                let values = currentForm.value
+                let valid = values && values.some(cloudletName=>{
+                    return fetchCloudletField(this.cloudletList, { operatorName: operator, cloudletName }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
+                })
+                form.visible = valid
             }
             if (form.field === fields.clusterName) {
                 this.updateUI(form)
