@@ -12,7 +12,7 @@ import { HELP_NETWORK_LIST } from "../../../tutorial";
 
 import { Grid } from '@material-ui/core';
 import { perpetual } from '../../../helper/constant';
-import { fetchPartnerOperator, showCloudlets } from '../../../services/modules/cloudlet';
+import { fetchCloudletField, showCloudlets } from '../../../services/modules/cloudlet';
 import { uniqueId, validateRemoteCIDR, validateRemoteIP } from '../../../helper/constant/shared';
 
 class NetworkReg extends React.Component {
@@ -121,7 +121,7 @@ class NetworkReg extends React.Component {
                 }
             }
             else {
-                data[fields.partnerOperator] = fetchPartnerOperator(this.cloudletList, data, fields.partnerOperator)
+                data[fields.partnerOperator] = fetchCloudletField(this.cloudletList, data, fields.partnerOperator)
                 mc = await createNetwork(this, data)
             }
             if (service.responseValid(mc)) {

@@ -5,12 +5,11 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, SWITCH, ICON_BUTTON, TEXT_AREA,
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../services/modules/organization';
-import { cloudletWithInfo, fetchPartnerOperator, showCloudlets } from '../../../services/modules/cloudlet';
+import { cloudletWithInfo, fetchCloudletField, showCloudlets } from '../../../services/modules/cloudlet';
 import { sendRequests } from '../../../services/model/serverWorker'
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import { getClusterInstList, showClusterInsts } from '../../../services/modules/clusterInst';
@@ -125,7 +124,7 @@ class AppInstReg extends React.Component {
             await Promise.all(cloudletList.map(async (cloudletName) => {
                 let key = `${region}>${operatorName}>${cloudletName}`
                 if (this.flavorOrgList[key] === undefined) {
-                    let flavorList = await fetchCloudletFlavors(this, { region: region, cloudletName, operatorName, partnerOperator: fetchPartnerOperator(this.cloudletList, { operatorName, cloudletName }, fields.partnerOperator) })
+                    let flavorList = await fetchCloudletFlavors(this, { region: region, cloudletName, operatorName, partnerOperator: fetchCloudletField(this.cloudletList, { operatorName, cloudletName }, fields.partnerOperator) })
                     if (flavorList && flavorList.length > 0) {
                         this.flavorOrgList[key] = flavorList
                     }
@@ -322,7 +321,7 @@ class AppInstReg extends React.Component {
                 operator = form.value
             }
             if (form.field === fields.dedicatedIp) {
-                form.visible = fetchPartnerOperator(this.cloudletList, { operatorName: operator, cloudletName: currentForm.value }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
+                form.visible = fetchCloudletField(this.cloudletList, { operatorName: operator, cloudletName: currentForm.value }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
             }
             if (form.field === fields.clusterName) {
                 this.updateUI(form)
@@ -488,9 +487,10 @@ class AppInstReg extends React.Component {
                     for (let i = 0; i < cloudlets.length; i++) {
                         let newData = cloneDeep(data)
                         let cloudlet = cloudlets[i];
-                        newData[fields.dedicatedIp] = fetchPartnerOperator(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL ? data[fields.dedicatedIp] : undefined
+                        const fetchedFields = fetchCloudletField(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet }, [fields.platformType, fields.partnerOperator])
+                        newData[fields.dedicatedIp] =  fetchedFields[0] === perpetual.PLATFORM_TYPE_K8S_BARE_METAL ? data[fields.dedicatedIp] : undefined
                         newData[fields.cloudletName] = cloudlet;
-                        newData[fields.partnerOperator] = fetchPartnerOperator(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet }, fields.partnerOperator)
+                        newData[fields.partnerOperator] = fetchedFields[1] 
                         newData[fields.compatibilityVersion] = this.fetchCompabilityVersion(data, cloudlet)
                         if (flavors) {
                             newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]

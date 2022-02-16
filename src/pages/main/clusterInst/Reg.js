@@ -11,7 +11,7 @@ import { redux_org } from '../../../helper/reduxData'
 //model
 import { createClusterInst, updateClusterInst } from '../../../services/modules/clusterInst';
 import { getOrganizationList } from '../../../services/modules/organization';
-import { showCloudlets, cloudletWithInfo, fetchPartnerOperator } from '../../../services/modules/cloudlet';
+import { showCloudlets, cloudletWithInfo, fetchCloudletField } from '../../../services/modules/cloudlet';
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import { fetchCloudletFlavors } from '../../../services/modules/flavor';
 import { getAutoScalePolicyList, showAutoScalePolicies } from '../../../services/modules/autoScalePolicy';
@@ -114,7 +114,7 @@ class ClusterInstReg extends React.Component {
             await Promise.all(cloudletList.map(async (cloudletName) => {
                 let key = `${region}>${operatorName}>${cloudletName}`
                 if (this.flavorOrgList[key] === undefined) {
-                    let flavorList = await fetchCloudletFlavors(this, { region: region, cloudletName, operatorName, partnerOperator: fetchPartnerOperator(this.cloudletList, { operatorName, cloudletName }, fields.partnerOperator) })
+                    let flavorList = await fetchCloudletFlavors(this, { region: region, cloudletName, operatorName, partnerOperator: fetchCloudletField(this.cloudletList, { operatorName, cloudletName }, fields.partnerOperator) })
                     if (flavorList && flavorList.length > 0) {
                         this.flavorOrgList[key] = flavorList
                     }
@@ -148,7 +148,7 @@ class ClusterInstReg extends React.Component {
             await Promise.all(cloudletList.map(async (cloudletName) => {
                 let key = `${region}>${operatorName}>${cloudletName}`
                 if (this.networkOrgList[key] === undefined) {
-                    const partnerOperator = fetchPartnerOperator(this.cloudletList, { operatorName, cloudletName }, fields.partnerOperator)
+                    const partnerOperator = fetchCloudletField(this.cloudletList, { operatorName, cloudletName }, fields.partnerOperator)
                     let networkList = await showAuthSyncRequest(this, showNetwork(this, { region, cloudletName, operatorName, partnerOperator }))
                     if (networkList.length > 0) {
                         networkList = networkList.map((data) => {
@@ -376,7 +376,7 @@ class ClusterInstReg extends React.Component {
                         let newData = cloneDeep(data)
                         let cloudlet = cloudlets[i];
                         newData[fields.cloudletName] = cloudlet;
-                        newData[fields.partnerOperator] = fetchPartnerOperator(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet }, fields.partnerOperator)
+                        newData[fields.partnerOperator] = fetchCloudletField(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet }, fields.partnerOperator)
                         newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
                         newData[fields.network] = network ? [network[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]] : undefined
                         this.props.handleLoadingSpinner(true)
