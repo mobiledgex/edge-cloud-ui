@@ -114,7 +114,7 @@ class ClusterInstReg extends React.Component {
             await Promise.all(cloudletList.map(async (cloudletName) => {
                 let key = `${region}>${operatorName}>${cloudletName}`
                 if (this.flavorOrgList[key] === undefined) {
-                    let flavorList = await fetchCloudletFlavors(this, { region: region, cloudletName, operatorName, partnerOperator: fetchPartnerOperator(this.cloudletList, {operatorName, cloudletName}) })
+                    let flavorList = await fetchCloudletFlavors(this, { region: region, cloudletName, operatorName, partnerOperator: fetchPartnerOperator(this.cloudletList, { operatorName, cloudletName }, fields.partnerOperator) })
                     if (flavorList && flavorList.length > 0) {
                         this.flavorOrgList[key] = flavorList
                     }
@@ -148,7 +148,8 @@ class ClusterInstReg extends React.Component {
             await Promise.all(cloudletList.map(async (cloudletName) => {
                 let key = `${region}>${operatorName}>${cloudletName}`
                 if (this.networkOrgList[key] === undefined) {
-                    let networkList = await showAuthSyncRequest(this, showNetwork(this, { region, cloudletName, operatorName }))
+                    const partnerOperator = fetchPartnerOperator(this.cloudletList, { operatorName, cloudletName }, fields.partnerOperator)
+                    let networkList = await showAuthSyncRequest(this, showNetwork(this, { region, cloudletName, operatorName, partnerOperator }))
                     if (networkList.length > 0) {
                         networkList = networkList.map((data) => {
                             return data.networkName
@@ -375,7 +376,7 @@ class ClusterInstReg extends React.Component {
                         let newData = cloneDeep(data)
                         let cloudlet = cloudlets[i];
                         newData[fields.cloudletName] = cloudlet;
-                        newData[fields.partnerOperator] = fetchPartnerOperator(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet })
+                        newData[fields.partnerOperator] = fetchPartnerOperator(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet }, fields.partnerOperator)
                         newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
                         newData[fields.network] = network ? [network[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]] : undefined
                         this.props.handleLoadingSpinner(true)
