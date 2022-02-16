@@ -45,29 +45,6 @@ export const getHeight = (height) => {
     return window.innerHeight - (height ? height : 85)
 }
 
-export const getTip = (field) => {
-    switch (field) {
-        case fields.region:
-            return 'Select region where you want to deploy.'
-        case fields.organizationName:
-            return 'The name of the organization you are currently managing.'
-        case fields.appName:
-            return 'The name of the application to deploy.'
-        case fields.version:
-            return 'The version of the application to deploy.'
-        case fields.operatorName:
-            return 'Which operator do you want to deploy this applicaton? Please select one.'
-        case fields.cloudletName:
-            return 'Which cloudlet(s) do you want to deploy this application ?'
-        case fields.autoClusterInstance:
-            return 'If you have yet to create a cluster, you can select this to auto create cluster instance.'
-        case fields.clusterName:
-            return 'Name of cluster instance to deploy this application.'
-        default:
-            return null
-    }
-}
-
 /**
  * Filter Data
  * remove data which are in selectedDatas

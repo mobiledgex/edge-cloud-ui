@@ -11,7 +11,7 @@ import { redux_org } from '../../../helper/reduxData'
 //model
 import { createClusterInst, updateClusterInst } from '../../../services/modules/clusterInst';
 import { getOrganizationList } from '../../../services/modules/organization';
-import { showCloudlets, cloudletWithInfo } from '../../../services/modules/cloudlet';
+import { showCloudlets, cloudletWithInfo, fetchCloudletField } from '../../../services/modules/cloudlet';
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import { fetchCloudletFlavors } from '../../../services/modules/flavor';
 import { getAutoScalePolicyList, showAutoScalePolicies } from '../../../services/modules/autoScalePolicy';
@@ -114,13 +114,12 @@ class ClusterInstReg extends React.Component {
             await Promise.all(cloudletList.map(async (cloudletName) => {
                 let key = `${region}>${operatorName}>${cloudletName}`
                 if (this.flavorOrgList[key] === undefined) {
-                    let flavorList = await fetchCloudletFlavors(this, { region: region, cloudletName, operatorName })
+                    let flavorList = await fetchCloudletFlavors(this, { region: region, cloudletName, operatorName, partnerOperator: fetchCloudletField(this.cloudletList, { operatorName, cloudletName }, fields.partnerOperator) })
                     if (flavorList && flavorList.length > 0) {
                         this.flavorOrgList[key] = flavorList
                     }
                 }
-                if (this.flavorOrgList[key])
-                {
+                if (this.flavorOrgList[key]) {
                     this.flavorList[key] = this.flavorOrgList[key]
                 }
             }))
@@ -149,10 +148,11 @@ class ClusterInstReg extends React.Component {
             await Promise.all(cloudletList.map(async (cloudletName) => {
                 let key = `${region}>${operatorName}>${cloudletName}`
                 if (this.networkOrgList[key] === undefined) {
-                    let networkList = await showAuthSyncRequest(this, showNetwork(this, { region, cloudletName, operatorName }))
+                    const partnerOperator = fetchCloudletField(this.cloudletList, { operatorName, cloudletName }, fields.partnerOperator)
+                    let networkList = await showAuthSyncRequest(this, showNetwork(this, { region, cloudletName, operatorName, partnerOperator }))
                     if (networkList.length > 0) {
                         networkList = networkList.map((data) => {
-                            return data.networkName 
+                            return data.networkName
                         })
                     }
                     if (networkList && networkList.length > 0) {
@@ -376,6 +376,7 @@ class ClusterInstReg extends React.Component {
                         let newData = cloneDeep(data)
                         let cloudlet = cloudlets[i];
                         newData[fields.cloudletName] = cloudlet;
+                        newData[fields.partnerOperator] = fetchCloudletField(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet }, fields.partnerOperator)
                         newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
                         newData[fields.network] = network ? [network[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]] : undefined
                         this.props.handleLoadingSpinner(true)
@@ -442,7 +443,7 @@ class ClusterInstReg extends React.Component {
                             <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                         </div>
                     </Grid>
-                    <Grid item xs={4} style={{ backgroundColor: '#2A2C34', padding:5 }}>
+                    <Grid item xs={4} style={{ backgroundColor: '#2A2C34', padding: 5 }}>
                         <MexTab form={{ panes: this.getPanes() }} activeIndex={this.state.activeIndex} />
                     </Grid>
                 </Grid>
@@ -469,7 +470,7 @@ class ClusterInstReg extends React.Component {
         if (form) {
             this.resetFormValue(form)
             if (form.field) {
-                if (form.formType === SELECT || form.formType === MULTI_SELECT  || form.formType === SELECT_RADIO_TREE_GROUP) {
+                if (form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === SELECT_RADIO_TREE_GROUP) {
                     switch (form.field) {
                         case fields.organizationName:
                             form.options = this.organizationList
@@ -554,12 +555,13 @@ class ClusterInstReg extends React.Component {
             { field: fields.clusterName, label: 'Cluster Name', formType: INPUT, placeholder: 'Enter Cluster Inst Name', rules: { required: true }, visible: true, update: { key: true } },
             { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], update: { key: true } },
+            { field: fields.partnerOperator, label: 'Partner Operator', formType: INPUT, visible: false, update: { key: true }},
             { field: fields.cloudletName, label: 'Cloudlet', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }], update: { key: true } },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: false, tip: 'Deployment type (kubernetes or docker)' },
             { field: fields.ipAccess, label: 'IP Access', formType: SELECT, placeholder: 'Select IP Access', visible: true, update: false, tip: 'IpAccess indicates the type of RootLB that Developer requires for their App' },
             { field: fields.autoScalePolicyName, label: 'Auto Scale Policy', formType: SELECT, placeholder: 'Select Auto Scale Policy', visible: true, update: { id: ['18'] } },
             { field: fields.network, label: 'Network', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE_GROUP, placeholder: 'Select Network', visible: true },
-            { field: fields.flavorName, label: 'Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE_GROUP, placeholder: 'Select Flavor', rules: { required: true, copy:true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'FlavorKey uniquely identifies a Flavor' },
+            { field: fields.flavorName, label: 'Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE_GROUP, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'FlavorKey uniquely identifies a Flavor' },
             { field: fields.numberOfMasters, label: 'Number of Masters', formType: INPUT, placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, tip: 'Number of k8s masters (In case of docker deployment, this field is not required)' },
             { field: fields.numberOfNodes, label: 'Number of Workers', formType: INPUT, placeholder: 'Enter Number of Workers', rules: { type: 'number' }, visible: false, update: { id: ['14'] }, tip: 'Number of k8s nodes (In case of docker deployment, this field is not required)' },
             { field: fields.sharedVolumeSize, label: 'Shared Volume Size', formType: INPUT, placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false, update: false, tip: 'Size of an optional shared volume to be mounted on the master' },
