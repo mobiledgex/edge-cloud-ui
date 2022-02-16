@@ -160,8 +160,8 @@ export const getKey = (data, isCreate) => {
         if (data[fields.allianceOrganization]) {
             cloudlet.alliance_orgs = data[fields.allianceOrganization]
         }
-        if (data[fields.singleKubernetesClusterOwner]) {
-            cloudlet.single_kubernetes_cluster_owner = data[fields.singleKubernetesClusterOwner]
+        if (data[fields.singleK8sClusterOwner]) {
+            cloudlet.single_kubernetes_cluster_owner = data[fields.singleK8sClusterOwner]
         }
 
     }
