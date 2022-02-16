@@ -50,6 +50,8 @@ class LogoLoader extends React.Component {
                         this.props.handlePrivateAccess(privateAccess)
                     }
                     this.props.handleOrganizationInfo(orgInfo)
+                } else {
+                    this.props.handleOrganizationInfo(undefined)
                 }
             }
             this.loadMainPage()

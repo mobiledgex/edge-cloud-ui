@@ -322,5 +322,6 @@ export const fields = {
     autoGenerateFederationID: 'autoGenerateFederationID',
     zones:'zones',
     mncmulti: 'mncmulti',
-    dedicatedIp: 'dedicatedIp'
+    dedicatedIp: 'dedicatedIp',
+    singleK8sClusterOwner: 'singleK8sClusterOwner'
 }
