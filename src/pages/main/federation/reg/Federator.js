@@ -51,13 +51,39 @@ class RegisterOperator extends React.Component {
         return ({ uuid: uniqueId(), field: fields.mncmulti, formType: MULTI_FORM, forms: form ? form : this.mncElements(), width: 3, visible: true })
     }
 
+    generateFederationId = (e, currentForm)=>{
+        const {forms} = this.state
+        for(const form of forms)
+        {
+            if(form.field === fields.federationId)
+            {
+                let childForms = form.forms
+                for(const childForm of childForms)
+                {
+                    if(childForm.field === fields.federationId)
+                    {
+                        childForm.value = uniqueId()
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        this.updateState({forms})
+    }
+
+    federationIdElements = () => ([
+        { field: fields.federationId, formType: INPUT, placeholder: 'Enter/Generate Federation ID', rules: { required: true }, update: { edit: true }, width: 15, visible: true },
+        { icon: 'vpn_key', tooltip:'Generate Federation Key', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: -10 }, width: 1, onClick: this.generateFederationId }
+    ])
+
     elements = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Enter'} Operator Details`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
             { field: fields.countryCode, label: ' Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
-            { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
+            { uuid: uniqueId(), field: fields.federationId, label: 'Federation ID', formType: INPUT, visible: true, forms: this.federationIdElements(), tip: 'Self federation ID' },
             { field: fields.locatorendpoint, label: 'Locator End Point', formType: INPUT, placeholder: 'Enter Locator Endpoint', visible: true, update: { edit: true }, tip: 'IP and Port of discovery service URL of operator platform' },
             { field: fields.mcc, label: 'MCC', formType: INPUT, placeholder: 'Enter MCC Code', rules: { required: true, type: 'number' }, visible: true, update: { edit: true }, tip: 'Mobile country code of operator sending the request' },
             { field: fields.mncs, label: 'List of MNC', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'List of mobile network codes of operator sending the request', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getMNC }], visible: true, tip: 'List of mobile network codes of operator sending the request' },
