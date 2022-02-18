@@ -5,6 +5,7 @@ import SequenceHorizontal from './SequenceHorizontal'
 import { uniqueId } from '../../../../helper/constant/shared';
 import { IconButton } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import { fi } from 'date-fns/locale';
 
 const width = 732;
 const radius = width / 6
@@ -51,6 +52,75 @@ const alertTypeIndicator = (d, code) => {
     let alertType = type && alertTypes[type] ? alertTypes[type] : alertTypes['error']
     return alertType[code]
 }
+
+const showAlert = (target, data) => {
+    return arcVisible(target) && data.alert
+}
+
+const tooltipContent = (d, tooltip, format) => {
+    const { children, data } = d
+    const { alert } = data
+    if (children) {
+        tooltip.html(() => {
+            let g = '<div style="font-size:10px;color:black;" align="left">'
+            g = g + `<p>${'Name: ' + data.name}</p>`
+            g = g + (children ? `<p>${'Count: ' + format(children.length)}</p>` : '')
+            g = g + (alert && !alert.nested ? `<p>${'Count: ' + JSON.stringify(data.alert)}</p>` : '')
+            g = g + '</div>'
+            return g
+        });
+        tooltip.style("visibility", "visible");
+    }
+}
+
+const arc = d3.arc()
+    .startAngle(d => d.x0)
+    .endAngle(d => d.x1)
+    .padAngle(d => Math.min((d.x1 - d.x0) / 2, 0.005))
+    .padRadius(radius * 1.5)
+    .innerRadius(d => d.y0 * radius)
+    .outerRadius(d => Math.max(d.y0 * radius, d.y1 * radius - 1))
+
+const updatePath = (path, label, update = false, t) => {
+    let output = path
+    if (update) {
+        output = output.transition(t)
+            .tween("data", d => {
+                const i = d3.interpolate(d.current, d.target);
+                return t => d.current = i(t);
+            });
+    }
+
+    output.attr("fill", d => (color(d.data.name)))
+        .attr("fill-opacity", d => {
+            let target = update ? d.target : d
+            return arcVisible(target) ? (d.children ? 0.8 : 0.4) : 0
+        })
+        .attr("stroke-width", d => {
+            let target = update ? d.target : d
+            return showAlert(target, d.data) ? 5 : undefined
+        })
+        .attr("stroke", d => {
+            let target = update ? d.target : d
+            let data = d.data
+            console.log(showAlert(target, data) ? data.alert : undefined)
+            return showAlert(target, data) ? data.alert.color : undefined
+        });
+
+    if (update) {
+        output.attrTween("d", d => () => arc(d.current));
+        label.transition(t)
+            .attrTween("transform", d => () => labelTransform(d.current))
+            .attr("fill-opacity", d => +labelVisible(d.target));
+
+    }
+    else {
+        output.attr("d", d => arc(d));
+        label.attr("fill-opacity", d => +labelVisible(d))
+            .attr("transform", d => labelTransform(d))
+    }
+}
+
 const Sunburst = (props) => {
     const { toggle, sequence, dataset, onMore } = props
     const [data, setData] = useState(undefined)
@@ -94,34 +164,10 @@ const Sunburst = (props) => {
 
             const t = svg.transition().duration(750);
 
-            path.transition(t)
-                .tween("data", d => {
-                    const i = d3.interpolate(d.current, d.target);
-                    return t => d.current = i(t);
-                })
-                .filter(function (d) {
-                    return +this.getAttribute("fill-opacity") || arcVisible(d.target);
-                })
-                .attr("fill", d => {
-                    return fetchColor(d)
-                })
-                .attr("fill-opacity", d => arcVisible(d.target) ? (d.children ? 0.8 : 0.4) : 0)
-                .attrTween("d", d => () => arc(d.current));
+            updatePath(path, label, true, t)
 
-            label.filter(function (d) {
-                return +this.getAttribute("fill-opacity") || labelVisible(d.target);
-            }).transition(t)
-                .attr("fill-opacity", d => +labelVisible(d.target))
-                .attrTween("transform", d => () => labelTransform(d.current));
         }
 
-        const arc = d3.arc()
-            .startAngle(d => d.x0)
-            .endAngle(d => d.x1)
-            .padAngle(d => Math.min((d.x1 - d.x0) / 2, 0.005))
-            .padRadius(radius * 1.5)
-            .innerRadius(d => d.y0 * radius)
-            .outerRadius(d => Math.max(d.y0 * radius, d.y1 * radius - 1))
 
         const svg = d3.select(sbRef.current).append("svg")
             .attr('id', 'chart')
@@ -147,35 +193,13 @@ const Sunburst = (props) => {
             .selectAll("path")
             .data(root.descendants().slice(1))
             .join("path")
-            .attr("fill", d => {
-                let data = d.data
-                let value = color(data.name)
-                if (iconVisible(d) && Boolean(data.alertType)) {
-                    value = alertTypeIndicator(data, 'color')
-                }
-                else if (data.color) {
-                    value = data.color;
-                }
-                return value;
-            })
-            .attr("fill-opacity", d => arcVisible(d) ? (d.children ? 0.8 : 0.4) : 0)
-            .attr("d", d => arc(d));
 
         path.filter(d => d.children)
             .style("cursor", "pointer")
             .on('click', clicked);
 
         path.on("mouseover", (e, d) => {
-            if (d.children || d.data.alert) {
-                tooltip.html(() => {
-                    return `<div style="font-size:10px;color:black;" align="left">
-                    <p>${'Name: ' + d.data.name}</p>
-                    <p>${d.children ? 'Count: ' + format(d.children.length) : ''}</p>
-                    <p>${d.data.alert ? `${alertTypes[d.data.alert.type].label}: ` + d.data.alert.msg : ''}</p>
-                    </div>`
-                });
-                tooltip.style("visibility", "visible");
-            }
+            tooltipContent(d, tooltip, format)
         })
             .on("mousemove", function (e, d) { return tooltip.style("top", (0) + "px").style("left", (0) + "px"); })
             .on("mouseout", function (e, d) { return tooltip.style("visibility", "hidden"); });
@@ -184,21 +208,19 @@ const Sunburst = (props) => {
        * Label*
        **********/
 
-        const labelData = svg.append("g")
+        const label = svg.append("g")
             .attr("pointer-events", "none")
             .attr("text-anchor", "middle")
             .style("user-select", "none")
             .selectAll("text")
             .data(root.descendants().slice(1))
-
-        const label = labelData
             .join("text")
             .attr("dy", "0.35em")
-            .attr("fill-opacity", d => +labelVisible(d))
-            .attr("transform", d => labelTransform(d))
             .text(d => d.data.name.substring(0, 14) + (d.data.name.length > 14 ? '...' : ''))
             .style('font-size', 14)
             .style('fill', 'white')
+
+        updatePath(path, label)
 
         const parent = svg.append("circle")
             .datum(root)
@@ -228,10 +250,10 @@ const Sunburst = (props) => {
 
     return (
         <React.Fragment>
-            <div style={{ marginTop: 10, marginBottom:-25 }} align='center'>
+            <div style={{ marginTop: 10, marginBottom: -25 }} align='center'>
                 <SequenceHorizontal key={uniqueId()} dataset={dataFlow} colors={color} />
             </div>
-            <div className='sunburst' style={{ padding: '0px 20px 20px 20px', borderRadius: 5 }} ref={sbRef}/>
+            <div className='sunburst' style={{ padding: '0px 20px 20px 20px', borderRadius: 5 }} ref={sbRef} />
         </React.Fragment>
     )
 }

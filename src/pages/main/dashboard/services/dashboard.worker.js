@@ -9,8 +9,8 @@ import { fields } from "../../../../services";
 const formatSequence = (order, index, inp, output) => {
     let data = inp[order[index].field]
     let nextIndex = index + 1
+    let alert = undefined
     if (data) {
-        let alertType = data.alert && data.alert.type
         let exist = false
         let nextsequence = (nextIndex < order.length) && inp[order[nextIndex].field] !== undefined
         let newout = undefined
@@ -25,9 +25,33 @@ const formatSequence = (order, index, inp, output) => {
         }
         if (exist === false) {
             newout = { ...data }
-            // if (order[index].field === 'cloudletStatus') {
-            //     newout.color = color[data.name]
-            // }
+            if (order[index].alerts) {
+                let alerts = order[index].alerts
+                alerts && alerts.forEach(item => {
+                    let field = item.field
+                    let type, color
+                    item.states.map(state=>{
+                        let values = state.values
+                        if(values.includes(data[field]))
+                        {
+                            type = state.type ? state.type : 'success'
+                            color = state.color
+                        }
+                    })
+                    if(type)
+                    console.log(type)
+                    type = type ? type : 'error'
+                    color = color ? color : '#D32F2F'
+
+                    if (type !== 'success') {
+                        newout.alert = newout.alert ? newout.alert : { self: true }
+                        newout.alert['type'] = type
+                        newout.alert['field'] = field
+                        newout.alert['value'] = data[field]
+                        newout.alert['color'] = color
+                    }
+                })
+            }
         }
 
         //if sequence exist and children is undefined
@@ -36,7 +60,7 @@ const formatSequence = (order, index, inp, output) => {
                 newout.children = []
                 newout.value = undefined
             }
-            alertType = formatSequence(order, nextIndex, inp, newout.children)
+            alert = formatSequence(order, nextIndex, inp, newout.children)
         }
         else {
             //assign value if no children
@@ -47,10 +71,32 @@ const formatSequence = (order, index, inp, output) => {
             output.push(newout)
         }
 
-        newout.alertType = newout.alert ? newout.alert : newout.alertType ? newout.alertType : alertType
-        return newout.alertType
-    }
+        if ((!newout.alert || !newout.alert.self) && alert) {
+            if (alert.self) {
+                if (!newout.alert || newout.alert.type !== 'error') {
+                    newout.alert = {}
+                    newout.alert.type = alert.type
+                    newout.alert.color = alert.color
+                }
+            }
+            else {
+                newout.alert = alert
+            }
+        }
 
+        // if (!newout.alert && alert) {
+        //     if(alert.nested)
+        //     {
+        //         newout.alert = alert 
+        //     }
+        //     else
+        //     {
+                
+        //     }
+        //     newout.alert = alert.nested ? alert : { nested: true, ...alert}
+        // }
+        return newout.alert
+    }
 }
 
 export const formatData = (order, rawData) => {
@@ -75,24 +121,12 @@ const skipData = (form, data) => {
     return valid
 }
 
-const validateData = (filters, parent, value) => {
-    return filters ? filters.every((field) => {
-        let field1 = field
-        let field2 = field1
-        if (Array.isArray(field)) {
-            field1 = field[0]
-            field2 = field[1]
-        }
-        return parent.data[field1] === value[field2]
-    }) : true
-}
-
 const calculateTotal = (order, total, data) => {
-    let attTotal = order.total
-    if (attTotal) {
+    let alerts = order.alerts
+    if (alerts) {
         total[order.field] = total[order.field] ? total[order.field] : {}
         let type = 'error'
-        attTotal.forEach(item => {
+        alerts.forEach(item => {
             let field = item.field
             let values = item.values
             if (values.includes(data[field])) {
@@ -122,11 +156,11 @@ const format = (worker) => {
         let tempFields = form.fields
         for (const item of rawDataList) {
             let data = map({}, item.data, keys)
-            calculateTotal(form, total, data)
-            let exist = false
             if (form.skip && skipData(form, data)) {
                 continue;
             }
+            let exist = false
+            calculateTotal(form, total, data)
             if (index > 0) {
                 if (form.method === SHOW_CLUSTER_INST) {
                     dataList.forEach(final => {
@@ -148,8 +182,17 @@ const format = (worker) => {
             if (!exist) {
                 let final = {}
                 final[fields.region] = { name: region }
+                final[form.field] = {}
+                final[form.field].name = data[form.field]
                 tempFields.forEach(field => {
-                    final[field] = { name: data[field] }
+                    if (Array.isArray(field)) {
+                        field.forEach(item => {
+                            final[form.field][item] = data[item]
+                        })
+                    }
+                    else {
+                        final[field] = { name: data[field] }
+                    }
                 })
                 if (form.method === SHOW_APP_INST) {
                     final[fields.appDeveloper] = final[fields.organizationName]
@@ -161,9 +204,8 @@ const format = (worker) => {
             }
         }
     })
-
     let sunburstData = formatData(sequence, dataList)
-    console.log('new', (new Date().getTime()) - start)
+    console.log(sunburstData)
     self.postMessage({ status: 200, data: sunburstData, total })
 }
 

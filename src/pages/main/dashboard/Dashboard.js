@@ -12,8 +12,6 @@ import Control from './control/Control'
 import Total from './total/Total'
 import { processWorker } from '../../../services/worker/interceptor'
 import { fields } from '../../../services'
-import { showOrganizations } from '../../../services/modules/organization/organization'
-import { perpetual } from '../../../helper/constant'
 
 class Dashboard extends React.Component {
     constructor(props) {
