@@ -33,7 +33,7 @@ const InfoDialog = (props) => {
                 <div style={{ padding: 5 }}>
                     {children}
                     {
-                        note ?
+                        !loading && note ?
                             <Typography style={{ color: '#FFC107', marginTop: 20, fontSize: 13 }}>
                                 <strong>Note</strong>: {note}
                             </Typography> : null
