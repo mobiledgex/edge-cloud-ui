@@ -8,6 +8,11 @@ import { endpoint, perpetual } from '../../../helper/constant';
 
 const fields = formatter.fields;
 
+const clouldetKeys = [
+    { field: fields.cloudletName, serverField: 'name', label: 'Cloudlet Name' },
+    { field: fields.partnerOperator, serverField: 'federated_organization', label: 'Partner Operator' },
+]
+
 export const keys = () => ([
     { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
     { field: fields.poolName, serverField: 'key#OS#name', label: 'Pool Name', sortable: true, visible: true, filter: true, key: true },
@@ -15,7 +20,7 @@ export const keys = () => ([
     { field: fields.cloudletCount, label: 'Number of  Cloudlets', sortable: true, visible: true },
     { field: fields.organizationCount, label: 'Number of Organizations', sortable: true, visible: true },
     {
-        field: fields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets', dataType: perpetual.TYPE_STRING
+        field: fields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets', keys: clouldetKeys
     },
     {
         field: fields.organizations, label: 'Organizations',

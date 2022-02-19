@@ -14,6 +14,8 @@ import { showFederator, showFederation, keys, iconKeys, deleteFederator, generat
 import { showFederationZones } from "../../../../services/modules/zones";
 import { uiFormatter } from '../../../../helper/formatter';
 import Reg from "./reg/Reg"
+import RegisterOperator from "../reg/Federator";
+import RegisterPartner from "../reg/Fedaration";
 import ShareZones from "./reg/ShareZones";
 import { InfoDialog } from "../../../../hoc/mexui";
 import { responseValid } from "../../../../services/service";
@@ -51,11 +53,11 @@ class Host extends React.Component {
     }
 
     onUpdate = (action, data) => {
-        this.updateState({ currentView: <Reg data={data} isUpdate={true} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <div className="round_panel"><RegisterOperator data={data} isUpdate={true} onClose={this.onRegClose} /></div> });
     }
 
     onAddPartnerData = (action, data) => {
-        this.updateState({ currentView: <Reg data={data} action={action.id} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <div className="round_panel"><RegisterPartner data={data} action={action.id} onClose={this.onRegClose} /></div> });
     }
 
     onCreateFederation = (action, data) => {

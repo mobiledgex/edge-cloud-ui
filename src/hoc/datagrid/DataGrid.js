@@ -268,7 +268,8 @@ class DataGrid extends React.Component {
 
     onWarning = async (action, actionLabel, isMultiple, data) => {
         let message = action.dialogMessage ? action.dialogMessage(action, data) : undefined
-        this.updateState({ dialogMessageInfo: { message: message ? message : `Are you sure you want to ${actionLabel} ${isMultiple ? '' : data[this.requestInfo.nameField]}?`, action: action, isMultiple: isMultiple, data: data } });
+        let label = isMultiple ? '' : data[this.requestInfo.nameField]
+        this.updateState({ dialogMessageInfo: { message: message ? message : `Are you sure you want to ${actionLabel} ${label ? label : ''}?`, action: action, isMultiple: isMultiple, data: data } });
     }
 
     /***Action Block */
