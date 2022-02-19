@@ -15,7 +15,7 @@ const federationKeys = () => ([
     { field: fields.partnerOperatorName, serverField: 'operatorid', label: 'Partner Operator', visible: true, filter: true, key: true },
     { field: fields.partnerCountryCode, serverField: 'countrycode', label: 'Partner Country Code', visible: true, filter: true, key: true },
     { field: fields.partnerFederationId, serverField: 'federationid', label: 'Partner Federation ID' },
-    { field: fields.federationAddr, serverField: 'federationaddr', label: 'Federation Address' },
+    { field: fields.partnerFederationAddr, serverField: 'federationaddr', label: 'Federation Address' },
     { field: fields.apiKey, serverField: 'apikey', label: 'Api Key' },
     { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf' },
@@ -26,6 +26,7 @@ const federatorKeys = () => ([
     { field: fields.region, label: 'Region', serverField: 'region', sortable: true, visible: true, filter: true, key: true },
     { field: fields.operatorName, label: 'Operator', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
     { field: fields.federationId, label: 'Federation', serverField: 'federationid', sortable: true, filter: true, key: true },
+    { field: fields.federationAddr, serverField: 'federationaddr', label: 'Federation Address' },
     { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true },
     { field: fields.mcc, label: 'MCC', serverField: 'mcc', sortable: true, filter: true, key: true },
     { field: fields.mnc, label: 'MNC', serverField: 'mnc', sortable: true, filter: true, key: true, dataType: perpetual.TYPE_ARRAY }
@@ -78,7 +79,7 @@ export const multiDataRequest = (keys, mcList) => {
                     federator[fields.partnerFederationId] = federation[fields.partnerFederationId]
                     federator[fields.partnerRoleShareZoneWithSelf] = federation[fields.partnerRoleShareZoneWithSelf]
                     federator[fields.partnerRoleAccessToSelfZones] = federation[fields.partnerRoleAccessToSelfZones]
-                    federator[fields.federationAddr] = federation[fields.federationAddr]
+                    federator[fields.partnerFederationAddr] = federation[fields.partnerFederationAddr]
                     break;
                 }
             }
@@ -107,7 +108,7 @@ export const getFederationKey = (data, isCreate) => {
     if (isCreate) {
         data[fields.apiKey] ? (federation.apikey = data[fields.apiKey]) : null
         data[fields.partnerCountryCode] ? (federation.countrycode = data[fields.partnerCountryCode].toUpperCase()) : null
-        data[fields.federationAddr] ? (federation.federationaddr = data[fields.federationAddr]) : null
+        data[fields.partnerFederationAddr] ? (federation.federationaddr = data[fields.partnerFederationAddr]) : null
         data[fields.partnerFederationId] ? federation.federationid = data[fields.partnerFederationId] : null
         data[fields.federationId] ? federation.selffederationid = data[fields.federationId] : null
         data[fields.partnerOperatorName] ? federation.operatorid = data[fields.partnerOperatorName] : null
@@ -134,15 +135,13 @@ export const getFederatorKey = (data, isCreate) => {
 }
 
 //Federator
-export const showFederator = (self, data) => {
+export const showFederator = (self, data, single = false) => {
     let requestData = {}
-    let organization = data.org ? data.org : redux_org.nonAdminOrg(self)
-    if (organization) {
-        if (redux_org.isOperator(self) || data.type === perpetual.OPERATOR) {
-            requestData = { operatorid: organization, region: data.region }
-        }
-    } else {
-        requestData = data
+    requestData[fields.region] = data[fields.region]
+    requestData.operatorid = redux_org.isOperator(self) ? redux_org.nonAdminOrg(self) : data[fields.operatorName]
+    if (single) {
+        requestData.federationid = data[fields.federationId]
+        requestData.countryCode = data[fields.countryCode]
     }
     return { method: endpoint.SHOW_FEDERATOR, data: requestData, keys: federatorKeys(), iconKeys: iconKeys() }
 }

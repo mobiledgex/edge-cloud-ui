@@ -9,7 +9,7 @@ import { service, updateFieldData } from '../../../services';
 import { fields } from '../../../services/model/format';
 
 import { getOrganizationList } from '../../../services/modules/organization';
-import { fetchCloudletData } from '../../../services/modules/cloudlet';
+import { cloudletKeys, fetchCloudletData, fetchCloudletField } from '../../../services/modules/cloudlet';
 import { createCloudletPool, updateCloudletPool } from '../../../services/modules/cloudletPool';
 import { createConfirmation, createInvitation, deleteConfirmation, deleteInvitation } from '../../../services/modules/poolAccess';
 
@@ -308,6 +308,9 @@ class CloudletPoolReg extends React.Component {
     onCreate = async () => {
         let forms = this.state.forms
         let data = this.formattedData()
+        data[fields.cloudlets] = data[fields.cloudlets].map(item=>{
+            return cloudletKeys({cloudletName: item, partnerOperator : fetchCloudletField(this.cloudletList, { cloudletName: item, operatorName: data[fields.operatorName] }, fields.partnerOperator)})
+        })
         let mcRequest = undefined
         if (this.isUpdate) {
             let updateData = updateFieldData(this, forms, data, this.props.data)
@@ -407,11 +410,7 @@ class CloudletPoolReg extends React.Component {
 
         if (this.action === perpetual.ADD_CLOUDLET) {
             this.cloudletList = await fetchCloudletData(this, { region: data[fields.region], org: data[fields.operatorName], type: perpetual.OPERATOR })
-            if (this.cloudletList && this.cloudletList.length > 0) {
-                this.cloudletList = this.cloudletList.filter((cloudlet) => {
-                    return cloudlet[fields.operatorName] === data[fields.operatorName]
-                })
-            }
+            data[fields.cloudlets] = data[fields.cloudlets].map(item=>item[fields.cloudletName])
         }
     }
 

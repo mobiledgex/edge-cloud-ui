@@ -173,12 +173,16 @@ export const getKey = (data, isCreate) => {
 
 export const fetchCloudletField = (cloudletList, data, field) => {
     const { cloudletName, operatorName } = data
-    let isFieldArray = Array.isArray(field)
     if (cloudletName && operatorName) {
-        for (const item of cloudletList) {
-            if (item[fields.cloudletName] === cloudletName && item[fields.operatorName] === operatorName) {
-                return isFieldArray ? field.map(item => item[item]) : item[field]
+        let selection = undefined
+        for (const cloudlet of cloudletList) {
+            if (cloudlet[fields.cloudletName] === cloudletName && cloudlet[fields.operatorName] === operatorName) {
+                selection = cloudlet
+                break;
             }
+        }
+        if (selection) {
+            return Array.isArray(field) ? field.map(item => selection[item]) : selection[field]
         }
     }
 }
