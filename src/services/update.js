@@ -31,14 +31,14 @@ export const updateFieldData = (self, forms, data, orgData) => {
             if (update.key) {
                 updateData[form.field] = data[form.field]
             }
-            else if (update.id) {
-                let updateId = update.id
+            // else if (update.id) {
+            //     let updateId = update.id
                 let ignoreCase = update.ignoreCase ? update.ignoreCase : false
                 if (!compareObjects(data[form.field], orgData[form.field], ignoreCase)) {
                     updateData[form.field] = data[form.field]
-                    updateFields = [...updateFields, ...updateId]
+                    updateFields = [...updateFields]
                 }
-            }
+            // }
         }
     }
     if (updateFields.length === 0) {

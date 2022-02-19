@@ -29,6 +29,7 @@ import Host from './federation/host/Host';
 import Guest from './federation/guest/Guest';
 import GuestZones from './federation/guestZones/GuestZones'
 import HostZones from './federation/zones/Zones'
+import TrustPolicyException from './trustPolicyException/TrustPolicyException'
 import * as constant from '../../constant';
 import { perpetual, role } from '../../helper/constant';
 
@@ -84,6 +85,8 @@ const renderPage = (id) => {
             return GuestZones
         case perpetual.PAGE_HOST_ZONES:
             return HostZones
+        case perpetual.PAGE_TRUST_POLICY_EXCEPTION:
+            return TrustPolicyException
     }
 }
 

@@ -25,10 +25,14 @@ export const keys = () => ([
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } }
 ])
 
+export const getCloudletPoolKey = (data) => {
+    return { name: data[fields.poolName], organization: data[fields.operatorName] }
+}
+
 export const getKey = (data) => {
     let cloudletpool = {}
 
-    cloudletpool.key = { name: data[fields.poolName], organization: data[fields.operatorName] }
+    cloudletpool.key = getCloudletPoolKey(data)
     cloudletpool.cloudlets = data[fields.cloudlets]
 
     if (data[fields.fields]) {

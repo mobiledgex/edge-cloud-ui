@@ -31,6 +31,7 @@ export const pages = [
             { label: 'Trust Policy', icon: 'policy', id: perpetual.PAGE_TRUST_POLICY, path: 'trust-policy', visible: true },
             { label: 'Auto Scale Policy', icon: 'landscape', id: perpetual.PAGE_AUTO_SCALE_POLICY, path: 'auto-scale-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
             { label: 'Alert Policy', icon: 'notifications_active', id: perpetual.PAGE_ALERT_POLICY, path: 'alert-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
+            { label: 'Trust Policy Exception', icon: 'apps', id: perpetual.PAGE_TRUST_POLICY_EXCEPTION, path: 'trust-exception-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER, perpetual.OPERATOR], visible: true },
         ]
     },
     { label: 'Monitoring', icon: 'tv', id: perpetual.PAGE_MONITORING, path: 'monitoring', visible: true },
