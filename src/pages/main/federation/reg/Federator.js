@@ -43,7 +43,7 @@ class RegisterOperator extends React.Component {
     }
 
     mncElements = () => ([
-        { field: fields.mnc, label: 'MNC', formType: INPUT, placeholder: 'Enter MNC code', rules: { required: true, type: 'number' }, width: 7, visible: true, update: { edit: true } },
+        { field: fields.mnc, label: 'MNC', formType: INPUT, placeholder: 'Enter MNC Code', rules: { required: true, type: 'number' }, width: 7, visible: true, update: { edit: true } },
         { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
@@ -151,10 +151,13 @@ class RegisterOperator extends React.Component {
         if (responseValid(mc)) {
             const responseData = mc.response.data
             this.props.handleAlertInfo('success', `Federation ${this.isUpdate ? 'updated' : 'created'} successfully !`)
-            let keyData = {
-                ...data,
-                federationId: responseData.federationid,
-                federationAPIKey: responseData.apikey,
+            let keyData = {...data}
+            keyData[fields.federationId] =  responseData.federationid
+            keyData[fields.apiKey] =  responseData.apikey
+
+            let fedAddrs = responseData.federationaddr.split(':')
+            if (fedAddrs && fedAddrs.length === 2) {
+                keyData[fields.federationAddr] = `${window.location.protocol}//${window.location.hostname}:${fedAddrs[1]}`
             }
             this.updateState({ keyData })
         }
