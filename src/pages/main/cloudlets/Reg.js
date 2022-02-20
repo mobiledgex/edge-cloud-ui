@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA, ICON_BUTTON, formattedData, MAIN_HEADER, HEADER, MULTI_FORM, TIP } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA, ICON_BUTTON, formattedData, MAIN_HEADER, HEADER, MULTI_FORM, TIP, SWITCH } from '../../../hoc/forms/MexForms';
 import ListMexMap from '../../../hoc/datagrid/map/ListMexMap';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/MexMessageMultiStream'
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
@@ -15,7 +15,7 @@ import { showOrganizations } from '../../../services/modules/organization';
 import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota, cloudletProps } from '../../../services/modules/cloudlet';
 import { showTrustPolicies } from '../../../services/modules/trustPolicy';
 import { HELP_CLOUDLET_REG } from "../../../tutorial";
-
+import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from '@material-ui/core';
 import { endpoint, perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
@@ -156,7 +156,7 @@ class CloudletReg extends React.Component {
                         envForm.visible = false
                     }
                 }
-                forms.splice(17 + count, 0, this.getEnvForm(envForms))
+                forms.splice(19 + count, 0, this.getEnvForm(envForms))
                 count++
             }
         })
@@ -274,6 +274,16 @@ class CloudletReg extends React.Component {
         }
     }
 
+    deploymentValueChange = (currentForm, forms, isInit) => {
+        for (let i = 0; i < forms.length; i++) {
+            let form = forms[i]
+            if (form.field === fields.infraApiAccess) {
+                this.updateUI(form)
+                this.updateState({ forms })
+            }
+        }
+    }
+
     kafkaChange = (currentForm, forms, isInit) => {
         let inputValid = false
         for (let form of forms) {
@@ -332,6 +342,12 @@ class CloudletReg extends React.Component {
         }
         else if (form.field === fields.latitude || form.field === fields.longitude) {
             this.locationChange(form, forms, isInit)
+        }
+        else if (form.field === fields.deployment) {
+            this.deploymentValueChange(form, forms, isInit)
+            let finalData = isInit ? data : formattedData(forms)
+            flowDataList.push(clusterFlow.deploymentTypeFlow(finalData))
+            flowDataList.push(clusterFlow.ipAccessFlow({}))
         }
         else if (form.field === fields.infraApiAccess) {
             this.infraAPIAccessChange(form, forms, isInit)
@@ -649,6 +665,9 @@ class CloudletReg extends React.Component {
                         case fields.key:
                             form.options = this.cloudletPropsList
                             break;
+                        case fields.deployment:
+                            form.options = [perpetual.DEPLOYMENT_TYPE_DOCKER, perpetual.DEPLOYMENT_TYPE_KUBERNETES, perpetual.DEPLOYMENT_TYPE_VM, perpetual.DEPLOYMENT_TYPE_HELM]
+                            break;
                         case fields.allianceOrganization:
                             form.options = this.allianceList
                             break;
@@ -720,7 +739,7 @@ class CloudletReg extends React.Component {
                             envForm.value = value
                         }
                     }
-                    forms.splice(17 + multiFormCount, 0, this.getEnvForm(envForms))
+                    forms.splice(16 + multiFormCount, 0, this.getEnvForm(envForms))
                     multiFormCount += 1
                 })
             }
@@ -812,6 +831,8 @@ class CloudletReg extends React.Component {
             { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, update: { id: ['8'] }, tip: 'Number of dynamic IPs available for dynamic IP support.' },
             { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, tip: 'Physical infrastructure cloudlet name.' },
             { field: fields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', visible: true, tip: 'Supported list of cloudlet types.' },
+            { field: fields.platformHighAvailability, label: 'Platform High Availability', formType: SWITCH, visible: true, value: false, update: { id: ['50'] }, tip: 'Enable platform H/A' },
+            { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
             { field: fields.vmPool, label: 'VM Pool', formType: INPUT, placeholder: 'Enter Pool Name', rules: { required: false }, visible: false, tip: 'VM Pool' },
             { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...', update: { id: ['23', '23.1', '23.2'] } },
             { field: fields.caCertdata, label: 'CACert Data', formType: TEXT_AREA, placeholder: 'Enter CACert Data', rules: { required: false }, visible: false, tip: 'CAcert data for HTTPS based verfication of auth URL', update: { id: ['23', '23.1', '23.2'] } },
