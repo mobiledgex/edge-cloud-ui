@@ -83,18 +83,6 @@ const formatSequence = (order, index, inp, output) => {
                 newout.alert = alert
             }
         }
-
-        // if (!newout.alert && alert) {
-        //     if(alert.nested)
-        //     {
-        //         newout.alert = alert 
-        //     }
-        //     else
-        //     {
-                
-        //     }
-        //     newout.alert = alert.nested ? alert : { nested: true, ...alert}
-        // }
         return newout.alert
     }
 }

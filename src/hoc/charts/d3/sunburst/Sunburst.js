@@ -3,12 +3,9 @@ import * as d3 from 'd3';
 import { useStyles } from './sunburst-styling';
 import SequenceHorizontal from './SequenceHorizontal'
 import { uniqueId } from '../../../../helper/constant/shared';
-import { IconButton } from '@material-ui/core';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import { fi } from 'date-fns/locale';
 
 const width = 732;
-const radius = width / 6
+const radius = width / 6.5
 
 
 const color = d3.scaleOrdinal(d3.schemePastel1)
@@ -60,7 +57,7 @@ const showAlert = (target, data) => {
 const tooltipContent = (d, tooltip, format) => {
     const { children, data } = d
     const { alert } = data
-    if (children) {
+    if (children || alert) {
         tooltip.html(() => {
             let g = '<div style="font-size:10px;color:black;" align="left">'
             g = g + `<p>${'Name: ' + data.name}</p>`
@@ -81,10 +78,25 @@ const arc = d3.arc()
     .innerRadius(d => d.y0 * radius)
     .outerRadius(d => Math.max(d.y0 * radius, d.y1 * radius - 1))
 
-const updatePath = (path, label, update = false, t) => {
+const arcBorder = d3.arc()
+    .startAngle(d => d.x0)
+    .endAngle(d => d.x1)
+    .padAngle(d => Math.min((d.x1 - d.x0) / 2, 0.005))
+    .padRadius(radius * 1.5)
+    .innerRadius(d => Math.max(d.y0 * radius, d.y1 * radius - 1))
+    .outerRadius(d => Math.max(d.y0 * radius, d.y1 * radius - 1) + 5)
+
+const updatePath = (path, pathBorder, label, update = false, t) => {
     let output = path
+    let border = pathBorder
     if (update) {
         output = output.transition(t)
+            .tween("data", d => {
+                const i = d3.interpolate(d.current, d.target);
+                return t => d.current = i(t);
+            });
+
+        border = pathBorder.transition(t)
             .tween("data", d => {
                 const i = d3.interpolate(d.current, d.target);
                 return t => d.current = i(t);
@@ -96,19 +108,19 @@ const updatePath = (path, label, update = false, t) => {
             let target = update ? d.target : d
             return arcVisible(target) ? (d.children ? 0.8 : 0.4) : 0
         })
-        .attr("stroke-width", d => {
+
+    border.attr("fill", d => {
+        let target = update ? d.target : d
+        return showAlert(target, d.data) ? d.data.alert.color : 'transparent'
+    })
+        .attr("fill-opacity", d => {
             let target = update ? d.target : d
-            return showAlert(target, d.data) ? 5 : undefined
+            return showAlert(target, d.data) ? 1 : 0
         })
-        .attr("stroke", d => {
-            let target = update ? d.target : d
-            let data = d.data
-            console.log(showAlert(target, data) ? data.alert : undefined)
-            return showAlert(target, data) ? data.alert.color : undefined
-        });
 
     if (update) {
         output.attrTween("d", d => () => arc(d.current));
+        border.attrTween("d", d => () => arcBorder(d.current))
         label.transition(t)
             .attrTween("transform", d => () => labelTransform(d.current))
             .attr("fill-opacity", d => +labelVisible(d.target));
@@ -116,6 +128,7 @@ const updatePath = (path, label, update = false, t) => {
     }
     else {
         output.attr("d", d => arc(d));
+        border.attr("d", d => arcBorder(d))
         label.attr("fill-opacity", d => +labelVisible(d))
             .attr("transform", d => labelTransform(d))
     }
@@ -143,7 +156,6 @@ const Sunburst = (props) => {
 
             logo.style("visibility", p.depth === 0 ? "visible" : "hidden");
 
-
             root.each(d => d.target = {
                 x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
                 x1: Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
@@ -164,7 +176,7 @@ const Sunburst = (props) => {
 
             const t = svg.transition().duration(750);
 
-            updatePath(path, label, true, t)
+            updatePath(path, pathBorder, label, true, t)
 
         }
 
@@ -194,6 +206,7 @@ const Sunburst = (props) => {
             .data(root.descendants().slice(1))
             .join("path")
 
+
         path.filter(d => d.children)
             .style("cursor", "pointer")
             .on('click', clicked);
@@ -203,6 +216,11 @@ const Sunburst = (props) => {
         })
             .on("mousemove", function (e, d) { return tooltip.style("top", (0) + "px").style("left", (0) + "px"); })
             .on("mouseout", function (e, d) { return tooltip.style("visibility", "hidden"); });
+
+        const pathBorder = svg.append("g")
+            .selectAll("path")
+            .data(root.descendants().slice(1))
+            .join("path")
 
         /**********
        * Label*
@@ -220,7 +238,8 @@ const Sunburst = (props) => {
             .style('font-size', 14)
             .style('fill', 'white')
 
-        updatePath(path, label)
+
+        updatePath(path, pathBorder, label)
 
         const parent = svg.append("circle")
             .datum(root)
