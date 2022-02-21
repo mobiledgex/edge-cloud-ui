@@ -300,6 +300,8 @@ export const fields = {
     partnerFederationId: 'partnerFederationId',
     partnerFederationName:'partnerFederationName',
     partnerCountryCode: 'partnerCountryCode',
+    partnerFederationAddr: 'partnerFederationAddr',
+    partnerAPIKey:'partnerAPIKey',
     federationAddr: 'federationAddr',
     cloudletCount: 'cloudletCount',
     zoneId: 'zoneid',
