@@ -15,6 +15,7 @@ import { Grid } from '@material-ui/core';
 import { showCloudlets } from '../../../../services/modules/cloudlet';
 import { HELP_ZONES_REG } from '../../../../tutorial';
 import { uniqueId } from '../../../../helper/constant/shared';
+import { readJsonFile } from '../../../../utils/file_util';
 
 class ZoneReg extends React.Component {
     constructor(props) {
@@ -156,7 +157,7 @@ class ZoneReg extends React.Component {
 
     onCreateZones = async (data) => {
         if (data) {
-            let mc; 
+            let mc;
             let forms = this.state.forms;
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
@@ -262,7 +263,7 @@ class ZoneReg extends React.Component {
         if (form) {
             this.resetFormValue(form)
             if (form.field) {
-                if (form.formType === SELECT || form.formType === MULTI_SELECT) {
+                if (form.formType === SELECT) {
                     switch (form.field) {
                         case fields.operatorName:
                             form.options = this.cloudletList
@@ -272,6 +273,9 @@ class ZoneReg extends React.Component {
                             break;
                         case fields.cloudletName:
                             form.options = this.cloudletList
+                            break;
+                        case fields.countryCode:
+                            form.options = this.countryCodes
                             break;
                         default:
                             form.options = undefined;
@@ -293,7 +297,7 @@ class ZoneReg extends React.Component {
             { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), dependentData: [{ index: 1, field: fields.region }], tip: 'Organization of the cloudlet site', update: { key: true } },
             { field: fields.cloudletName, label: 'Cloudlet Name', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true }, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.operatorName }] },
             { field: fields.zoneId, label: 'Zone ID', formType: INPUT, placeholder: 'Enter Zone Name', rules: { required: true }, visible: true, tip: ' Globally unique string used to authenticate operations over federation interface', update: { key: true } },
-            { field: fields.countryCode, label: 'Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true, type:'search' }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
+            { field: fields.countryCode, label: 'Country Code', formType: SELECT, placeholder: 'Select Country Code', rules: { required: true }, visible: true, tip: 'Country where operator platform is located' },
             { uuid: uniqueId(), field: fields.cloudletLocation, label: 'Zone Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS co-ordinates associated with the zone' },
             { field: fields.locality, label: 'Locality', formType: INPUT, placeholder: 'Enter Locality', visible: true, tip: 'Type of locality eg rural, urban etc.' },
             { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter State Name', width: 5, visible: true, update: { edit: true } },
@@ -320,6 +324,7 @@ class ZoneReg extends React.Component {
 
     getFormData = async (data) => {
         let forms = this.formKeys()
+        this.countryCodes = await readJsonFile('countrycode-iso31661a2.json')
         forms.push(
             { label: 'Create', formType: 'Button', onClick: this.onCreateZones, validate: true },
             { label: 'Cancel', formType: 'Button', onClick: this.onCancel }
