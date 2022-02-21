@@ -15,8 +15,7 @@ import { Grid } from '@material-ui/core';
 import { showCloudlets } from '../../../../services/modules/cloudlet';
 import { HELP_ZONES_REG } from '../../../../tutorial';
 import { uniqueId } from '../../../../helper/constant/shared';
-
-const countryCodes = require('../../../../assets/data/countrycode-iso31661a2.json')
+import { readJsonFile } from '../../../../utils/file_util';
 
 class ZoneReg extends React.Component {
     constructor(props) {
@@ -276,7 +275,7 @@ class ZoneReg extends React.Component {
                             form.options = this.cloudletList
                             break;
                         case fields.countryCode:
-                            form.options = countryCodes
+                            form.options = this.countryCodes
                             break;
                         default:
                             form.options = undefined;
@@ -325,6 +324,7 @@ class ZoneReg extends React.Component {
 
     getFormData = async (data) => {
         let forms = this.formKeys()
+        this.countryCodes = await readJsonFile('countrycode-iso31661a2.json')
         forms.push(
             { label: 'Create', formType: 'Button', onClick: this.onCreateZones, validate: true },
             { label: 'Cancel', formType: 'Button', onClick: this.onCancel }

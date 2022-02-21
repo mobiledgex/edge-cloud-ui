@@ -7,8 +7,7 @@ import MexForms, { BUTTON, INPUT, MAIN_HEADER, SELECT } from '../../../../hoc/fo
 import { fields } from '../../../../services'
 import { responseValid } from '../../../../services/service';
 import { createFederation } from '../../../../services/modules/federation';
-
-const countryCodes = require('../../../../assets/data/countrycode-iso31661a2.json')
+import { readJsonFile } from '../../../../utils/file_util';
 
 class RegisterPartner extends React.Component {
     constructor(props) {
@@ -30,7 +29,7 @@ class RegisterPartner extends React.Component {
             { field: fields.partnerCountryCode, selectField: fields.countryCode, label: 'Partner Country Code', formType: SELECT, placeholder: 'Select Partner Country Code', rules: { required: true }, visible: true, update: { key: true }, tip: 'Country where operator platform is located' },
             { field: fields.partnerFederationId, label: 'Partner Federation ID', formType: INPUT, placeholder: 'Enter Partner Federation ID', visible: true, rules: { required: true }, tip: 'Globally unique string used to indentify a federation with partner federation' },
             { field: fields.partnerFederationAddr, label: 'Partner Federation Addr', formType: INPUT, placeholder: 'Enter Partner Federation Addr', rules: { required: true }, visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
-            { field: fields.apiKey, label: 'Partner API Key', formType: INPUT, placeholder: 'Enter Partner API Key', rules: { required: true }, visible: true, tip: 'API Key used for authentication (stored in secure storage)' },
+            { field: fields.partnerAPIKey, label: 'Partner API Key', formType: INPUT, placeholder: 'Enter Partner API Key', rules: { required: true }, visible: true, tip: 'API Key used for authentication (stored in secure storage)' },
             { field: fields.partnerFederationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Federation Name', rules: { required: true }, visible: true, tip: 'Name to uniquely identify a federation' }
         ]
     }
@@ -94,7 +93,7 @@ class RegisterPartner extends React.Component {
                 if (form.formType === SELECT) {
                     switch (form.field) {
                         case fields.partnerCountryCode:
-                            form.options = countryCodes;
+                            form.options = this.countryCodes;
                             break;
                         default:
                             form.options = undefined;
@@ -119,8 +118,9 @@ class RegisterPartner extends React.Component {
         }
     }
 
-    getFormData = () => {
+    getFormData = async () => {
         const { data } = this.props
+        this.countryCodes = await readJsonFile('countrycode-iso31661a2.json')
         let forms = this.elements()
 
         forms.push(
