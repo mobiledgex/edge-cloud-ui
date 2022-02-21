@@ -322,17 +322,29 @@ class AppInstReg extends React.Component {
                 break;
             } 
         }
+        let values = currentForm.value
+        let valid = Array.isArray(values) && values && values.some(cloudletName => {
+            return fetchCloudletField(this.cloudletList, { operatorName: operator, cloudletName }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
+        })
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.dedicatedIp) {
-                let values = currentForm.value
-                let valid = values && values.some(cloudletName=>{
-                    return fetchCloudletField(this.cloudletList, { operatorName: operator, cloudletName }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
-                })
                 form.visible = valid
             }
             if (form.field === fields.clusterName) {
                 this.updateUI(form)
+            }
+            if (form.field === fields.autoClusterInstance) {
+                if (!isInit) {
+                    form.rules.disabled = valid ? true : false
+                }
+            }
+            if (form.field === fields.clusterName) {
+                if (!isInit) {
+                    form.value = valid ? "DefaultCluster" : undefined
+                    form.formType = valid ? INPUT : SELECT
+                    form.rules.disabled = valid ? true : false
+                }
             }
         }
         for (let i = 0; i < forms.length; i++) {
@@ -495,10 +507,11 @@ class AppInstReg extends React.Component {
                     for (let i = 0; i < cloudlets.length; i++) {
                         let newData = cloneDeep(data)
                         let cloudlet = cloudlets[i];
-                        const fetchedFields = fetchCloudletField(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet }, [fields.platformType, fields.partnerOperator])
+                        const fetchedFields = fetchCloudletField(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet }, [fields.platformType, fields.partnerOperator, fields.singleK8sClusterOwner])
                         newData[fields.dedicatedIp] =  fetchedFields[0] === perpetual.PLATFORM_TYPE_K8S_BARE_METAL ? data[fields.dedicatedIp] : undefined
                         newData[fields.cloudletName] = cloudlet;
                         newData[fields.partnerOperator] = fetchedFields[1] 
+                        newData[fields.clusterdeveloper] = fetchedFields[2] && fetchedFields[2][fields.singleK8sClusterOwner] ? fetchedFields[2][fields.singleK8sClusterOwner] : 'MobiledgeX'
                         newData[fields.compatibilityVersion] = this.fetchCompabilityVersion(data, cloudlet)
                         if (flavors) {
                             newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
