@@ -322,28 +322,23 @@ class AppInstReg extends React.Component {
                 break;
             } 
         }
-        let values = currentForm.value
-        let valid = Array.isArray(values) && values && values.some(cloudletName => {
-            return fetchCloudletField(this.cloudletList, { operatorName: operator, cloudletName }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
-        })
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.dedicatedIp) {
-                form.visible = valid
+                form.visible = this.getSpecificCloudletField(currentForm.value, operator)
             }
             if (form.field === fields.clusterName) {
+                if (!isInit) {
+                    let valid = this.getSpecificCloudletField(currentForm.value, operator)
+                    form.value = valid ? "DefaultCluster" : undefined
+                    form.formType = valid ? INPUT : SELECT
+                    form.rules.disabled = valid ? true : false
+                }
                 this.updateUI(form)
             }
             if (form.field === fields.autoClusterInstance) {
                 if (!isInit) {
-                    form.rules.disabled = valid ? true : false
-                }
-            }
-            if (form.field === fields.clusterName) {
-                if (!isInit) {
-                    form.value = valid ? "DefaultCluster" : undefined
-                    form.formType = valid ? INPUT : SELECT
-                    form.rules.disabled = valid ? true : false
+                    form.rules.disabled = this.getSpecificCloudletField(currentForm.value, operator) ? true : false
                 }
             }
         }
@@ -359,6 +354,12 @@ class AppInstReg extends React.Component {
         if (!isInit) {
             this.updateState({ forms })
         }
+    }
+
+    getSpecificCloudletField = (values, operator) => {
+        return Array.isArray(values) && values && values.some(cloudletName => {
+            return fetchCloudletField(this.cloudletList, { operatorName: operator, cloudletName }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
+        })
     }
 
     /**config blog */
