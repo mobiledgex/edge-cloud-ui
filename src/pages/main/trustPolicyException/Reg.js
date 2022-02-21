@@ -17,6 +17,8 @@ import { showCloudletPools } from '../../../services/modules/cloudletPool'
 import { getAppList } from '../../../services/modules/app';
 import { developerRoles, operatorRoles } from '../../../constant'
 import { updateTrustPolicyException, createTrustPolicyException } from '../../../services/modules/trustPolicyException';
+import { serverFields } from '../../../helper/formatter';
+import { HELP_TRUST_POLICY_EXCEPTION } from '../../../tutorial';
 
 class TrustPolicyExceptionReg extends React.Component {
     constructor(props) {
@@ -269,7 +271,7 @@ class TrustPolicyExceptionReg extends React.Component {
                             form.options = this.appList
                             break;
                         case fields.state:
-                            form.options = [perpetual.APPROVAL_REQUESTED, perpetual.ACTIVE, perpetual.REJECTED];
+                            form.options = [serverFields.APPROVAL_REQUESTED, serverFields.ACTIVE, serverFields.REJECTED];
                             break;
                         default:
                             form.options = undefined;
@@ -404,6 +406,7 @@ class TrustPolicyExceptionReg extends React.Component {
     componentDidMount() {
         this._isMounted = true
         this.getFormData(this.props.data)
+        this.props.handleViewMode(HELP_TRUST_POLICY_EXCEPTION)
     }
 
     componentWillUnmount() {

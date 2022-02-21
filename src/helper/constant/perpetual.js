@@ -269,7 +269,3 @@ export const PAGE_INBOUND_FEDERATION = 'Inbound'
 export const PAGE_PARTNER_ZONES = 'Partner Zones'
 export const PAGE_SHARED_ZONES = 'Shared Zones'
 export const PAGE_TRUST_POLICY_EXCEPTION = 'TrustPolicyException'
-
-export const APPROVAL_REQUESTED = 'ApprovalRequested'
-export const ACTIVE = 'Active'
-export const REJECTED = 'Rejected'

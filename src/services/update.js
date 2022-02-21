@@ -35,8 +35,8 @@ export const updateFieldData = (self, forms, data, orgData) => {
                 let updateId = update.id
                 let ignoreCase = update.ignoreCase ? update.ignoreCase : false
                 if (!compareObjects(data[form.field], orgData[form.field], ignoreCase)) {
+                    updateData[form.field] = data[form.field]
                     updateFields = [...updateFields, ...updateId]
-                    updateFields = [...updateFields]
                 }
             }
         }

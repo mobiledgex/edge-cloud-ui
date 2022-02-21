@@ -9,6 +9,7 @@ import { developerRoles, operatorRoles } from '../../../constant'
 import { perpetual, role } from '../../../helper/constant';
 import { keys, showTrustPolicyException, deleteTrustPolicyException } from '../../../services/modules/trustPolicyException/trustPolicyException';
 import TrustPolicyExceptionReg from './Reg'
+import * as shared from '../../../services/model/shared';
 
 class TrustPolicyExceptionList extends React.Component {
     constructor(props) {
@@ -66,11 +67,11 @@ class TrustPolicyExceptionList extends React.Component {
         }
     }
 
-    // showStatus = (data) => {
-    //     let progressRender = null
-    //     progressRender = shared.showStatus(data)
-    //     return progressRender
-    // }
+    showStatus = (data) => {
+        let progressRender = null
+        progressRender = shared.showProgress(data)
+        return progressRender
+    }
 
     canAdd = () => {
         if (role.validateRole(developerRoles, this.props.organizationInfo)) {
@@ -87,7 +88,8 @@ class TrustPolicyExceptionList extends React.Component {
             isRegion: true,
             keys: keys(),
             onAdd: this.canAdd(),
-            selection: role.validateRole(developerRoles, this.props.organizationInfo)
+            selection: role.validateRole(developerRoles, this.props.organizationInfo),
+            formatData: this.dataFormatter
         })
     }
 

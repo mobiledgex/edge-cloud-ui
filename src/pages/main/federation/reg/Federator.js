@@ -116,7 +116,6 @@ class RegisterOperator extends React.Component {
         if (mncList.length > 0) {
             data[fields.mnc] = mncList
         }
-        console.log(data)
         let mc = this.isUpdate ? await updateFederator(this, data) : await createFederator(this, data)
         if (responseValid(mc)) {
             const responseData = mc.response.data
