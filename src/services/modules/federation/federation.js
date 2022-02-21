@@ -165,7 +165,7 @@ export const deleteFederator = async (self, data) => {
     requestList.push({ method: endpoint.DELETE_FEDERATOR, data: getFederatorKey(data) })
     let mc = undefined
     for (const request of requestList) {
-        mc = await authSyncRequest(this, request)
+        mc = await authSyncRequest(self, request)
         if (responseValid(mc)) {
             continue;
         }
