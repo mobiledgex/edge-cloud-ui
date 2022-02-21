@@ -174,7 +174,10 @@ class CloudletReg extends React.Component {
                 valid = false
             }
             if (form.field === fields.infraApiAccess) {
-                this.infraApiAccessList = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK ? [perpetual.INFRA_API_ACCESS_DIRECT, perpetual.INFRA_API_ACCESS_RESTRICTED] : []
+                let curr_form = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
+                this.infraApiAccessList = curr_form ? [perpetual.INFRA_API_ACCESS_DIRECT, perpetual.INFRA_API_ACCESS_RESTRICTED] : [perpetual.INFRA_API_ACCESS_DIRECT]
+                form.value = curr_form ? undefined : perpetual.INFRA_API_ACCESS_DIRECT
+                form.rules.disabled = !curr_form
                 this.updateUI(form)
             }
             else if (form.field === fields.openRCData || form.field === fields.caCertdata) {
@@ -638,8 +641,7 @@ class CloudletReg extends React.Component {
                             form.options = [perpetual.MAINTENANCE_STATE_NORMAL_OPERATION, perpetual.MAINTENANCE_STATE_MAINTENANCE_START, perpetual.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER];
                             break;
                         case fields.infraApiAccess:
-                            form.options = this.infraApiAccessList.length > 0 ? this.infraApiAccessList : [perpetual.INFRA_API_ACCESS_DIRECT];
-                            form.value = this.infraApiAccessList.length === 0 && perpetual.INFRA_API_ACCESS_DIRECT
+                            form.options = this.infraApiAccessList
                             break;
                         case fields.trustPolicyName:
                             form.options = this.trustPolicyList
