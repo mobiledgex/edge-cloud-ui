@@ -13,6 +13,7 @@ import { createFederator, updateFederator } from '../../../../services/modules/f
 import { uniqueId } from '../../../../helper/constant/shared';
 import FederationKey from './FederatorKey';
 
+const countryCodes = require('../../../../assets/data/countrycode-iso31661a2.json')
 
 class RegisterOperator extends React.Component {
     constructor(props) {
@@ -82,7 +83,7 @@ class RegisterOperator extends React.Component {
             { label: `${this.isUpdate ? 'Update' : 'Enter'} Operator Details`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
             { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
-            { field: fields.countryCode, label: ' Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true, type:'search' }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
+            { field: fields.countryCode, label: 'Country Code', formType: SELECT, placeholder: 'Select Country Code', rules: { required: true }, visible: true, update: { key: true }, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
             this.isUpdate ? { field: fields.federationId, label: 'Federation ID', formType: INPUT, visible: true, tip: 'Self federation ID' } :
                 { uuid: uniqueId(), field: fields.federationId, label: 'Federation ID', formType: INPUT, visible: true, forms: this.federationIdElements(), tip: 'Self federation ID' },
             { field: fields.locatorendpoint, label: 'Locator End Point', formType: INPUT, placeholder: 'Enter Locator Endpoint', visible: true, update: { edit: true }, tip: 'IP and Port of discovery service URL of operator platform' },
@@ -188,6 +189,9 @@ class RegisterOperator extends React.Component {
                             break;
                         case fields.region:
                             form.options = this.props.regions;
+                            break;
+                        case fields.countryCode:
+                            form.options = countryCodes;
                             break;
                         default:
                             form.options = undefined;
