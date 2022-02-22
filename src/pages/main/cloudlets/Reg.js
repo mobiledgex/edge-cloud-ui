@@ -56,7 +56,7 @@ class CloudletReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
-        this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT, perpetual.INFRA_API_ACCESS_RESTRICTED]
+        this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT]
         //To avoid refeching data from server
         this.requestedRegionList = [];
         this.operatorList = [];
@@ -172,6 +172,17 @@ class CloudletReg extends React.Component {
             let valid = true
             if (form.field === fields.envVar || form.field === fields.resourceQuota) {
                 valid = false
+            }
+            if (form.field === fields.infraApiAccess) {
+                let curr_form = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
+                this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT]
+                if(curr_form)
+                {
+                    this.infraApiAccessList.push(perpetual.INFRA_API_ACCESS_RESTRICTED)   
+                }
+                form.value = curr_form ? undefined : perpetual.INFRA_API_ACCESS_DIRECT
+                form.rules.disabled = !curr_form
+                this.updateUI(form)
             }
             else if (form.field === fields.openRCData || form.field === fields.caCertdata) {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
@@ -634,8 +645,7 @@ class CloudletReg extends React.Component {
                             form.options = [perpetual.MAINTENANCE_STATE_NORMAL_OPERATION, perpetual.MAINTENANCE_STATE_MAINTENANCE_START, perpetual.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER];
                             break;
                         case fields.infraApiAccess:
-                            form.options = this.infraApiAccessList;
-                            form.value = perpetual.INFRA_API_ACCESS_DIRECT;
+                            form.options = this.infraApiAccessList
                             break;
                         case fields.trustPolicyName:
                             form.options = this.trustPolicyList
@@ -810,7 +820,7 @@ class CloudletReg extends React.Component {
             { uuid: uniqueId(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS Location', update: { id: ['5', '5.1', '5.2'] } },
             { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, tip: 'Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
             { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, update: { id: ['8'] }, tip: 'Number of dynamic IPs available for dynamic IP support.' },
-            { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, tip: 'Physical infrastructure cloudlet name.' },
+            { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', visible: true, tip: 'Physical infrastructure cloudlet name.' },
             { field: fields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', rules: { required: true }, visible: true, tip: 'Supported list of cloudlet types.' },
             { field: fields.vmPool, label: 'VM Pool', formType: INPUT, placeholder: 'Enter Pool Name', rules: { required: false }, visible: false, tip: 'VM Pool' },
             { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...', update: { id: ['23', '23.1', '23.2'] } },
