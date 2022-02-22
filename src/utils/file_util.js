@@ -44,3 +44,8 @@ export const copyData = (data, newline = false) => {
     document.execCommand('copy')
     textField.remove()
 }
+
+export const readJsonFile = async (fileName) => {
+    const response = await fetch(`data/${fileName}`)
+    return await response.json()
+}
