@@ -56,7 +56,7 @@ class CloudletReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
-        this.infraApiAccessList = []
+        this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT]
         //To avoid refeching data from server
         this.requestedRegionList = [];
         this.operatorList = [];
@@ -175,7 +175,11 @@ class CloudletReg extends React.Component {
             }
             if (form.field === fields.infraApiAccess) {
                 let curr_form = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
-                this.infraApiAccessList = curr_form ? [perpetual.INFRA_API_ACCESS_DIRECT, perpetual.INFRA_API_ACCESS_RESTRICTED] : [perpetual.INFRA_API_ACCESS_DIRECT]
+                this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT]
+                if(curr_form)
+                {
+                    this.infraApiAccessList.push(perpetual.INFRA_API_ACCESS_RESTRICTED)   
+                }
                 form.value = curr_form ? undefined : perpetual.INFRA_API_ACCESS_DIRECT
                 form.rules.disabled = !curr_form
                 this.updateUI(form)
