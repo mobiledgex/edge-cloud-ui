@@ -56,7 +56,7 @@ class CloudletReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
-        this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT, perpetual.INFRA_API_ACCESS_RESTRICTED]
+        this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT]
         //To avoid refeching data from server
         this.requestedRegionList = [];
         this.operatorList = [];
@@ -172,6 +172,17 @@ class CloudletReg extends React.Component {
             let valid = true
             if (form.field === fields.envVar || form.field === fields.resourceQuota) {
                 valid = false
+            }
+            if (form.field === fields.infraApiAccess) {
+                let curr_form = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
+                this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT]
+                if(curr_form)
+                {
+                    this.infraApiAccessList.push(perpetual.INFRA_API_ACCESS_RESTRICTED)   
+                }
+                form.value = curr_form ? undefined : perpetual.INFRA_API_ACCESS_DIRECT
+                form.rules.disabled = !curr_form
+                this.updateUI(form)
             }
             else if (form.field === fields.openRCData || form.field === fields.caCertdata) {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
@@ -634,8 +645,7 @@ class CloudletReg extends React.Component {
                             form.options = [perpetual.MAINTENANCE_STATE_NORMAL_OPERATION, perpetual.MAINTENANCE_STATE_MAINTENANCE_START, perpetual.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER];
                             break;
                         case fields.infraApiAccess:
-                            form.options = this.infraApiAccessList;
-                            form.value = perpetual.INFRA_API_ACCESS_DIRECT;
+                            form.options = this.infraApiAccessList
                             break;
                         case fields.trustPolicyName:
                             form.options = this.trustPolicyList
