@@ -6,7 +6,7 @@ import * as actions from '../../../actions';
 import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON } from '../../../hoc/forms/MexForms';
 import { redux_org } from '../../../helper/reduxData'
 //model
-import { service, fields, updateFieldData } from '../../../services';
+import { service, fields } from '../../../services';
 import { getOrganizationList } from '../../../services/modules/organization';
 
 import { Grid } from '@material-ui/core';
@@ -31,7 +31,6 @@ class TrustPolicyExceptionReg extends React.Component {
         //To avoid refetching data from server
         this.requestedRegionList = []
         this.organizationList = []
-        this.operatorList = []
         this.appList = []
         this.cloudletPoolList = []
     }
@@ -134,6 +133,7 @@ class TrustPolicyExceptionReg extends React.Component {
             this.ocProtcolValueChange(form, forms, isInit)
         }
     }
+
     ocProtcolValueChange = (currentForm, forms, isInit) => {
         let parentForm = currentForm.parent.form
         for (let i = 0; i < forms.length; i++) {
@@ -191,7 +191,7 @@ class TrustPolicyExceptionReg extends React.Component {
                     let multiFormData = data[uuid]
                     if (multiFormData) {
                         if (form.field === fields.requiredOutboundConnectionmulti) {
-                            outboundList.push({ 'port_range_min': parseInt(multiFormData[fields.ocPortMin]), 'port_range_max': parseInt(multiFormData[fields.ocPortMax]), 'protocol': multiFormData[fields.ocProtocol], 'remote_cidr': multiFormData[fields.ocRemoteCIDR] })
+                            outboundList.push({ 'port_range_min': multiFormData[fields.ocPortMin] && parseInt(multiFormData[fields.ocPortMin]), 'port_range_max': multiFormData[fields.ocPortMax] && parseInt(multiFormData[fields.ocPortMax]), 'protocol': multiFormData[fields.ocProtocol], 'remote_cidr': multiFormData[fields.ocRemoteCIDR] })
                         }
                     }
                     data[uuid] = undefined
