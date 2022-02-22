@@ -7,14 +7,19 @@ import { fields } from "../../../services";
 /**
  * alerts array order indicates priority with last index indicates high priority
  */
+
+const cloudletAlerts = [{ field: fields.state, states: [{ values: [serverFields.READY] }, { type: 'transient', color: '#FFA000', values: [serverFields.CREATING, serverFields.DELETING] }] }]
+const clusterAlerts = [{ field: fields.state, states: [{ values: [serverFields.READY] }, { type: 'transient', color: '#FFA000', values: [serverFields.CREATING, serverFields.DELETING] }] }]
+const appInstAlerts = [{ field: fields.healthCheck, states: [{ values: [serverFields.OK] }] }]
+
 export const sequence = [
     { label: 'Region', active: false, field: fields.region },
     { label: 'Operator', active: false, field: fields.operatorName },
-    { label: 'Cloudlet', active: false, field: fields.cloudletName, alerts: [{ field: fields.state, states: [{ values: [serverFields.READY] }, { type: 'transient', color: '#FFA000', values: [serverFields.CREATING] }] }] },
+    { label: 'Cloudlet', active: false, field: fields.cloudletName, alerts: cloudletAlerts },
     { label: 'Cluster Developer', active: false, field: fields.clusterdeveloper },
-    { label: 'Cluster', active: false, field: fields.clusterName, alerts: [{ field: fields.state, states: [{ values: [serverFields.READY] }] }] },
+    { label: 'Cluster', active: false, field: fields.clusterName, alerts: clusterAlerts },
     // { label: 'App Developer', active: false, field: fields.appDeveloper },
-    { label: 'App', active: false, field: fields.appName, alerts: [{ field: fields.healthCheck, states: [{ values: [serverFields.OK] }] }] },
+    { label: 'App', active: false, field: fields.appName, alerts: appInstAlerts },
 ]
 
 export const dataForms = [

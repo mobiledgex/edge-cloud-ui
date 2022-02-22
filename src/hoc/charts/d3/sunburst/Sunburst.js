@@ -57,12 +57,13 @@ const showAlert = (target, data) => {
 const tooltipContent = (d, tooltip, format) => {
     const { children, data } = d
     const { alert } = data
-    if (children || alert) {
+    let error = alert && alert.field ? `${alert.field}: ${alert.value}` : undefined
+    if (children || error) {
         tooltip.html(() => {
             let g = '<div style="font-size:10px;color:black;" align="left">'
             g = g + `<p>${'Name: ' + data.name}</p>`
             g = g + (children ? `<p>${'Count: ' + format(children.length)}</p>` : '')
-            g = g + (alert && !alert.nested ? `<p>${'Count: ' + JSON.stringify(data.alert)}</p>` : '')
+            g = g + (error ? `<p>${error}</p>` : '')
             g = g + '</div>'
             return g
         });
@@ -214,7 +215,7 @@ const Sunburst = (props) => {
         path.on("mouseover", (e, d) => {
             tooltipContent(d, tooltip, format)
         })
-            .on("mousemove", function (e, d) { return tooltip.style("top", (0) + "px").style("left", (0) + "px"); })
+            .on("mousemove", function (e, d) { return tooltip.style("top", (e.offsetY+10) + "px").style("left", (e.offsetX+30) + "px"); })
             .on("mouseout", function (e, d) { return tooltip.style("visibility", "hidden"); });
 
         const pathBorder = svg.append("g")
@@ -272,7 +273,7 @@ const Sunburst = (props) => {
             <div style={{ marginTop: 10, marginBottom: -25 }} align='center'>
                 <SequenceHorizontal key={uniqueId()} dataset={dataFlow} colors={color} />
             </div>
-            <div className='sunburst' style={{ padding: '0px 20px 20px 20px', borderRadius: 5 }} ref={sbRef} />
+            <div className='sunburst' style={{ padding: '0px 20px 20px 20px', borderRadius: 5, position:'relative' }} ref={sbRef} />
         </React.Fragment>
     )
 }

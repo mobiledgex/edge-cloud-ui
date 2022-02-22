@@ -7,8 +7,6 @@ import SequenceFunnel from '../../../../hoc/charts/d3/sequence/SequenceFunnel';
 import { withStyles } from '@material-ui/styles';
 import { controlStyles } from './control-styling'
 import { uniqueId } from '../../../../helper/constant/shared';
-import Tooltip from './Tooltip'
-import Doughnut from '../../../../hoc/charts/d3/doughnut/Doughnut';
 import { sequence } from '../sequence';
 class Control extends React.Component {
     constructor(props) {

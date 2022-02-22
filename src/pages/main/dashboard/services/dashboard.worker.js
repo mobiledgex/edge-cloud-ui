@@ -39,7 +39,6 @@ const formatSequence = (order, index, inp, output) => {
                         }
                     })
                     if(type)
-                    console.log(type)
                     type = type ? type : 'error'
                     color = color ? color : '#D32F2F'
 
@@ -193,7 +192,6 @@ const format = (worker) => {
         }
     })
     let sunburstData = formatData(sequence, dataList)
-    console.log(sunburstData)
     self.postMessage({ status: 200, data: sunburstData, total })
 }
 
