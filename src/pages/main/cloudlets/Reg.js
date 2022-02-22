@@ -56,7 +56,7 @@ class CloudletReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
-        this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT, perpetual.INFRA_API_ACCESS_RESTRICTED]
+        this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT]
         //To avoid refeching data from server
         this.requestedRegionList = [];
         this.operatorList = [];
@@ -172,6 +172,17 @@ class CloudletReg extends React.Component {
             let valid = true
             if (form.field === fields.envVar || form.field === fields.resourceQuota) {
                 valid = false
+            }
+            if (form.field === fields.infraApiAccess) {
+                let curr_form = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
+                this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT]
+                if(curr_form)
+                {
+                    this.infraApiAccessList.push(perpetual.INFRA_API_ACCESS_RESTRICTED)   
+                }
+                form.value = curr_form ? undefined : perpetual.INFRA_API_ACCESS_DIRECT
+                form.rules.disabled = !curr_form
+                this.updateUI(form)
             }
             else if (form.field === fields.openRCData || form.field === fields.caCertdata) {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
@@ -650,8 +661,7 @@ class CloudletReg extends React.Component {
                             form.options = [perpetual.MAINTENANCE_STATE_NORMAL_OPERATION, perpetual.MAINTENANCE_STATE_MAINTENANCE_START, perpetual.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER];
                             break;
                         case fields.infraApiAccess:
-                            form.options = this.infraApiAccessList;
-                            form.value = perpetual.INFRA_API_ACCESS_DIRECT;
+                            form.options = this.infraApiAccessList
                             break;
                         case fields.trustPolicyName:
                             form.options = this.trustPolicyList
@@ -829,10 +839,8 @@ class CloudletReg extends React.Component {
             { uuid: uniqueId(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS Location', update: { id: ['5', '5.1', '5.2'] } },
             { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, tip: 'Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
             { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, update: { id: ['8'] }, tip: 'Number of dynamic IPs available for dynamic IP support.' },
-            { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, tip: 'Physical infrastructure cloudlet name.' },
-            { field: fields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', visible: true, tip: 'Supported list of cloudlet types.' },
-            { field: fields.platformHighAvailability, label: 'Platform High Availability', formType: SWITCH, visible: true, value: false, update: { id: ['50'] }, tip: 'Enable platform H/A' },
-            { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
+            { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', visible: true, tip: 'Physical infrastructure cloudlet name.' },
+            { field: fields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', rules: { required: true }, visible: true, tip: 'Supported list of cloudlet types.' },
             { field: fields.vmPool, label: 'VM Pool', formType: INPUT, placeholder: 'Enter Pool Name', rules: { required: false }, visible: false, tip: 'VM Pool' },
             { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...', update: { id: ['23', '23.1', '23.2'] } },
             { field: fields.caCertdata, label: 'CACert Data', formType: TEXT_AREA, placeholder: 'Enter CACert Data', rules: { required: false }, visible: false, tip: 'CAcert data for HTTPS based verfication of auth URL', update: { id: ['23', '23.1', '23.2'] } },
@@ -843,6 +851,8 @@ class CloudletReg extends React.Component {
             { field: fields.envVars, label: 'Environment Variable', formType: HEADER, forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getEnvForm }], visible: true, tip: 'Single Key-Value pair of env var to be passed to CRM' },
             { field: fields.resourceQuotas, label: 'Resource Quota', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Resource Quota', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getResoureQuotaForm }], visible: true, update: { id: ['39', '39.1', '39.2', '39.3'] }, tip: 'Alert Threshold:</b> Generate alert when more than threshold percentage of resource is used\nName:</b> Resource name on which to set quota\nValue:</b> Quota value of the resource' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
+            { field: fields.platformHighAvailability, label: 'Platform High Availability', formType: SWITCH, visible: true, value: false, update: { id: ['50'] }, tip: 'Enable platform H/A', advance: false },
+            { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)', advance: false },
             { field: fields.trustPolicyName, label: 'Trust Policy', formType: SELECT, placeholder: 'Select Trust Policy', visible: true, update: { id: ['37'] }, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.operatorName }], advance: false, tip: 'Allow you to control the outbound connections your instances are permitted to make' },
             { field: fields.gpuConfig, label: 'GPU Driver', formType: SELECT, placeholder: 'Select GPU Driver', visible: true, update: { id: ['45', '45.1', '45.1.1', '45.1.2'] }, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.operatorName, value: 'MobiledgeX' }], advance: false, tip: 'GPU Configuration associated with cloudlet' },
             { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version', advance: false },
