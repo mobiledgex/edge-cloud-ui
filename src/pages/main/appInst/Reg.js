@@ -314,7 +314,7 @@ class AppInstReg extends React.Component {
     }
 
     cloudletValueChange = (currentForm, forms, isInit) => {
-        let operator = undefined
+        let operator, valid = undefined
         for(const form of forms)
         {
             if (form.field === fields.operatorName) {
@@ -322,14 +322,16 @@ class AppInstReg extends React.Component {
                 break;
             } 
         }
+        if (!isInit) {
+            valid = this.getSpecificCloudletField(currentForm.value, operator)
+        }
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.dedicatedIp) {
-                form.visible = this.getSpecificCloudletField(currentForm.value, operator)
+                form.visible = valid
             }
             if (form.field === fields.clusterName) {
                 if (!isInit) {
-                    let valid = this.getSpecificCloudletField(currentForm.value, operator)
                     form.value = valid ? "DefaultCluster" : undefined
                     form.formType = valid ? INPUT : SELECT
                     form.rules.disabled = valid ? true : false
@@ -338,7 +340,7 @@ class AppInstReg extends React.Component {
             }
             if (form.field === fields.autoClusterInstance) {
                 if (!isInit) {
-                    form.rules.disabled = this.getSpecificCloudletField(currentForm.value, operator) ? true : false
+                    form.rules.disabled = valid
                 }
             }
         }
@@ -512,7 +514,7 @@ class AppInstReg extends React.Component {
                         newData[fields.dedicatedIp] =  fetchedFields[0] === perpetual.PLATFORM_TYPE_K8S_BARE_METAL ? data[fields.dedicatedIp] : undefined
                         newData[fields.cloudletName] = cloudlet;
                         newData[fields.partnerOperator] = fetchedFields[1] 
-                        newData[fields.clusterdeveloper] = fetchedFields[2] && fetchedFields[2][fields.singleK8sClusterOwner] ? fetchedFields[2][fields.singleK8sClusterOwner] : 'MobiledgeX'
+                        newData[fields.clusterdeveloper] = fetchedFields[2] ? fetchedFields[2] : 'MobiledgeX'
                         newData[fields.compatibilityVersion] = this.fetchCompabilityVersion(data, cloudlet)
                         if (flavors) {
                             newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
