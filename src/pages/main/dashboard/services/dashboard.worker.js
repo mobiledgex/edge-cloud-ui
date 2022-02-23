@@ -38,7 +38,7 @@ const formatSequence = (order, index, inp, output) => {
                             color = state.color
                         }
                     })
-                    if(type)
+                    
                     type = type ? type : 'error'
                     color = color ? color : '#D32F2F'
 
