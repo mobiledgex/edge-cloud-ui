@@ -20,7 +20,7 @@ export const keys = (nameOnly) => {
             field: fields.userList, label: 'User List', sortable: true, visible: false,
             keys: [{ field: fields.username, label: 'Username' }, { field: fields.userRole, label: 'Role' }]
         },
-        { field: fields.manage, label: 'Manage', visible: true, clickable: true, format: true }
+            { field: fields.manage, label: 'Manage', visible: true, clickable: true, format: true }
         ]
     }
     return items
@@ -86,7 +86,7 @@ export const edgeboxOnlyAPI = (data) => {
     return { method: endpoint.EDGEBOX_ONLY, data: requestData }
 }
 
-export const multiDataRequest = (keys, mcRequestList) => {
+export const multiDataRequest = (keys, mcRequestList, userInfo) => {
     let orgDataList = [];
     let userDataList = [];
     for (let i = 0; i < mcRequestList.length; i++) {
@@ -100,8 +100,8 @@ export const multiDataRequest = (keys, mcRequestList) => {
         }
     }
     let dataList = orgDataList.map(org => {
-        let user = userDataList.find(user => user[fields.organizationName] === org[fields.organizationName]);
-        if (user && (user[fields.role] === OPERATOR_MANAGER || user[fields.role] === DEVELOPER_MANAGER)) {
+        let user = userDataList.find(user => user[fields.username] === userInfo['Name']);
+        if (user) {
             org[fields.role] = user[fields.role];
         }
         return org

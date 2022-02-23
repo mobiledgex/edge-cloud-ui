@@ -558,9 +558,10 @@ class DataGrid extends React.Component {
         if (mcList && mcList.length > 0) {
             this.requestCount -= 1
             let requestInfo = this.requestInfo
+            let user_info = requestInfo.userInfo ? this.props.userInfo : null
             let newDataList = []
             if (this.props.multiDataRequest) {
-                newDataList = this.props.multiDataRequest(requestInfo.keys, mcList)
+                newDataList = this.props.multiDataRequest(requestInfo.keys, mcList, user_info)
             }
             else {
                 let mc = mcList[0]
@@ -670,7 +671,8 @@ class DataGrid extends React.Component {
 const mapStateToProps = (state) => {
     return {
         regions: state.regionInfo.region,
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        userInfo: state.userInfo.data
     }
 };
 
