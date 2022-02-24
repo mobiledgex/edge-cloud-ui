@@ -743,7 +743,6 @@ class AppReg extends Component {
             }
 
             if ((data[fields.imagePath] && data[fields.imagePath].length > 0) || (data[fields.deploymentManifest] && data[fields.deploymentManifest].length > 0)) {
-                if (ports.length > 0) {
                     data[fields.accessPorts] = ports
                     data[fields.skipHCPorts] = skipHCPorts.length > 0 ? skipHCPorts : undefined
 
@@ -840,10 +839,6 @@ class AppReg extends Component {
                             }
                         }
                     }
-                }
-                else {
-                    this.props.handleAlertInfo('error', 'At least one port is mandatory')
-                }
             }
             else {
                 this.props.handleAlertInfo('error', 'Please input image path or deployment manifest')
