@@ -284,10 +284,6 @@ class CloudletReg extends React.Component {
         let valid;
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.infraApiAccess) {
-                this.updateUI(form)
-                this.updateState({ forms })
-            }
             if (form.field === fields.platformType) {
                 valid = [perpetual.PLATFORM_TYPE_VCD, perpetual.PLATFORM_TYPE_OPEN_STACK].includes(form.value)
             }
