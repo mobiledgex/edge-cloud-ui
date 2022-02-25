@@ -61,8 +61,8 @@ const tooltipContent = (d, tooltip, format) => {
     if (children || error) {
         tooltip.html(() => {
             let g = '<div style="font-size:10px;color:black;" align="left">'
-            g = g + `<p>${'Name: ' + data.name}</p>`
-            g = g + (children ? `<p>${'Count: ' + format(children.length)}</p>` : '')
+            g = g + `<p>${data.header}: ${data.name}</p>`
+            g = g + (children ? `<p>${data.childrenLabel}:  ${format(children.length)}</p>` : '')
             g = g + (error ? `<p>${error}</p>` : '')
             g = g + '</div>'
             return g
@@ -136,7 +136,7 @@ const updatePath = (path, pathBorder, label, update = false, t) => {
 }
 
 const Sunburst = (props) => {
-    const { toggle, sequence, dataset, onMore } = props
+    const { toggle, sequence, dataset, onMore, style } = props
     const [data, setData] = useState(undefined)
     const [dataFlow, setDataFlow] = useState([])
     const classes = useStyles({ btnVisibility: Boolean(data) })
@@ -149,6 +149,7 @@ const Sunburst = (props) => {
         //on click
         const clicked = (event, p) => {
 
+            onMore(p.depth > 0 ? p.data : undefined)
             d3.selectAll('polygon')
                 .style("fill", function (d) { return d === sequence[p.y0] || d === sequence[p.y1] ? '#388E3C' : '#757575' })
                 .attr("stroke", function (d) { return d === sequence[p.y0] || d === sequence[p.y1] ? '#388E3C' : '#757575' });
@@ -215,7 +216,7 @@ const Sunburst = (props) => {
         path.on("mouseover", (e, d) => {
             tooltipContent(d, tooltip, format)
         })
-            .on("mousemove", function (e, d) { return tooltip.style("top", (e.offsetY+10) + "px").style("left", (e.offsetX+30) + "px"); })
+            .on("mousemove", function (e, d) { return tooltip.style("top", (e.offsetY + 10) + "px").style("left", (e.offsetX + 30) + "px"); })
             .on("mouseout", function (e, d) { return tooltip.style("visibility", "hidden"); });
 
         const pathBorder = svg.append("g")
@@ -269,12 +270,12 @@ const Sunburst = (props) => {
     }, [toggle]);
 
     return (
-        <React.Fragment>
-            <div style={{ marginTop: 10, marginBottom: -25 }} align='center'>
+        <div align='center'>
+            <div style={{ margin: 10, marginBottom: -25 }} align='center'>
                 <SequenceHorizontal key={uniqueId()} dataset={dataFlow} colors={color} />
             </div>
-            <div className='sunburst' style={{ padding: '0px 20px 20px 20px', borderRadius: 5, position:'relative' }} ref={sbRef} />
-        </React.Fragment>
+            <div style={{ ...style, position: 'relative' }} ref={sbRef} />
+        </div>
     )
 }
 

@@ -3,6 +3,7 @@ import { UNIT_BYTES, UNIT_PERCENTAGE } from '../../../pages/main/monitoring/help
 import { fields } from '../../model/format';
 import { endpoint } from '../../../helper/constant';
 import { redux_org } from '../../../helper/reduxData';
+import { omit } from '../../../helper/constant/operators';
 
 export const customData = (id, data) => {
     switch (id) {
@@ -47,13 +48,15 @@ export const clusterResourceKeys = () => ([
     { field: 'map', header: 'Map' }
 ])
 
-export const clusterMetrics = (self, data, list, organization) => {
+export const clusterMetrics = (self, data, list) => {
+    let requestData = omit(data, fields.organizationName)
+    let organization = data[fields.organizationName]
     if (list) {
-        data.clusterinsts = list
+        requestData.clusterinsts = list
     }
-    else {
-        data.clusterinst = redux_org.isOperator(self) ? { cloudlet_key: { organization } } : { organization }
+    else if (organization) {
+        requestData.clusterinst = redux_org.isOperator(self) ? { cloudlet_key: { organization } } : { organization }
     }
-    return { method: endpoint.CLUSTER_METRICS_ENDPOINT, data, keys: clusterMetricsKeys }
+    return { method: endpoint.CLUSTER_METRICS_ENDPOINT, data: requestData, keys: clusterMetricsKeys }
 }
 

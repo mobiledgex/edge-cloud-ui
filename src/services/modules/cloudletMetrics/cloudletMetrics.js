@@ -2,6 +2,7 @@ import { UNIT_FLOOR, UNIT_GB, UNIT_MB } from '../../../pages/main/monitoring/hel
 import { endpoint, perpetual } from '../../../helper/constant';
 import { fields } from '../../model/format';
 import { TYPE_JSON } from '../../../helper/constant/perpetual';
+import { omit, pick } from '../../../helper/constant/operators';
 
 export const customData = (id, data) => {
     switch (id) {
@@ -61,26 +62,25 @@ export const cloudletResourceKeys = () => ([
  * 
  * @param {*} data request data
  * @param {*} list extracts specific cloudlet data
- * @param {*} org cloudlet organization
  * @returns cloudlet metric data
  */
-export const cloudletMetrics = (data, list, org) => {
-    let requestData = { ...data }
+export const cloudletMetrics = (self, data, list) => {
+    let requestData = pick(data, [fields.region, fields.starttime, fields.endtime, fields.selector, fields.numsamples])
     if (list) {
         requestData.cloudlets = list
     }
     else {
         requestData.cloudlet = {
-            organization: org
+            organization: data[fields.organizationName] ? data[fields.organizationName] : data[fields.operatorName]
         }
     }
     return { method: endpoint.CLOUDLET_METRICS_ENDPOINT, data: requestData, keys: cloudletMetricsKeys }
 }
 
-export const cloudletUsageMetrics = (data, org) => {
-    let requestData = { ...data }
+export const cloudletUsageMetrics = (self, data) => {
+    let requestData = omit(data, [fields.organizationName])
     requestData.cloudlet = data.cloudlet ? data.cloudlet : {
-        organization: org
+        organization: data[fields.organizationName]
     }
     let keys = data.selector === 'flavorusage' ? cloudletFlavorMetricsKeys : cloudletMetricsKeys
     return { method: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, data: requestData, keys }

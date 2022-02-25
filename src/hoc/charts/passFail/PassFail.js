@@ -5,13 +5,8 @@ import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
     bar: {
-<<<<<<< HEAD
-        backgroundImage: props => `linear-gradient(105deg, #E94F30 0%, #E94F30 ${props.level}%, transparent ${props.level}%)`,
-        background: '#159057',
-=======
         backgroundImage: props => `linear-gradient(105deg, #C94744 0%, #C94744 ${props.level}%, transparent ${props.level}%)`,
         background: '#42A36D',
->>>>>>> be4a43a67aa983aaf4e2da3d225141ec2ce1b3d4
         height:'inherit',
         display:'flex',
         alignItems:'center',

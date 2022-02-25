@@ -7,7 +7,8 @@ import { sequence, dataForms } from "../sequence";
 import { fields } from "../../../../services";
 
 const formatSequence = (order, index, inp, output) => {
-    let data = inp[order[index].field]
+    let currentOrder = order[index]
+    let data = inp[currentOrder.field]
     let nextIndex = index + 1
     let alert = undefined
     if (data) {
@@ -16,7 +17,7 @@ const formatSequence = (order, index, inp, output) => {
         let newout = undefined
         if (output && output.length > 0) {
             for (let i = 0; i < output.length; i++) {
-                if (output[i].name === inp[order[index].field].name) {
+                if (output[i].name === inp[currentOrder.field].name) {
                     exist = true
                     newout = output[i]
                     break;
@@ -24,9 +25,9 @@ const formatSequence = (order, index, inp, output) => {
             }
         }
         if (exist === false) {
-            newout = { ...data }
-            if (order[index].alerts) {
-                let alerts = order[index].alerts
+            newout = { ...data, field:currentOrder.field, header: currentOrder.label, childrenLabel: order[nextIndex] && order[nextIndex].label }
+            if (currentOrder.alerts) {
+                let alerts = currentOrder.alerts
                 alerts && alerts.forEach(item => {
                     let field = item.field
                     let type, color
@@ -153,6 +154,7 @@ const format = (worker) => {
                     dataList.forEach(final => {
                         if (final[fields.clusterName].name === data[fields.clusterName] && final[fields.clusterdeveloper].name === data[fields.organizationName]) {
                             final[fields.clusterName].state = data[fields.state]
+                            final[fields.clusterName].data = data
                             exist = true
                         }
                     })
@@ -161,6 +163,7 @@ const format = (worker) => {
                     dataList.forEach(final => {
                         if (final[fields.cloudletName].name === data[fields.cloudletName] && final[fields.operatorName].name === data[fields.operatorName]) {
                             final[fields.cloudletName].state = data[fields.state]
+                            final[fields.cloudletName].data = data
                             exist = true
                         }
                     })
@@ -171,6 +174,7 @@ const format = (worker) => {
                 final[fields.region] = { name: region }
                 final[form.field] = {}
                 final[form.field].name = data[form.field]
+                final[form.field].data = data
                 tempFields.forEach(field => {
                     if (Array.isArray(field)) {
                         field.forEach(item => {

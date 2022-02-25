@@ -6,6 +6,7 @@ import { endpoint, perpetual } from '../../../helper/constant';
 import { developerRoles } from '../../../constant';
 import { ADMIN, DEVELOPER, DEVELOPER_VIEWER } from '../../../helper/constant/perpetual';
 import { redux_org } from '../../../helper/reduxData';
+import { omit } from '../../../helper/constant/operators';
 
 let fields = formatter.fields;
 
@@ -90,14 +91,16 @@ export const fetchLocation = (avgValues, metricData, showList) => {
     return avgValues
 }
 
-export const appInstMetrics = (self, data, list, organization) => {
+export const appInstMetrics = (self, data, list) => {
+    let requestData = omit(data, fields.organizationName)
+    let organization = data[fields.organizationName]
     if(list)
     {
-        data.appinsts = list 
+        requestData.appinsts = list 
     }
     else if (organization) {
-        data.appinst = redux_org.isOperator(self) ? { cluster_inst_key: { cloudlet_key: { organization } } } : { app_key: { organization } }
+        requestData.appinst = redux_org.isOperator(self) ? { cluster_inst_key: { cloudlet_key: { organization } } } : { app_key: { organization } }
     }
-    return { method: endpoint.APP_INST_METRICS_ENDPOINT, data: data, keys: appMetricsKeys }
+    return { method: endpoint.APP_INST_METRICS_ENDPOINT, data: requestData, keys: appMetricsKeys }
 }
 

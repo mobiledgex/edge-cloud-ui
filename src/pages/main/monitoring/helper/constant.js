@@ -19,16 +19,16 @@ export const showAPIs = (moduleId) => {
     }
 }
 
-export const resourceAPIs = (self, method, data, list, org) => {
+export const resourceAPIs = (self, method, data, list) => {
     switch (method) {
         case endpoint.CLOUDLET_METRICS_ENDPOINT:
-            return cloudletMetrics(data, list, org)
+            return cloudletMetrics(self, data, list)
         case endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT:
-            return cloudletUsageMetrics(data, org)
+            return cloudletUsageMetrics(self, data)
         case endpoint.APP_INST_METRICS_ENDPOINT:
-            return appInstMetrics(self, data, list, org)
+            return appInstMetrics(self, data, list)
         case endpoint.CLUSTER_METRICS_ENDPOINT:
-            return clusterMetrics(self, data, list, org)
+            return clusterMetrics(self, data, list)
     }
 }
 

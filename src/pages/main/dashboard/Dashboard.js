@@ -7,7 +7,7 @@ import { showCloudletInfoData } from '../../../services/modules/cloudletInfo'
 import { showClusterInsts } from '../../../services/modules/clusterInst'
 import { multiAuthSyncRequest } from '../../../services/service'
 import DashbordWorker from './services/dashboard.worker.js'
-// import AuditLog from './auditLog/AuditLog'
+import AuditLog from './auditLog/AuditLog'
 import Control from './control/Control'
 import Total from './total/Total'
 import { processWorker } from '../../../services/worker/interceptor'
@@ -28,23 +28,12 @@ class Dashboard extends React.Component {
         return (
             <div style={{ height: 'calc(100vh - 55px)', overflowY: 'auto', overflowX: 'hidden', padding: 7 }}>
                 <Grid container columns={{ xs: 4, sm: 8, md: 12 }} spacing={1}>
-                    <Grid item xs={7}>
-                        <Control chartData={chartData} />
+                    <Grid item xs={12}>
+                        <Control chartData={chartData} total={total}>
+                            <AuditLog />
+                        </Control>
                     </Grid>
-                    <Grid item xs={5}>
-                        <Grid container style={{ marginBottom: 3 }} spacing={1}>
-                            <Grid item xs={4}>
-                                {total ? <Total label='Cloudlet' data={total[fields.cloudletName]} /> : null}
-                            </Grid>
-                            <Grid item xs={4}>
-                                {total ? <Total label='Cluster Instances' data={total[fields.clusterName]} /> : null}
-                            </Grid>
-                            <Grid item xs={4}>
-                                {total ? <Total label='App Instances' data={total[fields.appName]} /> : null}
-                            </Grid>
-                        </Grid>
-                        {/* <AuditLog /> */}
-                    </Grid>
+
                 </Grid>
             </div>
         )
