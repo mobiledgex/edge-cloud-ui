@@ -10,8 +10,11 @@ import { uniqueId } from '../../../../helper/constant/shared';
 import { sequence } from '../sequence';
 import Total from '../total/Total';
 import { fields } from '../../../../services';
-import { cloudletMetrics } from '../../../../services/modules/cloudletMetrics/cloudletMetrics';
+import { cloudletMetricsElements, cloudletUsageMetrics } from '../../../../services/modules/cloudletMetrics/cloudletMetrics';
 import { authSyncRequest } from '../../../../services/service';
+import { CLOUDLET_METRICS_USAGE_ENDPOINT } from '../../../../helper/constant/endpoint';
+import { formatMetricData } from './metric';
+
 class Control extends React.Component {
     constructor(props) {
         super(props)
@@ -22,16 +25,23 @@ class Control extends React.Component {
         }
     }
 
-    onMore = (show) => {
+    onMore = async (show) => {
         this.setState({ showMore: show })
-        if(show.field === fields.cloudletName)
-        {
+        if (show.field === fields.cloudletName) {
+            let numsamples = 1
+            let selector = '*'
             let data = show.data
-            data.selector = '*'
             data.region = 'US'
-            data.last=1
-            authSyncRequest(this, cloudletMetrics(this, data))
-            
+            data.numsamples = numsamples
+            await cloudletMetricsElements.forEach(async (element) => {
+                let method = element.serverRequest
+                if (method === CLOUDLET_METRICS_USAGE_ENDPOINT) {
+                    data.selector = element.selector ? element.selector : selector
+                    let mc = await authSyncRequest(this, { ...cloudletUsageMetrics(this, data, true), format: false })
+                    let metricData = formatMetricData(element, numsamples, mc)
+                }
+            })
+
         }
     }
 
@@ -78,7 +88,7 @@ class Control extends React.Component {
                                                 <Divider />
                                                 <br />
                                                 <h5>{`Name: ${showMore.name}`}</h5>
-                                                <h4>{`Total ${showMore.childrenLabel}: ${showMore.children.length}`}</h4>
+                                                <h4>{showMore.children ? `Total ${showMore.childrenLabel}: ${showMore.children.length}` : null}</h4>
                                             </div> :
                                                 <h3 style={{width:100}}>Please select an option on sunburst to see details</h3>
                                             }

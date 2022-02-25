@@ -148,37 +148,38 @@ const Sunburst = (props) => {
 
         //on click
         const clicked = (event, p) => {
-
             onMore(p.depth > 0 ? p.data : undefined)
-            d3.selectAll('polygon')
-                .style("fill", function (d) { return d === sequence[p.y0] || d === sequence[p.y1] ? '#388E3C' : '#757575' })
-                .attr("stroke", function (d) { return d === sequence[p.y0] || d === sequence[p.y1] ? '#388E3C' : '#757575' });
+            if (p.data.children) {
+                d3.selectAll('polygon')
+                    .style("fill", function (d) { return d === sequence[p.y0] || d === sequence[p.y1] ? '#388E3C' : '#757575' })
+                    .attr("stroke", function (d) { return d === sequence[p.y0] || d === sequence[p.y1] ? '#388E3C' : '#757575' });
 
-            parent.datum(p.parent || root);
+                parent.datum(p.parent || root);
 
-            logo.style("visibility", p.depth === 0 ? "visible" : "hidden");
+                logo.style("visibility", p.depth === 0 ? "visible" : "hidden");
 
-            root.each(d => d.target = {
-                x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-                x1: Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-                y0: Math.max(0, d.y0 - p.depth),
-                y1: Math.max(0, d.y1 - p.depth)
-            });
+                root.each(d => d.target = {
+                    x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+                    x1: Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+                    y0: Math.max(0, d.y0 - p.depth),
+                    y1: Math.max(0, d.y1 - p.depth)
+                });
 
-            parentLabel.text(p.data.name).style('fill', 'white')
-            setData(p.depth > 0 ? p.data : undefined)
+                parentLabel.text(p.data.name).style('fill', 'white')
+                setData(p.depth > 0 ? p.data : undefined)
 
-            var flow = [];
-            var current = p;
-            while (current.parent) {
-                flow.unshift(current);
-                current = current.parent;
+                var flow = [];
+                var current = p;
+                while (current.parent) {
+                    flow.unshift(current);
+                    current = current.parent;
+                }
+                setDataFlow(flow)
+
+                const t = svg.transition().duration(750);
+
+                updatePath(path, pathBorder, label, true, t)
             }
-            setDataFlow(flow)
-
-            const t = svg.transition().duration(750);
-
-            updatePath(path, pathBorder, label, true, t)
 
         }
 
@@ -209,8 +210,7 @@ const Sunburst = (props) => {
             .join("path")
 
 
-        path.filter(d => d.children)
-            .style("cursor", "pointer")
+        path.style("cursor", "pointer")
             .on('click', clicked);
 
         path.on("mouseover", (e, d) => {
