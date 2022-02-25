@@ -88,7 +88,7 @@ export const getKey = (data, isCreate) => {
 
         if (data[fields.allowServerless] || data[fields.serverlessRam] || data[fields.serverlessVcpu] || data[fields.serverlessMinReplicas]) {
             app.serverless_config = {
-                vcpus: data[fields.serverlessVcpu] ? parseFloat(data[fields.serverlessVcpu]).toString() : undefined,
+                vcpus: data[fields.serverlessVcpu] ? parseFloat(data[fields.serverlessVcpu]).toFixed(3) : undefined,
                 ram: data[fields.serverlessRam] ? parseInt(data[fields.serverlessRam]) : undefined,
                 min_replicas: data[fields.serverlessMinReplicas] ? parseInt(data[fields.serverlessMinReplicas]) : undefined
             }
