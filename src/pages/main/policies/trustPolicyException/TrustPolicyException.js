@@ -35,7 +35,7 @@ class TrustPolicyExceptionList extends React.Component {
     }
 
     onAdd = (action, data) => {
-        this.updateState({ currentView: <TrustPolicyExceptionReg data={data} isUpdate={action ? true : false} onClose={this.onRegClose} /> });
+        this.updateState({ currentView: <TrustPolicyExceptionReg data={data} isUpdate={Boolean(action)} onClose={this.onRegClose} /> });
     }
 
     onDeleteAction = (type, action, data) => {
@@ -56,7 +56,7 @@ class TrustPolicyExceptionList extends React.Component {
     }
 
     canAdd = () => {
-        if (role.validateRole(operatorRoles, this.props.organizationInfo)) {
+        if (role.validateRole(developerRoles, this.props.organizationInfo)) {
             return this.onAdd
         }
     }
