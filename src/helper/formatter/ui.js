@@ -241,7 +241,7 @@ export const RenderSeverity = (data, isDetailView) => {
 
 export const TPEState = (data, isDetailView) => {
     let id = data[fields.state]
-    let color = id === perpetual.APPROVE ? 'green' : id === perpetual.REJECTED ? 'red' : 'orange'
-    let label = id === perpetual.APPROVE ? 'Approved' : id === perpetual.REJECTED ? 'Rejected' : id
+    let color = id === perpetual.APPROVE ? 'green' : id === perpetual.REJECT ? 'red' : 'orange'
+    let label = id === perpetual.APPROVE ? 'Approved' : id === perpetual.REJECT ? 'Rejected' : id
     return isDetailView ? id : <IconButton tooltip={label}><Icon color={color} size={16}>circle</Icon></IconButton>
 }

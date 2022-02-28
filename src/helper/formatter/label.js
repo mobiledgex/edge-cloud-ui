@@ -313,7 +313,7 @@ export const tpeState = (label) => {
         case serverFields.ACTIVE:
             return perpetual.APPROVE
         case serverFields.REJECTED:
-            return perpetual.REJECTED
+            return perpetual.REJECT
         default:
             return label
     }

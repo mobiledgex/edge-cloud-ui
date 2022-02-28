@@ -33,7 +33,7 @@ class TrustPolicyExceptionReg extends React.Component {
         this.organizationList = []
         this.appList = []
         this.cloudletPoolList = []
-        this.stateList = [perpetual.APPROVE, perpetual.REJECTED]
+        this.stateList = [perpetual.APPROVE, perpetual.REJECT]
     }
 
     updateState = (data) => {

@@ -272,4 +272,4 @@ export const PAGE_TRUST_POLICY_EXCEPTION = 'TrustPolicyException'
 
 export const APPROVAL_REQUESTED = 'Approval Requested'
 export const APPROVE = 'Approve'
-export const REJECTED = 'Reject'
+export const REJECT = 'Reject'
