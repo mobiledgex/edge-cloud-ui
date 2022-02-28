@@ -266,8 +266,7 @@ class CloudletReg extends React.Component {
     }
 
     operatorValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
+        for (let form of forms) {
             if (form.field === fields.trustPolicyName) {
                 this.updateUI(form)
                 this.updateState({ forms })
@@ -282,12 +281,11 @@ class CloudletReg extends React.Component {
 
     deploymentValueChange = (currentForm, forms, isInit) => {
         let valid;
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
+        for (let form of forms) {
             if (form.field === fields.platformType) {
                 valid = [perpetual.PLATFORM_TYPE_VCD, perpetual.PLATFORM_TYPE_OPEN_STACK].includes(form.value)
             }
-            if (form.field === fields.platformHighAvailability) {
+            else if (form.field === fields.platformHighAvailability) {
                 form.visible = (currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES && valid)
                 form.value = false
             }
