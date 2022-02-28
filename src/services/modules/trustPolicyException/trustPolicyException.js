@@ -8,7 +8,7 @@ let fields = formatter.fields;
 export const keys = () => ([
     { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
     { field: fields.operatorName, label: 'Operator', sortable: true, serverField: 'key#OS#cloudlet_pool_key#OS#organization', visible: true, filter: true, group: true, key: true },
-    { field: fields.name, label: 'Trust Policy Exception', sortable: true, serverField: 'key#OS#name', visible: true, filter: true, group: true, key: true },
+    { field: fields.trustPolicyExceptionName, label: 'Trust Policy Exception', sortable: true, serverField: 'key#OS#name', visible: true, filter: true, group: true, key: true },
     { field: fields.organizationName, label: 'App [Organization]', sortable: true, serverField: 'key#OS#app_key#OS#organization', visible: true, filter: true, group: true, key: true },
     { field: fields.appName, label: 'App Name', sortable: true, serverField: 'key#OS#app_key#OS#name', visible: false, filter: true, group: true, key: true },
     { field: fields.version, label: 'App [Version]', sortable: true, serverField: 'key#OS#app_key#OS#version', visible: false, filter: true, group: true, key: true },
@@ -19,7 +19,7 @@ export const keys = () => ([
 
 export const getKey = (data, isCreate) => {
     let TrustPolicyException = {}
-    TrustPolicyException.key = { app_key: getAppKey(data), Name: data[fields.name], cloudlet_pool_key: getCloudletPoolKey(data) }
+    TrustPolicyException.key = { app_key: getAppKey(data), Name: data[fields.trustPolicyExceptionName], cloudlet_pool_key: getCloudletPoolKey(data) }
     if (data[fields.state]) {
         TrustPolicyException.state = data[fields.state]
     }
@@ -50,5 +50,5 @@ export const updateTrustPolicyException = async (self, data) => {
 
 export const deleteTrustPolicyException = (self, data) => {
     let requestData = getKey(data)
-    return { method: endpoint.DELETE_TRUST_POLICY_EXCEPTION, data: requestData, success: `Trust Policy Exception ${data[fields.name]} deleted successfully` }
+    return { method: endpoint.DELETE_TRUST_POLICY_EXCEPTION, data: requestData, success: `Trust Policy Exception ${data[fields.trustPolicyExceptionName]} deleted successfully` }
 }

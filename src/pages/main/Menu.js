@@ -17,6 +17,7 @@ import ClusterInst from './clusterInst/ClusterInst';
 import AutoProvPolicy from './policies/autoProvPolicy/AutoProvPolicy';
 import TrustPolicy from './policies/trustPolicy/TrustPolicy';
 import AutoScalePolicy from './policies/autoScalePolicy/AutoScalePolicy';
+import TrustPolicyException from './policies/trustPolicyException/TrustPolicyException';
 import AlertPolicy from './policies/alertPolicy/AlertPolicy';
 import Monitoring from './monitoring/Monitoring';
 import AlertReceiver from './notifications/alerts/receiver/AlertReceiver';
@@ -29,7 +30,6 @@ import Host from './federation/host/Host';
 import Guest from './federation/guest/Guest';
 import GuestZones from './federation/guestZones/GuestZones'
 import HostZones from './federation/zones/Zones'
-import TrustPolicyException from './trustPolicyException/TrustPolicyException'
 import * as constant from '../../constant';
 import { perpetual, role } from '../../helper/constant';
 

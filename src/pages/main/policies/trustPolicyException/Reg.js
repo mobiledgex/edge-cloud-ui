@@ -1,24 +1,24 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
+import * as actions from '../../../../actions';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON } from '../../../hoc/forms/MexForms';
-import { redux_org } from '../../../helper/reduxData'
+import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON } from '../../../../hoc/forms/MexForms';
+import { redux_org } from '../../../../helper/reduxData'
 //model
-import { service, fields } from '../../../services';
-import { getOrganizationList } from '../../../services/modules/organization';
+import { service, fields } from '../../../../services';
+import { getOrganizationList } from '../../../../services/modules/organization';
 
 import { Grid } from '@material-ui/core';
-import { perpetual, role } from '../../../helper/constant';
-import { uniqueId, validateRemoteCIDR } from '../../../helper/constant/shared';
-import { _sort } from '../../../helper/constant/operators';
-import { showCloudletPools } from '../../../services/modules/cloudletPool'
-import { getAppList } from '../../../services/modules/app';
-import { developerRoles, operatorRoles } from '../../../constant'
-import { updateTrustPolicyException, createTrustPolicyException } from '../../../services/modules/trustPolicyException';
-import { serverFields } from '../../../helper/formatter';
-import { HELP_TRUST_POLICY_EXCEPTION } from '../../../tutorial';
+import { perpetual, role } from '../../../../helper/constant';
+import { uniqueId, validateRemoteCIDR } from '../../../../helper/constant/shared';
+import { _sort } from '../../../../helper/constant/operators';
+import { showCloudletPools } from '../../../../services/modules/cloudletPool'
+import { getAppList } from '../../../../services/modules/app';
+import { developerRoles, operatorRoles } from '../../../../constant'
+import { updateTrustPolicyException, createTrustPolicyException } from '../../../../services/modules/trustPolicyException';
+import { serverFields } from '../../../../helper/formatter';
+import { HELP_TRUST_POLICY_EXCEPTION } from '../../../../tutorial';
 
 class TrustPolicyExceptionReg extends React.Component {
     constructor(props) {
@@ -206,7 +206,7 @@ class TrustPolicyExceptionReg extends React.Component {
             }
             if (service.responseValid(mc)) {
                 const text = this.props.isUpdate ? 'updated' : 'created'
-                this.props.handleAlertInfo('success', `Trust Policy Exception ${data[fields.name]} ${text} successfully`)
+                this.props.handleAlertInfo('success', `Trust Policy Exception ${data[fields.trustPolicyExceptionName]} ${text} successfully`)
                 this.props.onClose(true)
             }
         }
@@ -285,12 +285,12 @@ class TrustPolicyExceptionReg extends React.Component {
             { label: `${this.isUpdate ? 'Update' : 'Create'} Trust Policy Exception`, formType: MAIN_HEADER, visible: true },
             { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want Trust Exception Policy.', update: { key: true } },
             { field: fields.organizationName, label: 'Organization', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'The name of the organization you are currently managing.', update: { key: true } },
+            { field: fields.trustPolicyExceptionName, label: 'Trust Policy Exception', formType: INPUT, placeholder: 'Enter Name', rules: { required: true }, visible: true, update: { key: true }, tip: 'Name of the Trust Policy Exception.' },
             { field: fields.appName, label: 'App', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], update: { key: true }, tip: 'The name of the application to deploy.' },
             { field: fields.version, label: 'App Version', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }], update: { key: true }, tip: 'The version of the application to deploy.' },
             { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Organization of the cloudlet pool site', update: { key: true } },
-            { field: fields.poolName, label: 'Cloudlet Pool', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Pool', rules: { required: true }, visible: true, dependentData: [{ index: 5, field: fields.operatorName }], update: { key: true }, tip: 'CloudletPool Name' },
-            { field: fields.name, label: 'Trust Policy Exception Name', formType: INPUT, placeholder: 'Enter Trust Policy Exception Name', rules: { required: true }, visible: true, update: { key: true }, tip: 'Name of the Trust Policy Exception.' },
-            { field: fields.state, label: 'State Type', formType: SELECT, placeholder: 'Enter State Type', rules: { required: true, disabled: role.validateRole(operatorRoles, this.props.organizationInfo) && this.isUpdate ? false : true }, visible: this.isUpdate ? true : false, tip: 'State of the exception within the approval process.', update: { edit: true } },
+            { field: fields.poolName, label: 'Cloudlet Pool', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Pool', rules: { required: true }, visible: true, dependentData: [{ index: 6, field: fields.operatorName }], update: { key: true }, tip: 'CloudletPool Name' },
+            { field: fields.state, label: 'State Type', formType: SELECT, placeholder: 'Enter State Type', rules: { required: true, disabled: role.validateRole(operatorRoles, this.props.organizationInfo) && this.isUpdate ? false : true }, visible: this.isUpdate, tip: 'State of the exception within the approval process.', update: { edit: true } },
             { field: fields.requiredOutboundConnections, label: 'Required Outbound Connections', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Connections', icon: role.validateRole(developerRoles, this.props.organizationInfo) ? 'add' : '', visible: true, onClick: this.addMultiForm, multiForm: this.getOutboundConnectionsForm }], visible: true, tip: 'Connections this app require to determine if the app is compatible with a trust policy Exception' },
         ]
     }

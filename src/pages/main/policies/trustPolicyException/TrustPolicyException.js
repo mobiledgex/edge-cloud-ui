@@ -1,15 +1,15 @@
 import React from 'react';
-import DataView from '../../../container/DataView';
+import DataView from '../../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 
-import { fields } from '../../../services/model/format';
-import { developerRoles, operatorRoles } from '../../../constant'
-import { perpetual, role } from '../../../helper/constant';
-import { keys, showTrustPolicyException, deleteTrustPolicyException } from '../../../services/modules/trustPolicyException/trustPolicyException';
+import { fields } from '../../../../services/model/format';
+import { developerRoles, operatorRoles } from '../../../../constant'
+import { perpetual, role } from '../../../../helper/constant';
+import { keys, showTrustPolicyException, deleteTrustPolicyException } from '../../../../services/modules/trustPolicyException/trustPolicyException';
 import TrustPolicyExceptionReg from './Reg'
-import * as shared from '../../../services/model/shared';
+import * as shared from '../../../../services/model/shared';
 
 class TrustPolicyExceptionList extends React.Component {
     constructor(props) {
