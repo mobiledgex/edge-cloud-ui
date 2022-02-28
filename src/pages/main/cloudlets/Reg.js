@@ -289,7 +289,11 @@ class CloudletReg extends React.Component {
             }
             if (form.field === fields.platformHighAvailability) {
                 form.visible = (currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES && valid)
+                form.value = false
             }
+        }
+        if (!isInit) {
+            this.updateState({ forms })
         }
     }
 
