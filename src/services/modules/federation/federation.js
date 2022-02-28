@@ -3,7 +3,6 @@ import * as formatter from '../../model/format'
 import { authSyncRequest, responseValid } from '../../service';
 import { endpoint, perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData'
-import { operatorRoles } from '../../../constant';
 import { unionBy } from 'lodash';
 
 let fields = formatter.fields
@@ -69,6 +68,7 @@ export const multiDataRequest = (keys, mcList) => {
             zoneList = data
         }
     }
+    
     if (federatorList && federatorList.length > 0) {
         for (let federator of federatorList) {
             for (let federation of federationList) {
@@ -85,7 +85,7 @@ export const multiDataRequest = (keys, mcList) => {
             }
             federator[fields.zones] = []
             for (let zone of zoneList) {
-                if (federator[fields.partnerFederationName] === zone[fields.partnerFederationName] && federator[fields.operatorName] === zone[fields.operatorName] && federator[fields.partnerOperatorName] === zone[fields.partnerOperatorName]) {
+                if (federator[fields.partnerFederationName] === zone[fields.partnerFederationName] && federator[fields.operatorName] === zone[fields.operatorName]) {
                     federator[fields.zones].push({ ...zone, registered: zone[fields.registered] ? perpetual.YES : perpetual.NO })
                 }
             }
