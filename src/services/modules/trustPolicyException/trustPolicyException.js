@@ -3,6 +3,7 @@ import { endpoint, perpetual } from '../../../helper/constant';
 import { authSyncRequest } from "../../service";
 import { getAppKey } from '../app';
 import { getCloudletPoolKey } from '../cloudletPool';
+import { tpeState } from '../../../helper/formatter/id';
 let fields = formatter.fields;
 
 export const keys = () => ([
@@ -17,23 +18,25 @@ export const keys = () => ([
     { field: fields.state, label: 'State', sortable: true, serverField: 'state', visible: true, filter: true, group: true, key: true, format: true, detailView: false },
 ])
 
-export const getKey = (data, isCreate) => {
-    let TrustPolicyException = {}
-    TrustPolicyException.key = { app_key: getAppKey(data), Name: data[fields.trustPolicyExceptionName], cloudlet_pool_key: getCloudletPoolKey(data) }
-    if (data[fields.state]) {
-        TrustPolicyException.state = data[fields.state]
-    }
-    if (data[fields.requiredOutboundConnections]) {
-        TrustPolicyException.outbound_security_rules = data[fields.requiredOutboundConnections]
+export const getTPEKey = (data, isCreate) => {
+    let trustPolicyException = {}
+    trustPolicyException.key = { app_key: getAppKey(data), Name: data[fields.trustPolicyExceptionName], cloudlet_pool_key: getCloudletPoolKey(data) }
+    if (isCreate) {
+        if (data[fields.state]) {
+            trustPolicyException.state = tpeState(data[fields.state])
+        }
+        if (data[fields.requiredOutboundConnections]) {
+            trustPolicyException.outbound_security_rules = data[fields.requiredOutboundConnections]
+        }
     }
     return ({
         region: data[fields.region],
-        TrustPolicyException: TrustPolicyException
+        trustPolicyException
     })
 }
 
 export const createTrustPolicyException = async (self, data, callback) => {
-    let requestData = getKey(data, true)
+    let requestData = getTPEKey(data, true)
     let request = { method: endpoint.CREATE_TRUST_POLICY_EXCEPTION, data: requestData }
     return await authSyncRequest(self, request, callback, data)
 }
@@ -43,12 +46,12 @@ export const showTrustPolicyException = (self, data) => {
 }
 
 export const updateTrustPolicyException = async (self, data) => {
-    let requestData = getKey(data, true)
+    let requestData = getTPEKey(data, true)
     let request = { method: endpoint.UPDATE_TRUST_POLICY_EXCEPTION, data: requestData }
     return await authSyncRequest(self, request)
 }
 
 export const deleteTrustPolicyException = (self, data) => {
-    let requestData = getKey(data)
+    let requestData = getTPEKey(data)
     return { method: endpoint.DELETE_TRUST_POLICY_EXCEPTION, data: requestData, success: `Trust Policy Exception ${data[fields.trustPolicyExceptionName]} deleted successfully` }
 }

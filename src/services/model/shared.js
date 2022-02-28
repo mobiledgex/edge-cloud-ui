@@ -76,12 +76,6 @@ const getStateStatus = (id) => {
             return "Creating"
         case serverFields.DELETE_DONE:
             return "Deleted"
-        case serverFields.APPROVAL_REQUESTED:
-            return "Approval Requested"
-        case serverFields.ACTIVE:
-            return "Active"
-        case serverFields.REJECTED:
-            return "Rejected"
         default:
             return id
     }
@@ -110,11 +104,6 @@ export const showProgress = (data, isDetailView, disableProgress = false) => {
             case serverFields.DELETING:
             case serverFields.DELETE_PREPARE:
                 icon = <IconButton disabled={disableProgress} tooltip={`${disableProgress ? 'In' : 'View'} Progress`}><CircularProgress size={14} style={{ color: 'red' }} /></IconButton>
-                break;
-            case serverFields.APPROVAL_REQUESTED:
-            case serverFields.ACTIVE:
-            case serverFields.REJECTED:
-                icon = <IconButton disabled={disableProgress} tooltip={getStateStatus(state)}><Icon color={state === 'Active' ? 'green' : state === 'Rejected' ? 'red' : 'orange'} size={16}>circle</Icon></IconButton>
                 break;
             default:
                 icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon color='red' size={16}>close</Icon></IconButton>

@@ -6,7 +6,7 @@ import * as actions from '../../../../actions';
 import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON } from '../../../../hoc/forms/MexForms';
 import { redux_org } from '../../../../helper/reduxData'
 //model
-import { service, fields } from '../../../../services';
+import { service, fields, updateFieldDataNew } from '../../../../services';
 import { getOrganizationList } from '../../../../services/modules/organization';
 
 import { Grid } from '@material-ui/core';
@@ -17,8 +17,8 @@ import { showCloudletPools } from '../../../../services/modules/cloudletPool'
 import { getAppList } from '../../../../services/modules/app';
 import { developerRoles, operatorRoles } from '../../../../constant'
 import { updateTrustPolicyException, createTrustPolicyException } from '../../../../services/modules/trustPolicyException';
-import { serverFields } from '../../../../helper/formatter';
 import { HELP_TRUST_POLICY_EXCEPTION } from '../../../../tutorial';
+import cloneDeep from 'lodash/cloneDeep';
 
 class TrustPolicyExceptionReg extends React.Component {
     constructor(props) {
@@ -33,6 +33,7 @@ class TrustPolicyExceptionReg extends React.Component {
         this.organizationList = []
         this.appList = []
         this.cloudletPoolList = []
+        this.stateList = [perpetual.APPROVE, perpetual.REJECTED]
     }
 
     updateState = (data) => {
@@ -199,7 +200,10 @@ class TrustPolicyExceptionReg extends React.Component {
             }
             role.validateRole(developerRoles, this.props.organizationInfo) && outboundList.length > 0 ? data[fields.requiredOutboundConnections] = outboundList : null
             if (this.props.isUpdate) {
-                mc = await updateTrustPolicyException(this, data)
+                let updateData = updateFieldDataNew(this, forms, data, this.originalData)
+                if (updateData) {
+                    mc = await updateTrustPolicyException(this, updateData)
+                }
             }
             else {
                 mc = await createTrustPolicyException(this, data)
@@ -221,7 +225,6 @@ class TrustPolicyExceptionReg extends React.Component {
 
     render() {
         const { forms } = this.state
-        console.log(forms, "forms")
         return (
             <div>
                 <Grid container>
@@ -271,7 +274,7 @@ class TrustPolicyExceptionReg extends React.Component {
                             form.options = this.appList
                             break;
                         case fields.state:
-                            form.options = [serverFields.APPROVAL_REQUESTED, serverFields.ACTIVE, serverFields.REJECTED];
+                            form.options = this.stateList;
                             break;
                         default:
                             form.options = undefined;
@@ -280,6 +283,7 @@ class TrustPolicyExceptionReg extends React.Component {
             }
         }
     }
+
     formKeys = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Trust Policy Exception`, formType: MAIN_HEADER, visible: true },
@@ -290,8 +294,8 @@ class TrustPolicyExceptionReg extends React.Component {
             { field: fields.version, label: 'App Version', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }], update: { key: true }, tip: 'The version of the application to deploy.' },
             { field: fields.operatorName, label: 'Operator', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Organization of the cloudlet pool site', update: { key: true } },
             { field: fields.poolName, label: 'Cloudlet Pool', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Pool', rules: { required: true }, visible: true, dependentData: [{ index: 6, field: fields.operatorName }], update: { key: true }, tip: 'CloudletPool Name' },
-            { field: fields.state, label: 'State Type', formType: SELECT, placeholder: 'Enter State Type', rules: { required: true, disabled: role.validateRole(operatorRoles, this.props.organizationInfo) && this.isUpdate ? false : true }, visible: this.isUpdate, tip: 'State of the exception within the approval process.', update: { edit: true } },
-            { field: fields.requiredOutboundConnections, label: 'Required Outbound Connections', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Connections', icon: role.validateRole(developerRoles, this.props.organizationInfo) ? 'add' : '', visible: true, onClick: this.addMultiForm, multiForm: this.getOutboundConnectionsForm }], visible: true, tip: 'Connections this app require to determine if the app is compatible with a trust policy Exception' },
+            { field: fields.state, label: 'Action', formType: SELECT, placeholder: 'Select Action', rules: { required: true }, visible: !redux_org.isDeveloper(this), tip: 'State of the exception within the approval process.', update: { edit: true } },
+            { field: fields.requiredOutboundConnections, label: 'Required Outbound Connections', formType: HEADER, forms: !redux_org.isOperator(this) ? [{ formType: ICON_BUTTON, label: 'Add Connections', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getOutboundConnectionsForm }] : undefined, update: { edit: true, ignoreCase: true }, visible: true, tip: 'Connections this app require to determine if the app is compatible with a trust policy Exception' },
         ]
     }
 
@@ -375,7 +379,6 @@ class TrustPolicyExceptionReg extends React.Component {
                         outboundConnectionsForm.value = requiredOutboundConnection['port_range_max']
                     }
                 }
-                console.log(outboundConnectionsForms)
                 forms.splice(19 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
                 multiFormCount += 1
             }
@@ -392,6 +395,7 @@ class TrustPolicyExceptionReg extends React.Component {
             { label: this.isUpdate ? 'Update' : 'Create', formType: 'Button', onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
         if (data) {
+            this.originalData = cloneDeep(data)
             await this.loadDefaultData(forms, data)
         }
         if (!this.isUpdate) {

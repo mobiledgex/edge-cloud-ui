@@ -1,4 +1,5 @@
 import React from 'react';
+import * as actions from '../../../../actions';
 import DataView from '../../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
@@ -9,7 +10,8 @@ import { developerRoles, operatorRoles } from '../../../../constant'
 import { perpetual, role } from '../../../../helper/constant';
 import { keys, showTrustPolicyException, deleteTrustPolicyException } from '../../../../services/modules/trustPolicyException/trustPolicyException';
 import TrustPolicyExceptionReg from './Reg'
-import * as shared from '../../../../services/model/shared';
+import { serverFields, uiFormatter } from '../../../../helper/formatter';
+import { redux_org } from '../../../../helper/reduxData';
 
 class TrustPolicyExceptionList extends React.Component {
     constructor(props) {
@@ -35,7 +37,12 @@ class TrustPolicyExceptionList extends React.Component {
     }
 
     onAdd = (action, data) => {
-        this.updateState({ currentView: <TrustPolicyExceptionReg data={data} isUpdate={Boolean(action)} onClose={this.onRegClose} /> });
+        if (action && redux_org.isDeveloper(this) && data[fields.state] === serverFields.APPROVAL_REQUESTED) {
+            this.props.handleAlertInfo('error', 'Cannot update if approval is pending')
+        }
+        else {
+            this.updateState({ currentView: <TrustPolicyExceptionReg data={data} isUpdate={Boolean(action)} onClose={this.onRegClose} /> });
+        }
     }
 
     onDeleteAction = (type, action, data) => {
@@ -63,14 +70,8 @@ class TrustPolicyExceptionList extends React.Component {
 
     dataFormatter = (key, data, isDetail) => {
         if (key.field === fields.state) {
-            return this.showStatus(data, isDetail)
+            return uiFormatter.TPEState(data, isDetail)
         }
-    }
-
-    showStatus = (data) => {
-        let progressRender = null
-        progressRender = shared.showProgress(data)
-        return progressRender
     }
 
     canAdd = () => {
@@ -117,4 +118,10 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default withRouter(connect(mapStateToProps, null)(TrustPolicyExceptionList));
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
+    };
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(TrustPolicyExceptionList));

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector } from "react-redux";
 import { fields } from '../../services/model/format';
-import { IconButton, Tooltip, CircularProgress, makeStyles } from '@material-ui/core';
+import { IconButton as MIB, Tooltip, CircularProgress, makeStyles } from '@material-ui/core';
 import { labelFormatter, serverFields } from '.';
 import { redux_org } from '../reduxData';
 
@@ -9,7 +9,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import { colors, perpetual } from '../constant';
 import { toFirstUpperCase } from '../../utils/string_utils';
-import { Icon } from '../../hoc/mexui';
+import { Icon, IconButton } from '../../hoc/mexui';
 import { ICON_COLOR } from '../constant/colors';
 
 const useStyles = makeStyles((theme) => ({
@@ -178,7 +178,7 @@ export const Lock = (props) => {
     }
     else {
         return (
-            loading ? <div align='left' style={{ marginLeft: 13 }}><CircularProgress size={17} /></div> : <IconButton onClick={() => onAction(data)} >{locked === true ? <LockOutlinedIcon style={{ color: 'rgba(136,221,0,.9)' }} /> : <LockOpenOutlinedIcon style={{ color: '#6a6a6a' }} />}</IconButton>
+            loading ? <div align='left' style={{ marginLeft: 13 }}><CircularProgress size={17} /></div> : <MIB onClick={() => onAction(data)} >{locked === true ? <LockOutlinedIcon style={{ color: 'rgba(136,221,0,.9)' }} /> : <LockOpenOutlinedIcon style={{ color: '#6a6a6a' }} />}</MIB>
         )
     }
 }
@@ -239,3 +239,9 @@ export const RenderSeverity = (data, isDetailView) => {
     )
 }
 
+export const TPEState = (data, isDetailView) => {
+    let id = data[fields.state]
+    let color = id === perpetual.APPROVE ? 'green' : id === perpetual.REJECTED ? 'red' : 'orange'
+    let label = id === perpetual.APPROVE ? 'Approved' : id === perpetual.REJECTED ? 'Rejected' : id
+    return isDetailView ? id : <IconButton tooltip={label}><Icon color={color} size={16}>circle</Icon></IconButton>
+}

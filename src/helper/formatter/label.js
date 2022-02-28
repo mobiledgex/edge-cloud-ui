@@ -305,3 +305,16 @@ export const qosProfile = (label) => {
             return label
     }
 }
+
+export const tpeState = (label) => {
+    switch (label) {
+        case serverFields.APPROVAL_REQUESTED:
+            return perpetual.APPROVAL_REQUESTED
+        case serverFields.ACTIVE:
+            return perpetual.APPROVE
+        case serverFields.REJECTED:
+            return perpetual.REJECTED
+        default:
+            return label
+    }
+}
