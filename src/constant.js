@@ -29,7 +29,7 @@ export const pages = [
         label: 'Policies', icon: 'track_changes', id: perpetual.PAGE_POLICIES, sub: true, visible: true, options: [
             { label: 'Auto Provisioning Policy', icon: 'group_work', id: perpetual.PAGE_AUTO_PROVISIONING_POLICY, path: 'auto-prov-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
             { label: 'Trust Policy', icon: 'policy', id: perpetual.PAGE_TRUST_POLICY, path: 'trust-policy', visible: true },
-            { label: 'Trust Policy Exception', icon: 'verified_user', id: perpetual.PAGE_TRUST_POLICY_EXCEPTION, path: 'trust-exception-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER, perpetual.OPERATOR], visible: true },
+            { label: 'Trust Policy Exception', icon: 'gpp_maybe', id: perpetual.PAGE_TRUST_POLICY_EXCEPTION, path: 'trust-exception-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER, perpetual.OPERATOR], visible: true },
             { label: 'Auto Scale Policy', icon: 'landscape', id: perpetual.PAGE_AUTO_SCALE_POLICY, path: 'auto-scale-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
             { label: 'Alert Policy', icon: 'notifications_active', id: perpetual.PAGE_ALERT_POLICY, path: 'alert-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
         ]
