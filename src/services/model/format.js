@@ -8,6 +8,7 @@ export const fields = {
     org: 'org',
     billingOrgName: 'billingOrgName',
     operatorName: 'operatorName',
+    trustPolicyExceptionName:'trustPolicyExceptionName',
     partnerOperator: 'partnerOperator',
     cloudletName: 'cloudletName',
     flavorName: 'flavorName',

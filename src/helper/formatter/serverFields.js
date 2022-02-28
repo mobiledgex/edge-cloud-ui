@@ -82,4 +82,7 @@ export const LOW_LATENCY = 'LowLatency'
 export const THROUGHPUT_DOWN_S = 'ThroughputDownS'
 export const THROUGHPUT_DOWN_M = 'ThroughputDownM'
 export const THROUGHPUT_DOWN_L = 'ThroughputDownL'
+export const APPROVAL_REQUESTED = 'ApprovalRequested'
+export const ACTIVE = 'Active'
+export const REJECTED = 'Rejected'
 

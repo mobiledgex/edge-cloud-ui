@@ -51,15 +51,19 @@ export const keys = () => ([
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } }
 ])
 
-export const getKey = (data, isCreate) => {
-
-    let app = {}
-
-    app.key = {
+export const getAppKey = (data) => {
+    return {
         organization: data[fields.organizationName],
         name: data[fields.appName],
         version: data[fields.version]
     }
+}
+
+export const getKey = (data, isCreate) => {
+
+    let app = {}
+
+    app.key = getAppKey(data)
 
     if (isCreate) {
         app.scale_with_cluster = data[fields.scaleWithCluster]
