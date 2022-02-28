@@ -65,6 +65,7 @@ class Host extends React.Component {
     }
 
     onShareZones = (action, data) => {
+        console.log(data)
         this.updateState({ currentView: <div className="round_panel"><ShareZones id={action.id} data={data} onClose={this.onRegClose} /></div> })
     }
 
