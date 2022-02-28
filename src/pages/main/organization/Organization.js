@@ -39,6 +39,9 @@ class OrganizationList extends React.Component {
             if (key.field === fields.manage) {
                 key.visible = !redux_org.isAdmin(this)
             }
+            if (key.field === fields.role) {
+                key.visible = !redux_org.isAdmin(this) // role not visible for mexadmin
+            }
             return key
         })
     }

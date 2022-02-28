@@ -100,7 +100,7 @@ export const multiDataRequest = (keys, mcRequestList, userInfo) => {
         }
     }
     let dataList = orgDataList.map(org => {
-        let user = userDataList.find(user => user[fields.username] === userInfo['Name']);
+        let user = userDataList.find(user => user[fields.username] === userInfo['Name'] && user[fields.organizationName] === org[fields.organizationName]);
         if (user) {
             org[fields.role] = user[fields.role];
         }
