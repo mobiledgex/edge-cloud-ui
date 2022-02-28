@@ -266,7 +266,7 @@ class NetworkReg extends React.Component {
                             routeForm.value = routeArr[fields.nextHopIp]
                         }
                     }
-                    forms.splice(7 + multiFormCount, 0, this.getRoutesForm(routeForms))
+                    forms.splice(8 + multiFormCount, 0, this.getRoutesForm(routeForms))
                     multiFormCount = +1
                 }
             }

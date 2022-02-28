@@ -39,6 +39,7 @@ export const HELP_ZONES_REG = 'ZonesReg'
 export const HELP_FEDERATION_GUEST_LIST = 'InboundList'
 export const HELP_FEDERATION_GUEST_REG = 'GuestReg'
 export const HELP_OUTBOUND_REG = 'OutboundFederationListReG'
+export const HELP_TRUST_POLICY_EXCEPTION = 'TrustPolicyException'
 
 export const userRoles = (org, type, isDoc) => {
     if (isDoc) {
