@@ -241,8 +241,7 @@ class OrganizationList extends React.Component {
             additionalDetail: shared.additionalDetail,
             viewMode: HELP_ORG_LIST,
             grouping: true,
-            formatData: this.dataFormatter,
-            userInfo: true
+            formatData: this.dataFormatter
         })
     }
 

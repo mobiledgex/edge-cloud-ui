@@ -86,7 +86,7 @@ export const edgeboxOnlyAPI = (data) => {
     return { method: endpoint.EDGEBOX_ONLY, data: requestData }
 }
 
-export const multiDataRequest = (keys, mcRequestList, userInfo) => {
+export const multiDataRequest = (keys, mcRequestList) => {
     let orgDataList = [];
     let userDataList = [];
     for (let i = 0; i < mcRequestList.length; i++) {
@@ -100,7 +100,8 @@ export const multiDataRequest = (keys, mcRequestList, userInfo) => {
         }
     }
     let dataList = orgDataList.map(org => {
-        let user = userDataList.find(user => user[fields.username] === userInfo['Name'] && user[fields.organizationName] === org[fields.organizationName]);
+        let userInfo = JSON.parse(localStorage.getItem(perpetual.LS_USER_META_DATA)).organizationInfo;
+        let user = userDataList.find(user => user[fields.username] === userInfo[fields.username] && user[fields.organizationName] === org[fields.organizationName]);
         if (user) {
             org[fields.role] = user[fields.role];
         }
