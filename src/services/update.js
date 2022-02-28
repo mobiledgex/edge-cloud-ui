@@ -1,6 +1,5 @@
 import { operators, perpetual } from "../helper/constant"
 
-//Deperecated
 const compareObjects = (newData, oldData, ignoreCase) => {
     if ((typeof newData === perpetual.BOOLEAN) && newData === oldData) {
         return true
@@ -22,31 +21,7 @@ const compareObjects = (newData, oldData, ignoreCase) => {
     }
 }
 
-const compareObjectsNew = (newData, oldData, ignoreCase) => {
-    let newType = typeof newData
-    let oldType = typeof oldData
-    if (newType === undefined && oldType === undefined) {
-        return true
-    }
-    if (newType !== oldType) {
-        return false
-    }
-    else if (Array.isArray(newData) || newType === 'object' || newType === 'string') {
-        let newTemp = newData
-        let oldTemp = oldData
-        if (ignoreCase) {
-            newTemp = ((Array.isArray(newData) || newType === 'object') ? JSON.parse(JSON.stringify(newTemp).toLowerCase()) : newTemp.toLowerCase())
-            oldTemp = ((Array.isArray(oldData) || oldType === 'object') ? JSON.parse(JSON.stringify(oldTemp).toLowerCase()) : oldTemp.toLowerCase())
-        }
-        return operators.equal(newTemp, oldTemp)
-    }
-    else if (newData !== oldData) {
-        return false
-    }
-    return true
-}
-
-//Deperecated
+//Deprecated
 export const updateFieldData = (self, forms, data, orgData) => {
     let updateData = {}
     let updateFields = []
@@ -72,6 +47,30 @@ export const updateFieldData = (self, forms, data, orgData) => {
     }
     updateData.fields = Array.from(new Set(updateFields))
     return updateData
+}
+
+const compareObjectsNew = (newData, oldData, ignoreCase) => {
+    let newType = typeof newData
+    let oldType = typeof oldData
+    if (newType === undefined && oldType === undefined) {
+        return true
+    }
+    if (newType !== oldType) {
+        return false
+    }
+    else if (Array.isArray(newData) || newType === 'object' || newType === 'string') {
+        let newTemp = newData
+        let oldTemp = oldData
+        if (ignoreCase) {
+            newTemp = ((Array.isArray(newData) || newType === 'object') ? JSON.parse(JSON.stringify(newTemp).toLowerCase()) : newTemp.toLowerCase())
+            oldTemp = ((Array.isArray(oldData) || oldType === 'object') ? JSON.parse(JSON.stringify(oldTemp).toLowerCase()) : oldTemp.toLowerCase())
+        }
+        return operators.equal(newTemp, oldTemp)
+    }
+    else if (newData !== oldData) {
+        return false
+    }
+    return true
 }
 
 export const updateFieldDataNew = (self, forms, data, orgData) => {
