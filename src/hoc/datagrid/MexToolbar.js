@@ -168,7 +168,7 @@ const MexToolbar = (props) => {
     /*Refresh Block*/
     const refreshForm = (order) => (
         <MBox order={order}>
-            <IconButton aria-label="refresh" onClick={(e) => { props.onAction(ACTION_REFRESH) }}>
+            <IconButton disabled={props.clickRefresh} aria-label="refresh" onClick={(e) => { props.onAction(ACTION_REFRESH) }}>
                 <Icon style={{ color: ICON_COLOR }}>refresh</Icon>
             </IconButton>
         </MBox>
