@@ -3,10 +3,11 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import { redux_org } from '../../../../helper/reduxData'
-import MexForms, { BUTTON, INPUT, MAIN_HEADER } from '../../../../hoc/forms/MexForms'
+import MexForms, { BUTTON, INPUT, MAIN_HEADER, SELECT } from '../../../../hoc/forms/MexForms'
 import { fields } from '../../../../services'
 import { responseValid } from '../../../../services/service';
 import { createFederation } from '../../../../services/modules/federation';
+import { readJsonFile } from '../../../../utils/file_util';
 
 class RegisterPartner extends React.Component {
     constructor(props) {
@@ -20,15 +21,15 @@ class RegisterPartner extends React.Component {
     elements = () => {
         return [
             { label: 'Enter Partner Details', formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: INPUT, placeholder: 'Select Region', rules: { required: true, disabled: true }, visible: true, update: { key: true } },
-            { field: fields.operatorName, label: 'Operator', formType: INPUT, placeholder: 'Select Operator', rules: { required: true, disabled: true }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
-            { field: fields.countryCode, label: ' Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { required: true, disabled: true, type:'search' }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
-            { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, rules: { required: true, disabled: true }, tip: 'Self federation ID' },
+            { field: fields.region, label: 'Region', formType: INPUT, placeholder: 'Select Region', rules: { disabled: true }, visible: true, update: { key: true } },
+            { field: fields.operatorName, label: 'Operator', formType: INPUT, placeholder: 'Select Operator', rules: { disabled: true }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
+            { field: fields.countryCode, label: ' Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { disabled: true, type: 'search' }, visible: true, tip: 'Country where operator platform is located' },
+            { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, rules: { disabled: true }, tip: 'Self federation ID' },
             { field: fields.partnerOperatorName, label: 'Partner Operator', formType: INPUT, placeholder: 'Enter Partner Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Globally unique string to identify an operator platform' },
-            { field: fields.partnerCountryCode, label: 'Partner Country Code', formType: INPUT, placeholder: 'Enter Partner Country Code', rules: { required: true }, visible: true, tip: 'ISO 3166-1 Alpha-2 code for the country where operator platform is located' },
+            { field: fields.partnerCountryCode, selectField: fields.countryCode, label: 'Partner Country Code', formType: SELECT, placeholder: 'Select Partner Country Code', rules: { required: true }, visible: true, update: { key: true }, tip: 'Country where operator platform is located' },
             { field: fields.partnerFederationId, label: 'Partner Federation ID', formType: INPUT, placeholder: 'Enter Partner Federation ID', visible: true, rules: { required: true }, tip: 'Globally unique string used to indentify a federation with partner federation' },
             { field: fields.partnerFederationAddr, label: 'Partner Federation Addr', formType: INPUT, placeholder: 'Enter Partner Federation Addr', rules: { required: true }, visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
-            { field: fields.apiKey, label: 'Partner API Key', formType: INPUT, placeholder: 'Enter Partner API Key', rules: { required: true }, visible: true, tip: 'API Key used for authentication (stored in secure storage)' },
+            { field: fields.partnerAPIKey, label: 'Partner API Key', formType: INPUT, placeholder: 'Enter Partner API Key', rules: { required: true, type:'password' }, visible: true, tip: 'API Key used for authentication (stored in secure storage)' },
             { field: fields.partnerFederationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Federation Name', rules: { required: true }, visible: true, tip: 'Name to uniquely identify a federation' }
         ]
     }
@@ -88,6 +89,17 @@ class RegisterPartner extends React.Component {
     updateUI(form) {
         if (form) {
             this.resetFormValue(form)
+            if (form.field) {
+                if (form.formType === SELECT) {
+                    switch (form.field) {
+                        case fields.partnerCountryCode:
+                            form.options = this.countryCodes;
+                            break;
+                        default:
+                            form.options = undefined;
+                    }
+                }
+            }
         }
     }
 
@@ -106,8 +118,9 @@ class RegisterPartner extends React.Component {
         }
     }
 
-    getFormData = () => {
+    getFormData = async () => {
         const { data } = this.props
+        this.countryCodes = await readJsonFile('countrycode-iso31661a2.json')
         let forms = this.elements()
 
         forms.push(

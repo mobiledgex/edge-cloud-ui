@@ -195,3 +195,9 @@ export const SELF_ZONES_SHARE = 'auth/federator/self/zone/share'
 export const SELF_ZONES_UNSHARE = 'auth/federator/self/zone/unshare'
 export const REGISTER_FEDERATOR_PARTNER_ZONES = 'auth/federator/partner/zone/register'
 export const DEREGISTER_FEDERATOR_PARTNER_ZONES = 'auth/federator/partner/zone/deregister'
+
+//Trust Policy Exception
+export const SHOW_TRUST_POLICY_EXCEPTION = 'auth/ctrl/ShowTrustPolicyException'
+export const CREATE_TRUST_POLICY_EXCEPTION = 'auth/ctrl/CreateTrustPolicyException'
+export const UPDATE_TRUST_POLICY_EXCEPTION = 'auth/ctrl/UpdateTrustPolicyException'
+export const DELETE_TRUST_POLICY_EXCEPTION = 'auth/ctrl/DeleteTrustPolicyException'

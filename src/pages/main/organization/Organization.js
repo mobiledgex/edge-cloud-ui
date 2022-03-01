@@ -76,7 +76,7 @@ class OrganizationList extends React.Component {
 
     customToolbar = () =>
     (
-        redux_org.isViewer(this) ? null : <Box display='flex'>
+        <Box display='flex'>
             <Card style={{ margin: 10, width: '50%', maxHeight: 200, overflow: 'auto' }}>
                 <CardHeader
                     avatar={

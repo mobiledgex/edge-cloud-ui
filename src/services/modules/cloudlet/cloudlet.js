@@ -49,7 +49,9 @@ export const keys = () => ([
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
     { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', detailView: false },
     { field: fields.gpuExist, label: 'GPU', detailView: false },
-    { field: fields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING }
+    { field: fields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING },
+    { field: fields.platformHighAvailability, serverField: 'platform_high_availability', label: 'Platform High Availability' },
+    { field: fields.deployment, serverField: 'deployment', label: 'Deployment Type' }
 ])
 
 export const iconKeys = () => ([
@@ -133,6 +135,7 @@ export const getKey = (data, isCreate) => {
         if (data[fields.kafkaPassword]) {
             cloudlet.kafka_password = data[fields.kafkaPassword]
         }
+        cloudlet.platform_high_availability = data[fields.platformHighAvailability]
         if (data[fields.gpuConfig]) {
             cloudlet.gpu_config = {
                 driver: {
@@ -162,6 +165,9 @@ export const getKey = (data, isCreate) => {
         }
         if (data[fields.singleK8sClusterOwner]) {
             cloudlet.single_kubernetes_cluster_owner = data[fields.singleK8sClusterOwner]
+        }
+        if (data[fields.deployment]) {
+            cloudlet.deployment = data[fields.deployment]
         }
 
     }

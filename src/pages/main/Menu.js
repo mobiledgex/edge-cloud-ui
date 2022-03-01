@@ -17,6 +17,7 @@ import ClusterInst from './clusterInst/ClusterInst';
 import AutoProvPolicy from './policies/autoProvPolicy/AutoProvPolicy';
 import TrustPolicy from './policies/trustPolicy/TrustPolicy';
 import AutoScalePolicy from './policies/autoScalePolicy/AutoScalePolicy';
+import TrustPolicyException from './policies/trustPolicyException/TrustPolicyException';
 import AlertPolicy from './policies/alertPolicy/AlertPolicy';
 import Monitoring from './monitoring/Monitoring';
 import AlertReceiver from './notifications/alerts/receiver/AlertReceiver';
@@ -84,6 +85,8 @@ const renderPage = (id) => {
             return GuestZones
         case perpetual.PAGE_HOST_ZONES:
             return HostZones
+        case perpetual.PAGE_TRUST_POLICY_EXCEPTION:
+            return TrustPolicyException
     }
 }
 

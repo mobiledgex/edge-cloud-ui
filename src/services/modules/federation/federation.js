@@ -3,7 +3,6 @@ import * as formatter from '../../model/format'
 import { authSyncRequest, responseValid } from '../../service';
 import { endpoint, perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData'
-import { operatorRoles } from '../../../constant';
 import { unionBy } from 'lodash';
 
 let fields = formatter.fields
@@ -16,7 +15,7 @@ const federationKeys = () => ([
     { field: fields.partnerCountryCode, serverField: 'countrycode', label: 'Partner Country Code', visible: true, filter: true, key: true },
     { field: fields.partnerFederationId, serverField: 'federationid', label: 'Partner Federation ID' },
     { field: fields.partnerFederationAddr, serverField: 'federationaddr', label: 'Federation Address' },
-    { field: fields.apiKey, serverField: 'apikey', label: 'Api Key' },
+    { field: fields.partnerAPIKey, serverField: 'apikey', label: 'Api Key' },
     { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
     { field: fields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf' },
     { field: fields.partnerRoleAccessToSelfZones, label: 'Partner Registered', serverField: 'PartnerRoleAccessToSelfZones' },
@@ -69,6 +68,7 @@ export const multiDataRequest = (keys, mcList) => {
             zoneList = data
         }
     }
+    
     if (federatorList && federatorList.length > 0) {
         for (let federator of federatorList) {
             for (let federation of federationList) {
@@ -85,7 +85,7 @@ export const multiDataRequest = (keys, mcList) => {
             }
             federator[fields.zones] = []
             for (let zone of zoneList) {
-                if (federator[fields.partnerFederationName] === zone[fields.partnerFederationName] && federator[fields.operatorName] === zone[fields.operatorName] && federator[fields.partnerOperatorName] === zone[fields.partnerOperatorName]) {
+                if (federator[fields.partnerFederationName] === zone[fields.partnerFederationName] && federator[fields.operatorName] === zone[fields.operatorName]) {
                     federator[fields.zones].push({ ...zone, registered: zone[fields.registered] ? perpetual.YES : perpetual.NO })
                 }
             }
@@ -106,12 +106,12 @@ export const getFederationKey = (data, isCreate) => {
     federation['selfoperatorid'] = data[fields.operatorName]
     federation['name'] = data[fields.partnerFederationName]
     if (isCreate) {
-        data[fields.apiKey] ? (federation.apikey = data[fields.apiKey]) : null
-        data[fields.partnerCountryCode] ? (federation.countrycode = data[fields.partnerCountryCode].toUpperCase()) : null
-        data[fields.partnerFederationAddr] ? (federation.federationaddr = data[fields.partnerFederationAddr]) : null
-        data[fields.partnerFederationId] ? federation.federationid = data[fields.partnerFederationId] : null
-        data[fields.federationId] ? federation.selffederationid = data[fields.federationId] : null
-        data[fields.partnerOperatorName] ? federation.operatorid = data[fields.partnerOperatorName] : null
+        federation.apikey = data[fields.partnerAPIKey]
+        federation.countrycode = data[fields.partnerCountryCode]
+        federation.federationaddr = data[fields.partnerFederationAddr]
+        federation.federationid = data[fields.partnerFederationId]
+        federation.selffederationid = data[fields.federationId]
+        federation.operatorid = data[fields.partnerOperatorName]
     }
     return federation
 }
@@ -165,7 +165,7 @@ export const deleteFederator = async (self, data) => {
     requestList.push({ method: endpoint.DELETE_FEDERATOR, data: getFederatorKey(data) })
     let mc = undefined
     for (const request of requestList) {
-        mc = await authSyncRequest(this, request)
+        mc = await authSyncRequest(self, request)
         if (responseValid(mc)) {
             continue;
         }
