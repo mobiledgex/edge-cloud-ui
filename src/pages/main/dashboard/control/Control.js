@@ -11,9 +11,15 @@ import { sequence } from '../sequence';
 import Total from '../total/Total';
 import { fields } from '../../../../services';
 import { cloudletMetricsElements, cloudletUsageMetrics } from '../../../../services/modules/cloudletMetrics/cloudletMetrics';
+import { appInstMetrics, appInstMetricsElements } from '../../../../services/modules/appInstMetrics';
 import { authSyncRequest } from '../../../../services/service';
-import { CLOUDLET_METRICS_USAGE_ENDPOINT } from '../../../../helper/constant/endpoint';
+import { APP_INST_METRICS_ENDPOINT, CLOUDLET_METRICS_ENDPOINT, CLOUDLET_METRICS_USAGE_ENDPOINT } from '../../../../helper/constant/endpoint';
 import { formatMetricData } from './metric';
+import { appInstKeys } from '../../../../services/modules/appInst';
+import { clusterInstKeys } from '../../../../services/modules/clusterInst';
+import { clusterInstMetricsElements, clusterMetrics } from '../../../../services/modules/clusterInstMetrics';
+import { AIK_APP_CLOUDLET_CLUSTER } from '../../../../services/modules/appInst/primary';
+import { CIK_CLOUDLET_CLUSTER } from '../../../../services/modules/clusterInst/primary';
 
 class Control extends React.Component {
     constructor(props) {
@@ -22,40 +28,57 @@ class Control extends React.Component {
             dataset: formatData(sequence),
             toggle: false,
             showMore: undefined,
-            resources:undefined
+            resources: undefined
         }
     }
 
     onMore = async (show) => {
         this.setState({ showMore: show })
-        if(show)
-        {
-        if (show.field === fields.cloudletName) {
-            let numsamples = 1
-            let selector = '*'
-            let data = show.data
-            data.region = 'US'
-            data.numsamples = numsamples
-            let resources = {}
-            await cloudletMetricsElements.forEach(async (element) => {
-                let method = element.serverRequest
-                if (method === CLOUDLET_METRICS_USAGE_ENDPOINT) {
-                    data.selector = element.selector ? element.selector : selector
-                    let mc = await authSyncRequest(this, { ...cloudletUsageMetrics(this, data, true), format: false })
-                    let metricData = formatMetricData(element, numsamples, mc)
-                    if(element.selector)
-                    {
-                        resources.flavor = {label:metricData.flavorName.value, value:metricData.count.value}  
+        if (show) {
+            if (show.data) {
+                let data = show.data
+                let numsamples = 1
+                data.region = 'US'
+                data.selector = '*'
+                data.numsamples = numsamples
+                if (show.field === fields.cloudletName || show.field === fields.appName || show.field === fields.clusterName) {
+                    let elements
+                    let request
+                    if (show.field === fields.cloudletName) {
+                        elements = cloudletMetricsElements
+                        request = cloudletUsageMetrics(this, data, true)
                     }
-                    else
-                    {
-                        resources = {...resources, ...metricData}
+                    else if (show.field === fields.appName) {
+                        elements = appInstMetricsElements
+                        request = appInstMetrics(this, data, [appInstKeys(data, AIK_APP_CLOUDLET_CLUSTER)])
                     }
+                    else {
+                        elements = clusterInstMetricsElements
+                        request = clusterMetrics(this, data, [clusterInstKeys(data, CIK_CLOUDLET_CLUSTER)])
+                    }
+                    let resources = {}
+                    await Promise.all(elements.map(async (element) => {
+                        request.data.selector = element.selector ? element.selector : request.data.selector
+                        let mc = await authSyncRequest(this, { ...request, format: false })
+                        let metricData = formatMetricData(element, numsamples, mc)
+                        if (metricData) {
+                            if (element.selector === 'flavorusage' && metricData) {
+                                const { flavorName, count } = metricData
+                                if (flavorName) {
+                                    resources.flavor = { label: 'Flavor', value: `${flavorName.value} [${count ? count.value : 0}]` }
+                                }
+                            }
+                            else {
+                                resources = { ...resources, ...metricData }
+                            }
+                        }
+                    }))
+                    this.setState({ resources })
+                    return
                 }
-                this.setState({resources})
-            })
-
-        }}
+            }
+        }
+        this.setState({ resources: undefined })
     }
 
     onSequenceChange = (sequence) => {
@@ -67,14 +90,14 @@ class Control extends React.Component {
     }
 
     render() {
-        const { toggle, dataset, showMore, resources } = this.state
-        const { chartData, classes, height, total, children } = this.props
+        const { toggle, showMore, resources } = this.state
+        const { chartData, total, children } = this.props
         return (
             chartData ?
                 <Grid container spacing={1}>
                     <Grid xs={7} item>
                         <div className='mex-card' align='center'>
-                            <Sunburst style={{ width: 'calc(85vh - 0px)' }} sequence={sequence} dataset={chartData} toggle={toggle} onMore={this.onMore} />
+                            <Sunburst sequence={sequence} dataset={chartData} toggle={toggle} onMore={this.onMore} />
                         </div>
                     </Grid>
                     <Grid xs={5} item>
@@ -96,22 +119,42 @@ class Control extends React.Component {
                                         </Grid>
                                         <Grid item xs={7}>
 
-                                            {showMore ? <div >
+                                            {showMore ? <div style={{ marginTop: 20 }}>
                                                 <h4 align='center' style={{ width: '100%' }}>{`${showMore.header}`}</h4>
                                                 <Divider />
                                                 <br />
                                                 <h5>{`Name: ${showMore.name}`}</h5>
-                                                <h4>{showMore.children ? `Total ${showMore.childrenLabel}: ${showMore.children.length}` : null}</h4>
-                                                {
-                                                    resources && Object.keys(resources).map(item=>(
-                                                        <h4>{`${resources[item].label}: ${resources[item].value}`}</h4>
-                                                    ))
-                                                }
+                                                <h5>{showMore.children ? `Total ${showMore.childrenLabel}: ${showMore.children.length}` : null}</h5>
+
                                             </div> :
-                                                <h3 style={{width:100}}>Please select an option on sunburst to see details</h3>
+                                                <div style={{ height: '100%', alignItems: 'center', display: 'flex', justifyContent: 'center' }}>
+                                                    <h3 >Please select an option on sunburst to see details</h3>
+
+
+                                                </div>
+
                                             }
                                         </Grid>
                                     </Grid>
+                                    {resources ? <div style={{ padding: 10 }}>
+                                        <h4>Resources</h4>
+                                        <Divider />
+                                        <br />
+                                        {
+                                            Object.keys(resources).map((key) => {
+                                                let item = resources[key]
+                                                return (
+
+                                                    <div key={key} style={{ display: 'flex', gap: 10 }} align='left'>
+                                                        <h4 style={{ fontWeight: 900, width: 150 }}>{item.label}</h4>
+                                                        <h5>{item.value}</h5>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+
+                                    </div> : null
+                                    }
                                 </div>
                             </Grid>
                             {children}

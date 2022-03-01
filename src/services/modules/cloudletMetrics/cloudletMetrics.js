@@ -70,12 +70,12 @@ const metricElements = [
     { field: fields.ipv4Used, label: 'IPv4 Used', serverField: 'ipv4Used', serverFieldMax: 'ipv4Max', unit: UNIT_FLOOR }
 ]
 const metricUsageElements = [
-    { field: fields.externalIpsUsed, label: 'External IP Used', serverField: 'externalIpsUsed', unit: UNIT_FLOOR },
-    { field: fields.floatingIpsUsed, label: 'Floating IP Used', serverField: 'floatingIpsUsed', unit: UNIT_FLOOR },
-    { field: fields.gpusUsed, label: 'GPUs Used', serverField: 'gpusUsed', unit: UNIT_FLOOR },
-    { field: fields.instancesUsed, label: 'Instances Used', serverField: 'instancesUsed', unit: UNIT_FLOOR },
-    { field: fields.ramUsed, label: 'RAM Used', serverField: 'ramUsed', unit: UNIT_FLOOR },
-    { field: fields.cpuUsed, label: 'CPU Used', serverField: 'vcpusUsed', unit: UNIT_FLOOR }
+    { field: fields.externalIpsUsed, label: 'External IP', serverField: 'externalIpsUsed', unit: UNIT_FLOOR },
+    { field: fields.floatingIpsUsed, label: 'Floating IP', serverField: 'floatingIpsUsed', unit: UNIT_FLOOR },
+    { field: fields.gpusUsed, label: 'GPUs', serverField: 'gpusUsed', unit: UNIT_FLOOR },
+    { field: fields.instancesUsed, label: 'Instances', serverField: 'instancesUsed', unit: UNIT_FLOOR },
+    { field: fields.ramUsed, label: 'RAM', serverField: 'ramUsed', unit: UNIT_MB },
+    { field: fields.cpuUsed, label: 'CPU', serverField: 'vcpusUsed', unit: UNIT_FLOOR }
 ]
 const metricUsageFlavorElements = [
     { field: fields.count, label: 'Flavor Count', serverField: 'count' },
@@ -83,7 +83,7 @@ const metricUsageFlavorElements = [
 ]   
 
 export const cloudletMetricsElements = [
-    { serverRequest: endpoint.CLOUDLET_METRICS_ENDPOINT, keys: metricElements },
+    // { serverRequest: endpoint.CLOUDLET_METRICS_ENDPOINT, keys: metricElements },
     { serverRequest: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, keys: metricUsageElements },
     { serverRequest: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, keys: metricUsageFlavorElements, selector:'flavorusage' },
 ]

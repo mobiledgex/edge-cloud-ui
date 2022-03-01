@@ -3,7 +3,7 @@ import { UNIT_BYTES, UNIT_PERCENTAGE } from '../../../pages/main/monitoring/help
 import { fields } from '../../model/format';
 import { endpoint } from '../../../helper/constant';
 import { redux_org } from '../../../helper/reduxData';
-import { omit } from '../../../helper/constant/operators';
+import { omit, pick } from '../../../helper/constant/operators';
 
 export const customData = (id, data) => {
     switch (id) {
@@ -48,8 +48,21 @@ export const clusterResourceKeys = () => ([
     { field: 'map', header: 'Map' }
 ])
 
+/**New */
+const metricElements = [
+    { field: fields.networkSent, label: 'Network Sent', serverField: 'sendBytes', unit: UNIT_BYTES },
+    { field: fields.networkReceived, label: 'Network Received', serverField: 'recvBytes', unit: UNIT_BYTES },
+    { field: fields.cpu, label: 'CPU', serverField: 'cpu', unit: UNIT_PERCENTAGE },
+    { field: fields.mem, label: 'Memory', serverField: 'mem', unit: UNIT_PERCENTAGE },
+    { field: fields.disk, label: 'Disk', serverField: 'disk', unit: UNIT_PERCENTAGE },
+]
+
+export const clusterInstMetricsElements = [
+    { serverRequest: endpoint.CLUSTER_METRICS_ENDPOINT, keys: metricElements },
+]
+
 export const clusterMetrics = (self, data, list) => {
-    let requestData = omit(data, fields.organizationName)
+    let requestData = pick(data, [fields.region, fields.starttime, fields.endtime, fields.selector, fields.numsamples])
     let organization = data[fields.organizationName]
     if (list) {
         requestData.clusterinsts = list

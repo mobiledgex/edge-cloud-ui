@@ -6,7 +6,7 @@ import { endpoint, perpetual } from '../../../helper/constant';
 import { developerRoles } from '../../../constant';
 import { ADMIN, DEVELOPER, DEVELOPER_VIEWER } from '../../../helper/constant/perpetual';
 import { redux_org } from '../../../helper/reduxData';
-import { omit } from '../../../helper/constant/operators';
+import { omit, pick } from '../../../helper/constant/operators';
 
 let fields = formatter.fields;
 
@@ -72,6 +72,20 @@ export const appInstResourceKeys = () => ([
     { field: 'client', header: 'Client Usage' },
 ])
 
+/**New */
+const metricElements = [
+    { field: fields.networkSent, label: 'Network Sent', serverField: 'sendBytes', unit: UNIT_BYTES },
+    { field: fields.networkReceived, label: 'Network Received', serverField: 'recvBytes', unit: UNIT_BYTES },
+    { field: fields.cpu, label: 'CPU', serverField: 'cpu', unit: UNIT_PERCENTAGE },
+    { field: fields.mem, label: 'Memory', serverField: 'mem', unit: UNIT_BYTES },
+    { field: fields.disk, label: 'Disk', serverField: 'disk', unit: UNIT_BYTES },
+    { field: fields.activeConnections, label: 'Active Connections', serverField: 'active', unit: UNIT_FLOOR },
+]
+
+export const appInstMetricsElements = [
+    { serverRequest: endpoint.APP_INST_METRICS_ENDPOINT, keys: metricElements },
+]
+
 export const fetchLocation = (avgValues, metricData, showList) => {
     for (let i = 0; i < showList.length; i++) {
         let show = showList[i]
@@ -92,7 +106,8 @@ export const fetchLocation = (avgValues, metricData, showList) => {
 }
 
 export const appInstMetrics = (self, data, list) => {
-    let requestData = omit(data, fields.organizationName)
+    let requestData = pick(data, [fields.region, fields.starttime, fields.endtime, fields.selector, fields.numsamples])
+    // let requestData = omit(data, fields.organizationName)
     let organization = data[fields.organizationName]
     if(list)
     {

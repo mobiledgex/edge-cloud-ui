@@ -1,4 +1,5 @@
 import { responseValid } from "../../../../services/service"
+import { convertUnit } from "../../monitoring/helper/unitConvertor"
 
 export const formatMetricData = (metricResource, numsamples, mc) => {
     const latest = numsamples === 1
@@ -18,7 +19,9 @@ export const formatMetricData = (metricResource, numsamples, mc) => {
                             resourceTypes.map(type => {
                                 let index = columns.indexOf(type.serverField)
                                 if (index >= 0) {
-                                    let resource = { 'label': type.label, value: values[0][index] }
+                                    let value = values[0][index]
+                                    value = type.unit ? convertUnit(type.unit, value) : value
+                                    let resource = { 'label': type.label, value }
                                     if (type.serverFieldMax) {
                                         resource.max = values[0][columns.indexOf(type.serverFieldMax)]
                                     }
