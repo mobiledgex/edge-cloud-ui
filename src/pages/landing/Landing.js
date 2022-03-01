@@ -100,7 +100,6 @@ class Landing extends Component {
                                                     <Login clientSysInfo={clientSysInfo} />
                                 }
                             </Container>
-                            <Link className={classes.aLink} to="https://status.mobiledgex.com" target="_blank">Status</Link>
                         </div>
                     </div>
                 </div>
