@@ -24,12 +24,6 @@ const styles = props => ({
     },
     barColorPrimary: {
       backgroundColor: '#93E019',
-    },
-    aLink: {
-        fontStyle: 'italic',
-        textDecoration: 'underline',
-        color: "rgba(255,255,255,.5)",
-        cursor: 'pointer'
     }
   });
 
@@ -106,6 +100,7 @@ class Landing extends Component {
                                                     <Login clientSysInfo={clientSysInfo} />
                                 }
                             </Container>
+                            <Link className={classes.aLink} to="https://status.mobiledgex.com" target="_blank">Status</Link>
                         </div>
                     </div>
                 </div>
