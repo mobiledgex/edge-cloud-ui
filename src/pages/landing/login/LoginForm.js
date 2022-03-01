@@ -125,7 +125,7 @@ const Login = (props) => {
                         <div className={classes.divLink2}>
                             <Link className={classes.aLink} to="/acceptable-use-policy" target="_blank" >Acceptable Use Policy</Link>
                         </div>
-                        <div className={clsx(classes.aLink, classes.divLink3)}>
+                        <div className={classes.divLink3}>
                             <a className={classes.aLink} href="https://status.mobiledgex.com" target="_blank">Status</a>
                         </div>
                     </div>
