@@ -21,28 +21,41 @@ class Control extends React.Component {
         this.state = {
             dataset: formatData(sequence),
             toggle: false,
-            showMore: undefined
+            showMore: undefined,
+            resources:undefined
         }
     }
 
     onMore = async (show) => {
         this.setState({ showMore: show })
+        if(show)
+        {
         if (show.field === fields.cloudletName) {
             let numsamples = 1
             let selector = '*'
             let data = show.data
             data.region = 'US'
             data.numsamples = numsamples
+            let resources = {}
             await cloudletMetricsElements.forEach(async (element) => {
                 let method = element.serverRequest
                 if (method === CLOUDLET_METRICS_USAGE_ENDPOINT) {
                     data.selector = element.selector ? element.selector : selector
                     let mc = await authSyncRequest(this, { ...cloudletUsageMetrics(this, data, true), format: false })
                     let metricData = formatMetricData(element, numsamples, mc)
+                    if(element.selector)
+                    {
+                        resources.flavor = {label:metricData.flavorName.value, value:metricData.count.value}  
+                    }
+                    else
+                    {
+                        resources = {...resources, ...metricData}
+                    }
                 }
+                this.setState({resources})
             })
 
-        }
+        }}
     }
 
     onSequenceChange = (sequence) => {
@@ -54,7 +67,7 @@ class Control extends React.Component {
     }
 
     render() {
-        const { toggle, dataset, showMore } = this.state
+        const { toggle, dataset, showMore, resources } = this.state
         const { chartData, classes, height, total, children } = this.props
         return (
             chartData ?
@@ -89,6 +102,11 @@ class Control extends React.Component {
                                                 <br />
                                                 <h5>{`Name: ${showMore.name}`}</h5>
                                                 <h4>{showMore.children ? `Total ${showMore.childrenLabel}: ${showMore.children.length}` : null}</h4>
+                                                {
+                                                    resources && Object.keys(resources).map(item=>(
+                                                        <h4>{`${resources[item].label}: ${resources[item].value}`}</h4>
+                                                    ))
+                                                }
                                             </div> :
                                                 <h3 style={{width:100}}>Please select an option on sunburst to see details</h3>
                                             }
