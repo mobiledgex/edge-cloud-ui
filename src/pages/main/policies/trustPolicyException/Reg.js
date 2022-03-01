@@ -87,10 +87,8 @@ class TrustPolicyExceptionReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.poolName) {
-                this.updateUI(form)
                 if (!isInit) {
                     this.getCloudletPoolInfo(form, forms)
-                    this.updateState({ forms })
                 }
             }
         }
