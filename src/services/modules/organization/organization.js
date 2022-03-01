@@ -3,6 +3,7 @@ import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant'
 import { DEVELOPER_MANAGER, OPERATOR_MANAGER } from '../../../helper/constant/perpetual';
+import { getUserMetaData } from '../../../helper/ls';
 
 let fields = formatter.fields;
 
@@ -13,14 +14,14 @@ export const keys = (nameOnly) => {
         { field: fields.type, serverField: 'Type', label: 'Type', sortable: true },
         { field: fields.role, label: 'Role', sortable: true, visible: true, filter: true, group: true },
         { field: fields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: true },
-        { field: fields.address, serverField: 'Address', label: 'Address', sortable: true, visible: true },
+        { field: fields.address, serverField: 'Address', label: 'Address' },
         { field: fields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', roles: [perpetual.ADMIN_MANAGER], format: true },
         { field: fields.publicImages, serverField: 'PublicImages', label: 'Public Image', sortable: true, visible: true },
         {
             field: fields.userList, label: 'User List', sortable: true, visible: false,
             keys: [{ field: fields.username, label: 'Username' }, { field: fields.userRole, label: 'Role' }]
         },
-        { field: fields.manage, label: 'Manage', visible: true, clickable: true, format: true }
+            { field: fields.manage, label: 'Manage', visible: true, clickable: true, format: true }
         ]
     }
     return items
@@ -99,9 +100,10 @@ export const multiDataRequest = (keys, mcRequestList) => {
             orgDataList = mcRequest.response.data
         }
     }
+    let userInfo = getUserMetaData().organizationInfo;
     let dataList = orgDataList.map(org => {
-        let user = userDataList.find(user => user[fields.organizationName] === org[fields.organizationName]);
-        if (user && (user[fields.role] === OPERATOR_MANAGER || user[fields.role] === DEVELOPER_MANAGER)) {
+        let user = userDataList.find(user => user[fields.username] === userInfo[fields.username] && user[fields.organizationName] === org[fields.organizationName]);
+        if (user) {
             org[fields.role] = user[fields.role];
         }
         return org
