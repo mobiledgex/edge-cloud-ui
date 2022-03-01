@@ -36,11 +36,8 @@ class OrganizationList extends React.Component {
         this.data = {}
         this.worker = new RoleWorker();
         this.keys = keys().map(key => {
-            if (key.field === fields.manage) {
+            if (key.field === fields.manage || key.field === fields.role) {
                 key.visible = !redux_org.isAdmin(this)
-            }
-            if (key.field === fields.role) {
-                key.visible = !redux_org.isAdmin(this) // role not visible for mexadmin
             }
             return key
         })
