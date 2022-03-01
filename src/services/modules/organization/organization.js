@@ -3,6 +3,7 @@ import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant'
 import { DEVELOPER_MANAGER, OPERATOR_MANAGER } from '../../../helper/constant/perpetual';
+import { getUserMetaData } from '../../../helper/ls';
 
 let fields = formatter.fields;
 
@@ -99,8 +100,8 @@ export const multiDataRequest = (keys, mcRequestList) => {
             orgDataList = mcRequest.response.data
         }
     }
+    let userInfo = getUserMetaData().organizationInfo;
     let dataList = orgDataList.map(org => {
-        let userInfo = JSON.parse(localStorage.getItem(perpetual.LS_USER_META_DATA)).organizationInfo;
         let user = userDataList.find(user => user[fields.username] === userInfo[fields.username] && user[fields.organizationName] === org[fields.organizationName]);
         if (user) {
             org[fields.role] = user[fields.role];
