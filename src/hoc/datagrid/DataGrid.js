@@ -54,7 +54,7 @@ class DataGrid extends React.Component {
         this.selectedRow = {};
         this.sorting = false;
         this.selectedRegion = REGION_ALL
-        this.range = timeRangeInMin()
+        this.range = timeRangeInMin();
     }
 
     updateState = (data) => {
@@ -474,7 +474,7 @@ class DataGrid extends React.Component {
     }
 
     render() {
-        const { resetStream, deleteMultiple, showMap, progressData } = this.state
+        const { resetStream, deleteMultiple, showMap, progressData, loading } = this.state
         const { regions, toolbarAction } = this.props
         return (
             <div id="mex-list-view">
@@ -482,7 +482,7 @@ class DataGrid extends React.Component {
                     <MexMessageDialog messageInfo={this.state.dialogMessageInfo} onClick={this.onDialogClose} />
                     <MexMessageStream onClose={this.onCloseStepper} uuid={this.state.uuid} progressData={progressData} generateRequestData={this.specificDataFromServer} streamType={this.requestInfo.streamType} customStream={this.requestInfo.customStream} region={this.selectedRegion} resetStream={resetStream} />
                     <MexMultiStepper multiStepsArray={this.state.multiStepsArray} onClose={this.multiStepperClose} uuid={this.state.uuid} />
-                    <MexToolbar requestInfo={this.requestInfo} regions={regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} toolbarAction={toolbarAction} />
+                    <MexToolbar requestInfo={this.requestInfo} regions={regions} onAction={this.onToolbarAction} isDetail={this.state.isDetail} dropList={this.state.dropList} onRemoveDropItem={this.onRemoveDropItem} showMap={showMap} toolbarAction={toolbarAction} loading={loading} />
                     {this.props.customToolbar && !this.state.isDetail ? this.props.customToolbar() : null}
                     {this.state.currentView ? this.state.currentView : this.listView()}
                     <MexMessageMultiNorm data={deleteMultiple} close={this.onDeleteMulClose} />
@@ -572,7 +572,7 @@ class DataGrid extends React.Component {
             let dataList = cloneDeep(this.state.dataList)
             if (mcList && mcList.length > 0 && dataList.length > 0) {
                 let requestData = mcList[0].request.data
-                if (requestData.region) {
+                if (requestData && requestData.region) {
                     dataList = dataList.filter(function (obj) {
                         return obj[fields.region] !== requestData.region;
                     });
