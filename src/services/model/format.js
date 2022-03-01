@@ -306,7 +306,6 @@ export const fields = {
     federationAddr: 'federationAddr',
     cloudletCount: 'cloudletCount',
     zoneId: 'zoneid',
-    state: 'state',
     city: 'city',
     zoneLocation: 'zoneLocation',
     locality: 'locality',
