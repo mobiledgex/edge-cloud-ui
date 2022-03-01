@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA, ICON_BUTTON, formattedData, MAIN_HEADER, HEADER, MULTI_FORM, TIP } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA, ICON_BUTTON, formattedData, MAIN_HEADER, HEADER, MULTI_FORM, TIP, SWITCH } from '../../../hoc/forms/MexForms';
 import ListMexMap from '../../../hoc/datagrid/map/ListMexMap';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/MexMessageMultiStream'
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
@@ -15,7 +15,6 @@ import { showOrganizations } from '../../../services/modules/organization';
 import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota, cloudletProps } from '../../../services/modules/cloudlet';
 import { showTrustPolicies } from '../../../services/modules/trustPolicy';
 import { HELP_CLOUDLET_REG } from "../../../tutorial";
-
 import { Grid } from '@material-ui/core';
 import { endpoint, perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
@@ -170,6 +169,13 @@ class CloudletReg extends React.Component {
         }
         let nforms = forms.filter(form => {
             let valid = true
+            if (form.field === fields.deployment && !isInit) {
+                this.updateUI(form)
+            }
+            if (form.field === fields.platformHighAvailability && !isInit) {
+                form.visible = false
+                form.value = false
+            }
             if (form.field === fields.envVar || form.field === fields.resourceQuota) {
                 valid = false
             }
@@ -271,8 +277,7 @@ class CloudletReg extends React.Component {
     }
 
     operatorValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
+        for (let form of forms) {
             if (form.field === fields.trustPolicyName) {
                 this.updateUI(form)
                 this.updateState({ forms })
@@ -282,6 +287,22 @@ class CloudletReg extends React.Component {
                 this.updateUI(form)
                 this.updateState({ forms })
             }
+        }
+    }
+
+    deploymentValueChange = (currentForm, forms, isInit) => {
+        let valid;
+        for (let form of forms) {
+            if (form.field === fields.platformType) {
+                valid = [perpetual.PLATFORM_TYPE_VCD, perpetual.PLATFORM_TYPE_OPEN_STACK].includes(form.value)
+            }
+            else if (form.field === fields.platformHighAvailability) {
+                form.visible = (currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES && valid)
+                form.value = false
+            }
+        }
+        if (!isInit) {
+            this.updateState({ forms })
         }
     }
 
@@ -343,6 +364,9 @@ class CloudletReg extends React.Component {
         }
         else if (form.field === fields.latitude || form.field === fields.longitude) {
             this.locationChange(form, forms, isInit)
+        }
+        else if (form.field === fields.deployment) {
+            this.deploymentValueChange(form, forms, isInit)
         }
         else if (form.field === fields.infraApiAccess) {
             this.infraAPIAccessChange(form, forms, isInit)
@@ -659,6 +683,9 @@ class CloudletReg extends React.Component {
                         case fields.key:
                             form.options = this.cloudletPropsList
                             break;
+                        case fields.deployment:
+                            form.options = [perpetual.DEPLOYMENT_TYPE_DOCKER, perpetual.DEPLOYMENT_TYPE_KUBERNETES]
+                            break;
                         case fields.allianceOrganization:
                             form.options = this.allianceList
                             break;
@@ -838,6 +865,8 @@ class CloudletReg extends React.Component {
             { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },
             { field: fields.maintenanceState, label: 'Maintenance State', formType: SELECT, placeholder: 'Select Maintenance State', rules: { required: false }, visible: this.isUpdate, update: { id: ['30'] }, tip: 'Maintenance allows for planned downtimes of Cloudlets. These states involve message exchanges between the Controller, the AutoProv service, and the CRM. Certain states are only set by certain actors', advance: false },
             { field: fields.singleK8sClusterOwner, formType: INPUT, placeholder: 'Enter Single K8s Cluster Owner', label: 'Single K8s Cluster Owner', visible: false, tip: 'single kubernetes cluster cloudlet platforms, cluster is owned by this organization instead of multi-tenant.', update: { id: ['48'] }, advance: false },
+            { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)', advance: false },
+            { field: fields.platformHighAvailability, label: 'Platform High Availability', formType: SWITCH, visible: false, update: { id: ['50'] }, tip: 'Enable platform H/A', advance: false },
             { field: fields.kafkaCluster, label: 'Kafka Cluster', formType: INPUT, placeholder: 'Enter Kafka Cluster Endpoint', rules: { required: false, onBlur: true }, visible: true, update: { id: ['42'] }, tip: 'Operator provided kafka cluster endpoint to push events to', advance: false },
             { field: fields.kafkaUser, label: 'Kafka User', formType: INPUT, placeholder: 'Enter Kafka Username', rules: { required: false, onBlur: true }, visible: true, update: { id: ['43'] }, tip: 'Username for kafka SASL/PLAIN authentification, stored securely in secret storage and never visible externally', advance: false },
             { field: fields.kafkaPassword, label: 'Kafka Password', formType: INPUT, placeholder: 'Enter Kafka Password', rules: { required: false, onBlur: true }, visible: true, update: { id: ['44'] }, tip: 'Password for kafka SASL/PLAIN authentification, stored securely in secret storage and never visible externally', advance: false },

@@ -8,6 +8,7 @@ export const fields = {
     org: 'org',
     billingOrgName: 'billingOrgName',
     operatorName: 'operatorName',
+    trustPolicyExceptionName:'trustPolicyExceptionName',
     partnerOperator: 'partnerOperator',
     cloudletName: 'cloudletName',
     flavorName: 'flavorName',
@@ -337,5 +338,6 @@ export const fields = {
     ipv4Used: 'ipv4Used',
     instancesUsed:'instancesUsed',
     ramUsed:'ramUsed',
-    count:'count'
+    count:'count',
+    platformHighAvailability: 'platformHighAvailability'
 }
