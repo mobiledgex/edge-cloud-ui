@@ -13,7 +13,6 @@ import { fields } from '../../../../services';
 import { cloudletMetricsElements, cloudletUsageMetrics } from '../../../../services/modules/cloudletMetrics/cloudletMetrics';
 import { appInstMetrics, appInstMetricsElements } from '../../../../services/modules/appInstMetrics';
 import { authSyncRequest } from '../../../../services/service';
-import { APP_INST_METRICS_ENDPOINT, CLOUDLET_METRICS_ENDPOINT, CLOUDLET_METRICS_USAGE_ENDPOINT } from '../../../../helper/constant/endpoint';
 import { formatMetricData } from './metric';
 import { appInstKeys } from '../../../../services/modules/appInst';
 import { clusterInstKeys } from '../../../../services/modules/clusterInst';
@@ -32,53 +31,57 @@ class Control extends React.Component {
         }
     }
 
-    onMore = async (show) => {
-        this.setState({ showMore: show })
-        if (show) {
-            if (show.data) {
-                let data = show.data
-                let numsamples = 1
-                data.region = 'US'
-                data.selector = '*'
-                data.numsamples = numsamples
-                if (show.field === fields.cloudletName || show.field === fields.appName || show.field === fields.clusterName) {
-                    let elements
-                    let request
-                    if (show.field === fields.cloudletName) {
-                        elements = cloudletMetricsElements
-                        request = cloudletUsageMetrics(this, data, true)
-                    }
-                    else if (show.field === fields.appName) {
-                        elements = appInstMetricsElements
-                        request = appInstMetrics(this, data, [appInstKeys(data, AIK_APP_CLOUDLET_CLUSTER)])
-                    }
-                    else {
-                        elements = clusterInstMetricsElements
-                        request = clusterMetrics(this, data, [clusterInstKeys(data, CIK_CLOUDLET_CLUSTER)])
-                    }
-                    let resources = {}
-                    await Promise.all(elements.map(async (element) => {
-                        request.data.selector = element.selector ? element.selector : request.data.selector
-                        let mc = await authSyncRequest(this, { ...request, format: false })
-                        let metricData = formatMetricData(element, numsamples, mc)
-                        if (metricData) {
-                            if (element.selector === 'flavorusage' && metricData) {
-                                const { flavorName, count } = metricData
-                                if (flavorName) {
-                                    resources.flavor = { label: 'Flavor', value: `${flavorName.value} [${count ? count.value : 0}]` }
-                                }
-                            }
-                            else {
-                                resources = { ...resources, ...metricData }
+    fetchResources = async (show) => {
+        if (show.data) {
+            let data = show.data
+            let numsamples = 1
+            data.region = 'US'
+            data.selector = '*'
+            data.numsamples = numsamples
+            if (show.field === fields.cloudletName || show.field === fields.appName || show.field === fields.clusterName) {
+                let elements
+                let request
+                if (show.field === fields.cloudletName) {
+                    elements = cloudletMetricsElements
+                    request = cloudletUsageMetrics(this, data, true)
+                }
+                else if (show.field === fields.appName) {
+                    elements = appInstMetricsElements
+                    request = appInstMetrics(this, data, [appInstKeys(data, AIK_APP_CLOUDLET_CLUSTER)])
+                }
+                else {
+                    elements = clusterInstMetricsElements
+                    request = clusterMetrics(this, data, [clusterInstKeys(data, CIK_CLOUDLET_CLUSTER)])
+                }
+                let resources = {}
+                await Promise.all(elements.map(async (element) => {
+                    request.data.selector = element.selector ? element.selector : request.data.selector
+                    let mc = await authSyncRequest(this, { ...request, format: false })
+                    let metricData = formatMetricData(element, numsamples, mc)
+                    if (metricData) {
+                        if (element.selector === 'flavorusage' && metricData) {
+                            const { flavorName, count } = metricData
+                            if (flavorName) {
+                                resources.flavor = { label: 'Flavor', value: `${flavorName.value} [${count ? count.value : 0}]` }
                             }
                         }
-                    }))
-                    this.setState({ resources })
-                    return
-                }
+                        else {
+                            resources = { ...resources, ...metricData }
+                        }
+                    }
+                }))
+                this.setState({ resources })
+                return
             }
         }
         this.setState({ resources: undefined })
+    }
+
+    onMore = (show) => {
+        this.setState({ showMore: show })
+        if (show) {
+            this.fetchResources(show)
+        }
     }
 
     onSequenceChange = (sequence) => {
