@@ -1,7 +1,6 @@
 import React from "react";
 import { Map, TileLayer } from "react-leaflet";
 import Control from 'react-leaflet-control';
-import "leaflet-make-cluster-group/LeafletMakeCluster.css";
 import { Icon } from "semantic-ui-react";
 import { Tooltip } from "@material-ui/core";
 import { regionLocation } from "../../constant";
