@@ -1,7 +1,7 @@
-import React from 'react'
-import { ImageList, ImageListItem, makeStyles } from '@material-ui/core';
-import { currentDate, subtractDays } from '../../../utils/date_util';
-import moment from 'moment';
+import React, { useEffect } from 'react'
+import { ImageList, ImageListItem, makeStyles, Popover, Tooltip, Typography } from '@material-ui/core';
+import { addDays, subtractDays } from '../../../utils/date_util';
+import { Popup } from '../../mexui';
 
 const useStyles = makeStyles((theme) => ({
     bar: {
@@ -10,40 +10,88 @@ const useStyles = makeStyles((theme) => ({
         height:'inherit',
         display:'flex',
         alignItems:'center',
-        cursor:'pointer',
+        cursor: 'pointer',
         fontWeight:900,
         justifyContent: 'center',
-        '&:hover':{
-            background:'#FFF'
-        }
+    },
+    barDisabled: {
+        background: 'gray',
+        height:'inherit',
+        display:'flex',
+        alignItems:'center',
+        fontWeight:900,
+        justifyContent: 'center',
     }
 }));
 
 const PassFailBar = (props) => {
-    const { children, level } = props
-    const classes = useStyles({ level })
+    const { children, data, properties } = props
+    const { level, disabled } = data
+    const classes = useStyles({ level, disabled })
     return (
-        <div className={classes.bar}>
+        <div className={disabled ? classes.barDisabled : classes.bar} {...properties} >
             {children}
         </div>
     )
 }
 
-let a = currentDate()
-let b = subtractDays(35, a).toString()
-let nlist = []
-for (var m = moment(b); m.isBefore(a); m.add(1, 'days')) {
-    nlist.push({date:m.format('MMM DD'), l:10});
-}
-
 const PassFail = (props) => {
+    const { range, logs } = props
+    const [dateList, setDateList] = React.useState(undefined)
+    const [anchorEl, setAnchorEl] = React.useState(undefined)
+
+    useEffect(() => {
+        if (logs) {
+            const { endtime } = range
+            let endRange = addDays(3, endtime)
+            let startRange = subtractDays(36, endRange)
+            let statusList = []
+            for (let m = startRange; m.isBefore(endRange); m.add(1, 'days')) {
+                let date = m.format('MMM DD')
+                let status = {} 
+                status.date = date
+                status.disabled = true
+                status.level = 0
+                let data = logs[date]
+                if (data) {
+                    status.disabled = false
+                    status.level = (data.failed / data.total) * 100
+                    status.total = data.total
+                    status.failed = data.failed
+                }
+                statusList.push(status);
+            }
+            setDateList(statusList)
+        }
+    }, [logs]);
+
+    const handlePopoverClose = ()=>{
+        setAnchorEl(undefined)
+    }
+
+    const handlePopoverOpen = (e, data) => {
+        if (!data.disabled) {
+            setAnchorEl({target:e.currentTarget, data})
+        }
+    }
+
     return (
         <React.Fragment>
             <ImageList cols={6} rowHeight={35} gap={3} >
-                {nlist.map((item, i) => (
-                    <ImageListItem key={item.date}><PassFailBar level={Math.floor(Math.random() * 100)}>{item.date}</PassFailBar></ImageListItem>
-                ))}
+                {dateList && dateList.map((item) => {
+                    return (
+                        <ImageListItem key={item.date}><PassFailBar data={item} properties={{ onMouseEnter: (e) => { handlePopoverOpen(e, item) }, onMouseLeave: handlePopoverClose }}>{item.date}</PassFailBar></ImageListItem>
+                    )
+                })}
             </ImageList>
+            <Popup anchorEl={anchorEl && anchorEl.target}>
+                {
+                    anchorEl ? <React.Fragment>
+                        <p>{`Total Request : ${anchorEl.data.total}`}</p>
+                        <p>{`Request Failed : ${anchorEl.data.failed}`}</p>
+                    </React.Fragment> : null
+                }
+            </Popup>
         </React.Fragment>
 
     )

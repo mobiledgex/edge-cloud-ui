@@ -79,6 +79,11 @@ export const subtractDays = (value, date) => {
     return value ? obj.subtract(value, 'days') : obj.subtract('days')
 }
 
+export const addDays = (value, date) => {
+    let obj = date ? moment(date) : moment()
+    return value ? obj.add(value, 'days') : obj.add('days')
+}
+
 export const isAfter = (start, end) => {
     return moment(start).isAfter(end)
 }

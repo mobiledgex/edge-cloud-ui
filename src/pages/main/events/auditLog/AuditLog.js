@@ -14,6 +14,7 @@ import sortBy from 'lodash/sortBy';
 import { fields } from '../../../../services/model/format';
 import { showOrganizations } from '../../../../services/modules/organization';
 import '../style.css'
+
 class AuditLog extends Component {
     constructor(props) {
         super(props);

@@ -8,9 +8,8 @@ import { Skeleton } from '@material-ui/lab';
 import { validateRole } from '../../../../../helper/constant/role';
 import { fields } from '../../../../../services/model/format';
 import { healthCheck, NoData } from '../../../../../helper/formatter/ui';
-import Tooltip from './Tooltip';
 import { convertUnit } from '../../helper/unitConvertor';
-import { Icon } from '../../../../../hoc/mexui';
+import { Icon, Popup } from '../../../../../hoc/mexui';
 
 class Legend extends React.Component {
 
@@ -135,7 +134,7 @@ class Legend extends React.Component {
                             </React.Fragment>
                     }
                 </div>
-                <Tooltip anchorEl={anchorEl}>{this.renderTootip()}</Tooltip>
+                <Popup anchorEl={anchorEl}>{this.renderTootip()}</Popup>
             </React.Fragment>
         )
     }
