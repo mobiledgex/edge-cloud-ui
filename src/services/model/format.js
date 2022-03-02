@@ -328,5 +328,8 @@ export const fields = {
     mncmulti: 'mncmulti',
     dedicatedIp: 'dedicatedIp',
     singleK8sClusterOwner: 'singleK8sClusterOwner',
-    platformHighAvailability: 'platformHighAvailability'
+    platformHighAvailability: 'platformHighAvailability',
+    port_range_min: 'port_range_min',
+    port_range_max: 'port_range_max',
+    remote_cidr: 'remote_cidr'
 }

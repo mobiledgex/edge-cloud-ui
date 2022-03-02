@@ -13,7 +13,9 @@ const compareObjects = (newData, oldData, ignoreCase) => {
     else if (newData === undefined && oldData !== undefined && oldData.length > 0) {
         return false
     }
-    else if (ignoreCase) {
+    else if (Array.isArray(newData) && (Array.isArray(oldData))) {
+        return newData.length !== oldData.length ? false : operators.equal(newData[0], oldData[0])
+    } else if (ignoreCase) {
         return operators.equal(newData.toLowerCase(), oldData.toLowerCase())
     }
     else {

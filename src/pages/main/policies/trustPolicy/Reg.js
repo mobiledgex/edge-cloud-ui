@@ -174,15 +174,24 @@ class TrustPolicyReg extends React.Component {
                     if (form.uuid) {
                         let uuid = form.uuid;
                         let outboundSecurityRule = data[uuid]
+                        let requestoutboundSecurityRule = {};
                         if (outboundSecurityRule) {
-                            outboundSecurityRules.push({
+                            if (outboundSecurityRule[fields.protocol] !== 'icmp') {
+                                requestoutboundSecurityRule = {
                                 protocol: outboundSecurityRule[fields.protocol],
-                                port_range_min: outboundSecurityRule[fields.protocol] !== 'icmp' ? parseInt(outboundSecurityRule[fields.portRangeMin]) : undefined,
-                                port_range_max: outboundSecurityRule[fields.protocol] !== 'icmp' ? parseInt(outboundSecurityRule[fields.portRangeMax]) : undefined,
-                                remote_cidr: outboundSecurityRule[fields.remoteCIDR]
-                            })
+                                    [fields.port_range_min]: parseInt(outboundSecurityRule[fields.portRangeMin]),
+                                    [fields.port_range_max]: parseInt(outboundSecurityRule[fields.portRangeMax]),
+                                    [fields.remote_cidr]: outboundSecurityRule[fields.remoteCIDR]
+                                }
+                            } else {
+                                requestoutboundSecurityRule = {
+                                    protocol: outboundSecurityRule[fields.protocol],
+                                    remote_cidr: outboundSecurityRule[fields.remoteCIDR]
+                                }
+                            }
                         }
-
+                        outboundSecurityRules.push(requestoutboundSecurityRule)
+                        data[uuid] = undefined
                     }
                 }
             }
@@ -289,6 +298,31 @@ class TrustPolicyReg extends React.Component {
                     }
                     else if (form.field === fields.outboundSecurityRules) {
                         form.visible = data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0
+                        if (data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0) {
+                            let outboundSecurityRules = data[fields.outboundSecurityRules]
+                            for (let i = 0; i < outboundSecurityRules.length; i++) {
+                                let requiredOutboundConnection = outboundSecurityRules[i]
+                                let outboundConnectionsForms = this.getOutBoundRules();
+                                for (let j = 0; j < outboundConnectionsForms.length; j++) {
+                                    let outboundConnectionsForm = outboundConnectionsForms[j];
+                                    if (outboundConnectionsForm.field === fields.protocol) {
+                                        outboundConnectionsForm.value = requiredOutboundConnection['protocol']
+                                    }
+                                    else if (outboundConnectionsForm.field === fields.remoteCIDR) {
+                                        outboundConnectionsForm.value = requiredOutboundConnection[fields.remote_cidr]
+                                    }
+                                    else if (outboundConnectionsForm.field === fields.portRangeMin) {
+                                        outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
+                                        outboundConnectionsForm.value = requiredOutboundConnection[fields.port_range_min]
+                                    }
+                                    else if (outboundConnectionsForm.field === fields.portRangeMax) {
+                                        outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
+                                        outboundConnectionsForm.value = requiredOutboundConnection[fields.port_range_max]
+                                    }
+                                }
+                                forms.push(this.getOutboundSecurityForm(outboundConnectionsForms))
+                            }
+                        }
                     }
                     else {
                         if (form.field === fields.organizationName) {
@@ -317,24 +351,6 @@ class TrustPolicyReg extends React.Component {
             this.organizationList = [organization]
 
             this.loadData(forms, data)
-            if (data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0) {
-                for (let i = 0; i < data[fields.outboundSecurityRules].length; i++) {
-                    let OutboundSecurityRule = data[fields.outboundSecurityRules][i]
-                    let outboundRules = this.getOutBoundRules();
-                    let isICMP = false;
-                    for (let j = 0; j < outboundRules.length; j++) {
-                        let outboundRule = outboundRules[j];
-                        outboundRule.value = OutboundSecurityRule[outboundRule.field]
-                        if (outboundRule.field === fields.protocol) {
-                            isICMP = outboundRule.value === 'icmp' ? true : false;
-                        }
-                        if ((outboundRule.field === fields.portRangeMin || outboundRule.field === fields.portRangeMax) && isICMP) {
-                            outboundRule.visible = false;
-                        }
-                    }
-                    forms.push(this.getOutboundSecurityForm(outboundRules))
-                }
-            }
         }
         else {
             this.organizationList = await getOrganizationList(this, { type: perpetual.OPERATOR })

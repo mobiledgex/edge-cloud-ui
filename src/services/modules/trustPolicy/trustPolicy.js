@@ -9,9 +9,9 @@ const fields = formatter.fields;
 
 export const outboundSecurityRulesKeys = [
   { field: fields.protocol, serverField: 'protocol', label: 'Protocol' },
-  { field: fields.portRangeMin, serverField: 'port_range_min', label: 'Port Range Min' },
-  { field: fields.portRangeMax, serverField: 'port_range_max', label: 'Port Range Max' },
-  { field: fields.remoteCIDR, serverField: 'remote_cidr', label: 'Remote CIDR' }
+  { field: fields.port_range_min, serverField: 'port_range_min', label: 'Port Range Min' },
+  { field: fields.port_range_max, serverField: 'port_range_max', label: 'Port Range Max' },
+  { field: fields.remote_cidr, serverField: 'remote_cidr', label: 'Remote CIDR' }
 ]
 
 export const keys = () => ([
