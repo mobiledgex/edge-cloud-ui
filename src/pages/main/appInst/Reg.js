@@ -157,11 +157,21 @@ class AppInstReg extends React.Component {
     }
 
     autoClusterValueChange = (currentForm, forms, isInit) => {
+        let isAuto = Boolean(currentForm.value)
+        let appName = ''
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.clusterName) {
-                form.rules.disabled = currentForm.value ? true : false
-                form.error = currentForm.value ? undefined : form.error
+            if (form.field === fields.appName) {
+                appName = form.value
+            }
+            else if (form.field === fields.clusterName) {
+                form.visible = !isAuto
+                form.error = isAuto ? undefined : form.error
+            }
+            else if (form.field === fields.autoClusterName) {
+                form.visible = isAuto
+                form.value = undefined
+                form.value = isAuto ? `autocluster${appName.toLowerCase().replace(/[ _]/g, "")}` : undefined
             }
         }
         if (!isInit) {
@@ -388,6 +398,7 @@ class AppInstReg extends React.Component {
             { field: fields.flavorName, label: 'Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE_GROUP, placeholder: 'Select Flavor', rules: { required: false, copy: true }, visible: true, tip: 'FlavorKey uniquely identifies a Flavor' },
             { field: fields.dedicatedIp, label: 'Dedicated IP', formType: SWITCH, visible: false, value: false, update: { id: ['39'] }, tip: 'Dedicated IP assigns an IP for this AppInst but requires platform support (platform type -  k8s Bare Metal)' },
             { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: SWITCH, visible: false, value: false, update: { edit: true }, tip:'If you have yet to create a cluster, you can select this to auto create cluster instance.' },
+            { field: fields.autoClusterName, label: 'Auto Cluster Name', formType: INPUT, rules: { required: true }, visible: false, tip: 'Auto cluster name, the default value is string `autocluster` appended with app name, must not have spaces or underscore' },
             { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }, { index: 5, field: fields.operatorName }, { index: 7, field: fields.cloudletName }], update: { key: true }, tip: 'Name of cluster instance to deploy this application.' },
             { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, onClick: this.addConfigs, style: { color: 'white' } }], visible: false, update: { id: ['27', '27.1', '27.2'] } },
         ]
@@ -480,7 +491,7 @@ class AppInstReg extends React.Component {
             let cloudlets = data[fields.cloudletName];
             let flavors = data[fields.flavorName];
             if (data[fields.clusterName] || data[fields.autoClusterInstance]) {
-                data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g, "") : data[fields.clusterName]
+                data[fields.clusterName] = data[fields.autoClusterInstance] ? data[fields.autoClusterName] : data[fields.clusterName]
             }
             if (this.props.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
