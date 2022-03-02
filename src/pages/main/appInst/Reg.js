@@ -340,7 +340,7 @@ class AppInstReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.dedicatedIp) {
-                let values = currentForm.value
+                let values = Array.isArray(currentForm.value) ? currentForm.value : [currentForm.value]
                 let valid = values && values.some(cloudletName=>{
                     return fetchCloudletField(this.cloudletList, { operatorName: operator, cloudletName }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
                 })
