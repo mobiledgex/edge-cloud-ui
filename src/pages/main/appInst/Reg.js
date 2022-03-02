@@ -484,7 +484,7 @@ class AppInstReg extends React.Component {
         if (data) {
             let forms = this.state.forms;
             let configs = []
-            let autoClusterName = 'autocluster'
+            let autoClusterName = perpetual.AUTOCLUSTER
             for (const form of forms) {
                 if (form.uuid) {
                     let uuid = form.uuid;
