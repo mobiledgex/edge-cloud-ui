@@ -307,7 +307,7 @@ export const fields = {
     partnerAPIKey:'partnerAPIKey',
     federationAddr: 'federationAddr',
     cloudletCount: 'cloudletCount',
-    zoneId: 'zoneid', 
+    zoneId: 'zoneid',
     state: 'state',
     city: 'city',
     zoneLocation: 'zoneLocation',
