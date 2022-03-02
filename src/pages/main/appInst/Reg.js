@@ -171,7 +171,7 @@ class AppInstReg extends React.Component {
             else if (form.field === fields.autoClusterName) {
                 form.visible = isAuto
                 form.value = undefined
-                form.value = isAuto ? `autocluster${appName.toLowerCase().replace(/[ _]/g, "")}` : undefined
+                form.value = isAuto && appName ? `autocluster${appName.toLowerCase().replace(/[ _]/g, "")}` : undefined
             }
         }
         if (!isInit) {
