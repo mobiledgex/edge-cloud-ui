@@ -54,6 +54,7 @@ export const ACTION_DEREGISTER_ZONES = 'DeregisterFederationZones'
 export const ACTION_REGISTER_ZONES = 'registerFederationZones'
 export const ACTION_HOST_DELETE = 'federationFederatorDelete'
 
+export const AUTOCLUSTER = 'autocluster'
 export const CLOUDLET_COMPAT_VERSION_2_4 = 0
 export const CLOUDLET_COMPAT_VERSION_2_4_1 = 1
 

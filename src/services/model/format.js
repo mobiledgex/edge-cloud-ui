@@ -73,6 +73,8 @@ export const fields = {
     cloudlets: 'cloudlets',
     organizations: 'organizations',
     appName: 'appName',
+    autoClusterName:'autoClusterName',
+    autoClusterNameGroup:'autoClusterNameGroup',
     app_name_version: 'appnameversion',
     version: 'version',
     uri: 'uri',
