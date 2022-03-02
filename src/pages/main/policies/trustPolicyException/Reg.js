@@ -88,6 +88,7 @@ class TrustPolicyExceptionReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.poolName) {
+                this.updateUI(form)
                 if (!isInit) {
                     this.updateState({ forms })
                 }
@@ -197,7 +198,6 @@ class TrustPolicyExceptionReg extends React.Component {
                     data[uuid] = undefined
                 }
             }
-
             role.validateRole(developerRoles, this.props.organizationInfo) && outboundList.length > 0 ? data[fields.requiredOutboundConnections] = outboundList : null
             if (this.props.isUpdate) {
                 let updateData = updateFieldDataNew(this, forms, data, this.originalData)
