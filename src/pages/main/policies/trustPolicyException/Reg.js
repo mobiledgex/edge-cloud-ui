@@ -15,7 +15,7 @@ import { uniqueId, validateRemoteCIDR } from '../../../../helper/constant/shared
 import { _sort } from '../../../../helper/constant/operators';
 import { showCloudletPools } from '../../../../services/modules/cloudletPool'
 import { getAppList } from '../../../../services/modules/app';
-import { developerRoles } from '../../../../constant'
+import { developerRoles, operatorRoles } from '../../../../constant'
 import { updateTrustPolicyException, createTrustPolicyException } from '../../../../services/modules/trustPolicyException';
 import { HELP_TRUST_POLICY_EXCEPTION } from '../../../../tutorial';
 import cloneDeep from 'lodash/cloneDeep';
@@ -76,7 +76,8 @@ class TrustPolicyExceptionReg extends React.Component {
             }
         }
         if (region && organizationName) {
-            let cloudletInfo = await service.showAuthSyncRequest(this, showCloudletPools(this, { region }))
+            let requestData = { region: region, org: organizationName }
+            let cloudletInfo = await service.showAuthSyncRequest(this, showCloudletPools(this, requestData))
             this.cloudletPoolList = cloudletInfo
             this.updateUI(form)
             this.updateState({ forms })
@@ -88,7 +89,7 @@ class TrustPolicyExceptionReg extends React.Component {
             let form = forms[i]
             if (form.field === fields.poolName) {
                 if (!isInit) {
-                    this.getCloudletPoolInfo(form, forms)
+                    this.updateState({ forms })
                 }
             }
         }
@@ -196,13 +197,8 @@ class TrustPolicyExceptionReg extends React.Component {
                     data[uuid] = undefined
                 }
             }
-            if (role.validateRole(developerRoles, this.props.organizationInfo)) {
-                if (outboundList.length > 0) {
-                    data[fields.requiredOutboundConnections] = outboundList
-                } else {
-                    return this.props.handleAlertInfo('error', `Atleast One OutboundConnection is Required`)
-                }
-            }
+
+            role.validateRole(developerRoles, this.props.organizationInfo) && outboundList.length > 0 ? data[fields.requiredOutboundConnections] = outboundList : null
             if (this.props.isUpdate) {
                 let updateData = updateFieldDataNew(this, forms, data, this.originalData)
                 if (updateData) {
@@ -295,9 +291,9 @@ class TrustPolicyExceptionReg extends React.Component {
             { field: fields.organizationName, label: 'Organization', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'The name of the organization you are currently managing.', update: { key: true } },
             { field: fields.trustPolicyExceptionName, label: 'Trust Policy Exception', formType: INPUT, placeholder: 'Enter Name', rules: { required: true }, visible: true, update: { key: true }, tip: 'Name of the Trust Policy Exception.' },
             { field: fields.appName, label: 'App', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], update: { key: true }, tip: 'The name of the application to deploy.' },
-            { field: fields.version, label: 'App Version', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 4, field: fields.appName }], update: { key: true }, tip: 'The version of the application to deploy.' },
-            { field: fields.operatorName, label: 'Operator', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, tip: 'Organization of the cloudlet pool site', update: { key: true } },
-            { field: fields.poolName, label: 'Cloudlet Pool', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Pool', rules: { required: true }, visible: true, update: { key: true }, tip: 'CloudletPool Name' },
+            { field: fields.version, label: 'App Version', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }], update: { key: true }, tip: 'The version of the application to deploy.' },
+            { field: fields.operatorName, label: 'Operator', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Organization of the cloudlet pool site', update: { key: true } },
+            { field: fields.poolName, label: 'Cloudlet Pool', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Pool', rules: { required: true }, visible: true, dependentData: [{ index: 6, field: fields.operatorName }], update: { key: true }, tip: 'CloudletPool Name' },
             { field: fields.state, label: 'Action', formType: SELECT, placeholder: 'Select Action', rules: { required: true }, visible: !redux_org.isDeveloper(this), tip: 'State of the exception within the approval process.', update: { edit: true } },
             { field: fields.requiredOutboundConnections, label: 'Required Outbound Connections', formType: HEADER, forms: !redux_org.isOperator(this) ? [{ formType: ICON_BUTTON, label: 'Add Connections', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getOutboundConnectionsForm }] : undefined, update: { edit: true, ignoreCase: true }, visible: true, tip: 'Connections this app require to determine if the app is compatible with a trust policy Exception' },
         ]
