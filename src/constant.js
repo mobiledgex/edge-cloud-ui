@@ -29,6 +29,7 @@ export const pages = [
         label: 'Policies', icon: 'track_changes', id: perpetual.PAGE_POLICIES, sub: true, visible: true, options: [
             { label: 'Auto Provisioning Policy', icon: 'group_work', id: perpetual.PAGE_AUTO_PROVISIONING_POLICY, path: 'auto-prov-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
             { label: 'Trust Policy', icon: 'policy', id: perpetual.PAGE_TRUST_POLICY, path: 'trust-policy', visible: true },
+            { label: 'Trust Policy Exception', icon: 'gpp_maybe', id: perpetual.PAGE_TRUST_POLICY_EXCEPTION, path: 'trust-exception-policy', visible: true },
             { label: 'Auto Scale Policy', icon: 'landscape', id: perpetual.PAGE_AUTO_SCALE_POLICY, path: 'auto-scale-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
             { label: 'Alert Policy', icon: 'notifications_active', id: perpetual.PAGE_ALERT_POLICY, path: 'alert-policy', roles: [perpetual.ADMIN, perpetual.DEVELOPER], visible: true },
         ]
@@ -42,29 +43,6 @@ export const pages = [
 
 export const getHeight = (height) => {
     return window.innerHeight - (height ? height : 85)
-}
-
-export const getTip = (field) => {
-    switch (field) {
-        case fields.region:
-            return 'Select region where you want to deploy.'
-        case fields.organizationName:
-            return 'The name of the organization you are currently managing.'
-        case fields.appName:
-            return 'The name of the application to deploy.'
-        case fields.version:
-            return 'The version of the application to deploy.'
-        case fields.operatorName:
-            return 'Which operator do you want to deploy this applicaton? Please select one.'
-        case fields.cloudletName:
-            return 'Which cloudlet(s) do you want to deploy this application ?'
-        case fields.autoClusterInstance:
-            return 'If you have yet to create a cluster, you can select this to auto create cluster instance.'
-        case fields.clusterName:
-            return 'Name of cluster instance to deploy this application.'
-        default:
-            return null
-    }
 }
 
 /**

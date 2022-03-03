@@ -1,8 +1,8 @@
 import * as formatter from '../../model/format'
 import { endpoint, perpetual } from '../../../helper/constant';
-import { getCloudletKey } from '../../modules/cloudlet'
 import { authSyncRequest } from "../../service";
 import { idFormatter } from '../../../helper/formatter'
+import { cloudletKeys } from '../cloudlet';
 let fields = formatter.fields;
 
 export const keys = () => ([
@@ -11,12 +11,13 @@ export const keys = () => ([
     { field: fields.connectionType, label: 'Connection Type', serverField: 'connection_type', sortable: true, visible: true, clickable: true },
     { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', label: 'Cloudlet', sortable: true, visible: true, filter: true, key: true },
     { field: fields.operatorName, label: 'Organization', serverField: 'key#OS#cloudlet_key#OS#organization', sortable: false, visible: true, clickable: true },
+    { field: fields.partnerOperator, serverField: 'key#OS#cloudlet_key#OS#federated_organization', label: 'Partner Operator', key: true },
     { field: fields.accessRoutes, label: 'Routes', serverField: 'routes', sortable: false, visible: false, clickable: true, dataType: perpetual.TYPE_JSON }
 ])
 
 export const getKey = (data, isCreate) => {
     let Network = {}
-    Network.key = { cloudlet_key: getCloudletKey(data), name: data[fields.networkName] }
+    Network.key = { cloudlet_key: cloudletKeys(data), name: data[fields.networkName] }
     if (isCreate) {
         Network.connection_type = idFormatter.connectionType(data[fields.connectionType])
         if (data[fields.accessRoutes]) {

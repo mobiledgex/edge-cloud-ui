@@ -1,16 +1,15 @@
 import React, { Suspense } from 'react';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, SWITCH, ICON_BUTTON, TEXT_AREA, MAIN_HEADER, HEADER, SELECT_RADIO_TREE_GROUP, MULTI_FORM } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, SWITCH, ICON_BUTTON, TEXT_AREA, MAIN_HEADER, HEADER, SELECT_RADIO_TREE_GROUP, MULTI_FORM, INPUT } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import * as constant from '../../../constant';
 import { fields } from '../../../services/model/format';
 import { redux_org } from '../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../services/modules/organization';
-import { cloudletWithInfo, showCloudlets } from '../../../services/modules/cloudlet';
+import { cloudletWithInfo, fetchCloudletField, showCloudlets } from '../../../services/modules/cloudlet';
 import { sendRequests } from '../../../services/model/serverWorker'
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import { getClusterInstList, showClusterInsts } from '../../../services/modules/clusterInst';
@@ -125,7 +124,7 @@ class AppInstReg extends React.Component {
             await Promise.all(cloudletList.map(async (cloudletName) => {
                 let key = `${region}>${operatorName}>${cloudletName}`
                 if (this.flavorOrgList[key] === undefined) {
-                    let flavorList = await fetchCloudletFlavors(this, { region, cloudletName, operatorName })
+                    let flavorList = await fetchCloudletFlavors(this, { region: region, cloudletName, operatorName, partnerOperator: fetchCloudletField(this.cloudletList, { operatorName, cloudletName }, fields.partnerOperator) })
                     if (flavorList && flavorList.length > 0) {
                         this.flavorOrgList[key] = flavorList
                     }
@@ -158,11 +157,26 @@ class AppInstReg extends React.Component {
     }
 
     autoClusterValueChange = (currentForm, forms, isInit) => {
+        let isAuto = Boolean(currentForm.value)
+        let appName = ''
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.clusterName) {
-                form.rules.disabled = currentForm.value ? true : false
-                form.error = currentForm.value ? undefined : form.error
+            if (form.field === fields.appName) {
+                appName = form.value
+            }
+            else if (form.field === fields.clusterName) {
+                form.visible = !isAuto
+                form.error = isAuto ? undefined : form.error
+            }
+            else if (form.field === fields.autoClusterNameGroup) {
+                form.visible = isAuto
+                for (let childForm of form.forms) {
+                    if (childForm.field === fields.autoClusterName) {
+                        childForm.value = undefined
+                        childForm.value = isAuto && appName ? appName.toLowerCase().replace(/[ _]/g, "") : undefined
+                        break;
+                    }
+                }
             }
         }
         if (!isInit) {
@@ -315,8 +329,23 @@ class AppInstReg extends React.Component {
     }
 
     cloudletValueChange = (currentForm, forms, isInit) => {
+        let operator = undefined
+        for(const form of forms)
+        {
+            if (form.field === fields.operatorName) {
+                operator = form.value
+                break;
+            } 
+        }
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
+            if (form.field === fields.dedicatedIp) {
+                let values = Array.isArray(currentForm.value) ? currentForm.value : [currentForm.value]
+                let valid = values && values.some(cloudletName=>{
+                    return fetchCloudletField(this.cloudletList, { operatorName: operator, cloudletName }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
+                })
+                form.visible = valid
+            }
             if (form.field === fields.clusterName) {
                 this.updateUI(form)
             }
@@ -361,18 +390,27 @@ class AppInstReg extends React.Component {
         }
     }
 
+    autoClusterNameForm = () => ([
+        { field: perpetual.AUTOCLUSTER, formType: INPUT, rules: { disabled: true}, width: 7, visible: true, value:perpetual.AUTOCLUSTER },
+        { icon: 'add', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: -8}, width: 2},
+        { field: fields.autoClusterName, formType: INPUT, rules: { required: true }, visible: true, width: 7 },
+    ])
+
     formKeys = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} App Instances`, formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Organization or Company Name that a Developer is part of', update: { key: true } },
-            { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], update: { key: true } },
-            { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }], update: { key: true } },
-            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], update: { key: true } },
-            { field: fields.cloudletName, label: 'Cloudlet', formType: MULTI_SELECT, placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 5, field: fields.operatorName }], update: { key: true } },
+            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true }, tip:'Select region where you want to deploy.' },
+            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'The name of the organization you are currently managing.', update: { key: true } },
+            { field: fields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], update: { key: true }, tip:'The name of the application to deploy.' },
+            { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }], update: { key: true }, tip:'The version of the application to deploy.' },
+            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], update: { key: true }, tip:'Which operator do you want to deploy this applicaton? Please select one.' },
+            { field: fields.partnerOperator, label: 'Partner Operator', formType: INPUT, visible: false, update: { key: true }},
+            { field: fields.cloudletName, label: 'Cloudlet', formType: MULTI_SELECT, placeholder: 'Select Cloudlets', rules: { required: true }, visible: true, dependentData: [{ index: 5, field: fields.operatorName }], update: { key: true }, tip:'Which cloudlet(s) do you want to deploy this application ?' },
             { field: fields.flavorName, label: 'Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE_GROUP, placeholder: 'Select Flavor', rules: { required: false, copy: true }, visible: true, tip: 'FlavorKey uniquely identifies a Flavor' },
-            { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: SWITCH, visible: false, value: false, update: { edit: true } },
-            { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }, { index: 5, field: fields.operatorName }, { index: 6, field: fields.cloudletName }], update: { key: true } },
+            { field: fields.dedicatedIp, label: 'Dedicated IP', formType: SWITCH, visible: false, value: false, update: { id: ['39'] }, tip: 'Dedicated IP assigns an IP for this AppInst but requires platform support (platform type -  k8s Bare Metal)' },
+            { field: fields.autoClusterInstance, label: 'Auto Cluster Instance', formType: SWITCH, visible: false, value: false, update: { edit: true }, tip:'If you have yet to create a cluster, you can select this to auto create cluster instance.' },
+            { uuid: uniqueId(), field: fields.autoClusterNameGroup, label: 'Auto Cluster Name', formType: INPUT, rules: { required: true }, visible: false, forms: this.autoClusterNameForm(), tip: 'Auto cluster name, the default value is string `autocluster` appended with app name, must not have spaces or underscore' },
+            { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Clusters', rules: { required: true }, visible: false, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }, { index: 5, field: fields.operatorName }, { index: 7, field: fields.cloudletName }], update: { key: true }, tip: 'Name of cluster instance to deploy this application.' },
             { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, icon: 'add', visible: true, onClick: this.addConfigs, style: { color: 'white' } }], visible: false, update: { id: ['27', '27.1', '27.2'] } },
         ]
     }
@@ -446,13 +484,19 @@ class AppInstReg extends React.Component {
         if (data) {
             let forms = this.state.forms;
             let configs = []
-            for (let i = 0; i < forms.length; i++) {
-                let form = forms[i];
+            let autoClusterName = perpetual.AUTOCLUSTER
+            for (const form of forms) {
                 if (form.uuid) {
                     let uuid = form.uuid;
                     let multiFormData = data[uuid]
                     if (multiFormData) {
-                        configs.push(multiFormData)
+                        if(form.field === fields.autoClusterNameGroup && multiFormData[fields.autoClusterName])
+                        {
+                            autoClusterName = autoClusterName + multiFormData[fields.autoClusterName]
+                        }
+                        else if (form.field === fields.configmulti) {
+                            configs.push(multiFormData)
+                        }
                     }
                     data[uuid] = undefined
                 }
@@ -464,7 +508,7 @@ class AppInstReg extends React.Component {
             let cloudlets = data[fields.cloudletName];
             let flavors = data[fields.flavorName];
             if (data[fields.clusterName] || data[fields.autoClusterInstance]) {
-                data[fields.clusterName] = data[fields.autoClusterInstance] ? 'autocluster' + data[fields.appName].toLowerCase().replace(/ /g, "") : data[fields.clusterName]
+                data[fields.clusterName] = data[fields.autoClusterInstance] ? autoClusterName : data[fields.clusterName]
             }
             if (this.props.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
@@ -479,7 +523,10 @@ class AppInstReg extends React.Component {
                     for (let i = 0; i < cloudlets.length; i++) {
                         let newData = cloneDeep(data)
                         let cloudlet = cloudlets[i];
+                        const fetchedFields = fetchCloudletField(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet }, [fields.platformType, fields.partnerOperator])
+                        newData[fields.dedicatedIp] =  fetchedFields[0] === perpetual.PLATFORM_TYPE_K8S_BARE_METAL ? data[fields.dedicatedIp] : undefined
                         newData[fields.cloudletName] = cloudlet;
+                        newData[fields.partnerOperator] = fetchedFields[1] 
                         newData[fields.compatibilityVersion] = this.fetchCompabilityVersion(data, cloudlet)
                         if (flavors) {
                             newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
@@ -670,7 +717,6 @@ class AppInstReg extends React.Component {
 
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            form.tip = constant.getTip(form.field)
             this.updateUI(form, data)
             if (data) {
                 if (!this.isUpdate && form.field === fields.flavorName) {

@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA, ICON_BUTTON, formattedData, MAIN_HEADER, HEADER, MULTI_FORM, TIP } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA, ICON_BUTTON, formattedData, MAIN_HEADER, HEADER, MULTI_FORM, TIP, SWITCH } from '../../../hoc/forms/MexForms';
 import ListMexMap from '../../../hoc/datagrid/map/ListMexMap';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/MexMessageMultiStream'
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
@@ -15,7 +15,6 @@ import { showOrganizations } from '../../../services/modules/organization';
 import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota, cloudletProps } from '../../../services/modules/cloudlet';
 import { showTrustPolicies } from '../../../services/modules/trustPolicy';
 import { HELP_CLOUDLET_REG } from "../../../tutorial";
-
 import { Grid } from '@material-ui/core';
 import { endpoint, perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
@@ -56,7 +55,7 @@ class CloudletReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
-        this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT, perpetual.INFRA_API_ACCESS_RESTRICTED]
+        this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT]
         //To avoid refeching data from server
         this.requestedRegionList = [];
         this.operatorList = [];
@@ -171,8 +170,26 @@ class CloudletReg extends React.Component {
         }
         let nforms = forms.filter(form => {
             let valid = true
+            if (form.field === fields.deployment && !isInit) {
+                this.updateUI(form)
+            }
+            if (form.field === fields.platformHighAvailability && !isInit) {
+                form.visible = false
+                form.value = false
+            }
             if (form.field === fields.envVar || form.field === fields.resourceQuota) {
                 valid = false
+            }
+            if (form.field === fields.infraApiAccess) {
+                let curr_form = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
+                this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT]
+                if(curr_form)
+                {
+                    this.infraApiAccessList.push(perpetual.INFRA_API_ACCESS_RESTRICTED)   
+                }
+                form.value = curr_form ? undefined : perpetual.INFRA_API_ACCESS_DIRECT
+                form.rules.disabled = !curr_form
+                this.updateUI(form)
             }
             else if (form.field === fields.openRCData || form.field === fields.caCertdata) {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
@@ -273,8 +290,7 @@ class CloudletReg extends React.Component {
     }
 
     operatorValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
+        for (let form of forms) {
             if (form.field === fields.trustPolicyName) {
                 this.updateUI(form)
                 this.updateState({ forms })
@@ -284,6 +300,22 @@ class CloudletReg extends React.Component {
                 this.updateUI(form)
                 this.updateState({ forms })
             }
+        }
+    }
+
+    deploymentValueChange = (currentForm, forms, isInit) => {
+        let valid;
+        for (let form of forms) {
+            if (form.field === fields.platformType) {
+                valid = [perpetual.PLATFORM_TYPE_VCD, perpetual.PLATFORM_TYPE_OPEN_STACK].includes(form.value)
+            }
+            else if (form.field === fields.platformHighAvailability) {
+                form.visible = (currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES && valid)
+                form.value = false
+            }
+        }
+        if (!isInit) {
+            this.updateState({ forms })
         }
     }
 
@@ -345,6 +377,9 @@ class CloudletReg extends React.Component {
         }
         else if (form.field === fields.latitude || form.field === fields.longitude) {
             this.locationChange(form, forms, isInit)
+        }
+        else if (form.field === fields.deployment) {
+            this.deploymentValueChange(form, forms, isInit)
         }
         else if (form.field === fields.infraApiAccess) {
             this.infraAPIAccessChange(form, forms, isInit)
@@ -650,8 +685,7 @@ class CloudletReg extends React.Component {
                             form.options = [perpetual.MAINTENANCE_STATE_NORMAL_OPERATION, perpetual.MAINTENANCE_STATE_MAINTENANCE_START, perpetual.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER];
                             break;
                         case fields.infraApiAccess:
-                            form.options = this.infraApiAccessList;
-                            form.value = perpetual.INFRA_API_ACCESS_DIRECT;
+                            form.options = this.infraApiAccessList
                             break;
                         case fields.trustPolicyName:
                             form.options = this.trustPolicyList
@@ -664,6 +698,9 @@ class CloudletReg extends React.Component {
                             break;
                         case fields.key:
                             form.options = this.cloudletPropsList
+                            break;
+                        case fields.deployment:
+                            form.options = [perpetual.DEPLOYMENT_TYPE_DOCKER, perpetual.DEPLOYMENT_TYPE_KUBERNETES]
                             break;
                         case fields.allianceOrganization:
                             form.options = this.allianceList
@@ -826,7 +863,7 @@ class CloudletReg extends React.Component {
             { uuid: uniqueId(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS Location', update: { id: ['5', '5.1', '5.2'] } },
             { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, tip: 'Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
             { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, update: { id: ['8'] }, tip: 'Number of dynamic IPs available for dynamic IP support.' },
-            { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', rules: { required: true }, visible: true, tip: 'Physical infrastructure cloudlet name.' },
+            { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', visible: true, tip: 'Physical infrastructure cloudlet name.' },
             { field: fields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', rules: { required: true }, visible: true, tip: 'Supported list of cloudlet types.' },
             { field: fields.vmPool, label: 'VM Pool', formType: INPUT, placeholder: 'Enter Pool Name', rules: { required: false }, visible: false, tip: 'VM Pool' },
             { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...', update: { id: ['23', '23.1', '23.2'] } },
@@ -844,6 +881,9 @@ class CloudletReg extends React.Component {
             { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version', advance: false },
             { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },
             { field: fields.maintenanceState, label: 'Maintenance State', formType: SELECT, placeholder: 'Select Maintenance State', rules: { required: false }, visible: this.isUpdate, update: { id: ['30'] }, tip: 'Maintenance allows for planned downtimes of Cloudlets. These states involve message exchanges between the Controller, the AutoProv service, and the CRM. Certain states are only set by certain actors', advance: false },
+            { field: fields.singleK8sClusterOwner, formType: INPUT, placeholder: 'Enter Single K8s Cluster Owner', label: 'Single K8s Cluster Owner', visible: false, tip: 'single kubernetes cluster cloudlet platforms, cluster is owned by this organization instead of multi-tenant.', update: { id: ['48'] }, advance: false },
+            { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)', advance: false },
+            { field: fields.platformHighAvailability, label: 'Platform High Availability', formType: SWITCH, visible: false, update: { id: ['50'] }, tip: 'Enable platform H/A', advance: false },
             { field: fields.kafkaCluster, label: 'Kafka Cluster', formType: INPUT, placeholder: 'Enter Kafka Cluster Endpoint', rules: { required: false, onBlur: true }, visible: true, update: { id: ['42'] }, tip: 'Operator provided kafka cluster endpoint to push events to', advance: false },
             { field: fields.kafkaUser, label: 'Kafka User', formType: INPUT, placeholder: 'Enter Kafka Username', rules: { required: false, onBlur: true }, visible: true, update: { id: ['43'] }, tip: 'Username for kafka SASL/PLAIN authentification, stored securely in secret storage and never visible externally', advance: false },
             { field: fields.kafkaPassword, label: 'Kafka Password', formType: INPUT, placeholder: 'Enter Kafka Password', rules: { required: false, onBlur: true }, visible: true, update: { id: ['44'] }, tip: 'Password for kafka SASL/PLAIN authentification, stored securely in secret storage and never visible externally', advance: false },

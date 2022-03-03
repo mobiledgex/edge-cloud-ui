@@ -36,7 +36,7 @@ class OrganizationList extends React.Component {
         this.data = {}
         this.worker = new RoleWorker();
         this.keys = keys().map(key => {
-            if (key.field === fields.manage) {
+            if (key.field === fields.manage || key.field === fields.role) {
                 key.visible = !redux_org.isAdmin(this)
             }
             return key
@@ -73,7 +73,7 @@ class OrganizationList extends React.Component {
 
     customToolbar = () =>
     (
-        redux_org.isViewer(this) ? null : <Box display='flex'>
+        <Box display='flex'>
             <Card style={{ margin: 10, width: '50%', maxHeight: 200, overflow: 'auto' }}>
                 <CardHeader
                     avatar={

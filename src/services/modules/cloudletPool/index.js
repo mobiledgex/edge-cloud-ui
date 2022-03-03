@@ -1,5 +1,5 @@
 import { customize } from './custom'
-import { keys, showCloudletPools, createCloudletPool, updateCloudletPool, deleteCloudletPool, multiDataRequest } from './cloudletPool'
+import { keys, showCloudletPools, createCloudletPool, updateCloudletPool, deleteCloudletPool, multiDataRequest, getCloudletPoolKey } from './cloudletPool'
 export {
     customize,
     keys,
@@ -7,6 +7,7 @@ export {
     createCloudletPool,
     updateCloudletPool,
     deleteCloudletPool,
-    multiDataRequest
+    multiDataRequest,
+    getCloudletPoolKey
 }
 

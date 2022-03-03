@@ -8,7 +8,7 @@ import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant'
 import { customize } from '../../modules/cloudlet'
 import { generateUUID } from '../../format/shared'
-import { primaryKeys } from './primary';
+import { cloudletKeys } from './primary';
 
 const fields = formatter.fields;
 
@@ -50,7 +50,9 @@ export const keys = () => ([
     { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', detailView: false },
     { field: fields.gpuExist, label: 'GPU', detailView: false },
     { field: fields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING },
-    { field: fields.singleKubernetesClusterOwner, label: 'Alliance Organization', serverField: 'single_kubernetes_cluster_owner', dataType: perpetual.TYPE_STRING }
+    { field: fields.singleKubernetesClusterOwner, label: 'Alliance Organization', serverField: 'single_kubernetes_cluster_owner', dataType: perpetual.TYPE_STRING },
+    { field: fields.platformHighAvailability, serverField: 'platform_high_availability', label: 'Platform High Availability' },
+    { field: fields.deployment, serverField: 'deployment', label: 'Deployment Type' }
 ])
 
 export const iconKeys = () => ([
@@ -59,13 +61,9 @@ export const iconKeys = () => ([
     { field: fields.partnerOperator, label: 'Federation', icon: 'star_rate_outlined', clicked: false, count: 0 }
 ])
 
-export const getCloudletKey = (data) => {
-    return { organization: data[fields.operatorName], name: data[fields.cloudletName] }
-}
-
 export const getRequestData = (data) => {
     let cloudlet = {}
-    cloudlet.key = getCloudletKey(data)
+    cloudlet.key = cloudletKeys(data)
 
     if (data[fields.allianceOrganization]) {
         cloudlet.organization = data[fields.allianceOrganization]
@@ -78,7 +76,7 @@ export const getRequestData = (data) => {
 
 export const getKey = (data, isCreate) => {
     let cloudlet = {}
-    cloudlet.key = getCloudletKey(data)
+    cloudlet.key = cloudletKeys(data)
     if (isCreate) {
         if (data[fields.cloudletLocation]) {
             cloudlet.location = data[fields.cloudletLocation]
@@ -138,6 +136,7 @@ export const getKey = (data, isCreate) => {
         if (data[fields.kafkaPassword]) {
             cloudlet.kafka_password = data[fields.kafkaPassword]
         }
+        cloudlet.platform_high_availability = data[fields.platformHighAvailability]
         if (data[fields.gpuConfig]) {
             cloudlet.gpu_config = {
                 driver: {
@@ -168,12 +167,31 @@ export const getKey = (data, isCreate) => {
         if (data[fields.singleKubernetesClusterOwner]) {
             cloudlet.single_kubernetes_cluster_owner = data[fields.singleKubernetesClusterOwner]
         }
+        if (data[fields.deployment]) {
+            cloudlet.deployment = data[fields.deployment]
+        }
 
     }
     return ({
         region: data[fields.region],
         cloudlet: cloudlet
     })
+}
+
+export const fetchCloudletField = (cloudletList, data, field) => {
+    const { cloudletName, operatorName } = data
+    if (cloudletName && operatorName) {
+        let selection = undefined
+        for (const cloudlet of cloudletList) {
+            if (cloudlet[fields.cloudletName] === cloudletName && cloudlet[fields.operatorName] === operatorName) {
+                selection = cloudlet
+                break;
+            }
+        }
+        if (selection) {
+            return Array.isArray(field) ? field.map(item => selection[item]) : selection[field]
+        }
+    }
 }
 
 export const cloudletWithInfo = (mcList, pageId) => {
@@ -326,7 +344,7 @@ export const deleteCloudlet = (self, data) => {
 
 export const getCloudletManifest = async (self, data, showSpinner) => {
     let requestData = {}
-    requestData.cloudletkey = getCloudletKey(data)
+    requestData.cloudletkey = cloudletKeys(data)
     requestData.region = data[fields.region]
     let mc = await authSyncRequest(self, { method: endpoint.GET_CLOUDLET_MANIFEST, data: requestData, showSpinner: showSpinner })
     return mc
@@ -334,14 +352,14 @@ export const getCloudletManifest = async (self, data, showSpinner) => {
 
 export const revokeAccessKey = async (self, data, showSpinner) => {
     let requestData = {}
-    requestData.cloudletkey = getCloudletKey(data)
+    requestData.cloudletkey = cloudletKeys(data)
     requestData.region = data[fields.region]
     let mc = await authSyncRequest(self, { method: endpoint.REVOKE_ACCESS_KEY, data: requestData, showSpinner: showSpinner })
     return mc
 }
 
 export const streamCloudlet = (data) => {
-    let requestData = { region: data[fields.region], cloudletkey: getCloudletKey(data) }
+    let requestData = { region: data[fields.region], cloudletkey: cloudletKeys(data) }
     return { uuid: data.uuid, method: endpoint.STREAM_CLOUDLET, data: requestData }
 }
 
@@ -373,7 +391,7 @@ export const fetchShowNode = async (self, data) => {
     let requestData = {
         node: {
             key: {
-                cloudlet_key: primaryKeys(data),
+                cloudlet_key: cloudletKeys(data),
                 region: data[fields.region]
             }
         }

@@ -79,22 +79,21 @@ class UsageLog extends React.Component {
     eventLogData = async (starttime, endtime) => {
         this.newRequest = true
         let regions = this.props.regions
-        let org = redux_org.nonAdminOrg(this) ? redux_org.nonAdminOrg(this) : this.selectedOrg
-        if (org) {
+        let orgInfo = redux_org.nonAdminOrg(this) ? this.props.organizationInfo : this.selectedOrg
+        let isOperator = redux_org.isOperator(orgInfo)
+        if (orgInfo) {
             if (regions && regions.length > 0) {
                 regions.map(region => {
                     let data = {}
                     data[fields.region] = region
                     data[fields.starttime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
                     data[fields.endtime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
-                    data[fields.organizationName] = org
-                    if (redux_org.isAdmin(this) || redux_org.isOperator(this)) {
+                    data[fields.organizationName] = orgInfo[fields.organizationName]
+                    if (isOperator) {
                         authRequest(this, { ...cloudletEventLogs(this, data), showMessage: false }, this.serverResponse, false)
                     }
-                    if (redux_org.isAdmin(this) || redux_org.isDeveloper(this) || redux_private.isRegionValid(this, region)) {
-                        authRequest(this, { ...clusterEventLogs(this, data), showMessage: false }, this.serverResponse, false)
-                        authRequest(this, { ...appInstEventLogs(this, data), showMessage: false }, this.serverResponse, false)
-                    }
+                    authRequest(this, { ...clusterEventLogs(this, data, isOperator), showMessage: false }, this.serverResponse, false)
+                    authRequest(this, { ...appInstEventLogs(this, data, isOperator), showMessage: false }, this.serverResponse, false)
                 })
                 if (this._isMounted) { this.setState({ loading: true }) }
             }
@@ -111,7 +110,7 @@ class UsageLog extends React.Component {
         const { liveData, loading, toggle } = this.state
         return (
             <Suspense fallback={<div>loading</div>}>
-                <RightDrawer close={this.handleClose} fetchData={this.onFetchData} endtime={this.endtime} toggle={toggle} liveData={liveData} loading={loading} organizationList={this.organizationList} onOrgChange={this.onOrganizationChange} selectedOrg={this.selectedOrg} />
+                <RightDrawer close={this.handleClose} fetchData={this.onFetchData} endtime={this.endtime} toggle={toggle} liveData={liveData} loading={loading} organizationList={this.organizationList} onOrgChange={this.onOrganizationChange}/>
             </Suspense>
         )
     }
@@ -133,7 +132,7 @@ class UsageLog extends React.Component {
                 this.setState({ liveData: {} })
             }
             defaultRange(this)
-            this.selectedOrg = org[fields.organizationName]
+            this.selectedOrg = org
             this.eventLogData(this.starttime, this.endtime)
         }
     }

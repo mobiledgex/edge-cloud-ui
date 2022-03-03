@@ -35,11 +35,27 @@ const useStyles = makeStyles({
         fontSize: 15,
         padding: '0'
     },
+    divLink1: {
+        display:'inline',
+        float:'left'
+    },
+    divLink2: {
+        display:'inline',
+        float:'center'
+    },
+    divLink3: {
+        display:'inline',
+        float:'right'
+    },
     aLink: {
         fontStyle: 'italic',
         textDecoration: 'underline',
         color: "rgba(255,255,255,.5)",
-        cursor: 'pointer'
+        cursor: 'pointer',
+        '&:hover':{
+            color:'#93E019',
+            textDecoration: 'underline',
+        }
     }
 });
 
@@ -102,7 +118,17 @@ const Login = (props) => {
                 <Button onClick={() => onSubmit()}>Log In</Button>
                 <br /><br />
                 <span>
-                    <div className={classes.linkContainer}><Link className={classes.aLink} to="/terms-of-use" target="_blank">Terms of Use</Link> &amp; <Link className={classes.aLink} to="/acceptable-use-policy" target="_blank" >Acceptable Use Policy</Link>.</div>
+                    <div className={classes.linkContainer}>
+                        <div className={classes.divLink1}>
+                            <Link className={classes.aLink} to="/terms-of-use" target="_blank">Terms of Use</Link>
+                        </div>
+                        <div className={classes.divLink2}>
+                            <Link className={classes.aLink} to="/acceptable-use-policy" target="_blank" >Acceptable Use Policy</Link>
+                        </div>
+                        <div className={classes.divLink3}>
+                            <a className={classes.aLink} href="https://status.mobiledgex.com" target="_blank">Status</a>
+                        </div>
+                    </div>
                 </span>
             </div>
         </React.Fragment>

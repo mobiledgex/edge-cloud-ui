@@ -7,7 +7,8 @@ import { endpoint, perpetual } from '../../../helper/constant'
 import { customize } from '.'
 import { generateUUID } from '../../format/shared'
 import { REQUEST_APP_INST_LATENCY } from '../../../helper/constant/endpoint';
-import { AIK_APP_CLOUDLET_CLUSTER, primaryKeys } from './primary';
+import { AIK_APP_CLOUDLET_CLUSTER,  appInstKeys } from './primary';
+import {  cloudletKeys } from '../cloudlet';
 import { serverFields } from '../../../helper/formatter';
 
 let fields = formatter.fields;
@@ -20,6 +21,7 @@ export const keys = () => ([
   { field: fields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: false, key: true },
   { field: fields.cloudlet_name_operator, label: 'Cloudlet [Operator]', sortable: true, visible: true, detailView: false },
   { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: false, filter: true, group: true, key: true },
+  { field: fields.partnerOperator, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#federated_organization', label: 'Partner Operator', visible: false, key: true },
   { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: false, filter: true, group: true, key: true },
   { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: perpetual.TYPE_JSON },
   { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false, key: true },
@@ -43,6 +45,7 @@ export const keys = () => ([
   { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: perpetual.TYPE_JSON },
   { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true, format: true },
   { field: fields.autoPolicyName, label: 'Auto Prov Policy', visible: false },
+  { field: fields.dedicatedIp, label: 'Dedicated IP', serverFields: 'dedicated_ip', visible: false, format: true },
   { field: fields.trusted, label: 'Trusted', visible: false, sortable: true, format: true }
 ])
 
@@ -59,7 +62,7 @@ export const getAppInstanceKey = (data) => {
   return {
     app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
     cluster_inst_key: {
-      cloudlet_key: { name: data[fields.cloudletName], organization: data[fields.operatorName] },
+      cloudlet_key: cloudletKeys(data),
       cluster_key: { name: data[fields.clusterName] ? data[fields.clusterName] : 'DefaultVMCluster' },
       organization: getClusterOrg(data)
     }
@@ -86,6 +89,9 @@ export const getKey = (data, isCreate) => {
 
     if (data[fields.fields]) {
       appinst.fields = data[fields.fields]
+    }
+    if (data[fields.dedicatedIp]) {
+      appinst.dedicated_ip = data[fields.dedicatedIp]
     }
 
   }
@@ -241,7 +247,7 @@ export const refreshAppInst = (data) => {
 export const requestAppInstLatency = async (self, data) => {
   let requestData = {
     region: data[fields.region],
-    appInstLatency: { key: primaryKeys(data, AIK_APP_CLOUDLET_CLUSTER) }
+    appInstLatency: { key: appInstKeys(data, AIK_APP_CLOUDLET_CLUSTER) }
   }
   return await authSyncRequest(self, { method: REQUEST_APP_INST_LATENCY, data: requestData })
 }
