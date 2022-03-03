@@ -71,6 +71,7 @@ class CloudletReg extends React.Component {
         this.gpuDriverList = [];
         this.kafkaRequired = true;
         this.allianceList = []
+        this.developerOrgList = []
     }
 
     updateState = (data) => {
@@ -182,6 +183,7 @@ class CloudletReg extends React.Component {
             }
             else if (form.field === fields.singleKubernetesClusterOwner) {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
+                currentForm.value === perpetual.PLATFORM_TYPE_K8S_BARE_METAL && this.getDevelopOrg(form, forms, isInit) 
             }
             return valid
         })
@@ -192,6 +194,17 @@ class CloudletReg extends React.Component {
             else {
                 this.updateState({ forms: nforms })
             }
+        }
+    }
+
+    getDevelopOrg = async (form, forms, isInit) => {
+        if (this.developerOrgList.length === 0) {
+            let developerList = await showAuthSyncRequest(self, showOrganizations(self, { type: perpetual.DEVELOPER }))
+            this.developerOrgList = _sort(developerList.map(org => (org[fields.organizationName])))
+        }
+        this.updateUI(form)
+        if (!isInit) {
+            this.updateState({ forms })
         }
     }
 
@@ -621,6 +634,9 @@ class CloudletReg extends React.Component {
                         case fields.operatorName:
                             form.options = this.operatorList
                             break;
+                        case fields.singleKubernetesClusterOwner:
+                            form.options = this.developerOrgList
+                            break;
                         case fields.region:
                             form.options = this.props.regions;
                             break;
@@ -819,7 +835,7 @@ class CloudletReg extends React.Component {
             { field: fields.infraFlavorName, label: 'Infra Flavor Name', formType: 'Input', placeholder: 'Enter Infra Flavor Name', rules: { required: false }, visible: true, tip: 'Infra specific flavor name' },
             { field: fields.infraExternalNetworkName, label: 'Infra External Network Name', formType: 'Input', placeholder: 'Enter Infra External Network Name', rules: { required: false }, visible: true, tip: 'Infra specific external network name' },
             { field: fields.allianceOrganization, label: 'Alliance Organization', formType: MULTI_SELECT, placeholder: 'Select Alliance Operator', visible: true, tip: 'Alliance Organization of the cloudlet site', update: { id: ['47'] } },
-            { field: fields.singleKubernetesClusterOwner, formType: INPUT, placeholder: 'Enter Single Kubernetes Cluster Owner', label: 'Single K8S Owner', visible: false, tip: 'single kubernetes cluster cloudlet platforms, cluster is owned by this organization instead of multi-tenant.', update: { id: ['48'] } },
+            { field: fields.singleKubernetesClusterOwner, formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Single Kubernetes Cluster Owner', label: 'Single K8S Owner', visible: true, tip: 'single kubernetes cluster cloudlet platforms, cluster is owned by this organization instead of multi-tenant.' },
             { field: fields.envVars, label: 'Environment Variable', formType: HEADER, forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getEnvForm }], visible: true, tip: 'Single Key-Value pair of env var to be passed to CRM' },
             { field: fields.resourceQuotas, label: 'Resource Quota', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Resource Quota', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getResoureQuotaForm }], visible: true, update: { id: ['39', '39.1', '39.2', '39.3'] }, tip: 'Alert Threshold:</b> Generate alert when more than threshold percentage of resource is used\nName:</b> Resource name on which to set quota\nValue:</b> Quota value of the resource' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
