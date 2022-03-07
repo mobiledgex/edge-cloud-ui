@@ -146,10 +146,7 @@ class CloudletList extends React.Component {
         else if (key.field === fields.state) {
             return this.showProgress(data, isDetail)
         }
-        else if (key.field === fields.trusted) {
-            return uiFormatter.renderYesNo(key, data[key.field], isDetail)
-        }
-        else if (key.field === fields.gpuExist) {
+        else if (key.field === fields.trusted || key.field === fields.gpuExist || key.field === fields.platformHighAvailability) {
             return uiFormatter.renderYesNo(key, data[key.field], isDetail)
         }
     }
