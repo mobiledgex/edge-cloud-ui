@@ -20,7 +20,7 @@ class AuditLog extends React.Component {
 
     fetchLogs = async () => {
         this.setState({ loading: true })
-        let mc = await showAudits(this, { starttime: this.starttime, endtime: this.endtime, type: 'audit', limit:1000 })
+        let mc = await showAudits(this, { starttime: this.starttime, endtime: this.endtime, type: 'audit', limit: 1000, notmatch: { names: ['/api/v1/auth/ctrl/Show*', '/api/v1/login', '/api/v1/auth/user/current', '/api/v1/auth/wstoken', '/api/v1/auth/federator/self/show', '/api/v1/auth/federation/show', '/api/v1/auth/report/show', '/api/v1/auth/report/show', '/api/v1/auth/ctrl/AccessCloudlet', '/api/v1/auth/ctrl/RunCommand', '/api/v1/publicconfig', '/api/v1/auth/user/delete', '/api/v1/auth/ctrl/FindFlavorMatch', '/api/v1/auth/ctrl/UpdateSettings', '/api/v1/auth/restricted/user/update','/api/v1/auth/ctrl/DeleteFlowRateLimitSettings','/api/v1/auth/ctrl/CreateFlowRateLimitSettings'] } })
         if (responseValid(mc)) {
             let logs = {}
             let dataList = mc.response.data
