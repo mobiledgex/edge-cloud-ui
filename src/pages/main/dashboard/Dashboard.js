@@ -9,27 +9,29 @@ import { multiAuthSyncRequest } from '../../../services/service'
 import DashbordWorker from './services/dashboard.worker.js'
 import AuditLog from './auditLog/AuditLog'
 import Control from './control/Control'
-import Total from './total/Total'
 import { processWorker } from '../../../services/worker/interceptor'
-import { fields } from '../../../services'
+import { sequence } from './sequence'
 
 class Dashboard extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             chartData: undefined,
+            rawList: undefined,
             total: undefined
         }
         this.worker = new DashbordWorker()
     }
 
+
+
     render() {
-        const { chartData, total } = this.state
+        const { chartData, total, rawList } = this.state
         return (
             <div style={{ height: 'calc(100vh - 55px)', overflowY: 'auto', overflowX: 'hidden', padding: 7 }}>
                 <Grid container columns={{ xs: 4, sm: 8, md: 12 }} spacing={1}>
                     <Grid item xs={12}>
-                        <Control chartData={chartData} total={total}>
+                        <Control chartData={chartData} total={total} rawList={rawList} worker={this.worker}>
                             <AuditLog />
                         </Control>
                     </Grid>
@@ -39,23 +41,27 @@ class Dashboard extends React.Component {
         )
     }
 
-    fetchData = async () => {
+    fetchData = () => {
         let requestList = [];
-        [showCloudlets, showCloudletInfoData, showClusterInsts, showAppInsts].forEach(requestType => {
-            let request = requestType(this, Object.assign({}, { region: 'US' }))
-            requestList.push(request)
-        })
-        // requestList.push(showOrganizations(this, { type: perpetual.OPERATOR }, true))
-        if (requestList.length > 0) {
-            let mcList = await multiAuthSyncRequest(this, requestList, false)
-            let response = await processWorker(this.worker, {
-                region: 'US',
-                rawList: mcList
+        ['EU'].forEach(async (region) => {
+            [showCloudlets, showCloudletInfoData, showClusterInsts, showAppInsts].forEach(requestType => {
+                let request = requestType(this, Object.assign({}, { region }))
+                requestList.push(request)
             })
-            if (response.status === 200) {
-                this.setState({ chartData: response.data, total: response.total })
+            if (requestList.length > 0) {
+                let mcList = await multiAuthSyncRequest(this, requestList, false)
+                let response = await processWorker(this.worker, {
+                    region,
+                    rawList: mcList,
+                    initFormat: true,
+                    sequence
+                })
+                if (response.status === 200) {
+                    const { data: chartData, total, dataList: rawList } = response
+                    this.setState({ chartData, total: total, rawList })
+                }
             }
-        }
+        })
     }
 
     componentDidMount() {

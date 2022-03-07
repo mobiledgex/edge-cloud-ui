@@ -3,7 +3,7 @@
 import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLOUDLET_INFO, SHOW_CLUSTER_INST } from "../../../../helper/constant/endpoint"
 import { toJson } from "../../../../utils/json_util"
 import { map } from "../../../../services/format/shared";
-import { sequence, dataForms } from "../sequence";
+import { dataForms } from "../sequence";
 import { fields } from "../../../../services";
 
 const formatSequence = (order, index, inp, output) => {
@@ -25,21 +25,20 @@ const formatSequence = (order, index, inp, output) => {
             }
         }
         if (exist === false) {
-            newout = { ...data, field:currentOrder.field, header: currentOrder.label, childrenLabel: order[nextIndex] && order[nextIndex].label }
+            newout = { ...data, field: currentOrder.field, header: currentOrder.label, childrenLabel: order[nextIndex] && order[nextIndex].label }
             if (currentOrder.alerts) {
                 let alerts = currentOrder.alerts
                 alerts && alerts.forEach(item => {
                     let field = item.field
                     let type, color
-                    item.states.map(state=>{
+                    item.states.map(state => {
                         let values = state.values
-                        if(values.includes(data[field]))
-                        {
+                        if (values.includes(data[field])) {
                             type = state.type ? state.type : 'success'
                             color = state.color
                         }
                     })
-                    
+
                     type = type ? type : 'error'
                     color = color ? color : '#D32F2F'
 
@@ -127,76 +126,81 @@ const calculateTotal = (order, total, data) => {
 }
 
 const format = (worker) => {
-    let start = new Date().getTime()
-    const { region, rawList } = worker
-    let rawListObject = {}
-    rawList.map(item => {
-        const { request, response } = item
-        let dataArray = toJson(response.data);
-        rawListObject[request.method] = { dataList: dataArray, keys: request.keys }
-    })
-
-    let dataList = []
+    console.time()
+    const { region, rawList, initFormat, sequence } = worker
+    let dataList = initFormat ? [] : rawList
     let total = {}
-    dataForms.forEach((form, index) => {
-        let keys = rawListObject[form.method].keys
-        let rawDataList = rawListObject[form.method].dataList
-        let tempFields = form.fields
-        for (const item of rawDataList) {
-            let data = map({}, item.data, keys)
-            if (form.skip && skipData(form, data)) {
-                continue;
-            }
-            let exist = false
-            calculateTotal(form, total, data)
-            if (index > 0) {
-                if (form.method === SHOW_CLUSTER_INST) {
-                    dataList.forEach(final => {
-                        if (final[fields.clusterName].name === data[fields.clusterName] && final[fields.clusterdeveloper].name === data[fields.organizationName]) {
-                            final[fields.clusterName].state = data[fields.state]
-                            final[fields.clusterName].data = data
-                            exist = true
-                        }
-                    })
+    if (initFormat) {
+        let rawListObject = {}
+        rawList.map(item => {
+            const { request, response } = item
+            let dataArray = toJson(response.data);
+            rawListObject[request.method] = { dataList: dataArray, keys: request.keys }
+        })
+
+        dataForms.forEach((form, index) => {
+            let keys = rawListObject[form.method].keys
+            let rawDataList = rawListObject[form.method].dataList
+            let tempFields = form.fields
+            for (const item of rawDataList) {
+                let data = map({}, item.data, keys)
+                if (form.skip && skipData(form, data)) {
+                    continue;
                 }
-                else if (form.method === SHOW_CLOUDLET) {
-                    dataList.forEach(final => {
-                        if (final[fields.cloudletName].name === data[fields.cloudletName] && final[fields.operatorName].name === data[fields.operatorName]) {
-                            final[fields.cloudletName].state = data[fields.state]
-                            final[fields.cloudletName].data = data
-                            exist = true
-                        }
-                    })
-                }
-            }
-            if (!exist) {
-                let final = {}
-                final[fields.region] = { name: region }
-                final[form.field] = {}
-                final[form.field].name = data[form.field]
-                final[form.field].data = data
-                tempFields.forEach(field => {
-                    if (Array.isArray(field)) {
-                        field.forEach(item => {
-                            final[form.field][item] = data[item]
+                let exist = false
+                calculateTotal(form, total, data)
+                if (index > 0) {
+                    if (form.method === SHOW_CLUSTER_INST) {
+                        dataList.forEach(final => {
+                            if (final[fields.clusterName].name === data[fields.clusterName] && final[fields.clusterdeveloper].name === data[fields.organizationName]) {
+                                final[fields.clusterName].state = data[fields.state]
+                                final[fields.clusterName].data = data
+                                exist = true
+                            }
                         })
                     }
-                    else {
-                        final[field] = { name: data[field] }
+                    else if (form.method === SHOW_CLOUDLET) {
+                        dataList.forEach(final => {
+                            if (final[fields.cloudletName].name === data[fields.cloudletName] && final[fields.operatorName].name === data[fields.operatorName]) {
+                                final[fields.cloudletName].state = data[fields.state]
+                                final[fields.cloudletName].data = data
+                                exist = true
+                            }
+                        })
                     }
-                })
-                if (form.method === SHOW_APP_INST) {
-                    final[fields.appDeveloper] = final[fields.organizationName]
                 }
-                else if (form.method === SHOW_CLUSTER_INST) {
-                    final[fields.clusterdeveloper] = final[fields.organizationName]
+                if (!exist) {
+                    let final = {}
+                    final[fields.region] = { name: region }
+                    final[form.field] = {}
+                    final[form.field].name = data[form.field]
+                    final[form.field].data = data
+                    tempFields.forEach(field => {
+                        if (Array.isArray(field)) {
+                            field.forEach(item => {
+                                final[form.field][item] = data[item]
+                            })
+                        }
+                        else {
+                            final[field] = { name: data[field] }
+                        }
+                    })
+                    if (form.method === SHOW_APP_INST) {
+                        final[fields.appDeveloper] = final[fields.organizationName]
+                    }
+                    else if (form.method === SHOW_CLUSTER_INST) {
+                        final[fields.clusterdeveloper] = final[fields.organizationName]
+                    }
+                    dataList.push(final)
                 }
-                dataList.push(final)
             }
-        }
-    })
+        })
+
+    }
     let sunburstData = formatData(sequence, dataList)
-    self.postMessage({ status: 200, data: sunburstData, total })
+    console.timeLog()
+    console.timeEnd()
+    self.postMessage({ status: 200, data: sunburstData, total, dataList })
 }
 
 self.addEventListener("message", (event) => {

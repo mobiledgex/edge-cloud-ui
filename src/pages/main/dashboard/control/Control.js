@@ -19,12 +19,13 @@ import { clusterInstKeys } from '../../../../services/modules/clusterInst';
 import { clusterInstMetricsElements, clusterMetrics } from '../../../../services/modules/clusterInstMetrics';
 import { AIK_APP_CLOUDLET_CLUSTER } from '../../../../services/modules/appInst/primary';
 import { CIK_CLOUDLET_CLUSTER } from '../../../../services/modules/clusterInst/primary';
+import { processWorker } from '../../../../services/worker/interceptor';
 
 class Control extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            dataset: formatData(sequence),
+            dataset: undefined,
             toggle: false,
             showMore: undefined,
             resources: undefined
@@ -84,8 +85,16 @@ class Control extends React.Component {
         }
     }
 
-    onSequenceChange = (sequence) => {
-        this.setState({ dataset: formatData(sequence), toggle: !this.state.toggle })
+    onSequenceChange = async (sequence) => {
+        let response = await processWorker(this.props.worker, {
+            region: 'US',
+            rawList: this.props.rawList,
+            sequence
+        })
+        if (response.status === 200) {
+            this.setState({ dataset: response.data, toggle: !this.state.toggle })
+        }
+
     }
 
     renderMarker = () => {
@@ -93,14 +102,14 @@ class Control extends React.Component {
     }
 
     render() {
-        const { toggle, showMore, resources } = this.state
+        const { toggle, showMore, dataset, resources } = this.state
         const { chartData, total, children } = this.props
         return (
             chartData ?
                 <Grid container spacing={1}>
                     <Grid xs={7} item>
                         <div className='mex-card' align='center'>
-                            <Sunburst sequence={sequence} dataset={chartData} toggle={toggle} onMore={this.onMore} />
+                            <Sunburst sequence={sequence} dataset={dataset ? dataset : chartData} toggle={toggle} onMore={this.onMore} />
                         </div>
                     </Grid>
                     <Grid xs={5} item>
@@ -161,7 +170,7 @@ class Control extends React.Component {
                                 </div>
                             </Grid>
                             <Grid item xs={12}>
-                            {children}
+                                {children}
                             </Grid>
                         </Grid>
                     </Grid>
