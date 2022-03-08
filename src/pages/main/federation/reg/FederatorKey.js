@@ -20,7 +20,7 @@ export const FederationKey = (props) => {
         keys.forEach(key=>{
             text = text + `${key.label}:${data[key.field]}\n`
         })
-        copyData(text, true)
+        copyData(text)
     }
 
     return (
