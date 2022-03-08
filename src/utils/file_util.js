@@ -30,14 +30,9 @@ export const uploadData = (e, callback, callbackData) => {
     input.click();
 }
 
-export const copyData = (data, newline = false) => {
+export const copyData = (data) => {
     var textField = document.createElement('textarea')
-    if (newline) {
-        textField.innerHTML = data
-    }
-    else {
-        textField.innerText = data
-    }
+    textField.textContent = data
     document.body.appendChild(textField)
     textField.select()
     textField.focus()
