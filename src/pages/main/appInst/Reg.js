@@ -339,10 +339,6 @@ class AppInstReg extends React.Component {
         }
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            let operator = undefined;
-            if (form.field === fields.operatorName) {
-                operator = form.value
-            }
             if (form.field === fields.dedicatedIp) {
                 let values = Array.isArray(currentForm.value) ? currentForm.value : [currentForm.value]
                 let valid = values && values.some(cloudletName=>{
