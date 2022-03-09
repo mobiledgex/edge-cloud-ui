@@ -6,7 +6,7 @@ import MexOTPValidation from './MexOTPValidation';
 import LoginForm from './LoginForm'
 import { withRouter } from 'react-router-dom';
 import { perpetual } from '../../../helper/constant';
-import { tokenRequired } from '../../../helper/constant/shared';
+import { isLocal } from '../../../utils/location_utils';
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -23,7 +23,7 @@ class Login extends Component {
 
     loadMainPage = (data) => {
         if (data && data.token) {
-            if (tokenRequired()) {
+            if (isLocal()) {
                 localStorage.setItem(perpetual.LS_THASH, data.token)
             }
             else

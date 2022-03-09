@@ -17,12 +17,11 @@ import ReCAPTCHA from "react-google-recaptcha";
 import MexOTPRegistration from '../otp/MexOTPRegistration';
 import { Link, useHistory } from 'react-router-dom';
 import { endpoint } from "../../../helper/constant";
-import { authSyncRequest, responseValid, syncRequest } from "../../../services/service";
-
-
+import { responseValid, syncRequest } from "../../../services/service";
+import { hostURL } from "../../../utils/location_utils";
+import { validateEmail as _validateEmail } from "../../../utils/validation_utils";
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
-const HOST = window.location.host;
 
 const validateLetterCase = (value) => {
     return /[a-z]/.test(value) && /[A-Z]/.test(value)
@@ -99,7 +98,7 @@ class RegistryUserForm extends React.Component {
     }
 
     validateEmail = (form) => {
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value)) {
+        if (!_validateEmail(form.value)) {
             form.error = 'Invalid email address'
             return false;
         }
@@ -178,7 +177,7 @@ class RegistryUserForm extends React.Component {
                 email: data[fields.email],
                 operatingsystem: clientSysInfo.os.name,
                 browser: clientSysInfo.browser.name,
-                callbackurl: `https://${HOST}/#/verify`,
+                callbackurl: `https://${hostURL()}/#/verify`,
                 clientip: clientSysInfo.clientIP,
             },
             EnableTOTP: data[fields.otp],
