@@ -4,7 +4,7 @@ import { formatData } from "./format";
 import { isBoolean } from "../utils/boolean_utils";
 import { WS_TOKEN } from "../helper/constant/endpoint";
 import { LS_THASH } from "../helper/constant/perpetual";
-import { tokenRequired } from "../helper/constant/shared";
+import { isLocal } from "../utils/location_utils";
 
 const formatter = (request, response, format = true, self) => {
     format = isBoolean(request.format) ? request.format : format
@@ -63,7 +63,7 @@ export const fetchWSToken = async (self) => {
  * @returns
  */
 export const fetchToken = (self) => {
-    if (tokenRequired()) {
+    if (isLocal()) {
         let token = localStorage.getItem(LS_THASH)
         if (token) {
             return token
