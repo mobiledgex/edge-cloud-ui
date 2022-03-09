@@ -54,7 +54,7 @@ export const login = async (self, data) => {
 }
 
 export const resetPasswordRequest = async (self, data) => {
-    let mc = await authSyncRequest(self, { method: endpoint.RESET_PASSWORD_REQUEST, data: data })
+    let mc = await syncRequest(self, { method: endpoint.RESET_PASSWORD_REQUEST, data: data })
     return responseValid(mc)
 }
 

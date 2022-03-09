@@ -27,6 +27,7 @@ import { Grid } from '@material-ui/core';
 import { endpoint, perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 import { responseValid } from '../../../services/service';
+import { changeHostName } from '../../../utils/location_utils';
 
 const MexFlow = lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const SERVERCONFIG_HEADER = 'ServerLess Config'
@@ -258,11 +259,8 @@ class AppReg extends Component {
                     form.value = `https://chart.registry.com/charts:${organizationName}/${appName}`
                 }
                 else {
-                    let domain = window.location.host
-                    if (domain && domain.startsWith('https://console') || domain.startsWith('console')) {
-                        domain = domain.replace('console', 'docker')
-                    }
-                    else {
+                    let domain = changeHostName('console', 'docker')
+                    if (!Boolean(domain)) {
                         domain = 'docker.mobiledgex.net'
                     }
                     form.value = `${domain}/${organizationName.toLowerCase()}/images/${appName.toLowerCase()}:${version.toLowerCase()}`
