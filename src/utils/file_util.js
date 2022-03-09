@@ -32,10 +32,15 @@ export const uploadData = (e, callback, callbackData) => {
 
 export const copyData = (data) => {
     var textField = document.createElement('textarea')
-    textField.innerText = data
+    textField.textContent = data
     document.body.appendChild(textField)
     textField.select()
     textField.focus()
     document.execCommand('copy')
     textField.remove()
+}
+
+export const readJsonFile = async (fileName) => {
+    const response = await fetch(`data/${fileName}`)
+    return await response.json()
 }

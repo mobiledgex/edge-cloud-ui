@@ -49,7 +49,9 @@ export const keys = () => ([
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
     { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', detailView: false },
     { field: fields.gpuExist, label: 'GPU', detailView: false },
-    { field: fields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING }
+    { field: fields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING },
+    { field: fields.platformHighAvailability, serverField: 'platform_high_availability', label: 'Platform High Availability', format:true },
+    { field: fields.deployment, serverField: 'deployment', label: 'Deployment Type' }
 ])
 
 export const iconKeys = () => ([
@@ -133,6 +135,7 @@ export const getKey = (data, isCreate) => {
         if (data[fields.kafkaPassword]) {
             cloudlet.kafka_password = data[fields.kafkaPassword]
         }
+        cloudlet.platform_high_availability = data[fields.platformHighAvailability]
         if (data[fields.gpuConfig]) {
             cloudlet.gpu_config = {
                 driver: {
@@ -163,6 +166,9 @@ export const getKey = (data, isCreate) => {
         if (data[fields.singleK8sClusterOwner]) {
             cloudlet.single_kubernetes_cluster_owner = data[fields.singleK8sClusterOwner]
         }
+        if (data[fields.deployment]) {
+            cloudlet.deployment = data[fields.deployment]
+        }
 
     }
     return ({
@@ -171,10 +177,18 @@ export const getKey = (data, isCreate) => {
     })
 }
 
-export const fetchCloudletField = (cloudletList, data, fields) => {
-    for (const item of cloudletList) {
-        if (item[fields.cloudletName] === data[fields.cloudletName] && item[fields.operatorName] === data[fields.operatorName]) {
-            return Array.isArray(fields) ? fields.map(field=>item[field]) : item[fields]
+export const fetchCloudletField = (cloudletList, data, field) => {
+    const { cloudletName, operatorName } = data
+    if (cloudletName && operatorName) {
+        let selection = undefined
+        for (const cloudlet of cloudletList) {
+            if (cloudlet[fields.cloudletName] === cloudletName && cloudlet[fields.operatorName] === operatorName) {
+                selection = cloudlet
+                break;
+            }
+        }
+        if (selection) {
+            return Array.isArray(field) ? field.map(item => selection[item]) : selection[field]
         }
     }
 }

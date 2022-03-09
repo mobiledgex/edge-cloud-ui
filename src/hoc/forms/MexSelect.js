@@ -21,6 +21,7 @@ const MexSelect = (props) => {
         let forms = props.forms
         let dependentData = form.dependentData
         let dataList = form.options
+        let field = form.selectField ? form.selectField : form.field
 
         if (dataList && dataList.length > 0) {
             if (dependentData && dependentData.length > 0) {
@@ -46,9 +47,9 @@ const MexSelect = (props) => {
                             valid = true
                         }
                         if (valid) {
-                            if (data[form.field]) {
+                            if (data[field]) {
                                 if (i === dependentData.length - 1) {
-                                    filteredList.push(data[form.field])
+                                    filteredList.push(data[field])
                                 }
                                 else {
                                     filteredList.push(data)
@@ -62,7 +63,7 @@ const MexSelect = (props) => {
             else {
                 for (let j = 0; j < dataList.length; j++) {
                     let data = dataList[j];
-                    filteredList.push(data[form.field] ? data[form.field] : data)
+                    filteredList.push(data[field] ? data[field] : data)
                 }
                 dataList = filteredList
             }
@@ -72,6 +73,7 @@ const MexSelect = (props) => {
 
     //Convert data to semantic select format
     const getData = (form) => {
+        let field = form.selectField ? form.selectField : form.field
         let rules = form.rules
         let allCaps = rules ? rules.allCaps ? rules.allCaps : false : false
         let firstCaps = rules ? rules.firstCaps ? rules.firstCaps : false : false
@@ -79,7 +81,7 @@ const MexSelect = (props) => {
         let dataList = getFilteredData(form)
         if (dataList && dataList.length > 0) {
             optionList = dataList.map(data => {
-                let info = data[form.field] ? data[form.field] : data
+                let info = data[field] ? data[field] : data
                 return { key: info, value: info, text: allCaps ? info.toUpperCase() : firstCaps ? toFirstUpperCase(info) : info }
             })
         }

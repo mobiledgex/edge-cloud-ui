@@ -1,26 +1,41 @@
 import React from 'react'
-import { codeHighLighter } from '../../../../hoc/highLighter/highLighter'
+import { Grid, Typography } from '@material-ui/core'
 import { InfoDialog } from '../../../../hoc/mexui'
+import { fields } from '../../../../services'
+import { copyData } from '../../../../utils/file_util'
+
+const keys = [
+    { label: 'Operator Name', field: fields.operatorName },
+    { label: 'Country Code', field: fields.countryCode },
+    { label: 'Federation ID', field: fields.federationId },
+    { label: 'Federation Address', field: fields.federationAddr },
+    { label: 'API Key', field: fields.apiKey }
+]
 
 export const FederationKey = (props) => {
     const { data, onClose } = props
+
+    const onCopy = ()=>{
+        let text = ''
+        keys.forEach(key=>{
+            text = text + `${key.label}:${data[key.field]}\n`
+        })
+        copyData(text)
+    }
+
     return (
-        <InfoDialog open={Boolean(data)} title={'Federation ID & API Key'} onClose={onClose} note={'Make sure to copy your API key now. You won\'t be able to see it again!'}>
+        <InfoDialog open={Boolean(data)} maxWidth='sm' title={'Federator Details'} onCopy={onCopy} onClose={onClose} note={'Make sure to copy your API key now. You won\'t be able to see it again!'}>
             {
                 data ? <React.Fragment >
-                    <div >
-                        <p style={{ fontSize: 16, fontWeight: 900 }}>Federation ID</p>
-                        <strong variant='caption'>Globally unique string used to identify the federation with partner operator</strong>
-                        <br /><br />
-                        <div id="federationID">{codeHighLighter(data.federationId)}</div>
-                    </div>
-                    <br />
-                    <div>
-                        <p style={{ fontSize: 16, fontWeight: 900 }}>API Key</p>
-                        <strong variant='caption'>One-time generated key used for authenticating federation requests from partner operator</strong>
-                        <br /><br />
-                        <div style={{ display: 'flex', alignItems: 'center' }}>{codeHighLighter(data.federationAPIKey)}</div>
-                    </div>
+                    <Typography variant='body1' style={{color:'#727888'}}>Please share below details with the partner operator</Typography>
+                    <br/>
+                    <Grid container spacing={2}>
+                        {keys.map(key => (
+                            <React.Fragment key={key.field}>
+                                <Grid xs={6} item><strong style={{color:'#CECECE'}}>{key.label}</strong></Grid><Grid xs={6} item><strong style={{color:'#CECECE'}}>{data[key.field]}</strong></Grid>
+                            </React.Fragment>
+                        ))}
+                    </Grid>
                 </React.Fragment > : null}
         </InfoDialog >
     )

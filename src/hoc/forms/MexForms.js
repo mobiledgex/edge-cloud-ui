@@ -13,7 +13,7 @@ import MexTimeCounter from './MexTimeCounter';
 import MexSelectTree from './selectTree/MexSelectTree';
 import MexSelectTreeGroup from './selectTree/MexSelectTreeGroup';
 import { Form, Grid, Divider } from 'semantic-ui-react';
-import { IconButton, Tooltip } from '@material-ui/core';
+import { IconButton as MIB, makeStyles, Tooltip } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
@@ -23,10 +23,12 @@ import ContactSupportOutlinedIcon from '@material-ui/icons/ContactSupportOutline
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddToPhotosOutlinedIcon from '@material-ui/icons/AddToPhotosOutlined';
+import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 import { useSelector } from 'react-redux';
 import { redux_org } from '../../helper/reduxData';
 import { uniqueId } from '../../helper/constant/shared';
 import './style.css'
+import { IconButton } from '../mexui';
 
 export const MAIN_HEADER = 'MainHeader'
 export const HEADER = 'Header'
@@ -47,6 +49,62 @@ export const DATE_PICKER = 'DatePicker'
 export const TIME_COUNTER = 'TimeCounter'
 export const TIP = 'Tip'
 
+const useStyles = makeStyles((theme) => ({
+    formBtn: {
+        display: 'flex',
+        alignItems: 'center',
+        textAlign: 'center',
+        justifyContent: 'center',
+        height: 55
+    },
+    fromHeaderLabel: {
+        color: "white",
+        display: 'flex',
+        alignItems: 'center'
+    },
+    fromHorizontalFieldLabelContainer: {
+        marginBottom: 5
+    },
+    fromHorizontalFieldText: {
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        marginRight: 3
+    },
+    formHorizontal: {
+        width: '100%',
+        marginLeft: 20
+    },
+    horizontalHelpTip: {
+        display: 'flex',
+        height: 55,
+        paddingTop: '1.7rem'
+    },
+    tipMain: {
+        listStyleType: 'none',
+        padding: 0
+    },
+    tipBody: {
+        fontSize: 13,
+        marginTop: 5
+    },
+    tipText: {
+        lineHeight: 1.2
+    },
+    tipContent: {
+        marginTop: 9
+    },
+    formGroup:{
+        flexDirection: 'column', 
+        alignContent: 'space-around'
+    },
+    mainHorizontalForm:{
+        marginLeft: -13, 
+        width: '100%', 
+        marginTop: -10, 
+        marginBottom: -27
+    }
+}))
 /***
 * Map values from form to field
 * ***/
@@ -75,6 +133,7 @@ export const formattedData = (forms) => {
 
 const MexForms = (props) => {
     let forms = props.forms
+    const classes = useStyles()
     const [error, setError] = React.useState(undefined)
     const orgInfo = useSelector(state => state.organizationInfo.data)
     const getIcon = (id) => {
@@ -95,6 +154,8 @@ const MexForms = (props) => {
                 return <ExpandLessIcon />
             case 'expand_more':
                 return <ExpandMoreIcon />
+            case 'vpn_key':
+                return <VpnKeyOutlinedIcon />
             default:
                 return id
         }
@@ -172,7 +233,7 @@ const MexForms = (props) => {
                         }
                         else {
                             if (form.value === null || form.value === undefined || form.value.length === 0) {
-                                form.error = rules.requiredMsg ? rules.requiredMsg : `${form.label} is mandatory`
+                                form.error = rules.requiredMsg ? rules.requiredMsg : `${form.label ? form.label : 'Field'} is mandatory`
                                 errorBanner(form)
                                 valid = false;
                             }
@@ -243,11 +304,7 @@ const MexForms = (props) => {
     const loadButton = (form, index) => {
         return (
             form.formType === ICON_BUTTON ?
-                form.label ?
-                    <Tooltip key={index} title={form.label} aria-label="icon">
-                        <IconButton style={form.style} onClick={(e) => { form.onClick(e, form) }}>{getIcon(form.icon)}</IconButton>
-                    </Tooltip> :
-                    <IconButton key={index} style={form.style} onClick={(e) => { form.onClick(e, form) }} disabled={form.onClick === undefined}>{getIcon(form.icon)}</IconButton>
+                <IconButton style={form.style} key={index} tooltip={form.tooltip} onClick={(e) => { form.onClick(e, form) }} disabled={form.onClick === undefined}>{getIcon(form.icon)}</IconButton>
                 :
                 form.formType === BUTTON ?
                     <MexButton
@@ -275,7 +332,7 @@ const MexForms = (props) => {
             <React.Fragment key={uniqueId() + '' + index}>
                 <Grid.Row className={'formHeader-' + index} columns={2} style={{ height: 40 }}>
                     <Grid.Column width={15}>
-                        <h3 style={{ color: "white", display: 'inline' }}>{form.label}
+                        <h3 className={classes.fromHeaderLabel}>{form.label}
                             {
                                 subForms ? subForms.map((subForm, i) => {
                                     subForm.parent = { id: index, form: form }
@@ -318,11 +375,11 @@ const MexForms = (props) => {
                     <Grid.Column width={form.width ? form.width : parentForm.width} key={key}>
                         {
                             form.label ?
-                                <div style={{ marginBottom: 5 }}>
-                                    <Tooltip title={`${form.label} ${required ? ' *' : ''}`}>
-                                        <label style={{ ...form.labelStyle, color: '#CECECE', display: 'flex' }}>
-                                            <p style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', marginRight: 3 }}>{form.label}</p>{required ? '*' : ''}
-                                        </label>
+                                <div className={classes.fromHorizontalFieldLabelContainer}>
+                                    <Tooltip title={form.label}>
+                                        <div style={{ ...form.labelStyle }}>
+                                            <p className={classes.fromHorizontalFieldText}>{`${form.label} ${required ? '*' : ''}`}</p>
+                                        </div>
                                     </Tooltip>
                                 </div> :
                                 null
@@ -335,9 +392,9 @@ const MexForms = (props) => {
                                     form.formType === SWITCH ?
                                         <div style={{ marginTop: 5 }}><MexSwitch horizontal={true} form={form} onChange={onValueSelect} /></div> :
                                         form.formType === ICON_BUTTON || form.formType === BUTTON ?
-                                            <div key={i} style={{ display: 'flex', alignItems: 'center', textAlign: 'center', verticalAlign: 'middle', height: 55 }}>{loadButton(form, i)}</div> :
+                                            <div key={i} className={classes.formBtn}>{loadButton(form, i)}</div> :
                                             form.formType === TIP && form.tip ?
-                                                <div key={i} style={{ display: 'flex', height: 55, paddingTop: '1.7rem' }}>{showTip(form)}</div> :
+                                                <div key={i} className={classes.horizontalHelpTip}>{showTip(form)}</div> :
                                                 null
                         }
                     </Grid.Column> : null
@@ -349,19 +406,19 @@ const MexForms = (props) => {
         let tips = form.tip.split('\n')
         return (
             <Tooltip title={
-                <ul style={{ listStyleType: 'none', padding: 0 }}>{tips.map((info, i) => {
+                <ul className={classes.tipMain}>{tips.map((info, i) => {
                     const temp = info.split('</b>')
                     return (
-                        <li key={i} style={{ fontSize: 13, marginTop: 5 }}>{temp.length === 2 ?
+                        <li key={i} className={classes.tipBody}>{temp.length === 2 ?
                             <React.Fragment>
                                 <b>{`${temp[0]} `}</b>
-                                <code style={{ lineHeight: 1.2 }}>{temp[1]}</code>
-                            </React.Fragment> : <code style={{ lineHeight: 1.2 }}>{info}</code>}
+                                <code className={classes.tipText} >{temp[1]}</code>
+                            </React.Fragment> : <code className={classes.tipText}>{info}</code>}
                             <br />
                         </li>
                     )
                 })}</ul>
-            } aria-label="tip" style={{ marginTop: 9 }}>
+            } aria-label="tip" className={classes.tipContent}>
                 {getIcon('help')}
             </Tooltip>
         )
@@ -382,22 +439,22 @@ const MexForms = (props) => {
 
         if (form.rules) {
             let rules = form.rules;
-            required = rules.required ? rules.required : false;
-            requiredColor = rules.requiredColor
             disabled = rules.disabled ? rules.disabled : false;
+            required = rules.required && !disabled ? rules.required : false;
+            requiredColor = rules.requiredColor
         }
         return (
             form.field ?
                 <Grid.Row columns={3} key={uniqueId() + '' + index} className={'formRow-' + index}>
                     <Grid.Column width={4} className='detail_item'>
                         {form.labelIcon ?
-                            <IconButton disabled={true}>{form.labelIcon}<sup style={{ color: requiredColor }}>{required ? ' *' : ''}</sup></IconButton> :
+                            <MIB disabled={true}>{form.labelIcon}<sup style={{ color: requiredColor }}>{required ? ' *' : ''}</sup></MIB> :
                             <div style={form.labelStyle ? form.labelStyle : { marginTop: 8, color: '#CECECE' }}>{form.label}<sup style={{ color: requiredColor }}>{required ? ' *' : ''}</sup></div>}
                     </Grid.Column>
                     <Grid.Column width={11}>
                         {
                             form.forms ?
-                                <Grid key={index} id={form.field} style={{ marginLeft: -13, width: '100%' }}>{loadHorizontalForms(index, form.forms)}</Grid> :
+                                <Grid key={index} id={form.field} className={classes.mainHorizontalForm}>{loadHorizontalForms(index, form.forms)}</Grid> :
                                 form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === DUALLIST ?
                                     loadDropDownForms(form, required, disabled) :
                                     form.formType === SELECT_RADIO_TREE ?
@@ -435,7 +492,7 @@ const MexForms = (props) => {
                         {props.style ? null : <div><br /><br /></div>}
                     </div> : null}
                 <Form>
-                    <Form.Group widths="equal" style={{ flexDirection: 'column', alignContent: 'space-around' }}>
+                    <Form.Group widths="equal" className={classes.formGroup}>
                         <Grid columns={2}>
                             {forms.map((form, i) => {
                                 if (form.custom) {
@@ -456,7 +513,7 @@ const MexForms = (props) => {
                                                     loadHeader(i, form) :
                                                     form.formType === MULTI_FORM ?
                                                         form.forms ?
-                                                            <Grid.Row key={i} id={form.field} style={{ width: '100%', marginLeft: 20 }}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
+                                                            <Grid.Row key={i} id={form.field} className={classes.formHorizontal}>{loadHorizontalForms(i, form.forms)}</Grid.Row>
                                                             : null :
                                                         loadForms(i, form) :
                                             null

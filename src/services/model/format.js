@@ -8,6 +8,7 @@ export const fields = {
     org: 'org',
     billingOrgName: 'billingOrgName',
     operatorName: 'operatorName',
+    trustPolicyExceptionName:'trustPolicyExceptionName',
     partnerOperator: 'partnerOperator',
     cloudletName: 'cloudletName',
     flavorName: 'flavorName',
@@ -72,6 +73,8 @@ export const fields = {
     cloudlets: 'cloudlets',
     organizations: 'organizations',
     appName: 'appName',
+    autoClusterName:'autoClusterName',
+    autoClusterNameGroup:'autoClusterNameGroup',
     app_name_version: 'appnameversion',
     version: 'version',
     uri: 'uri',
@@ -300,6 +303,8 @@ export const fields = {
     partnerFederationId: 'partnerFederationId',
     partnerFederationName:'partnerFederationName',
     partnerCountryCode: 'partnerCountryCode',
+    partnerFederationAddr: 'partnerFederationAddr',
+    partnerAPIKey:'partnerAPIKey',
     federationAddr: 'federationAddr',
     cloudletCount: 'cloudletCount',
     zoneId: 'zoneid',
@@ -323,5 +328,6 @@ export const fields = {
     zones:'zones',
     mncmulti: 'mncmulti',
     dedicatedIp: 'dedicatedIp',
-    singleK8sClusterOwner: 'singleK8sClusterOwner'
+    singleK8sClusterOwner: 'singleK8sClusterOwner',
+    platformHighAvailability: 'platformHighAvailability'
 }
