@@ -10,7 +10,7 @@ export const keys = () => ([
     { field: fields.networkName, serverField: 'key#OS#name', label: 'Network Name', sortable: true, visible: true, filter: true, group: true, key: true },
     { field: fields.connectionType, label: 'Connection Type', serverField: 'connection_type', sortable: true, visible: true, clickable: true },
     { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', label: 'Cloudlet', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.operatorName, label: 'Organization', serverField: 'key#OS#cloudlet_key#OS#organization', sortable: false, visible: true, clickable: true },
+    { field: fields.operatorName, label: 'Operator', serverField: 'key#OS#cloudlet_key#OS#organization', sortable: false, visible: true, clickable: true },
     { field: fields.partnerOperator, serverField: 'key#OS#cloudlet_key#OS#federated_organization', label: 'Partner Operator', key: true },
     { field: fields.accessRoutes, label: 'Routes', serverField: 'routes', sortable: false, visible: false, clickable: true, dataType: perpetual.TYPE_JSON }
 ])
