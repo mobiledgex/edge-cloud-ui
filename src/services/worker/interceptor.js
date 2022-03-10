@@ -8,7 +8,6 @@ export const postMessage = (worker, message, self) => new Promise((resolve, reje
             resolve(response)
         }
         else {
-            console.log(self, response)
             if (validateExpiry(self, response.message)) {
                 reject(response)
             }
