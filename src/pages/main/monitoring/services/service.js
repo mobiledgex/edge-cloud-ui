@@ -16,11 +16,11 @@ export const fetchOrgList = async (self) => {
     }
 }
 
-export const fetchFlavorBySelection = async (data) => {
+export const fetchFlavorBySelection = async (self, data) => {
     const { worker, dataList, selection } = data
     if (dataList && dataList.length > 0) {
         const { legends, region, resourceType, values } = dataList[0]
-        let response = await processWorker(worker, {
+        let response = await processWorker(self, worker, {
             legends,
             region,
             resource: resourceType,
@@ -48,7 +48,7 @@ export const fetchResourceData = async (self, moduleId, data) => {
         let request = resourceAPIs(self, resourceKey.serverRequest, data, metricRequestData, organization ? organization[fields.organizationName] : redux_org.nonAdminOrg(self))
         let mc = await authSyncRequest(this, { ...request, format: false })
         if (responseValid(mc)) {
-            let response = await processWorker(worker, {
+            let response = await processWorker(self, worker, {
                 response: { data: mc.response.data },
                 request: request,
                 parentId: moduleId,
@@ -76,7 +76,7 @@ export const fetchShowData = async (self, moduleId, data) => {
     let mcList = await multiAuthSyncRequest(this, requestList, false)
     if (mcList && mcList.length > 0) {
         let worker = ShowWorker()
-        let response = await processWorker(worker, {
+        let response = await processWorker(self, worker, {
             requestList,
             parentId: moduleId,
             region,
