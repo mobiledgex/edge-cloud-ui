@@ -7,7 +7,6 @@ import { IconButton } from '../../../hoc/mexui'
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import { showAlerts } from '../../../services/modules/alerts'
 import { redux_org } from '../../../helper/reduxData'
-import * as constant from '../../../constant'
 import Alerts from './alerts/Alerts'
 import sortBy from 'lodash/sortBy'
 import './style.css'
@@ -44,8 +43,7 @@ class AlertGlobal extends React.Component {
             showDot: alertStatus() ? alertStatus().showDot : false
         }
         this._isMounted = false
-        this.intervalId = undefined
-        this.regions = constant.regions()
+        this.regions = props.regions
         this.worker = undefined
     }
 
@@ -180,7 +178,8 @@ class AlertGlobal extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 }
 
