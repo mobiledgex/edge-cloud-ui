@@ -114,7 +114,9 @@ export const legendRoles =
         'Auto Scale Policy': 'Manage',
         'Alert Policy': 'Manage',
         'Monitoring': 'View',
-        'Alert Receivers': 'Manage'
+        'Alert Receivers': 'Manage',
+        'Network': 'View',
+        'Gpu Drivers': 'Manage'
     },
     DeveloperContributor: {
         'Users & Roles': 'View',
@@ -129,7 +131,9 @@ export const legendRoles =
         'Auto Scale Policy': 'Manage',
         'Alert Policy': 'Manage',
         'Monitoring': 'View',
-        'Alert Receivers': 'Manage'
+        'Alert Receivers': 'Manage',
+        'Network': 'View',
+        'Gpu Drivers': 'Manage'
     },
     DeveloperViewer: {
         'Users & Roles': 'View',
@@ -140,7 +144,9 @@ export const legendRoles =
         'App Instances': 'View',
         'Policies': 'View',
         'Monitoring': 'View',
-        'Alert Receivers': 'View'
+        'Alert Receivers': 'View',
+        'Network': 'View',
+        'Gpu Drivers': 'Manage'
     },
     OperatorManager: {
         'Users & Roles': 'Manage',
@@ -150,7 +156,10 @@ export const legendRoles =
         'App Instances': 'View',
         'Trust Policy': 'Manage',
         'Monitoring': 'View',
-        'Alert Receivers': 'Manage'
+        'Alert Receivers': 'Manage',
+        'Federation': 'Manage',
+        'Network': 'Manage',
+        'Gpu Drivers': 'Manage'
     },
     OperatorContributor: {
         'Users & Roles': 'View',
@@ -160,7 +169,10 @@ export const legendRoles =
         'App Instances': 'View',
         'Trust Policy': 'Manage',
         'Monitoring': 'View',
-        'Alert Receivers': 'Manage'
+        'Alert Receivers': 'Manage',
+        'Federation': 'Manage',
+        'Network': 'Manage',
+        'Gpu Drivers': 'Manage'
     },
     OperatorViewer: {
         'Users & Roles': 'View',
@@ -170,7 +182,10 @@ export const legendRoles =
         'App Instances': 'View',
         'Policies': 'View',
         'Monitoring': 'View',
-        'Alert Receivers': 'Manage'
+        'Alert Receivers': 'Manage',
+        'Federation': 'Manage',
+        'Network': 'Manage',
+        'Gpu Drivers': 'Manage'
     },
     AdminManager: {
         'Organizations': 'Manage',
@@ -185,7 +200,10 @@ export const legendRoles =
         'Policies': 'Manage',
         'Monitoring': 'View',
         'Alert Receivers': 'Manage',
-        'Reports': 'View'
+        'Reports': 'View',
+        'Federation': 'Manage',
+        'Network': 'Manage',
+        'Gpu Drivers': 'Manage'
     }
 }
 
