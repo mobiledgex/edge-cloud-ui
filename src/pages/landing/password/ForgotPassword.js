@@ -1,7 +1,10 @@
 import React from 'react'
+import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Button, Grid, Input } from 'semantic-ui-react'
+import { alertInfo } from '../../../actions';
 import { perpetual } from '../../../helper/constant';
+import { validateEmail } from '../../../utils/validation_utils';
 
 const Message = (props) => {
     const history = useHistory()
@@ -26,17 +29,25 @@ const Message = (props) => {
 
 const ForgotPassword = (props) => {
     const { onPasswordReset, onVerificationEmail } = props
+    const dispatch = useDispatch();
     const [email, setEmail] = React.useState(undefined)
     const [success, setSuccess] = React.useState(false)
     const location = useLocation()
     const type = location.state && location.state.type ? location.state.type : 0
     const onReset = async () => {
-        if (type === 0) {
-            setSuccess(await onPasswordReset(email))
+        if (validateEmail(email)) {
+            if (type === perpetual.VERIFY_PASSWORD) {
+                setSuccess(await onPasswordReset(email))
+            }
+            else {
+                setSuccess(await onVerificationEmail(email))
+            }
         }
-        else {
-            setSuccess(await onVerificationEmail(email))
+        else
+        {
+            dispatch(alertInfo('error', 'Invalid email address'))
         }
+
     }
 
     return (success ?

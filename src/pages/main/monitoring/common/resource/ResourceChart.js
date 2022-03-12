@@ -63,7 +63,7 @@ class ResourceChart extends React.Component {
     onSelection = async () => {
         const { dataList } = this.state
         const { region, selection } = this.props
-        let data = await fetchFlavorBySelection({ worker: this.metricWorker, region, selection, dataList })
+        let data = await fetchFlavorBySelection(this, { worker: this.metricWorker, region, selection, dataList })
         if (data) {
             this.updateState({ dataList: [data] })
         }

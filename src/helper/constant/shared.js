@@ -9,11 +9,6 @@ export const isPathOrg = (self)=>{
     return self.props.history.location.pathname.includes(perpetual.PAGE_ORGANIZATIONS.toLowerCase())
 }
 
-export const tokenRequired = ()=>{
-    const list = ['localhost', 'kubernetes.docker.internal', '192.168.0.100']
-    return list.includes(window.location.hostname)
-}
-
 export const validateRemoteCIDR = (form) => {
     if (form.value && form.value.length > 0) {
         if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([0-9]|1[0-9]|2[0-9]|3[0-2]?)$/.test(form.value)) {
