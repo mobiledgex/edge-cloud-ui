@@ -175,7 +175,7 @@ class CloudletPoolReg extends React.Component {
                 let newData = data
                 organization = (redux_org.isAdmin(this) || this.isOrgDelete) ? JSON.parse(organization) : organization
                 newData[fields.developerOrg] = organization[fields.organizationName]
-                newData[fields.operatorOrg] = data[fields.operatorName]
+                newData[fields.operatorName] = data[fields.operatorName]
                 let request = undefined
                 switch (this.action) {
                     case perpetual.ACTION_POOL_ACCESS_ADMIN_REMOVE:

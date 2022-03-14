@@ -19,6 +19,7 @@ import { developerRoles } from '../../../../constant'
 import { updateTrustPolicyException, createTrustPolicyException } from '../../../../services/modules/trustPolicyException';
 import { HELP_TRUST_POLICY_EXCEPTION } from '../../../../tutorial';
 import cloneDeep from 'lodash/cloneDeep';
+import { showConfirmation } from '../../../../services/modules/poolAccess';
 
 class TrustPolicyExceptionReg extends React.Component {
     constructor(props) {
@@ -65,7 +66,7 @@ class TrustPolicyExceptionReg extends React.Component {
 
     getCloudletPoolInfo = async (region, form, forms) => {
         if (!this.requestedRegionList.includes(region)) {
-            this.cloudletPoolList = [...this.cloudletPoolList, ...await service.showAuthSyncRequest(this, showCloudletPools(this, { region }))]
+            this.cloudletPoolList = [...this.cloudletPoolList, ...await service.showAuthSyncRequest(this, showConfirmation(this, { region }))]
         }
         this.updateUI(form)
         this.updateState({ forms })

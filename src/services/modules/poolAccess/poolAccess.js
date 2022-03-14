@@ -5,8 +5,8 @@ import { fields } from "../../model/format"
 export const keys = () => ([
     { field: fields.region, label: 'Region', serverField: 'Region', sortable: true, visible: true, filter: true, key: true },
     { field: fields.poolName, serverField: 'CloudletPool', label: 'Pool Name', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.operatorOrg, serverField: 'CloudletPoolOrg', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.developerOrg, serverField: 'Org', label: 'Developer', sortable: true, visible: true, key: true },
+    { field: fields.operatorName, serverField: 'CloudletPoolOrg', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.organizationName, serverField: 'Org', label: 'Developer', sortable: true, visible: true, key: true },
     { field: fields.decision, serverField: 'Decision', label: 'Status', visible: true, format: true },
     { field: fields.confirm, label: 'Accepted', detailView: false }
 ])
@@ -15,8 +15,8 @@ const getRequestData = (data) => {
     return {
         Region: data[fields.region],
         CloudletPool: data[fields.poolName],
-        CloudletPoolOrg: data[fields.operatorOrg],
-        Org: data[fields.developerOrg],
+        CloudletPoolOrg: data[fields.operatorName],
+        Org: data[fields.organizationName],
         Decision: data[fields.decision],
     }
 }
@@ -120,7 +120,7 @@ export const multiDataRequest = (keys, mcList) => {
             confirmationList.forEach(confirmation => {
                 let exist = false
                 dataList.forEach(data => {
-                    if (data[fields.poolName] === confirmation[fields.poolName] && data[fields.developerOrg] === confirmation[fields.developerOrg] && data[fields.operatorOrg] === confirmation[fields.operatorOrg]) {
+                    if (data[fields.poolName] === confirmation[fields.poolName] && data[fields.organizationName] === confirmation[fields.organizationName] && data[fields.operatorName] === confirmation[fields.operatorName]) {
                         data.confirm = true
                         data.decision = confirmation[fields.decision]
                         exist = true
