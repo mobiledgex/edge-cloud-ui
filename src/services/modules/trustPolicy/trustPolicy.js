@@ -27,7 +27,7 @@ export const keys = () => ([
 
 const getKey = (data) => {
   let trustpolicy = {}
-  trustpolicy.key = { organization: data[fields.operatorName] ? data[fields.operatorName] : data[fields.organizationName], name: data[fields.trustPolicyName] }
+  trustpolicy.key = { organization: data[fields.operatorName], name: data[fields.trustPolicyName] }
   if (data[fields.outboundSecurityRules]) {
     let newRules = []
     for (const rule of data[fields.outboundSecurityRules]) {
