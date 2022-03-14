@@ -1,11 +1,12 @@
 import React from 'react';
 import { useSelector } from "react-redux";
-import { ListItem, Dialog, DialogContent, IconButton, Table, TableBody, TableRow, TableCell, TableHead } from '@material-ui/core';
+import { ListItem, Table, TableBody, TableRow, TableCell, TableHead, TableContainer } from '@material-ui/core';
 import { perpetual } from '../../../helper/constant';
-import CloseIcon from '@material-ui/icons/Close';
 import { redux_org } from '../../../helper/reduxData';
 import { legendRoles } from '../../../constant';
 import { splitByCaps } from '../../../utils/string_utils';
+import { makeStyles } from '@material-ui/styles';
+import { InfoDialog } from '../../../hoc/mexui';
 
 const legends = [
     { role: perpetual.ADMIN_MANAGER, class: 'mark markA markS', mark: 'AM' },
@@ -17,11 +18,50 @@ const legends = [
     { role: perpetual.OPERATOR_VIEWER, class: 'mark markO markV', mark: 'OV' },
 ]
 
+// .MuiTableCell-stickyHeader
+
+const useStyles = makeStyles((theme) => (
+    {
+        tableContainer: {
+            maxHeight: 400,
+            width: 400
+        },
+        tableRow: {
+            "&:last-child th, &:last-child td": {
+                borderBottom: 0
+            },
+        },
+        tableHead: {
+            backgroundColor: '#202125',
+        },
+        tableCol: {
+            borderRight: '1px #515151 solid',
+        },
+        roleInfo:{
+            marginTop: 10, 
+            marginBottom: -7
+        },
+        colText: {
+            color: '#E8E8E8',
+            fontSize: 13
+        },
+        legend: {
+            display: 'flex',
+            alignItems: 'center'
+        },
+        legendInfo: {
+            color: '#BFC0C2',
+            fontSize: 14
+        }
+    }
+))
+
 const LegendMark = (props) => {
     const orgInfo = useSelector(state => state.organizationInfo.data)
+    const classes = useStyles()
     return (
-        <React.Fragment>
-            <div className="markBox" style={{ display: 'inline' }}>
+        <div className={classes.legend}>
+            <div className="markBox">
                 {
                     orgInfo ?
                         legends.map(legend => (
@@ -32,8 +72,8 @@ const LegendMark = (props) => {
             </div>
             {
                 props.open ?
-                    <div style={{ display: 'inline' }}>
-                        <strong style={{ color: '#BFC0C2', fontSize: 14, }}>
+                    <div>
+                        <strong className={classes.legendInfo}>
                             {
                                 orgInfo ? splitByCaps(redux_org.role(orgInfo)) :
                                     <div>
@@ -45,17 +85,18 @@ const LegendMark = (props) => {
                         </strong>
                     </div> : null
             }
-        </React.Fragment>
+        </div>
     )
 }
 
 const RoleLegend = (props) => {
     const [open, setOpen] = React.useState(false)
     const orgInfo = useSelector(state => state.organizationInfo.data)
+    const classes = useStyles()
 
     const roleInfo = () => {
         return (
-            <div style={{ marginTop: 10, marginBottom: -7 }} >
+            <div className={classes.roleInfo} >
                 <ListItem button onClick={(e) => { setOpen(orgInfo !== undefined) }}>
                     <LegendMark open={props.drawerOpen} orgInfo={orgInfo} />
                 </ListItem>
@@ -70,26 +111,15 @@ const RoleLegend = (props) => {
     const orgRole = redux_org.role(orgInfo)
     const roles = orgRole && legendRoles[orgRole]
     const keys = roles && Object.keys(roles)
-    const length = keys && keys.length - 1
     return (
         <React.Fragment>
             {roleInfo()}
-            <Dialog open={open} onClose={handleClose}>
-                <DialogContent>
-                    <div style={{ width: 400 }}>
-                        <div style={{ display: 'inline-block' }}>
-                            <h3>Permissions of Role</h3>
-                        </div>
-                        <div style={{ display: 'inline-block', float: 'right' }}>
-                            <IconButton onClick={handleClose} style={{ marginTop: -9 }}>
-                                <CloseIcon />
-                            </IconButton>
-                        </div>
-                    </div>
-                    <Table style={{ backgroundColor: '#1d1f23', borderRadius: 5 }} size="small">
+            <InfoDialog open={open} title={'User Permissions'} onClose={handleClose}>
+                <TableContainer className={classes.tableContainer}>
+                    <Table stickyHeader>
                         <TableHead>
                             <TableRow>
-                                <TableCell colSpan={2} style={{ padding: 10 }}>
+                                <TableCell colSpan={2} className={classes.tableHead}>
                                     <LegendMark open={true} />
                                 </TableCell>
                             </TableRow>
@@ -97,16 +127,16 @@ const RoleLegend = (props) => {
                         <TableBody>
                             {
                                 roles && keys.map((key, i) => (
-                                    <TableRow key={i}>
-                                        <TableCell style={length === i ? { borderBottom: 'none', borderRight: '1px #515151 solid' } : { borderRight: '1px #515151 solid' }}><b style={{color:'#e5e5e5'}}>{key}</b></TableCell>
-                                        <TableCell style={length === i ? { borderBottom: 'none' } : null}><b style={{color:'#e5e5e5'}}>{roles[key]}</b></TableCell>
+                                    <TableRow key={i} className={classes.tableRow}>
+                                        <TableCell className={classes.tableCol}><b className={classes.colText}>{key}</b></TableCell>
+                                        <TableCell><b className={classes.colText}>{roles[key]}</b></TableCell>
                                     </TableRow>
                                 ))
                             }
                         </TableBody>
                     </Table>
-                </DialogContent>
-            </Dialog>
+                </TableContainer>
+            </InfoDialog>
         </React.Fragment>
     );
 }
