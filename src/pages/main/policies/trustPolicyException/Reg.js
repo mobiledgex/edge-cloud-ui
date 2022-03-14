@@ -15,7 +15,7 @@ import { uniqueId, validateRemoteCIDR } from '../../../../helper/constant/shared
 import { _sort } from '../../../../helper/constant/operators';
 import { showCloudletPools } from '../../../../services/modules/cloudletPool'
 import { getAppList } from '../../../../services/modules/app';
-import { developerRoles, operatorRoles } from '../../../../constant'
+import { developerRoles } from '../../../../constant'
 import { updateTrustPolicyException, createTrustPolicyException } from '../../../../services/modules/trustPolicyException';
 import { HELP_TRUST_POLICY_EXCEPTION } from '../../../../tutorial';
 import cloneDeep from 'lodash/cloneDeep';
@@ -63,35 +63,20 @@ class TrustPolicyExceptionReg extends React.Component {
         }
     }
 
-    getCloudletPoolInfo = async (form, forms) => {
-        let region = undefined;
-        let organizationName = undefined;
-        for (let i = 0; i < forms.length; i++) {
-            let tempForm = forms[i]
-            if (tempForm.field === fields.region) {
-                region = tempForm.value
-            }
-            else if (tempForm.field === fields.organizationName) {
-                organizationName = tempForm.value
-            }
-        }
-        if (region && organizationName) {
-            let requestData = { region: region, org: organizationName }
-            let cloudletInfo = await service.showAuthSyncRequest(this, showCloudletPools(this, requestData))
-            this.cloudletPoolList = cloudletInfo
-            this.updateUI(form)
-            this.updateState({ forms })
-        }
+    getCloudletPoolInfo = async (region, form, forms) => {
+        this.cloudletPoolList  = await service.showAuthSyncRequest(this, showCloudletPools(this, { region }))
+        this.updateUI(form)
+        this.updateState({ forms })
     }
 
     operatorValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
+        for (const form of forms) {
             if (form.field === fields.poolName) {
                 this.updateUI(form)
                 if (!isInit) {
                     this.updateState({ forms })
                 }
+                break;
             }
         }
     }
@@ -99,21 +84,18 @@ class TrustPolicyExceptionReg extends React.Component {
     regionValueChange = (currentForm, forms, isInit) => {
         let region = currentForm.value;
         if (region) {
-            for (let i = 0; i < forms.length; i++) {
-                let form = forms[i]
-                if (form.field === fields.operatorName) {
-                    this.operatorValueChange(form, forms, isInit)
-                    if (!isInit) {
-                        this.getCloudletPoolInfo(form, forms)
+            if (!isInit) {
+                for (const form of forms) {
+                    if (form.field === fields.operatorName) {
+                        this.getCloudletPoolInfo(region, form, forms)
                     }
-                }
-                else if (form.field === fields.appName) {
-                    if (!isInit) {
+                    else if (form.field === fields.appName) {
+
                         this.getAppInfo(region, form, forms)
                     }
                 }
+                this.requestedRegionList.push(region)
             }
-            this.requestedRegionList.push(region)
         }
     }
 
@@ -142,7 +124,7 @@ class TrustPolicyExceptionReg extends React.Component {
             if (form.uuid === parentForm.uuid) {
                 for (let outboundConnectionForm of form.forms) {
                     if (outboundConnectionForm.field === fields.ocPortMin || outboundConnectionForm.field === fields.ocPortMax) {
-                        outboundConnectionForm.visible = !(currentForm.value === 'icmp')
+                        outboundConnectionForm.visible = !(currentForm.value === perpetual.PROTOCOL_ICMP)
                         outboundConnectionForm.value = undefined
                     }
                 }
@@ -157,13 +139,7 @@ class TrustPolicyExceptionReg extends React.Component {
     organizationValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.operatorName) {
-                this.operatorValueChange(form, forms, isInit)
-                if (!isInit) {
-                    this.getCloudletPoolInfo(form, forms)
-                }
-            }
-            else if (form.field === fields.appName) {
+            if (form.field === fields.appName) {
                 this.updateUI(form)
                 this.appNameValueChange(form, forms, true)
             }
@@ -317,7 +293,7 @@ class TrustPolicyExceptionReg extends React.Component {
     }
 
     outboundConnectionsForm = () => ([
-        { field: fields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true, required: true, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 4, visible: true, options: ['tcp', 'udp', 'icmp'], update: { edit: true } },
+        { field: fields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true, required: true, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 4, visible: true, options: [perpetual.PROTOCOL_TCP, perpetual.PROTOCOL_UDP, perpetual.PROTOCOL_ICMP], update: { edit: true } },
         { field: fields.ocPortMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number', min: 1, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: fields.ocPortMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number', min: 1, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
@@ -371,11 +347,11 @@ class TrustPolicyExceptionReg extends React.Component {
                         outboundConnectionsForm.value = requiredOutboundConnection['remote_cidr']
                     }
                     else if (outboundConnectionsForm.field === fields.ocPortMin) {
-                        outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
+                        outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== perpetual.PROTOCOL_ICMP
                         outboundConnectionsForm.value = requiredOutboundConnection['port_range_min']
                     }
                     else if (outboundConnectionsForm.field === fields.ocPortMax) {
-                        outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
+                        outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== perpetual.PROTOCOL_ICMP
                         outboundConnectionsForm.value = requiredOutboundConnection['port_range_max']
                     }
                 }
