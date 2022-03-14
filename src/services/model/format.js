@@ -1,4 +1,5 @@
 export const fields = {
+    empty:'empty',
     uuid: 'uuid',
     region: 'region',
     clusterName: 'clusterName',
