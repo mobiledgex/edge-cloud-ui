@@ -1,10 +1,11 @@
 import { customize } from './custom'
-import {addUser, keys, showUsers, deleteUser, updateUser, updatePwd, resetPwd, updateUserMetaData} from './users'
+import {addUser, keys, showUsers, showUser, deleteUser, updateUser, updatePwd, resetPwd, updateUserMetaData} from './users'
 export {
     customize,
     keys, 
     addUser,
-    showUsers, 
+    showUsers,
+    showUser, 
     deleteUser,
     updateUser,
     updatePwd, 
