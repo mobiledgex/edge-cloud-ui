@@ -12,10 +12,11 @@ import { updateTrustPolicy, createTrustPolicy } from '../../../../services/modul
 import { HELP_TRUST_POLICY_REG } from "../../../../tutorial";
 import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/MexMessageMultiStream'
 import { Grid } from '@material-ui/core';
-import { service, updateFieldData } from '../../../../services';
+import { service, updateFieldDataNew } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';
 import cloneDeep from 'lodash/cloneDeep';
 import { uniqueId, validateRemoteCIDR } from '../../../../helper/constant/shared';
+import { id } from 'date-fns/locale';
 
 class TrustPolicyReg extends React.Component {
     constructor(props) {
@@ -70,7 +71,7 @@ class TrustPolicyReg extends React.Component {
             if (form.uuid === parentForm.uuid) {
                 for (let j = 0; j < form.forms.length; j++) {
                     let outBoundRulesForm = form.forms[j]
-                    if (currentForm.value === 'icmp' && (outBoundRulesForm.field === fields.portRangeMin || outBoundRulesForm.field === fields.portRangeMax)) {
+                    if (currentForm.value === perpetual.PROTOCOL_ICMP && (outBoundRulesForm.icon === '~' || outBoundRulesForm.field === fields.portRangeMin || outBoundRulesForm.field === fields.portRangeMax)) {
                         outBoundRulesForm.visible = false;
                     }
                     else {
@@ -125,11 +126,12 @@ class TrustPolicyReg extends React.Component {
     }
 
     getOutBoundRules = (protocol, portRangeMin, portRangeMax, remoteCIDR) => ([
-        { field: fields.protocol, label: 'Protocol', formType: SELECT, rules: { required: true, type: 'number', allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp', 'icmp'], serverField: 'protocol', update: { edit: true }, value: protocol },
+        { field: fields.protocol, label: 'Protocol', formType: SELECT, rules: { required: true, type: 'number', allCaps: true }, width: 3, visible: true, options: [perpetual.PROTOCOL_TCP, perpetual.PROTOCOL_UDP, perpetual.PROTOCOL_ICMP], serverField: 'protocol', update: { edit: true }, value: protocol },
+        { field: fields.remoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true }, width: 3, visible: true, serverField: 'remote_cidr', dataValidateFunc: validateRemoteCIDR, update: { edit: true }, value: remoteCIDR },
         { field: fields.portRangeMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, serverField: 'port_range_min', dataValidateFunc: this.validatePortRange, update: { edit: true }, value: portRangeMin },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: fields.portRangeMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, serverField: 'port_range_max', dataValidateFunc: this.validatePortRange, update: { edit: true }, value: portRangeMax },
-        { field: fields.remoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true }, width: 3, visible: true, serverField: 'remote_cidr', dataValidateFunc: validateRemoteCIDR, update: { edit: true }, value: remoteCIDR },
+        { field: fields.empty, visible: false, width: 7 },
         { icon: 'delete', formType: 'IconButton', visible: true, style: { color: 'white', top: 15 }, width: 1, onClick: this.removeRulesForm }
     ])
 
@@ -140,10 +142,10 @@ class TrustPolicyReg extends React.Component {
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Trust Policy`, formType: MAIN_HEADER, visible: true },
         { field: fields.region, label: 'Region', formType: MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', update: { key: true } },
-        { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, update: { key: true } },
+        { field: fields.operatorName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, update: { key: true } },
         { field: fields.trustPolicyName, label: 'Trust Policy Name', formType: INPUT, placeholder: 'Enter Trust Policy Name', rules: { required: true }, visible: true, update: { key: true } },
         { field: fields.fullIsolation, label: 'Full Isolation', formType: SWITCH, visible: true, value: false, update: { edit: true } },
-        { field: fields.outboundSecurityRules, label: 'Outbound Security Rules', formType: HEADER, forms: [{ formType: 'IconButton', icon: 'add', style: { color: "white", display: 'inline' }, onClick: this.addRulesForm }], visible: true, update: { id: ['3', '3.1', '3.2', '3.3', '3.4'] } },
+        { field: fields.outboundSecurityRules, label: 'Outbound Security Rules', formType: HEADER, forms: [{ formType: 'IconButton', icon: 'add', style: { color: "white", display: 'inline' }, onClick: this.addRulesForm }], visible: true, update: { edit:true } },
     ])
 
     addRulesForm = (e, form) => {
@@ -170,18 +172,20 @@ class TrustPolicyReg extends React.Component {
             let forms = this.state.forms
             let outboundSecurityRules = [];
             if (!data[fields.fullIsolation]) {
-                for (let i = 0; i < forms.length; i++) {
-                    let form = forms[i];
+                for (const form of forms) {
                     if (form.uuid) {
                         let uuid = form.uuid;
                         let outboundSecurityRule = data[uuid]
                         if (outboundSecurityRule) {
-                            outboundSecurityRules.push({
-                                protocol: outboundSecurityRule[fields.protocol],
-                                port_range_min: outboundSecurityRule[fields.protocol] !== 'icmp' ? parseInt(outboundSecurityRule[fields.portRangeMin]) : undefined,
-                                port_range_max: outboundSecurityRule[fields.protocol] !== 'icmp' ? parseInt(outboundSecurityRule[fields.portRangeMax]) : undefined,
-                                remote_cidr: outboundSecurityRule[fields.remoteCIDR]
-                            })
+                            let newRule = {
+                                [fields.protocol]: outboundSecurityRule[fields.protocol],
+                                [fields.remoteCIDR]: outboundSecurityRule[fields.remoteCIDR]
+                            }
+                            if (outboundSecurityRule[fields.protocol] !== perpetual.PROTOCOL_ICMP) {
+                                newRule[fields.portRangeMin] = outboundSecurityRule[fields.portRangeMin]
+                                newRule[fields.portRangeMax] = outboundSecurityRule[fields.portRangeMax]
+                            }
+                            outboundSecurityRules.push(newRule)
                         }
 
                     }
@@ -191,8 +195,8 @@ class TrustPolicyReg extends React.Component {
                 data[fields.outboundSecurityRules] = outboundSecurityRules;
             }
             if (this.isUpdate) {
-                let updateData = updateFieldData(this, forms, data, this.props.data)
-                if (updateData.fields.length > 0) {
+                let updateData = updateFieldDataNew(this, forms, data, this.props.data)
+                if (updateData) {
                     this.props.handleLoadingSpinner(true)
                     updateTrustPolicy(this, updateData, this.onUpdateResponse)
                 }
@@ -263,7 +267,7 @@ class TrustPolicyReg extends React.Component {
     disableFields = (form) => {
         let rules = form.rules ? form.rules : {}
         let field = form.field
-        if (field === fields.organizationName || field === fields.region || field === fields.trustPolicyName) {
+        if (field === fields.operatorName || field === fields.region || field === fields.trustPolicyName) {
             rules.disabled = true;
         }
     }
@@ -274,7 +278,7 @@ class TrustPolicyReg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT || form.formType === MULTI_SELECT) {
                     switch (form.field) {
-                        case fields.organizationName:
+                        case fields.operatorName:
                             form.options = this.organizationList
                             break;
                         case fields.region:
@@ -292,7 +296,7 @@ class TrustPolicyReg extends React.Component {
                         form.visible = data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0
                     }
                     else {
-                        if (form.field === fields.organizationName) {
+                        if (form.field === fields.operatorName) {
                             form.value = data[fields.operatorName]
                         }
                         else {
@@ -314,7 +318,7 @@ class TrustPolicyReg extends React.Component {
 
         if (data) {
             let organization = {}
-            organization[fields.organizationName] = data[fields.operatorName]
+            organization[fields.operatorName] = data[fields.operatorName]
             this.organizationList = [organization]
 
             this.loadData(forms, data)
@@ -327,9 +331,13 @@ class TrustPolicyReg extends React.Component {
                         let outboundRule = outboundRules[j];
                         outboundRule.value = OutboundSecurityRule[outboundRule.field]
                         if (outboundRule.field === fields.protocol) {
-                            isICMP = outboundRule.value === 'icmp' ? true : false;
+                            isICMP = outboundRule.value === perpetual.PROTOCOL_ICMP ? true : false;
                         }
-                        if ((outboundRule.field === fields.portRangeMin || outboundRule.field === fields.portRangeMax) && isICMP) {
+                        if(isICMP && outboundRule.field === fields.empty)
+                        {
+                            outboundRule.visible = true; 
+                        }
+                        if ((outboundRule.field === fields.portRangeMin || outboundRule.field === fields.portRangeMax || outboundRule.icon === '~') && isICMP) {
                             outboundRule.visible = false;
                         }
                     }
@@ -340,9 +348,9 @@ class TrustPolicyReg extends React.Component {
         else {
             this.organizationList = await getOrganizationList(this, { type: perpetual.OPERATOR })
             this.loadData(forms)
-            forms.push(this.getOutboundSecurityForm(this.getOutBoundRules('udp', 53, 53, '0.0.0.0/0')))
-            forms.push(this.getOutboundSecurityForm(this.getOutBoundRules('tcp', 443, 443, '0.0.0.0/0')))
-            forms.push(this.getOutboundSecurityForm(this.getOutBoundRules('udp', 123, 123, '0.0.0.0/0')))
+            forms.push(this.getOutboundSecurityForm(this.getOutBoundRules(perpetual.PROTOCOL_UDP, 53, 53, '0.0.0.0/0')))
+            forms.push(this.getOutboundSecurityForm(this.getOutBoundRules(perpetual.PROTOCOL_TCP, 443, 443, '0.0.0.0/0')))
+            forms.push(this.getOutboundSecurityForm(this.getOutBoundRules(perpetual.PROTOCOL_UDP, 123, 123, '0.0.0.0/0')))
         }
         this.updateState({ forms })
     }
