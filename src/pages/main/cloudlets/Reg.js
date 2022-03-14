@@ -82,7 +82,7 @@ class CloudletReg extends React.Component {
     loadEnvTip = (data) => {
         const { key, name, value, description } = data
         if (description) {
-            return `Name:</b> ${name ? name : key}\n${description ? 'Description' : ''}</b> ${description ? description : ''}`
+            return `Name:</b> ${name ?? key}\n${description ? 'Description' : ''}</b> ${description ?? ''}`
         }
     }
 
