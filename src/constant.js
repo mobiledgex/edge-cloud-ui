@@ -98,7 +98,6 @@ export const validatePhone = (form) => {
 export const operatorRoles = [perpetual.ADMIN_MANAGER, perpetual.OPERATOR_MANAGER, perpetual.OPERATOR_CONTRIBUTOR]
 export const developerRoles = [perpetual.ADMIN_MANAGER, perpetual.DEVELOPER_MANAGER, perpetual.DEVELOPER_CONTRIBUTOR]
 
-
 export const legendRoles =
 {
     DeveloperManager: {
@@ -116,7 +115,7 @@ export const legendRoles =
         'Monitoring': 'View',
         'Alert Receivers': 'Manage',
         'Network': 'View',
-        'Gpu Drivers': 'Manage'
+        'GPU Drivers': 'View'
     },
     DeveloperContributor: {
         'Users & Roles': 'View',
@@ -133,7 +132,7 @@ export const legendRoles =
         'Monitoring': 'View',
         'Alert Receivers': 'Manage',
         'Network': 'View',
-        'Gpu Drivers': 'Manage'
+        'GPU Drivers': 'View'
     },
     DeveloperViewer: {
         'Users & Roles': 'View',
@@ -146,7 +145,7 @@ export const legendRoles =
         'Monitoring': 'View',
         'Alert Receivers': 'View',
         'Network': 'View',
-        'Gpu Drivers': 'Manage'
+        'GPU Drivers': 'View'
     },
     OperatorManager: {
         'Users & Roles': 'Manage',
@@ -159,7 +158,7 @@ export const legendRoles =
         'Alert Receivers': 'Manage',
         'Federation': 'Manage',
         'Network': 'Manage',
-        'Gpu Drivers': 'Manage'
+        'GPU Drivers': 'Manage'
     },
     OperatorContributor: {
         'Users & Roles': 'View',
@@ -172,7 +171,7 @@ export const legendRoles =
         'Alert Receivers': 'Manage',
         'Federation': 'Manage',
         'Network': 'Manage',
-        'Gpu Drivers': 'Manage'
+        'GPU Drivers': 'Manage'
     },
     OperatorViewer: {
         'Users & Roles': 'View',
@@ -183,9 +182,9 @@ export const legendRoles =
         'Policies': 'View',
         'Monitoring': 'View',
         'Alert Receivers': 'Manage',
-        'Federation': 'Manage',
-        'Network': 'Manage',
-        'Gpu Drivers': 'Manage'
+        'Federation': 'View',
+        'Network': 'View',
+        'GPU Drivers': 'View'
     },
     AdminManager: {
         'Organizations': 'Manage',
@@ -203,7 +202,7 @@ export const legendRoles =
         'Reports': 'View',
         'Federation': 'Manage',
         'Network': 'Manage',
-        'Gpu Drivers': 'Manage'
+        'GPU Drivers': 'Manage'
     }
 }
 

@@ -3,7 +3,7 @@ import React from 'react'
 import { IconButton, Icon } from '..'
 
 const InfoDialog = (props) => {
-    const { open, title, children, onClose, onCopy, note, maxWidth, style } = props
+    const { open, title, children, onClose, onCopy, note, maxWidth, fullWidth, style } = props
     const dialogStyle = style ? style : {}
     return (
         <Dialog open={open} onClose={onClose} aria-labelledby={`dialog`} disableEscapeKeyDown={true} maxWidth={maxWidth ? maxWidth : 'md'} PaperProps={{
