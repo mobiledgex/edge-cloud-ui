@@ -21,7 +21,7 @@ export const keys = (nameOnly) => {
             field: fields.userList, label: 'User List', sortable: true, visible: false,
             keys: [{ field: fields.username, label: 'Username' }, { field: fields.userRole, label: 'Role' }]
         },
-            { field: fields.manage, label: 'Manage', visible: true, clickable: true, format: true }
+        { field: fields.manage, label: 'Manage', visible: true, clickable: true, format: true }
         ]
     }
     return items
@@ -87,22 +87,25 @@ export const edgeboxOnlyAPI = (data) => {
     return { method: endpoint.EDGEBOX_ONLY, data: requestData }
 }
 
-export const multiDataRequest = (keys, mcRequestList) => {
+export const multiDataRequest = (keys, mcList) => {
     let orgDataList = [];
     let userDataList = [];
-    for (let i = 0; i < mcRequestList.length; i++) {
-        let mcRequest = mcRequestList[i];
-        let request = mcRequest.request;
+    let currentUser = undefined;
+    for (const mc of mcList) {
+        let request = mc.request;
         if (request.method === endpoint.SHOW_USERS) {
-            userDataList = mcRequest.response.data
+            userDataList = mc.response.data
         }
         else if (request.method === endpoint.SHOW_ORG) {
-            orgDataList = mcRequest.response.data
+            orgDataList = mc.response.data
+        }
+        else if (request.method === endpoint.CURRENT_USER) {
+            currentUser = mc.response.data
         }
     }
-    let userInfo = getUserMetaData().organizationInfo;
-    let dataList = orgDataList.map(org => {
-        let user = userDataList.find(user => user[fields.username] === userInfo[fields.username] && user[fields.organizationName] === org[fields.organizationName]);
+    let dataList = orgDataList
+    dataList = orgDataList.map(org => {
+        let user = userDataList.find(user => user[fields.username] === currentUser?.Name && user[fields.organizationName] === org[fields.organizationName]);
         if (user) {
             org[fields.role] = user[fields.role];
         }
