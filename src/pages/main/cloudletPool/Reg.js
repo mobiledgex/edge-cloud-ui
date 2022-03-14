@@ -174,7 +174,7 @@ class CloudletPoolReg extends React.Component {
             organizationList.forEach(organization => {
                 let newData = data
                 organization = (redux_org.isAdmin(this) || this.isOrgDelete) ? JSON.parse(organization) : organization
-                newData[fields.developerOrg] = organization[fields.organizationName]
+                newData[fields.organizationName] = organization[fields.organizationName]
                 newData[fields.operatorName] = data[fields.operatorName]
                 let request = undefined
                 switch (this.action) {
