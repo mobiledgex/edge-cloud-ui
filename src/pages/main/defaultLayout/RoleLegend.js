@@ -37,6 +37,10 @@ const useStyles = makeStyles((theme) => (
         tableCol: {
             borderRight: '1px #515151 solid',
         },
+        roleInfo:{
+            marginTop: 10, 
+            marginBottom: -7
+        },
         colText: {
             color: '#E8E8E8',
             fontSize: 13
@@ -92,7 +96,7 @@ const RoleLegend = (props) => {
 
     const roleInfo = () => {
         return (
-            <div style={{ marginTop: 10, marginBottom: -7 }} >
+            <div className={classes.roleInfo} >
                 <ListItem button onClick={(e) => { setOpen(orgInfo !== undefined) }}>
                     <LegendMark open={props.drawerOpen} orgInfo={orgInfo} />
                 </ListItem>
