@@ -50,7 +50,7 @@ export const keys = () => ([
     { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', detailView: false },
     { field: fields.gpuExist, label: 'GPU', detailView: false },
     { field: fields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING },
-    { field: fields.singleKubernetesClusterOwner, label: 'Alliance Organization', serverField: 'single_kubernetes_cluster_owner', dataType: perpetual.TYPE_STRING },
+    { field: fields.singleKubernetesClusterOwner, label: 'Single Kubernetes Cluster Owner', serverField: 'single_kubernetes_cluster_owner', dataType: perpetual.TYPE_STRING },
     { field: fields.platformHighAvailability, serverField: 'platform_high_availability', label: 'Platform High Availability' },
     { field: fields.deployment, serverField: 'deployment', label: 'Deployment Type' }
 ])
