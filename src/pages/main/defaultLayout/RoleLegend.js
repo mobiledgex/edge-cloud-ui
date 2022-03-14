@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => (
     {
         tableContainer: {
             maxHeight: 400,
-            width: 600
+            width: 400
         },
         tableRow: {
             "&:last-child th, &:last-child td": {
