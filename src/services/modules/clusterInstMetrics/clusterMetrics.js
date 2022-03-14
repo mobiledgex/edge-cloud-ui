@@ -50,8 +50,8 @@ export const clusterResourceKeys = () => ([
 
 /**New */
 const metricElements = [
-    { field: fields.networkSent, label: 'Network Sent', serverField: 'sendBytes', unit: UNIT_BYTES },
-    { field: fields.networkReceived, label: 'Network Received', serverField: 'recvBytes', unit: UNIT_BYTES },
+    { field: fields.networkSent, label: 'N/W Sent', serverField: 'sendBytes', unit: UNIT_BYTES },
+    { field: fields.networkReceived, label: 'N/W Received', serverField: 'recvBytes', unit: UNIT_BYTES },
     { field: fields.cpu, label: 'CPU', serverField: 'cpu', unit: UNIT_PERCENTAGE },
     { field: fields.mem, label: 'Memory', serverField: 'mem', unit: UNIT_PERCENTAGE },
     { field: fields.disk, label: 'Disk', serverField: 'disk', unit: UNIT_PERCENTAGE },

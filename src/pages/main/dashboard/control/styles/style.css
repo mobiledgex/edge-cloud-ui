@@ -1,0 +1,78 @@
+.dashboard {
+    --marginBottom:2px;
+    height: 99.91%;
+    min-width: 900px;
+    min-height: 560px;
+    overflow: auto;
+    box-sizing: border-box;
+}
+
+.dashboard .title {
+    color: #E8E8E8;
+    font-weight: 900;
+    font-size: 15px;
+    padding: 10px;
+    text-transform: uppercase;
+}
+
+.dashboard .control {
+    height: calc(95vh - 5px);
+    display: flex;
+    gap: 2px;
+    width: 100%;
+}
+
+.dashboard .control .col-left{
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:1;
+}
+
+.dashboard .control .col-left .sunburst {
+   width: 98%
+}
+
+.dashboard .control .col-right{
+    height: 100%;
+    overflow: auto;
+    width: 50%;
+    /* border: 1px solid red; */
+}
+
+.dashboard .control .col-right .content1  {
+    display: grid;
+    grid-template-columns: 220px auto;
+    column-gap: 2px;
+    margin-bottom: var(--marginBottom);
+}
+
+.dashboard .control .content1 .total {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    column-gap: 2px;
+} 
+
+.dashboard .control .col-right .content2  {
+    margin-bottom: var(--marginBottom);
+}  
+
+.dashboard .audit-log {
+    margin-bottom: var(--marginBottom); 
+}
+
+.dashboard .control .col-right .title {
+    text-align: start;
+}
+
+.dashboard .control .col-right .resources {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 10px;
+}
+
+/* MUI  */
+.tooltip .MuiDrawer-paperAnchorDockedRight {
+    border-left: none !important;
+}

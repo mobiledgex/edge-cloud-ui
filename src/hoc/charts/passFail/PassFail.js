@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { ImageList, ImageListItem, makeStyles, Popover, Tooltip, Typography } from '@material-ui/core';
-import { addDays, subtractDays } from '../../../utils/date_util';
+import { addDays, FORMAT_MMM_DD, subtractDays } from '../../../utils/date_util';
 import { Popup } from '../../mexui';
 
 const useStyles = makeStyles((theme) => ({
@@ -47,7 +47,7 @@ const PassFail = (props) => {
             let startRange = subtractDays(36, endRange)
             let statusList = []
             for (let m = startRange; m.isBefore(endRange); m.add(1, 'days')) {
-                let date = m.format('MMM DD')
+                let date = m.format(FORMAT_MMM_DD)
                 let status = {} 
                 status.date = date
                 status.disabled = true

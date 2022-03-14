@@ -1,5 +1,5 @@
-import { responseValid } from "../../../../services/service"
-import { convertUnit } from "../../monitoring/helper/unitConvertor"
+import { responseValid } from "../../../../../services/service"
+import { convertUnit } from "../../../monitoring/helper/unitConvertor"
 
 export const formatMetricData = (metricResource, numsamples, mc) => {
     const latest = numsamples === 1

@@ -236,8 +236,8 @@ const Sunburst = (props) => {
             .data(root.descendants().slice(1))
             .join("text")
             .attr("dy", "0.35em")
-            .text(d => d.data.name.substring(0, 14) + (d.data.name.length > 14 ? '...' : ''))
-            .style('font-size', 14)
+            .text(d => d.data.name.substring(0, 13) + (d.data.name.length > 14 ? '...' : ''))
+            .style('font-size', 13)
             .style('fill', 'white')
 
 
@@ -253,7 +253,7 @@ const Sunburst = (props) => {
         const parentLabel = svg.append("text")
             .attr("class", "total")
             .attr("text-anchor", "middle")
-            .attr('font-size', '2em')
+            .attr('font-size', '1.7em')
             .attr('y', 12)
             .attr('x', 1)
 

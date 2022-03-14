@@ -1,15 +1,21 @@
 import React from 'react';
 import * as d3 from 'd3';
 import { uniqueId } from '../../../../helper/constant/shared';
-import { sequence } from '../../../../pages/main/dashboard/sequence';
+import { sequence } from '../../../../pages/main/dashboard/control/services/sequence';
 
 const CON_WIDTH = 34
+const COLOR_GREEN = '#388E3C'
+const COLOR_RED = '#757575'
 /***********
 **w:width;**
 **h:height**
 **s:space***
 **t:vertex**/
 const b = { w: 20, h: 20, s: 6, t: 12 };
+
+const breadCrumbColor = (flag) => {
+  return flag ? COLOR_GREEN : COLOR_RED
+}
 
 const breadcrumbPoints = (d, i, j) => {
   var w = (b.w * sequence.length) + i * b.t
@@ -36,8 +42,8 @@ export const updateElements = (sequence, onSwap) => {
     .style('display', 'inline')
     .attr("stroke-linejoin", "round")
     .attr("stroke-width", '5px')
-    .attr("stroke", function (d, i) { return i < 2 ? '#43A56E' : '#757575' })
-    .style("fill", function (d, i) { return i < 2 ? '#43A56E' : '#757575' })
+    .attr("stroke", function (d, i) { return breadCrumbColor(i < 2) })
+    .style("fill", function (d, i) { return breadCrumbColor(i < 2) })
 
 
   //add label
@@ -49,7 +55,7 @@ export const updateElements = (sequence, onSwap) => {
     .style("font-size", "12px")
     .style("font-weight", "700")
     .attr("text-anchor", "middle")
-    .attr("dominant-baseline", "central") 
+    .attr("dominant-baseline", "central")
     .text((d) => { return d.label; })
     .attr('fill', 'white');
 
@@ -83,7 +89,7 @@ class Sequence extends React.Component {
     this.state = {
     }
     this.sbRef = React.createRef();
-    this.width = props.width ? props.width : CON_WIDTH * props.sequence.length
+    this.width = props.width ?? CON_WIDTH * props.sequence.length
   }
 
   render() {

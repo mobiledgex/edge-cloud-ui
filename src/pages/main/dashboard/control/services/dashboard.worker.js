@@ -1,12 +1,10 @@
-/* eslint-disable */
+import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST } from "../../../../../helper/constant/endpoint"
+import { toJson } from "../../../../../utils/json_util"
+import { map } from "../../../../../services/format/shared";
+import { dataForms } from "./sequence";
+import { fields } from "../../../../../services";
 
-import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLOUDLET_INFO, SHOW_CLUSTER_INST } from "../../../../helper/constant/endpoint"
-import { toJson } from "../../../../utils/json_util"
-import { map } from "../../../../services/format/shared";
-import { dataForms } from "../sequence";
-import { fields } from "../../../../services";
-
-const formatSequence = (order, index, inp, output) => {
+const formatSequence = (order, index, inp, outputs) => {
     let currentOrder = order[index]
     let data = inp[currentOrder.field]
     let nextIndex = index + 1
@@ -15,16 +13,16 @@ const formatSequence = (order, index, inp, output) => {
         let exist = false
         let nextsequence = (nextIndex < order.length) && inp[order[nextIndex].field] !== undefined
         let newout = undefined
-        if (output && output.length > 0) {
-            for (let i = 0; i < output.length; i++) {
-                if (output[i].name === inp[currentOrder.field].name) {
+        if (outputs?.length > 0) {
+            for (const output of outputs) {
+                if (output.name === inp[currentOrder.field].name) {
                     exist = true
-                    newout = output[i]
+                    newout = output
                     break;
                 }
             }
         }
-        if (exist === false) {
+        if (!exist) {
             newout = { ...data, field: currentOrder.field, header: currentOrder.label, childrenLabel: order[nextIndex] && order[nextIndex].label }
             if (currentOrder.alerts) {
                 let alerts = currentOrder.alerts
@@ -67,7 +65,7 @@ const formatSequence = (order, index, inp, output) => {
         }
 
         if (exist === false) {
-            output.push(newout)
+            outputs.push(newout)
         }
 
         if ((!newout.alert || !newout.alert.self) && alert) {
@@ -86,10 +84,10 @@ const formatSequence = (order, index, inp, output) => {
     }
 }
 
-export const formatData = (order, rawData) => {
+export const formatData = (order, rawDatas) => {
     let data = { name: '', children: [] }
-    for (let i = 0; i < rawData.length; i++) {
-        let item = rawData[i]
+    for (const rawData of rawDatas) {
+        let item = rawData
         formatSequence(order, 0, item, data.children)
     }
     return data
@@ -126,7 +124,6 @@ const calculateTotal = (order, total, data) => {
 }
 
 const format = (worker) => {
-    console.time()
     const { region, rawList, initFormat, sequence } = worker
     let dataList = initFormat ? [] : rawList
     let total = {}
@@ -174,7 +171,7 @@ const format = (worker) => {
                     final[fields.region] = { name: region }
                     final[form.field] = {}
                     final[form.field].name = data[form.field]
-                    final[form.field].data = data
+                    final[form.field].data = {...data, region}
                     tempFields.forEach(field => {
                         if (Array.isArray(field)) {
                             field.forEach(item => {
@@ -198,11 +195,9 @@ const format = (worker) => {
 
     }
     let sunburstData = formatData(sequence, dataList)
-    console.timeLog()
-    console.timeEnd()
-    self.postMessage({ status: 200, data: sunburstData, total, dataList })
+    postMessage({ status: 200, data: sunburstData, total, dataList })
 }
 
-self.addEventListener("message", (event) => {
+addEventListener("message", (event) => {
     format(event.data)
 });

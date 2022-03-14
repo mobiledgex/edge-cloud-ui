@@ -1,8 +1,8 @@
 
-import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST } from "../../../helper/constant/endpoint";
-import { MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION } from "../../../helper/constant/perpetual";
-import * as serverFields from "../../../helper/formatter/serverFields";
-import { fields } from "../../../services";
+import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST } from "../../../../../helper/constant/endpoint";
+import { MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION } from "../../../../../helper/constant/perpetual";
+import * as serverFields from "../../../../../helper/formatter/serverFields";
+import { fields } from "../../../../../services";
 
 /**
  * alerts array order indicates priority with last index indicates high priority
