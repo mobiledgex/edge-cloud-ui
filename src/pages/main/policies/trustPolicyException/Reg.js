@@ -68,7 +68,7 @@ class TrustPolicyExceptionReg extends React.Component {
         if(redux_org.isAdmin(this))
         {
             requestData = fetchDataByField(forms, [fields.region, fields.organizationName])
-            requestData.isDeveloper = true
+            requestData[fields.isDeveloper] = true
         }
         this.cloudletPoolList = await service.showAuthSyncRequest(this, showConfirmation(this, requestData))
         this.updateUI(form)

@@ -328,5 +328,6 @@ export const fields = {
     mncmulti: 'mncmulti',
     dedicatedIp: 'dedicatedIp',
     singleK8sClusterOwner: 'singleK8sClusterOwner',
-    platformHighAvailability: 'platformHighAvailability'
+    platformHighAvailability: 'platformHighAvailability',
+    isDeveloper:'isDeveloper'
 }

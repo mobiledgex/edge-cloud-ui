@@ -1,7 +1,8 @@
 import { endpoint, perpetual } from "../../../helper/constant"
 import { redux_org } from '../../../helper/reduxData'
-import responseFields from '../../model/responseFields'
+import {responseFields} from '../../model/responseFields'
 import { fields } from "../../model/format"
+import { pick } from "../../../helper/constant/operators"
 
 export const keys = () => ([
     { field: fields.region, label: 'Region', serverField: responseFields.Region, sortable: true, visible: true, filter: true, key: true },
@@ -30,16 +31,16 @@ export const createConfirmation = (data) => {
 }
 
 export const showConfirmation = (self, data) => {
-    let requestData = {}
+    let requestData = pick(data, [fields.region])
     let organizationName = redux_org.isAdmin(self) ? data[fields.organizationName] : redux_org.nonAdminOrg(self)
     if (organizationName) {
-        if (redux_org.isDeveloper(self)) {
-            data[responseFields.Org] = organizationName
+        if (data[fields.isDeveloper] || redux_org.isDeveloper(self)) {
+            requestData[responseFields.Org] = organizationName
         }
         else if (redux_org.isOperator(self)) {
-            data[responseFields.CloudletPoolOrg] = organizationName
+            requestData[responseFields.CloudletPoolOrg] = organizationName
         }
-        return { method: endpoint.SHOW_POOL_ACCESS_CONFIRMATION, data, keys: keys() }
+        return { method: endpoint.SHOW_POOL_ACCESS_CONFIRMATION, data: requestData, keys: keys() }
     }
 }
 
