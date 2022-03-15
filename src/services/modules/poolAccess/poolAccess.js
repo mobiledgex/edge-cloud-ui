@@ -23,6 +23,20 @@ const getRequestData = (data) => {
     }
 }
 
+const getShowRequestData = (self, data) => {
+    let requestData = pick(data, [fields.region])
+    let organizationName = redux_org.isAdmin(self) ? data[fields.organizationName] : redux_org.nonAdminOrg(self)
+    if (organizationName) {
+        if (data[fields.type] === perpetual.DEVELOPER || redux_org.isDeveloper(self)) {
+            requestData[responseFields.Org] = organizationName
+        }
+        else if (data[fields.type] === perpetual.OPERATOR || redux_org.isOperator(self)) {
+            requestData[responseFields.CloudletPoolOrg] = organizationName
+        }
+    }
+    return requestData
+}
+
 export const createInvitation = (data) => {
     return { method: endpoint.CREATE_POOL_ACCESS_INVITATION, data: getRequestData(data), success: 'Invitation Created' }
 }
@@ -31,31 +45,17 @@ export const createConfirmation = (data) => {
 }
 
 export const showConfirmation = (self, data) => {
-    let requestData = pick(data, [fields.region])
-    let organizationName = redux_org.isAdmin(self) ? data[fields.organizationName] : redux_org.nonAdminOrg(self)
-    if (organizationName) {
-        if (data[fields.isDeveloper] || redux_org.isDeveloper(self)) {
-            requestData[responseFields.Org] = organizationName
-        }
-        else if (redux_org.isOperator(self)) {
-            requestData[responseFields.CloudletPoolOrg] = organizationName
-        }
+    let requestData = getShowRequestData(self, data)
+    if (requestData) {
         return { method: endpoint.SHOW_POOL_ACCESS_CONFIRMATION, data: requestData, keys: keys() }
     }
 }
 
 export const showInvitation = (self, data) => {
-    data = data ? data : {}
-    let org = redux_org.nonAdminOrg(self)
-    if (org) {
-        if (redux_org.isDeveloper(self)) {
-            data[responseFields.Org] = org
-        }
-        else if (redux_org.isOperator(self)) {
-            data[responseFields.CloudletPoolOrg] = org
-        }
+    let requestData = getShowRequestData(self, data)
+    if (requestData) {
+        return { method: endpoint.SHOW_POOL_ACCESS_INVITATION, data, keys: keys() }
     }
-    return { method: endpoint.SHOW_POOL_ACCESS_INVITATION, data, keys: keys() }
 }
 
 export const deleteConfirmation = (data) => {
@@ -68,30 +68,23 @@ export const deleteInvitation = (data) => {
 
 export const accessGranted = (self, orgInfo) => {
     let data = {}
-    let org = orgInfo[fields.organizationName]
-    if (org) {
+    let organizationName = orgInfo[fields.organizationName]
+    if (organizationName) {
         if (orgInfo[fields.type] === perpetual.DEVELOPER) {
-            data[responseFields.Org] = org
+            data[responseFields.Org] = organizationName
         }
         else if (orgInfo[fields.type] === perpetual.OPERATOR) {
-            data[responseFields.CloudletPoolOrg] = org
+            data[responseFields.CloudletPoolOrg] = organizationName
         }
     }
     return { method: endpoint.SHOW_POOL_ACCESS_GRANTED, data, keys: keys() }
 }
 
 export const accessPending = (self, data) => {
-    data = data ? data : {}
-    let org = redux_org.nonAdminOrg(self)
-    if (org) {
-        if (redux_org.isDeveloper(self)) {
-            data[responseFields.Org] = org
-        }
-        else if (redux_org.isOperator(self)) {
-            data[responseFields.CloudletPoolOrg] = org
-        }
+    let requestData = getShowRequestData(self, data)
+    if (requestData) {
+        return { method: endpoint.SHOW_POOL_ACCESS_PENDING, data }
     }
-    return { method: endpoint.SHOW_POOL_ACCESS_PENDING, data }
 }
 
 export const multiDataRequest = (keys, mcList) => {

@@ -52,10 +52,10 @@ class TrustPolicyExceptionReg extends React.Component {
     }
 
     appNameValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
+        for (const form of forms) {
             if (form.field === fields.version) {
                 this.updateUI(form)
+                break;
             }
         }
         if (!isInit) {
@@ -64,15 +64,19 @@ class TrustPolicyExceptionReg extends React.Component {
     }
 
     getCloudletPoolInfo = async (form, forms, region) => {
-        let requestData = {region}
-        if(redux_org.isAdmin(this))
-        {
+        let requestData = undefined
+        if (redux_org.isAdmin(this)) {
             requestData = fetchDataByField(forms, [fields.region, fields.organizationName])
-            requestData[fields.isDeveloper] = true
+            requestData[fields.type] = perpetual.DEVELOPER
         }
-        this.cloudletPoolList = await service.showAuthSyncRequest(this, showConfirmation(this, requestData))
-        this.updateUI(form)
-        this.updateState({ forms })
+        else {
+            requestData = { region }
+        }
+        if (requestData) {
+            this.cloudletPoolList = await service.showAuthSyncRequest(this, showConfirmation(this, requestData))
+            this.updateUI(form)
+            this.updateState({ forms })
+        }
     }
 
     operatorValueChange = (currentForm, forms, isInit) => {
@@ -122,8 +126,7 @@ class TrustPolicyExceptionReg extends React.Component {
 
     ocProtcolValueChange = (currentForm, forms, isInit) => {
         let parentForm = currentForm.parent.form
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i];
+        for (const form of forms) {
             if (form.uuid === parentForm.uuid) {
                 for (let outboundConnectionForm of form.forms) {
                     if (outboundConnectionForm.field === fields.ocPortMin || outboundConnectionForm.field === fields.ocPortMax) {
@@ -140,8 +143,7 @@ class TrustPolicyExceptionReg extends React.Component {
     }
 
     organizationValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
+        for (const form of forms) {
             if (form.field === fields.operatorName) {
                 this.getCloudletPoolInfo(form, forms)
             }
