@@ -13,6 +13,7 @@ import { createFederator, updateFederator } from '../../../../services/modules/f
 import { uniqueId } from '../../../../helper/constant/shared';
 import FederationKey from './FederatorKey';
 import { readJsonFile } from '../../../../utils/file_util';
+import { urlWithoutPort } from '../../../../utils/location_utils';
 
 class RegisterOperator extends React.Component {
     constructor(props) {
@@ -152,7 +153,7 @@ class RegisterOperator extends React.Component {
 
             let fedAddrs = responseData.federationaddr.split(':')
             if (fedAddrs && fedAddrs.length === 2) {
-                keyData[fields.federationAddr] = `${window.location.protocol}//${window.location.hostname}:${fedAddrs[1]}`
+                keyData[fields.federationAddr] = `${urlWithoutPort()}:${fedAddrs[1]}`
             }
             this.updateState({ keyData })
         }

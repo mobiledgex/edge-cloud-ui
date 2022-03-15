@@ -3,20 +3,20 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Popover from '@material-ui/core/Popover';
 import { Badge } from '@material-ui/core';
-import {IconButton} from '../../../hoc/mexui'
+import { IconButton } from '../../../hoc/mexui'
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import { showAlerts } from '../../../services/modules/alerts'
 import { redux_org } from '../../../helper/reduxData'
-import * as constant from '../../../constant'
 import Alerts from './alerts/Alerts'
 import sortBy from 'lodash/sortBy'
 import './style.css'
 
-import notificationWorker from './services/notifcation.worker.js';
+import NotificationWorker from './services/notifcation.worker.js';
 import { operators } from '../../../helper/constant';
 import { fetchToken } from '../../../services/service';
 import { fields } from '../../../services/model/format';
-import { LS_NOTIFICATION } from '../../../helper/constant/perpetual';
+import { LS_NOTIFICATION, RESPONSE_STATUS_SUCCESS } from '../../../helper/constant/perpetual';
+import { processWorker } from "../../../services/worker/interceptor";
 import isEmpty from 'lodash/isEmpty';
 
 const alertStatus = () => {
@@ -43,9 +43,8 @@ class AlertGlobal extends React.Component {
             showDot: alertStatus() ? alertStatus().showDot : false
         }
         this._isMounted = false
-        this.intervalId = undefined
-        this.regions = constant.regions()
-        this.worker = new notificationWorker()
+        this.regions = props.regions
+        this.worker = undefined
     }
 
     updateState = (data) => {
@@ -123,46 +122,36 @@ class AlertGlobal extends React.Component {
         return showDot
     }
 
-    workerListener = () => {
-        this.worker.addEventListener('message', (event) => {
-            let response = event.data
-            if (response.status === 200) {
-                let responseData = response.data.data
-                const region = response.data.region
-                if (responseData.length > 0) {
-                    let newDataList = sortBy(responseData, [fields.activeAt]).reverse()
-                    let newActiveDate = newDataList[0][fields.activeAt]
-                    const showDot = this.processDot(newActiveDate)
-                    if (this._isMounted) {
-                        this.setState(prevState => {
-                            let dataList = prevState.dataList
-                            dataList = [...dataList, ...newDataList]
-                            return { dataList, showDot }
-                        })
-                    }
-                }
-            }
-        })
+    terminateWorker = (worker) => {
+        if (Boolean(worker)) {
+            worker.removeEventListener('message', () => { })
+            worker.terminate()
+        }
     }
 
-    sendRequest = (region) => {
-        this.worker.postMessage({ token: fetchToken(this), request: showAlerts(this, { region }) })
-    }
-
-    fetchdata = () => {
+    fetchdata = async () => {
+        this.terminateWorker(this.worker)
+        this.worker = new NotificationWorker()
+        let requestList = []
         this.regions.map(region => {
-            this.sendRequest(region)
+            requestList.push(showAlerts(this, { region }))
         })
-
-        this.intervalId = setInterval(() => {
-            this.regions.map(region => {
-                this.sendRequest(region)
-            })
-        }, 3 * 10 * 1000);
+        let response = await processWorker(this, this.worker, {
+            token: fetchToken(this),
+            requestList: requestList
+        })
+        if (response?.status === RESPONSE_STATUS_SUCCESS) {
+            let dataList = response.data?.alertList
+            if (dataList?.length > 0) {
+                dataList = sortBy(dataList, [fields.activeAt]).reverse()
+                let newActiveDate = dataList[0][fields.activeAt]
+                const showDot = this.processDot(newActiveDate)
+                this.updateState({ dataList, showDot })
+            }
+        }
     }
 
     componentDidMount() {
-        this.workerListener()
         this._isMounted = true
         if (redux_org.orgName(this) || redux_org.isAdmin(this)) {
             this.fetchdata()
@@ -175,7 +164,6 @@ class AlertGlobal extends React.Component {
                 this.fetchdata()
             }
             else {
-                clearInterval(this.intervalId)
                 this.updateState({ dataList: [] })
                 this.fetchdata()
             }
@@ -184,17 +172,14 @@ class AlertGlobal extends React.Component {
 
     componentWillUnmount() {
         this._isMounted = false
-        if (this.intervalId) {
-            clearInterval(this.intervalId)
-        }
-        this.worker.removeEventListener('message', () => { })
-        this.worker.terminate()
+        this.terminateWorker(this.worker)
     }
 }
 
 const mapStateToProps = (state) => {
     return {
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 }
 

@@ -12,6 +12,7 @@ import { perpetual } from '../../../helper/constant';
 import { showUsers } from '../../../services/modules/users';
 import { ADMIN_MANAGER } from '../../../helper/constant/perpetual';
 import { EmailVerfied, Lock } from '../../../helper/formatter/ui';
+import { hostURL } from '../../../utils/location_utils';
 
 class AccountList extends Component {
     constructor(props) {
@@ -70,7 +71,7 @@ class AccountList extends Component {
     }
 
     onSendEmail = async (username, email) => {
-        let data = { username: username, email: email, callbackurl: `https://${window.location.host}/#/verify` }
+        let data = { username: username, email: email, callbackurl: `https://${hostURL()}/#/verify` }
         if (await serverData.sendVerify(this, data)) {
             this.props.handleAlertInfo('success', 'Verification email sent')
         }

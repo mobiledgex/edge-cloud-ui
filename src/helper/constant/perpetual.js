@@ -1,8 +1,10 @@
 
 export const MOBILEDGEX = 'MobiledgeX'
 export const STATUS_UNDER_MAINTAINANCE = 999
-
 export const BOOLEAN = 'boolean'
+
+export const RESPONSE_STATUS_EXPIRED = 401
+export const RESPONSE_STATUS_SUCCESS = 200
 
 export const COLOR_GREEN = '#388E3C'
 export const COLOR_RED = '#ab2424'
@@ -274,3 +276,7 @@ export const PAGE_TRUST_POLICY_EXCEPTION = 'TrustPolicyException'
 export const APPROVAL_REQUESTED = 'Approval Requested'
 export const APPROVE = 'Approve'
 export const REJECT = 'Reject'
+
+export const PROTOCOL_TCP = 'TCP'
+export const PROTOCOL_ICMP = 'ICMP'
+export const PROTOCOL_UDP = 'UDP'
