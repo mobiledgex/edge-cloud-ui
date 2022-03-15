@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON } from '../../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON, fetchDataByField } from '../../../../hoc/forms/MexForms';
 import { redux_org } from '../../../../helper/reduxData'
 //model
 import { service, fields, updateFieldDataNew } from '../../../../services';
@@ -13,7 +13,6 @@ import { Grid } from '@material-ui/core';
 import { perpetual, role } from '../../../../helper/constant';
 import { uniqueId, validateRemoteCIDR } from '../../../../helper/constant/shared';
 import { _sort } from '../../../../helper/constant/operators';
-import { showCloudletPools } from '../../../../services/modules/cloudletPool'
 import { getAppList } from '../../../../services/modules/app';
 import { developerRoles } from '../../../../constant'
 import { updateTrustPolicyException, createTrustPolicyException } from '../../../../services/modules/trustPolicyException';
@@ -64,10 +63,14 @@ class TrustPolicyExceptionReg extends React.Component {
         }
     }
 
-    getCloudletPoolInfo = async (region, form, forms) => {
-        if (!this.requestedRegionList.includes(region)) {
-            this.cloudletPoolList = [...this.cloudletPoolList, ...await service.showAuthSyncRequest(this, showConfirmation(this, { region }))]
+    getCloudletPoolInfo = async (form, forms, region) => {
+        let requestData = {region}
+        if(redux_org.isAdmin(this))
+        {
+            requestData = fetchDataByField(forms, [fields.region, fields.organizationName])
+            requestData.isDeveloper = true
         }
+        this.cloudletPoolList = await service.showAuthSyncRequest(this, showConfirmation(this, requestData))
         this.updateUI(form)
         this.updateState({ forms })
     }
@@ -86,19 +89,16 @@ class TrustPolicyExceptionReg extends React.Component {
 
     regionValueChange = (currentForm, forms, isInit) => {
         let region = currentForm.value;
-        if (region) {
-            if (!isInit) {
-                for (const form of forms) {
-                    if (form.field === fields.operatorName) {
-                        this.getCloudletPoolInfo(region, form, forms)
-                    }
-                    else if (form.field === fields.appName) {
-
-                        this.getAppInfo(region, form, forms)
-                    }
+        if (!isInit && region) {
+            for (const form of forms) {
+                if (form.field === fields.operatorName) {
+                    this.getCloudletPoolInfo(form, forms, region)
                 }
-                this.requestedRegionList.push(region)
+                else if (form.field === fields.appName) {
+                    this.getAppInfo(region, form, forms)
+                }
             }
+            this.requestedRegionList.push(region)
         }
     }
 
@@ -142,7 +142,10 @@ class TrustPolicyExceptionReg extends React.Component {
     organizationValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.appName) {
+            if (form.field === fields.operatorName) {
+                this.getCloudletPoolInfo(form, forms)
+            }
+            else if (form.field === fields.appName) {
                 this.updateUI(form)
                 this.appNameValueChange(form, forms, true)
             }

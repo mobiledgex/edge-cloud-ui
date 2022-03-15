@@ -1,23 +1,24 @@
 import { endpoint, perpetual } from "../../../helper/constant"
 import { redux_org } from '../../../helper/reduxData'
+import responseFields from '../../model/responseFields'
 import { fields } from "../../model/format"
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', serverField: 'Region', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.poolName, serverField: 'CloudletPool', label: 'Pool Name', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.operatorName, serverField: 'CloudletPoolOrg', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.organizationName, serverField: 'Org', label: 'Developer', sortable: true, visible: true, key: true },
-    { field: fields.decision, serverField: 'Decision', label: 'Status', visible: true, format: true },
+    { field: fields.region, label: 'Region', serverField: responseFields.Region, sortable: true, visible: true, filter: true, key: true },
+    { field: fields.poolName, serverField: responseFields.CloudletPool, label: 'Pool Name', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.operatorName, serverField: responseFields.CloudletPoolOrg, label: 'Operator', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.organizationName, serverField: responseFields.Org, label: 'Developer', sortable: true, visible: true, key: true },
+    { field: fields.decision, serverField: responseFields.Decision, label: 'Status', visible: true, format: true },
     { field: fields.confirm, label: 'Accepted', detailView: false }
 ])
 
 const getRequestData = (data) => {
     return {
-        Region: data[fields.region],
-        CloudletPool: data[fields.poolName],
-        CloudletPoolOrg: data[fields.operatorName],
-        Org: data[fields.organizationName],
-        Decision: data[fields.decision],
+        [responseFields.Region]: data[fields.region],
+        [responseFields.CloudletPool]: data[fields.poolName],
+        [responseFields.CloudletPoolOrg]: data[fields.operatorName],
+        [responseFields.Org]: data[fields.organizationName],
+        [responseFields.Decision]: data[fields.decision],
     }
 }
 
@@ -29,17 +30,17 @@ export const createConfirmation = (data) => {
 }
 
 export const showConfirmation = (self, data) => {
-    data = data ? data : {}
-    let org = redux_org.nonAdminOrg(self)
-    if (org) {
+    let requestData = {}
+    let organizationName = redux_org.isAdmin(self) ? data[fields.organizationName] : redux_org.nonAdminOrg(self)
+    if (organizationName) {
         if (redux_org.isDeveloper(self)) {
-            data['Org'] = org
+            data[responseFields.Org] = organizationName
         }
         else if (redux_org.isOperator(self)) {
-            data['CloudletPoolOrg'] = org
+            data[responseFields.CloudletPoolOrg] = organizationName
         }
+        return { method: endpoint.SHOW_POOL_ACCESS_CONFIRMATION, data, keys: keys() }
     }
-    return { method: endpoint.SHOW_POOL_ACCESS_CONFIRMATION, data, keys: keys() }
 }
 
 export const showInvitation = (self, data) => {
@@ -47,10 +48,10 @@ export const showInvitation = (self, data) => {
     let org = redux_org.nonAdminOrg(self)
     if (org) {
         if (redux_org.isDeveloper(self)) {
-            data['Org'] = org
+            data[responseFields.Org] = org
         }
         else if (redux_org.isOperator(self)) {
-            data['CloudletPoolOrg'] = org
+            data[responseFields.CloudletPoolOrg] = org
         }
     }
     return { method: endpoint.SHOW_POOL_ACCESS_INVITATION, data, keys: keys() }
@@ -69,10 +70,10 @@ export const accessGranted = (self, orgInfo) => {
     let org = orgInfo[fields.organizationName]
     if (org) {
         if (orgInfo[fields.type] === perpetual.DEVELOPER) {
-            data['Org'] = org
+            data[responseFields.Org] = org
         }
         else if (orgInfo[fields.type] === perpetual.OPERATOR) {
-            data['CloudletPoolOrg'] = org
+            data[responseFields.CloudletPoolOrg] = org
         }
     }
     return { method: endpoint.SHOW_POOL_ACCESS_GRANTED, data, keys: keys() }
@@ -83,10 +84,10 @@ export const accessPending = (self, data) => {
     let org = redux_org.nonAdminOrg(self)
     if (org) {
         if (redux_org.isDeveloper(self)) {
-            data['Org'] = org
+            data[responseFields.Org] = org
         }
         else if (redux_org.isOperator(self)) {
-            data['CloudletPoolOrg'] = org
+            data[responseFields.CloudletPoolOrg] = org
         }
     }
     return { method: endpoint.SHOW_POOL_ACCESS_PENDING, data }
