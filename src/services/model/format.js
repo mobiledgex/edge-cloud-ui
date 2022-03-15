@@ -149,8 +149,6 @@ export const fields = {
     manage: 'manage',
     checkbox:'checkbox',
     poolName: 'poolName',
-    operatorOrg: 'operatorOrg',
-    developerOrg: 'developerOrg',
     invite: 'invite',
     confirm: 'confirm',
     decision: 'decision',
