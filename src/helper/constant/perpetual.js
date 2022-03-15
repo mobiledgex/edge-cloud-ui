@@ -277,3 +277,7 @@ export const PAGE_TRUST_POLICY_EXCEPTION = 'TrustPolicyException'
 export const APPROVAL_REQUESTED = 'Approval Requested'
 export const APPROVE = 'Approve'
 export const REJECT = 'Reject'
+
+export const PROTOCOL_TCP = 'TCP'
+export const PROTOCOL_ICMP = 'ICMP'
+export const PROTOCOL_UDP = 'UDP'

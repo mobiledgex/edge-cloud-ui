@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON } from '../../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON, fetchDataByField } from '../../../../hoc/forms/MexForms';
 import { redux_org } from '../../../../helper/reduxData'
 //model
 import { service, fields, updateFieldDataNew } from '../../../../services';
@@ -13,12 +13,12 @@ import { Grid } from '@material-ui/core';
 import { perpetual, role } from '../../../../helper/constant';
 import { uniqueId, validateRemoteCIDR } from '../../../../helper/constant/shared';
 import { _sort } from '../../../../helper/constant/operators';
-import { showCloudletPools } from '../../../../services/modules/cloudletPool'
 import { getAppList } from '../../../../services/modules/app';
-import { developerRoles, operatorRoles } from '../../../../constant'
+import { developerRoles } from '../../../../constant'
 import { updateTrustPolicyException, createTrustPolicyException } from '../../../../services/modules/trustPolicyException';
 import { HELP_TRUST_POLICY_EXCEPTION } from '../../../../tutorial';
 import cloneDeep from 'lodash/cloneDeep';
+import { showConfirmation } from '../../../../services/modules/poolAccess';
 
 class TrustPolicyExceptionReg extends React.Component {
     constructor(props) {
@@ -52,10 +52,10 @@ class TrustPolicyExceptionReg extends React.Component {
     }
 
     appNameValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
+        for (const form of forms) {
             if (form.field === fields.version) {
                 this.updateUI(form)
+                break;
             }
         }
         if (!isInit) {
@@ -63,54 +63,43 @@ class TrustPolicyExceptionReg extends React.Component {
         }
     }
 
-    getCloudletPoolInfo = async (form, forms) => {
-        let region = undefined;
-        let organizationName = undefined;
-        for (let i = 0; i < forms.length; i++) {
-            let tempForm = forms[i]
-            if (tempForm.field === fields.region) {
-                region = tempForm.value
-            }
-            else if (tempForm.field === fields.organizationName) {
-                organizationName = tempForm.value
-            }
+    getCloudletPoolInfo = async (form, forms, region) => {
+        let requestData = undefined
+        if (redux_org.isAdmin(this)) {
+            requestData = fetchDataByField(forms, [fields.region, fields.organizationName])
+            requestData[fields.type] = perpetual.DEVELOPER
         }
-        if (region && organizationName) {
-            let requestData = { region: region, org: organizationName }
-            let cloudletInfo = await service.showAuthSyncRequest(this, showCloudletPools(this, requestData))
-            this.cloudletPoolList = cloudletInfo
+        else {
+            requestData = { region }
+        }
+        if (requestData) {
+            this.cloudletPoolList = await service.showAuthSyncRequest(this, showConfirmation(this, requestData))
             this.updateUI(form)
             this.updateState({ forms })
         }
     }
 
     operatorValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
+        for (const form of forms) {
             if (form.field === fields.poolName) {
                 this.updateUI(form)
                 if (!isInit) {
                     this.updateState({ forms })
                 }
+                break;
             }
         }
     }
 
     regionValueChange = (currentForm, forms, isInit) => {
         let region = currentForm.value;
-        if (region) {
-            for (let i = 0; i < forms.length; i++) {
-                let form = forms[i]
+        if (!isInit && region) {
+            for (const form of forms) {
                 if (form.field === fields.operatorName) {
-                    this.operatorValueChange(form, forms, isInit)
-                    if (!isInit) {
-                        this.getCloudletPoolInfo(form, forms)
-                    }
+                    this.getCloudletPoolInfo(form, forms, region)
                 }
                 else if (form.field === fields.appName) {
-                    if (!isInit) {
-                        this.getAppInfo(region, form, forms)
-                    }
+                    this.getAppInfo(region, form, forms)
                 }
             }
             this.requestedRegionList.push(region)
@@ -137,12 +126,11 @@ class TrustPolicyExceptionReg extends React.Component {
 
     ocProtcolValueChange = (currentForm, forms, isInit) => {
         let parentForm = currentForm.parent.form
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i];
+        for (const form of forms) {
             if (form.uuid === parentForm.uuid) {
                 for (let outboundConnectionForm of form.forms) {
                     if (outboundConnectionForm.field === fields.ocPortMin || outboundConnectionForm.field === fields.ocPortMax) {
-                        outboundConnectionForm.visible = !(currentForm.value === 'icmp')
+                        outboundConnectionForm.visible = !(currentForm.value === perpetual.PROTOCOL_ICMP)
                         outboundConnectionForm.value = undefined
                     }
                 }
@@ -155,13 +143,9 @@ class TrustPolicyExceptionReg extends React.Component {
     }
 
     organizationValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
+        for (const form of forms) {
             if (form.field === fields.operatorName) {
-                this.operatorValueChange(form, forms, isInit)
-                if (!isInit) {
-                    this.getCloudletPoolInfo(form, forms)
-                }
+                this.getCloudletPoolInfo(form, forms)
             }
             else if (form.field === fields.appName) {
                 this.updateUI(form)
@@ -293,7 +277,7 @@ class TrustPolicyExceptionReg extends React.Component {
             { field: fields.appName, label: 'App', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], update: { key: true }, tip: 'The name of the application to deploy.' },
             { field: fields.version, label: 'App Version', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: fields.appName }], update: { key: true }, tip: 'The version of the application to deploy.' },
             { field: fields.operatorName, label: 'Operator', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Organization of the cloudlet pool site', update: { key: true } },
-            { field: fields.poolName, label: 'Cloudlet Pool', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Pool', rules: { required: true }, visible: true, dependentData: [{ index: 6, field: fields.operatorName }], update: { key: true }, tip: 'CloudletPool Name' },
+            { field: fields.poolName, label: 'Cloudlet Pool', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Pool', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 6, field: fields.operatorName }], update: { key: true }, tip: 'CloudletPool Name' },
             { field: fields.state, label: 'Action', formType: SELECT, placeholder: 'Select Action', rules: { required: true }, visible: !redux_org.isDeveloper(this), tip: 'State of the exception within the approval process.', update: { edit: true } },
             { field: fields.requiredOutboundConnections, label: 'Required Outbound Connections', formType: HEADER, forms: !redux_org.isOperator(this) ? [{ formType: ICON_BUTTON, label: 'Add Connections', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getOutboundConnectionsForm }] : undefined, update: { edit: true, ignoreCase: true }, visible: true, tip: 'Connections this app require to determine if the app is compatible with a trust policy Exception' },
         ]
@@ -317,7 +301,7 @@ class TrustPolicyExceptionReg extends React.Component {
     }
 
     outboundConnectionsForm = () => ([
-        { field: fields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true, required: true, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 4, visible: true, options: ['tcp', 'udp', 'icmp'], update: { edit: true } },
+        { field: fields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true, required: true, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 4, visible: true, options: [perpetual.PROTOCOL_TCP, perpetual.PROTOCOL_UDP, perpetual.PROTOCOL_ICMP], update: { edit: true } },
         { field: fields.ocPortMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number', min: 1, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: fields.ocPortMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number', min: 1, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
@@ -371,11 +355,11 @@ class TrustPolicyExceptionReg extends React.Component {
                         outboundConnectionsForm.value = requiredOutboundConnection['remote_cidr']
                     }
                     else if (outboundConnectionsForm.field === fields.ocPortMin) {
-                        outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
+                        outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== perpetual.PROTOCOL_ICMP
                         outboundConnectionsForm.value = requiredOutboundConnection['port_range_min']
                     }
                     else if (outboundConnectionsForm.field === fields.ocPortMax) {
-                        outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
+                        outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== perpetual.PROTOCOL_ICMP
                         outboundConnectionsForm.value = requiredOutboundConnection['port_range_max']
                     }
                 }

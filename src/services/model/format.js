@@ -1,4 +1,5 @@
 export const fields = {
+    empty:'empty',
     uuid: 'uuid',
     region: 'region',
     clusterName: 'clusterName',
@@ -149,8 +150,6 @@ export const fields = {
     manage: 'manage',
     checkbox: 'checkbox',
     poolName: 'poolName',
-    operatorOrg: 'operatorOrg',
-    developerOrg: 'developerOrg',
     invite: 'invite',
     confirm: 'confirm',
     decision: 'decision',

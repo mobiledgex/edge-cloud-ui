@@ -36,7 +36,10 @@ export const omit = (item, fields) => {
 export const pick = (item, fields) => {
     return _pick(item, Array.isArray(fields) ? fields : [fields])
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> e751119be9a721c3bbd9d7aedce1532cf2e93b40
 
 export const _orderBy = (data, fields, order = 'asc') => {
     return orderBy(data, fields, order)

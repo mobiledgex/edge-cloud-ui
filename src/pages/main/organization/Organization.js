@@ -20,7 +20,7 @@ import { authSyncRequest, fetchToken } from '../../../services/service';
 import { validatePrivateAccess } from '../../../constant';
 import { getUserMetaData } from '../../../helper/ls';
 import { updateUserMetaData } from '../../../services/modules/users';
-import { showUsers } from '../../../services/modules/users';
+import { showUsers, showUser } from '../../../services/modules/users';
 import { ACTION_REFRESH } from '../../../hoc/datagrid/MexToolbar';
 import { ICON_COLOR } from '../../../helper/constant/colors';
 
@@ -231,7 +231,7 @@ class OrganizationList extends React.Component {
             id: perpetual.PAGE_ORGANIZATIONS,
             headerLabel: 'Organizations',
             nameField: fields.organizationName,
-            requestType: [showOrganizations, showUsers],
+            requestType: [showOrganizations, showUsers, showUser],
             sortBy: [fields.organizationName],
             keys: this.keys,
             iconKeys:iconKeys(),

@@ -1,7 +1,7 @@
 import * as formatter from '../../model/format'
 import * as serverData from '../../model/serverData'
 import { redux_org } from '../../../helper/reduxData'
-import { endpoint } from '../../../helper/constant';
+import { endpoint, perpetual } from '../../../helper/constant';
 import { generateUUID } from '../../format/shared';
 import { showAuthSyncRequest } from '../../service';
 
@@ -27,9 +27,20 @@ export const keys = () => ([
 
 const getKey = (data) => {
   let trustpolicy = {}
-  trustpolicy.key = { organization: data[fields.operatorName] ? data[fields.operatorName] : data[fields.organizationName], name: data[fields.trustPolicyName] }
+  trustpolicy.key = { organization: data[fields.operatorName], name: data[fields.trustPolicyName] }
   if (data[fields.outboundSecurityRules]) {
-    trustpolicy.outbound_security_rules = data[fields.outboundSecurityRules]
+    let newRules = []
+    for (const rule of data[fields.outboundSecurityRules]) {
+      let newRule = {}
+      if (rule[fields.protocol] !== perpetual.PROTOCOL_ICMP) {
+        newRule.port_range_max = rule[fields.portRangeMin]
+        newRule.port_range_min = rule[fields.portRangeMax]
+      }
+      newRule.protocol = rule[fields.protocol]
+      newRule.remote_cidr = rule[fields.remoteCIDR]
+      newRules.push(newRule)
+    }
+    trustpolicy.outbound_security_rules = newRules
   }
   if (data[fields.fields]) {
     trustpolicy.fields = data[fields.fields]
@@ -53,7 +64,7 @@ export const getTrustPolicyList = async (self, data) => {
 
 export const updateTrustPolicy = (self, data, callback) => {
   let requestData = getKey(data)
-  let request = { uuid: data.uuid ? data.uuid : generateUUID(keys(), data), method: endpoint.UPDATE_TRUST_POLICY, data: requestData }
+  let request = { uuid: data.uuid ?? generateUUID(keys(), data), method: endpoint.UPDATE_TRUST_POLICY, data: requestData }
   return serverData.sendWSRequest(self, request, callback, data)
 }
 

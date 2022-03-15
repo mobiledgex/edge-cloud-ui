@@ -1503,65 +1503,10 @@ rect.zoom {
     fill-opacity: 0.5;
 }
 
-
-/* mark */
-.markBox {
-    display:inline-block;
-    margin-right: 26px;
-}
-
-.markBox .mark {
-    display: inline-block;
-    min-width: 25px;
-    padding: 4px;
-    color:#fff;
-    margin-left: -2px;
-    text-align: center;
-    font-size: 14px;
-}
-.markBox .mark.type {
-    width: 16px;
-    height: 16px;
-    vertical-align: middle;
-}
-
-.markBox .mark.markA {
-    border-radius: 5px;
-}
-
-.markBox .mark.markD {
-    border-radius: 5px;
-}
-
-.markBox .mark.markO {
-    border-radius: 5px;
-}
-
-.markBox .mark.markA.markS {
-    background-color: rgba(136,221,0,.8);
-}
-.markBox .mark.markD.markM {
-    background-color: rgba(255, 247, 2, 0.7);
-}
-.markBox .mark.markD.markC {
-    background-color: rgba(255, 247, 2, 0.5);
-}
-.markBox .mark.markD.markV {
-    background-color: rgba(255, 247, 2, 0.3);
-}
-.markBox .mark.markO.markM {
-    background-color: rgba(204, 236, 255, 0.7);
-}
-.markBox .mark.markO.markC {
-    background-color: rgba(204, 236, 255, 0.5);
-}
-.markBox .mark.markO.markV {
-    background-color: rgba(204, 236, 255, 0.3);
-}
-
 .modal_role .content .description .stepOrgDeveloper2 {
     margin: 0;
 }
+
 .modal_role .content .description .stepOrgDeveloper2 > .row {
     display: flex;
     align-items: center;

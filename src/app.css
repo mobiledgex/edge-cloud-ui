@@ -173,16 +173,35 @@ h6 {
     background-color: #470 !important;
 }
 
-.mex-card {
-    position: relative;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    min-width: 0;
-    word-wrap: break-word;
-    background-color: #2c2d34;
-    background-clip: border-box;
-    border: 1px solid transparent;
-    border-radius: 0.25rem;
+/* Legend Role Marker */
+.markBox .mark {
+    color:#FFF;
+    margin-right: 25px;
+    padding: 2px 5px 2px 5px;
+    font-size: 14px;
+    font-weight: 900;
+    border-radius: 5px;
 }
+
+.markBox .mark.markA.markS {
+    background-color: rgba(136,221,0,.8);
+}
+.markBox .mark.markD.markM {
+    background-color: rgba(255, 247, 2, 0.7);
+}
+.markBox .mark.markD.markC {
+    background-color: rgba(255, 247, 2, 0.5);
+}
+.markBox .mark.markD.markV {
+    background-color: rgba(255, 247, 2, 0.3);
+}
+.markBox .mark.markO.markM {
+    background-color: rgba(204, 236, 255, 0.7);
+}
+.markBox .mark.markO.markC {
+    background-color: rgba(204, 236, 255, 0.5);
+}
+.markBox .mark.markO.markV {
+    background-color: rgba(204, 236, 255, 0.3);
+}
+/* Legend Role Marker */

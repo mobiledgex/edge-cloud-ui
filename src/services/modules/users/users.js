@@ -20,6 +20,10 @@ export const showUsers = (self, data) => {
     return { method: endpoint.SHOW_USERS, data: data, keys: keys() }
 }
 
+export const showUser = (self) => {
+    return { method: endpoint.CURRENT_USER }
+}
+
 export const addUser = async (self, data) => {
     let requestData = getKey(data, true)
     let request = { method: endpoint.ADD_USER_ROLE, data: requestData }
