@@ -1,24 +1,40 @@
 import { endpoint, perpetual } from "../../../helper/constant"
 import { redux_org } from '../../../helper/reduxData'
+import {responseFields} from '../../model/responseFields'
 import { fields } from "../../model/format"
+import { pick } from "../../../helper/constant/operators"
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', serverField: 'Region', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.poolName, serverField: 'CloudletPool', label: 'Pool Name', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.operatorOrg, serverField: 'CloudletPoolOrg', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.developerOrg, serverField: 'Org', label: 'Developer', sortable: true, visible: true, key: true },
-    { field: fields.decision, serverField: 'Decision', label: 'Status', visible: true, format: true },
+    { field: fields.region, label: 'Region', serverField: responseFields.Region, sortable: true, visible: true, filter: true, key: true },
+    { field: fields.poolName, serverField: responseFields.CloudletPool, label: 'Pool Name', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.operatorName, serverField: responseFields.CloudletPoolOrg, label: 'Operator', sortable: true, visible: true, filter: true, key: true },
+    { field: fields.organizationName, serverField: responseFields.Org, label: 'Developer', sortable: true, visible: true, key: true },
+    { field: fields.decision, serverField: responseFields.Decision, label: 'Status', visible: true, format: true },
     { field: fields.confirm, label: 'Accepted', detailView: false }
 ])
 
 const getRequestData = (data) => {
     return {
-        Region: data[fields.region],
-        CloudletPool: data[fields.poolName],
-        CloudletPoolOrg: data[fields.operatorOrg],
-        Org: data[fields.developerOrg],
-        Decision: data[fields.decision],
+        [responseFields.Region]: data[fields.region],
+        [responseFields.CloudletPool]: data[fields.poolName],
+        [responseFields.CloudletPoolOrg]: data[fields.operatorName],
+        [responseFields.Org]: data[fields.organizationName],
+        [responseFields.Decision]: data[fields.decision],
     }
+}
+
+const getShowRequestData = (self, data) => {
+    let requestData = pick(data, [fields.region])
+    let organizationName = redux_org.isAdmin(self) ? data[fields.organizationName] : redux_org.nonAdminOrg(self)
+    if (organizationName) {
+        if (data[fields.type] === perpetual.DEVELOPER || redux_org.isDeveloper(self)) {
+            requestData[responseFields.Org] = organizationName
+        }
+        else if (data[fields.type] === perpetual.OPERATOR || redux_org.isOperator(self)) {
+            requestData[responseFields.CloudletPoolOrg] = organizationName
+        }
+    }
+    return requestData
 }
 
 export const createInvitation = (data) => {
@@ -29,31 +45,17 @@ export const createConfirmation = (data) => {
 }
 
 export const showConfirmation = (self, data) => {
-    data = data ? data : {}
-    let org = redux_org.nonAdminOrg(self)
-    if (org) {
-        if (redux_org.isDeveloper(self)) {
-            data['Org'] = org
-        }
-        else if (redux_org.isOperator(self)) {
-            data['CloudletPoolOrg'] = org
-        }
+    let requestData = getShowRequestData(self, data)
+    if (requestData) {
+        return { method: endpoint.SHOW_POOL_ACCESS_CONFIRMATION, data: requestData, keys: keys() }
     }
-    return { method: endpoint.SHOW_POOL_ACCESS_CONFIRMATION, data, keys: keys() }
 }
 
 export const showInvitation = (self, data) => {
-    data = data ? data : {}
-    let org = redux_org.nonAdminOrg(self)
-    if (org) {
-        if (redux_org.isDeveloper(self)) {
-            data['Org'] = org
-        }
-        else if (redux_org.isOperator(self)) {
-            data['CloudletPoolOrg'] = org
-        }
+    let requestData = getShowRequestData(self, data)
+    if (requestData) {
+        return { method: endpoint.SHOW_POOL_ACCESS_INVITATION, data, keys: keys() }
     }
-    return { method: endpoint.SHOW_POOL_ACCESS_INVITATION, data, keys: keys() }
 }
 
 export const deleteConfirmation = (data) => {
@@ -66,30 +68,23 @@ export const deleteInvitation = (data) => {
 
 export const accessGranted = (self, orgInfo) => {
     let data = {}
-    let org = orgInfo[fields.organizationName]
-    if (org) {
+    let organizationName = orgInfo[fields.organizationName]
+    if (organizationName) {
         if (orgInfo[fields.type] === perpetual.DEVELOPER) {
-            data['Org'] = org
+            data[responseFields.Org] = organizationName
         }
         else if (orgInfo[fields.type] === perpetual.OPERATOR) {
-            data['CloudletPoolOrg'] = org
+            data[responseFields.CloudletPoolOrg] = organizationName
         }
     }
     return { method: endpoint.SHOW_POOL_ACCESS_GRANTED, data, keys: keys() }
 }
 
 export const accessPending = (self, data) => {
-    data = data ? data : {}
-    let org = redux_org.nonAdminOrg(self)
-    if (org) {
-        if (redux_org.isDeveloper(self)) {
-            data['Org'] = org
-        }
-        else if (redux_org.isOperator(self)) {
-            data['CloudletPoolOrg'] = org
-        }
+    let requestData = getShowRequestData(self, data)
+    if (requestData) {
+        return { method: endpoint.SHOW_POOL_ACCESS_PENDING, data }
     }
-    return { method: endpoint.SHOW_POOL_ACCESS_PENDING, data }
 }
 
 export const multiDataRequest = (keys, mcList) => {
@@ -120,7 +115,7 @@ export const multiDataRequest = (keys, mcList) => {
             confirmationList.forEach(confirmation => {
                 let exist = false
                 dataList.forEach(data => {
-                    if (data[fields.poolName] === confirmation[fields.poolName] && data[fields.developerOrg] === confirmation[fields.developerOrg] && data[fields.operatorOrg] === confirmation[fields.operatorOrg]) {
+                    if (data[fields.poolName] === confirmation[fields.poolName] && data[fields.organizationName] === confirmation[fields.organizationName] && data[fields.operatorName] === confirmation[fields.operatorName]) {
                         data.confirm = true
                         data.decision = confirmation[fields.decision]
                         exist = true
