@@ -58,7 +58,7 @@ const formatInvitation = (poolList, invitationList) => {
             if (pool[fields.poolName] === invitation[fields.poolName]) {
                 pool[fields.organizationCount] += 1
                 let organization = {}
-                organization[fields.organizationName] = invitation[fields.developerOrg]
+                organization[fields.organizationName] = invitation[fields.organizationName]
                 organization[fields.status] = labelFormatter.decision(invitation[fields.decision])
                 organizations.push(organization)
             }
