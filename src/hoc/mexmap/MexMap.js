@@ -102,7 +102,6 @@ class MexMap extends React.Component {
                         style={{ width: '100%', height: '100%', zIndex: 1 }}
                         url={'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'}
                         zoom={2}
-                        style={{ zIndex: 1 }}
                     />
                     {this.renderMapControl(backswitch)}
                     {renderMarker ? renderMarker() : null}

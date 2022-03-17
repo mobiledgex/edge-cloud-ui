@@ -281,3 +281,5 @@ export const REJECT = 'Reject'
 export const PROTOCOL_TCP = 'TCP'
 export const PROTOCOL_ICMP = 'ICMP'
 export const PROTOCOL_UDP = 'UDP'
+
+export const CHART_BULLET = 'Bullet'
