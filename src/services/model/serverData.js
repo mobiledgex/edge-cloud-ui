@@ -1,6 +1,5 @@
 import * as serviceMC from './serviceMC';
-import { SHOW_AUDIT_ORG } from '../../helper/constant/endpoint';
-import { endpoint } from '../../helper/constant';
+import { CREATE_USER, LOGIN, RESEND_VERIFY, RESET_PASSWORD_REQUEST, SETTING_LOCK, SHOW_AUDIT_ORG, SHOW_ROLE, VERIFY_EMAIL } from '../../helper/constant/endpoint';
 import { authSyncRequest, fetchWSToken, responseValid, syncRequest } from '../service';
 
 /**
@@ -19,17 +18,17 @@ export const sendWSRequest = async (self, requestData, callback, orgData) => {
 
 /* User Role */
 export const showUserRoles = async (self) => {
-    let mc = await authSyncRequest(self, { method: endpoint.SHOW_ROLE })
+    let mc = await authSyncRequest(self, { method: SHOW_ROLE })
     return mc
 }
 
 export const sendVerify = async (self, data) => {
-    let mc = await syncRequest(self, { method: endpoint.RESEND_VERIFY, data: data })
+    let mc = await syncRequest(self, { method: RESEND_VERIFY, data: data })
     return responseValid(mc)
 }
 
 export const verifyEmail = async (self, data) => {
-    let mc = await syncRequest(self, { method: endpoint.VERIFY_EMAIL, data: data })
+    let mc = await syncRequest(self, { method: VERIFY_EMAIL, data: data })
     return mc
 }
 
@@ -39,22 +38,22 @@ export const showAuditOrg = async (self, data, showSpinner) => {
 }
 
 export const settingLock = async (self, data) => {
-    let mc = await authSyncRequest(self, { method: endpoint.SETTING_LOCK, data: data })
+    let mc = await authSyncRequest(self, { method: SETTING_LOCK, data: data })
     return responseValid(mc)
 }
 
 export const createUser = async (self, data) => {
-    let mc = await syncRequest(self, { method: endpoint.CREATE_USER, data: data })
+    let mc = await syncRequest(self, { method: CREATE_USER, data: data })
     return mc
 }
 
 export const login = async (self, data) => {
-    let mc = await syncRequest(self, { method: endpoint.LOGIN, data: data })
+    let mc = await syncRequest(self, { method: LOGIN, data: data })
     return mc
 }
 
 export const resetPasswordRequest = async (self, data) => {
-    let mc = await syncRequest(self, { method: endpoint.RESET_PASSWORD_REQUEST, data: data })
+    let mc = await syncRequest(self, { method: RESET_PASSWORD_REQUEST, data: data })
     return responseValid(mc)
 }
 
