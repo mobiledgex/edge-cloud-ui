@@ -21,11 +21,11 @@ export const clusterMetricsKeys = [
 ]
 
 export const clusterMetricsListKeys = [
-    { field: fields.region, label: 'Region', sortable: true, visible: true },
+    { field: fields.region, label: 'Region', sortable: true, visible: true, width: 70 },
     { field: fields.clusterName, serverField: 'cluster', label: 'Cluster', sortable: true, visible: true, groupBy: true },
-    { field: fields.organizationName, serverField: 'clusterorg', label: 'Developer', sortable: true, visible: true, groupBy: true },
-    { field: fields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
-    { field: fields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, visible: false, groupBy: true },
+    { field: fields.organizationName, serverField: 'clusterorg', label: 'Developer', sortable: true, groupBy: true },
+    { field: fields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, groupBy: true, customData: true },
+    { field: fields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, groupBy: true },
     { field: fields.cloudletLocation, label: 'Location', sortable: false, visible: false, groupBy: false },
     { field: 'cpu', label: 'CPU', sortable: false, visible: true, format: true, isArray: true },
     { field: 'disk', label: 'Disk Usage', sortable: false, visible: true, format: true, isArray: true },

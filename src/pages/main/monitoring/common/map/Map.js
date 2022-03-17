@@ -6,6 +6,7 @@ import { fields } from '../../../../../services/model/format'
 import { Icon } from '../../../../../hoc/mexui';
 import { PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST } from '../../../../../helper/constant/perpetual';
 import { Skeleton } from '@material-ui/lab';
+import './style.css'
 
 const DEFAULT_ZOOM = 3
 
