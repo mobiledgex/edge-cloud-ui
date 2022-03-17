@@ -94,17 +94,28 @@ const useStyles = makeStyles((theme) => ({
     tipContent: {
         marginTop: 9
     },
-    formGroup:{
-        flexDirection: 'column', 
+    formGroup: {
+        flexDirection: 'column',
         alignContent: 'space-around'
     },
-    mainHorizontalForm:{
-        marginLeft: -13, 
-        width: '100%', 
-        marginTop: -10, 
+    mainHorizontalForm: {
+        marginLeft: -13,
+        width: '100%',
+        marginTop: -10,
         marginBottom: -27
     }
 }))
+
+export const fetchDataByField = (forms, fields) => {
+    let data = {}
+    for (const form of forms) {
+        if (fields.includes(form.field)) {
+            data[form.field] = form.value
+        }
+    }
+    return data
+}
+
 /***
 * Map values from form to field
 * ***/
