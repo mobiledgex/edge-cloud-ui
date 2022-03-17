@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST } from '../../../helper/constant/perpetual'
+import { NoData } from '../../../helper/formatter/ui'
 import AppMonitoring from './modules/app/AppMonitoring'
 import CloudletMonitoring from './modules/cloudlet/CloudletMonitoring'
 import ClusterMonitoring from './modules/cluster/ClusterMonitoring'
 import { fetchShowData } from './services/service'
-
 
 class Show extends React.Component {
     constructor(props) {
@@ -42,13 +42,13 @@ class Show extends React.Component {
         const { loading, legends, selection, refresh } = this.state
         const { tools } = this.props
         return (
-            <React.Fragment>
+            legends ? <React.Fragment>
                 {
                     tools.moduleId === PARENT_CLOUDLET ? <CloudletMonitoring tools={tools} loading={loading} legends={legends} metricRequestData={this.legendList} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
                         tools.moduleId === PARENT_CLUSTER_INST ? <ClusterMonitoring tools={tools} loading={loading} legends={legends} metricRequestData={this.legendList} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> :
                             tools.moduleId === PARENT_APP_INST ? <AppMonitoring tools={tools} loading={loading} legends={legends} metricRequestData={this.legendList} selection={selection} refresh={refresh} handleDataStateChange={this.handleDataStateChange} handleSelectionStateChange={this.handleSelectionStateChange} /> : null
                 }
-            </React.Fragment>
+            </React.Fragment> : <NoData loading={loading}/>
         )
     }
 
