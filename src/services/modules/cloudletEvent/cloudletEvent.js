@@ -1,4 +1,4 @@
-import { endpoint } from '../../../helper/constant'
+import { endpoint } from '../..'
 import { cloudletKeys } from '../cloudlet/primary'
 import { localFields } from '../../fields'
 

@@ -1,9 +1,10 @@
 
 import * as formatter from '../../fields'
 import { authSyncRequest } from '../../service';
-import { endpoint, perpetual } from '../../../helper/constant'
+import { perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData'
 import { TYPE_JSON } from '../../../helper/constant/perpetual';
+import { endpoint } from '../..';
 
 let localFields = formatter.localFields
 

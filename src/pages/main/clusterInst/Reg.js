@@ -23,8 +23,8 @@ import { HELP_CLUSTER_INST_REG } from "../../../tutorial";
 import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
 import { sendRequests } from '../../../services/worker/serverWorker'
 import { Grid } from '@material-ui/core';
-import { endpoint, perpetual } from '../../../helper/constant';
-import { service, updateFieldData } from '../../../services';
+import { perpetual } from '../../../helper/constant';
+import { endpoint, service, updateFieldData } from '../../../services';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 import cloneDeep from 'lodash/cloneDeep';
 import { showAuthSyncRequest } from '../../../services/service';

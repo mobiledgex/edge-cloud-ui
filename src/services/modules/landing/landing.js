@@ -1,4 +1,4 @@
-import { CREATE_USER, LOGIN, RESEND_VERIFY, RESET_PASSWORD_REQUEST, VERIFY_EMAIL } from '../../../helper/constant/endpoint/nonauth';
+import { CREATE_USER, LOGIN, RESEND_VERIFY, RESET_PASSWORD_REQUEST, VERIFY_EMAIL } from '../../endpoint/nonauth';
 import { responseValid } from '../../config';
 import { syncRequest } from '../../service';
 

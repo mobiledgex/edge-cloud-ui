@@ -2,9 +2,9 @@ import * as formatter from '../../fields'
 import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util';
 import { idFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData'
-import { endpoint, perpetual } from '../../../helper/constant';
+import { perpetual } from '../../../helper/constant';
+import { endpoint } from '../..';
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
-import { developerRoles } from '../../../constant';
 
 const localFields = formatter.localFields;
 

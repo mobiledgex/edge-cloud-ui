@@ -1,4 +1,4 @@
-import { ALERT_SHOW_RECEIVER } from "../../../helper/constant/endpoint"
+import { ALERT_SHOW_RECEIVER } from "../../endpoint"
 import { localFields } from "../../fields"
 
 export const customize = (request, value) => {

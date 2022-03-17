@@ -1,6 +1,7 @@
 import * as formatter from '../../fields'
 import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util'
-import { endpoint, perpetual } from '../../../helper/constant'
+import { perpetual } from '../../../helper/constant'
+import { endpoint } from '../..';
 import { authSyncRequest } from '../../service'
 
 let localFields = formatter.localFields

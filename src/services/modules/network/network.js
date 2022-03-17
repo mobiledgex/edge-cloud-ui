@@ -1,8 +1,9 @@
 import * as formatter from '../../fields'
-import { endpoint, perpetual } from '../../../helper/constant';
+import { perpetual } from '../../../helper/constant';
 import { authSyncRequest } from "../../service";
 import { idFormatter } from '../../../helper/formatter'
 import { cloudletKeys } from '../cloudlet';
+import { endpoint } from '../..';
 let localFields = formatter.localFields;
 
 export const keys = () => ([

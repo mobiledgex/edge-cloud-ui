@@ -1,4 +1,5 @@
-import { endpoint, perpetual } from '../../../helper/constant'
+import { perpetual } from '../../../helper/constant'
+import { endpoint } from '../..';
 import * as formatter from '../../fields'
 
 let localFields = formatter.localFields

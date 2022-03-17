@@ -1,6 +1,7 @@
 import { redux_org } from '../../../helper/reduxData'
-import { endpoint, perpetual } from '../../../helper/constant';
+import { perpetual } from '../../../helper/constant';
 import { localFields } from '../../fields';
+import { endpoint } from '../..';
 
 export const keys = () => ([
     { field: localFields.cloudletName, serverField: 'key#OS#name' },

@@ -1,7 +1,7 @@
 
 import { UNIT_BYTES, UNIT_PERCENTAGE } from '../../../pages/main/monitoring/helper/unitConvertor';
 import { localFields } from '../../fields';
-import { endpoint } from '../../../helper/constant';
+import { endpoint } from '../..';
 import { redux_org } from '../../../helper/reduxData';
 
 export const customData = (id, data) => {

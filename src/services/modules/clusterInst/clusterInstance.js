@@ -3,7 +3,8 @@ import { showAuthSyncRequest } from '../../service';
 import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util'
 import { idFormatter, serverFields } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData'
-import { endpoint, perpetual } from '../../../helper/constant';
+import { perpetual } from '../../../helper/constant';
+import { endpoint } from '../..';
 import { customize } from '../../modules/clusterInst';
 import { generateUUID } from '../../format/shared';
 import { cloudletKeys } from '../cloudlet';

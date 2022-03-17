@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET } from '../../../../helper/constant/endpoint'
+import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET } from '../../../../services/endpoint'
 import { MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION, PARENT_APP_INST, PARENT_CLUSTER_INST, PARENT_CLOUDLET } from '../../../../helper/constant/perpetual'
 import { formatData } from '../../../../services/format'
 import { localFields } from '../../../../services/fields'

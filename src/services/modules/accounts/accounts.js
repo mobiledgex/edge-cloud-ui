@@ -1,8 +1,8 @@
 import * as formatter from '../../fields'
-import { endpoint } from '../../../helper/constant'
 import { ADMIN_MANAGER } from '../../../helper/constant/perpetual'
 import { authSyncRequest } from '../../service'
 import { responseValid } from '../../config'
+import { endpoint } from '../..'
 
 let localFields = formatter.localFields
 

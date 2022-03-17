@@ -18,9 +18,10 @@ import { showClusterInsts } from '../../../../../services/modules/clusterInst';
 import cloneDeep from 'lodash/cloneDeep';
 import { Grid, LinearProgress } from '@material-ui/core'
 import { resetFormValue } from '../../../../../hoc/forms/helper/constant';
-import { endpoint, perpetual } from '../../../../../helper/constant';
+import { perpetual } from '../../../../../helper/constant';
 import { uniqueId } from '../../../../../helper/constant/shared';
 import { responseValid } from '../../../../../services/config';
+import { endpoint } from '../../../../../services';
 
 const RECEIVER_TYPE = [perpetual.RECEIVER_TYPE_EMAIL, perpetual.RECEIVER_TYPE_SLACK, perpetual.RECEIVER_TYPE_PAGER_DUTY]
 const RECEIVER_SEVERITY = [perpetual.INFO, perpetual.WARNING, perpetual.ERROR]

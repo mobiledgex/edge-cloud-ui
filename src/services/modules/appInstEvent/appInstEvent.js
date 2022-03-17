@@ -1,7 +1,6 @@
-import { endpoint } from '../../../helper/constant'
+import { endpoint } from '../..'
 import { localFields } from '../../fields'
 import { AIK_CLOUDLET, appInstKeys } from '../appInst/primary'
-import { redux_org } from '../../../helper/reduxData'
 
 export const appEventKeys = [
     { field: localFields.time, label: 'Starttime', serverField: 'time', visible: true, detailedView: false, format: true },

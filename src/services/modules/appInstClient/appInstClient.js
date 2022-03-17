@@ -1,4 +1,4 @@
-import { endpoint } from "../../../helper/constant"
+import { endpoint } from "../.."
 import { localFields } from "../../fields"
 
 export const appInstanceKey = (data) => {

@@ -1,7 +1,6 @@
 import { UNIT_FLOOR, UNIT_GB, UNIT_MB } from '../../../pages/main/monitoring/helper/unitConvertor';
-import { endpoint, perpetual } from '../../../helper/constant';
+import { endpoint } from '../..';
 import { localFields } from '../../fields';
-import { TYPE_JSON } from '../../../helper/constant/perpetual';
 
 export const customData = (id, data) => {
     switch (id) {

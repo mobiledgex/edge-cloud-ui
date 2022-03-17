@@ -22,8 +22,8 @@ import { HELP_APP_INST_REG } from "../../../tutorial";
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from '@material-ui/core';
-import { endpoint, perpetual } from '../../../helper/constant';
-import { service, updateFieldData } from '../../../services';
+import { perpetual } from '../../../helper/constant';
+import { endpoint, service, updateFieldData } from '../../../services';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 import cloneDeep from 'lodash/cloneDeep';
 import { uniqueId } from '../../../helper/constant/shared';

@@ -9,8 +9,8 @@ import { Paper, Box } from '@material-ui/core';
 import MexForms, { INPUT, MULTI_FORM, SELECT, SWITCH } from '../forms/MexForms';
 import { localFields } from '../../services/fields'
 import { redux_org } from '../../helper/reduxData';
-import { service } from '../../services'
-import { endpoint, perpetual } from '../../helper/constant';
+import { endpoint, service } from '../../services'
+import { perpetual } from '../../helper/constant';
 import { componentLoader } from '../loader/componentLoader';
 import './style.css'
 
