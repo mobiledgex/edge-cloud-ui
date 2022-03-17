@@ -107,13 +107,12 @@ const Module = (props) => {
 const Statistics = (props) => {
     const { order, value, onUpdate } = props
     const dataList = ['max', 'avg', 'min']
-
     const onChange = (value) => {
         onUpdate({ stats: value })
     }
 
     return (
-        value.moduleId !== PARENT_CLOUDLET ? <MonitoringMenu order={order} data={dataList} onChange={onChange} default={dataList[0]} fCaps={true} /> : null
+        value.moduleId !== PARENT_CLOUDLET ? <MonitoringMenu order={order} data={dataList} onChange={onChange} default={value?.stats} fCaps={true} /> : null
     )
 }
 
@@ -241,10 +240,10 @@ const MexToolbar = (props) => {
 
     return (
         <React.Fragment>
-            <Card style={{ height: 50, marginBottom: 2 }}>
+            <Card className='toolbar'>
                 <Toolbar>
-                    <Typography variant={'h5'} className='monitoring-header'>Monitoring</Typography>
-                    <div style={{ width: '100%' }}>
+                    <Typography variant={'h5'} className='headerBar'>Monitoring</Typography>
+                    <div className='container'>
                         <Box display="flex" justifyContent="flex-end">
                             {value && value.organization ?
                                 <React.Fragment>
