@@ -112,7 +112,6 @@
     cursor: pointer;
 }
 
-
 .map-control-div-marker-popup .leaflet-popup-content-wrapper {
     overflow: auto;
     height: 100px;

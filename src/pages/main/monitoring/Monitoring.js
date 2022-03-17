@@ -9,12 +9,11 @@ import Toolbar from './toolbar/MonitoringToolbar'
 import { LS_LINE_GRAPH_FULL_SCREEN, } from '../../../helper/constant/perpetual';
 import { HELP_MONITORING } from '../../../tutorial';
 
-import './PageMonitoringStyles.css'
-import './style.css'
 import { fetchOrgList } from './services/service';
 import { equal } from '../../../helper/constant/operators';
 import Show from './Show';
 import { NoData } from '../../../helper/formatter/ui';
+import './style.css'
 
 
 
