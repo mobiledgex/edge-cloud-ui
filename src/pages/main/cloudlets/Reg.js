@@ -198,7 +198,7 @@ class CloudletReg extends React.Component {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_VMPOOL
                 form.rules.required = currentForm.value === perpetual.PLATFORM_TYPE_VMPOOL
             }
-            else if (form.field === fields.singleKubernetesClusterOwner) {
+            else if (form.field === fields.singleK8sClusterOwner) {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
                 form.visible && this.getDevelopOrg(form, forms, isInit)
             }
@@ -669,7 +669,7 @@ class CloudletReg extends React.Component {
                         case fields.operatorName:
                             form.options = this.operatorList
                             break;
-                        case fields.singleKubernetesClusterOwner:
+                        case fields.singleK8sClusterOwner:
                             form.options = this.developerOrgList
                             break;
                         case fields.region:
@@ -880,7 +880,7 @@ class CloudletReg extends React.Component {
             { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version', advance: false },
             { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },
             { field: fields.maintenanceState, label: 'Maintenance State', formType: SELECT, placeholder: 'Select Maintenance State', rules: { required: false }, visible: this.isUpdate, update: { id: ['30'] }, tip: 'Maintenance allows for planned downtimes of Cloudlets. These states involve message exchanges between the Controller, the AutoProv service, and the CRM. Certain states are only set by certain actors', advance: false },
-            { field: fields.singleKubernetesClusterOwner, formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Single Kubernetes Cluster Owner', label: 'Single K8S Owner', visible: true, tip: 'single kubernetes cluster cloudlet platforms, cluster is owned by this organization instead of multi-tenant.', advance: false },
+            { field: fields.singleK8sClusterOwner, formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Single Kubernetes Cluster Owner', label: 'Single K8S Owner', visible: true, tip: 'single kubernetes cluster cloudlet platforms, cluster is owned by this organization instead of multi-tenant.', advance: false },
             { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)', advance: false },
             { field: fields.platformHighAvailability, label: 'Platform High Availability', formType: SWITCH, visible: false, update: { id: ['50'] }, tip: 'Enable platform H/A', advance: false },
             { field: fields.kafkaCluster, label: 'Kafka Cluster', formType: INPUT, placeholder: 'Enter Kafka Cluster Endpoint', rules: { required: false, onBlur: true }, visible: true, update: { id: ['42'] }, tip: 'Operator provided kafka cluster endpoint to push events to', advance: false },

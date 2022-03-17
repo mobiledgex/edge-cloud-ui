@@ -50,7 +50,7 @@ export const keys = () => ([
     { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', detailView: false },
     { field: fields.gpuExist, label: 'GPU', detailView: false },
     { field: fields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING },
-    { field: fields.singleKubernetesClusterOwner, label: 'Single Kubernetes Cluster Owner', serverField: 'single_kubernetes_cluster_owner', dataType: perpetual.TYPE_STRING },
+    { field: fields.singleK8sClusterOwner, label: 'Single Kubernetes Cluster Owner', serverField: 'single_kubernetes_cluster_owner', dataType: perpetual.TYPE_STRING },
     { field: fields.platformHighAvailability, serverField: 'platform_high_availability', label: 'Platform High Availability',format:true },
     { field: fields.deployment, serverField: 'deployment', label: 'Deployment Type' }
 ])
@@ -164,8 +164,8 @@ export const getKey = (data, isCreate) => {
         if (data[fields.allianceOrganization]) {
             cloudlet.alliance_orgs = data[fields.allianceOrganization]
         }
-        if (data[fields.singleKubernetesClusterOwner]) {
-            cloudlet.single_kubernetes_cluster_owner = data[fields.singleKubernetesClusterOwner]
+        if (data[fields.singleK8sClusterOwner]) {
+            cloudlet.single_kubernetes_cluster_owner = data[fields.singleK8sClusterOwner]
         }
         if (data[fields.deployment]) {
             cloudlet.deployment = data[fields.deployment]

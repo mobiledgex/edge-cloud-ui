@@ -327,6 +327,6 @@ export const fields = {
     zones:'zones',
     mncmulti: 'mncmulti',
     dedicatedIp: 'dedicatedIp',
-    singleKubernetesClusterOwner: 'singleKubernetesClusterOwner',
+    singleK8sClusterOwner: 'singleK8sClusterOwner',
     platformHighAvailability: 'platformHighAvailability'
 }
