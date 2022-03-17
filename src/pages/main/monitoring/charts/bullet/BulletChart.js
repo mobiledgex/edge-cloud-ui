@@ -55,7 +55,7 @@ class BulletChart extends React.Component {
         const { onHover, data, column } = this.props
         return (
             <React.Fragment>
-                <div ref={this.myRef} id={this.props.id} onMouseEnter={(e) => { onHover(e, { type: 'Bullet', data: data[0], column }) }} onMouseLeave={() => { onHover() }}></div>
+                <div ref={this.myRef} id={this.props.id} onMouseEnter={(e) => { onHover && onHover(e, { type: 'Bullet', data: data[0], column }) }} onMouseLeave={() => {  onHover && onHover() }}></div>
             </React.Fragment>
         );
     }

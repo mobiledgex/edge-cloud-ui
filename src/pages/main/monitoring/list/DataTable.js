@@ -61,7 +61,7 @@ class MuiVirtualizedTable extends React.PureComponent {
     };
 
     cellRenderer = ({ rowData, cellData, columnIndex, rowIndex }) => {
-        const { columns, classes, rowHeight, onRowClick, selection, formatter, onAction, onHover } = this.props;
+        const { id, columns, classes, rowHeight, onRowClick, selection, formatter, onAction, onHover } = this.props;
         let column = columns[columnIndex]
         return (
             <TableCell
@@ -76,7 +76,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                 {
                     column.type === 'button' ? <IconButton onClick={(e) => { onAction(e, rowData) }}><Icon color={ICON_COLOR} style={{ height: 18 }}>list</Icon></IconButton> :
                         column.type === 'checkbox' ? <Icon style={{ color: rowData.color }}>{`${selection[rowData.key] ? 'check_box' : 'check_box_outline_blank'}`}</Icon> :
-                            column.format ? formatter(column, cellData) :
+                            column.format ? formatter(id, column, cellData) :
                                 <span style={{ width: column.width - 10, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }} onMouseEnter={(e) => { onHover(e, { type: 'Default', column, data: cellData }) }} onMouseLeave={() => { onHover() }}>{cellData}</span>
                 }
             </TableCell>

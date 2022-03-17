@@ -11,6 +11,7 @@ import { healthCheck, NoData } from '../../../../../helper/formatter/ui';
 import Tooltip from './Tooltip';
 import { convertUnit } from '../../helper/unitConvertor';
 import { Icon } from '../../../../../hoc/mexui';
+import { PARENT_CLUSTER_INST } from '../../../../../helper/constant/perpetual';
 
 class Legend extends React.Component {
 
@@ -72,18 +73,19 @@ class Legend extends React.Component {
         this.setState({ anchorEl: e ? e.target : undefined, hoverData })
     }
 
-    onFormat = (column, data) => {
-        const { tools } = this.props
+    onFormat = (id, column, data) => {
+        const { tools, formatter } = this.props
         if (data) {
-            if (column.field === fields.healthCheck) {
-                return healthCheck(undefined, data)
-            }
-            else if (data.infraAllotted) {
-                let value = { title: "", subtitle: "", unit: column.unit, ranges: [data.infraAllotted ? onlyNumeric(data.infraAllotted) : 0], measures: [data.infraUsed ? onlyNumeric(data.infraUsed) : 0, data.used ? onlyNumeric(data.used) : 0], markers: [data.allotted ? onlyNumeric(data.allotted) : 0] }
-                return <BulletChart data={[value]} column={column} onHover={this.onHover} />
+            if (formatter) {
+                return formatter(column, data, tools)
             }
             else {
-                return data[tools.stats]
+                if (column.field === fields.healthCheck) {
+                    return healthCheck(undefined, data)
+                }
+                else {
+                    return data[tools.stats]
+                }
             }
         }
     }
@@ -128,13 +130,12 @@ class Legend extends React.Component {
                         loading ? <Skeleton id='mex-monitoring-legend-skeleton' variant='rect' height={'inherit'} /> :
                             <React.Fragment>
                                 {
-                                    dataList && dataList.length > 0 ?
-                                        <DataTable id={id} dataList={dataList} keys={legendKeys(tools.moduleId)} onRowClick={handleSelectionStateChange} formatter={this.onFormat} actionMenu={this.filterAction()} handleAction={handleAction} groupBy={groupBy} onHover={this.onHover}/> : <NoData />
+                                    dataList?.length > 0 ?
+                                        <DataTable id={id} dataList={dataList} keys={legendKeys(tools.moduleId)} onRowClick={handleSelectionStateChange} formatter={this.onFormat} actionMenu={this.filterAction()} handleAction={handleAction} groupBy={groupBy} onHover={this.onHover} /> : <NoData />
                                 }
                             </React.Fragment>
                     }
                 </div>
-                <Tooltip anchorEl={anchorEl}>{this.renderTootip()}</Tooltip>
             </React.Fragment>
         )
     }

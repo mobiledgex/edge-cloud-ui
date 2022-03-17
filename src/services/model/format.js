@@ -93,6 +93,7 @@ export const fields = {
     ram: 'ram',
     vCPUs: 'vCPUs',
     disk: 'disk',
+    memory:'memory',
     sent: 'sent',
     received: 'received',
     network: 'networks',
