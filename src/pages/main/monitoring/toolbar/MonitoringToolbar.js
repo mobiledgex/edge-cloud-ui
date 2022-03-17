@@ -107,13 +107,12 @@ const Module = (props) => {
 const Statistics = (props) => {
     const { order, value, onUpdate } = props
     const dataList = ['max', 'avg', 'min']
-
     const onChange = (value) => {
         onUpdate({ stats: value })
     }
 
     return (
-        value.moduleId !== PARENT_CLOUDLET ? <MonitoringMenu order={order} data={dataList} onChange={onChange} default={dataList[0]} fCaps={true} /> : null
+        value.moduleId !== PARENT_CLOUDLET ? <MonitoringMenu order={order} data={dataList} onChange={onChange} default={value?.stats} fCaps={true} /> : null
     )
 }
 
