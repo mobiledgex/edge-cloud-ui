@@ -1,30 +1,60 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import Login from './login/Login';
-import Register from './register/Register'
-import ForgotPassword from './password/ForgotPassword'
-import ResetPassword from './password/ResetPassword';
-import Verify from './verify/Verify'
-
-import { connect } from 'react-redux';
-import * as actions from '../../actions';
-import * as serverData from '../../services/model/serverData';
-import MexAlert from '../../hoc/alert/AlertDialog';
 import publicIp from 'public-ip';
 import UAParser from 'ua-parser-js';
-import { Container } from 'semantic-ui-react';
+import { alertInfo } from '../../actions';
+
+// import Login from './login/Login';
+// import Register from './register/Register'
+// import ForgotPassword from './password/ForgotPassword'
+// import ResetPassword from './password/ResetPassword';
+// import Verify from './verify/Verify'
+
+import MexAlert from '../../hoc/alert/AlertDialog';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { withStyles } from '@material-ui/styles';
-import { perpetual } from '../../helper/constant';
 import { hostURL } from '../../utils/location_utils';
+import { resetPasswordRequest, sendVerify } from '../../services/model/serverData';
+import { LS_REGIONS, LS_THASH, LS_USER_META_DATA, PAGE_ORGANIZATIONS } from '../../helper/constant/perpetual';
 
-const styles = props => ({
+const styles = theme => ({
     colorPrimary: {
         backgroundColor: 'rgba(0,170,255,.10)',
     },
     barColorPrimary: {
         backgroundColor: '#93E019',
+    },
+    width400 :{
+        width:400
+    },
+    width500 :{
+        width:500
+    },
+    actionBtn: {
+        display: 'flex',
+        alignItems: 'center',
+        color: '#FFF',
+        position: 'absolute',
+        right: 10,
+        top: 10,
+        zIndex: 1,
+        gap: 10
+    },
+    actionBtnLink: {
+        color: 'white',
+        '&:hover': {
+            color: '#93E019'
+        }
+    },
+    container: {
+        position: 'absolute',
+        width: '100%',
+        height: '100vh',
+        justifyContent: 'center',
+        alignItems: 'center',
+        display: 'flex'
     }
 });
 
@@ -49,7 +79,7 @@ class Landing extends Component {
             callbackurl: `${hostURL()}/#/passwordreset`,
             clientip: clientSysInfo.clientIP
         }
-        let valid = await serverData.resetPasswordRequest(this, requestData)
+        let valid = await resetPasswordRequest(this, requestData)
         if (valid) {
             this.props.handleAlertInfo('success', 'We have e-mailed your password reset link!')
             return valid
@@ -57,7 +87,7 @@ class Landing extends Component {
     }
 
     onVerificationEmail = async (email) => {
-        let valid = await serverData.sendVerify(this, { email, callbackurl: `${hostURL()}/#/verify` })
+        let valid = await sendVerify(this, { email, callbackurl: `${hostURL()}/#/verify` })
         if (valid) {
             this.props.handleAlertInfo('success', 'We have e-mailed your verification link')
         }
@@ -83,16 +113,16 @@ class Landing extends Component {
         const path = history.location.pathname
         return (
             <div className="login_main">
-                <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 1 }}>
-                    <Link to="/" replace style={{ marginRight: 20, color: 'white' }}>Login</Link>
-                    <Link to="/register" replace style={{ color: 'white' }}>Register</Link>
+                <div className={classes.actionBtn}>
+                    <Link to="/" replace className={classes.actionBtnLink}>Login</Link>
+                    <Link to="/register" replace className={classes.actionBtnLink}>Register</Link>
                 </div>
-                <div style={{ position: 'absolute', width: '100%', height: '100vh', justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
+                <div className={classes.container}>
                     <div className='login_head' >
                         {loading ? <LinearProgress classes={{ colorPrimary: classes.colorPrimary, barColorPrimary: classes.barColorPrimary }} /> : null}
                         <div className='intro_login'>
                             <img src='/assets/brand/MobiledgeX_Logo_tm_white.svg' width={200} alt="MobiledgeX" />
-                            <Container style={{ width: path === '/register' ? 500 : 400 }}>
+                            {/* <div className={path === '/register' ? classes.width500 : classes.width400}>
                                 {
                                     path === '/forgotpassword' ? <ForgotPassword onPasswordReset={this.onPasswordReset} onVerificationEmail={this.onVerificationEmail} /> :
                                         path === '/register' ? <Register clientSysInfo={clientSysInfo} onVerificationEmail={this.onVerificationEmail} /> :
@@ -100,7 +130,7 @@ class Landing extends Component {
                                                 path === '/verify' ? <Verify /> :
                                                     <Login clientSysInfo={clientSysInfo} />
                                 }
-                            </Container>
+                            </div> */}
                         </div>
                     </div>
                 </div>
@@ -126,12 +156,12 @@ class Landing extends Component {
     componentDidMount() {
         this.receiveClientIp()
         if (this.props.match.path === '/logout') {
-            localStorage.removeItem(perpetual.LS_THASH);
-            localStorage.removeItem(perpetual.LS_USER_META_DATA);
-            localStorage.removeItem(perpetual.LS_REGIONS);
+            localStorage.removeItem(LS_THASH);
+            localStorage.removeItem(LS_USER_META_DATA);
+            localStorage.removeItem(LS_REGIONS);
         }
-        else if (localStorage.getItem(perpetual.LS_THASH)) {
-            this.props.history.push(`/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)
+        else if (localStorage.getItem(LS_THASH)) {
+            this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
         }
     }
 }
@@ -145,7 +175,7 @@ function mapStateToProps(state) {
 }
 const mapDispatchProps = (dispatch) => {
     return {
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleAlertInfo: (mode, msg) => { dispatch(alertInfo(mode, msg)) }
     };
 };
 
