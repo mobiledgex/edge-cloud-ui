@@ -3,11 +3,10 @@ import { connect } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { loadingSpinner, alertInfo } from '../../../actions';
 import MexForms, { INPUT, BUTTON, POPUP_INPUT, SWITCH } from "../../../hoc/forms/MexForms";
-import { createUser as _createUser } from '../../../services/modules/landing';
+import { createUser as _createUser, publicConfig as _publicConfig } from '../../../services/modules/landing';
 import cloneDeep from "lodash/cloneDeep";
 import { load } from "../../../helper/zxcvbn";
 import ReCAPTCHA from "react-google-recaptcha";
-import { syncRequest } from "../../../services/service";
 import { hostURL } from "../../../utils/location_utils";
 import { validateEmail as _validateEmail } from "../../../utils/validation_utils";
 import { copyData } from '../../../utils/file_util';
@@ -21,7 +20,6 @@ import MexOTPRegistration from '../otp/MexOTPRegistration';
 import { withStyles } from "@material-ui/styles";
 import { localFields } from "../../../services/fields";
 import { responseValid } from "../../../services/config";
-import { PUBLIC_CONFIG } from "../../../services/endpoint/nonauth";
 
 const styles = theme => ({
     customForm: {
@@ -389,7 +387,7 @@ class RegistryUserForm extends React.Component {
     }
 
     publicConfig = async () => {
-        let mc = await syncRequest(this, { method: PUBLIC_CONFIG })
+        let mc = await _publicConfig(this)
         if (responseValid(mc)) {
             this.passwordMinCrackTimeSec = mc.response.data.PasswordMinCrackTimeSec
             this.getFormData()

@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
+import { withRouter } from 'react-router-dom';
+import {loadingSpinner, alertInfo} from '../../../actions';
 import MexForms, { INPUT, BUTTON, POPUP_INPUT } from "../../../hoc/forms/MexForms";
 import { localFields } from "../../../services/fields";
 import { Icon } from "semantic-ui-react";
@@ -10,11 +11,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 import { Button, Dialog, DialogContent, DialogTitle, ListItemText, MenuItem, LinearProgress } from '@material-ui/core';
 import { load } from "../../../helper/zxcvbn";
-import { withRouter } from 'react-router-dom';
-import { resetPwd, updatePwd } from "../../../services/modules/users";
-import { syncRequest } from "../../../services/service";
 import { responseValid } from "../../../services/config";
-import { endpoint } from "../../../services";
+import { publicConfig } from "../../../services/modules/landing";
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
 
@@ -118,9 +116,10 @@ class UpdatePassword extends React.Component {
     }
 
     onCreate = async (data) => {
-        if (this.props.dialog) {
+        const { dialog, onUpdatePwd } = this.props
+        if (dialog) {
             this.updateState({ loading: true })
-            let mc = await updatePwd(this, { password: data.password })
+            let mc = await onUpdatePwd(data.password)
             if (responseValid(mc)) {
                 this.updateState({ open: false })
                 this.props.handleAlertInfo('success', 'Password updated successfully')
@@ -298,9 +297,9 @@ class UpdatePassword extends React.Component {
     }
 
     fetchPublicConfig = async () => {
-        let mc = await syncRequest(this, { method: endpoint.PUBLIC_CONFIG })
-        if (mc && mc.response && mc.response.status === 200) {
-            this.passwordMinCrackTimeSec = mc.response.data.PasswordMinCrackTimeSec
+        let mc = await publicConfig(this)
+        if (responseValid(mc)) {
+            this.passwordMinCrackTimeSec = mc.response.data?.PasswordMinCrackTimeSec
             this.getFormData()
         }
     }
@@ -319,8 +318,8 @@ class UpdatePassword extends React.Component {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleLoadingSpinner: (data) => { dispatch(loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(alertInfo(mode, msg)) }
     };
 };
 

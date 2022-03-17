@@ -1,4 +1,4 @@
-import {timezoneName } from './date_util'
+import { timezoneName } from './date_util'
 import { getUserMetaData, orgUserMetaDataLS } from '../helper/ls'
 import { PREF_MONITORING } from '../pages/main/userSetting/preferences/Preferences'
 
@@ -13,7 +13,7 @@ export const PREF_PREFIX_SEARCH = 'PrefixSearch'
 
 export const timezonePref = () => {
     let data = getUserMetaData()
-    return data[PREF_TIMEZONE] ? data[PREF_TIMEZONE] : timezoneName()
+    return data[PREF_TIMEZONE] ?? timezoneName()
 }
 
 export const showMapPref = () => {

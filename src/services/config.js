@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const responseValid = (mc) => {
     return Boolean(mc?.response?.status === 200)
 }
@@ -22,6 +24,13 @@ export const fetchHeader = (request) => {
 export const fetchResponseType = (request) => {
     return request.responseType ? request.responseType : undefined
 
+}
+
+export const instance = (self, request, auth) => {
+    return axios.create({
+        headers: fetchHeader(self, request, auth),
+        responseType: fetchResponseType(request)
+    })
 }
 
 export const fetchURL = (isWebSocket) => {
@@ -59,5 +68,72 @@ export const validateExpiry = (self, message) => {
             }, 2000);
         }
         return !isExpired;
+    }
+}
+
+/**
+ * Show error alert message default is true
+ * @param {*} request
+ */
+ const showMessage = (self, request, message) => {
+    const flag = Boolean(request?.showMessage)
+    if (flag && self?.props?.handleAlertInfo && message !== 'Forbidden' && message !== 'No bearer token found') {
+        self.props.handleAlertInfo('error', message)
+    }
+}
+
+const responseStatus = (self, status) => {
+    let valid = true
+    let msg = ''
+    switch (status) {
+        case 504:
+            msg = '504 Gateway Timeout'
+            valid = false
+            break;
+        case 502:
+            msg = '502 Bad Gateway'
+            valid = false
+            break;
+    }
+
+    if (!valid && self?.props?.handleAlertInfo) {
+        self.props.handleAlertInfo('error', msg)
+    }
+    return valid
+}
+
+export const errorResponse = (self, request, error, callback, auth = true) => {
+    if (error?.response) {
+        const response = error.response
+        const code = response.status
+        const data = response.data
+        let message = 'Unknown'
+
+        if (responseStatus(self, code) && data) {
+            if (request.responseType === 'arraybuffer') {
+                var decodedString = String.fromCharCode.apply(null, new Uint8Array(data));
+                var obj = JSON.parse(decodedString);
+                message = obj['message'];
+            }
+            else {
+                message = data.message ? data.message : message
+            }
+        }
+        if (!auth || validateExpiry(self, message)) {
+            showMessage(self, request, message)
+            if (callback) {
+                callback({ request, error: { code, message } })
+            }
+        }
+    }
+}
+
+/**
+ * Show progress while fetching data from server, default is true
+ * @param {*} request
+ */
+export const showProgress = (self, request) => {
+    if (self?.props?.handleLoadingSpinner) {
+        self.props.handleLoadingSpinner(Boolean(request?.showSpinner))
     }
 }

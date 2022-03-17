@@ -61,8 +61,3 @@ export const updatePwd = async (self, data) => {
     let request = { method: endpoint.NEW_PASSWORD, data: data }
     return await authSyncRequest(self, request,)
 }
-
-export const resetPwd = async (self, data) => {
-    let request = { method: endpoint.RESET_PASSWORD, data: data }
-    return await syncRequest(self, request)
-}
