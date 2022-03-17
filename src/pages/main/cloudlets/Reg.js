@@ -200,7 +200,7 @@ class CloudletReg extends React.Component {
             }
             else if (form.field === fields.singleKubernetesClusterOwner) {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
-                currentForm.value === perpetual.PLATFORM_TYPE_K8S_BARE_METAL && this.getDevelopOrg(form, forms, isInit) 
+                form.visible && this.getDevelopOrg(form, forms, isInit)
             }
             return valid
         })
@@ -216,11 +216,11 @@ class CloudletReg extends React.Component {
 
     getDevelopOrg = async (form, forms, isInit) => {
         if (this.developerOrgList.length === 0) {
-            let developerList = await showAuthSyncRequest(self, showOrganizations(self, { type: perpetual.DEVELOPER }))
-            this.developerOrgList = _sort(developerList.map(org => (org[fields.organizationName])))
+            this.developerOrgList = await showAuthSyncRequest(self, showOrganizations(self, { type: perpetual.DEVELOPER }))
+            this.developerOrgList = _sort(this.developerOrgList.map(org => (org[fields.organizationName])))
         }
-        this.updateUI(form)
         if (!isInit) {
+            this.updateUI(form)
             this.updateState({ forms })
         }
     }
