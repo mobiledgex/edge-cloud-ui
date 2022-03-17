@@ -1,51 +1,52 @@
 
-import * as formatter from '../../model/format'
-import { authSyncRequest, responseValid } from '../../service';
+import * as formatter from '../../fields'
+import { authSyncRequest } from '../../service';
 import { endpoint, perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData'
 import { unionBy } from 'lodash';
+import { responseValid } from '../../config';
 
 let fields = formatter.fields
 
 const federationKeys = () => ([
-    { field: fields.operatorName, serverField: 'selfoperatorid', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.federationId, serverField: 'selffederationid', label: 'Federation ID' },
-    { field: fields.partnerFederationName, serverField: 'name', label: 'Federation Name', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.partnerOperatorName, serverField: 'operatorid', label: 'Partner Operator', visible: true, filter: true, key: true },
-    { field: fields.partnerCountryCode, serverField: 'countrycode', label: 'Partner Country Code', visible: true, filter: true, key: true },
-    { field: fields.partnerFederationId, serverField: 'federationid', label: 'Partner Federation ID' },
-    { field: fields.partnerFederationAddr, serverField: 'federationaddr', label: 'Federation Address' },
-    { field: fields.partnerAPIKey, serverField: 'apikey', label: 'Api Key' },
-    { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
-    { field: fields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf' },
-    { field: fields.partnerRoleAccessToSelfZones, label: 'Partner Registered', serverField: 'PartnerRoleAccessToSelfZones' },
+    { field: localFields.operatorName, serverField: 'selfoperatorid', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
+    { field: localFields.federationId, serverField: 'selffederationid', label: 'Federation ID' },
+    { field: localFields.partnerFederationName, serverField: 'name', label: 'Federation Name', sortable: true, visible: true, filter: true, key: true },
+    { field: localFields.partnerOperatorName, serverField: 'operatorid', label: 'Partner Operator', visible: true, filter: true, key: true },
+    { field: localFields.partnerCountryCode, serverField: 'countrycode', label: 'Partner Country Code', visible: true, filter: true, key: true },
+    { field: localFields.partnerFederationId, serverField: 'federationid', label: 'Partner Federation ID' },
+    { field: localFields.partnerFederationAddr, serverField: 'federationaddr', label: 'Federation Address' },
+    { field: localFields.partnerAPIKey, serverField: 'apikey', label: 'Api Key' },
+    { field: localFields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', key: true, dataType: perpetual.TYPE_ARRAY },
+    { field: localFields.partnerRoleShareZoneWithSelf, label: 'Partner Share Zone', serverField: 'PartnerRoleShareZonesWithSelf' },
+    { field: localFields.partnerRoleAccessToSelfZones, label: 'Partner Registered', serverField: 'PartnerRoleAccessToSelfZones' },
 ])
 
 const federatorKeys = () => ([
-    { field: fields.region, label: 'Region', serverField: 'region', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.operatorName, label: 'Operator', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.federationId, label: 'Federation', serverField: 'federationid', sortable: true, filter: true, key: true },
-    { field: fields.federationAddr, serverField: 'federationaddr', label: 'Federation Address' },
-    { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true },
-    { field: fields.mcc, label: 'MCC', serverField: 'mcc', sortable: true, filter: true, key: true },
-    { field: fields.mnc, label: 'MNC', serverField: 'mnc', sortable: true, filter: true, key: true, dataType: perpetual.TYPE_ARRAY }
+    { field: localFields.region, label: 'Region', serverField: 'region', sortable: true, visible: true, filter: true, key: true },
+    { field: localFields.operatorName, label: 'Operator', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
+    { field: localFields.federationId, label: 'Federation', serverField: 'federationid', sortable: true, filter: true, key: true },
+    { field: localFields.federationAddr, serverField: 'federationaddr', label: 'Federation Address' },
+    { field: localFields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true },
+    { field: localFields.mcc, label: 'MCC', serverField: 'mcc', sortable: true, filter: true, key: true },
+    { field: localFields.mnc, label: 'MNC', serverField: 'mnc', sortable: true, filter: true, key: true, dataType: perpetual.TYPE_ARRAY }
 ])
 
 export const keys = (host = false) => {
     let unionKeys = unionBy(federatorKeys(), federationKeys(), 'field');
-    unionKeys.push({ field: fields.zoneCount, label: `Zones ${host ? 'Shared' : 'Received'}`, sortable: true, visible: true, filter: true, key: true, detailView: false })
+    unionKeys.push({ field: localFields.zoneCount, label: `Zones ${host ? 'Shared' : 'Received'}`, sortable: true, visible: true, filter: true, key: true, detailView: false })
     unionKeys.push({
-        field: fields.zones, label: `Zones ${host ? 'Shared' : 'Received'}`,
+        field: localFields.zones, label: `Zones ${host ? 'Shared' : 'Received'}`,
         keys: [
-            { field: fields.zoneId, label: 'Zone' },
-            { field: fields.registered, label: 'Registered' }
+            { field: localFields.zoneId, label: 'Zone' },
+            { field: localFields.registered, label: 'Registered' }
         ]
     })
     return unionKeys
 }
 
 export const iconKeys = (host = false) => ([
-    { field: host ? fields.partnerRoleAccessToSelfZones : fields.partnerRoleShareZoneWithSelf, label: 'Registered', icon: 'bookmark_added', count: 0}
+    { field: host ? localFields.partnerRoleAccessToSelfZones : localFields.partnerRoleShareZoneWithSelf, label: 'Registered', icon: 'bookmark_added', count: 0}
 ])
 
 export const multiDataRequest = (keys, mcList) => {
@@ -72,29 +73,29 @@ export const multiDataRequest = (keys, mcList) => {
     if (federatorList && federatorList.length > 0) {
         for (let federator of federatorList) {
             for (let federation of federationList) {
-                if (federator[fields.federationId] === federation[fields.federationId]) {
-                    federator[fields.partnerOperatorName] = federation[fields.partnerOperatorName]
-                    federator[fields.partnerCountryCode] = federation[fields.partnerCountryCode]
-                    federator[fields.partnerFederationName] = federation[fields.partnerFederationName]
-                    federator[fields.partnerFederationId] = federation[fields.partnerFederationId]
-                    federator[fields.partnerRoleShareZoneWithSelf] = federation[fields.partnerRoleShareZoneWithSelf]
-                    federator[fields.partnerRoleAccessToSelfZones] = federation[fields.partnerRoleAccessToSelfZones]
-                    federator[fields.partnerFederationAddr] = federation[fields.partnerFederationAddr]
+                if (federator[localFields.federationId] === federation[localFields.federationId]) {
+                    federator[localFields.partnerOperatorName] = federation[localFields.partnerOperatorName]
+                    federator[localFields.partnerCountryCode] = federation[localFields.partnerCountryCode]
+                    federator[localFields.partnerFederationName] = federation[localFields.partnerFederationName]
+                    federator[localFields.partnerFederationId] = federation[localFields.partnerFederationId]
+                    federator[localFields.partnerRoleShareZoneWithSelf] = federation[localFields.partnerRoleShareZoneWithSelf]
+                    federator[localFields.partnerRoleAccessToSelfZones] = federation[localFields.partnerRoleAccessToSelfZones]
+                    federator[localFields.partnerFederationAddr] = federation[localFields.partnerFederationAddr]
                     break;
                 }
             }
-            federator[fields.zones] = []
+            federator[localFields.zones] = []
             for (let zone of zoneList) {
-                if (federator[fields.partnerFederationName] === zone[fields.partnerFederationName] && federator[fields.operatorName] === zone[fields.operatorName]) {
-                    federator[fields.zones].push({ ...zone, registered: zone[fields.registered] ? perpetual.YES : perpetual.NO })
+                if (federator[localFields.partnerFederationName] === zone[localFields.partnerFederationName] && federator[localFields.operatorName] === zone[localFields.operatorName]) {
+                    federator[localFields.zones].push({ ...zone, registered: zone[localFields.registered] ? perpetual.YES : perpetual.NO })
                 }
             }
-            federator[fields.zoneCount] = federator[fields.zones].length
+            federator[localFields.zoneCount] = federator[localFields.zones].length
         }
     }
     federatorList = federatorList.filter(item => {
-        if (item[fields.partnerRoleAccessToSelfZones] || item[fields.partnerRoleShareZoneWithSelf]) {
-            return isShared ? item[fields.partnerRoleAccessToSelfZones] : item[fields.partnerRoleShareZoneWithSelf]
+        if (item[localFields.partnerRoleAccessToSelfZones] || item[localFields.partnerRoleShareZoneWithSelf]) {
+            return isShared ? item[localFields.partnerRoleAccessToSelfZones] : item[localFields.partnerRoleShareZoneWithSelf]
         }
         return true
     })
@@ -103,33 +104,33 @@ export const multiDataRequest = (keys, mcList) => {
 
 export const getFederationKey = (data, isCreate) => {
     let federation = {}
-    federation['selfoperatorid'] = data[fields.operatorName]
-    federation['name'] = data[fields.partnerFederationName]
+    federation['selfoperatorid'] = data[localFields.operatorName]
+    federation['name'] = data[localFields.partnerFederationName]
     if (isCreate) {
-        federation.apikey = data[fields.partnerAPIKey]
-        federation.countrycode = data[fields.partnerCountryCode]
-        federation.federationaddr = data[fields.partnerFederationAddr]
-        federation.federationid = data[fields.partnerFederationId]
-        federation.selffederationid = data[fields.federationId]
-        federation.operatorid = data[fields.partnerOperatorName]
+        federation.apikey = data[localFields.partnerAPIKey]
+        federation.countrycode = data[localFields.partnerCountryCode]
+        federation.federationaddr = data[localFields.partnerFederationAddr]
+        federation.federationid = data[localFields.partnerFederationId]
+        federation.selffederationid = data[localFields.federationId]
+        federation.operatorid = data[localFields.partnerOperatorName]
     }
     return federation
 }
 
 export const getFederatorKey = (data, isCreate) => {
     let federator = {}
-    federator.operatorid = data[fields.operatorName]
+    federator.operatorid = data[localFields.operatorName]
     if (isCreate) {
-        federator.countryCode = data[fields.countryCode].toUpperCase()
-        federator.mcc = data[fields.mcc]
-        federator.mnc = data[fields.mnc]
-        federator.region = data[fields.region]
+        federator.countryCode = data[localFields.countryCode].toUpperCase()
+        federator.mcc = data[localFields.mcc]
+        federator.mnc = data[localFields.mnc]
+        federator.region = data[localFields.region]
     }
-    if (data[fields.federationId]) {
-        federator.federationid = data[fields.federationId]
+    if (data[localFields.federationId]) {
+        federator.federationid = data[localFields.federationId]
     }
-    if (data[fields.locatorendpoint]) {
-        federator.locatorendpoint = data[fields.locatorEndPoint]
+    if (data[localFields.locatorendpoint]) {
+        federator.locatorendpoint = data[localFields.locatorEndPoint]
     }
     return federator
 }
@@ -137,11 +138,11 @@ export const getFederatorKey = (data, isCreate) => {
 //Federator
 export const showFederator = (self, data, single = false) => {
     let requestData = {}
-    requestData[fields.region] = data[fields.region]
-    requestData.operatorid = redux_org.isOperator(self) ? redux_org.nonAdminOrg(self) : data[fields.operatorName]
+    requestData[localFields.region] = data[localFields.region]
+    requestData.operatorid = redux_org.isOperator(self) ? redux_org.nonAdminOrg(self) : data[localFields.operatorName]
     if (single) {
-        requestData.federationid = data[fields.federationId]
-        requestData.countryCode = data[fields.countryCode]
+        requestData.federationid = data[localFields.federationId]
+        requestData.countryCode = data[localFields.countryCode]
     }
     return { method: endpoint.SHOW_FEDERATOR, data: requestData, keys: federatorKeys(), iconKeys: iconKeys() }
 }
@@ -159,7 +160,7 @@ export const updateFederator = async (self, data) => {
 
 export const deleteFederator = async (self, data) => {
     let requestList = []
-    if (data[fields.partnerFederationId]) {
+    if (data[localFields.partnerFederationId]) {
         requestList.push({ method: endpoint.DELETE_FEDERATION, data: getFederationKey(data) })
     }
     requestList.push({ method: endpoint.DELETE_FEDERATOR, data: getFederatorKey(data) })
@@ -201,7 +202,7 @@ export const showFederation = (self, data) => {
 
 export const createFederation = async (self, data, selffederationid) => {
     let requestData = getFederationKey(data, true)
-    requestData['selffederationid'] = selffederationid ? selffederationid : data[fields.federationId]
+    requestData['selffederationid'] = selffederationid ? selffederationid : data[localFields.federationId]
     let request = { method: endpoint.CREATE_FEDERATION, data: requestData }
     return await authSyncRequest(self, request)
 }

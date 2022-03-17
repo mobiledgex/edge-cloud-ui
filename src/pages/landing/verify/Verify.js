@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { verifyEmail } from "../../../services/model/serverData";
+import { verifyEmail } from "../../../services/modules/landing";
 import { Button, CircularProgress } from '@material-ui/core';
 
 class VerifyContent extends Component {
@@ -17,9 +17,9 @@ class VerifyContent extends Component {
     requestVerify = async () => {
         let token = this.props.location.search
         token = token.substring(token.indexOf('token=') + 6)
-        let mc = await verifyEmail(this, { token: token });
+        let mc = await verifyEmail(this, { token });
         let success = false
-        if (mc && (mc.response || mc.error)) {
+        if (mc?.response || mc?.error) {
             let message = 'Oops, this link is expired'
             if (mc && mc.response && mc.response.data) {
                 success = true

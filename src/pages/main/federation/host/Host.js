@@ -9,7 +9,7 @@ import * as actions from '../../../../actions';
 import { HELP_OUTBOUND_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
 import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
-import { fields } from '../../../../services'
+import { localFields } from '../../../../services'
 import { showFederator, showFederation, keys, iconKeys, deleteFederator, generateApiKey, multiDataRequest } from "../../../../services/modules/federation"
 import { showFederationZones } from "../../../../services/modules/zones";
 import { uiFormatter } from '../../../../helper/formatter';
@@ -18,7 +18,7 @@ import RegisterOperator from "../reg/Federator";
 import RegisterPartner from "../reg/Fedaration";
 import ShareZones from "./reg/ShareZones";
 import { InfoDialog } from "../../../../hoc/mexui";
-import { responseValid } from "../../../../services/service";
+import { responseValid } from "../../../../services/config";
 
 class Host extends React.Component {
     constructor(props) {
@@ -69,11 +69,11 @@ class Host extends React.Component {
     }
 
     createVisible = (data) => {
-        return data[fields.partnerFederationId] === undefined
+        return data[localFields.partnerFederationId] === undefined
     }
 
     federationNameVisible = (type, action, data) => {
-        return true//data[fields.partnerFederationId] !== undefined
+        return true//data[localFields.partnerFederationId] !== undefined
     }
 
     onDialogClose = () => {
@@ -114,10 +114,10 @@ class Host extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.partnerRoleShareZoneWithSelf) {
+        if (key.field === localFields.partnerRoleShareZoneWithSelf) {
             return uiFormatter.renderYesNo(key, data[key.field], isDetail)
         }
-        if (key.field === fields.partnerRoleAccessToSelfZones) {
+        if (key.field === localFields.partnerRoleAccessToSelfZones) {
             return uiFormatter.renderYesNo(key, data[key.field], isDetail)
         }
     }
@@ -127,11 +127,11 @@ class Host extends React.Component {
             id: perpetual.PAGE_OUTBOUND_FEDERATION,
             headerLabel: 'Host - Federation',
             requestType: [showFederation, showFederator, showFederationZones],
-            sortBy: [fields.region],
+            sortBy: [localFields.region],
             // isRegion: true,
             keys: this.keys,
             onAdd: this.onAdd,
-            nameField: fields.partnerFederationName,
+            nameField: localFields.partnerFederationName,
             viewMode: HELP_OUTBOUND_LIST,
             iconKeys: iconKeys(true),
             formatData: this.dataFormatter

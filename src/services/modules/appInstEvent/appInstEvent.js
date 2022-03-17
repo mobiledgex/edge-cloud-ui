@@ -1,17 +1,17 @@
 import { endpoint } from '../../../helper/constant'
-import { fields } from '../../model/format'
+import { localFields } from '../../fields'
 import { AIK_CLOUDLET, appInstKeys } from '../appInst/primary'
 import { redux_org } from '../../../helper/reduxData'
 
 export const appEventKeys = [
-    { field: fields.time, label: 'Starttime', serverField: 'time', visible: true, detailedView: false, format: true },
+    { field: localFields.time, label: 'Starttime', serverField: 'time', visible: true, detailedView: false, format: true },
     { label: 'Region', serverField: 'region', visible: true, detailedView: false, groupBy: true, filter: true },
-    { field: fields.appName, label: 'App', serverField: 'app', visible: true, detailedView: false, groupBy: true, filter: true, format: true },
+    { field: localFields.appName, label: 'App', serverField: 'app', visible: true, detailedView: false, groupBy: true, filter: true, format: true },
     { label: 'App Developer', serverField: 'apporg', visible: false, detailedView: false, groupBy: true },
     { label: 'Version', serverField: 'ver', visible: false, detailedView: false, groupBy: true },
-    { field: fields.clusterName, label: 'Cluster', serverField: 'cluster', visible: true, detailedView: false, groupBy: true, format: true },
+    { field: localFields.clusterName, label: 'Cluster', serverField: 'cluster', visible: true, detailedView: false, groupBy: true, format: true },
     { label: 'Cluster Developer', serverField: 'clusterorg', visible: false, detailedView: false, groupBy: true },
-    { field: fields.cloudletName, label: 'Cloudlet', serverField: 'cloudlet', visible: true, detailedView: false, groupBy: true, format: true },
+    { field: localFields.cloudletName, label: 'Cloudlet', serverField: 'cloudlet', visible: true, detailedView: false, groupBy: true, format: true },
     { label: 'Operator', serverField: 'cloudletorg', visible: false, detailedView: false, groupBy: true },
     { label: 'Action', serverField: 'event', visible: true, detailedView: true },
     { label: 'Status', serverField: 'status', visible: true, detailedView: true }
@@ -19,9 +19,9 @@ export const appEventKeys = [
 
 export const appInstEventLogs = (self, data, isOperator = false) => {
     let requestData = {
-        region: data[fields.region],
-        starttime: data[fields.starttime],
-        endtime: data[fields.endtime]
+        region: data[localFields.region],
+        starttime: data[localFields.starttime],
+        endtime: data[localFields.endtime]
     }
     if (isOperator) {
         requestData.appinst = appInstKeys(data, AIK_CLOUDLET)
@@ -29,7 +29,7 @@ export const appInstEventLogs = (self, data, isOperator = false) => {
     else {
         requestData.appinst = {
             app_key: {
-                organization: data[fields.organizationName]
+                organization: data[localFields.organizationName]
             }
         }
     }

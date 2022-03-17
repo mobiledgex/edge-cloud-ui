@@ -1,29 +1,29 @@
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
-import { fields } from '../../model/format';
+import { localFields } from '../../fields';
 
 export const keys = () => ([
-    { field: fields.cloudletName, serverField: 'key#OS#name' },
-    { field: fields.operatorName, serverField: 'key#OS#organization' },
-    { field: fields.state, serverField: 'state' },
-    { field: fields.notifyId, serverField: 'notify_id' },
-    { field: fields.controller, serverField: 'controller' },
-    { field: fields.status, serverField: 'status' },
-    { field: fields.containerVersion, serverField: 'container_version' },
-    { field: fields.osMaxRam, serverField: 'os_max_ram' },
-    { field: fields.osMaxVCores, serverField: 'os_max_vcores' },
-    { field: fields.osMaxVolGB, serverField: 'os_max_vol_gb' },
-    { field: fields.flavors, serverField: 'flavors' },
-    { field: fields.compatibilityVersion, serverField: 'compatibility_version' },
+    { field: localFields.cloudletName, serverField: 'key#OS#name' },
+    { field: localFields.operatorName, serverField: 'key#OS#organization' },
+    { field: localFields.state, serverField: 'state' },
+    { field: localFields.notifyId, serverField: 'notify_id' },
+    { field: localFields.controller, serverField: 'controller' },
+    { field: localFields.status, serverField: 'status' },
+    { field: localFields.containerVersion, serverField: 'container_version' },
+    { field: localFields.osMaxRam, serverField: 'os_max_ram' },
+    { field: localFields.osMaxVCores, serverField: 'os_max_vcores' },
+    { field: localFields.osMaxVolGB, serverField: 'os_max_vol_gb' },
+    { field: localFields.flavors, serverField: 'flavors' },
+    { field: localFields.compatibilityVersion, serverField: 'compatibility_version' },
 ])
 
 export const getKey = (data) => {
     return ({
-        region: data[fields.region],
+        region: data[localFields.region],
         cloudletinfo: {
             key: {
-                organization: data[fields.operatorName],
-                name: data[fields.cloudletName]
+                organization: data[localFields.operatorName],
+                name: data[localFields.cloudletName]
             }
         }
     })

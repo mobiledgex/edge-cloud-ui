@@ -2,7 +2,6 @@ import { fetchHttpURL, validateExpiry } from "./config"
 import axios from 'axios';
 import { formatData } from "./format";
 import { isBoolean } from "../utils/boolean_utils";
-import { WS_TOKEN } from "../helper/constant/endpoint";
 import { LS_THASH } from "../helper/constant/perpetual";
 import { isLocal } from "../utils/location_utils";
 
@@ -34,25 +33,6 @@ const showMessage = (self, request, message) => {
     const flag = request ? isBoolean(request.showMessage) ? request.showMessage : true : false
     if (flag && self && self.props && self.props.handleAlertInfo && message !== 'Forbidden' && message !== 'No bearer token found') {
         self.props.handleAlertInfo('error', message)
-    }
-}
-
-
-/**
- * fetch token for websocket
- * @param {*} request 
- * @param {*} auth 
- * @returns
- */
-export const fetchWSToken = async (self) => {
-    let mc = await authSyncRequest(self, { method: WS_TOKEN })
-    if (responseValid(mc)) {
-        return mc.response.data.token
-    }
-    else {
-        if (self && self.props && self.props.history) {
-            self.props.history.push('/logout');
-        }
     }
 }
 
@@ -148,10 +128,6 @@ const errorResponse = (self, request, error, callback, auth = true) => {
             }
         }
     }
-}
-
-export const responseValid = (mc) => {
-    return mc && mc.response && mc.response.status === 200
 }
 
 /**

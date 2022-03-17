@@ -2,11 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux';
 import * as actions from '../../../../../actions';
 import MexForms, { INPUT, BUTTON } from '../../../../../hoc/forms/MexForms';
-import { fields } from '../../../../../services';
-import { responseValid } from '../../../../../services/service';
+import { localFields } from '../../../../../services';
 import { setApiKey } from '../../../../../services/modules/federation';
 import { LinearProgress } from '@material-ui/core';
 import { InfoDialog } from '../../../../../hoc/mexui';
+import { responseValid } from '../../../../../services/config';
 
 
 class APIKey extends React.Component {
@@ -21,9 +21,9 @@ class APIKey extends React.Component {
 
     elements = () => (
         [
-            { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { required: true, disabled: true }, visible: true },
-            { field: fields.partnerFederationName, label: 'Federation Name', formType: INPUT, rules: { required: true, disabled: true }, visible: true },
-            { field: fields.apiKey, label: 'API Key', placeholder: 'Enter API Key', formType: INPUT, rules: { required: true }, visible: true },
+            { field: localFields.operatorName, label: 'Operator', formType: INPUT, rules: { required: true, disabled: true }, visible: true },
+            { field: localFields.partnerFederationName, label: 'Federation Name', formType: INPUT, rules: { required: true, disabled: true }, visible: true },
+            { field: localFields.apiKey, label: 'API Key', placeholder: 'Enter API Key', formType: INPUT, rules: { required: true }, visible: true },
         ]
     )
 
@@ -55,10 +55,10 @@ class APIKey extends React.Component {
 
     onCreate = async (data) => {
         this.updateState({ loading: true })
-        let mc = await setApiKey(this, { selfoperatorid: data[fields.operatorName], name: data[fields.partnerFederationName], apikey: data[fields.apiKey] })
+        let mc = await setApiKey(this, { selfoperatorid: data[localFields.operatorName], name: data[localFields.partnerFederationName], apikey: data[localFields.apiKey] })
         this.updateState({ loading: false })
         if (responseValid(mc)) {
-            this.props.handleAlertInfo('success', `API key changed for  ${data[fields.partnerFederationName]}`)
+            this.props.handleAlertInfo('success', `API key changed for  ${data[localFields.partnerFederationName]}`)
             this.props.onClose()
         }
     }

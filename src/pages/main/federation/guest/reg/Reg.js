@@ -11,7 +11,7 @@ import { HELP_FEDERATION_GUEST_REG } from "../../../../../tutorial";
 import RegisterOperator from '../../reg/Federator';
 import MexMessageDialog from '../../../../../hoc/dialog/mexWarningDialog';
 import { registerFederation } from '../../../../../services/modules/federation';
-import { responseValid } from '../../../../../services/service';
+import { responseValid } from '../../../../../services/config';
 
 const stepData = [
     {

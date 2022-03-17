@@ -2,7 +2,7 @@
 import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST, SHOW_ORG_CLOUDLET } from '../../../../helper/constant/endpoint'
 import { MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION, PARENT_APP_INST, PARENT_CLUSTER_INST, PARENT_CLOUDLET } from '../../../../helper/constant/perpetual'
 import { formatData } from '../../../../services/format'
-import { fields } from '../../../../services/model/format'
+import { localFields } from '../../../../services/fields'
 import { darkColors } from '../../../../utils/color_utils'
 
 const fetchAppInstData = (parentId, showList, keys, isOperator) => {
@@ -11,24 +11,24 @@ const fetchAppInstData = (parentId, showList, keys, isOperator) => {
     let colors = darkColors(showList.length + 10)
     for (let i = 0; i < showList.length; i++) {
         const show = showList[i]
-        if (show[fields.appName] === MEX_PROMETHEUS_APP_NAME || show[fields.appName] === NFS_AUTO_PROVISION || (show.cloudletLocation === undefined || Object.keys(show.cloudletLocation).length === 0)) {
+        if (show[localFields.appName] === MEX_PROMETHEUS_APP_NAME || show[localFields.appName] === NFS_AUTO_PROVISION || (show.cloudletLocation === undefined || Object.keys(show.cloudletLocation).length === 0)) {
             continue;
         }
         if (parentId === PARENT_CLOUDLET) {
-            formattedList.push({ name: show[fields.cloudletName], organization: show[fields.operatorName] })
+            formattedList.push({ name: show[localFields.cloudletName], organization: show[localFields.operatorName] })
         }
         else if (parentId === PARENT_APP_INST) {
-            formattedList.push(isOperator ? { cluster_inst_key: { cloudlet_key: { organization: show[fields.operatorName] } } } : { app_key: { name: show[fields.appName], organization: show[fields.organizationName] } })
+            formattedList.push(isOperator ? { cluster_inst_key: { cloudlet_key: { organization: show[localFields.operatorName] } } } : { app_key: { name: show[localFields.appName], organization: show[localFields.organizationName] } })
         }
         else if (parentId === PARENT_CLUSTER_INST) {
-            formattedList.push(isOperator ? { cloudlet_key: { organization: show[fields.operatorName] } } : { cluster_key: { name: show[fields.clusterName] }, organization: show[fields.organizationName] })
+            formattedList.push(isOperator ? { cloudlet_key: { organization: show[localFields.operatorName] } } : { cluster_key: { name: show[localFields.clusterName] }, organization: show[localFields.organizationName] })
         }
         let dataKey = ''
         let data = {}
         keys.forEach(key => {
             if (!key.resourceLabel && key.field) {
                 data[key.field] = show[key.field]
-                if (key.field === fields.resourceQuotas && show[key.field]) {
+                if (key.field === localFields.resourceQuotas && show[key.field]) {
                     let resourceQuotas = show[key.field]
                     resourceQuotas.forEach(quota => {
                         keys.forEach(resource => {
@@ -40,9 +40,9 @@ const fetchAppInstData = (parentId, showList, keys, isOperator) => {
                 }
                 else if (key.groupBy) {
                     //replace cluster name with realclustername for appmetrics
-                    let isRealCluster = parentId === PARENT_APP_INST && show[fields.realclustername]
-                    if (isRealCluster && key.field === fields.clusterName) {
-                        dataKey = dataKey + show[fields.realclustername] + '_'
+                    let isRealCluster = parentId === PARENT_APP_INST && show[localFields.realclustername]
+                    if (isRealCluster && key.field === localFields.clusterName) {
+                        dataKey = dataKey + show[localFields.realclustername] + '_'
                     }
                     else {
                         dataKey = dataKey + show[key.field] + '_'
@@ -85,8 +85,8 @@ const processData = (worker) => {
             if (appInstList && appInstList.length > 0) {
                 for (let appInst of appInstList) {
                     for (const cloudlet of cloudletList) {
-                        if (appInst[fields.cloudletName] === cloudlet[fields.cloudletName] && appInst[fields.operatorName] === cloudlet[fields.operatorName]) {
-                            appInst[fields.platformType] = cloudlet[fields.platformType]
+                        if (appInst[localFields.cloudletName] === cloudlet[localFields.cloudletName] && appInst[localFields.operatorName] === cloudlet[localFields.operatorName]) {
+                            appInst[localFields.platformType] = cloudlet[localFields.platformType]
                             break;
                         }
                     }
@@ -113,8 +113,8 @@ const processData = (worker) => {
                     let cluster = clusterList[i]
                     for (let j = 0; j < cloudletList.length; j++) {
                         let cloudlet = cloudletList[j]
-                        if (cluster[fields.operatorName] === cloudlet[fields.operatorName] && cluster[fields.cloudletName] === cloudlet[fields.cloudletName]) {
-                            cluster[fields.cloudletLocation] = cloudlet[fields.cloudletLocation]
+                        if (cluster[localFields.operatorName] === cloudlet[localFields.operatorName] && cluster[localFields.cloudletName] === cloudlet[localFields.cloudletName]) {
+                            cluster[localFields.cloudletLocation] = cloudlet[localFields.cloudletLocation]
                             break;
                         }
                     }

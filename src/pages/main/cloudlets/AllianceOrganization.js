@@ -63,7 +63,7 @@ class AllianceOrganization extends React.Component {
             if (form.field) {
                 if (form.formType === DUALLIST) {
                     switch (form.field) {
-                        case fields.allianceOrganization:
+                        case localFields.allianceOrganization:
                             form.options = this.allianceList.map(data => ({ value: data, label: data }))
                             break;
                         default:
@@ -97,13 +97,13 @@ class AllianceOrganization extends React.Component {
     }
 
     onCreate = async (data) => {
-        let allianceOrgs = data[fields.allianceOrganization]
+        let allianceOrgs = data[localFields.allianceOrganization]
         if (allianceOrgs && allianceOrgs.length > 0) {
             let requestList = []
             let requestCall = this.isAllianceCloudletAdd ? addClouldletAllianceOrgs : removeClouldletAllianceOrgs
             allianceOrgs.forEach(org => {
                 let requestData = {...data}
-                requestData[fields.allianceOrganization] = org
+                requestData[localFields.allianceOrganization] = org
                 requestList.push(requestCall(requestData))
             })
             if (requestList && requestList.length > 0) {
@@ -117,7 +117,7 @@ class AllianceOrganization extends React.Component {
     filterAllianceCloudlets = () => {
         let removeList = []
         if (this.props.data) {
-            let selectedAllianceOrgs = this.props.data[fields.allianceOrganization]
+            let selectedAllianceOrgs = this.props.data[localFields.allianceOrganization]
             if (selectedAllianceOrgs && selectedAllianceOrgs.length > 0) {
                 for (let i = 0; i < selectedAllianceOrgs.length; i++) {
                     let selectedAllianceOrg = selectedAllianceOrgs[i];
@@ -141,17 +141,17 @@ class AllianceOrganization extends React.Component {
 
     getFormData = async (data) => {
         let organizationList = await service.showAuthSyncRequest(this, showOrganizations(this, { type: perpetual.OPERATOR }))
-        organizationList = _sort(organizationList.map(org => org[fields.organizationName]))
-        this.allianceList = organizationList.filter(org => org !== data[fields.operatorName])
+        organizationList = _sort(organizationList.map(org => org[localFields.organizationName]))
+        this.allianceList = organizationList.filter(org => org !== data[localFields.operatorName])
         if (this.allianceList && this.allianceList.length > 0) {
             let action = this.props.action === perpetual.ACTION_REMOVE_ALLIANCE_ORG ? 'Remove' : 'Add'
             this.filterAllianceCloudlets();
             let forms = [
                 { label: `${action} Alliance Organization`, formType: MAIN_HEADER, visible: true },
-                { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.region] },
-                { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.cloudletName] },
-                { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.operatorName] },
-                { field: fields.allianceOrganization, label: 'Alliance Organization', formType: DUALLIST, visible: true },
+                { field: localFields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: data[localFields.region] },
+                { field: localFields.cloudletName, label: 'Cloudlet Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[localFields.cloudletName] },
+                { field: localFields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: data[localFields.operatorName] },
+                { field: localFields.allianceOrganization, label: 'Alliance Organization', formType: DUALLIST, visible: true },
                 { label: `${action}`, formType: 'Button', onClick: this.onCreate },
                 { label: 'Cancel', formType: 'Button', onClick: this.onCancel }
             ]

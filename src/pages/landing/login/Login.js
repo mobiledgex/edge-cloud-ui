@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { loadingSpinner, alertInfo } from '../../../actions';
 import { LS_THASH } from '../../../helper/constant/perpetual';
 import { isLocal } from '../../../utils/location_utils';
-import { login } from '../../../services/model/serverData';
+import { login } from '../../../services/modules/landing';
 import LoginForm from './LoginForm';
 import MexOTPValidation from './MexOTPValidation';
 

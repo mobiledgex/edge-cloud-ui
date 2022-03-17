@@ -2,7 +2,7 @@ import React from 'react'
 import { Divider, Grid, Tooltip, Tabs, Tab, Paper } from '@material-ui/core';
 import * as dateUtil from '../../../../utils/date_util'
 import MexCalendar from '../../../../hoc/calendar/MexCalendar'
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 import { FixedSizeList } from 'react-window';
 import { Icon } from '../../../../hoc/mexui';
 import Toolbar, { ACION_SEARCH, ACTION_CLOSE, ACTION_ORG, ACTION_PICKER, ACTION_REFRESH } from '../helper/toolbar/Toolbar';
@@ -164,13 +164,13 @@ class EventLog extends React.Component {
 
     formatData = (field, data, index) => {
         switch (field) {
-            case fields.time:
+            case localFields.time:
                 return dateUtil.time(dateUtil.FORMAT_FULL_DATE_TIME, data[index])
-            case fields.appName:
+            case localFields.appName:
                 return `${data[index]} [${data[index + 1]}]`
-            case fields.clusterName:
+            case localFields.clusterName:
                 return `${data[index]} [${data[index + 1]}]`
-            case fields.cloudletName:
+            case localFields.cloudletName:
                 return `${data[index]} [${data[index + 1]}]`
         }
     }

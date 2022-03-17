@@ -5,7 +5,7 @@ import LineChart from '../../charts/linechart/MexLineChart'
 import { fetchResourceData, fetchFlavorBySelection } from '../../services/service'
 import MetricWorker from '../../services/metric.worker.js'
 import { equal } from '../../../../../helper/constant/operators'
-import { fields } from '../../../../../services/model/format'
+import { localFields } from '../../../../../services/fields'
 
 class ResourceChart extends React.Component {
     constructor(props) {
@@ -14,7 +14,7 @@ class ResourceChart extends React.Component {
             dataList: undefined
         }
         this.metricWorker = new MetricWorker();
-        this.isFlavor = props.resource.field === fields.flavorusage
+        this.isFlavor = props.resource.field === localFields.flavorusage
     }
 
     updateState = (data) => {

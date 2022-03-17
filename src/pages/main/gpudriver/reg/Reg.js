@@ -5,7 +5,7 @@ import MexForms, { SELECT, BUTTON, INPUT, MAIN_HEADER, MULTI_FORM, HEADER, ICON_
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 //model
 import { Grid } from '@material-ui/core';
 import { redux_org } from '../../../../helper/reduxData';
@@ -56,29 +56,29 @@ class GPUDriverReg extends React.Component {
     }
 
     buildForm = () => ([
-        { field: fields.buildName, label: 'Name', formType: INPUT, placeholder: 'Enter Build Name', rules: { required: true, type: 'search' }, width: 2, visible: true, update: { edit: true } },
-        { field: fields.driverPath, label: 'Driver Path', formType: INPUT, placeholder: 'Enter Driver Path', rules: { required: true, type: 'search' }, width: 2, visible: true, update: { edit: true } },
-        { field: fields.md5Sum, label: 'MD5 Sum', formType: INPUT, placeholder: 'Enter MD5 Sum', rules: { required: true, type: 'search' }, width: 2, visible: true, update: { edit: true } },
-        { field: fields.driverPathCreds, label: 'Driver Path Creds', formType: INPUT, placeholder: 'Enter username:password', rules: { required: false, type: 'password', autocomplete: "off" }, width: 2, visible: true, update: { edit: true } },
-        { field: fields.operatingSystem, label: 'Operating System', formType: SELECT, placeholder: 'Select Operating System', rules: { required: true }, width: 2, visible: true, update: { edit: true }, options: osList },
-        { field: fields.kernelVersion, label: 'Kernel Version', formType: INPUT, placeholder: 'Enter Kernel Version', rules: { required: false, type: 'search' }, width: 2, visible: true, update: { edit: true } },
-        { field: fields.hypervisorInfo, label: 'Hypervisor Info', formType: INPUT, placeholder: 'Enter Hypervisor Info', rules: { required: false, type: 'search' }, width: 2, visible: true, update: { edit: true } },
+        { field: localFields.buildName, label: 'Name', formType: INPUT, placeholder: 'Enter Build Name', rules: { required: true, type: 'search' }, width: 2, visible: true, update: { edit: true } },
+        { field: localFields.driverPath, label: 'Driver Path', formType: INPUT, placeholder: 'Enter Driver Path', rules: { required: true, type: 'search' }, width: 2, visible: true, update: { edit: true } },
+        { field: localFields.md5Sum, label: 'MD5 Sum', formType: INPUT, placeholder: 'Enter MD5 Sum', rules: { required: true, type: 'search' }, width: 2, visible: true, update: { edit: true } },
+        { field: localFields.driverPathCreds, label: 'Driver Path Creds', formType: INPUT, placeholder: 'Enter username:password', rules: { required: false, type: 'password', autocomplete: "off" }, width: 2, visible: true, update: { edit: true } },
+        { field: localFields.operatingSystem, label: 'Operating System', formType: SELECT, placeholder: 'Select Operating System', rules: { required: true }, width: 2, visible: true, update: { edit: true }, options: osList },
+        { field: localFields.kernelVersion, label: 'Kernel Version', formType: INPUT, placeholder: 'Enter Kernel Version', rules: { required: false, type: 'search' }, width: 2, visible: true, update: { edit: true } },
+        { field: localFields.hypervisorInfo, label: 'Hypervisor Info', formType: INPUT, placeholder: 'Enter Hypervisor Info', rules: { required: false, type: 'search' }, width: 2, visible: true, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
     ])
 
     buildMultiForm = (form) => {
-        return ({ uuid: uniqueId(), field: fields.build, formType: MULTI_FORM, forms: form ? form : this.buildForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: localFields.build, formType: MULTI_FORM, forms: form ? form : this.buildForm(), width: 3, visible: true })
     }
 
     propertyForm = () => ([
-        { field: fields.key, label: 'Key', formType: INPUT, rules: { required: true }, width: 7, visible: true },
-        { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 7, visible: true },
+        { field: localFields.key, label: 'Key', formType: INPUT, rules: { required: true }, width: 7, visible: true },
+        { field: localFields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 7, visible: true },
         this.isUpdate ? {} :
             { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 2, onClick: this.removeMultiForm }
     ])
 
     getPropertyForm = (form) => {
-        return ({ uuid: uniqueId(), field: fields.property, formType: MULTI_FORM, forms: form ? form : this.propertyForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: localFields.property, formType: MULTI_FORM, forms: form ? form : this.propertyForm(), width: 3, visible: true })
     }
 
     onLicenseConfigLoad = (data, extra) => {
@@ -99,7 +99,7 @@ class GPUDriverReg extends React.Component {
     }
 
     deploymentManifestForm = () => ([
-        { field: fields.licenseConfig, formType: TEXT_AREA, rules: { required: false, onBlur: true }, update: { edit: true }, width: 14, visible: true },
+        { field: localFields.licenseConfig, formType: TEXT_AREA, rules: { required: false, onBlur: true }, update: { edit: true }, width: 14, visible: true },
         { icon: 'browse', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.addLicenseConfig },
         { icon: 'clear', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
     ])
@@ -107,12 +107,12 @@ class GPUDriverReg extends React.Component {
     formKeys = () => {
         return [
             { label: 'Create GPU Driver', formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Region name' },
-            { field: fields.gpuDriverName, label: 'GPU Driver Name', formType: INPUT, placeholder: 'Enter GPU Driver Name', rules: { required: true }, visible: true, tip: 'Name of the driver' },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: ' Organization to which the driver belongs to', update: { key: true } },
-            { uuid: uniqueId(), field: fields.licenseConfig, label: 'License Config', formType: TEXT_AREA, visible: true, update: { id: ['16'] }, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
-            { field: fields.builds, label: 'Builds', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Build', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.buildMultiForm }], update: { id: ['7'], ignoreCase: true }, visible: true, tip: buildTip },
-            { field: fields.properties, label: 'Properties', formType: HEADER, forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getPropertyForm }], visible: true, tip: 'Additional properties associated with GPU driver build For example: license server information, driver release date, etc, specify properties:empty=true to clear' },
+            { field: localFields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Region name' },
+            { field: localFields.gpuDriverName, label: 'GPU Driver Name', formType: INPUT, placeholder: 'Enter GPU Driver Name', rules: { required: true }, visible: true, tip: 'Name of the driver' },
+            { field: localFields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: ' Organization to which the driver belongs to', update: { key: true } },
+            { uuid: uniqueId(), field: localFields.licenseConfig, label: 'License Config', formType: TEXT_AREA, visible: true, update: { id: ['16'] }, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
+            { field: localFields.builds, label: 'Builds', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Build', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.buildMultiForm }], update: { id: ['7'], ignoreCase: true }, visible: true, tip: buildTip },
+            { field: localFields.properties, label: 'Properties', formType: HEADER, forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getPropertyForm }], visible: true, tip: 'Additional properties associated with GPU driver build For example: license server information, driver release date, etc, specify properties:empty=true to clear' },
         ]
     }
 
@@ -121,7 +121,7 @@ class GPUDriverReg extends React.Component {
         for (const form of forms) {
             if (form.uuid === parentForm.uuid) {
                 for (const childForm of form.forms) {
-                    if (childForm.field === fields.kernelVersion) {
+                    if (childForm.field === localFields.kernelVersion) {
                         childForm.rules.required = currentForm.value === OS_LINUX
                         break;
                     }
@@ -135,7 +135,7 @@ class GPUDriverReg extends React.Component {
     }
 
     checkForms = (form, forms, isInit = false) => {
-        if (form.field === fields.operatingSystem) {
+        if (form.field === localFields.operatingSystem) {
             this.onOperatingSystemChange(form, forms, isInit)
         }
     }
@@ -162,7 +162,7 @@ class GPUDriverReg extends React.Component {
                 if (mc.response && mc.response.data) {
                     responseData = mc.response.data;
                 }
-                let labels = [{ label: 'GPU Driver', field: fields.gpuDriverName }]
+                let labels = [{ label: 'GPU Driver', field: localFields.gpuDriverName }]
                 this.updateState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
             }
         }
@@ -178,24 +178,24 @@ class GPUDriverReg extends React.Component {
                     let uuid = form.uuid;
                     let multiFormData = data[uuid]
                     if (multiFormData) {
-                        if (form.field === fields.build) {
+                        if (form.field === localFields.build) {
                             builds.push(buildKey(multiFormData))
                         }
-                        else if (form.field === fields.licenseConfig && multiFormData[fields.licenseConfig]) {
-                            data[fields.licenseConfig] = multiFormData[fields.licenseConfig].trim()
+                        else if (form.field === localFields.licenseConfig && multiFormData[localFields.licenseConfig]) {
+                            data[localFields.licenseConfig] = multiFormData[localFields.licenseConfig].trim()
                         }
-                        else if (form.field === fields.property) {
-                            properties[multiFormData[fields.key]] = multiFormData[fields.value]
+                        else if (form.field === localFields.property) {
+                            properties[multiFormData[localFields.key]] = multiFormData[localFields.value]
                         }
                     }
                     data[uuid] = undefined
                 }
             }
             if (builds.length > 0) {
-                data[fields.builds] = builds
+                data[localFields.builds] = builds
             }
             if (Boolean(properties)) {
-                data[fields.properties] = properties
+                data[localFields.properties] = properties
             }
             if (this.props.isUpdate) {
             }
@@ -234,13 +234,13 @@ class GPUDriverReg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT) {
                     switch (form.field) {
-                        case fields.region:
+                        case localFields.region:
                             form.options = this.props.regions;
                             break;
-                        case fields.organizationName:
+                        case localFields.organizationName:
                             form.options = this.organizationList;
                             break;
-                        case fields.operatingSystem:
+                        case localFields.operatingSystem:
                             form.options = osList
                             break;
                         default:

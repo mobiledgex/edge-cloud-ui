@@ -1,4 +1,4 @@
-import * as formatter from '../../model/format'
+import * as formatter from '../../fields'
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
@@ -16,32 +16,32 @@ const SF_TRIGGER_TIME = 'trigger_time'
 const SF_DESCRIPTION = 'description'
 
 export const keys = () => ([
-  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
-  { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization', sortable: true, visible: true, filter: true, key: true },
-  { field: fields.alertPolicyName, serverField: 'key#OS#name', label: 'Alert Policy Name', sortable: true, visible: true, filter: true, key: true },
-  { field: fields.description, serverField: SF_DESCRIPTION, label: 'Description' },
-  { field: fields.severity, serverField: SF_SEVERITY, label: 'Severity', sortable: true, visible: true, filter: true, format: true },
-  { field: fields.triggerTime, serverField: SF_TRIGGER_TIME, label: 'Trigger Time', sortable: true, visible: true, filter: true, format: true },
-  { field: fields.cpuUtilizationLimit, serverField: SF_CUL, label: 'CPU Utilization Limit', type: 'number' },
-  { field: fields.memUtilizationLimit, serverField: SF_MUL, label: 'Memory Utilization Limit', type: 'number' },
-  { field: fields.diskUtilizationLimit, serverField: SF_DUL, label: 'Disk Utilization Limit', type: 'number' },
-  { field: fields.activeConnectionLimit, serverField: SF_ACL, label: 'Active Connection Limit', type: 'number' },
-  { field: fields.labels, serverField: SF_LABELS, label: 'Labels', dataType: perpetual.TYPE_JSON },
-  { field: fields.annotations, serverField: SF_ANNOTATIONS, label: 'Annotations', dataType: perpetual.TYPE_JSON },
+  { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
+  { field: localFields.organizationName, serverField: 'key#OS#organization', label: 'Organization', sortable: true, visible: true, filter: true, key: true },
+  { field: localFields.alertPolicyName, serverField: 'key#OS#name', label: 'Alert Policy Name', sortable: true, visible: true, filter: true, key: true },
+  { field: localFields.description, serverField: SF_DESCRIPTION, label: 'Description' },
+  { field: localFields.severity, serverField: SF_SEVERITY, label: 'Severity', sortable: true, visible: true, filter: true, format: true },
+  { field: localFields.triggerTime, serverField: SF_TRIGGER_TIME, label: 'Trigger Time', sortable: true, visible: true, filter: true, format: true },
+  { field: localFields.cpuUtilizationLimit, serverField: SF_CUL, label: 'CPU Utilization Limit', type: 'number' },
+  { field: localFields.memUtilizationLimit, serverField: SF_MUL, label: 'Memory Utilization Limit', type: 'number' },
+  { field: localFields.diskUtilizationLimit, serverField: SF_DUL, label: 'Disk Utilization Limit', type: 'number' },
+  { field: localFields.activeConnectionLimit, serverField: SF_ACL, label: 'Active Connection Limit', type: 'number' },
+  { field: localFields.labels, serverField: SF_LABELS, label: 'Labels', dataType: perpetual.TYPE_JSON },
+  { field: localFields.annotations, serverField: SF_ANNOTATIONS, label: 'Annotations', dataType: perpetual.TYPE_JSON },
   {
-    field: fields.apps, label: 'Apps',
-    keys: [{ field: fields.appName, label: 'App Name' },
-    { field: fields.version, label: 'Version' }]
+    field: localFields.apps, label: 'Apps',
+    keys: [{ field: localFields.appName, label: 'App Name' },
+    { field: localFields.version, label: 'Version' }]
   }
 ])
 
 const getKey = (data, isCreate) => {
   let alertPolicy = {}
-  alertPolicy.key = { organization: data[fields.organizationName], name: data[fields.alertPolicyName] }
-  const updateFields = data[fields.fields]
+  alertPolicy.key = { organization: data[localFields.organizationName], name: data[localFields.alertPolicyName] }
+  const updateFields = data[localFields.fields]
   if (isCreate) {
     for (const item of keys()) {
-      if (item.key || item.field === fields.actions) {
+      if (item.key || item.field === localFields.actions) {
         continue;
       }
       if (data[item.field]) {
@@ -53,7 +53,7 @@ const getKey = (data, isCreate) => {
     }
   }
   return {
-    region: data[fields.region],
+    region: data[localFields.region],
     alertPolicy
   }
 }
@@ -83,7 +83,7 @@ export const createAlertPolicy = (data) => {
 
 export const deleteAlertPolicy = (self, data) => {
   let requestData = getKey(data)
-  return { method: endpoint.DELETE_ALERT_POLICY, data: requestData, success: `Alert Policy ${data[fields.alertPolicyName]} deleted successfully` }
+  return { method: endpoint.DELETE_ALERT_POLICY, data: requestData, success: `Alert Policy ${data[localFields.alertPolicyName]} deleted successfully` }
 }
 
 export const multiDataRequest = (keys, mcList, specific) => {
@@ -99,15 +99,15 @@ export const multiDataRequest = (keys, mcList, specific) => {
     }
   }
   alertPolicyList.forEach(alertPolicy => {
-    let policyName = alertPolicy[fields.alertPolicyName]
+    let policyName = alertPolicy[localFields.alertPolicyName]
     let apps = []
     appList.forEach(app => {
-      if (app[fields.alertPolicies] && app[fields.alertPolicies].includes(policyName)) {
+      if (app[localFields.alertPolicies] && app[localFields.alertPolicies].includes(policyName)) {
         apps.push(app)
       }
     })
     if (apps.length > 0) {
-      alertPolicy[fields.apps] = apps
+      alertPolicy[localFields.apps] = apps
     }
   })
   return alertPolicyList

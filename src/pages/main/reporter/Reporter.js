@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux';
 import { perpetual } from '../../../helper/constant';
 import DataView from '../../../container/DataView';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import { keys, showReporter, deleteReporter } from '../../../services/modules/reporter';
 import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
 import { Box } from '@material-ui/core';
@@ -17,6 +17,7 @@ import { showOrganizations } from '../../../services/modules/organization';
 import LogoSpinner from '../../../hoc/loader/LogoSpinner'
 import { service } from '../../../services';
 import { FORMAT_FULL_DATE } from '../../../utils/date_util';
+import { responseValid } from '../../../services/config';
 
 class Reporter extends React.Component {
 
@@ -72,11 +73,11 @@ class Reporter extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.status) {
+        if (key.field === localFields.status) {
             return uiFormatter.reporterStatus(key, data, isDetail)
         }
-        else if (key.field === fields.startdate || key.field === fields.nextDate) {
-            return dateFormatter.formatDate(FORMAT_FULL_DATE, data[key.field], data[fields.timezone])
+        else if (key.field === localFields.startdate || key.field === localFields.nextDate) {
+            return dateFormatter.formatDate(FORMAT_FULL_DATE, data[key.field], data[localFields.timezone])
         }
     }
 
@@ -84,9 +85,9 @@ class Reporter extends React.Component {
         return ({
             id: perpetual.PAGE_REPORTER,
             headerLabel: 'Report Scheduler',
-            nameField: fields.name,
+            nameField: localFields.name,
             requestType: [showReporter],
-            sortBy: [fields.name],
+            sortBy: [localFields.name],
             onAdd: this.onReg,
             keys: this.keys,
             formatData: this.dataFormatter
@@ -113,9 +114,9 @@ class Reporter extends React.Component {
 
     fetchOrgs = async () => {
         let mc = await service.authSyncRequest(this, showOrganizations(this, { type: perpetual.OPERATOR }))
-        if (service.responseValid(mc)) {
+        if (responseValid(mc)) {
             const dataList = mc.response.data
-            const orgList = dataList.map(data => (data[fields.organizationName]))
+            const orgList = dataList.map(data => (data[localFields.organizationName]))
             this.updateState({ orgList, loading: false })
         }
     }

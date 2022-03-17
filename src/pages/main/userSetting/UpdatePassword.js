@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import MexForms, { INPUT, BUTTON, POPUP_INPUT } from "../../../hoc/forms/MexForms";
-import { fields } from "../../../services/model/format";
+import { localFields } from "../../../services/fields";
 import { Icon } from "semantic-ui-react";
 import { copyData } from '../../../utils/file_util'
 import cloneDeep from "lodash/cloneDeep";
@@ -13,7 +13,8 @@ import { load } from "../../../helper/zxcvbn";
 import { withRouter } from 'react-router-dom';
 import { endpoint } from "../../../helper/constant";
 import { resetPwd, updatePwd } from "../../../services/modules/users";
-import { responseValid, syncRequest } from "../../../services/service";
+import { syncRequest } from "../../../services/service";
+import { responseValid } from "../../../services/config";
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
 
@@ -88,11 +89,11 @@ class UpdatePassword extends React.Component {
             currentForm.error = 'Password is weak'
             return false;
         }
-        else if (currentForm.field === fields.confirmPassword) {
+        else if (currentForm.field === localFields.confirmPassword) {
             let forms = this.state.forms
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i]
-                if (form.field === fields.password) {
+                if (form.field === localFields.password) {
                     if (value !== form.value) {
                         currentForm.error = 'Password and Confirm Password do not match'
                         return false;
@@ -169,10 +170,10 @@ class UpdatePassword extends React.Component {
         let forms = cloneDeep(this.state.forms)
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.password || form.field === fields.confirmPassword) {
+            if (form.field === localFields.password || form.field === localFields.confirmPassword) {
                 form.value = password
             }
-            if (form.field === fields.password) {
+            if (form.field === localFields.password) {
                 form.rules.type = 'text'
             }
         }
@@ -210,8 +211,8 @@ class UpdatePassword extends React.Component {
 
     forms = () => (
         [
-            { field: fields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
-            { field: fields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword },
+            { field: localFields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
+            { field: localFields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword },
         ]
     )
 

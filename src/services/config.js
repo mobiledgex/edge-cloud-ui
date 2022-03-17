@@ -1,3 +1,6 @@
+export const responseValid = (mc) => {
+    return Boolean(mc?.response?.status === 200)
+}
 
 export const fetchPath = (request) => {
     return `/api/v1/${request.method}`;

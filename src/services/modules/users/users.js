@@ -1,18 +1,19 @@
-import { fields } from '../../model/format'
+import { localFields } from '../../fields'
 import { endpoint, perpetual } from '../../../helper/constant'
-import { authSyncRequest, responseValid, syncRequest } from '../../service'
+import { authSyncRequest, syncRequest } from '../../service'
+import { responseValid } from '../../config'
 
 export const keys = () => ([
-    { field: fields.username, serverField: 'username', label: 'Username', sortable: true, visible: true, filter: true, group: true },
-    { field: fields.organizationName, serverField: 'org', label: 'Organization', sortable: true, visible: true, filter: true, group: true },
-    { field: fields.role, serverField: 'role', label: 'Role Type', sortable: true, visible: true, filter: true, group: true }
+    { field: localFields.username, serverField: 'username', label: 'Username', sortable: true, visible: true, filter: true, group: true },
+    { field: localFields.organizationName, serverField: 'org', label: 'Organization', sortable: true, visible: true, filter: true, group: true },
+    { field: localFields.role, serverField: 'role', label: 'Role Type', sortable: true, visible: true, filter: true, group: true }
 ])
 
 export const getKey = (data) => {
     return ({
-        org: data[fields.organizationName],
-        username: data[fields.username],
-        role: data[fields.role]
+        org: data[localFields.organizationName],
+        username: data[localFields.username],
+        role: data[localFields.role]
     })
 }
 
@@ -24,6 +25,11 @@ export const showUser = (self) => {
     return { method: endpoint.CURRENT_USER }
 }
 
+export const showUserRoles = async (self) => {
+    let mc = await authSyncRequest(self, { method: endpoint.SHOW_ROLE })
+    return mc
+}
+
 export const addUser = async (self, data) => {
     let requestData = getKey(data, true)
     let request = { method: endpoint.ADD_USER_ROLE, data: requestData }
@@ -32,7 +38,7 @@ export const addUser = async (self, data) => {
 
 export const deleteUser = (self, data) => {
     let requestData = getKey(data);
-    return { method: endpoint.DELETE_USER, data: requestData, success: `User ${data[fields.username]} removed successfully` }
+    return { method: endpoint.DELETE_USER, data: requestData, success: `User ${data[localFields.username]} removed successfully` }
 }
 
 export const updateUser = async (self, data)=>{

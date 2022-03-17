@@ -1,27 +1,27 @@
-import { fields } from "../../model/format"
+import { localFields } from "../../fields"
 
 export const buildKey = (data) => {
     let build = {}
-    if (data[fields.buildName]) {
-        build.name = data[fields.buildName]
+    if (data[localFields.buildName]) {
+        build.name = data[localFields.buildName]
     }
-    if (data[fields.driverPath]) {
-        build.driver_path = data[fields.driverPath]
+    if (data[localFields.driverPath]) {
+        build.driver_path = data[localFields.driverPath]
     }
-    if (data[fields.driverPathCreds]) {
-        build.driver_path_creds = data[fields.driverPathCreds]
+    if (data[localFields.driverPathCreds]) {
+        build.driver_path_creds = data[localFields.driverPathCreds]
     }
-    if (data[fields.operatingSystem]) {
-        build.operating_system = data[fields.operatingSystem]
+    if (data[localFields.operatingSystem]) {
+        build.operating_system = data[localFields.operatingSystem]
     }
-    if (data[fields.kernelVersion]) {
-        build.kernel_version = data[fields.kernelVersion]
+    if (data[localFields.kernelVersion]) {
+        build.kernel_version = data[localFields.kernelVersion]
     }
-    if (data[fields.hypervisorInfo]) {
-        build.hypervisor_info = data[fields.hypervisorInfo]
+    if (data[localFields.hypervisorInfo]) {
+        build.hypervisor_info = data[localFields.hypervisorInfo]
     }
-    if (data[fields.md5Sum]) {
-        build.md5sum = data[fields.md5Sum]
+    if (data[localFields.md5Sum]) {
+        build.md5sum = data[localFields.md5Sum]
     }
     return build
 }

@@ -6,18 +6,19 @@ import * as actions from '../../../../actions';
 import { clusterEventLogs } from '../../../../services/modules/clusterInstEvent'
 import { appInstEventLogs } from '../../../../services/modules/appInstEvent'
 import { cloudletEventLogs } from '../../../../services/modules/cloudletEvent'
-import { sendAuthRequest } from '../../../../services/model/serverWorker'
+import { sendAuthRequest } from '../../../../services/worker/serverWorker'
 import { showOrganizations } from '../../../../services/modules/organization'
 
-import { fields } from '../../../../services/model/format';
-import { redux_org, redux_private } from '../../../../helper/reduxData'
+import { localFields } from '../../../../services/fields';
+import { redux_org } from '../../../../helper/reduxData'
 import { withStyles } from '@material-ui/styles';
 import * as dateUtil from '../../../../utils/date_util'
 import sortBy from 'lodash/sortBy';
 import { componentLoader } from '../../../../hoc/loader/componentLoader';
-import { authRequest, responseValid } from '../../../../services/service';
+import { authRequest } from '../../../../services/service';
 import EventWorker from '../../../../services/worker/event.worker';
 import { defaultRange } from '../helper/constant';
+import { responseValid } from '../../../../services/config';
 import '../style.css'
 
 const RightDrawer = lazy(() => componentLoader(import('./RightDrawer')));
@@ -85,10 +86,10 @@ class UsageLog extends React.Component {
             if (regions && regions.length > 0) {
                 regions.map(region => {
                     let data = {}
-                    data[fields.region] = region
-                    data[fields.starttime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
-                    data[fields.endtime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
-                    data[fields.organizationName] = orgInfo[fields.organizationName]
+                    data[localFields.region] = region
+                    data[localFields.starttime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, starttime)
+                    data[localFields.endtime] = dateUtil.utcTime(dateUtil.FORMAT_FULL_T_Z, endtime)
+                    data[localFields.organizationName] = orgInfo[localFields.organizationName]
                     if (isOperator) {
                         authRequest(this, { ...cloudletEventLogs(this, data), showMessage: false }, this.serverResponse, false)
                     }
@@ -139,7 +140,7 @@ class UsageLog extends React.Component {
 
     orgResponse = (mc) => {
         if (responseValid(mc)) {
-            this.organizationList = sortBy(mc.response.data, [item => item[fields.organizationName]], ['asc']);
+            this.organizationList = sortBy(mc.response.data, [item => item[localFields.organizationName]], ['asc']);
             defaultRange(this)
             if (this._isMounted) {
                 this.setState({ liveData: {} })

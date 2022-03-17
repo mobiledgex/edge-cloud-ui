@@ -1,52 +1,52 @@
-import * as formatter from '../../model/format'
-import * as serverData from '../../model/serverData'
+import * as formatter from '../../fields'
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
 import { generateUUID } from '../../format/shared';
 import { showAuthSyncRequest } from '../../service';
+import { websocket } from '../..';
 
 const fields = formatter.fields;
 
 export const outboundSecurityRulesKeys = [
-  { field: fields.protocol, serverField: 'protocol', label: 'Protocol' },
-  { field: fields.portRangeMin, serverField: 'port_range_min', label: 'Port Range Min' },
-  { field: fields.portRangeMax, serverField: 'port_range_max', label: 'Port Range Max' },
-  { field: fields.remoteCIDR, serverField: 'remote_cidr', label: 'Remote CIDR' }
+  { field: localFields.protocol, serverField: 'protocol', label: 'Protocol' },
+  { field: localFields.portRangeMin, serverField: 'port_range_min', label: 'Port Range Min' },
+  { field: localFields.portRangeMax, serverField: 'port_range_max', label: 'Port Range Max' },
+  { field: localFields.remoteCIDR, serverField: 'remote_cidr', label: 'Remote CIDR' }
 ]
 
 export const keys = () => ([
-  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
-  { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Organization', sortable: true, visible: true, filter: true, key: true },
-  { field: fields.trustPolicyName, serverField: 'key#OS#name', label: 'Trust Policy Name', sortable: true, visible: true, filter: true, key: true },
-  { field: fields.outboundSecurityRulesCount, label: 'Rules Count', sortable: true, visible: true },
+  { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
+  { field: localFields.operatorName, serverField: 'key#OS#organization', label: 'Organization', sortable: true, visible: true, filter: true, key: true },
+  { field: localFields.trustPolicyName, serverField: 'key#OS#name', label: 'Trust Policy Name', sortable: true, visible: true, filter: true, key: true },
+  { field: localFields.outboundSecurityRulesCount, label: 'Rules Count', sortable: true, visible: true },
   {
-    field: fields.outboundSecurityRules, serverField: 'outbound_security_rules', label: 'Outbound Security Rules',
+    field: localFields.outboundSecurityRules, serverField: 'outbound_security_rules', label: 'Outbound Security Rules',
     keys: outboundSecurityRulesKeys
   }
 ])
 
 const getKey = (data) => {
   let trustpolicy = {}
-  trustpolicy.key = { organization: data[fields.operatorName], name: data[fields.trustPolicyName] }
-  if (data[fields.outboundSecurityRules]) {
+  trustpolicy.key = { organization: data[localFields.operatorName], name: data[localFields.trustPolicyName] }
+  if (data[localFields.outboundSecurityRules]) {
     let newRules = []
-    for (const rule of data[fields.outboundSecurityRules]) {
+    for (const rule of data[localFields.outboundSecurityRules]) {
       let newRule = {}
-      if (rule[fields.protocol] !== perpetual.PROTOCOL_ICMP) {
-        newRule.port_range_max = rule[fields.portRangeMin]
-        newRule.port_range_min = rule[fields.portRangeMax]
+      if (rule[localFields.protocol] !== perpetual.PROTOCOL_ICMP) {
+        newRule.port_range_max = rule[localFields.portRangeMin]
+        newRule.port_range_min = rule[localFields.portRangeMax]
       }
-      newRule.protocol = rule[fields.protocol]
-      newRule.remote_cidr = rule[fields.remoteCIDR]
+      newRule.protocol = rule[localFields.protocol]
+      newRule.remote_cidr = rule[localFields.remoteCIDR]
       newRules.push(newRule)
     }
     trustpolicy.outbound_security_rules = newRules
   }
-  if (data[fields.fields]) {
-    trustpolicy.fields = data[fields.fields]
+  if (data[localFields.fields]) {
+    trustpolicy.fields = data[localFields.fields]
   }
   return {
-    region: data[fields.region],
+    region: data[localFields.region],
     trustpolicy: trustpolicy
   }
 }
@@ -65,7 +65,7 @@ export const getTrustPolicyList = async (self, data) => {
 export const updateTrustPolicy = (self, data, callback) => {
   let requestData = getKey(data)
   let request = { uuid: data.uuid ?? generateUUID(keys(), data), method: endpoint.UPDATE_TRUST_POLICY, data: requestData }
-  return serverData.sendWSRequest(self, request, callback, data)
+  return websocket.request(self, request, callback, data)
 }
 
 
@@ -76,7 +76,7 @@ export const createTrustPolicy = (data) => {
 
 export const deleteTrustPolicy = (self, data) => {
   let requestData = getKey(data)
-  return { method: endpoint.DELETE_TRUST_POLICY, data: requestData, success: `Trust Policy ${data[fields.trustPolicyName]} deleted successfully` }
+  return { method: endpoint.DELETE_TRUST_POLICY, data: requestData, success: `Trust Policy ${data[localFields.trustPolicyName]} deleted successfully` }
 }
 
 export const multiDataRequest = (keys, mcRequestList) => {
@@ -98,12 +98,12 @@ export const multiDataRequest = (keys, mcRequestList) => {
       let cloudlets = []
       for (let j = 0; j < cloudletList.length; j++) {
         let cloudlet = cloudletList[j]
-        if (trustPolicy[fields.trustPolicyName] === cloudlet[fields.trustPolicyName]) {
-          cloudlets.push(cloudlet[fields.cloudletName])
+        if (trustPolicy[localFields.trustPolicyName] === cloudlet[localFields.trustPolicyName]) {
+          cloudlets.push(cloudlet[localFields.cloudletName])
         }
       }
       if (cloudlets.length > 0) {
-        trustPolicy[fields.cloudlets] = cloudlets
+        trustPolicy[localFields.cloudlets] = cloudlets
       }
     }
   }

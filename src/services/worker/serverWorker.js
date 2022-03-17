@@ -1,4 +1,4 @@
-import ServerWorker from '../worker/server.worker.js'
+import ServerWorker from './server.worker.js'
 import { validateExpiry } from '../config.js'
 import { fetchToken } from '../service.js'
 
