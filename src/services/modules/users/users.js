@@ -1,5 +1,6 @@
 import { localFields } from '../../fields'
-import { endpoint, perpetual } from '../../../helper/constant'
+import { perpetual } from '../../../helper/constant'
+import { endpoint } from '../..';
 import { authSyncRequest, syncRequest } from '../../service'
 import { responseValid } from '../../config'
 

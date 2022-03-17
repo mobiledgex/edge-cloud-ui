@@ -1,7 +1,7 @@
 import * as formatter from '../../fields'
 import { showAuthSyncRequest, authSyncRequest } from '../../service';
 import { redux_org } from '../../../helper/reduxData'
-import { endpoint } from '../../../helper/constant';
+import { endpoint } from '../..';
 
 const localFields = formatter.localFields;
 

@@ -9,7 +9,7 @@ import { generateDataset, generateDataset2 } from './chart';
 import { formatData } from '../../../../services/format/format';
 import { localFields } from '../../../../services/fields';
 import { DEPLOYMENT_TYPE_VM, PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST, PLATFORM_TYPE_OPEN_STACK, PLATFORM_TYPE_VCD } from '../../../../helper/constant/perpetual';
-import { CLOUDLET_METRICS_ENDPOINT, APP_INST_METRICS_ENDPOINT, CLUSTER_METRICS_ENDPOINT } from '../../../../helper/constant/endpoint';
+import { CLOUDLET_METRICS_ENDPOINT, APP_INST_METRICS_ENDPOINT, CLUSTER_METRICS_ENDPOINT } from '../../../../services/endpoint';
 import { processFlavorData, processFlavorSelection } from './flavor';
 
 const processLineChartData = (chartDataList, values, worker) => {

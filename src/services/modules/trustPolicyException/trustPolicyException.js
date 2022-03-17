@@ -1,5 +1,6 @@
 import * as formatter from '../../fields'
-import { endpoint, perpetual } from '../../../helper/constant';
+import { perpetual } from '../../../helper/constant';
+import { endpoint } from '../..';
 import { authSyncRequest } from "../../service";
 import { getAppKey } from '../app';
 import { getCloudletPoolKey } from '../cloudletPool';

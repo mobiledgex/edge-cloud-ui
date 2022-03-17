@@ -1,4 +1,4 @@
-import { endpoint } from '../../../helper/constant'
+import { endpoint } from '../..'
 import { redux_org } from '../../../helper/reduxData'
 import { cloudletKeys } from '../cloudlet'
 import { localFields } from '../../fields'

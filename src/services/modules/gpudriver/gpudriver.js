@@ -1,7 +1,8 @@
 
 import * as formatter from '../../fields'
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
-import { endpoint, perpetual } from '../../../helper/constant'
+import { perpetual } from '../../../helper/constant';
+import { endpoint } from '../..';
 import { redux_org } from '../../../helper/reduxData';
 import { ADMIN, TYPE_JSON } from '../../../helper/constant/perpetual';
 import { websocket } from '../..';

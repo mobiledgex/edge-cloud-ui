@@ -2,10 +2,11 @@ import * as formatter from '../../fields'
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util'
 import { redux_org } from '../../../helper/reduxData'
-import { endpoint, perpetual } from '../../../helper/constant'
+import { perpetual } from '../../../helper/constant'
+import { endpoint } from '../..';
 import { customize } from '.'
 import { generateUUID } from '../../format/shared'
-import { REQUEST_APP_INST_LATENCY } from '../../../helper/constant/endpoint';
+import { REQUEST_APP_INST_LATENCY } from '../../endpoint';
 import { AIK_APP_CLOUDLET_CLUSTER,  appInstKeys } from './primary';
 import {  cloudletKeys } from '../cloudlet';
 import { serverFields } from '../../../helper/formatter';

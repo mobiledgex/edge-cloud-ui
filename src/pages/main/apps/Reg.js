@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { localFields } from '../../../services/fields';
 import { redux_org } from '../../../helper/reduxData';
-import { service, updateFieldData, websocket } from '../../../services'
+import { endpoint, service, updateFieldData, websocket } from '../../../services'
 import { getOrganizationList } from '../../../services/modules/organization';
 import { getFlavorList, showFlavors } from '../../../services/modules/flavor/flavor';
 import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/modules/autoProvPolicy';
@@ -22,7 +22,7 @@ import { uniqueId, validateRemoteCIDR } from '../../../helper/constant/shared'
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from '@material-ui/core';
-import { endpoint, perpetual } from '../../../helper/constant';
+import { perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 import { changeHostName } from '../../../utils/location_utils';
 import { responseValid } from '../../../services/config';

@@ -7,8 +7,9 @@ import { validatePrivateAccess } from '../../../constant';
 import './style.css'
 import { withRouter } from 'react-router-dom';
 import { redux_org } from '../../../helper/reduxData';
-import { endpoint, perpetual } from '../../../helper/constant';
+import { perpetual } from '../../../helper/constant';
 import { fetchToken, multiAuthSyncRequest } from '../../../services/service';
+import { endpoint } from '../../../services';
 
 class LogoLoader extends React.Component {
 

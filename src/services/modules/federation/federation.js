@@ -1,7 +1,8 @@
 
 import * as formatter from '../../fields'
 import { authSyncRequest } from '../../service';
-import { endpoint, perpetual } from '../../../helper/constant'
+import { perpetual } from '../../../helper/constant'
+import { endpoint } from '../..';
 import { redux_org } from '../../../helper/reduxData'
 import { unionBy } from 'lodash';
 import { responseValid } from '../../config';

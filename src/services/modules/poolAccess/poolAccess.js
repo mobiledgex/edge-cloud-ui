@@ -1,7 +1,7 @@
-import { endpoint, perpetual } from "../../../helper/constant"
+import { perpetual } from "../../../helper/constant"
 import { redux_org } from '../../../helper/reduxData'
-import { serverFields } from '../../fields'
-import { localFields } from "../../fields"
+import { serverFields, localFields } from '../../fields'
+import { endpoint } from '../..'
 import { pick } from "../../../helper/constant/operators"
 
 export const keys = () => ([

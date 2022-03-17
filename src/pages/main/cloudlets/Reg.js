@@ -10,13 +10,13 @@ import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
 import MexTab from '../../../hoc/forms/tab/MexTab';
 import { redux_org } from '../../../helper/reduxData'
 //model
-import { service, updateFieldData, fields } from '../../../services';
+import { service, updateFieldData, fields, endpoint } from '../../../services';
 import { showOrganizations } from '../../../services/modules/organization';
 import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota, cloudletProps } from '../../../services/modules/cloudlet';
 import { showTrustPolicies } from '../../../services/modules/trustPolicy';
 import { HELP_CLOUDLET_REG } from "../../../tutorial";
 import { Grid } from '@material-ui/core';
-import { endpoint, perpetual } from '../../../helper/constant';
+import { perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 import { showGPUDrivers } from '../../../services/modules/gpudriver';
 import { showAuthSyncRequest } from '../../../services/service';

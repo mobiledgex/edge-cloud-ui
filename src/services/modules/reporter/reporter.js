@@ -1,4 +1,5 @@
-import { endpoint, perpetual } from "../../../helper/constant";
+
+import { endpoint } from '../..'
 import { idFormatter } from "../../../helper/formatter";
 import { redux_org } from "../../../helper/reduxData";
 import { authSyncRequest } from "../../service";

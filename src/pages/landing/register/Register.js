@@ -19,9 +19,9 @@ import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
 import MexOTPRegistration from '../otp/MexOTPRegistration';
 import { withStyles } from "@material-ui/styles";
-import { PUBLIC_CONFIG } from "../../../helper/constant/endpoint/nonauth";
 import { localFields } from "../../../services/fields";
 import { responseValid } from "../../../services/config";
+import { PUBLIC_CONFIG } from "../../../services/endpoint/nonauth";
 
 const styles = theme => ({
     customForm: {

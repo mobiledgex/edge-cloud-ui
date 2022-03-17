@@ -1,6 +1,7 @@
 import * as formatter from '../../fields'
 import { redux_org } from '../../../helper/reduxData'
-import { endpoint, perpetual } from '../../../helper/constant';
+import { perpetual } from '../../../helper/constant';
+import { endpoint } from '../..';
 import { generateUUID } from '../../format/shared';
 import { showAuthSyncRequest } from '../../service';
 import { websocket } from '../..';
