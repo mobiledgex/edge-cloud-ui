@@ -28,7 +28,7 @@ class Legend extends React.Component {
         const { data, tools, groupBy, sortBy } = props
         if (data) {
             const { regions, search } = tools
-            regions.map(region => {
+            regions.forEach(region => {
                 if (data[region]) {
                     let keys = Object.keys(data[region])
                     if (keys.length > 0) {
@@ -41,7 +41,7 @@ class Legend extends React.Component {
                 }
             })
         }
-        if (dataList.length > 0) {
+        if (dataList?.length > 0) {
             if (groupBy) {
                 dataList = _orderBy(dataList, groupBy);
                 let group = {}
@@ -59,7 +59,6 @@ class Legend extends React.Component {
                     }
                     groupList.push(item)
                 })
-
                 dataList = groupList
             }
             else {
@@ -91,7 +90,7 @@ class Legend extends React.Component {
 
     filterAction = () => {
         const { tools, actionMenu } = this.props
-        return actionMenu && actionMenu.filter(item => item.roles ? validateRole(item.roles, tools.organization) : true)
+        return actionMenu?.filter(item => item.roles ? validateRole(item.roles, tools.organization) : true)
     }
 
     renderTootip = () => {
@@ -121,7 +120,7 @@ class Legend extends React.Component {
 
     render() {
         const { dataList, anchorEl } = this.state
-        const { tools, handleSelectionStateChange, handleAction, loading, groupBy } = this.props
+        const { id, tools, handleSelectionStateChange, handleAction, loading, groupBy } = this.props
         return (
             <React.Fragment>
                 <div id='mex-monitoring-legend-block' className="block block-1">
@@ -130,7 +129,7 @@ class Legend extends React.Component {
                             <React.Fragment>
                                 {
                                     dataList && dataList.length > 0 ?
-                                        <DataTable dataList={dataList} keys={legendKeys(tools.moduleId)} onRowClick={handleSelectionStateChange} formatter={this.onFormat} actionMenu={this.filterAction()} handleAction={handleAction} groupBy={groupBy} onHover={this.onHover}/> : <NoData />
+                                        <DataTable id={id} dataList={dataList} keys={legendKeys(tools.moduleId)} onRowClick={handleSelectionStateChange} formatter={this.onFormat} actionMenu={this.filterAction()} handleAction={handleAction} groupBy={groupBy} onHover={this.onHover}/> : <NoData />
                                 }
                             </React.Fragment>
                     }

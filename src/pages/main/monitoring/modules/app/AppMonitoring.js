@@ -47,7 +47,7 @@ class AppMonitoring extends React.Component {
         const { moduleId, regions, search, range, organization, visibility } = tools
         return (
             <React.Fragment>
-                <Legend tools={tools} data={legends} loading={loading} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} groupBy={[fields.region, fields.appName, fields.version]} />
+                <Legend id={moduleId} tools={tools} data={legends} loading={loading} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} groupBy={[fields.region, fields.appName, fields.version]} />
                 <div style={{ position: 'relative', height: 4 }}>
                     <DragButton height={400} />
                 </div>

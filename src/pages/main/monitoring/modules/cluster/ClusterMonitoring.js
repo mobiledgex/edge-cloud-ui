@@ -16,7 +16,7 @@ class ClusterMonitoring extends React.Component {
         const { moduleId, search, regions, organization, visibility, range } = tools
         return (
             <React.Fragment>
-                <Legend tools={tools} data={legends} loading={loading} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} sortBy={[fields.clusterName]}/>
+                <Legend id={moduleId} tools={tools} data={legends} loading={loading} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} sortBy={[fields.clusterName]} groupBy={[fields.cloudletName, fields.operatorName]}/>
                 <div style={{ position: 'relative', height: 4 }}>
                     <DragButton height={400} />
                 </div>

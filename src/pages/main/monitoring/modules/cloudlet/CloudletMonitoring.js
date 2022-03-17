@@ -31,7 +31,7 @@ class CloudletMonitoring extends React.Component {
         const { moduleId, regions, search, range, organization, visibility } = tools
         return (
             <React.Fragment>
-                <Legend tools={tools} data={legends} loading={loading} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} sortBy={[fields.cloudletName]} />
+                <Legend id={moduleId} tools={tools} data={legends} loading={loading} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} sortBy={[fields.cloudletName]} />
                 <div style={{ position: 'relative', height: 4 }}>
                     <DragButton height={400} />
                 </div>
