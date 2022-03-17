@@ -241,10 +241,10 @@ const MexToolbar = (props) => {
 
     return (
         <React.Fragment>
-            <Card style={{ height: 50, marginBottom: 2 }}>
+            <Card className='toolbar'>
                 <Toolbar>
-                    <Typography variant={'h5'} className='monitoring-header'>Monitoring</Typography>
-                    <div style={{ width: '100%' }}>
+                    <Typography variant={'h5'} className='headerBar'>Monitoring</Typography>
+                    <div className='container'>
                         <Box display="flex" justifyContent="flex-end">
                             {value && value.organization ?
                                 <React.Fragment>

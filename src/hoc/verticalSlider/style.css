@@ -1,0 +1,8 @@
+.slider {
+    position: absolute;
+    z-index: 999;
+    left: 50%;
+    top:-20px;
+    cursor: row-resize;
+    user-select: none; /* disable selection */
+}

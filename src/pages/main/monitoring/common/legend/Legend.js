@@ -94,7 +94,7 @@ class Legend extends React.Component {
         const { id, tools, handleSelectionStateChange, handleAction, loading, groupBy } = this.props
         return (
             <React.Fragment>
-                <div id='mex-monitoring-legend-block' className="block block-1">
+                <div id='mex-monitoring-legend-block' className="block-1">
                     {
                         loading ? <Skeleton id='mex-monitoring-legend-skeleton' variant='rect' height={'inherit'} /> :
                             <React.Fragment>

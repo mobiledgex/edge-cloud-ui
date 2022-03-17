@@ -3,7 +3,7 @@ import React from 'react'
 import Map from '../../common/map/Map'
 import Module from '../../common/Module'
 import Legend from '../../common/legend/Legend'
-import DragButton from '../../list/DragButton'
+import VerticalSliderBtn from '../../../../../hoc/verticalSlider/VerticalSliderButton'
 import { fields } from '../../../../../services/model/format';
 import BulletChart from '../../charts/bullet/BulletChart'
 import Tooltip from '../../common/legend/Tooltip'
@@ -39,12 +39,12 @@ class ClusterMonitoring extends React.Component {
     }
 
     onHover = (e, hoverData) => {
-        this.setState({ anchorEl: e ? e.target : undefined, hoverData })
+        this.setState({ anchorEl: e?.target, hoverData })
     }
 
     dataFormatter = (column, data, tools) => {
         if (column.field === fields.cpu || column.field === fields.disk || column.field === fields.memory) {
-            let value = { title: "", subtitle: "", unit: column.unit, ranges: [100], measures: [0, parseInt(data[tools.stats])], markers: [0] }
+            let value = { title: '', subtitle: '', unit: column.unit, ranges: [100], measures: [0, parseInt(data[tools.stats])], markers: [0] }
             return <BulletChart data={[value]} column={column} onHover={this.onHover}/>
         }
         else {
@@ -59,10 +59,10 @@ class ClusterMonitoring extends React.Component {
         return (
             <React.Fragment>
                 <Legend id={moduleId} tools={tools} data={legends} loading={loading} handleSelectionStateChange={handleSelectionStateChange} refresh={refresh} sortBy={[fields.clusterName]} groupBy={[fields.cloudletName, fields.operatorName]} formatter={this.dataFormatter} />
-                <div style={{ position: 'relative', height: 4 }}>
-                    <DragButton height={400} />
+                <div className='legend-drag-btn'>
+                    <VerticalSliderBtn height={400} selector='block-1'/>
                 </div>
-                <div id='resource-block' className="block block-2">
+                <div id='resource-block' className='block-2'>
                     <ImageList cols={4} rowHeight={300} >
                         {
                             visibility.includes(fields.map) ? <ImageListItem cols={4}>

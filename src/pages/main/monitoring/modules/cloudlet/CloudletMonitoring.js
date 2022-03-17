@@ -4,7 +4,7 @@ import Module from '../../common/Module'
 import CloudletEvent from './CloudletEvent'
 import Map from '../../common/map/Map'
 import Legend from '../../common/legend/Legend'
-import DragButton from '../../list/DragButton'
+import VerticalSliderBtn from '../../../../../hoc/verticalSlider/VerticalSliderButton'
 import DMEMetrics from '../../dme/DMEMetrics'
 import { ACTION_LATENCY_METRICS } from '../../../../../helper/constant/perpetual'
 import { fields } from '../../../../../services/model/format';
@@ -75,10 +75,10 @@ class CloudletMonitoring extends React.Component {
         return (
             <React.Fragment>
                 <Legend id={moduleId} tools={tools} data={legends} loading={loading} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} sortBy={[fields.cloudletName]} formatter={this.dataFormatter} />
-                <div style={{ position: 'relative', height: 4 }}>
-                    <DragButton height={400} />
+                <div className='legend-drag-btn'>
+                    <VerticalSliderBtn height={400} selector='block-1'/>
                 </div>
-                <div id='resource-block' className="block block-2">
+                <div id='resource-block' className="block-2">
                     <ImageList cols={4} rowHeight={300} >
                         {
                             visibility.includes(fields.map) ? <ImageListItem cols={3}>
@@ -88,7 +88,7 @@ class CloudletMonitoring extends React.Component {
                         {
                             visibility.includes(fields.event) ?
                                 <ImageListItem cols={1}>
-                                    <Card style={{ height: 300 }}>
+                                    <Card className='window-height-300'>
                                         <CloudletEvent range={range} />
                                     </Card>
                                 </ImageListItem> : null

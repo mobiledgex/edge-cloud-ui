@@ -55,9 +55,9 @@ class Monitoring extends React.Component {
     render() {
         const { tools, organizations, loading } = this.state
         return (
-            <div mex-test="component-monitoring" style={{ position: 'relative' }}>
+            <div className='monitoring' mex-test="component-monitoring">
                 <Toolbar onChange={this.handleToolbarChange} organizations={organizations} />
-                <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
+                <div className='main'>
                     {
                         tools?.organization ?
                             <Show tools={tools} />
