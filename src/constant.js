@@ -1,4 +1,4 @@
-import { fields } from "./services/model/format"
+import { localFields } from "./services/fields"
 import { accessGranted } from "./services/modules/poolAccess"
 import { perpetual } from "./helper/constant"
 import { authSyncRequest } from "./services/service"
@@ -214,7 +214,7 @@ export const validatePrivateAccess = async (self, orgInfo) => {
         if (dataList.length > 0) {
             let regions = new Set()
             dataList.forEach(data => {
-                regions.add(data[fields.region])
+                regions.add(data[localFields.region])
             })
             privateAccess = { isPrivate: true, regions: Array.from(regions) }
         }

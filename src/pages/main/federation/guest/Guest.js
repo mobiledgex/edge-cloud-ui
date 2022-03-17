@@ -9,15 +9,15 @@ import * as actions from '../../../../actions';
 import { HELP_FEDERATION_GUEST_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
 import { showFederator, showFederation, deleteFederator, multiDataRequest, keys, iconKeys, deRegisterFederation, registerFederation } from "../../../../services/modules/federation"
-import { fields } from '../../../../services'
+import { localFields } from '../../../../services'
 import { uiFormatter } from '../../../../helper/formatter';
 
 import RegisterOperator from "../reg/Federator";
 import RegisterPartner from "../reg/Fedaration";
 import Reg from "./reg/Reg"
 import APIKey from "./reg/APIKey";
-import { responseValid } from "../../../../services/service";
 import { showPartnerFederatorZone } from "../../../../services/modules/partnerZones/partnerZones";
+import { responseValid } from "../../../../services/config";
 
 class Guest extends React.Component {
     constructor(props) {
@@ -67,19 +67,19 @@ class Guest extends React.Component {
     }
 
     registerVisible = (type, action, data) => {
-        return !data[fields.partnerRoleShareZoneWithSelf]
+        return !data[localFields.partnerRoleShareZoneWithSelf]
     }
 
     deregisterVisible = (type, action, data) => {
-        return data[fields.partnerRoleShareZoneWithSelf]
+        return data[localFields.partnerRoleShareZoneWithSelf]
     }
 
     createVisible = (type, action, data) => {
-        return data[fields.partnerFederationName] === undefined
+        return data[localFields.partnerFederationName] === undefined
     }
 
     federationNameVisible = (type, action, data) => {
-        return data[fields.partnerFederationName] !== undefined
+        return data[localFields.partnerFederationName] !== undefined
     }
 
     handleClose = () => {
@@ -93,7 +93,7 @@ class Guest extends React.Component {
         let requestCall = isRegister ? registerFederation : deRegisterFederation
         let mc = await requestCall(this, data)
         if (responseValid(mc)) {
-            this.props.handleAlertInfo('success', `Federation ${data[fields.partnerFederationName]} ${isRegister ? 'R' : 'Der'}egistered successfully !`)
+            this.props.handleAlertInfo('success', `Federation ${data[localFields.partnerFederationName]} ${isRegister ? 'R' : 'Der'}egistered successfully !`)
             callback()
         }
     }
@@ -128,7 +128,7 @@ class Guest extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.partnerRoleShareZoneWithSelf) {
+        if (key.field === localFields.partnerRoleShareZoneWithSelf) {
             return uiFormatter.renderYesNo(key, data[key.field], isDetail)
         }
     }
@@ -138,11 +138,11 @@ class Guest extends React.Component {
             id: perpetual.PAGE_INBOUND_FEDERATION,
             headerLabel: 'Guest - Federation',
             requestType: [showFederation, showFederator, showPartnerFederatorZone],
-            sortBy: [fields.operatorName],
+            sortBy: [localFields.operatorName],
             // isRegion: true,
             keys: this.keys,
             onAdd: this.onAdd,
-            nameField: fields.partnerFederationName,
+            nameField: localFields.partnerFederationName,
             viewMode: HELP_FEDERATION_GUEST_LIST,
             iconKeys: iconKeys(),
             formatData: this.dataFormatter

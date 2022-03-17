@@ -1,4 +1,4 @@
-import { fields } from "../../model/format"
+import { localFields } from "../../fields"
 
 export const customize = (request, value) => {
     

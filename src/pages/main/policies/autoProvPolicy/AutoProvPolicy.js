@@ -6,7 +6,7 @@ import * as actions from '../../../../actions';
 //reg
 import AutoProvPolicyReg from './Reg'
 //model
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 import { keys, showAutoProvPolicies, deleteAutoProvPolicy, multiDataRequest } from '../../../../services/modules/autoProvPolicy';
 import { showApps } from '../../../../services/modules/app';
 //list
@@ -52,7 +52,7 @@ class AutoProvPolicy extends React.Component {
     }
 
     onDeleteCloudletVisible = (data) => {
-        return data[fields.cloudletCount] > 0
+        return data[localFields.cloudletCount] > 0
     }
 
     onDelete = (data, success, errorInfo) => {
@@ -60,8 +60,8 @@ class AutoProvPolicy extends React.Component {
             if (errorInfo.message === 'Policy in use by App') {
                 let appInfo = ''
                 let length = 0
-                if (data[fields.apps]) {
-                    let apps = data[fields.apps]
+                if (data[localFields.apps]) {
+                    let apps = data[localFields.apps]
                     length = apps.length
                     apps.map((app, i) => {
                         appInfo = appInfo + app
@@ -93,10 +93,10 @@ class AutoProvPolicy extends React.Component {
         return ({
             id: perpetual.PAGE_AUTO_PROVISIONING_POLICY,
             headerLabel: 'Auto Provisioning Policy',
-            nameField: fields.autoPolicyName,
+            nameField: localFields.autoPolicyName,
             requestType: [showAutoProvPolicies, showApps],
             isRegion: true,
-            sortBy: [fields.region, fields.autoPolicyName],
+            sortBy: [localFields.region, localFields.autoPolicyName],
             selection: true,
             keys: this.keys,
             onAdd: role.validateRole(developerRoles, this.props.organizationInfo) ? this.onAdd : undefined,

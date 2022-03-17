@@ -22,6 +22,7 @@ import { showGPUDrivers } from '../../../services/modules/gpudriver';
 import { showAuthSyncRequest } from '../../../services/service';
 import { _sort } from '../../../helper/constant/operators';
 import { uniqueId } from '../../../helper/constant/shared';
+import { responseValid } from '../../../services/config';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const CloudletManifest = React.lazy(() => componentLoader(import('./CloudletManifest')));
@@ -102,7 +103,7 @@ class CloudletReg extends React.Component {
                 let mcList = await service.multiAuthSyncRequest(this, requestList)
                 if (mcList && mcList.length > 0) {
                     mcList.forEach(mc => {
-                        if (service.responseValid(mc)) {
+                        if (responseValid(mc)) {
                             let method = mc.request.method
                             let data = mc.response.data
                             if (data) {
@@ -141,11 +142,11 @@ class CloudletReg extends React.Component {
                 let key = item.key
                 let value = item.value
                 for (let envForm of envForms) {
-                    if (envForm.field === fields.key) {
+                    if (envForm.field === localFields.key) {
                         envForm.value = key
                         envForm.rules.disabled = true
                     }
-                    else if (envForm.field === fields.value) {
+                    else if (envForm.field === localFields.value) {
                         envForm.value = value
                     }
                     else if (envForm.formType === TIP) {
@@ -169,17 +170,17 @@ class CloudletReg extends React.Component {
         }
         let nforms = forms.filter(form => {
             let valid = true
-            if (form.field === fields.deployment && !isInit) {
+            if (form.field === localFields.deployment && !isInit) {
                 this.updateUI(form)
             }
-            if (form.field === fields.platformHighAvailability && !isInit) {
+            if (form.field === localFields.platformHighAvailability && !isInit) {
                 form.visible = false
                 form.value = false
             }
-            if (form.field === fields.envVar || form.field === fields.resourceQuota) {
+            if (form.field === localFields.envVar || form.field === localFields.resourceQuota) {
                 valid = false
             }
-            if (form.field === fields.infraApiAccess) {
+            if (form.field === localFields.infraApiAccess) {
                 let curr_form = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
                 this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT]
                 if(curr_form)
@@ -190,14 +191,14 @@ class CloudletReg extends React.Component {
                 form.rules.disabled = !curr_form
                 this.updateUI(form)
             }
-            else if (form.field === fields.openRCData || form.field === fields.caCertdata) {
+            else if (form.field === localFields.openRCData || form.field === localFields.caCertdata) {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
             }
-            else if (form.field === fields.vmPool) {
+            else if (form.field === localFields.vmPool) {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_VMPOOL
                 form.rules.required = currentForm.value === perpetual.PLATFORM_TYPE_VMPOOL
             }
-            else if (form.field === fields.singleK8sClusterOwner) {
+            else if (form.field === localFields.singleK8sClusterOwner) {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
             }
             return valid
@@ -215,7 +216,7 @@ class CloudletReg extends React.Component {
     infraAPIAccessChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.infraFlavorName || form.field === fields.infraExternalNetworkName) {
+            if (form.field === localFields.infraFlavorName || form.field === localFields.infraExternalNetworkName) {
                 form.rules.required = currentForm.value === perpetual.INFRA_API_ACCESS_RESTRICTED
             }
         }
@@ -232,10 +233,10 @@ class CloudletReg extends React.Component {
             let longitude = undefined
             for (let i = 0; i < childForms.length; i++) {
                 let form = childForms[i]
-                if (form.field === fields.latitude) {
+                if (form.field === localFields.latitude) {
                     latitude = form.value
                 }
-                else if (form.field === fields.longitude) {
+                else if (form.field === localFields.longitude) {
                     longitude = form.value
                 }
             }
@@ -254,14 +255,14 @@ class CloudletReg extends React.Component {
         let region = currentForm.value;
         this.updateState({ region })
         if (region && !isInit) {
-            const platformType = fetchFormValue(forms, fields.platformType)
+            const platformType = fetchFormValue(forms, localFields.platformType)
             await this.fetchRegionDependentData(region, platformType)
             let nforms = forms.filter(form => {
                 let valid = true
-                if (form.field === fields.trustPolicyName || form.field === fields.gpuConfig) {
+                if (form.field === localFields.trustPolicyName || form.field === localFields.gpuConfig) {
                     this.updateUI(form)
                 }
-                else if (form.field === fields.envVar || form.field === fields.resourceQuota) {
+                else if (form.field === localFields.envVar || form.field === localFields.resourceQuota) {
                     valid = false
                 }
                 return valid
@@ -278,11 +279,11 @@ class CloudletReg extends React.Component {
 
     operatorValueChange = (currentForm, forms, isInit) => {
         for (let form of forms) {
-            if (form.field === fields.trustPolicyName) {
+            if (form.field === localFields.trustPolicyName) {
                 this.updateUI(form)
                 this.updateState({ forms })
             }
-            else if (form.field === fields.allianceOrganization) {
+            else if (form.field === localFields.allianceOrganization) {
                 this.allianceList = currentForm.value ? this.operatorList.filter(org => org !== currentForm.value) : []
                 this.updateUI(form)
                 this.updateState({ forms })
@@ -293,10 +294,10 @@ class CloudletReg extends React.Component {
     deploymentValueChange = (currentForm, forms, isInit) => {
         let valid;
         for (let form of forms) {
-            if (form.field === fields.platformType) {
+            if (form.field === localFields.platformType) {
                 valid = [perpetual.PLATFORM_TYPE_VCD, perpetual.PLATFORM_TYPE_OPEN_STACK].includes(form.value)
             }
-            else if (form.field === fields.platformHighAvailability) {
+            else if (form.field === localFields.platformHighAvailability) {
                 form.visible = (currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES && valid)
                 form.value = false
             }
@@ -312,12 +313,12 @@ class CloudletReg extends React.Component {
             if (inputValid) {
                 continue;
             }
-            else if (form.field === fields.kafkaCluster || form.field === fields.kafkaUser || form.field === fields.kafkaPassword) {
+            else if (form.field === localFields.kafkaCluster || form.field === localFields.kafkaUser || form.field === localFields.kafkaPassword) {
                 inputValid = Boolean(form.value)
             }
         }
         for (let form of forms) {
-            if (form.field === fields.kafkaCluster || form.field === fields.kafkaUser || form.field === fields.kafkaPassword) {
+            if (form.field === localFields.kafkaCluster || form.field === localFields.kafkaUser || form.field === localFields.kafkaPassword) {
                 form.rules.required = inputValid && this.kafkaRequired
             }
         }
@@ -337,7 +338,7 @@ class CloudletReg extends React.Component {
             for (let form of forms) {
                 if (form.uuid === parentForm.uuid) {
                     for (let childForm of form.forms) {
-                        if (childForm.field === fields.value) {
+                        if (childForm.field === localFields.value) {
                             childForm.value = keyData.value
                         }
                         else if (childForm.formType === TIP) {
@@ -353,30 +354,30 @@ class CloudletReg extends React.Component {
 
     checkForms = (form, forms, isInit = false, data) => {
         let flowDataList = []
-        if (form.field === fields.region) {
+        if (form.field === localFields.region) {
             this.regionValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.operatorName) {
+        else if (form.field === localFields.operatorName) {
             this.operatorValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.platformType) {
+        else if (form.field === localFields.platformType) {
             this.platformTypeValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.latitude || form.field === fields.longitude) {
+        else if (form.field === localFields.latitude || form.field === localFields.longitude) {
             this.locationChange(form, forms, isInit)
         }
-        else if (form.field === fields.deployment) {
+        else if (form.field === localFields.deployment) {
             this.deploymentValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.infraApiAccess) {
+        else if (form.field === localFields.infraApiAccess) {
             this.infraAPIAccessChange(form, forms, isInit)
             let finalData = isInit ? data : formattedData(forms)
             flowDataList.push(cloudletFLow.privateFlow(finalData))
         }
-        else if (form.field === fields.kafkaCluster || form.field === fields.kafkaUser || form.field === fields.kafkaPassword) {
+        else if (form.field === localFields.kafkaCluster || form.field === localFields.kafkaUser || form.field === localFields.kafkaPassword) {
             this.kafkaChange(form, forms, isInit)
         }
-        else if (form.field === fields.key) {
+        else if (form.field === localFields.key) {
             this.onCloudletPropsKeyChange(form, forms, isInit)
         }
 
@@ -425,9 +426,9 @@ class CloudletReg extends React.Component {
                     responseData = mc.response.data;
                 }
                 let orgData = request.orgData;
-                let isRestricted = orgData[fields.infraApiAccess] === perpetual.INFRA_API_ACCESS_RESTRICTED
+                let isRestricted = orgData[localFields.infraApiAccess] === perpetual.INFRA_API_ACCESS_RESTRICTED
 
-                let labels = [{ label: 'Cloudlet', field: fields.cloudletName }]
+                let labels = [{ label: 'Cloudlet', field: localFields.cloudletName }]
                 if (!this.isUpdate && isRestricted) {
                     this.restricted = true
                     if (responseData && responseData.data && responseData.data.message === 'Cloudlet configured successfully. Please run `GetCloudletManifest` to bringup Platform VM(s) for cloudlet services') {
@@ -462,11 +463,11 @@ class CloudletReg extends React.Component {
             let resourceQuotas = []
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i];
-                if (form.field === fields.gpuConfig) {
+                if (form.field === localFields.gpuConfig) {
                     for (const option of form.options) {
-                        if (option[fields.gpuConfig] === data[fields.gpuConfig] && data[fields.operatorName] === option[fields.organizationName] || option[fields.organizationName] === perpetual.MOBILEDGEX) {
-                            data[fields.gpuDriverName] = option[fields.gpuDriverName]
-                            data[fields.gpuORG] = option[fields.organizationName]
+                        if (option[localFields.gpuConfig] === data[localFields.gpuConfig] && data[localFields.operatorName] === option[localFields.organizationName] || option[localFields.organizationName] === perpetual.MOBILEDGEX) {
+                            data[localFields.gpuDriverName] = option[localFields.gpuDriverName]
+                            data[localFields.gpuORG] = option[localFields.organizationName]
                             break;
                         }
                     }
@@ -475,41 +476,41 @@ class CloudletReg extends React.Component {
                     let uuid = form.uuid;
                     let multiFormData = data[uuid]
                     if (multiFormData) {
-                        if (form.field === fields.cloudletLocation) {
+                        if (form.field === localFields.cloudletLocation) {
                             multiFormData.latitude = Number(multiFormData.latitude)
                             multiFormData.longitude = Number(multiFormData.longitude)
-                            data[fields.cloudletLocation] = multiFormData
+                            data[localFields.cloudletLocation] = multiFormData
                         }
-                        else if (multiFormData[fields.key] && multiFormData[fields.value]) {
+                        else if (multiFormData[localFields.key] && multiFormData[localFields.value]) {
                             envVars = envVars ? envVars : {}
-                            envVars[multiFormData[fields.key]] = multiFormData[fields.value]
+                            envVars[multiFormData[localFields.key]] = multiFormData[localFields.value]
                         }
-                        else if (multiFormData[fields.resourceName] && multiFormData[fields.alertThreshold] && multiFormData[fields.resourceValue]) {
-                            resourceQuotas.push({ name: multiFormData[fields.resourceName], value: parseInt(multiFormData[fields.resourceValue]), alert_threshold: parseInt(multiFormData[fields.alertThreshold]) })
+                        else if (multiFormData[localFields.resourceName] && multiFormData[localFields.alertThreshold] && multiFormData[localFields.resourceValue]) {
+                            resourceQuotas.push({ name: multiFormData[localFields.resourceName], value: parseInt(multiFormData[localFields.resourceValue]), alert_threshold: parseInt(multiFormData[localFields.alertThreshold]) })
                         }
                     }
                     data[uuid] = undefined
                 }
             }
             if (envVars) {
-                data[fields.envVars] = envVars
+                data[localFields.envVars] = envVars
             }
 
             if (resourceQuotas.length > 0) {
-                data[fields.resourceQuotas] = resourceQuotas
+                data[localFields.resourceQuotas] = resourceQuotas
             }
 
             if (this.props.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
-                if (updateData[fields.gpuConfig]) {
-                    updateData[fields.gpuDriverName] = data[fields.gpuDriverName]
-                    updateData[fields.gpuORG] = data[fields.gpuORG]
+                if (updateData[localFields.gpuConfig]) {
+                    updateData[localFields.gpuDriverName] = data[localFields.gpuDriverName]
+                    updateData[localFields.gpuORG] = data[localFields.gpuORG]
                 }
-                if ((updateData[fields.kafkaUser] || updateData[fields.kafkaPassword]) && !updateData[fields.kafkaCluster]) {
-                    updateData[fields.kafkaCluster] = data[fields.kafkaCluster]
-                    updateData.fields.push('42')
+                if ((updateData[localFields.kafkaUser] || updateData[localFields.kafkaPassword]) && !updateData[localFields.kafkaCluster]) {
+                    updateData[localFields.kafkaCluster] = data[localFields.kafkaCluster]
+                    updateData.localFields.push('42')
                 }
-                if (updateData.fields.length > 0) {
+                if (updateData.localFields.length > 0) {
                     this.props.handleLoadingSpinner(true)
                     updateCloudlet(this, updateData, this.onCreateResponse)
                 }
@@ -525,17 +526,17 @@ class CloudletReg extends React.Component {
         let forms = this.state.forms
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.cloudletLocation && !form.rules.disabled) {
+            if (form.field === localFields.cloudletLocation && !form.rules.disabled) {
                 let cloudlet = {}
                 cloudlet.cloudletLocation = { latitude: location.lat, longitude: location.long }
                 this.updateState({ mapData: [cloudlet] })
                 let childForms = form.forms;
                 for (let j = 0; j < childForms.length; j++) {
                     let childForm = childForms[j]
-                    if (childForm.field === fields.latitude) {
+                    if (childForm.field === localFields.latitude) {
                         childForm.value = location.lat
                     }
-                    else if (childForm.field === fields.longitude) {
+                    else if (childForm.field === localFields.longitude) {
                         childForm.value = location.long
                     }
                 }
@@ -602,7 +603,7 @@ class CloudletReg extends React.Component {
     }
 
     cloudletManifestForm = () => {
-        let fileName = `${this.cloudletData[fields.cloudletName]}-${this.cloudletData[fields.operatorName]}-pf`
+        let fileName = `${this.cloudletData[localFields.cloudletName]}-${this.cloudletData[localFields.operatorName]}-pf`
         let cloudletManifest = this.state.cloudletManifest;
         if (cloudletManifest && cloudletManifest['manifest']) {
             return (
@@ -653,40 +654,40 @@ class CloudletReg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT || form.formType === MULTI_SELECT) {
                     switch (form.field) {
-                        case fields.operatorName:
+                        case localFields.operatorName:
                             form.options = this.operatorList
                             break;
-                        case fields.region:
+                        case localFields.region:
                             form.options = this.props.regions;
                             break;
-                        case fields.ipSupport:
+                        case localFields.ipSupport:
                             form.options = [perpetual.IP_SUPPORT_DYNAMIC];
                             break;
-                        case fields.platformType:
+                        case localFields.platformType:
                             form.options = [perpetual.PLATFORM_TYPE_OPEN_STACK, perpetual.PLATFORM_TYPE_VMPOOL, perpetual.PLATFORM_TYPE_VSPHERE, perpetual.PLATFORM_TYPE_VCD, perpetual.PLATFORM_TYPE_K8S_BARE_METAL];
                             break;
-                        case fields.maintenanceState:
+                        case localFields.maintenanceState:
                             form.options = [perpetual.MAINTENANCE_STATE_NORMAL_OPERATION, perpetual.MAINTENANCE_STATE_MAINTENANCE_START, perpetual.MAINTENANCE_STATE_MAINTENANCE_START_NO_FAILOVER];
                             break;
-                        case fields.infraApiAccess:
+                        case localFields.infraApiAccess:
                             form.options = this.infraApiAccessList
                             break;
-                        case fields.trustPolicyName:
+                        case localFields.trustPolicyName:
                             form.options = this.trustPolicyList
                             break;
-                        case fields.gpuConfig:
+                        case localFields.gpuConfig:
                             form.options = this.gpuDriverList
                             break;
-                        case fields.resourceName:
+                        case localFields.resourceName:
                             form.options = this.resourceQuotaList
                             break;
-                        case fields.key:
+                        case localFields.key:
                             form.options = this.cloudletPropsList
                             break;
-                        case fields.deployment:
+                        case localFields.deployment:
                             form.options = [perpetual.DEPLOYMENT_TYPE_DOCKER, perpetual.DEPLOYMENT_TYPE_KUBERNETES]
                             break;
-                        case fields.allianceOrganization:
+                        case localFields.allianceOrganization:
                             form.options = this.allianceList
                             break;
                         default:
@@ -704,12 +705,12 @@ class CloudletReg extends React.Component {
             let requestList = []
 
             let operator = {}
-            operator[fields.operatorName] = data[fields.operatorName];
+            operator[localFields.operatorName] = data[localFields.operatorName];
             this.operatorList = [operator]
             this.updateState({ mapData: [data] })
-            requestList.push(showTrustPolicies(this, { region: data[fields.region] }))
-            requestList.push(showGPUDrivers(this, { region: data[fields.region] }, true))
-            requestList.push(cloudletResourceQuota(this, { region: data[fields.region], platformType: data[fields.platformType] }))
+            requestList.push(showTrustPolicies(this, { region: data[localFields.region] }))
+            requestList.push(showGPUDrivers(this, { region: data[localFields.region] }, true))
+            requestList.push(cloudletResourceQuota(this, { region: data[localFields.region], platformType: data[localFields.platformType] }))
             requestList.push(showOrganizations(this, { type: perpetual.OPERATOR }))
             let mcList = await service.multiAuthSyncRequest(this, requestList)
 
@@ -720,7 +721,7 @@ class CloudletReg extends React.Component {
                         let responseData = mc.response.data
                         let request = mc.request;
                         if (request.method === endpoint.SHOW_ORG) {
-                            this.operatorList = _sort(responseData.map(data => (data[fields.organizationName])))
+                            this.operatorList = _sort(responseData.map(data => (data[localFields.organizationName])))
                         }
                         else if (request.method === endpoint.SHOW_TRUST_POLICY) {
                             this.trustPolicyList = responseData
@@ -739,21 +740,21 @@ class CloudletReg extends React.Component {
                     }
                 }
             }
-            data[fields.maintenanceState] = undefined
+            data[localFields.maintenanceState] = undefined
 
             let multiFormCount = 0
-            if (data[fields.envVars]) {
-                let envVarsArray = data[fields.envVars]
+            if (data[localFields.envVars]) {
+                let envVarsArray = data[localFields.envVars]
                 Object.keys(envVarsArray).map(item => {
                     let envForms = this.envForm()
                     let key = item
                     let value = envVarsArray[item]
                     for (let j = 0; j < envForms.length; j++) {
                         let envForm = envForms[j]
-                        if (envForm.field === fields.key) {
+                        if (envForm.field === localFields.key) {
                             envForm.value = key
                         }
-                        else if (envForm.field === fields.value) {
+                        else if (envForm.field === localFields.value) {
                             envForm.value = value
                         }
                     }
@@ -762,21 +763,21 @@ class CloudletReg extends React.Component {
                 })
             }
 
-            if (data[fields.resourceQuotas]) {
-                let resourceQuotaArray = data[fields.resourceQuotas]
+            if (data[localFields.resourceQuotas]) {
+                let resourceQuotaArray = data[localFields.resourceQuotas]
                 resourceQuotaArray.map(item => {
                     let resourceQuotaForms = this.resourceQuotaForm()
                     for (let resourceQuotaForm of resourceQuotaForms) {
-                        if (resourceQuotaForm.field === fields.resourceName) {
+                        if (resourceQuotaForm.field === localFields.resourceName) {
                             resourceQuotaForm.value = item['name']
 
                         }
-                        else if (resourceQuotaForm.field === fields.resourceValue) {
+                        else if (resourceQuotaForm.field === localFields.resourceValue) {
                             resourceQuotaForm.value = item['value']
 
                         }
-                        else if (resourceQuotaForm.field === fields.alertThreshold) {
-                            resourceQuotaForm.value = item['alert_threshold'] ? item['alert_threshold'] : data[fields.defaultResourceAlertThreshold]
+                        else if (resourceQuotaForm.field === localFields.alertThreshold) {
+                            resourceQuotaForm.value = item['alert_threshold'] ? item['alert_threshold'] : data[localFields.defaultResourceAlertThreshold]
                         }
                     }
                     forms.splice(18 + multiFormCount, 0, this.getResoureQuotaForm(resourceQuotaForms))
@@ -787,38 +788,38 @@ class CloudletReg extends React.Component {
     }
 
     locationForm = () => ([
-        { field: fields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } },
-        { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } }
+        { field: localFields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } },
+        { field: localFields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } }
     ])
 
     cloudletManifest = () => {
         return [
-            { field: fields.manifest, serverField: 'manifest', label: 'Manifest', dataType: perpetual.TYPE_YAML },
+            { field: localFields.manifest, serverField: 'manifest', label: 'Manifest', dataType: perpetual.TYPE_YAML },
         ]
     }
 
     /*Multi Form*/
     envForm = () => ([
-        { field: fields.key, label: 'Key', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Key', rules: { required: true }, width: 7, visible: true, options: this.cloudletPropsList },
-        { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 7, visible: true },
+        { field: localFields.key, label: 'Key', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Key', rules: { required: true }, width: 7, visible: true, options: this.cloudletPropsList },
+        { field: localFields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 7, visible: true },
         this.isUpdate ? {} :
             { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm },
         { formType: TIP, visible: true, width: 1 }
     ])
 
     resourceQuotaForm = () => ([
-        { field: fields.resourceName, label: 'Name', formType: SELECT, placeholder: 'Select Name', rules: { required: true }, width: 5, visible: true, options: this.resourceQuotaList, update: { edit: true } },
-        { field: fields.alertThreshold, label: 'Alert Threshold', formType: INPUT, unit: '%', rules: { required: true }, width: 4, visible: true, update: { edit: true }, value: this.isUpdate ? this.props.data[fields.defaultResourceAlertThreshold] : undefined },
-        { field: fields.resourceValue, label: 'Value', formType: INPUT, rules: { required: true }, width: 5, visible: true, update: { edit: true } },
+        { field: localFields.resourceName, label: 'Name', formType: SELECT, placeholder: 'Select Name', rules: { required: true }, width: 5, visible: true, options: this.resourceQuotaList, update: { edit: true } },
+        { field: localFields.alertThreshold, label: 'Alert Threshold', formType: INPUT, unit: '%', rules: { required: true }, width: 4, visible: true, update: { edit: true }, value: this.isUpdate ? this.props.data[localFields.defaultResourceAlertThreshold] : undefined },
+        { field: localFields.resourceValue, label: 'Value', formType: INPUT, rules: { required: true }, width: 5, visible: true, update: { edit: true } },
         { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     getEnvForm = (form) => {
-        return ({ uuid: uniqueId(), field: fields.envVar, formType: MULTI_FORM, forms: form ? form : this.envForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: localFields.envVar, formType: MULTI_FORM, forms: form ? form : this.envForm(), width: 3, visible: true })
     }
 
     getResoureQuotaForm = (form) => {
-        return ({ uuid: uniqueId(), field: fields.resourceQuota, formType: MULTI_FORM, forms: form ? form : this.resourceQuotaForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: localFields.resourceQuota, formType: MULTI_FORM, forms: form ? form : this.resourceQuotaForm(), width: 3, visible: true })
     }
 
     removeMultiForm = (e, form) => {
@@ -841,35 +842,35 @@ class CloudletReg extends React.Component {
     formKeys = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Cloudlet`, formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to deploy.', update: { key: true } },
-            { field: fields.cloudletName, label: 'Cloudlet Name', formType: INPUT, placeholder: 'Enter cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true } },
-            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the cloudlet site', update: { key: true } },
-            { uuid: uniqueId(), field: fields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS Location', update: { id: ['5', '5.1', '5.2'] } },
-            { field: fields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, tip: 'Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
-            { field: fields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, update: { id: ['8'] }, tip: 'Number of dynamic IPs available for dynamic IP support.' },
-            { field: fields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', visible: true, tip: 'Physical infrastructure cloudlet name.' },
-            { field: fields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', rules: { required: true }, visible: true, tip: 'Supported list of cloudlet types.' },
-            { field: fields.vmPool, label: 'VM Pool', formType: INPUT, placeholder: 'Enter Pool Name', rules: { required: false }, visible: false, tip: 'VM Pool' },
-            { field: fields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...', update: { id: ['23', '23.1', '23.2'] } },
-            { field: fields.caCertdata, label: 'CACert Data', formType: TEXT_AREA, placeholder: 'Enter CACert Data', rules: { required: false }, visible: false, tip: 'CAcert data for HTTPS based verfication of auth URL', update: { id: ['23', '23.1', '23.2'] } },
-            { field: fields.infraApiAccess, label: 'Infra API Access', formType: SELECT, placeholder: 'Select Infra API Access', rules: { required: true }, visible: true, tip: 'Infra Access Type is the type of access available to Infra API Endpoint\nDirect:</b> Infra API endpoint is accessible from public network\nRestricted:</b> Infra API endpoint is not accessible from public network' },
-            { field: fields.infraFlavorName, label: 'Infra Flavor Name', formType: 'Input', placeholder: 'Enter Infra Flavor Name', rules: { required: false }, visible: true, tip: 'Infra specific flavor name' },
-            { field: fields.infraExternalNetworkName, label: 'Infra External Network Name', formType: 'Input', placeholder: 'Enter Infra External Network Name', rules: { required: false }, visible: true, tip: 'Infra specific external network name' },
-            { field: fields.allianceOrganization, label: 'Alliance Organization', formType: MULTI_SELECT, placeholder: 'Select Alliance Operator', visible: true, tip: 'Alliance Organization of the cloudlet site', update: { id: ['47'] } },
-            { field: fields.envVars, label: 'Environment Variable', formType: HEADER, forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getEnvForm }], visible: true, tip: 'Single Key-Value pair of env var to be passed to CRM' },
-            { field: fields.resourceQuotas, label: 'Resource Quota', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Resource Quota', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getResoureQuotaForm }], visible: true, update: { id: ['39', '39.1', '39.2', '39.3'] }, tip: 'Alert Threshold:</b> Generate alert when more than threshold percentage of resource is used\nName:</b> Resource name on which to set quota\nValue:</b> Quota value of the resource' },
+            { field: localFields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to deploy.', update: { key: true } },
+            { field: localFields.cloudletName, label: 'Cloudlet Name', formType: INPUT, placeholder: 'Enter cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true } },
+            { field: localFields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the cloudlet site', update: { key: true } },
+            { uuid: uniqueId(), field: localFields.cloudletLocation, label: 'Cloudlet Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS Location', update: { id: ['5', '5.1', '5.2'] } },
+            { field: localFields.ipSupport, label: 'IP Support', formType: SELECT, placeholder: 'Select IP Support', rules: { required: true }, visible: true, tip: 'Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.' },
+            { field: localFields.numDynamicIPs, label: 'Number of Dynamic IPs', formType: INPUT, placeholder: 'Enter Number of Dynamic IPs', rules: { required: true, type: 'number' }, visible: true, update: { id: ['8'] }, tip: 'Number of dynamic IPs available for dynamic IP support.' },
+            { field: localFields.physicalName, label: 'Physical Name', formType: INPUT, placeholder: 'Enter Physical Name', visible: true, tip: 'Physical infrastructure cloudlet name.' },
+            { field: localFields.platformType, label: 'Platform Type', formType: SELECT, placeholder: 'Select Platform Type', rules: { required: true }, visible: true, tip: 'Supported list of cloudlet types.' },
+            { field: localFields.vmPool, label: 'VM Pool', formType: INPUT, placeholder: 'Enter Pool Name', rules: { required: false }, visible: false, tip: 'VM Pool' },
+            { field: localFields.openRCData, label: 'OpenRC Data', formType: TEXT_AREA, placeholder: 'Enter OpenRC Data', rules: { required: false }, visible: false, tip: 'key-value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...', update: { id: ['23', '23.1', '23.2'] } },
+            { field: localFields.caCertdata, label: 'CACert Data', formType: TEXT_AREA, placeholder: 'Enter CACert Data', rules: { required: false }, visible: false, tip: 'CAcert data for HTTPS based verfication of auth URL', update: { id: ['23', '23.1', '23.2'] } },
+            { field: localFields.infraApiAccess, label: 'Infra API Access', formType: SELECT, placeholder: 'Select Infra API Access', rules: { required: true }, visible: true, tip: 'Infra Access Type is the type of access available to Infra API Endpoint\nDirect:</b> Infra API endpoint is accessible from public network\nRestricted:</b> Infra API endpoint is not accessible from public network' },
+            { field: localFields.infraFlavorName, label: 'Infra Flavor Name', formType: 'Input', placeholder: 'Enter Infra Flavor Name', rules: { required: false }, visible: true, tip: 'Infra specific flavor name' },
+            { field: localFields.infraExternalNetworkName, label: 'Infra External Network Name', formType: 'Input', placeholder: 'Enter Infra External Network Name', rules: { required: false }, visible: true, tip: 'Infra specific external network name' },
+            { field: localFields.allianceOrganization, label: 'Alliance Organization', formType: MULTI_SELECT, placeholder: 'Select Alliance Operator', visible: true, tip: 'Alliance Organization of the cloudlet site', update: { id: ['47'] } },
+            { field: localFields.envVars, label: 'Environment Variable', formType: HEADER, forms: this.isUpdate ? [] : [{ formType: ICON_BUTTON, label: 'Add Env Vars', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getEnvForm }], visible: true, tip: 'Single Key-Value pair of env var to be passed to CRM' },
+            { field: localFields.resourceQuotas, label: 'Resource Quota', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Resource Quota', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getResoureQuotaForm }], visible: true, update: { id: ['39', '39.1', '39.2', '39.3'] }, tip: 'Alert Threshold:</b> Generate alert when more than threshold percentage of resource is used\nName:</b> Resource name on which to set quota\nValue:</b> Quota value of the resource' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
-            { field: fields.trustPolicyName, label: 'Trust Policy', formType: SELECT, placeholder: 'Select Trust Policy', visible: true, update: { id: ['37'] }, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.operatorName }], advance: false, tip: 'Allow you to control the outbound connections your instances are permitted to make' },
-            { field: fields.gpuConfig, label: 'GPU Driver', formType: SELECT, placeholder: 'Select GPU Driver', visible: true, update: { id: ['45', '45.1', '45.1.1', '45.1.2'] }, dependentData: [{ index: 1, field: fields.region }, { index: 3, field: fields.operatorName, value: 'MobiledgeX' }], advance: false, tip: 'GPU Configuration associated with cloudlet' },
-            { field: fields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version', advance: false },
-            { field: fields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },
-            { field: fields.maintenanceState, label: 'Maintenance State', formType: SELECT, placeholder: 'Select Maintenance State', rules: { required: false }, visible: this.isUpdate, update: { id: ['30'] }, tip: 'Maintenance allows for planned downtimes of Cloudlets. These states involve message exchanges between the Controller, the AutoProv service, and the CRM. Certain states are only set by certain actors', advance: false },
-            { field: fields.singleK8sClusterOwner, formType: INPUT, placeholder: 'Enter Single K8s Cluster Owner', label: 'Single K8s Cluster Owner', visible: false, tip: 'single kubernetes cluster cloudlet platforms, cluster is owned by this organization instead of multi-tenant.', update: { id: ['48'] }, advance: false },
-            { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)', advance: false },
-            { field: fields.platformHighAvailability, label: 'Platform High Availability', formType: SWITCH, visible: false, update: { id: ['50'] }, tip: 'Enable platform H/A', advance: false },
-            { field: fields.kafkaCluster, label: 'Kafka Cluster', formType: INPUT, placeholder: 'Enter Kafka Cluster Endpoint', rules: { required: false, onBlur: true }, visible: true, update: { id: ['42'] }, tip: 'Operator provided kafka cluster endpoint to push events to', advance: false },
-            { field: fields.kafkaUser, label: 'Kafka User', formType: INPUT, placeholder: 'Enter Kafka Username', rules: { required: false, onBlur: true }, visible: true, update: { id: ['43'] }, tip: 'Username for kafka SASL/PLAIN authentification, stored securely in secret storage and never visible externally', advance: false },
-            { field: fields.kafkaPassword, label: 'Kafka Password', formType: INPUT, placeholder: 'Enter Kafka Password', rules: { required: false, onBlur: true }, visible: true, update: { id: ['44'] }, tip: 'Password for kafka SASL/PLAIN authentification, stored securely in secret storage and never visible externally', advance: false },
+            { field: localFields.trustPolicyName, label: 'Trust Policy', formType: SELECT, placeholder: 'Select Trust Policy', visible: true, update: { id: ['37'] }, dependentData: [{ index: 1, field: localFields.region }, { index: 3, field: localFields.operatorName }], advance: false, tip: 'Allow you to control the outbound connections your instances are permitted to make' },
+            { field: localFields.gpuConfig, label: 'GPU Driver', formType: SELECT, placeholder: 'Select GPU Driver', visible: true, update: { id: ['45', '45.1', '45.1.1', '45.1.2'] }, dependentData: [{ index: 1, field: localFields.region }, { index: 3, field: localFields.operatorName, value: 'MobiledgeX' }], advance: false, tip: 'GPU Configuration associated with cloudlet' },
+            { field: localFields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version', advance: false },
+            { field: localFields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },
+            { field: localFields.maintenanceState, label: 'Maintenance State', formType: SELECT, placeholder: 'Select Maintenance State', rules: { required: false }, visible: this.isUpdate, update: { id: ['30'] }, tip: 'Maintenance allows for planned downtimes of Cloudlets. These states involve message exchanges between the Controller, the AutoProv service, and the CRM. Certain states are only set by certain actors', advance: false },
+            { field: localFields.singleK8sClusterOwner, formType: INPUT, placeholder: 'Enter Single K8s Cluster Owner', label: 'Single K8s Cluster Owner', visible: false, tip: 'single kubernetes cluster cloudlet platforms, cluster is owned by this organization instead of multi-tenant.', update: { id: ['48'] }, advance: false },
+            { field: localFields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)', advance: false },
+            { field: localFields.platformHighAvailability, label: 'Platform High Availability', formType: SWITCH, visible: false, update: { id: ['50'] }, tip: 'Enable platform H/A', advance: false },
+            { field: localFields.kafkaCluster, label: 'Kafka Cluster', formType: INPUT, placeholder: 'Enter Kafka Cluster Endpoint', rules: { required: false, onBlur: true }, visible: true, update: { id: ['42'] }, tip: 'Operator provided kafka cluster endpoint to push events to', advance: false },
+            { field: localFields.kafkaUser, label: 'Kafka User', formType: INPUT, placeholder: 'Enter Kafka Username', rules: { required: false, onBlur: true }, visible: true, update: { id: ['43'] }, tip: 'Username for kafka SASL/PLAIN authentification, stored securely in secret storage and never visible externally', advance: false },
+            { field: localFields.kafkaPassword, label: 'Kafka Password', formType: INPUT, placeholder: 'Enter Kafka Password', rules: { required: false, onBlur: true }, visible: true, update: { id: ['44'] }, tip: 'Password for kafka SASL/PLAIN authentification, stored securely in secret storage and never visible externally', advance: false },
         ]
     }
 
@@ -878,15 +879,15 @@ class CloudletReg extends React.Component {
             let form = forms[i]
             this.updateUI(form)
             if (data) {
-                if (form.field === fields.envVars && data[fields.envVars] === undefined) {
+                if (form.field === localFields.envVars && data[localFields.envVars] === undefined) {
                     form.visible = false;
                 }
                 else if (form.forms && form.formType !== HEADER && form.formType !== MULTI_FORM) {
                     this.updateFormData(form.forms, data) // to fetch the forms inside multiForm data or header
                 }
-                else if (form.field === fields.kafkaCluster) {
-                    this.kafkaRequired = data[fields.kafkaCluster] === undefined
-                    form.value = data[fields.kafkaCluster]
+                else if (form.field === localFields.kafkaCluster) {
+                    this.kafkaRequired = data[localFields.kafkaCluster] === undefined
+                    form.value = data[localFields.kafkaCluster]
                 }
                 else {
                     form.value = data[form.field]
@@ -911,7 +912,7 @@ class CloudletReg extends React.Component {
         }
         else {
             let organizationList = await showAuthSyncRequest(self, showOrganizations(self, { type: perpetual.OPERATOR }))
-            this.operatorList = _sort(organizationList.map(org => (org[fields.organizationName])))
+            this.operatorList = _sort(organizationList.map(org => (org[localFields.organizationName])))
             if (redux_org.isOperator(this)) {
                 this.allianceList = this.operatorList.filter(org => (org !== redux_org.nonAdminOrg(this)))
             }

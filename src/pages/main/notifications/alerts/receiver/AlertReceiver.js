@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 
-import { fields } from '../../../../../services/model/format';
+import { localFields } from '../../../../../services/fields';
 import { showAlertReceiver, deleteAlertReceiver, showAlertReceiverKeys } from '../../../../../services/modules/alerts';
 
 import Reg from './Reg';
@@ -56,7 +56,7 @@ class AlertList extends React.Component {
     }
 
     renderType = (data, isDetailView) => {
-        let id = data[fields.receiverAddress]
+        let id = data[localFields.receiverAddress]
         let ids = id.split('#OS#')
         let label = ids[1]
         let icon = undefined
@@ -76,10 +76,10 @@ class AlertList extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.severity) {
+        if (key.field === localFields.severity) {
             return uiFormatter.RenderSeverity(data, isDetail)
         }
-        else if (key.field === fields.receiverAddress) {
+        else if (key.field === localFields.receiverAddress) {
             return this.renderType(data, isDetail)
         }
     }
@@ -88,9 +88,9 @@ class AlertList extends React.Component {
         return ({
             id: perpetual.PAGE_ALERTS,
             headerLabel: 'Alert Receivers',
-            nameField: fields.alertname,
+            nameField: localFields.alertname,
             requestType: [showAlertReceiver],
-            sortBy: [fields.alertname],
+            sortBy: [localFields.alertname],
             selection: true,
             viewMode: HELP_ALERTS,
             keys: this.keys,

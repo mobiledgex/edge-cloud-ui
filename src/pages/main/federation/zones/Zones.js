@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import DataView from '../../../../container/DataView';
 //redux
 import { connect } from 'react-redux';
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 //model
 import { HELP_ZONES_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
@@ -42,12 +42,12 @@ class ZoneList extends React.Component {
             id: perpetual.PAGE_HOST_ZONES,
             headerLabel: 'Host - Zones',
             requestType: [showFederatorZones, showFederationZones],
-            sortBy: [fields.zoneId],
+            sortBy: [localFields.zoneId],
             keys: this.keys,
             isMap: true,
             onAdd: this.onAdd,
             formatData: this.dataFormatter,
-            nameField: fields.zoneId,
+            nameField: localFields.zoneId,
             viewMode: HELP_ZONES_LIST,
             iconKeys:iconKeys()
         })
@@ -58,7 +58,7 @@ class ZoneList extends React.Component {
     }
 
     registeredZones = (type, action, data) => {
-        return data[fields.registered]
+        return data[localFields.registered]
     }
 
     actionMenu = () => {

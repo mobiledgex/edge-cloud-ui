@@ -4,16 +4,16 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import { redux_org } from '../../../../helper/reduxData'
 import MexForms, { BUTTON, HEADER, ICON_BUTTON, INPUT, MAIN_HEADER, MULTI_FORM, SELECT } from '../../../../hoc/forms/MexForms'
-import { fields } from '../../../../services'
+import { localFields } from '../../../../services'
 import { _sort } from '../../../../helper/constant/operators';
 import { getOrganizationList } from '../../../../services/modules/organization';
 import { perpetual } from '../../../../helper/constant';
-import { responseValid } from '../../../../services/service';
 import { createFederator, updateFederator } from '../../../../services/modules/federation';
 import { uniqueId } from '../../../../helper/constant/shared';
 import FederationKey from './FederatorKey';
 import { readJsonFile } from '../../../../utils/file_util';
 import { urlWithoutPort } from '../../../../utils/location_utils';
+import { responseValid } from '../../../../services/config';
 
 class RegisterOperator extends React.Component {
     constructor(props) {
@@ -44,21 +44,21 @@ class RegisterOperator extends React.Component {
     }
 
     mncElements = () => ([
-        { field: fields.mnc, label: 'MNC', formType: INPUT, placeholder: 'Enter MNC Code', rules: { required: true, type: 'number' }, width: 7, visible: true, update: { edit: true } },
+        { field: localFields.mnc, label: 'MNC', formType: INPUT, placeholder: 'Enter MNC Code', rules: { required: true, type: 'number' }, width: 7, visible: true, update: { edit: true } },
         { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     getMNC = (form) => {
-        return ({ uuid: uniqueId(), field: fields.mncmulti, formType: MULTI_FORM, forms: form ? form : this.mncElements(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: localFields.mncmulti, formType: MULTI_FORM, forms: form ? form : this.mncElements(), width: 3, visible: true })
     }
 
     generateFederationId = (e, currentForm) => {
         const { forms } = this.state
         for (const form of forms) {
-            if (form.field === fields.federationId) {
+            if (form.field === localFields.federationId) {
                 let childForms = form.forms
                 for (const childForm of childForms) {
-                    if (childForm.field === fields.federationId) {
+                    if (childForm.field === localFields.federationId) {
                         childForm.value = uniqueId()
                         break;
                     }
@@ -70,21 +70,21 @@ class RegisterOperator extends React.Component {
     }
 
     federationIdElements = () => ([
-        { field: fields.federationId, formType: INPUT, placeholder: 'Enter/Generate Federation ID', rules: { required: true }, width: 15, visible: true },
+        { field: localFields.federationId, formType: INPUT, placeholder: 'Enter/Generate Federation ID', rules: { required: true }, width: 15, visible: true },
         { icon: 'vpn_key', tooltip: 'Generate Federation Key', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: -10 }, width: 1, onClick: this.generateFederationId }
     ])
 
     elements = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Enter'} Operator Details`, formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
-            { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
-            { field: fields.countryCode, label: 'Country Code', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Country Code', rules: { required: true }, visible: true, update: { key: true }, tip: 'Country where operator platform is located' },
-            this.isUpdate ? { field: fields.federationId, label: 'Federation ID', formType: INPUT, visible: true, tip: 'Self federation ID' } :
-                { uuid: uniqueId(), field: fields.federationId, label: 'Federation ID', formType: INPUT, visible: true, forms: this.federationIdElements(), tip: 'Self federation ID' },
-            { field: fields.locatorendpoint, label: 'Locator End Point', formType: INPUT, placeholder: 'Enter Locator Endpoint', visible: true, update: { edit: true }, tip: 'IP and Port of discovery service URL of operator platform' },
-            { field: fields.mcc, label: 'MCC', formType: INPUT, placeholder: 'Enter MCC Code', rules: { required: true, type: 'number' }, visible: true, update: { edit: true }, tip: 'Mobile country code of operator sending the request' },
-            { field: fields.mncs, label: 'List of MNC', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'List of mobile network codes of operator sending the request', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getMNC }], visible: true, tip: 'List of mobile network codes of operator sending the request' },
+            { field: localFields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
+            { field: localFields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
+            { field: localFields.countryCode, label: 'Country Code', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Country Code', rules: { required: true }, visible: true, update: { key: true }, tip: 'Country where operator platform is located' },
+            this.isUpdate ? { field: localFields.federationId, label: 'Federation ID', formType: INPUT, visible: true, tip: 'Self federation ID' } :
+                { uuid: uniqueId(), field: localFields.federationId, label: 'Federation ID', formType: INPUT, visible: true, forms: this.federationIdElements(), tip: 'Self federation ID' },
+            { field: localFields.locatorendpoint, label: 'Locator End Point', formType: INPUT, placeholder: 'Enter Locator Endpoint', visible: true, update: { edit: true }, tip: 'IP and Port of discovery service URL of operator platform' },
+            { field: localFields.mcc, label: 'MCC', formType: INPUT, placeholder: 'Enter MCC Code', rules: { required: true, type: 'number' }, visible: true, update: { edit: true }, tip: 'Mobile country code of operator sending the request' },
+            { field: localFields.mncs, label: 'List of MNC', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'List of mobile network codes of operator sending the request', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getMNC }], visible: true, tip: 'List of mobile network codes of operator sending the request' },
         ]
     }
 
@@ -130,30 +130,30 @@ class RegisterOperator extends React.Component {
                 let uuid = form.uuid;
                 let multiFormData = data[uuid]
                 if (multiFormData) {
-                    if (form.field === fields.mncmulti) {
-                        mncList.push(multiFormData[fields.mnc])
+                    if (form.field === localFields.mncmulti) {
+                        mncList.push(multiFormData[localFields.mnc])
                     }
-                    else if (form.field === fields.federationId) {
-                        data[fields.federationId] = multiFormData[fields.federationId]
+                    else if (form.field === localFields.federationId) {
+                        data[localFields.federationId] = multiFormData[localFields.federationId]
                     }
                 }
                 data[uuid] = undefined
             }
         }
         if (mncList.length > 0) {
-            data[fields.mnc] = mncList
+            data[localFields.mnc] = mncList
         }
         let mc = this.isUpdate ? await updateFederator(this, data) : await createFederator(this, data)
         if (responseValid(mc)) {
             const responseData = mc.response.data
             this.props.handleAlertInfo('success', `Federation ${this.isUpdate ? 'updated' : 'created'} successfully !`)
             let keyData = { ...data }
-            keyData[fields.federationId] = responseData.federationid
-            keyData[fields.apiKey] = responseData.apikey
+            keyData[localFields.federationId] = responseData.federationid
+            keyData[localFields.apiKey] = responseData.apikey
 
             let fedAddrs = responseData.federationaddr.split(':')
             if (fedAddrs && fedAddrs.length === 2) {
-                keyData[fields.federationAddr] = `${urlWithoutPort()}:${fedAddrs[1]}`
+                keyData[localFields.federationAddr] = `${urlWithoutPort()}:${fedAddrs[1]}`
             }
             this.updateState({ keyData })
         }
@@ -179,13 +179,13 @@ class RegisterOperator extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT) {
                     switch (form.field) {
-                        case fields.operatorName:
+                        case localFields.operatorName:
                             form.options = this.operatorList
                             break;
-                        case fields.region:
+                        case localFields.region:
                             form.options = this.props.regions;
                             break;
-                        case fields.countryCode:
+                        case localFields.countryCode:
                             form.options = this.countryCodes;
                             break;
                         default:
@@ -212,13 +212,13 @@ class RegisterOperator extends React.Component {
     }
 
     loadDefaultData = (forms, data) => {
-        if (data[fields.mnc]) {
+        if (data[localFields.mnc]) {
             let multiFormCount = 0;
-            let mncList = data[fields.mnc]
+            let mncList = data[localFields.mnc]
             for (let mnc of mncList) {
                 let mncForms = this.mncElements()
                 for (let mncForm of mncForms) {
-                    if (mncForm.field === fields.mnc) {
+                    if (mncForm.field === localFields.mnc) {
                         mncForm.value = mnc
                     }
                 }
@@ -238,7 +238,7 @@ class RegisterOperator extends React.Component {
             this.countryCodes = await readJsonFile('countrycode-iso31661a2.json')
             this.operatorList = await getOrganizationList(this, { type: perpetual.OPERATOR })
             this.operatorList = _sort(this.operatorList.map(item => {
-                return item[fields.organizationName]
+                return item[localFields.organizationName]
             }))
         }
 

@@ -7,7 +7,7 @@ import { Image, Label } from 'semantic-ui-react';
 import * as style from './TerminalStyle';
 import { Paper, Box } from '@material-ui/core';
 import MexForms, { INPUT, MULTI_FORM, SELECT, SWITCH } from '../forms/MexForms';
-import { fields } from '../../services/model/format'
+import { localFields } from '../../services/fields'
 import { redux_org } from '../../helper/reduxData';
 import { service } from '../../services'
 import { endpoint, perpetual } from '../../helper/constant';
@@ -46,15 +46,15 @@ class TerminalViewer extends Component {
             {
                 app_key:
                 {
-                    organization: this.props.data[fields.organizationName],
-                    name: this.props.data[fields.appName],
-                    version: this.props.data[fields.version]
+                    organization: this.props.data[localFields.organizationName],
+                    name: this.props.data[localFields.appName],
+                    version: this.props.data[localFields.version]
                 },
                 cluster_inst_key:
                 {
-                    cluster_key: { name: this.props.data[fields.clusterName] },
-                    cloudlet_key: { organization: this.props.data[fields.operatorName], name: this.props.data[fields.cloudletName] },
-                    organization: this.props.data[fields.clusterdeveloper]
+                    cluster_key: { name: this.props.data[localFields.clusterName] },
+                    cloudlet_key: { organization: this.props.data[localFields.operatorName], name: this.props.data[localFields.cloudletName] },
+                    organization: this.props.data[localFields.clusterdeveloper]
                 }
             },
         }
@@ -78,7 +78,7 @@ class TerminalViewer extends Component {
         }
 
         let requestedData = {
-            region: this.props.data[fields.region],
+            region: this.props.data[localFields.region],
             execRequest: execRequest
         }
 
@@ -308,13 +308,13 @@ class TerminalViewer extends Component {
 
     componentDidMount() {
         let data = this.props.data
-        if (data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_VM) {
+        if (data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_VM) {
             this.setState({ isVM: true })
             setTimeout(() => { this.sendRequest() }, 1000)
         }
-        else if (data[fields.runtimeInfo] && data[fields.runtimeInfo][fields.container_ids]) {
+        else if (data[localFields.runtimeInfo] && data[localFields.runtimeInfo][localFields.container_ids]) {
             this.setState({ isVM: false })
-            let tempContainerIds = data[fields.runtimeInfo][fields.container_ids];
+            let tempContainerIds = data[localFields.runtimeInfo][localFields.container_ids];
 
             let containerIds = []
             for (let i = 0; i < tempContainerIds.length; i++) {

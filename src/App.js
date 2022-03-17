@@ -11,9 +11,9 @@ import 'semantic-ui-css/semantic.min.css';
 import './app.css';
 import './css/index.css';
 
-// const Main = lazy(() => componentLoader(import('./pages/main/Main')));
+const Main = lazy(() => componentLoader(import('./pages/main/Main')));
 const Landing = lazy(() => componentLoader(import('./pages/landing/Landing')));
-// const PreLoader = lazy(() => componentLoader(import('./pages/landing/loader/PreLoader')));
+const PreLoader = lazy(() => componentLoader(import('./pages/landing/loader/PreLoader')));
 
 class App extends Component {
     constructor() {
@@ -29,13 +29,13 @@ class App extends Component {
                             <Route exact path='/terms-of-use' component={Policy} />
                             <Route exact path='/acceptable-use-policy' component={Policy} />
                             <Route exact path='/' component={Landing} />
-                            {/* <Route exact path='/register' component={Landing} />
+                            <Route exact path='/register' component={Landing} />
                             <Route exact path='/forgotpassword' component={Landing} />
                             <Route exact path='/passwordreset' component={Landing} />
                             <Route exact path='/logout' component={Landing} />
-                            <Route exact path='/verify' component={Landing} /> */}
-                            {/* <Route exact path='/preloader' component={PreLoader} /> */}
-                            {/* <Route path='/main' component={Main} /> */}
+                            <Route exact path='/verify' component={Landing} />
+                            <Route exact path='/preloader' component={PreLoader} />
+                            <Route path='/main' component={Main} />
                             <Redirect from='*' to='/' />
                         </Switch>
                     </Suspense>

@@ -3,7 +3,7 @@ import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import { redux_org } from '../../../helper/reduxData';
 import { keys, iconKeys, showFlavors, deleteFlavor } from '../../../services/modules/flavor';
 import FlavorReg from './Reg';
@@ -63,7 +63,7 @@ class FlavorList extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.gpu) {
+        if (key.field === localFields.gpu) {
             return uiFormatter.flavorGPU(key, data, isDetail)
         }
     }
@@ -74,10 +74,10 @@ class FlavorList extends React.Component {
         return ({
             id: perpetual.PAGE_FLAVORS,
             headerLabel: 'Flavors',
-            nameField: fields.flavorName,
+            nameField: localFields.flavorName,
             isRegion: true,
             requestType: [showFlavors],
-            sortBy: [fields.region, fields.flavorName],
+            sortBy: [localFields.region, localFields.flavorName],
             selection: !redux_org.isDeveloper(this),
             keys: this.keys,
             iconKeys : iconKeys(),

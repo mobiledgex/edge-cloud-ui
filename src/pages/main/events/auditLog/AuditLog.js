@@ -6,14 +6,14 @@ import * as actions from '../../../../actions';
 import { showAudits } from '../../../../services/modules/audit'
 import LeftView from "./LeftView"
 import * as dateUtil from '../../../../utils/date_util'
-import { responseValid } from '../../../../services/service';
 import { defaultRange } from '../helper/constant';
 import { redux_org } from '../../../../helper/reduxData';
-import { sendAuthRequest } from '../../../../services/model/serverWorker';
+import { sendAuthRequest } from '../../../../services/worker/serverWorker';
 import sortBy from 'lodash/sortBy';
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 import { showOrganizations } from '../../../../services/modules/organization';
 import '../style.css'
+import { responseValid } from '../../../../services/config';
 class AuditLog extends Component {
     constructor(props) {
         super(props);
@@ -87,7 +87,7 @@ class AuditLog extends Component {
 
     orgResponse = (mc) => {
         if (responseValid(mc)) {
-            const organizationList = sortBy(mc.response.data, [item => item[fields.organizationName]], ['asc']);
+            const organizationList = sortBy(mc.response.data, [item => item[localFields.organizationName]], ['asc']);
             this.setState({ orgList: organizationList })
         }
     }

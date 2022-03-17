@@ -4,7 +4,7 @@ import MexForms, { MAIN_HEADER, INPUT, SELECT, TIME_COUNTER, HEADER, ICON_BUTTON
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 import { redux_org } from '../../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../../services/modules/organization';
@@ -13,8 +13,8 @@ import { Grid } from '@material-ui/core';
 import { service, updateFieldData } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';
 import { createAlertPolicy, updateAlertPolicy } from '../../../../services/modules/alertPolicy';
-import { responseValid } from '../../../../services/service';
 import { uniqueId } from '../../../../helper/constant/shared';
+import { responseValid } from '../../../../services/config';
 
 const ALERT_SEVERITY = [perpetual.INFO, perpetual.WARNING, perpetual.ERROR]
 class Reg extends React.Component {
@@ -46,16 +46,16 @@ class Reg extends React.Component {
         let diskLimit = undefined
         let activeFormIndex = -1
         forms.forEach((form, i) => {
-            if (form.field === fields.cpuUtilizationLimit) {
+            if (form.field === localFields.cpuUtilizationLimit) {
                 cpuLimit = form.value
             }
-            else if (form.field === fields.memUtilizationLimit) {
+            else if (form.field === localFields.memUtilizationLimit) {
                 memLimit = form.value
             }
-            else if (form.field === fields.diskUtilizationLimit) {
+            else if (form.field === localFields.diskUtilizationLimit) {
                 diskLimit = form.value
             }
-            else if (form.field === fields.activeConnectionLimit) {
+            else if (form.field === localFields.activeConnectionLimit) {
                 activeFormIndex = i
             }
         })
@@ -68,7 +68,7 @@ class Reg extends React.Component {
     onActiveConnectionChange = (currentForm, forms, isInit) => {
         const value = currentForm.value
         for (const form of forms) {
-            if (form.field === fields.cpuUtilizationLimit || form.field === fields.memUtilizationLimit || form.field === fields.diskUtilizationLimit) {
+            if (form.field === localFields.cpuUtilizationLimit || form.field === localFields.memUtilizationLimit || form.field === localFields.diskUtilizationLimit) {
                 form.rules.disabled = value !== undefined
             }
         }
@@ -76,10 +76,10 @@ class Reg extends React.Component {
     }
 
     checkForms = (form, forms, isInit = false, data) => {
-        if (form.field === fields.cpuUtilizationLimit || form.field === fields.memUtilizationLimit || form.field === fields.diskUtilizationLimit) {
+        if (form.field === localFields.cpuUtilizationLimit || form.field === localFields.memUtilizationLimit || form.field === localFields.diskUtilizationLimit) {
             this.onCPUMemDiskChange(form, forms, isInit)
         }
-        else if (form.field === fields.activeConnectionLimit) {
+        else if (form.field === localFields.activeConnectionLimit) {
             this.onActiveConnectionChange(form, forms, isInit)
         }
     }
@@ -92,7 +92,7 @@ class Reg extends React.Component {
     validateLimit = (currentForm) => {
         if (currentForm.value && currentForm.value.length > 0) {
             let value = parseInt(currentForm.value)
-            if (currentForm.field === fields.activeConnectionLimit) {
+            if (currentForm.field === localFields.activeConnectionLimit) {
                 if (value < 1 || value > 4294967295) {
                     currentForm.error = 'Limit must be between 1-4294967295'
                 }
@@ -125,33 +125,33 @@ class Reg extends React.Component {
 
     /*Multi Form*/
     labelsForm = () => ([
-        { field: fields.key, label: 'Key', formType: INPUT, rules: { required: true }, update: { edit: true }, width: 7, visible: true },
-        { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, update: { edit: true }, width: 7, visible: true },
+        { field: localFields.key, label: 'Key', formType: INPUT, rules: { required: true }, update: { edit: true }, width: 7, visible: true },
+        { field: localFields.value, label: 'Value', formType: INPUT, rules: { required: true }, update: { edit: true }, width: 7, visible: true },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     getLabelsForm = (form) => {
-        return ({ uuid: uniqueId(), field: fields.labels, formType: MULTI_FORM, forms: form ? form : this.labelsForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: localFields.labels, formType: MULTI_FORM, forms: form ? form : this.labelsForm(), width: 3, visible: true })
     }
 
     getAnnotationForm = (form) => {
-        return ({ uuid: uniqueId(), field: fields.annotations, formType: MULTI_FORM, forms: form ? form : this.labelsForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: localFields.annotations, formType: MULTI_FORM, forms: form ? form : this.labelsForm(), width: 3, visible: true })
     }
 
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Alert Policy`, formType: MAIN_HEADER, visible: true },
-        { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', update: { key: true } },
-        { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, update: { key: true }, tip: ' Name of the organization for the app that this alert can be applied to' },
-        { field: fields.alertPolicyName, label: 'Alert Policy Name', formType: INPUT, placeholder: 'Enter Alert Policy Name', rules: { required: true }, visible: true, update: { key: true }, tip: 'Alert Policy name' },
-        { field: fields.description, label: 'Description', formType: INPUT, placeholder: 'Enter Description', rules: { required: false }, visible: true, update: { id: [fields.description] }, tip: 'Description' },
-        { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true, firstCaps: true }, visible: true, update: { id: [fields.severity] }, tip: 'Alert severity level - one of "info", "warning", "error"' },
-        { field: fields.triggerTime, label: 'Trigger time', formType: TIME_COUNTER, placeholder: 'Enter Trigger Time', rules: { required: true, onBlur: true }, visible: true, update: { id: [fields.triggerTime] }, tip: 'Alert threshold time needed to trigger alerts', default: '30s' },
-        { field: fields.cpuUtilizationLimit, label: 'CPU Utilization Limit', formType: INPUT, placeholder: 'Enter CPU Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [fields.cpuUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod CPU utilization rate(percentage) across all nodes. Valid values 1-100' },
-        { field: fields.memUtilizationLimit, label: 'Memory Utilization Limit', formType: INPUT, placeholder: 'Enter Memory Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [fields.memUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod memory utilization rate(percentage) across all nodes. Valid values 1-100' },
-        { field: fields.diskUtilizationLimit, label: 'Disk Utilization Limit', formType: INPUT, placeholder: 'Enter Disk Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [fields.diskUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod disk utilization rate(percentage) across all nodes. Valid values 1-100' },
-        { field: fields.activeConnectionLimit, label: 'Active Connection Limit', formType: INPUT, placeholder: 'Enter Number of Active Connections', rules: { type: 'number', onBlur: true }, visible: true, update: { id: [fields.activeConnectionLimit] }, dataValidateFunc: this.validateLimit, tip: 'Active Connections alert threshold. Valid values 1-4294967295' },
-        { field: fields.labels, label: 'Labels', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Labels', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getLabelsForm }], visible: true, update: { id: [fields.labels] }, tip: 'Additional Labels, specify labels:empty=true to clear' },
-        { field: fields.annotations, label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Labels', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: true, update: { id: [fields.annotations] }, tip: 'Additional Annotations for extra information about the alert, specify annotations:empty=true to clear' }
+        { field: localFields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', update: { key: true } },
+        { field: localFields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, update: { key: true }, tip: ' Name of the organization for the app that this alert can be applied to' },
+        { field: localFields.alertPolicyName, label: 'Alert Policy Name', formType: INPUT, placeholder: 'Enter Alert Policy Name', rules: { required: true }, visible: true, update: { key: true }, tip: 'Alert Policy name' },
+        { field: localFields.description, label: 'Description', formType: INPUT, placeholder: 'Enter Description', rules: { required: false }, visible: true, update: { id: [localFields.description] }, tip: 'Description' },
+        { field: localFields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true, firstCaps: true }, visible: true, update: { id: [localFields.severity] }, tip: 'Alert severity level - one of "info", "warning", "error"' },
+        { field: localFields.triggerTime, label: 'Trigger time', formType: TIME_COUNTER, placeholder: 'Enter Trigger Time', rules: { required: true, onBlur: true }, visible: true, update: { id: [localFields.triggerTime] }, tip: 'Alert threshold time needed to trigger alerts', default: '30s' },
+        { field: localFields.cpuUtilizationLimit, label: 'CPU Utilization Limit', formType: INPUT, placeholder: 'Enter CPU Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [localFields.cpuUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod CPU utilization rate(percentage) across all nodes. Valid values 1-100' },
+        { field: localFields.memUtilizationLimit, label: 'Memory Utilization Limit', formType: INPUT, placeholder: 'Enter Memory Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [localFields.memUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod memory utilization rate(percentage) across all nodes. Valid values 1-100' },
+        { field: localFields.diskUtilizationLimit, label: 'Disk Utilization Limit', formType: INPUT, placeholder: 'Enter Disk Utilization Limit', rules: { type: 'number', onBlur: true }, unit: '%', visible: true, update: { id: [localFields.diskUtilizationLimit] }, dataValidateFunc: this.validateLimit, tip: 'Container or pod disk utilization rate(percentage) across all nodes. Valid values 1-100' },
+        { field: localFields.activeConnectionLimit, label: 'Active Connection Limit', formType: INPUT, placeholder: 'Enter Number of Active Connections', rules: { type: 'number', onBlur: true }, visible: true, update: { id: [localFields.activeConnectionLimit] }, dataValidateFunc: this.validateLimit, tip: 'Active Connections alert threshold. Valid values 1-4294967295' },
+        { field: localFields.labels, label: 'Labels', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Labels', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getLabelsForm }], visible: true, update: { id: [localFields.labels] }, tip: 'Additional Labels, specify labels:empty=true to clear' },
+        { field: localFields.annotations, label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Labels', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: true, update: { id: [localFields.annotations] }, tip: 'Additional Annotations for extra information about the alert, specify annotations:empty=true to clear' }
     ])
 
     onUpdateResponse = (mc) => {
@@ -162,7 +162,7 @@ class Reg extends React.Component {
             if (mc.response && mc.response.data) {
                 responseData = mc.response.data;
             }
-            let labels = [{ label: 'Alert Policy', field: fields.alertPolicyName }]
+            let labels = [{ label: 'Alert Policy', field: localFields.alertPolicyName }]
             this.updateState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
     }
@@ -178,30 +178,30 @@ class Reg extends React.Component {
                     let uuid = form.uuid;
                     let multiFormData = data[uuid]
                     if (multiFormData) {
-                        if (form.field === fields.labels) {
+                        if (form.field === localFields.labels) {
                             labels = labels ? labels : {}
-                            labels[multiFormData[fields.key]] = multiFormData[fields.value]
+                            labels[multiFormData[localFields.key]] = multiFormData[localFields.value]
                         }
-                        else if (form.field === fields.annotations) {
+                        else if (form.field === localFields.annotations) {
                             annotations = annotations ? annotations : {}
-                            annotations[multiFormData[fields.key]] = multiFormData[fields.value]
+                            annotations[multiFormData[localFields.key]] = multiFormData[localFields.value]
                         }
                     }
                     data[uuid] = undefined
                 }
             }
-            data[fields.labels] = labels ? labels : {}
-            data[fields.annotations] = annotations ? annotations : {}
+            data[localFields.labels] = labels ? labels : {}
+            data[localFields.annotations] = annotations ? annotations : {}
             if (this.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
-                if (updateData.fields.length > 0) {
+                if (updateData.localFields.length > 0) {
                     mc = await updateAlertPolicy(this, updateData, this.onUpdateResponse)
                 }
             }
             else {
                 mc = await service.authSyncRequest(this, createAlertPolicy(data))
             }
-            if (mc && responseValid(mc)) {
+            if (responseValid(mc)) {
                 let policyName = mc.request.data.alertPolicy.key.name;
                 this.props.handleAlertInfo('success', `Alert Policy ${policyName} ${this.isUpdate ? 'updated' : 'created'} successfully`)
                 this.props.onClose(true)
@@ -244,7 +244,7 @@ class Reg extends React.Component {
     disableFields = (form) => {
         let rules = form.rules ? form.rules : {}
         let field = form.field
-        if (field === fields.organizationName || field === fields.region || field === fields.alertPolicyName) {
+        if (field === localFields.organizationName || field === localFields.region || field === localFields.alertPolicyName) {
             rules.disabled = true;
         }
     }
@@ -257,10 +257,10 @@ class Reg extends React.Component {
                 let value = dataArray[key]
                 let newForms = formBody()
                 for (let form of newForms) {
-                    if (form.field === fields.key) {
+                    if (form.field === localFields.key) {
                         form.value = key
                     }
-                    else if (form.field === fields.value) {
+                    else if (form.field === localFields.value) {
                         form.value = value
                     }
                 }
@@ -276,13 +276,13 @@ class Reg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT) {
                     switch (form.field) {
-                        case fields.organizationName:
+                        case localFields.organizationName:
                             form.options = this.organizationList
                             break;
-                        case fields.region:
+                        case localFields.region:
                             form.options = this.props.regions
                             break;
-                        case fields.severity:
+                        case localFields.severity:
                             form.options = ALERT_SEVERITY;
                             break;
                         default:
@@ -294,22 +294,22 @@ class Reg extends React.Component {
                     if (form.uuid) {
                         continue;
                     }
-                    else if (form.field === fields.organizationName) {
-                        form.value = data[fields.organizationName]
+                    else if (form.field === localFields.organizationName) {
+                        form.value = data[localFields.organizationName]
                     }
-                    else if (form.field === fields.activeConnectionLimit) {
-                        form.visible = data[fields.cpuUtilizationLimit] === undefined && data[fields.memUtilizationLimit] === undefined && data[fields.diskUtilizationLimit] === undefined
+                    else if (form.field === localFields.activeConnectionLimit) {
+                        form.visible = data[localFields.cpuUtilizationLimit] === undefined && data[localFields.memUtilizationLimit] === undefined && data[localFields.diskUtilizationLimit] === undefined
                         form.value = data[form.field]
                     }
-                    else if (form.field === fields.cpuUtilizationLimit || form.field === fields.memUtilizationLimit || form.field === fields.diskUtilizationLimit) {
-                        form.visible = data[fields.activeConnectionLimit] === undefined
+                    else if (form.field === localFields.cpuUtilizationLimit || form.field === localFields.memUtilizationLimit || form.field === localFields.diskUtilizationLimit) {
+                        form.visible = data[localFields.activeConnectionLimit] === undefined
                         form.value = data[form.field]
                     }
-                    else if (form.field === fields.labels) {
-                        this.addMultiKeyValueDataForm(i + 1, data, forms, fields.labels, this.labelsForm, this.getLabelsForm)
+                    else if (form.field === localFields.labels) {
+                        this.addMultiKeyValueDataForm(i + 1, data, forms, localFields.labels, this.labelsForm, this.getLabelsForm)
                     }
-                    else if (form.field === fields.annotations) {
-                        this.addMultiKeyValueDataForm(i + 1, data, forms, fields.annotations, this.labelsForm, this.getAnnotationForm)
+                    else if (form.field === localFields.annotations) {
+                        this.addMultiKeyValueDataForm(i + 1, data, forms, localFields.annotations, this.labelsForm, this.getAnnotationForm)
                     }
                     else {
                         form.value = data[form.field]
@@ -328,7 +328,7 @@ class Reg extends React.Component {
 
         if (data) {
             let organization = {}
-            organization[fields.organizationName] = data[fields.organizationName]
+            organization[localFields.organizationName] = data[localFields.organizationName]
             this.organizationList = [organization]
 
             this.loadData(forms, data)

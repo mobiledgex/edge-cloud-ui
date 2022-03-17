@@ -1,4 +1,4 @@
-import * as formatter from '../../model/format'
+import * as formatter from '../../fields'
 import { endpoint, perpetual } from '../../../helper/constant';
 import { authSyncRequest } from "../../service";
 import { idFormatter } from '../../../helper/formatter'
@@ -6,26 +6,26 @@ import { cloudletKeys } from '../cloudlet';
 let fields = formatter.fields;
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
-    { field: fields.networkName, serverField: 'key#OS#name', label: 'Network Name', sortable: true, visible: true, filter: true, group: true, key: true },
-    { field: fields.connectionType, label: 'Connection Type', serverField: 'connection_type', sortable: true, visible: true, clickable: true },
-    { field: fields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', label: 'Cloudlet', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.operatorName, label: 'Operator', serverField: 'key#OS#cloudlet_key#OS#organization', sortable: false, visible: true, clickable: true },
-    { field: fields.partnerOperator, serverField: 'key#OS#cloudlet_key#OS#federated_organization', label: 'Partner Operator', key: true },
-    { field: fields.accessRoutes, label: 'Routes', serverField: 'routes', sortable: false, visible: false, clickable: true, dataType: perpetual.TYPE_JSON }
+    { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
+    { field: localFields.networkName, serverField: 'key#OS#name', label: 'Network Name', sortable: true, visible: true, filter: true, group: true, key: true },
+    { field: localFields.connectionType, label: 'Connection Type', serverField: 'connection_type', sortable: true, visible: true, clickable: true },
+    { field: localFields.cloudletName, serverField: 'key#OS#cloudlet_key#OS#name', label: 'Cloudlet', sortable: true, visible: true, filter: true, key: true },
+    { field: localFields.operatorName, label: 'Operator', serverField: 'key#OS#cloudlet_key#OS#organization', sortable: false, visible: true, clickable: true },
+    { field: localFields.partnerOperator, serverField: 'key#OS#cloudlet_key#OS#federated_organization', label: 'Partner Operator', key: true },
+    { field: localFields.accessRoutes, label: 'Routes', serverField: 'routes', sortable: false, visible: false, clickable: true, dataType: perpetual.TYPE_JSON }
 ])
 
 export const getKey = (data, isCreate) => {
     let Network = {}
-    Network.key = { cloudlet_key: cloudletKeys(data), name: data[fields.networkName] }
+    Network.key = { cloudlet_key: cloudletKeys(data), name: data[localFields.networkName] }
     if (isCreate) {
-        Network.connection_type = idFormatter.connectionType(data[fields.connectionType])
-        if (data[fields.accessRoutes]) {
-            Network.routes = data[fields.accessRoutes]
+        Network.connection_type = idFormatter.connectionType(data[localFields.connectionType])
+        if (data[localFields.accessRoutes]) {
+            Network.routes = data[localFields.accessRoutes]
         }
     }
     return ({
-        region: data[fields.region],
+        region: data[localFields.region],
         Network: Network
     })
 }
@@ -49,5 +49,5 @@ export const updateNetwork = async (self, data) => {
 
 export const deleteNetwork = (self, data) => {
     let requestData = getKey(data)
-    return { method: endpoint.DELETE_NETWORKS, data: requestData, success: `Network ${data[fields.networkName]} deleted successfully` }
+    return { method: endpoint.DELETE_NETWORKS, data: requestData, success: `Network ${data[localFields.networkName]} deleted successfully` }
 }

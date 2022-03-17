@@ -6,18 +6,18 @@ import publicIp from 'public-ip';
 import UAParser from 'ua-parser-js';
 import { alertInfo } from '../../actions';
 
-// import Login from './login/Login';
-// import Register from './register/Register'
-// import ForgotPassword from './password/ForgotPassword'
-// import ResetPassword from './password/ResetPassword';
-// import Verify from './verify/Verify'
+import Login from './login/Login';
+import Register from './register/Register'
+import ForgotPassword from './password/ForgotPassword'
+import ResetPassword from './password/ResetPassword';
+import Verify from './verify/Verify'
 
 import MexAlert from '../../hoc/alert/AlertDialog';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { withStyles } from '@material-ui/styles';
 import { hostURL } from '../../utils/location_utils';
-import { resetPasswordRequest, sendVerify } from '../../services/model/serverData';
-import { LS_REGIONS, LS_THASH, LS_USER_META_DATA, PAGE_ORGANIZATIONS } from '../../helper/constant/perpetual';
+import { resetPasswordRequest, sendVerify } from '../../services/modules/landing';
+import { LS_THASH, PAGE_ORGANIZATIONS } from '../../helper/constant/perpetual';
 
 const styles = theme => ({
     colorPrimary: {
@@ -26,11 +26,11 @@ const styles = theme => ({
     barColorPrimary: {
         backgroundColor: '#93E019',
     },
-    width400 :{
-        width:400
+    width400: {
+        width: 400
     },
-    width500 :{
-        width:500
+    width500: {
+        width: 500
     },
     actionBtn: {
         display: 'flex',
@@ -122,7 +122,7 @@ class Landing extends Component {
                         {loading ? <LinearProgress classes={{ colorPrimary: classes.colorPrimary, barColorPrimary: classes.barColorPrimary }} /> : null}
                         <div className='intro_login'>
                             <img src='/assets/brand/MobiledgeX_Logo_tm_white.svg' width={200} alt="MobiledgeX" />
-                            {/* <div className={path === '/register' ? classes.width500 : classes.width400}>
+                            <div className={path === '/register' ? classes.width500 : classes.width400}>
                                 {
                                     path === '/forgotpassword' ? <ForgotPassword onPasswordReset={this.onPasswordReset} onVerificationEmail={this.onVerificationEmail} /> :
                                         path === '/register' ? <Register clientSysInfo={clientSysInfo} onVerificationEmail={this.onVerificationEmail} /> :
@@ -130,7 +130,7 @@ class Landing extends Component {
                                                 path === '/verify' ? <Verify /> :
                                                     <Login clientSysInfo={clientSysInfo} />
                                 }
-                            </div> */}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -156,9 +156,7 @@ class Landing extends Component {
     componentDidMount() {
         this.receiveClientIp()
         if (this.props.match.path === '/logout') {
-            localStorage.removeItem(LS_THASH);
-            localStorage.removeItem(LS_USER_META_DATA);
-            localStorage.removeItem(LS_REGIONS);
+            localStorage.clear();
         }
         else if (localStorage.getItem(LS_THASH)) {
             this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)

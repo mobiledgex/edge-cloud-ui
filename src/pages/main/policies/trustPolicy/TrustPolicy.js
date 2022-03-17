@@ -11,7 +11,7 @@ import { showCloudlets } from '../../../../services/modules/cloudlet';
 import { HELP_TRUST_POLICY } from "../../../../tutorial";
 import { operatorRoles } from '../../../../constant';
 import { role, perpetual } from '../../../../helper/constant';
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 import { redux_org } from '../../../../helper/reduxData';
 
 class TrustPolicy extends React.Component {
@@ -49,8 +49,8 @@ class TrustPolicy extends React.Component {
     onDelete = (data, success, errorInfo) => {
         if (!success, errorInfo) {
             let cloudlets = []
-            if (data[fields.cloudlets]) {
-                cloudlets = data[fields.cloudlets]
+            if (data[localFields.cloudlets]) {
+                cloudlets = data[localFields.cloudlets]
             }
             if (errorInfo.message === 'Policy in use by Cloudlet') {
                 this.props.handleAlertInfo('error', `Policy in use by Cloudlet${cloudlets.length > 1 ? 's' : ''} ${cloudlets.map(cloudlet => {
@@ -79,8 +79,8 @@ class TrustPolicy extends React.Component {
             headerLabel: 'Trust Policy',
             requestType: [showTrustPolicies, showCloudlets],
             isRegion: true,
-            nameField: fields.trustPolicyName,
-            sortBy: [fields.region, fields.trustPolicyName],
+            nameField: localFields.trustPolicyName,
+            sortBy: [localFields.region, localFields.trustPolicyName],
             keys: this.keys,
             selection: !redux_org.isDeveloper(this),
             onAdd: role.validateRole(operatorRoles, this.props.organizationInfo) ? this.onAdd : undefined,

@@ -3,13 +3,11 @@ import { connect } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { loadingSpinner, alertInfo } from '../../../actions';
 import MexForms, { INPUT, BUTTON, POPUP_INPUT, SWITCH } from "../../../hoc/forms/MexForms";
-import { localFields } from "../../../services/landing/localFields";
-import { createUser as _createUser } from '../../../services/model/serverData';
+import { createUser as _createUser } from '../../../services/modules/landing';
 import cloneDeep from "lodash/cloneDeep";
 import { load } from "../../../helper/zxcvbn";
 import ReCAPTCHA from "react-google-recaptcha";
-import { PUBLIC_CONFIG } from "../../../helper/constant/endpoint";
-import { responseValid, syncRequest } from "../../../services/service";
+import { syncRequest } from "../../../services/service";
 import { hostURL } from "../../../utils/location_utils";
 import { validateEmail as _validateEmail } from "../../../utils/validation_utils";
 import { copyData } from '../../../utils/file_util';
@@ -21,6 +19,9 @@ import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
 import MexOTPRegistration from '../otp/MexOTPRegistration';
 import { withStyles } from "@material-ui/styles";
+import { PUBLIC_CONFIG } from "../../../helper/constant/endpoint/nonauth";
+import { localFields } from "../../../services/fields";
+import { responseValid } from "../../../services/config";
 
 const styles = theme => ({
     customForm: {

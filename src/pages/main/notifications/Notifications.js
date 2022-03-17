@@ -14,7 +14,7 @@ import './style.css'
 import NotificationWorker from './services/notifcation.worker.js';
 import { operators } from '../../../helper/constant';
 import { fetchToken } from '../../../services/service';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import { LS_NOTIFICATION, RESPONSE_STATUS_SUCCESS } from '../../../helper/constant/perpetual';
 import { processWorker } from "../../../services/worker/interceptor";
 import isEmpty from 'lodash/isEmpty';
@@ -143,8 +143,8 @@ class AlertGlobal extends React.Component {
         if (response?.status === RESPONSE_STATUS_SUCCESS) {
             let dataList = response.data?.alertList
             if (dataList?.length > 0) {
-                dataList = sortBy(dataList, [fields.activeAt]).reverse()
-                let newActiveDate = dataList[0][fields.activeAt]
+                dataList = sortBy(dataList, [localFields.activeAt]).reverse()
+                let newActiveDate = dataList[0][localFields.activeAt]
                 const showDot = this.processDot(newActiveDate)
                 this.updateState({ dataList, showDot })
             }

@@ -1,6 +1,6 @@
-import { fields } from "../../model/format"
+import { localFields } from "../../fields"
 
 export const customize = (request, value) => {
-    value[fields.decision] = value[fields.decision] ? value[fields.decision] : 'pending'
+    value[localFields.decision] = value[localFields.decision] ? value[localFields.decision] : 'pending'
     return value
 }

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 //model
 import * as shared from '../../../services/model/shared';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiDataRequest } from '../../../services/modules/clusterInst';
 import { showCloudlets } from '../../../services/modules/cloudlet';
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
@@ -15,7 +15,7 @@ import DataView from '../../../container/DataView';
 import ClusterInstReg from './Reg';
 import { HELP_CLUSTER_INST_LIST } from "../../../tutorial";
 import { perpetual, role } from '../../../helper/constant';
-import { labelFormatter, serverFields } from '../../../helper/formatter';
+import { labelFormatter, serverFields, uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
 import { developerRoles } from '../../../constant';
 
@@ -29,7 +29,7 @@ class ClusterInstView extends React.Component {
         this.data = {};
         this.keys = keys();
         this._isMounted = false
-        this.multiStepperHeader = [{ label: 'Cluster', field: fields.clusterName }, { label: 'Cloudlet', field: fields.cloudletName }, { label: 'Operator', field: fields.operatorName }]
+        this.multiStepperHeader = [{ label: 'Cluster', field: localFields.clusterName }, { label: 'Cloudlet', field: localFields.cloudletName }, { label: 'Operator', field: localFields.operatorName }]
 
     }
 
@@ -52,13 +52,13 @@ class ClusterInstView extends React.Component {
     }
 
     getDeleteActionMessage = (action, data) => {
-        if (data[fields.cloudletStatus] !== serverFields.READY && redux_org.isAdmin(this)) {
-            return `Cloudlet status is not online, do you still want to proceed with ${data[fields.clusterName]} Cluster Instance deletion?`
+        if (data[localFields.cloudletStatus] !== serverFields.READY && redux_org.isAdmin(this)) {
+            return `Cloudlet status is not online, do you still want to proceed with ${data[localFields.clusterName]} Cluster Instance deletion?`
         }
     }
 
     updateVisible = (data) => {
-        return data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES
+        return data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES
     }
 
     actionMenu = () => {
@@ -75,10 +75,10 @@ class ClusterInstView extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.state) {
-            return shared.showProgress(data, isDetail)
+        if (key.field === localFields.state) {
+            return uiFormatter.showProgress(data, isDetail)
         }
-        else if (key.field === fields.reservable) {
+        else if (key.field === localFields.reservable) {
             return labelFormatter.showYesNo(data[key.field])
         }
     }
@@ -87,13 +87,13 @@ class ClusterInstView extends React.Component {
         return ({
             id: perpetual.PAGE_CLUSTER_INSTANCES,
             headerLabel: 'Cluster Instances',
-            nameField: fields.clusterName,
+            nameField: localFields.clusterName,
             requestType: [showClusterInsts, showCloudlets, showCloudletInfoData],
             streamType: streamClusterInst,
             isRegion: true,
             isMap: true,
             selection: !redux_org.isOperator(this),
-            sortBy: [fields.region, fields.cloudletName],
+            sortBy: [localFields.region, localFields.cloudletName],
             keys: this.keys,
             onAdd:  role.validateRole(developerRoles, this.props.organizationInfo) ? this.onAdd : undefined,
             viewMode: HELP_CLUSTER_INST_LIST,

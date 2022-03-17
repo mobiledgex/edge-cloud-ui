@@ -1,5 +1,5 @@
 
-import * as formatter from '../../model/format'
+import * as formatter from '../../fields'
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import { endpoint, perpetual } from '../../../helper/constant'
 import { cloudletKeys } from '../cloudlet/primary';
@@ -7,32 +7,32 @@ import { cloudletKeys } from '../cloudlet/primary';
 let fields = formatter.fields
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.flavorName, serverField: 'key#OS#name', label: 'Flavor Name', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.ram, serverField: 'ram', label: 'RAM Size(MB)', sortable: true, visible: true },
-    { field: fields.vCPUs, serverField: 'vcpus', label: 'Number of vCPUs', sortable: true, visible: true },
-    { field: fields.disk, serverField: 'disk', label: 'Disk Space(GB)', sortable: true, visible: true },
-    { field: fields.gpu, serverField: 'opt_res_map#OS#gpu', label: 'GPU', visible: false, format: true, dataType: perpetual.TYPE_JSON }
+    { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
+    { field: localFields.flavorName, serverField: 'key#OS#name', label: 'Flavor Name', sortable: true, visible: true, filter: true, key: true },
+    { field: localFields.ram, serverField: 'ram', label: 'RAM Size(MB)', sortable: true, visible: true },
+    { field: localFields.vCPUs, serverField: 'vcpus', label: 'Number of vCPUs', sortable: true, visible: true },
+    { field: localFields.disk, serverField: 'disk', label: 'Disk Space(GB)', sortable: true, visible: true },
+    { field: localFields.gpu, serverField: 'opt_res_map#OS#gpu', label: 'GPU', visible: false, format: true, dataType: perpetual.TYPE_JSON }
 ])
 
 export const iconKeys = () => ([
-    { field: fields.gpu, label: 'GPU', icon: 'gpu_green.svg', clicked: false, count: 0 },
+    { field: localFields.gpu, label: 'GPU', icon: 'gpu_green.svg', clicked: false, count: 0 },
 ])
 
 export const getKey = (data, isCreate) => {
     let flavor = {}
-    flavor.key = { name: data[fields.flavorName] }
+    flavor.key = { name: data[localFields.flavorName] }
 
     if (isCreate) {
-        flavor.ram = parseInt(data[fields.ram])
-        flavor.vcpus = parseInt(data[fields.vCPUs])
-        flavor.disk = parseInt(data[fields.disk])
-        if (data[fields.gpu]) {
+        flavor.ram = parseInt(data[localFields.ram])
+        flavor.vcpus = parseInt(data[localFields.vCPUs])
+        flavor.disk = parseInt(data[localFields.disk])
+        if (data[localFields.gpu]) {
             flavor.opt_res_map = { gpu: "gpu:1" }
         }
     }
     return ({
-        region: data[fields.region],
+        region: data[localFields.region],
         flavor: flavor
     })
 }
@@ -45,7 +45,7 @@ export const fetchCloudletFlavors = async (self, data) => {
     const keys = [{ label: 'Name', field: 'flavorName', serverField: 'name' }]
     const requestData = {
         cloudletKey: cloudletKeys(data),
-        region: data[fields.region]
+        region: data[localFields.region]
     }
     return await showAuthSyncRequest(self, { method: endpoint.SHOW_FLAVORS_FOR_CLOUDLET, data: requestData, keys })
 }
@@ -63,5 +63,5 @@ export const createFlavor = async (self, data) => {
 
 export const deleteFlavor = (self, data) => {
     let requestData = getKey(data);
-    return { method: endpoint.DELETE_FLAVOR, data: requestData, success: `Flavor ${data[fields.flavorName]} deleted successfully` }
+    return { method: endpoint.DELETE_FLAVOR, data: requestData, success: `Flavor ${data[localFields.flavorName]} deleted successfully` }
 }

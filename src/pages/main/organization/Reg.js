@@ -8,8 +8,7 @@ import MexDetailViewer from '../../../hoc/datagrid/detail/DetailViewer'
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as constant from '../../../constant';
-import { additionalDetail } from '../../../services/model/shared';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 //model
 import { keys, createOrganization, updateOrganization } from '../../../services/modules/organization';
 import { addUser } from '../../../services/modules/users';
@@ -17,6 +16,7 @@ import { HELP_ORG_REG_3, HELP_ORG_REG_2, HELP_ORG_REG_1 } from "../../../tutoria
 import { Grid, List } from "@material-ui/core";
 import { splitByCaps, toFirstUpperCase } from "../../../utils/string_utils";
 import { perpetual } from "../../../helper/constant";
+import { uiFormatter } from "../../../helper/formatter";
 
 const stepData = [
     {
@@ -91,16 +91,16 @@ class OrganizationReg extends React.Component {
     onAddUser = async (data) => {
         let userList = this.organizationInfo.userList ? this.organizationInfo.userList : [];
         if (data) {
-            data[fields.role] = toFirstUpperCase(this.type) + data[fields.role]
+            data[localFields.role] = toFirstUpperCase(this.type) + data[localFields.role]
             let mcRequest = await addUser(this, data)
             if (mcRequest && mcRequest.response && mcRequest.response.data) {
                 let message = mcRequest.response.data.message
                 if (message === 'Role added to user') {
-                    this.props.handleAlertInfo('success', `User ${data[fields.username]} added successfully`)
+                    this.props.handleAlertInfo('success', `User ${data[localFields.username]} added successfully`)
                     this.addUserForm(this.organizationInfo)
                     userList.push({
-                        username: data[fields.username],
-                        userRole: data[fields.role]
+                        username: data[localFields.username],
+                        userRole: data[localFields.role]
                     })
                 }
             }
@@ -122,7 +122,7 @@ class OrganizationReg extends React.Component {
             { label: 'Add User', formType: 'Button', onClick: this.onAddUser, validate: true },
             { label: this.props.action === 'AddUser' ? 'Close' : 'Skip', formType: 'Button', onClick: this.onFinalStep })
         this.setState({
-            type: data[fields.type],
+            type: data[localFields.type],
             step: 1,
             forms: forms
         })
@@ -133,11 +133,11 @@ class OrganizationReg extends React.Component {
     onCreateOrganization = async (data) => {
         if (data) {
             this.organizationInfo = data
-            this.type = toFirstUpperCase(data[fields.type])
-            data[fields.type] = data[fields.type]
+            this.type = toFirstUpperCase(data[localFields.type])
+            data[localFields.type] = data[localFields.type]
             let mcRequest = this.isUpdate ? await updateOrganization(this, data) : await createOrganization(this, data)
             if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                this.props.handleAlertInfo('success', `Organization ${data[fields.organizationName]} ${this.isUpdate ? 'updated' : 'created'} successfully`)
+                this.props.handleAlertInfo('success', `Organization ${data[localFields.organizationName]} ${this.isUpdate ? 'updated' : 'created'} successfully`)
                 this.isUpdate ? this.props.onClose() : this.addUserForm(data)
             }
         }
@@ -151,7 +151,7 @@ class OrganizationReg extends React.Component {
     }
 
     getStep3 = () => {
-        this.organizationInfo[fields.publicImages] = this.organizationInfo[fields.publicImages] ? perpetual.YES : perpetual.NO
+        this.organizationInfo[localFields.publicImages] = this.organizationInfo[localFields.publicImages] ? perpetual.YES : perpetual.NO
         return (
             <Fragment>
                 <Grid container>
@@ -159,7 +159,7 @@ class OrganizationReg extends React.Component {
                         <Form>
                             <br />
                             <MexDetailViewer detailData={this.organizationInfo} keys={keys()} compact={true} />
-                            {additionalDetail(this.organizationInfo)}
+                            {uiFormatter.additionalDetail(this.organizationInfo)}
                             <br /><br />
                             <Form.Group className='orgButton' style={{ width: '100%' }}>
                                 <Button className="newOrg3-4" onClick={(e) => { this.props.onClose() }} type='submit' positive style={{ width: '100%' }}>Return to Organizations</Button>
@@ -240,11 +240,11 @@ class OrganizationReg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT) {
                     switch (form.field) {
-                        case fields.type:
+                        case localFields.type:
                             form.options = ['developer', 'operator']
                             form.value = this.props.type
                             break;
-                        case fields.role:
+                        case localFields.role:
                             form.options = ['Manager', 'Contributor', 'Viewer']
                             break;
                     }
@@ -256,26 +256,26 @@ class OrganizationReg extends React.Component {
     step2 = (data) => {
         return [
             { label: 'Add User', formType: MAIN_HEADER, visible: true },
-            { field: fields.username, label: 'Username', formType: INPUT, placeholder: 'Select Username', rules: { required: true }, visible: true },
-            { field: fields.organizationName, label: 'Organization', formType: INPUT, placeholder: 'Enter Organization Name', rules: { disabled: true }, visible: true, value: data[fields.organizationName] },
-            { field: fields.type, label: 'Type', formType: SELECT, placeholder: 'Enter Type', rules: { disabled: true, allCaps: true }, visible: true, value: data[fields.type] },
-            { field: fields.role, label: 'Role', formType: SELECT, placeholder: 'Select Role', rules: { required: true }, visible: true },
+            { field: localFields.username, label: 'Username', formType: INPUT, placeholder: 'Select Username', rules: { required: true }, visible: true },
+            { field: localFields.organizationName, label: 'Organization', formType: INPUT, placeholder: 'Enter Organization Name', rules: { disabled: true }, visible: true, value: data[localFields.organizationName] },
+            { field: localFields.type, label: 'Type', formType: SELECT, placeholder: 'Enter Type', rules: { disabled: true, allCaps: true }, visible: true, value: data[localFields.type] },
+            { field: localFields.role, label: 'Role', formType: SELECT, placeholder: 'Select Role', rules: { required: true }, visible: true },
         ]
     }
 
     step1 = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Organization`, formType: MAIN_HEADER, visible: true },
-            { field: fields.type, label: 'Type', formType: 'Select', placeholder: 'Select Type', rules: { required: true, disabled: this.props.type !== undefined, allCaps: true }, visible: true },
-            { field: fields.organizationName, label: 'Organization', formType: INPUT, placeholder: 'Enter Organization Name', rules: { required: true }, visible: true, },
-            { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, update: { edit: true } },
-            { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, update: { edit: true }, dataValidateFunc: constant.validatePhone },
-            { field: fields.publicImages, label: 'Public Image', formType: SWITCH, visible: true, value: false, update: { edit: true }, roles: [perpetual.ADMIN_MANAGER] }
+            { field: localFields.type, label: 'Type', formType: 'Select', placeholder: 'Select Type', rules: { required: true, disabled: this.props.type !== undefined, allCaps: true }, visible: true },
+            { field: localFields.organizationName, label: 'Organization', formType: INPUT, placeholder: 'Enter Organization Name', rules: { required: true }, visible: true, },
+            { field: localFields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: true }, visible: true, update: { edit: true } },
+            { field: localFields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: true }, visible: true, update: { edit: true }, dataValidateFunc: constant.validatePhone },
+            { field: localFields.publicImages, label: 'Public Image', formType: SWITCH, visible: true, value: false, update: { edit: true }, roles: [perpetual.ADMIN_MANAGER] }
         ]
     }
 
     loadDefaultData = async (data) => {
-        data[fields.publicImages] = data[fields.publicImages] === perpetual.YES ? true : false
+        data[localFields.publicImages] = data[localFields.publicImages] === perpetual.YES ? true : false
     }
 
     getFormData = (data) => {
@@ -284,7 +284,7 @@ class OrganizationReg extends React.Component {
                 this.loadDefaultData(data)
             }
             else {
-                this.type = toFirstUpperCase(data[fields.type])
+                this.type = toFirstUpperCase(data[localFields.type])
                 this.organizationInfo = data
                 this.addUserForm(data)
                 this.setState({ step: 1 })
