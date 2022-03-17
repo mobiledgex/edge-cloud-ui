@@ -1,17 +1,11 @@
 import React from 'react'
-import BulletChart from '../../charts/bullet/BulletChart';
 import DataTable from '../../list/DataTable'
-import { onlyNumeric } from '../../../../../utils/string_utils';
 import { _orderBy } from '../../../../../helper/constant/operators';
 import { legendKeys } from '../../helper/constant';
 import { Skeleton } from '@material-ui/lab';
 import { validateRole } from '../../../../../helper/constant/role';
 import { fields } from '../../../../../services/model/format';
 import { healthCheck, NoData } from '../../../../../helper/formatter/ui';
-import Tooltip from './Tooltip';
-import { convertUnit } from '../../helper/unitConvertor';
-import { Icon } from '../../../../../hoc/mexui';
-import { PARENT_CLUSTER_INST } from '../../../../../helper/constant/perpetual';
 
 class Legend extends React.Component {
 
@@ -93,31 +87,6 @@ class Legend extends React.Component {
     filterAction = () => {
         const { tools, actionMenu } = this.props
         return actionMenu?.filter(item => item.roles ? validateRole(item.roles, tools.organization) : true)
-    }
-
-    renderTootip = () => {
-        const { hoverData } = this.state
-        if (hoverData) {
-            const { type, column, data } = hoverData
-            if (type === 'Bullet') {
-                const { ranges, markers, measures } = data
-                const cloudetAllocation = markers[0]
-                const cloudetUsage = measures[1]
-                const { unit } = column
-                return (
-                    <div>
-                        <p style={{display:'flex', alignItems:'center', color:'#CECECE', fontWeight:900}}><Icon size={10} color={'rgba(67,167,111,.4)'}>circle</Icon>&nbsp;&nbsp;{`Total Available: ${unit ? convertUnit(unit, ranges[0]) : ranges}`}</p>
-                        <p style={{display:'flex', alignItems:'center', color:'#CECECE', fontWeight:900}}><Icon size={10} color={'rgba(67,167,111,.9)'}>circle</Icon>&nbsp;&nbsp;{`Total Used: ${unit ? convertUnit(unit, measures[0]) : measures[0]}`}</p>
-                        <p style={{display:'flex', alignItems:'center', color:'#CECECE', fontWeight:900}}><Icon size={10} color={'#1B432C'}>circle</Icon>&nbsp;&nbsp;{`Quota Limit: ${cloudetAllocation > 0  ? unit ? convertUnit(unit, cloudetAllocation) : cloudetAllocation : 'Not Set'}`}</p>
-                        <p style={{display:'flex', alignItems:'center', color:'#CECECE', fontWeight:900}}><Icon size={10} color={'#FFF'}>circle</Icon>&nbsp;&nbsp;{`Resource Used: ${unit && cloudetUsage > 0 ? convertUnit(unit, cloudetUsage) : cloudetUsage}`}</p>
-                    </div>
-                )
-            }
-            else {
-                return <p>{data}</p>
-            }
-        }
-        return null
     }
 
     render() {

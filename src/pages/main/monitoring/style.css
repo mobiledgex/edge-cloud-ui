@@ -211,5 +211,12 @@
 
 canvas#race{position:relative; z-index:999999;}
 
+.bullet-hover {
+    display: 'flex';
+    align-items: 'center'; 
+    color: #CECECE; 
+    font-weight: 900
+}
+
 
 

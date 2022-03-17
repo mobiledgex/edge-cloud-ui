@@ -12,6 +12,7 @@ import BulletChart from '../../charts/bullet/BulletChart'
 import Tooltip from '../../common/legend/Tooltip'
 import { convertUnit } from '../../helper/unitConvertor'
 import { Icon } from '../../../../../hoc/mexui'
+import { perpetual } from '../../../../../helper/constant'
 
 const actionMenu = [
     { id: ACTION_LATENCY_METRICS, label: 'Show Latency Metrics' },
@@ -35,17 +36,17 @@ class CloudletMonitoring extends React.Component {
         const { hoverData } = this.state
         if (hoverData) {
             const { type, column, data } = hoverData
-            if (type === 'Bullet') {
+            if (type === perpetual.CHART_BULLET) {
                 const { ranges, markers, measures } = data
                 const cloudetAllocation = markers[0]
                 const cloudetUsage = measures[1]
                 const { unit } = column
                 return (
                     <div>
-                        <p style={{ display: 'flex', alignItems: 'center', color: '#CECECE', fontWeight: 900 }}><Icon size={10} color={'rgba(67,167,111,.4)'}>circle</Icon>&nbsp;&nbsp;{`Total Available: ${unit ? convertUnit(unit, ranges[0]) : ranges}`}</p>
-                        <p style={{ display: 'flex', alignItems: 'center', color: '#CECECE', fontWeight: 900 }}><Icon size={10} color={'rgba(67,167,111,.9)'}>circle</Icon>&nbsp;&nbsp;{`Total Used: ${unit ? convertUnit(unit, measures[0]) : measures[0]}`}</p>
-                        <p style={{ display: 'flex', alignItems: 'center', color: '#CECECE', fontWeight: 900 }}><Icon size={10} color={'#1B432C'}>circle</Icon>&nbsp;&nbsp;{`Quota Limit: ${cloudetAllocation > 0 ? unit ? convertUnit(unit, cloudetAllocation) : cloudetAllocation : 'Not Set'}`}</p>
-                        <p style={{ display: 'flex', alignItems: 'center', color: '#CECECE', fontWeight: 900 }}><Icon size={10} color={'#FFF'}>circle</Icon>&nbsp;&nbsp;{`Resource Used: ${unit && cloudetUsage > 0 ? convertUnit(unit, cloudetUsage) : cloudetUsage}`}</p>
+                        <p className='bullet-hover'><Icon size={10} color={'rgba(67,167,111,.4)'}>circle</Icon>&nbsp;&nbsp;{`Total Available: ${unit ? convertUnit(unit, ranges[0]) : ranges}`}</p>
+                        <p className='bullet-hover'><Icon size={10} color={'rgba(67,167,111,.9)'}>circle</Icon>&nbsp;&nbsp;{`Total Used: ${unit ? convertUnit(unit, measures[0]) : measures[0]}`}</p>
+                        <p className='bullet-hover'><Icon size={10} color={'#1B432C'}>circle</Icon>&nbsp;&nbsp;{`Quota Limit: ${cloudetAllocation > 0 ? unit ? convertUnit(unit, cloudetAllocation) : cloudetAllocation : 'Not Set'}`}</p>
+                        <p className='bullet-hover'><Icon size={10} color={'#FFF'}>circle</Icon>&nbsp;&nbsp;{`Resource Used: ${unit && cloudetUsage > 0 ? convertUnit(unit, cloudetUsage) : cloudetUsage}`}</p>
                     </div>
                 )
             }
