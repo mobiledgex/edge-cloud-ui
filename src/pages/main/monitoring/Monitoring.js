@@ -1,21 +1,16 @@
-import React from 'react'
-import { connect } from 'react-redux'
+import React from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 import { redux_org } from '../../../helper/reduxData';
-
-import Toolbar from './toolbar/MonitoringToolbar'
-
+import Toolbar from './toolbar/MonitoringToolbar';
 import { LS_LINE_GRAPH_FULL_SCREEN, } from '../../../helper/constant/perpetual';
 import { HELP_MONITORING } from '../../../tutorial';
-
 import { fetchOrgList } from './services/service';
 import { equal } from '../../../helper/constant/operators';
 import Show from './Show';
 import { NoData } from '../../../helper/formatter/ui';
 import './style.css'
-
-
 
 class Monitoring extends React.Component {
     constructor(props) {
@@ -64,9 +59,9 @@ class Monitoring extends React.Component {
                 <Toolbar onChange={this.handleToolbarChange} organizations={organizations} />
                 <div className="outer" style={{ height: 'calc(100vh - 106px)' }}>
                     {
-                        tools && tools.organization ? (
+                        tools?.organization ?
                             <Show tools={tools} />
-                        ) : <NoData loading={loading} />
+                            : <NoData loading={loading} />
                     }
                 </div>
             </div>
