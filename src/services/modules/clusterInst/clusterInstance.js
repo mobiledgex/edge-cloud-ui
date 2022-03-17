@@ -9,7 +9,7 @@ import { generateUUID } from '../../format/shared';
 import { cloudletKeys } from '../cloudlet';
 import { websocket } from '../..';
 
-let fields = formatter.fields;
+let localFields = formatter.localFields;
 
 export const keys = () => ([
     { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },

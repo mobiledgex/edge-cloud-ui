@@ -7,11 +7,11 @@ import Paper from '@material-ui/core/Paper';
 import { AutoSizer, Column, Table } from 'react-virtualized';
 import { Icon, IconButton } from '../mexui';
 import Actions from './action/Action';
-import { localFields } from '../../services';
 import { NoData } from '../../helper/formatter/ui';
 import { ICON_COLOR } from '../../helper/constant/colors'; 
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
 import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined';
+import { localFields } from '../../services/fields';
 
 const styles = (theme) => ({
     flexContainer: {

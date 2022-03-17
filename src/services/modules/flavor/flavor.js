@@ -4,7 +4,7 @@ import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import { endpoint, perpetual } from '../../../helper/constant'
 import { cloudletKeys } from '../cloudlet/primary';
 
-let fields = formatter.fields
+let localFields = formatter.localFields
 
 export const keys = () => ([
     { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },

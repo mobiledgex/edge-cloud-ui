@@ -5,7 +5,7 @@ import { generateUUID } from '../../format/shared';
 import { showAuthSyncRequest } from '../../service';
 import { websocket } from '../..';
 
-const fields = formatter.fields;
+const localFields = formatter.localFields;
 
 export const outboundSecurityRulesKeys = [
   { field: localFields.protocol, serverField: 'protocol', label: 'Protocol' },

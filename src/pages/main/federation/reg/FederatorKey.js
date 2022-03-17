@@ -1,7 +1,7 @@
 import React from 'react'
 import { Grid, Typography } from '@material-ui/core'
 import { InfoDialog } from '../../../../hoc/mexui'
-import { localFields } from '../../../../services'
+import { localFields } from "../../../../services/fields";
 import { copyData } from '../../../../utils/file_util'
 
 const keys = [

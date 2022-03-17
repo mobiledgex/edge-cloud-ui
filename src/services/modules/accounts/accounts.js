@@ -4,7 +4,7 @@ import { ADMIN_MANAGER } from '../../../helper/constant/perpetual'
 import { authSyncRequest } from '../../service'
 import { responseValid } from '../../config'
 
-let fields = formatter.fields
+let localFields = formatter.localFields
 
 export const keys = () => ([
     { field: localFields.username, serverField: 'Name', sortable: true, label: 'Username', visible: true, filter: true },

@@ -4,7 +4,7 @@ import { redux_org } from "../../../helper/reduxData";
 import { authSyncRequest } from "../../service";
 import * as formatter from '../../fields'
 
-const fields = formatter.fields;
+const localFields = formatter.localFields;
 
 const SERVER_FIELD_NAME = 'Name'
 const SERVER_FIELD_ORG = 'Org'

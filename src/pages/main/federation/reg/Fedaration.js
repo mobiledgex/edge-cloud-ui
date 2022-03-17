@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import { redux_org } from '../../../../helper/reduxData'
 import MexForms, { BUTTON, INPUT, MAIN_HEADER, SELECT } from '../../../../hoc/forms/MexForms'
-import { localFields } from '../../../../services'
+import { localFields } from "../../../../services/fields";
 import { createFederation } from '../../../../services/modules/federation';
 import { readJsonFile } from '../../../../utils/file_util';
 import { responseValid } from '../../../../services/config';

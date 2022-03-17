@@ -6,7 +6,7 @@ import { labelFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
 
-const fields = formatter.fields;
+const localFields = formatter.localFields;
 
 const clouldetKeys = [
     { field: localFields.cloudletName, serverField: 'name', label: 'Cloudlet Name' },

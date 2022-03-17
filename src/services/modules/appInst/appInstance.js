@@ -11,7 +11,7 @@ import {  cloudletKeys } from '../cloudlet';
 import { serverFields } from '../../../helper/formatter';
 import { websocket } from '../..';
 
-let fields = formatter.fields;
+const localFields = formatter.localFields;
 
 export const keys = () => ([
   { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true, format: true },

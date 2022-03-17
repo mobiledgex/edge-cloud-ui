@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import { redux_org } from '../../../../helper/reduxData'
 import MexForms, { BUTTON, HEADER, ICON_BUTTON, INPUT, MAIN_HEADER, MULTI_FORM, SELECT } from '../../../../hoc/forms/MexForms'
-import { localFields } from '../../../../services'
+import { localFields } from "../../../../services/fields";
 import { _sort } from '../../../../helper/constant/operators';
 import { getOrganizationList } from '../../../../services/modules/organization';
 import { perpetual } from '../../../../helper/constant';

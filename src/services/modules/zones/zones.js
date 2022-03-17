@@ -5,7 +5,7 @@ import { endpoint, perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData'
 import { TYPE_JSON } from '../../../helper/constant/perpetual';
 
-let fields = formatter.fields
+let localFields = formatter.localFields
 
 export const keys = () => ([
     { field: localFields.region, label: 'Region', serverField: 'region', sortable: true, visible: true, filter: true },

@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 //redux
 import * as actions from '../../../actions';
 //model
-import * as shared from '../../../services/model/shared';
 import { localFields } from '../../../services/fields';
 import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiDataRequest } from '../../../services/modules/clusterInst';
 import { showCloudlets } from '../../../services/modules/cloudlet';

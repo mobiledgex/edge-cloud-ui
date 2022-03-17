@@ -9,7 +9,6 @@ import * as actions from '../../../../actions';
 import { HELP_FEDERATION_GUEST_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
 import { showFederator, showFederation, deleteFederator, multiDataRequest, keys, iconKeys, deRegisterFederation, registerFederation } from "../../../../services/modules/federation"
-import { localFields } from '../../../../services'
 import { uiFormatter } from '../../../../helper/formatter';
 
 import RegisterOperator from "../reg/Federator";
@@ -18,6 +17,7 @@ import Reg from "./reg/Reg"
 import APIKey from "./reg/APIKey";
 import { showPartnerFederatorZone } from "../../../../services/modules/partnerZones/partnerZones";
 import { responseValid } from "../../../../services/config";
+import { localFields } from "../../../../services/fields";
 
 class Guest extends React.Component {
     constructor(props) {

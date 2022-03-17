@@ -4,7 +4,7 @@ import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant'
 import { authSyncRequest } from '../../service'
 
-let fields = formatter.fields
+let localFields = formatter.localFields
 export const showAlertKeys = () => (
     [
         { field: localFields.region, label: 'Region', serverField: 'labels#OS#region', sortable: true, visible: true },
