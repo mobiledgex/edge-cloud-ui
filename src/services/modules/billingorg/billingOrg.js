@@ -3,8 +3,7 @@ import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util'
 import { endpoint, perpetual } from '../../../helper/constant'
 import { authSyncRequest } from '../../service'
 
-
-let fields = formatter.fields
+let localFields = formatter.localFields
 
 export const keys = () => (
     [

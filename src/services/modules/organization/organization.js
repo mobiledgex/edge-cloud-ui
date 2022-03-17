@@ -2,10 +2,8 @@ import * as formatter from '../../fields'
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant'
-import { DEVELOPER_MANAGER, OPERATOR_MANAGER } from '../../../helper/constant/perpetual';
-import { getUserMetaData } from '../../../helper/ls';
 
-let fields = formatter.fields;
+let localFields = formatter.localFields;
 
 export const keys = (nameOnly) => {
     let items = [{ field: localFields.organizationName, serverField: 'Name', label: 'Organization', sortable: true, visible: true, filter: true }]

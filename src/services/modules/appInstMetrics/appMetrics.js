@@ -2,12 +2,10 @@
 import * as formatter from '../../fields'
 import { UNIT_BYTES, UNIT_PERCENTAGE, UNIT_FLOOR } from '../../../pages/main/monitoring/helper/unitConvertor';
 import { labelFormatter } from '../../../helper/formatter';
-import { endpoint, perpetual } from '../../../helper/constant';
-import { developerRoles } from '../../../constant';
-import { ADMIN, DEVELOPER, DEVELOPER_VIEWER } from '../../../helper/constant/perpetual';
+import { endpoint } from '../../../helper/constant';
 import { redux_org } from '../../../helper/reduxData';
 
-let fields = formatter.fields;
+const localFields = formatter.localFields;
 
 export const appMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },

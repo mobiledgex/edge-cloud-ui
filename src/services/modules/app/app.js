@@ -6,7 +6,7 @@ import { endpoint, perpetual } from '../../../helper/constant';
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import { developerRoles } from '../../../constant';
 
-let fields = formatter.fields
+const localFields = formatter.localFields;
 
 export const configs = () => ([
     { field: localFields.kind, serverField: 'kind', label: 'Kind' },

@@ -2,11 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux';
 import * as actions from '../../../../../actions';
 import MexForms, { INPUT, BUTTON } from '../../../../../hoc/forms/MexForms';
-import { localFields } from '../../../../../services';
 import { setApiKey } from '../../../../../services/modules/federation';
 import { LinearProgress } from '@material-ui/core';
 import { InfoDialog } from '../../../../../hoc/mexui';
 import { responseValid } from '../../../../../services/config';
+import { localFields } from '../../../../../services/fields';
 
 
 class APIKey extends React.Component {

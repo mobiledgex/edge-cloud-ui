@@ -6,7 +6,7 @@ import { redux_org } from '../../../helper/reduxData'
 import { unionBy } from 'lodash';
 import { responseValid } from '../../config';
 
-let fields = formatter.fields
+let localFields = formatter.localFields
 
 const federationKeys = () => ([
     { field: localFields.operatorName, serverField: 'selfoperatorid', label: 'Operator', sortable: true, visible: true, filter: true, key: true },

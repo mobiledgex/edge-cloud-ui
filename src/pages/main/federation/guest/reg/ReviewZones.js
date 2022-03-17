@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../../actions';
 import { Button, Typography } from '@material-ui/core'
 import MexTable from '../../../../../hoc/datagrid/MexTable'
-import { localFields } from '../../../../../services'
 import { registerPartnerZone, showPartnerFederatorZone } from '../../../../../services/modules/partnerZones/partnerZones'
 import { authSyncRequest, showAuthSyncRequest } from '../../../../../services/service'
 import { withRouter } from 'react-router-dom';
+import { localFields } from '../../../../../services/fields';
 
 export const zoneKeys = () => ([
     { field: localFields.partnerFederationName, label: 'Federation Name', visible: true },

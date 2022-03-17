@@ -9,7 +9,7 @@ import * as actions from '../../../../actions';
 import { HELP_OUTBOUND_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
 import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
-import { localFields } from '../../../../services'
+import { localFields } from "../../../../services/fields";
 import { showFederator, showFederation, keys, iconKeys, deleteFederator, generateApiKey, multiDataRequest } from "../../../../services/modules/federation"
 import { showFederationZones } from "../../../../services/modules/zones";
 import { uiFormatter } from '../../../../helper/formatter';
@@ -143,7 +143,7 @@ class Host extends React.Component {
         return (
             <React.Fragment>
                 <DataView id={perpetual.PAGE_FEDERATION} multiDataRequest={multiDataRequest} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} />
-                <InfoDialog open={open} onClose={this.onDialogClose} title={'Federation API Key'} onClose={() => { this.updateState({ open: false }) }} note={'Make sure to copy API key now. You won\'t be able to see it again!'}>
+                <InfoDialog open={open} onClose={this.onDialogClose} title={'Federation API Key'} note={'Make sure to copy API key now. You won\'t be able to see it again!'}>
                     <p>One-time generated key used for authenticating federation requests from partner operator</p>
                     {codeHighLighter(this.apiKey)}
                 </InfoDialog>

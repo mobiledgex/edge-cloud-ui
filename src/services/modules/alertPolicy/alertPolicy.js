@@ -3,7 +3,7 @@ import { redux_org } from '../../../helper/reduxData'
 import { endpoint, perpetual } from '../../../helper/constant';
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
 
-const fields = formatter.fields;
+const localFields = formatter.localFields;
 
 const SF_CUL = 'cpu_utilization_limit'
 const SF_MUL = 'mem_utilization_limit'

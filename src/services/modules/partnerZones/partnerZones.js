@@ -2,7 +2,7 @@ import { endpoint, perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData';
 import * as formatter from '../../fields'
 
-let fields = formatter.fields
+let localFields = formatter.localFields
 
 export const keys = () => {
     return [

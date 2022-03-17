@@ -6,7 +6,7 @@ import { redux_org } from '../../../helper/reduxData';
 import { ADMIN, TYPE_JSON } from '../../../helper/constant/perpetual';
 import { websocket } from '../..';
 
-let fields = formatter.fields
+let localFields = formatter.localFields
 
 export const buildKeys = [
     { field: localFields.buildName, serverField: 'name', label: 'Name' },

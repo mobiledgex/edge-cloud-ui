@@ -1,6 +1,6 @@
 import React from 'react'
 import { PARENT_APP_INST, PARENT_CLUSTER_INST } from '../../../../helper/constant/perpetual'
-import { localFields } from '../../../../services'
+import { localFields } from "../../../../services/fields";
 
 const GroupView = (props) => {
     const { id, data } = props

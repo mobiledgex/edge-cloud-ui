@@ -8,7 +8,6 @@ import { localFields } from '../../../services/fields';
 import { redux_org } from '../../../helper/reduxData';
 import { keys, iconKeys, showOrganizations, deleteOrganization, edgeboxOnlyAPI, multiDataRequest } from '../../../services/modules/organization';
 import OrganizationReg from './Reg';
-import * as shared from '../../../services/model/shared';
 import RoleWorker from '../../../services/worker/role.worker.js'
 import { Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core';
 import { HELP_ORG_LIST } from "../../../tutorial";

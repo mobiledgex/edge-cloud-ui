@@ -3,7 +3,7 @@ import { endpoint, perpetual } from '../../../helper/constant';
 import { authSyncRequest } from "../../service";
 import { idFormatter } from '../../../helper/formatter'
 import { cloudletKeys } from '../cloudlet';
-let fields = formatter.fields;
+let localFields = formatter.localFields;
 
 export const keys = () => ([
     { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },

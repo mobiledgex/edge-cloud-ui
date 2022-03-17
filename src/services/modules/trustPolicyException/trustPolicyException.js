@@ -4,7 +4,8 @@ import { authSyncRequest } from "../../service";
 import { getAppKey } from '../app';
 import { getCloudletPoolKey } from '../cloudletPool';
 import { tpeState } from '../../../helper/formatter/id';
-let fields = formatter.fields;
+
+let localFields = formatter.localFields;
 
 export const keys = () => ([
     { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
