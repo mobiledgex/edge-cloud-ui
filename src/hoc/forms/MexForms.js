@@ -1,4 +1,6 @@
-import React from 'react'
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { redux_org } from '../../helper/reduxData';
 import cloneDeep from 'lodash/cloneDeep';
 import MexSelect from './MexSelect';
 import MexMultiSelect from './MexMultiSelect'
@@ -14,7 +16,11 @@ import MexSelectTree from './selectTree/MexSelectTree';
 import MexSelectTreeGroup from './selectTree/MexSelectTreeGroup';
 import { Form, Grid, Divider } from 'semantic-ui-react';
 import { IconButton as MIB, makeStyles, Tooltip } from '@material-ui/core';
+import { uniqueId } from '../../helper/constant/shared';
+import { IconButton } from '../mexui';
 import Alert from '@material-ui/lab/Alert';
+
+//Icons
 import AddIcon from '@material-ui/icons/Add';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
@@ -24,11 +30,8 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddToPhotosOutlinedIcon from '@material-ui/icons/AddToPhotosOutlined';
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
-import { useSelector } from 'react-redux';
-import { redux_org } from '../../helper/reduxData';
-import { uniqueId } from '../../helper/constant/shared';
+
 import './style.css'
-import { IconButton } from '../mexui';
 
 export const MAIN_HEADER = 'MainHeader'
 export const HEADER = 'Header'
