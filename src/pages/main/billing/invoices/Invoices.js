@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from 'react'
 import LogoSpinner from '../../../../hoc/loader/LogoSpinner'
 
-import DataView from '../../../../container/DataView';
+import DataView from '../../../../hoc/datagrid/DataView';
 import { localFields } from '../../../../services/fields';
 
 import { showInvoices, keys } from '../../../../services/modules/invoices'

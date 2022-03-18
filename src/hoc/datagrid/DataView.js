@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import DataGrid from '../hoc/datagrid/DataGrid';
-import { operators, shared } from '../helper/constant';
-import { redux_org } from '../helper/reduxData';
-import { validateRole } from '../helper/constant/role';
+import DataGrid from './DataGrid';
+import { operators, shared } from '../../helper/constant';
+import { redux_org } from '../../helper/reduxData';
+import { validateRole } from '../../helper/constant/role';
 
 class DataView extends React.Component {
     constructor(props) {

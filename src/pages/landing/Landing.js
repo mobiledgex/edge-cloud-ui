@@ -18,6 +18,7 @@ import { withStyles } from '@material-ui/styles';
 import { hostURL } from '../../utils/location_utils';
 import { resetPasswordRequest, sendVerify } from '../../services/modules/landing';
 import { LS_THASH, PAGE_ORGANIZATIONS } from '../../helper/constant/perpetual';
+import './style.css'
 
 const styles = theme => ({
     colorPrimary: {

@@ -29,7 +29,6 @@ import CloudletDetails from './details/CloudletDetails';
 import DeviceDetails from './details/DeviceDetails';
 import { operators } from "../../../../helper/constant";
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
-import { onlyNumeric } from '../../../../utils/string_utils';
 import { AIK_APP_ALL, AIK_APP_CLOUDLET_CLUSTER } from '../../../../services/modules/appInst/primary';
 import { timezonePref } from '../../../../utils/sharedPreferences_util';
 import './style.css'
@@ -334,7 +333,7 @@ class DMEMetrics extends React.Component {
                 this.fetchData()
                 break;
             case ACTION_LATENCY_RANGE:
-                this.setState({ latencyRange: onlyNumeric(value) }, () => {
+                this.setState({ latencyRange: parseInt(value) }, () => {
                     this.onLatencyRangeChange()
                 })
                 break;

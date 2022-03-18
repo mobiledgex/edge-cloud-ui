@@ -9,7 +9,7 @@ import { keys, showClusterInsts, deleteClusterInst, streamClusterInst, multiData
 import { showCloudlets } from '../../../services/modules/cloudlet';
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 //list
-import DataView from '../../../container/DataView';
+import DataView from '../../../hoc/datagrid/DataView';
 //reg
 import ClusterInstReg from './Reg';
 import { HELP_CLUSTER_INST_LIST } from "../../../tutorial";

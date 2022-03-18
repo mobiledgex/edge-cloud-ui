@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from 'react-router-dom';
-import DataView from '../../../../container/DataView';
+import DataView from '../../../../hoc/datagrid/DataView';
 //Mex
 //redux
 import { connect } from 'react-redux';
