@@ -10,7 +10,7 @@ import { localFields } from '../../../../services/fields';
 import { keys, showAutoProvPolicies, deleteAutoProvPolicy, multiDataRequest } from '../../../../services/modules/autoProvPolicy';
 import { showApps } from '../../../../services/modules/app';
 //list
-import DataView from '../../../../container/DataView';
+import DataView from '../../../../hoc/datagrid/DataView';
 import { HELP_POLICY_LIST } from "../../../../tutorial";
 import { perpetual, role } from '../../../../helper/constant';
 import { developerRoles } from '../../../../constant';

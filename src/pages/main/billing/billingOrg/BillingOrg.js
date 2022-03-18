@@ -4,7 +4,7 @@ import * as actions from '../../../../actions';
 //redux
 import { connect } from 'react-redux';
 
-import DataView from '../../../../container/DataView';
+import DataView from '../../../../hoc/datagrid/DataView';
 import { localFields } from '../../../../services/fields';
 import { showBillingOrg, deleteBillingOrg, keys } from '../../../../services/modules/billingorg';
 

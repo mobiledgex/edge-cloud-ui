@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { perpetual } from '../../../helper/constant';
-import DataView from '../../../container/DataView';
+import DataView from '../../../hoc/datagrid/DataView';
 import { localFields } from '../../../services/fields';
 import { keys, showReporter, deleteReporter } from '../../../services/modules/reporter';
 import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';

@@ -1,5 +1,5 @@
 import React from 'react'
-import DataView from '../../../../container/DataView';
+import DataView from '../../../../hoc/datagrid/DataView';
 import { localFields } from '../../../../services/fields';
 import * as actions from '../../../../actions';
 import { withRouter } from 'react-router-dom';

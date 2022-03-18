@@ -63,7 +63,7 @@ class CloudletMonitoring extends React.Component {
 
     dataFormatter = (column, data) => {
         if (data?.infraAllotted) {
-            let value = { title: "", subtitle: "", unit: column.unit, ranges: [data.infraAllotted ? parseInt(data.infraAllotted) : 0], measures: [data.infraUsed ? parseInt(data.infraUsed) : 0, data.used ? parseInt(data.used) : 0], markers: [data.allotted ? onlyNumeric(data.allotted) : 0] }
+            let value = { title: "", subtitle: "", unit: column.unit, ranges: [data.infraAllotted ? parseInt(data.infraAllotted) : 0], measures: [data.infraUsed ? parseInt(data.infraUsed) : 0, data.used ? parseInt(data.used) : 0], markers: [data.allotted ? parseInt(data.allotted) : 0] }
             return <BulletChart data={[value]} column={column} onHover={this.onHover} />
         }
     }

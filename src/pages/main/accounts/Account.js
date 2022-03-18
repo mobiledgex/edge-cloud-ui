@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react';
-import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { localFields } from '../../../services/fields';
+import DataView from '../../../hoc/datagrid/DataView';
 import { keys, showAccounts, deleteAccount, multiDataRequest, iconKeys } from '../../../services/modules/accounts';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import { perpetual } from '../../../helper/constant';
