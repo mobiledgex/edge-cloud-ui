@@ -1,11 +1,8 @@
-
-import * as formatter from '../../fields'
 import { UNIT_BYTES, UNIT_PERCENTAGE, UNIT_FLOOR } from '../../../pages/main/monitoring/helper/unitConvertor';
 import { labelFormatter } from '../../../helper/formatter';
 import { endpoint } from '../..';
 import { redux_org } from '../../../helper/reduxData';
-
-const localFields = formatter.localFields;
+import { localFields } from '../../fields';
 
 export const appMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },

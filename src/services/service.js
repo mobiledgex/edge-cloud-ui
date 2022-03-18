@@ -2,57 +2,15 @@ import { errorResponse, fetchHttpURL, instance, showProgress } from "./config"
 import axios from 'axios';
 import { formatData } from "./format";
 import { LS_THASH } from "../helper/constant/perpetual";
-import { isLocal } from "../utils/location_utils";
 
 const formatter = (request, response, format = true, self) => {
-    format = Boolean(request?.format) ?? format
+    format = request?.format ?? format
     if (format) {
         return formatData(request, response, self)
     }
     else {
         return { request, response: { status: response.status, data: response.data } }
     }
-}
-
-/**
- * 
- * @param {*} request 
- * @param {*} auth 
- * @returns
- */
-export const fetchToken = (self) => {
-    if (isLocal()) {
-        let token = localStorage.getItem(LS_THASH)
-        if (token) {
-            return token
-        }
-        if (self && self.props && self.props.history) {
-            self.props.history.push('/logout');
-        }
-    }
-}
-
-/**
- * 
- * @param {*} request 
- * @returns headers
- */
-export const fetchHeader = (self, request, auth) => {
-    const token = auth && fetchToken(self)
-    let headers = {};
-    if (token && auth) {
-        headers = {
-            'Authorization': `Bearer ${token}`
-        }
-    }
-    if (request.headers) {
-        headers = { ...headers, ...request.headers }
-    }
-    return headers;
-}
-
-export const fetchResponseType = (request) => {
-    return request.responseType ? request.responseType : undefined
 }
 
 /**

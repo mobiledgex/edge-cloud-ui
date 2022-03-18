@@ -1,4 +1,3 @@
-import * as formatter from '../../fields'
 import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util';
 import isEqual from 'lodash/isEqual';
 import omit from 'lodash/omit';
@@ -6,8 +5,7 @@ import { labelFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData'
 import { perpetual } from '../../../helper/constant';
 import { endpoint } from '../..';
-
-const localFields = formatter.localFields;
+import { localFields } from '../../fields';
 
 const clouldetKeys = [
     { field: localFields.cloudletName, serverField: 'name', label: 'Cloudlet Name' },

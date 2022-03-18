@@ -1,9 +1,7 @@
 import { endpoint } from '../..';
 import { perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData';
-import * as formatter from '../../fields'
-
-let localFields = formatter.localFields
+import { localFields } from '../../fields';
 
 export const keys = () => {
     return [

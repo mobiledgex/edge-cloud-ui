@@ -1,13 +1,11 @@
 
-import * as formatter from '../../fields'
 import { authSyncRequest } from '../../service';
 import { perpetual } from '../../../helper/constant'
 import { endpoint } from '../..';
 import { redux_org } from '../../../helper/reduxData'
 import { unionBy } from 'lodash';
 import { responseValid } from '../../config';
-
-let localFields = formatter.localFields
+import { localFields } from '../../fields';
 
 const federationKeys = () => ([
     { field: localFields.operatorName, serverField: 'selfoperatorid', label: 'Operator', sortable: true, visible: true, filter: true, key: true },

@@ -1,10 +1,8 @@
-import * as formatter from '../../fields'
 import { redux_org } from '../../../helper/reduxData'
 import { perpetual } from '../../../helper/constant';
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import { endpoint } from '../..';
-
-const localFields = formatter.localFields;
+import { localFields } from '../../fields';
 
 const SF_CUL = 'cpu_utilization_limit'
 const SF_MUL = 'mem_utilization_limit'

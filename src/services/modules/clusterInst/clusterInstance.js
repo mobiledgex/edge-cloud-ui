@@ -1,4 +1,3 @@
-import * as formatter from '../../fields'
 import { showAuthSyncRequest } from '../../service';
 import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util'
 import { idFormatter, serverFields } from '../../../helper/formatter';
@@ -9,8 +8,7 @@ import { customize } from '../../modules/clusterInst';
 import { generateUUID } from '../../format/shared';
 import { cloudletKeys } from '../cloudlet';
 import { websocket } from '../..';
-
-let localFields = formatter.localFields;
+import { localFields } from '../../fields';
 
 export const keys = () => ([
     { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },

@@ -14,7 +14,7 @@ import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { perpetual } from '../../../helper/constant';
 import { uiFormatter } from '../../../helper/formatter'
-import { authSyncRequest, fetchToken } from '../../../services/service';
+import { authSyncRequest } from '../../../services/service';
 import { validatePrivateAccess } from '../../../constant';
 import { getUserMetaData } from '../../../helper/ls';
 import { updateUserMetaData } from '../../../services/modules/users';
@@ -22,6 +22,7 @@ import { showUsers, showUser } from '../../../services/modules/users';
 import { ACTION_REFRESH } from '../../../hoc/datagrid/MexToolbar';
 import { ICON_COLOR } from '../../../helper/constant/colors';
 import { showUserRoles } from '../../../services/modules/users/users';
+import { fetchToken } from '../../../services/config';
 
 class OrganizationList extends React.Component {
     constructor(props) {

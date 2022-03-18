@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { isLocal } from '../utils/location_utils';
+import { LS_THASH } from "../helper/constant/perpetual";
 
 export const responseValid = (mc) => {
     return Boolean(mc?.response?.status === 200)
@@ -8,11 +10,39 @@ export const fetchPath = (request) => {
     return `/api/v1/${request.method}`;
 }
 
-export const fetchHeader = (request) => {
-    let headers = {};
+/**
+ * 
+ * @param {*} request 
+ * @param {*} auth 
+ * @returns
+ */
+ export const fetchToken = (self) => {
+     if (isLocal()) {
+         let token = localStorage.getItem(LS_THASH)
+         if (token) {
+             return token
+         }
+         if (self?.props?.history) {
+             self.props.history.push('/logout');
+         }
+     }
+ }
+
+/**
+ * 
+ * @param {*} request 
+ * @returns headers
+ */
+export const fetchHeader = (request, auth, self) => {
+    let token = auth && fetchToken(self)
     if (request.token) {
+        auth = true
+        token = request.token
+    }
+    let headers = {};
+    if (token && auth) {
         headers = {
-            'Authorization': `Bearer ${request.token}`
+            'Authorization': `Bearer ${token}`
         }
     }
     if (request.headers) {
@@ -28,7 +58,7 @@ export const fetchResponseType = (request) => {
 
 export const instance = (self, request, auth) => {
     return axios.create({
-        headers: fetchHeader(self, request, auth),
+        headers: fetchHeader(request, auth, self),
         responseType: fetchResponseType(request)
     })
 }
@@ -76,7 +106,7 @@ export const validateExpiry = (self, message) => {
  * @param {*} request
  */
  const showMessage = (self, request, message) => {
-    const flag = Boolean(request?.showMessage)
+    const flag = request ? request.showMessage ?? true : false
     if (flag && self?.props?.handleAlertInfo && message !== 'Forbidden' && message !== 'No bearer token found') {
         self.props.handleAlertInfo('error', message)
     }
@@ -134,6 +164,6 @@ export const errorResponse = (self, request, error, callback, auth = true) => {
  */
 export const showProgress = (self, request) => {
     if (self?.props?.handleLoadingSpinner) {
-        self.props.handleLoadingSpinner(Boolean(request?.showSpinner))
+        self.props.handleLoadingSpinner(request ? request.showSpinner ?? true : false)
     }
 }

@@ -1,12 +1,10 @@
-import * as formatter from '../../fields'
 import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util';
 import { idFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData'
 import { perpetual } from '../../../helper/constant';
 import { endpoint } from '../..';
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
-
-const localFields = formatter.localFields;
+import { localFields } from '../../fields';
 
 export const configs = () => ([
     { field: localFields.kind, serverField: 'kind', label: 'Kind' },

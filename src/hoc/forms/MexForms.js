@@ -112,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
 export const fetchDataByField = (forms, fields) => {
     let data = {}
     for (const form of forms) {
-        if (localFields.includes(form.field)) {
+        if (fields.includes(form.field)) {
             data[form.field] = form.value
         }
     }

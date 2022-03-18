@@ -365,7 +365,7 @@ class ClusterInstReg extends React.Component {
             let network = data[localFields.network]
             if (this.props.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
-                if (updateData.localFields.length > 0) {
+                if (updateData.fields.length > 0) {
                     this.props.handleLoadingSpinner(true)
                     updateClusterInst(this, updateData, this.onCreateResponse)
                 }
