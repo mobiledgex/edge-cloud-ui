@@ -23,6 +23,7 @@ import { showAuthSyncRequest } from '../../../services/service';
 import { _sort } from '../../../helper/constant/operators';
 import { uniqueId } from '../../../helper/constant/shared';
 import { responseValid } from '../../../services/config';
+import { localFields } from '../../../services/fields';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const CloudletManifest = React.lazy(() => componentLoader(import('./CloudletManifest')));
