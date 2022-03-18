@@ -659,6 +659,7 @@ class CloudletReg extends React.Component {
             requestList.push(showTrustPolicies(this, { region: data[fields.region] }))
             requestList.push(showGPUDrivers(this, { region: data[fields.region] }, true))
             requestList.push(cloudletResourceQuota(this, { region: data[fields.region], platformType: data[fields.platformType] }))
+            requestList.push(showOrganizations(this, { type: perpetual.OPERATOR }))
             let mcList = await service.multiAuthSyncRequest(this, requestList)
 
             if (mcList && mcList.length > 0) {
@@ -667,7 +668,10 @@ class CloudletReg extends React.Component {
                     if (mc && mc.response && mc.response.data) {
                         let responseData = mc.response.data
                         let request = mc.request;
-                        if (request.method === endpoint.SHOW_TRUST_POLICY) {
+                        if (request.method === endpoint.SHOW_ORG) {
+                            this.operatorList = _sort(responseData.map(data => (data[fields.organizationName])))
+                        }
+                        else if (request.method === endpoint.SHOW_TRUST_POLICY) {
                             this.trustPolicyList = responseData
                         }
                         if (request.method === endpoint.SHOW_GPU_DRIVER) {
@@ -702,7 +706,7 @@ class CloudletReg extends React.Component {
                             envForm.value = value
                         }
                     }
-                    forms.splice(16 + multiFormCount, 0, this.getEnvForm(envForms))
+                    forms.splice(17 + multiFormCount, 0, this.getEnvForm(envForms))
                     multiFormCount += 1
                 })
             }
@@ -724,7 +728,7 @@ class CloudletReg extends React.Component {
                             resourceQuotaForm.value = item['alert_threshold'] ? item['alert_threshold'] : data[fields.defaultResourceAlertThreshold]
                         }
                     }
-                    forms.splice(17 + multiFormCount, 0, this.getResoureQuotaForm(resourceQuotaForms))
+                    forms.splice(18 + multiFormCount, 0, this.getResoureQuotaForm(resourceQuotaForms))
                     multiFormCount += 1
                 })
             }
