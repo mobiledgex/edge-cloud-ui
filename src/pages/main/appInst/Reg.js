@@ -329,7 +329,10 @@ class AppInstReg extends React.Component {
     }
 
     cloudletValueChange = (currentForm, forms, isInit) => {
-        let operator = undefined
+        let operator, valid = undefined
+        if (!isInit) {
+            valid = this.getSpecificCloudletField(currentForm.value, operator)
+        }
         for(const form of forms)
         {
             if (form.field === fields.operatorName) {
@@ -340,14 +343,20 @@ class AppInstReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             if (form.field === fields.dedicatedIp) {
-                let values = Array.isArray(currentForm.value) ? currentForm.value : [currentForm.value]
-                let valid = values && values.some(cloudletName=>{
-                    return fetchCloudletField(this.cloudletList, { operatorName: operator, cloudletName }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
-                })
                 form.visible = valid
             }
             if (form.field === fields.clusterName) {
+                if (!isInit) {
+                    form.formType = valid ? INPUT : SELECT
+                    form.rules.required = !valid
+                    form.placeholder = valid ? 'Enter Cluster Name' : 'Select Clusters'
+                }
                 this.updateUI(form)
+            }
+            if (form.field === fields.autoClusterInstance) {
+                if (!isInit) {
+                    form.rules.disabled = valid
+                }
             }
         }
         for (let i = 0; i < forms.length; i++) {
@@ -362,6 +371,12 @@ class AppInstReg extends React.Component {
         if (!isInit) {
             this.updateState({ forms })
         }
+    }
+
+    getSpecificCloudletField = (values, operator) => {
+        return Array.isArray(values) && values && values.some(cloudletName => {
+            return fetchCloudletField(this.cloudletList, { operatorName: operator, cloudletName }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
+        })
     }
 
     /**config blog */
@@ -744,6 +759,7 @@ class AppInstReg extends React.Component {
     }
 
     render() {
+        console.log(this.clusterInstList, this.state.forms, "forms")
         return (
             <div>
                 <Grid container>

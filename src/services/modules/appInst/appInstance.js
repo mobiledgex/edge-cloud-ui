@@ -49,22 +49,14 @@ export const keys = () => ([
   { field: fields.trusted, label: 'Trusted', visible: false, sortable: true, format: true }
 ])
 
-const getClusterOrg = (data) => {
-  if (data[fields.autoClusterInstance]) {
-    return data[fields.compatibilityVersion] >= perpetual.CLOUDLET_COMPAT_VERSION_2_4_1 ? 'MobiledgeX' : data[fields.organizationName]
-  }
-  else {
-    return data[fields.clusterdeveloper] ? data[fields.clusterdeveloper] : data[fields.organizationName]
-  }
-}
 
 export const getAppInstanceKey = (data) => {
   return {
     app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
     cluster_inst_key: {
       cloudlet_key: cloudletKeys(data),
-      cluster_key: { name: data[fields.clusterName] ? data[fields.clusterName] : 'DefaultVMCluster' },
-      organization: getClusterOrg(data)
+      cluster_key: { name: data[fields.clusterName] ? data[fields.clusterName] : '' },
+      organization: ''
     }
   }
 }
