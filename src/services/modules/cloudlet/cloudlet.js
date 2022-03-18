@@ -56,6 +56,19 @@ export const iconKeys = () => ([
     { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', clicked: false, count: 0 }
 ])
 
+export const getRequestData = (data) => {
+    let cloudlet = {}
+    cloudlet.key = primaryKeys(data)
+
+    if (data[fields.allianceOrganization]) {
+        cloudlet.organization = data[fields.allianceOrganization]
+    }
+    return ({
+        region: data[fields.region],
+        cloudletallianceorg: cloudlet
+    })
+}
+
 export const getCloudletKey = (data) => {
     return { organization: data[fields.operatorName], name: data[fields.cloudletName] }
 }
@@ -149,6 +162,9 @@ export const getKey = (data, isCreate) => {
         }
         if (infraConfig) {
             cloudlet.infra_config = infraConfig
+        }
+        if (data[fields.allianceOrganization]) {
+            cloudlet.alliance_orgs = data[fields.allianceOrganization]
         }
 
     }
@@ -357,4 +373,12 @@ export const fetchShowNode = async (self, data) => {
     }
 
     return await authSyncRequest(self, { method: endpoint.SHOW_NODE, data: requestData })
+}
+
+export const addClouldletAllianceOrgs = (data) => {
+    return { method: endpoint.ADD_CLOUDLET_ALLIANCE_ORG, data: getRequestData(data), success: 'Alliance Organizations Added Successfully' }
+}
+
+export const removeClouldletAllianceOrgs = (data) => {
+    return { method: endpoint.REMOVE_CLOUDLET_ALLIANCE_ORG, data: getRequestData(data), success: 'Alliance Organization Removed Successfully' }
 }
