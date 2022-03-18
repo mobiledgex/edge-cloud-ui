@@ -759,7 +759,6 @@ class AppInstReg extends React.Component {
     }
 
     render() {
-        console.log(this.clusterInstList, this.state.forms, "forms")
         return (
             <div>
                 <Grid container>
