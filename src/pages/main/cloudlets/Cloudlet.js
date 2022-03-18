@@ -19,6 +19,7 @@ import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import { uiFormatter } from '../../../helper/formatter';
 import { perpetual, role } from '../../../helper/constant';
 import { responseValid } from '../../../services/service';
+import AllianceOrganization from './AllianceOrganization';
 import ShowNode from './ShowNode'
 
 class CloudletList extends React.Component {
