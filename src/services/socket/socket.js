@@ -1,5 +1,6 @@
 import { fetchPath, fetchURL, responseValid } from '../config';
-
+import { WS_TOKEN } from '../endpoint';
+import { authSyncRequest } from '../service';
 
 let sockets = [];
 
@@ -41,7 +42,7 @@ const sendWSRequest = (request, callback) => {
         return mc.response.data.token
     }
     else {
-        if (self && self.props && self.props.history) {
+        if (self?.props?.history) {
             self.props.history.push('/logout');
         }
     }
@@ -53,9 +54,9 @@ const sendWSRequest = (request, callback) => {
  *           because websocket supports multi request response 
  *  **/
  export const request = async (self, requestData, callback, orgData) => {
-    let token = await fetchWSToken(self)
-    if (token) {
-        requestData.token = token;
+    let _token = await token(self)
+    if (_token) {
+        requestData.token = _token;
         requestData.orgData = orgData
         sendWSRequest(requestData, callback)
     }
