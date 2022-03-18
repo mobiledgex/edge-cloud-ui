@@ -47,7 +47,7 @@ export const keys = () => ([
     { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME, dataFormat: 'seconds' } },
     { field: fields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING },
-    { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg' },
+    { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', format:true },
     { field: fields.gpuExist, label: 'GPU', detailView: false },
     { field: fields.actions, label: 'Actions', sortable: false, visible: true, clickable: true, roles: constant.operatorRoles }
 ])
