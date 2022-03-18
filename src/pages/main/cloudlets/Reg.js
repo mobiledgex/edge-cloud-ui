@@ -22,6 +22,7 @@ import { endpoint, perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 import { showGPUDrivers } from '../../../services/modules/gpudriver';
 import { showAuthSyncRequest } from '../../../services/service';
+import { _sort } from '../../../helper/constant/operators';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const CloudletManifest = React.lazy(() => componentLoader(import('./CloudletManifest')));
@@ -246,14 +247,16 @@ class CloudletReg extends React.Component {
     }
 
     operatorValueChange = (currentForm, forms, isInit) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            if (form.field === fields.allianceOrganization) {
+        for (const form of forms) {
+            if (form.field === fields.trustPolicyName) {
+                this.updateUI(form)
+            }
+            else if (form.field === fields.allianceOrganization) {
                 this.allianceList = currentForm.value ? this.operatorList.filter(org => org !== currentForm.value) : []
+                this.updateUI(form)
             }
         }
         if (!isInit) {
-            this.updateUI(form)
             this.updateState({ forms })
         }
     }
