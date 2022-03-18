@@ -229,7 +229,7 @@ class AutoProvPolicyReg extends React.Component {
             data[localFields.cloudlets] = this.getCloudletList(data)
             if (this.isUpdate) {
                 let updateData = updateFieldData(this, this.state.forms, data, this.props.data)
-                if (updateData.localFields.length > 0) {
+                if (updateData.fields.length > 0) {
                     mcRequest = await service.authSyncRequest(this, updateAutoProvPolicy(updateData))
                 }
             }

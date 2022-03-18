@@ -314,7 +314,7 @@ class CloudletPoolReg extends React.Component {
         let mcRequest = undefined
         if (this.isUpdate) {
             let updateData = updateFieldData(this, forms, data, this.props.data)
-            if (updateData.localFields.length > 0) {
+            if (updateData.fields.length > 0) {
                 mcRequest = await service.authSyncRequest(this, updateCloudletPool(updateData))
             }
         }

@@ -10,7 +10,7 @@ import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
 import MexTab from '../../../hoc/forms/tab/MexTab';
 import { redux_org } from '../../../helper/reduxData'
 //model
-import { service, updateFieldData, fields, endpoint } from '../../../services';
+import { service, updateFieldData, endpoint } from '../../../services';
 import { showOrganizations } from '../../../services/modules/organization';
 import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota, cloudletProps } from '../../../services/modules/cloudlet';
 import { showTrustPolicies } from '../../../services/modules/trustPolicy';
@@ -510,7 +510,7 @@ class CloudletReg extends React.Component {
                     updateData[localFields.kafkaCluster] = data[localFields.kafkaCluster]
                     updateData.localFields.push('42')
                 }
-                if (updateData.localFields.length > 0) {
+                if (updateData.fields.length > 0) {
                     this.props.handleLoadingSpinner(true)
                     updateCloudlet(this, updateData, this.onCreateResponse)
                 }

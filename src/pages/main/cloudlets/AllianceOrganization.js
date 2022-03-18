@@ -5,13 +5,15 @@ import * as actions from '../../../actions';
 //Mex
 import MexForms, { DUALLIST, INPUT, MAIN_HEADER } from '../../../hoc/forms/MexForms';
 //model
-import { service, fields } from '../../../services';
+import { service } from '../../../services';
 import { showOrganizations } from '../../../services/modules/organization';
 import { addClouldletAllianceOrgs, removeClouldletAllianceOrgs } from '../../../services/modules/cloudlet/cloudlet'
 
 import { Grid } from '@material-ui/core';
 import { perpetual } from '../../../helper/constant';
 import { _sort } from '../../../helper/constant/operators';
+import { localFields } from '../../../services/fields';
+
 class AllianceOrganization extends React.Component {
     constructor(props) {
         super(props);

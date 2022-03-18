@@ -1,12 +1,10 @@
 
-import * as formatter from '../../fields'
 import { authSyncRequest } from '../../service';
 import { perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData'
 import { TYPE_JSON } from '../../../helper/constant/perpetual';
 import { endpoint } from '../..';
-
-let localFields = formatter.localFields
+import { localFields } from '../../fields';
 
 export const keys = () => ([
     { field: localFields.region, label: 'Region', serverField: 'region', sortable: true, visible: true, filter: true },

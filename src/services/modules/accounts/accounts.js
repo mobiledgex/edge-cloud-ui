@@ -1,10 +1,8 @@
-import * as formatter from '../../fields'
 import { ADMIN_MANAGER } from '../../../helper/constant/perpetual'
 import { authSyncRequest } from '../../service'
 import { responseValid } from '../../config'
 import { endpoint } from '../..'
-
-let localFields = formatter.localFields
+import { localFields } from '../../fields'
 
 export const keys = () => ([
     { field: localFields.username, serverField: 'Name', sortable: true, label: 'Username', visible: true, filter: true },

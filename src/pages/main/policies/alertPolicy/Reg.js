@@ -194,7 +194,7 @@ class Reg extends React.Component {
             data[localFields.annotations] = annotations ? annotations : {}
             if (this.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
-                if (updateData.localFields.length > 0) {
+                if (updateData.fields.length > 0) {
                     mc = await updateAlertPolicy(this, updateData, this.onUpdateResponse)
                 }
             }

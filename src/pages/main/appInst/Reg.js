@@ -512,7 +512,7 @@ class AppInstReg extends React.Component {
             }
             if (this.props.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
-                if (updateData.localFields.length > 0) {
+                if (updateData.fields.length > 0) {
                     this.props.handleLoadingSpinner(true)
                     updateData[localFields.clusterdeveloper] = this.clusterInstList[0][localFields.clusterdeveloper]
                     updateAppInst(this, updateData, this.onCreateResponse)

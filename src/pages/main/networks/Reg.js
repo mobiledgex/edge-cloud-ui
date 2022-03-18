@@ -118,7 +118,7 @@ class NetworkReg extends React.Component {
             routesList.length > 0 ? data[localFields.accessRoutes] = routesList : null
             if (this.props.isUpdate) {
                 let updateData = updateFieldData(this, this.state.forms, data, this.props.data)
-                if (updateData.localFields.length > 0) {
+                if (updateData.fields.length > 0) {
                     mc = await updateNetwork(this, updateData)
                 }
             }

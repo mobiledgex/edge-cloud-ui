@@ -1,11 +1,10 @@
 
-import * as formatter from '../../fields'
 import { redux_org } from '../../../helper/reduxData'
 import { perpetual } from '../../../helper/constant'
 import { authSyncRequest } from '../../service'
 import { endpoint } from '../..'
+import { localFields } from '../../fields'
 
-let localFields = formatter.localFields
 export const showAlertKeys = () => (
     [
         { field: localFields.region, label: 'Region', serverField: 'labels#OS#region', sortable: true, visible: true },

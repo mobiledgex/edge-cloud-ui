@@ -1,12 +1,10 @@
-import * as formatter from '../../fields'
 import { perpetual } from '../../../helper/constant';
 import { endpoint } from '../..';
 import { authSyncRequest } from "../../service";
 import { getAppKey } from '../app';
 import { getCloudletPoolKey } from '../cloudletPool';
 import { tpeState } from '../../../helper/formatter/id';
-
-let localFields = formatter.localFields;
+import { localFields } from '../../fields';
 
 export const keys = () => ([
     { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },

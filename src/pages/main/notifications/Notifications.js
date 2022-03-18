@@ -13,11 +13,11 @@ import './style.css'
 
 import NotificationWorker from './services/notifcation.worker.js';
 import { operators } from '../../../helper/constant';
-import { fetchToken } from '../../../services/service';
 import { localFields } from '../../../services/fields';
 import { LS_NOTIFICATION, RESPONSE_STATUS_SUCCESS } from '../../../helper/constant/perpetual';
 import { processWorker } from "../../../services/worker/interceptor";
 import isEmpty from 'lodash/isEmpty';
+import { fetchToken } from '../../../services/config';
 
 const alertStatus = () => {
     try {

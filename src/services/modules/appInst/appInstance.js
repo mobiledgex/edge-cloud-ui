@@ -1,4 +1,3 @@
-import * as formatter from '../../fields'
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util'
 import { redux_org } from '../../../helper/reduxData'
@@ -11,8 +10,7 @@ import { AIK_APP_CLOUDLET_CLUSTER,  appInstKeys } from './primary';
 import {  cloudletKeys } from '../cloudlet';
 import { serverFields } from '../../../helper/formatter';
 import { websocket } from '../..';
-
-const localFields = formatter.localFields;
+import { localFields } from '../../fields';
 
 export const keys = () => ([
   { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true, format: true },

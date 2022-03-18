@@ -2,10 +2,8 @@
 import { endpoint } from '../..'
 import { idFormatter } from "../../../helper/formatter";
 import { redux_org } from "../../../helper/reduxData";
+import { localFields } from '../../fields';
 import { authSyncRequest } from "../../service";
-import * as formatter from '../../fields'
-
-const localFields = formatter.localFields;
 
 const SERVER_FIELD_NAME = 'Name'
 const SERVER_FIELD_ORG = 'Org'

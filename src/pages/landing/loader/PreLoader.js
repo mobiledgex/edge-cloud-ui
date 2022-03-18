@@ -8,8 +8,9 @@ import './style.css'
 import { withRouter } from 'react-router-dom';
 import { redux_org } from '../../../helper/reduxData';
 import { perpetual } from '../../../helper/constant';
-import { fetchToken, multiAuthSyncRequest } from '../../../services/service';
+import { multiAuthSyncRequest } from '../../../services/service';
 import { endpoint } from '../../../services';
+import { fetchToken } from '../../../services/config';
 
 class LogoLoader extends React.Component {
 

@@ -1,13 +1,11 @@
 
-import * as formatter from '../../fields'
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import { perpetual } from '../../../helper/constant';
 import { endpoint } from '../..';
 import { redux_org } from '../../../helper/reduxData';
 import { ADMIN, TYPE_JSON } from '../../../helper/constant/perpetual';
 import { websocket } from '../..';
-
-let localFields = formatter.localFields
+import { localFields } from '../../fields';
 
 export const buildKeys = [
     { field: localFields.buildName, serverField: 'name', label: 'Name' },

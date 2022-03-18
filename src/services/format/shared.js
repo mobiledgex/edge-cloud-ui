@@ -1,7 +1,7 @@
 const mapObject = (currentObject, serverField) => {
     if (currentObject && serverField) {
         let fields = serverField.split('#OS#');
-        let length = localFields.length;
+        let length = fields.length;
         for (let i = 0; i < length - 1; i++) {
             currentObject = currentObject[fields[i]] ? currentObject[fields[i]] : {}
         }

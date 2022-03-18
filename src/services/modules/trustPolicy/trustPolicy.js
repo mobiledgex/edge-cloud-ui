@@ -1,12 +1,10 @@
-import * as formatter from '../../fields'
 import { redux_org } from '../../../helper/reduxData'
 import { perpetual } from '../../../helper/constant';
 import { endpoint } from '../..';
 import { generateUUID } from '../../format/shared';
 import { showAuthSyncRequest } from '../../service';
 import { websocket } from '../..';
-
-const localFields = formatter.localFields;
+import { localFields } from '../../fields';
 
 export const outboundSecurityRulesKeys = [
   { field: localFields.protocol, serverField: 'protocol', label: 'Protocol' },

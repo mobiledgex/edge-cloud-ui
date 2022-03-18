@@ -1,9 +1,7 @@
-import * as formatter from '../../fields'
 import { showAuthSyncRequest, authSyncRequest } from '../../service';
 import { redux_org } from '../../../helper/reduxData'
 import { endpoint } from '../..';
-
-const localFields = formatter.localFields;
+import { localFields } from '../../fields';
 
 export const keys = () => ([
   { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
