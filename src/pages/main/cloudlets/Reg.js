@@ -12,7 +12,7 @@ import MexTab from '../../../hoc/forms/tab/MexTab';
 import { redux_org } from '../../../helper/reduxData'
 //model
 import { service, updateFieldData, fields } from '../../../services';
-import { getOrganizationList, showOrganizations } from '../../../services/modules/organization';
+import { showOrganizations } from '../../../services/modules/organization';
 import { createCloudlet, updateCloudlet, getCloudletManifest, cloudletResourceQuota, cloudletProps } from '../../../services/modules/cloudlet';
 import { showTrustPolicies } from '../../../services/modules/trustPolicy';
 import { HELP_CLOUDLET_REG } from "../../../tutorial";
