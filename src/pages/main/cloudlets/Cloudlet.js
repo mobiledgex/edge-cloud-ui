@@ -112,8 +112,13 @@ class CloudletList extends React.Component {
             { id: perpetual.ACTION_UPDATE, label: 'Update', disable: this.onPreAction, onClick: this.onAdd, type: 'Edit' },
             { id: perpetual.ACTION_DELETE, label: 'Delete', disable: this.onPreAction, onClick: deleteCloudlet, ws: true, type: 'Edit' },
             { id: perpetual.ACTION_MANIFEST, label: 'Show Manifest', disable: this.onPreAction, visible: this.onCloudletManifestVisible, onClick: this.onCloudletManifest },
-            { id: perpetual.ACTION_SHOW_NODE, label: 'Show Nodes', visibility:this.onPreNodeAction, onClick: this.onShowNode }
+            { id: perpetual.ACTION_SHOW_NODE, label: 'Show Nodes', visibility:this.onPreNodeAction, onClick: this.onShowNode },
+            { id: perpetual.ACTION_REMOVE_ALLIANCE_ORG, label: 'Remove Alliance Organization', onClick: this.onActionAllianceOrg, type: 'Edit' }
         ]
+    }
+
+    onActionAllianceOrg = (action, data) => {
+        data[fields.allianceOrganization] || action.id === perpetual.ACTION_ADD_ALLIANCE_ORG ? this.updateState({ currentView: <AllianceOrganization data={data} org={true} action={action.id} onClose={() => this.resetView()} /> }) : this.props.handleAlertInfo('error', 'No Alliance Organization to Remove')
     }
 
     groupActionMenu = () => {
