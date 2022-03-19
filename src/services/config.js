@@ -64,20 +64,9 @@ export const instance = (self, request, auth) => {
 }
 
 export const fetchURL = (isWebSocket) => {
-    let serverURL = ''
-    if (process.env.NODE_ENV === 'production') {
-        var url = window.location.href
-        var arr = url.split("/");
-        serverURL = arr[0] + "//" + arr[2]
-
-        if (isWebSocket) {
-            serverURL = serverURL.replace('http', 'ws')
-        }
-    }
-    else {
-        if (isWebSocket) {
-            serverURL = process.env.REACT_APP_API_ENDPOINT.replace('http', 'ws')
-        }
+    let serverURL = window.location.origin
+    if (isWebSocket) {
+        serverURL = serverURL.replace('http', 'ws')
     }
     return serverURL
 }
