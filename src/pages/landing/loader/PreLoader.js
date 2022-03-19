@@ -79,7 +79,6 @@ class LogoLoader extends React.Component {
                     }
                     else if (request.method === endpoint.SHOW_CONTROLLER) {
                         let regions = data.map(item => { return item.Region })
-                        localStorage.setItem(perpetual.LS_REGIONS, regions)
                         this.props.handleRegionInfo(regions)
                     }
                     else if (request.method === endpoint.CURRENT_USER) {

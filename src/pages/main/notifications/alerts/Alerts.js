@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Chip, Divider, IconButton, List, ListItem, Typography, Tooltip } from '@material-ui/core'
-import { regions } from '../../../../constant';
 import { showAlertKeys } from '../../../../services/modules/alerts';
 import { Icon } from '../../../../hoc/mexui';
 import { localFields } from '../../../../services/fields';
@@ -32,7 +31,7 @@ class AlertLocal extends React.Component {
         this.state = {
             dataList: undefined
         }
-        this.regions = regions()
+        this.regions = props.regions
     }
 
     onClose = () => {
@@ -184,4 +183,10 @@ class AlertLocal extends React.Component {
     }
 }
 
-export default withRouter(connect(null, null)(AlertLocal));
+const mapStateToProps = (state) => {
+    return {
+        regions: state.regionInfo.region
+    }
+};
+
+export default withRouter(connect(mapStateToProps, null)(AlertLocal));

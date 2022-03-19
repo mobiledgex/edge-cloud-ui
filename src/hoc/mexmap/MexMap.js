@@ -18,7 +18,6 @@ class MexMap extends React.Component {
             mapCenter: MAP_CENTER
         }
         this.map = React.createRef();
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
 
     updateView = (mapCenter, zoom) => {

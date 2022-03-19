@@ -20,7 +20,7 @@ class FlavorReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        this.regions = props.regions
     }
 
     updateState = (data) => {
@@ -156,6 +156,12 @@ class FlavorReg extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        regions: state.regionInfo.region
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
@@ -164,4 +170,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(FlavorReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(FlavorReg));
