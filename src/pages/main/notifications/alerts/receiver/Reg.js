@@ -10,7 +10,6 @@ import {redux_org} from '../../../../../helper/reduxData'
 //model
 import { createAlertReceiver } from '../../../../../services/modules/alerts';
 import { sendRequests } from '../../../../../services/worker/serverWorker'
-import * as constant from '../../../../../constant'
 import { showOrganizations } from '../../../../../services/modules/organization';
 import { showCloudlets } from '../../../../../services/modules/cloudlet';
 import { showAppInsts } from '../../../../../services/modules/appInst';
@@ -46,7 +45,7 @@ class FlavorReg extends React.Component {
             loading: true
         }
         this.isUpdate = this.props.isUpdate
-        this.regions = constant.regions()
+        this.regions = props.regions
         this.organizationList = []
         this.cloudletList = [];
         this.appInstList = [];
@@ -475,7 +474,8 @@ class FlavorReg extends React.Component {
 const mapStateToProps = (state) => {
     return {
         userInfo: state.userInfo.data,
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 };
 
