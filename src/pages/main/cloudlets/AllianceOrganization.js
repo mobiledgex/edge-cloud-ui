@@ -100,13 +100,12 @@ class AllianceOrganization extends React.Component {
 
     onCreate = async (data) => {
         let allianceOrgs = data[localFields.allianceOrganization]
+        let partnerOperator = this.props.data[localFields.partnerOperator]
         if (allianceOrgs && allianceOrgs.length > 0) {
             let requestList = []
             let requestCall = this.isAllianceCloudletAdd ? addClouldletAllianceOrgs : removeClouldletAllianceOrgs
             allianceOrgs.forEach(org => {
-                let requestData = {...data}
-                requestData[localFields.allianceOrganization] = org
-                requestList.push(requestCall(requestData))
+                requestList.push(requestCall({...data, partnerOperator, [localFields.allianceOrganization]:org}))
             })
             if (requestList && requestList.length > 0) {
                 this.props.handleLoadingSpinner(true)
