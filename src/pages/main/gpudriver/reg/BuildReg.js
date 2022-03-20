@@ -12,12 +12,11 @@ import { redux_org } from '../../../../helper/reduxData';
 import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/MexMessageMultiStream'
 import { ACTION_UPDATE, OS_LINUX } from '../../../../helper/constant/perpetual';
 import { buildTip, osList } from './shared';
-import { buildKey, removeBuild } from '../../../../services/modules/gpudriver';
-import { addbuild } from '../../../../services/modules/gpudriver/gpudriver';
+import { buildKey, addbuild, removeBuild } from '../../../../services/modules/gpudriver';
 import { uniqueId } from '../../../../helper/constant/shared';
 import { websocket } from '../../../../services';
 
-class GPUDriverReg extends React.Component {
+class BuildReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -177,6 +176,10 @@ class GPUDriverReg extends React.Component {
                     data[uuid] = undefined
                 }
             }
+        }
+        else
+        {
+            this.props.handleAlertInfo('error', 'Nothing to update')
         }
 
         if (requestList.length > 0) {
@@ -348,4 +351,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(GPUDriverReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(BuildReg));
