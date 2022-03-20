@@ -143,7 +143,7 @@ class TrustPolicyReg extends React.Component {
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Trust Policy`, formType: MAIN_HEADER, visible: true },
         { field: localFields.region, label: 'Region', formType: MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', update: { key: true } },
-        { field: localFields.operatorName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, update: { key: true } },
+        { field: localFields.organizationName, label: 'Operator', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, update: { key: true } },
         { field: localFields.trustPolicyName, label: 'Trust Policy Name', formType: INPUT, placeholder: 'Enter Trust Policy Name', rules: { required: true }, visible: true, update: { key: true } },
         { field: localFields.fullIsolation, label: 'Full Isolation', formType: SWITCH, visible: true, value: false, update: { edit: true } },
         { field: localFields.outboundSecurityRules, label: 'Outbound Security Rules', formType: HEADER, forms: [{ formType: 'IconButton', icon: 'add', style: { color: "white", display: 'inline' }, onClick: this.addRulesForm }], visible: true, update: { edit:true } },
@@ -210,7 +210,7 @@ class TrustPolicyReg extends React.Component {
                     regions.splice(0, 1)
                 }
                 regions.map(region => {
-                    let requestData = JSON.parse(JSON.stringify(data))
+                    let requestData = { ...data }
                     requestData[localFields.region] = region
                     requestList.push(createTrustPolicy(requestData))
                 })
@@ -268,7 +268,7 @@ class TrustPolicyReg extends React.Component {
     disableFields = (form) => {
         let rules = form.rules ? form.rules : {}
         let field = form.field
-        if (field === localFields.operatorName || field === localFields.region || field === localFields.trustPolicyName) {
+        if (field === localFields.organizationName || field === localFields.region || field === localFields.trustPolicyName) {
             rules.disabled = true;
         }
     }
@@ -279,7 +279,7 @@ class TrustPolicyReg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT || form.formType === MULTI_SELECT) {
                     switch (form.field) {
-                        case localFields.operatorName:
+                        case localFields.organizationName:
                             form.options = this.organizationList
                             break;
                         case localFields.region:
@@ -297,8 +297,8 @@ class TrustPolicyReg extends React.Component {
                         form.visible = data[localFields.outboundSecurityRules] && data[localFields.outboundSecurityRules].length > 0
                     }
                     else {
-                        if (form.field === localFields.operatorName) {
-                            form.value = data[localFields.operatorName]
+                        if (form.field === localFields.organizationName) {
+                            form.value = data[localFields.organizationName]
                         }
                         else {
                             form.value = data[form.field]
@@ -319,7 +319,7 @@ class TrustPolicyReg extends React.Component {
 
         if (data) {
             let organization = {}
-            organization[localFields.operatorName] = data[localFields.operatorName]
+            organization[localFields.organizationName] = data[localFields.operatorName]
             this.organizationList = [organization]
 
             this.loadData(forms, data)
