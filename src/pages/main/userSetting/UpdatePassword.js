@@ -12,7 +12,7 @@ import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 import { Button, Dialog, DialogContent, DialogTitle, ListItemText, MenuItem, LinearProgress } from '@material-ui/core';
 import { load } from "../../../helper/zxcvbn";
 import { responseValid } from "../../../services/config";
-import { publicConfig } from "../../../services/modules/landing";
+import { publicConfig, resetPwd } from "../../../services/modules/landing";
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
 
