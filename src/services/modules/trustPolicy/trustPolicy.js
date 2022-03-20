@@ -32,8 +32,8 @@ const getKey = (data) => {
     for (const rule of data[localFields.outboundSecurityRules]) {
       let newRule = {}
       if (rule[localFields.protocol] !== perpetual.PROTOCOL_ICMP) {
-        newRule.port_range_max = rule[localFields.portRangeMin]
-        newRule.port_range_min = rule[localFields.portRangeMax]
+        newRule.port_range_max = parseInt(rule[localFields.portRangeMax])
+        newRule.port_range_min = parseInt(rule[localFields.portRangeMin])
       }
       newRule.protocol = rule[localFields.protocol]
       newRule.remote_cidr = rule[localFields.remoteCIDR]

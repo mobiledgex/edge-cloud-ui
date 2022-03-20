@@ -16,7 +16,6 @@ import { service, updateFieldDataNew } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';
 import cloneDeep from 'lodash/cloneDeep';
 import { uniqueId, validateRemoteCIDR } from '../../../../helper/constant/shared';
-import { id } from 'date-fns/locale';
 import { responseValid } from '../../../../services/config';
 
 class TrustPolicyReg extends React.Component {
@@ -67,16 +66,12 @@ class TrustPolicyReg extends React.Component {
     protocolValueChange(currentForm) {
         let parentForm = currentForm.parent.form
         let forms = this.state.forms
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i];
+        const isICMP = currentForm.value === perpetual.PROTOCOL_ICMP
+        for (const form of forms) {
             if (form.uuid === parentForm.uuid) {
-                for (let j = 0; j < form.forms.length; j++) {
-                    let outBoundRulesForm = form.forms[j]
-                    if (currentForm.value === perpetual.PROTOCOL_ICMP && (outBoundRulesForm.icon === '~' || outBoundRulesForm.field === localFields.portRangeMin || outBoundRulesForm.field === localFields.portRangeMax)) {
-                        outBoundRulesForm.visible = false;
-                    }
-                    else {
-                        outBoundRulesForm.visible = true;
+                for (const outBoundRulesForm of form.forms) {
+                    if (outBoundRulesForm.icon === '~' || outBoundRulesForm.field === localFields.portRangeMin || outBoundRulesForm.field === localFields.portRangeMax) {
+                        outBoundRulesForm.visible = !isICMP;
                     }
                 }
                 break;
@@ -143,7 +138,7 @@ class TrustPolicyReg extends React.Component {
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Trust Policy`, formType: MAIN_HEADER, visible: true },
         { field: localFields.region, label: 'Region', formType: MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', update: { key: true } },
-        { field: localFields.organizationName, label: 'Operator', formType: SELECT, placeholder: 'Select Organization', rules: { required: true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, update: { key: true } },
+        { field: localFields.organizationName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, update: { key: true } },
         { field: localFields.trustPolicyName, label: 'Trust Policy Name', formType: INPUT, placeholder: 'Enter Trust Policy Name', rules: { required: true }, visible: true, update: { key: true } },
         { field: localFields.fullIsolation, label: 'Full Isolation', formType: SWITCH, visible: true, value: false, update: { edit: true } },
         { field: localFields.outboundSecurityRules, label: 'Outbound Security Rules', formType: HEADER, forms: [{ formType: 'IconButton', icon: 'add', style: { color: "white", display: 'inline' }, onClick: this.addRulesForm }], visible: true, update: { edit:true } },
@@ -298,7 +293,7 @@ class TrustPolicyReg extends React.Component {
                     }
                     else {
                         if (form.field === localFields.organizationName) {
-                            form.value = data[localFields.organizationName]
+                            form.value = data[localFields.operatorName]
                         }
                         else {
                             form.value = data[form.field]
@@ -321,7 +316,6 @@ class TrustPolicyReg extends React.Component {
             let organization = {}
             organization[localFields.organizationName] = data[localFields.operatorName]
             this.organizationList = [organization]
-
             this.loadData(forms, data)
             if (data[localFields.outboundSecurityRules] && data[localFields.outboundSecurityRules].length > 0) {
                 for (let i = 0; i < data[localFields.outboundSecurityRules].length; i++) {
