@@ -1,4 +1,3 @@
-import { fields } from "../../../../../services";
 import { appInstKeys, showAppInsts } from "../../../../../services/modules/appInst";
 import { appInstMetrics, appInstMetricsElements } from "../../../../../services/modules/appInstMetrics";
 import { showCloudlets } from "../../../../../services/modules/cloudlet";
@@ -12,6 +11,7 @@ import { sequence } from './sequence';
 import { formatMetricData } from "./metric";
 import { AIK_APP_CLOUDLET_CLUSTER } from "../../../../../services/modules/appInst/primary";
 import { CIK_CLOUDLET_CLUSTER } from "../../../../../services/modules/clusterInst/primary";
+import { localFields } from "../../../../../services/fields";
 
 /**
  * 
@@ -26,14 +26,14 @@ export const fetchSpecificResources = async (self, item) => {
         data.region = 'US'
         data.selector = '*'
         data.numsamples = numsamples
-        if (item.field === fields.cloudletName || item.field === fields.appName || item.field === fields.clusterName) {
+        if (item.field === localFields.cloudletName || item.field === localFields.appName || item.field === localFields.clusterName) {
             let elements
             let request
-            if (item.field === fields.cloudletName) {
+            if (item.field === localFields.cloudletName) {
                 elements = cloudletMetricsElements
                 request = cloudletUsageMetrics(self, data, true)
             }
-            else if (item.field === fields.appName) {
+            else if (item.field === localFields.appName) {
                 elements = appInstMetricsElements
                 request = appInstMetrics(self, data, [appInstKeys(data, AIK_APP_CLOUDLET_CLUSTER)])
             }

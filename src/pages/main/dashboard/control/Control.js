@@ -5,7 +5,6 @@ import { withStyles } from '@material-ui/styles';
 import { controlStyles } from './styles/control-styling'
 import { uniqueId } from '../../../../helper/constant/shared';
 import { sequence } from './services/sequence';
-import { fields } from '../../../../services';
 import { processWorker } from '../../../../services/worker/interceptor';
 import DashbordWorker from './services/dashboard.worker.js';
 import Total from './total/Total';
@@ -15,6 +14,7 @@ import clsx from 'clsx';
 import { Divider, Grid } from '@material-ui/core';
 import { Header1 } from '../../../../hoc/mexui/headers/Header1';
 import Resources from './total/Resources';
+import { localFields } from '../../../../services/fields';
 
 const states = [
     {label:'Success', color:'#66BC6A'},
@@ -78,9 +78,9 @@ class Control extends React.Component {
                             <SequenceFunnel sequence={sequence} onChange={this.onSequenceChange} key={uniqueId()}></SequenceFunnel>
                         </div>
                         {total ? <div className='total'>
-                            <Total label='Cloudlet' data={total[fields.cloudletName]} />
-                            <Total label='Cluster Instances' data={total[fields.clusterName]} />
-                            <Total label='App Instances' data={total[fields.appName]} />
+                            <Total label='Cloudlet' data={total[localFields.cloudletName]} />
+                            <Total label='Cluster Instances' data={total[localFields.clusterName]} />
+                            <Total label='App Instances' data={total[localFields.appName]} />
                         </div> : null}
                     </div>
                     {

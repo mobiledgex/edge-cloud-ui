@@ -2,7 +2,7 @@ import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST } from "../../../../../
 import { toJson } from "../../../../../utils/json_util"
 import { map } from "../../../../../services/format/shared";
 import { dataForms } from "./sequence";
-import { fields } from "../../../../../services";
+import { localFields } from "../../../../../services/fields";
 
 const formatSequence = (order, index, inp, outputs) => {
     let currentOrder = order[index]
@@ -149,18 +149,18 @@ const format = (worker) => {
                 if (index > 0) {
                     if (form.method === SHOW_CLUSTER_INST) {
                         dataList.forEach(final => {
-                            if (final[fields.clusterName].name === data[fields.clusterName] && final[fields.clusterdeveloper].name === data[fields.organizationName]) {
-                                final[fields.clusterName].state = data[fields.state]
-                                final[fields.clusterName].data = data
+                            if (final[localFields.clusterName].name === data[localFields.clusterName] && final[localFields.clusterdeveloper].name === data[localFields.organizationName]) {
+                                final[localFields.clusterName].state = data[localFields.state]
+                                final[localFields.clusterName].data = data
                                 exist = true
                             }
                         })
                     }
                     else if (form.method === SHOW_CLOUDLET) {
                         dataList.forEach(final => {
-                            if (final[fields.cloudletName].name === data[fields.cloudletName] && final[fields.operatorName].name === data[fields.operatorName]) {
-                                final[fields.cloudletName].state = data[fields.state]
-                                final[fields.cloudletName].data = data
+                            if (final[localFields.cloudletName].name === data[localFields.cloudletName] && final[localFields.operatorName].name === data[localFields.operatorName]) {
+                                final[localFields.cloudletName].state = data[localFields.state]
+                                final[localFields.cloudletName].data = data
                                 exist = true
                             }
                         })
@@ -168,7 +168,7 @@ const format = (worker) => {
                 }
                 if (!exist) {
                     let final = {}
-                    final[fields.region] = { name: region }
+                    final[localFields.region] = { name: region }
                     final[form.field] = {}
                     final[form.field].name = data[form.field]
                     final[form.field].data = {...data, region}
@@ -183,10 +183,10 @@ const format = (worker) => {
                         }
                     })
                     if (form.method === SHOW_APP_INST) {
-                        final[fields.appDeveloper] = final[fields.organizationName]
+                        final[localFields.appDeveloper] = final[localFields.organizationName]
                     }
                     else if (form.method === SHOW_CLUSTER_INST) {
-                        final[fields.clusterdeveloper] = final[fields.organizationName]
+                        final[localFields.clusterdeveloper] = final[localFields.organizationName]
                     }
                     dataList.push(final)
                 }
