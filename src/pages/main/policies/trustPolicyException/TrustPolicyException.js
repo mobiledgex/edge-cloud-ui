@@ -1,11 +1,11 @@
 import React from 'react';
 import * as actions from '../../../../actions';
-import DataView from '../../../../container/DataView';
+import DataView from '../../../../hoc/datagrid/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 import { developerRoles, operatorRoles } from '../../../../constant'
 import { perpetual, role } from '../../../../helper/constant';
 import { keys, showTrustPolicyException, deleteTrustPolicyException } from '../../../../services/modules/trustPolicyException/trustPolicyException';
@@ -37,7 +37,7 @@ class TrustPolicyExceptionList extends React.Component {
     }
 
     onAdd = (action, data) => {
-        if (action && redux_org.isDeveloper(this) && data[fields.state] === serverFields.APPROVAL_REQUESTED) {
+        if (action && redux_org.isDeveloper(this) && data[localFields.state] === serverFields.APPROVAL_REQUESTED) {
             this.props.handleAlertInfo('error', 'Cannot update if approval is pending')
         }
         else {
@@ -69,7 +69,7 @@ class TrustPolicyExceptionList extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.state) {
+        if (key.field === localFields.state) {
             return uiFormatter.TPEState(data, isDetail)
         }
     }
@@ -83,9 +83,9 @@ class TrustPolicyExceptionList extends React.Component {
         return ({
             id: perpetual.PAGE_TRUST_POLICY_EXCEPTION,
             headerLabel: 'Trust Policy Exception',
-            nameField: fields.name,
+            nameField: localFields.name,
             requestType: [showTrustPolicyException],
-            sortBy: [fields.name],
+            sortBy: [localFields.name],
             isRegion: true,
             keys: keys(),
             onAdd: this.canAdd(),

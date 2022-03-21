@@ -1,4 +1,4 @@
-import * as endpoint from '../../helper/constant/endpoint';
+import * as endpoint from '../endpoint';
 import { customize as organization } from '../modules/organization/custom';
 import { customize as users } from '../modules/users/custom';
 import { customize as accounts } from '../modules/accounts/custom';

@@ -4,11 +4,11 @@ import Check from "@material-ui/icons/Check";
 import ErrorIcon from '@material-ui/icons/Error';
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty';
 import { green, red } from '@material-ui/core/colors';
-import * as serverData from '../../services/model/serverData';
-import { fields } from '../../services/model/format';
+import { localFields } from '../../services/fields';
 import cloneDeep from 'lodash/cloneDeep';
 import { serverFields } from '../../helper/formatter';
 import { equal } from '../../helper/constant/operators';
+import { websocket } from '../../services';
 
 export const CODE_FINISH = 100;
 export const CODE_SUCCESS = 200;
@@ -153,12 +153,12 @@ class MexMessageStream extends React.Component {
         let stream = this.props.streamType;
         if (stream) {
             let valid = false
-            let state = data[fields.state];
+            let state = data[localFields.state];
             if (state === serverFields.READY || state === serverFields.CREATING || state === serverFields.CREATE_REQUESTED || state === serverFields.UPDATE_REQUESTED || state === serverFields.UPDATING || state === serverFields.DELETE_REQUESTED || state === serverFields.DELETING || state === serverFields.DELETE_PREPARE || state === serverFields.CRM_INITOK || state === serverFields.CREATING_DEPENDENCIES) {
                 valid = true
             }
-            else if (data[fields.powerState]) {
-                let powerState = data[fields.powerState];
+            else if (data[localFields.powerState]) {
+                let powerState = data[localFields.powerState];
                 if (powerState !== serverFields.UNKNOWN && powerState !== serverFields.POWER_ON && powerState !== serverFields.POWER_OFF && powerState !== serverFields.REBOOT && powerState !== serverFields.ERROR) {
                     valid = true
                 }
@@ -181,7 +181,7 @@ class MexMessageStream extends React.Component {
             if (proceed) {
                 let forceStream = false
                 let valid = false
-                if (data[fields.state] !== serverFields.READY) {
+                if (data[localFields.state] !== serverFields.READY) {
                     valid = this.sendWSRequest(data, forceStream)
                 }
                 if (this.props.customStream) {
@@ -190,7 +190,7 @@ class MexMessageStream extends React.Component {
                 if (valid || forceStream) {
                     stepsArray.push({ uuid: data.uuid, steps: [{code: CODE_REQUEST, message:'Waiting for response from server'}] })
                     this.setState({ stepsArray })
-                    serverData.sendWSRequest(this, stream(data), this.requestResponse)
+                    websocket.request(this, stream(data), this.requestResponse)
                 }
             }
         }

@@ -1,6 +1,6 @@
 import { SHAPE_ROUND_RECTANGLE, SHAPE_ELLIPSE } from './flowConstant'
 import * as svgIcons from './svgicons'
-import { fields } from '../../services/model/format'
+import { localFields } from '../../services/fields'
 import { perpetual } from '../../helper/constant'
 
 export const edgeFlowList = [
@@ -25,7 +25,7 @@ export const defaultFlow = () => (
 
 export const privateFlow = (data) => {
     let dataList = []
-    if (data[fields.infraApiAccess] === perpetual.INFRA_API_ACCESS_RESTRICTED) {
+    if (data[localFields.infraApiAccess] === perpetual.INFRA_API_ACCESS_RESTRICTED) {
         dataList.push({ type: 'nodes', data: { id: 1, shape: SHAPE_ELLIPSE, width: 100, height: 100, bg: '#FFF', bi: svgIcons.renderNode(svgIcons.ICON_CLOSE, 1, '#D4272D', 100, 3, 2.25).svg }, position: { x: 407, y: 292 } })
     }
     return (

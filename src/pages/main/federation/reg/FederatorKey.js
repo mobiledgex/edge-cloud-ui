@@ -1,15 +1,15 @@
 import React from 'react'
 import { Grid, Typography } from '@material-ui/core'
 import { InfoDialog } from '../../../../hoc/mexui'
-import { fields } from '../../../../services'
+import { localFields } from "../../../../services/fields";
 import { copyData } from '../../../../utils/file_util'
 
 const keys = [
-    { label: 'Operator Name', field: fields.operatorName },
-    { label: 'Country Code', field: fields.countryCode },
-    { label: 'Federation ID', field: fields.federationId },
-    { label: 'Federation Address', field: fields.federationAddr },
-    { label: 'API Key', field: fields.apiKey }
+    { label: 'Operator Name', field: localFields.operatorName },
+    { label: 'Country Code', field: localFields.countryCode },
+    { label: 'Federation ID', field: localFields.federationId },
+    { label: 'Federation Address', field: localFields.federationAddr },
+    { label: 'API Key', field: localFields.apiKey }
 ]
 
 export const FederationKey = (props) => {

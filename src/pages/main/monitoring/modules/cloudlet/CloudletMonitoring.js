@@ -7,7 +7,7 @@ import Legend from '../../common/legend/Legend'
 import VerticalSliderBtn from '../../../../../hoc/verticalSlider/VerticalSliderButton'
 import DMEMetrics from '../../dme/DMEMetrics'
 import { ACTION_LATENCY_METRICS } from '../../../../../helper/constant/perpetual'
-import { fields } from '../../../../../services/model/format';
+import { localFields } from '../../../../../services/fields';
 import BulletChart from '../../charts/bullet/BulletChart'
 import Tooltip from '../../common/legend/Tooltip'
 import { convertUnit } from '../../helper/unitConvertor'
@@ -63,7 +63,7 @@ class CloudletMonitoring extends React.Component {
 
     dataFormatter = (column, data) => {
         if (data?.infraAllotted) {
-            let value = { title: "", subtitle: "", unit: column.unit, ranges: [data.infraAllotted ? parseInt(data.infraAllotted) : 0], measures: [data.infraUsed ? parseInt(data.infraUsed) : 0, data.used ? parseInt(data.used) : 0], markers: [data.allotted ? onlyNumeric(data.allotted) : 0] }
+            let value = { title: "", subtitle: "", unit: column.unit, ranges: [data.infraAllotted ? parseInt(data.infraAllotted) : 0], measures: [data.infraUsed ? parseInt(data.infraUsed) : 0, data.used ? parseInt(data.used) : 0], markers: [data.allotted ? parseInt(data.allotted) : 0] }
             return <BulletChart data={[value]} column={column} onHover={this.onHover} />
         }
     }
@@ -74,19 +74,19 @@ class CloudletMonitoring extends React.Component {
         const { moduleId, regions, search, range, organization, visibility } = tools
         return (
             <React.Fragment>
-                <Legend id={moduleId} tools={tools} data={legends} loading={loading} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} sortBy={[fields.cloudletName]} formatter={this.dataFormatter} />
+                <Legend id={moduleId} tools={tools} data={legends} loading={loading} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} sortBy={[localFields.cloudletName]} formatter={this.dataFormatter} />
                 <div className='legend-drag-btn'>
                     <VerticalSliderBtn height={400} selector='block-1'/>
                 </div>
                 <div id='resource-block' className="block-2">
                     <ImageList cols={4} rowHeight={300} >
                         {
-                            visibility.includes(fields.map) ? <ImageListItem cols={3}>
+                            visibility.includes(localFields.map) ? <ImageListItem cols={3}>
                                 <Map moduleId={moduleId} search={search} regions={regions} data={legends} selection={selection} />
                             </ImageListItem> : null
                         }
                         {
-                            visibility.includes(fields.event) ?
+                            visibility.includes(localFields.event) ?
                                 <ImageListItem cols={1}>
                                     <Card className='window-height-300'>
                                         <CloudletEvent range={range} />

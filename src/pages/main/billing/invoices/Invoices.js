@@ -1,8 +1,8 @@
 import React, { lazy, Suspense } from 'react'
 import LogoSpinner from '../../../../hoc/loader/LogoSpinner'
 
-import DataView from '../../../../container/DataView';
-import { fields } from '../../../../services/model/format';
+import DataView from '../../../../hoc/datagrid/DataView';
+import { localFields } from '../../../../services/fields';
 
 import { showInvoices, keys } from '../../../../services/modules/invoices'
 import { withRouter } from 'react-router-dom';
@@ -51,16 +51,16 @@ class Invoices extends React.Component {
         const { billingOrg } = this.state
         return ({
             id: perpetual.PAGE_INVOICES,
-            headerLabel: redux_org.isAdmin(this) ? `Invoices - ${billingOrg[fields.name]}` : 'Invoices',
-            nameField: fields.name,
+            headerLabel: redux_org.isAdmin(this) ? `Invoices - ${billingOrg[localFields.name]}` : 'Invoices',
+            nameField: localFields.name,
             requestType: [showInvoices],
-            sortBy: [fields.name],
+            sortBy: [localFields.name],
             selection: false,
             keys: this.keys,
             onAdd: undefined,
             grouping: false,
             picker: true,
-            filter: { name: billingOrg[fields.name] },
+            filter: { name: billingOrg[localFields.name] },
             back: redux_org.isAdmin(this) ? this.onBackClick : null
         })
     }

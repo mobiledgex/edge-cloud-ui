@@ -6,8 +6,9 @@ import { redux_org } from '../../../../../helper/reduxData'
 import randomColor from 'randomcolor'
 import { CircularProgress, IconButton, Tooltip } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { authSyncRequest, responseValid } from '../../../../../services/service'
+import { authSyncRequest } from '../../../../../services/service'
 import { equal } from '../../../../../helper/constant/operators'
+import { responseValid } from '../../../../../services/config'
 
 const cloudletEventKeys = [
     { label: 'Cloudlet', serverField: 'cloudlet', summary: true, filter: true },
@@ -59,7 +60,7 @@ class CloudletEvent extends React.Component {
         const { tools } = this.props
         return (
             <div>
-                <EventList header='Events' eventData={eventData} colors={colors} keys={cloudletEventKeys} header={this.header} itemSize={80} itemExpandSize={320} />
+                <EventList eventData={eventData} colors={colors} keys={cloudletEventKeys} header={this.header} itemSize={80} itemExpandSize={320} />
                 {showMore ? <div className='event-list-more' align="center">
                     {loading ? <CircularProgress size={20} /> :
                         <Tooltip title='More' onClick={this.loadMore}>

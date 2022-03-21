@@ -1,13 +1,13 @@
 import { MapControl, withLeaflet } from "react-leaflet";
 import L from "leaflet";
-import { fields } from '../../../../../services/model/format';
+import { localFields } from '../../../../../services/fields';
 
 const tableKeys = [
-  { label: 'App', field: fields.appName },
-  { label: 'Version', field: fields.version },
-  { label: 'Cloudlet', field: fields.cloudletName },
-  { label: 'Operator', field: fields.operatorName },
-  { label: 'Cluster', field: fields.clusterName },
+  { label: 'App', field: localFields.appName },
+  { label: 'Version', field: localFields.version },
+  { label: 'Cloudlet', field: localFields.cloudletName },
+  { label: 'Operator', field: localFields.operatorName },
+  { label: 'Cluster', field: localFields.clusterName },
 ]
 
 class Legend extends MapControl {

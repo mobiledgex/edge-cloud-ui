@@ -9,7 +9,7 @@ import { auditKeys, DEFAULT_DURATION_MINUTES, eventKeys } from '../helper/consta
 import { NoData } from '../../../../helper/formatter/ui';
 import FilterListRoundedIcon from '@material-ui/icons/FilterListRounded';
 import { AUDIT } from '../../../../helper/constant/perpetual';
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 import AuditView from './AuditView';
 import EventView from './EventView';
 import ServerFilter, { ACTION_FILTER } from './ServerFilter';
@@ -111,7 +111,7 @@ class AuditLogView extends Component {
                         return `${value} [${mtags['clusterorg']}]`
                     case 'cloudlet':
                         return `${value} [${mtags['cloudletorg']}]`
-                    case fields.name:
+                    case localFields.name:
                         return formatURL(value)
                 }
             }

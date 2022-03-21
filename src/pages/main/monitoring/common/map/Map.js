@@ -2,7 +2,7 @@ import React from 'react'
 import { cloudGreenIcon } from '../../../../../hoc/mexmap/MapProperties'
 import MexMap from '../../../../../hoc/mexmap/MexMap'
 import { Marker, Popup } from "react-leaflet";
-import { fields } from '../../../../../services/model/format'
+import { localFields } from '../../../../../services/fields'
 import { Icon } from '../../../../../hoc/mexui';
 import { PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST } from '../../../../../helper/constant/perpetual';
 import { Skeleton } from '@material-ui/lab';
@@ -12,16 +12,16 @@ const DEFAULT_ZOOM = 3
 
 const CloudletPopup = (props) => {
     const { data } = props
-    return data[fields.cloudletName]
+    return data[localFields.cloudletName]
 }
 
 const AppInstPopup = (props) => {
     const { data } = props
     return (
         <React.Fragment>
-            {data[fields.appName]} [{data[fields.version]}]
-            <code style={{ color: '#74B724' }}>
-                [{data[fields.clusterName]}]
+            {data[localFields.appName]} [{data[localFields.version]}]
+            <code className='subcontent'>
+                [{data[localFields.clusterName]}]
             </code>
         </React.Fragment>
     )
@@ -31,7 +31,7 @@ const ClusterInstPopup = (props) => {
     const { data } = props
     return (
         <React.Fragment>
-            <code>{data[fields.clusterName]}</code>
+            <code>{data[localFields.clusterName]}</code>
         </React.Fragment>
     )
 }
@@ -64,33 +64,25 @@ class Map extends React.Component {
     renderMarkerPopup = (data) => {
         const { moduleId } = this.props
         return (
-            <Popup className="map-control-div-marker-popup" ref={this.popup}>
+            <Popup className="map-popup" ref={this.popup}>
                 {
                     Object.keys(data).map(key => {
                         let dataList = data[key]
                         return (
                             <div key={key}>
-                                {
-                                    <React.Fragment>
-                                        <div>
-                                            {moduleId !== PARENT_CLOUDLET ?
-                                                <React.Fragment>
-                                                    <strong style={{ textTransform: 'uppercase', fontSize: 14 }}>{dataList[0][fields.cloudletName]}</strong>
-                                                    <br /><br />
-                                                </React.Fragment> : null
-                                            }
-                                            {dataList.map((item, i) => (
-
-                                                <div key={`${i}_${key}`} className="map-control-div-marker-popup-label" >
-                                                    <code style={{ fontWeight: 400, fontSize: 12, display: 'flex', alignItems: 'center' }}>
-                                                        <Icon style={{ color: item.color, marginRight: 5, fontSize: 10 }}>circle</Icon>
-                                                        {this.renderModulePopup(item)}
-                                                    </code>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </React.Fragment>
-                                }
+                                <div className='container'>
+                                    {moduleId !== PARENT_CLOUDLET ?
+                                        <p className='header'>{dataList[0][localFields.cloudletName]}</p> : null
+                                    }
+                                    {
+                                        dataList.map((item, i) => (
+                                            <div key={`${i}_${key}`} className="content">
+                                                <Icon color={item.color} size={10}>circle</Icon>
+                                                <code>{this.renderModulePopup(item)}</code>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
                             </div>
                         )
                     })
@@ -133,9 +125,9 @@ class Map extends React.Component {
                         keys.map(key => {
                             if ((selection.count === 0 || selection[key]) && (search.length === 0 || key.includes(search))) {
                                 let item = data[region][key]
-                                const { latitude, longitude } = item[fields.cloudletLocation]
+                                const { latitude, longitude } = item[localFields.cloudletLocation]
                                 let mapKey = `${latitude}_${longitude}`
-                                let cloudletKey = item[fields.cloudletName]
+                                let cloudletKey = item[localFields.cloudletName]
                                 maps[mapKey] = maps[mapKey] ? maps[mapKey] : {}
                                 maps[mapKey][cloudletKey] = maps[mapKey][cloudletKey] ? maps[mapKey][cloudletKey] : []
                                 maps[mapKey][cloudletKey].push(item)

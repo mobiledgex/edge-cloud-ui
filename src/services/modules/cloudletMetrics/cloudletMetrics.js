@@ -1,12 +1,11 @@
 import { UNIT_FLOOR, UNIT_GB, UNIT_MB } from '../../../pages/main/monitoring/helper/unitConvertor';
-import { endpoint, perpetual } from '../../../helper/constant';
-import { fields } from '../../model/format';
-import { TYPE_JSON } from '../../../helper/constant/perpetual';
+import { endpoint } from '../..';
+import { localFields } from '../../fields';
 
 export const customData = (id, data) => {
     switch (id) {
-        case fields.cloudletName:
-            return `${data[fields.cloudletName]} [${data[fields.operatorName]}]`
+        case localFields.cloudletName:
+            return `${data[localFields.cloudletName]} [${data[localFields.operatorName]}]`
     }
 }
 
@@ -24,11 +23,11 @@ export const cloudletFlavorMetricsKeys = [
 ]
 
 export const cloudletMetricsListKeys = [
-    { field: fields.region, serverField: 'region', label: 'Region', sortable: true, visible: true, groupBy: true },
-    { field: fields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
-    { field: fields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, visible: false, groupBy: true },
-    { field: fields.cloudletLocation, label: 'Location', visible: false },
-    { field: fields.resourceQuotas, label: 'Resource Quotas', visible: false },
+    { field: localFields.region, serverField: 'region', label: 'Region', sortable: true, visible: true, groupBy: true },
+    { field: localFields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
+    { field: localFields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, visible: false, groupBy: true },
+    { field: localFields.cloudletLocation, label: 'Location', visible: false },
+    { field: localFields.resourceQuotas, label: 'Resource Quotas', visible: false },
     { field: 'cpu', label: 'CPU', resourceLabel: 'vCPUs', format: true, sortable: false, visible: true },
     { field: 'disk', label: 'Disk', resourceLabel: 'Disk', format: true, sortable: false, unit: UNIT_GB, visible: true },
     { field: 'memory', label: 'Memory', resourceLabel: 'RAM', format: true, sortable: false, unit: UNIT_MB, visible: true }

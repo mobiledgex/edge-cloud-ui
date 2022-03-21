@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import cloneDeep from 'lodash/cloneDeep';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
@@ -11,6 +10,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import { Icon } from 'semantic-ui-react';
 import { FixedSizeList } from 'react-window';
 import './mexSelectTree.css'
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -220,7 +220,7 @@ export default function MexSelectRadioTree(props) {
     }
 
     return (
-        <div className={classes.root}>
+        <div className={clsx(classes.root, 'mex-select-tree')}>
             <div
                 id={form.field}
                 style={{ backgroundColor: `${form.error ? 'rgba(211, 46, 46, 0.1)' : 'none'}` }}

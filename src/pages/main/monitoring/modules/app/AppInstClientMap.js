@@ -1,6 +1,6 @@
 import React from 'react'
 import { Marker } from "react-leaflet";
-import { fields } from '../../../../../services/model/format';
+import { localFields } from '../../../../../services/fields';
 import { showAppInstClient } from '../../../../../services/modules/appInstClient'
 import cloneDeep from 'lodash/cloneDeep'
 import MexCircleMarker from '../../../../../hoc/mexmap/utils/MexCircleMarker'
@@ -10,7 +10,7 @@ import MexCurve from '../../../../../hoc/mexmap/utils/MexCurve'
 import { Dialog } from '@material-ui/core';
 import Legend from './MapLegend'
 import { fetchPath, fetchURL } from '../../../../../services/config';
-import { fetchWSToken } from '../../../../../services/service';
+import { websocket } from '../../../../../services';
 
 class AppMexMap extends React.Component {
     constructor(props) {
@@ -27,10 +27,10 @@ class AppMexMap extends React.Component {
     }
 
     mapClick = (data) => {
-        let location = data[fields.cloudletLocation]
+        let location = data[localFields.cloudletLocation]
         // this.popup.current.leafletElement.options.leaflet.map.closePopup();
         let keyData = data
-        let main = { cloudletLocation: keyData[fields.cloudletLocation], data }
+        let main = { cloudletLocation: keyData[localFields.cloudletLocation], data }
         this.setState({ mapData: { main }, polyline: [[location.latitude, location.longitude]], curveColor: keyData.color, backswitch: true })
         this.sendWSRequest(showAppInstClient(keyData))
     }
@@ -46,7 +46,7 @@ class AppMexMap extends React.Component {
     }
 
     sendWSRequest = async (request) => {
-        let token = await fetchWSToken(this)
+        let token = await websocket.token(this)
         if (token) {
             this.setState({ showDevices: true })
             this.ws = new WebSocket(`${fetchURL(true)}/ws${fetchPath(request)}`)
@@ -58,7 +58,7 @@ class AppMexMap extends React.Component {
                 let response = JSON.parse(evt.data);
                 if (response.code === 200) {
                     let responseData = response.data
-                    let location = responseData[fields.location]
+                    let location = responseData[localFields.location]
                     if (location) {
                         let latitude = location.latitude ? location.latitude : 0
                         let longitude = location.longitude ? location.longitude : 0
@@ -97,9 +97,9 @@ class AppMexMap extends React.Component {
         return mapData ?
             <div>
                 {Object.keys(mapData).map((key, i) => {
-                    let location = mapData[key][fields.cloudletLocation]
-                    let lat = location[fields.latitude]
-                    let lon = location[fields.longitude]
+                    let location = mapData[key][localFields.cloudletLocation]
+                    let lat = location[localFields.latitude]
+                    let lon = location[localFields.longitude]
                     return (
                         <React.Fragment key={key}>
                             {

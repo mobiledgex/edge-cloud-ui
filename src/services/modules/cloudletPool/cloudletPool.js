@@ -1,50 +1,49 @@
-import * as formatter from '../../model/format'
 import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util';
 import isEqual from 'lodash/isEqual';
 import omit from 'lodash/omit';
 import { labelFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData'
-import { endpoint, perpetual } from '../../../helper/constant';
-
-const fields = formatter.fields;
+import { perpetual } from '../../../helper/constant';
+import { endpoint } from '../..';
+import { localFields } from '../../fields';
 
 const clouldetKeys = [
-    { field: fields.cloudletName, serverField: 'name', label: 'Cloudlet Name' },
-    { field: fields.partnerOperator, serverField: 'federated_organization', label: 'Partner Operator' },
+    { field: localFields.cloudletName, serverField: 'name', label: 'Cloudlet Name' },
+    { field: localFields.partnerOperator, serverField: 'federated_organization', label: 'Partner Operator' },
 ]
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.poolName, serverField: 'key#OS#name', label: 'Pool Name', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, key: true },
-    { field: fields.cloudletCount, label: 'Number of  Cloudlets', sortable: true, visible: true },
-    { field: fields.organizationCount, label: 'Number of Organizations', sortable: true, visible: true },
+    { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
+    { field: localFields.poolName, serverField: 'key#OS#name', label: 'Pool Name', sortable: true, visible: true, filter: true, key: true },
+    { field: localFields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, key: true },
+    { field: localFields.cloudletCount, label: 'Number of  Cloudlets', sortable: true, visible: true },
+    { field: localFields.organizationCount, label: 'Number of Organizations', sortable: true, visible: true },
     {
-        field: fields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets', keys: clouldetKeys
+        field: localFields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets', keys: clouldetKeys
     },
     {
-        field: fields.organizations, label: 'Organizations',
-        keys: [{ field: fields.organizationName, label: 'Organization' }, { field: fields.status, label: 'Status' }]
+        field: localFields.organizations, label: 'Organizations',
+        keys: [{ field: localFields.organizationName, label: 'Organization' }, { field: localFields.status, label: 'Status' }]
     },
-    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
-    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } }
+    { field: localFields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
+    { field: localFields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } }
 ])
 
 export const getCloudletPoolKey = (data) => {
-    return { name: data[fields.poolName], organization: data[fields.operatorName] }
+    return { name: data[localFields.poolName], organization: data[localFields.operatorName] }
 }
 
 export const getKey = (data) => {
     let cloudletpool = {}
 
     cloudletpool.key = getCloudletPoolKey(data)
-    cloudletpool.cloudlets = data[fields.cloudlets]
+    cloudletpool.cloudlets = data[localFields.cloudlets]
 
-    if (data[fields.fields]) {
-        cloudletpool.fields = data[fields.fields]
+    if (data[localFields.fields]) {
+        cloudletpool.fields = data[localFields.fields]
     }
     return ({
-        region: data[fields.region],
+        region: data[localFields.region],
         cloudletpool: cloudletpool
     })
 }
@@ -55,15 +54,15 @@ const formatInvitation = (poolList, invitationList) => {
         let organizations = []
         for (let j = 0; j < invitationList.length; j++) {
             let invitation = invitationList[j]
-            if (pool[fields.poolName] === invitation[fields.poolName]) {
-                pool[fields.organizationCount] += 1
+            if (pool[localFields.poolName] === invitation[localFields.poolName]) {
+                pool[localFields.organizationCount] += 1
                 let organization = {}
-                organization[fields.organizationName] = invitation[fields.organizationName]
-                organization[fields.status] = labelFormatter.decision(invitation[fields.decision])
+                organization[localFields.organizationName] = invitation[localFields.organizationName]
+                organization[localFields.status] = labelFormatter.decision(invitation[localFields.decision])
                 organizations.push(organization)
             }
         }
-        pool[fields.organizations] = organizations
+        pool[localFields.organizations] = organizations
     }
 }
 
@@ -88,8 +87,8 @@ export const multiDataRequest = (keys, mcList) => {
     if (invitationList.length > 0) {
         invitationList.forEach(invitation => {
             for (let grant of grantList) {
-                if (isEqual(omit(invitation, [fields.uuid, fields.decision]), omit(grant, [fields.uuid, fields.decision]))) {
-                    invitation[fields.decision] = grant[fields.decision] ? grant[fields.decision] : invitation[fields.decision]
+                if (isEqual(omit(invitation, [localFields.uuid, localFields.decision]), omit(grant, [localFields.uuid, localFields.decision]))) {
+                    invitation[localFields.decision] = grant[localFields.decision] ? grant[localFields.decision] : invitation[localFields.decision]
                     break;
                 }
             }
@@ -122,5 +121,5 @@ export const updateCloudletPool = (data) => {
 
 export const deleteCloudletPool = (self, data) => {
     let requestData = getKey(data)
-    return { method: endpoint.DELETE_CLOUDLET_POOL, data: requestData, success: `Cloudlet Pool ${data[fields.poolName]} deleted successfully` }
+    return { method: endpoint.DELETE_CLOUDLET_POOL, data: requestData, success: `Cloudlet Pool ${data[localFields.poolName]} deleted successfully` }
 }
