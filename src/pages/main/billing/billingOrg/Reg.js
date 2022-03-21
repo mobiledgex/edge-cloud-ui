@@ -4,7 +4,7 @@ import * as actions from '../../../../actions';
 import { connect } from 'react-redux';
 import MexForms, { SELECT, INPUT, MAIN_HEADER, BUTTON, DUALLIST } from '../../../../hoc/forms/MexForms';
 import { Grid } from '@material-ui/core'
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 import { redux_org } from '../../../../helper/reduxData'
 import { perpetual } from '../../../../helper/constant';
 import { resetFormValue } from '../../../../hoc/forms/helper/constant';
@@ -29,26 +29,26 @@ class BillingOrgReg extends React.Component {
     formKeys = () => {
         return [
             { label: 'Create Billing Org', formType: MAIN_HEADER, visible: true },
-            { field: fields.type, label: 'Type', formType: SELECT, placeholder: 'Select Type', rules: { required: true, firstCaps: true }, visible: true, tip: 'Billing type self or group' },
-            { field: fields.name, label: 'Name', formType: INPUT, placeholder: 'Enter Billing Group Name', rules: { required: true }, visible: false, tip: 'Billing group name' },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, visible: false, value: redux_org.nonAdminOrg(this) },
-            { field: fields.firstName, label: 'First Name', formType: INPUT, placeholder: 'Enter First Name', rules: { required: true }, update: { edit: true }, visible: true, tip: 'First name' },
-            { field: fields.lastName, label: 'Last Name', formType: INPUT, placeholder: 'Enter Last Name', rules: { required: true }, update: { edit: true }, visible: true, tip: 'Last name' },
-            { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true, type: 'search' }, visible: true, update: { edit: true }, tip: 'Email address' },
-            { field: fields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: false, type: 'search' }, update: { edit: true }, visible: true, tip: 'Address' },
-            { field: fields.country, label: 'Country', formType: INPUT, placeholder: 'Enter Country', rules: { required: false, type: 'search' }, update: { edit: true }, visible: true, tip: 'Country' },
-            { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter State', rules: { required: false, type: 'search' }, update: { edit: true }, visible: true, tip: 'State' },
-            { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City', rules: { required: false, type: 'search' }, update: { edit: true }, visible: true, tip: 'City' },
-            { field: fields.postalCode, label: 'Postal Code', formType: INPUT, placeholder: 'Enter Postal Code', rules: { required: false, type: 'search' }, visible: true, update: { edit: true }, tip: 'Postal code' },
-            { field: fields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: false }, visible: true, update: { edit: true }, tip: 'Phone number' },
+            { field: localFields.type, label: 'Type', formType: SELECT, placeholder: 'Select Type', rules: { required: true, firstCaps: true }, visible: true, tip: 'Billing type self or group' },
+            { field: localFields.name, label: 'Name', formType: INPUT, placeholder: 'Enter Billing Group Name', rules: { required: true }, visible: false, tip: 'Billing group name' },
+            { field: localFields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, visible: false, value: redux_org.nonAdminOrg(this) },
+            { field: localFields.firstName, label: 'First Name', formType: INPUT, placeholder: 'Enter First Name', rules: { required: true }, update: { edit: true }, visible: true, tip: 'First name' },
+            { field: localFields.lastName, label: 'Last Name', formType: INPUT, placeholder: 'Enter Last Name', rules: { required: true }, update: { edit: true }, visible: true, tip: 'Last name' },
+            { field: localFields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true, type: 'search' }, visible: true, update: { edit: true }, tip: 'Email address' },
+            { field: localFields.address, label: 'Address', formType: INPUT, placeholder: 'Enter Address', rules: { required: false, type: 'search' }, update: { edit: true }, visible: true, tip: 'Address' },
+            { field: localFields.country, label: 'Country', formType: INPUT, placeholder: 'Enter Country', rules: { required: false, type: 'search' }, update: { edit: true }, visible: true, tip: 'Country' },
+            { field: localFields.state, label: 'State', formType: INPUT, placeholder: 'Enter State', rules: { required: false, type: 'search' }, update: { edit: true }, visible: true, tip: 'State' },
+            { field: localFields.city, label: 'City', formType: INPUT, placeholder: 'Enter City', rules: { required: false, type: 'search' }, update: { edit: true }, visible: true, tip: 'City' },
+            { field: localFields.postalCode, label: 'Postal Code', formType: INPUT, placeholder: 'Enter Postal Code', rules: { required: false, type: 'search' }, visible: true, update: { edit: true }, tip: 'Postal code' },
+            { field: localFields.phone, label: 'Phone', formType: INPUT, placeholder: 'Enter Phone Number', rules: { required: false }, visible: true, update: { edit: true }, tip: 'Phone number' },
         ]
     }
 
     formChildKeys = () => {
         return [
             { label: `${this.actionId === perpetual.ACTION_BILLING_ADD_CHILD ? 'Add Child' : 'Remove Child'}`, formType: MAIN_HEADER, visible: true },
-            { field: fields.name, label: 'Name', formType: INPUT, placeholder: 'Enter Billing Group Name', rules: { disabled: true }, visible: true, tip: 'Billing group' },
-            { field: fields.organizations, label: 'Organization', formType: DUALLIST, placeholder: 'Select Organization', visible: true },
+            { field: localFields.name, label: 'Name', formType: INPUT, placeholder: 'Enter Billing Group Name', rules: { disabled: true }, visible: true, tip: 'Billing group' },
+            { field: localFields.organizations, label: 'Organization', formType: DUALLIST, placeholder: 'Select Organization', visible: true },
         ]
     }
 
@@ -61,10 +61,10 @@ class BillingOrgReg extends React.Component {
     onTypeChange = (currentForm, forms, isInit) => {
         for (let i in forms) {
             let form = forms[i]
-            if (form.field === fields.organizationName) {
+            if (form.field === localFields.organizationName) {
                 form.visible = currentForm.value === perpetual.BILLING_TYPE_SELF
             }
-            else if (form.field === fields.name) {
+            else if (form.field === localFields.name) {
                 form.visible = currentForm.value === perpetual.BILLING_TYPE_PARENT
             }
         }
@@ -72,7 +72,7 @@ class BillingOrgReg extends React.Component {
     }
 
     checkForms = (form, forms, isInit = false) => {
-        if (form.field === fields.type) {
+        if (form.field === localFields.type) {
             this.onTypeChange(form, forms, isInit)
         }
     }
@@ -111,11 +111,11 @@ class BillingOrgReg extends React.Component {
 
     onCreate = async (data) => {
         if (this.actionId === perpetual.ACTION_BILLING_ADD_CHILD || this.actionId === perpetual.ACTION_BILLING_REMOVE_CHILD) {
-            let organizations = data[fields.organizations]
+            let organizations = data[localFields.organizations]
             let requestList = []
             let requestType = this.actionId === perpetual.ACTION_BILLING_REMOVE_CHILD ? removeBillingChild : addBillingChild
             organizations.map(children => {
-                requestList.push(requestType({ name: data[fields.name], children }))
+                requestList.push(requestType({ name: data[localFields.name], children }))
             })
             if (requestList.length > 0) {
                 service.multiAuthRequest(this, requestList, this.childResponse)
@@ -124,8 +124,8 @@ class BillingOrgReg extends React.Component {
         else {
             let mc = this.isUpdate ? await updateBillingOrg(this, data) : await createBillingOrg(this, data)
             if (mc && mc.response && mc.response.status === 200) {
-                let isParent = data[fields.type] === perpetual.BILLING_TYPE_PARENT
-                this.props.handleAlertInfo('success', `Billing  ${isParent ? 'group' : 'org'} ${isParent ? data[fields.name] : data[fields.organizationName]} ${this.isUpdate ? 'update' : 'created'} successfully`)
+                let isParent = data[localFields.type] === perpetual.BILLING_TYPE_PARENT
+                this.props.handleAlertInfo('success', `Billing  ${isParent ? 'group' : 'org'} ${isParent ? data[localFields.name] : data[localFields.organizationName]} ${this.isUpdate ? 'update' : 'created'} successfully`)
                 this.props.onClose(true)
             }
         }
@@ -153,13 +153,13 @@ class BillingOrgReg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT || form.formType === DUALLIST) {
                     switch (form.field) {
-                        case fields.type:
+                        case localFields.type:
                             form.options = [perpetual.BILLING_TYPE_SELF, perpetual.BILLING_TYPE_PARENT]
                             break;
-                        case fields.organizationName:
+                        case localFields.organizationName:
                             form.options = this.organizationList
                             break;
-                        case fields.organizations:
+                        case localFields.organizations:
                             form.options = this.actionId === perpetual.ACTION_BILLING_REMOVE_CHILD ? this.removeBillingOrgList(this.billingOrgList) : this.addBillingOrgList(this.organizationList)
                             break;
                     }
@@ -176,14 +176,14 @@ class BillingOrgReg extends React.Component {
                 let exist = false
                 for (let j in this.billingOrgList) {
                     let billingOrg = this.billingOrgList[j]
-                    let children = billingOrg[fields.children]
-                    if (children && children.includes(data[fields.organizationName])) {
+                    let children = billingOrg[localFields.children]
+                    if (children && children.includes(data[localFields.organizationName])) {
                         exist = true
                         break;
                     }
                 }
-                if (!exist && data[fields.type] === perpetual.DEVELOPER) {
-                    optionList.push({ value: data[fields.organizationName], label: data[fields.organizationName] })
+                if (!exist && data[localFields.type] === perpetual.DEVELOPER) {
+                    optionList.push({ value: data[localFields.organizationName], label: data[localFields.organizationName] })
                 }
             }
         }
@@ -192,7 +192,7 @@ class BillingOrgReg extends React.Component {
 
     removeBillingOrgList = () => {
         let optionList = []
-        let children = this.orgData[fields.children]
+        let children = this.orgData[localFields.children]
         if (children) {
             let dataList = children.split(',')
             for (let i in dataList) {
@@ -205,7 +205,7 @@ class BillingOrgReg extends React.Component {
 
     loadDefaultData = async (forms, data) => {
         let organization = {}
-        organization[fields.organizationName] = data[fields.name];
+        organization[localFields.organizationName] = data[localFields.name];
         this.organizationList = [organization]
     }
 
@@ -253,8 +253,8 @@ class BillingOrgReg extends React.Component {
             let form = forms[i]
             this.updateUI(form)
             if (data) {
-                if (form.field === fields.organizationName) {
-                    form.value = data[fields.name]
+                if (form.field === localFields.organizationName) {
+                    form.value = data[localFields.name]
                 }
                 form.value = data[form.field] ? data[form.field] : form.value
                 this.checkForms(form, forms, true)

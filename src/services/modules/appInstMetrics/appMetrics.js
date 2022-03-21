@@ -1,53 +1,48 @@
-
-import * as formatter from '../../model/format'
 import { UNIT_BYTES, UNIT_PERCENTAGE, UNIT_FLOOR } from '../../../pages/main/monitoring/helper/unitConvertor';
 import { labelFormatter } from '../../../helper/formatter';
-import { endpoint, perpetual } from '../../../helper/constant';
-import { developerRoles } from '../../../constant';
-import { ADMIN, DEVELOPER, DEVELOPER_VIEWER } from '../../../helper/constant/perpetual';
+import { endpoint } from '../..';
 import { redux_org } from '../../../helper/reduxData';
-import { omit, pick } from '../../../helper/constant/operators';
-
-let fields = formatter.fields;
+import { pick } from '../../../helper/constant/operators';
+import { localFields } from '../../fields';
 
 export const appMetricsKeys = [
     { label: 'Date', serverField: 'time', visible: false },
-    { label: 'Region', field: fields.region, serverField: 'region', visible: true, groupBy: true },
-    { label: 'App', field: fields.appName, serverField: 'app', visible: true, groupBy: true, filter: true },
-    { label: 'Version', field: fields.version, serverField: 'ver', visible: true, groupBy: true },
-    { label: 'App Developer', field: fields.organizationName, serverField: 'apporg', visible: true, groupBy: false },
-    { label: 'Cluster', field: fields.clusterName, serverField: 'cluster', visible: true, groupBy: true },
-    { label: 'Cluster Developer', field: fields.clusterdeveloper, serverField: 'clusterorg', visible: true, groupBy: true },
-    { label: 'Cloudlet', field: fields.cloudletName, serverField: 'cloudlet', visible: true, groupBy: true },
-    { label: 'Operator', field: fields.operatorName, serverField: 'cloudletorg', visible: true, groupBy: true }
+    { label: 'Region', field: localFields.region, serverField: 'region', visible: true, groupBy: true },
+    { label: 'App', field: localFields.appName, serverField: 'app', visible: true, groupBy: true, filter: true },
+    { label: 'Version', field: localFields.version, serverField: 'ver', visible: true, groupBy: true },
+    { label: 'App Developer', field: localFields.organizationName, serverField: 'apporg', visible: true, groupBy: false },
+    { label: 'Cluster', field: localFields.clusterName, serverField: 'cluster', visible: true, groupBy: true },
+    { label: 'Cluster Developer', field: localFields.clusterdeveloper, serverField: 'clusterorg', visible: true, groupBy: true },
+    { label: 'Cloudlet', field: localFields.cloudletName, serverField: 'cloudlet', visible: true, groupBy: true },
+    { label: 'Operator', field: localFields.operatorName, serverField: 'cloudletorg', visible: true, groupBy: true }
 ]
 
 export const customData = (id, data) => {
     switch (id) {
-        case fields.healthCheck:
-            return labelFormatter.healthCheck(data[fields.healthCheck])
-        case fields.cloudletName:
-            return `${data[fields.cloudletName]} [${data[fields.operatorName]}]`
-        case fields.clusterName:
-            return `${data[fields.clusterName]} [${data[fields.clusterdeveloper]}]`
-        case fields.appName:
-            return `${data[fields.appName]} [${data[fields.version]}]`
+        case localFields.healthCheck:
+            return labelFormatter.healthCheck(data[localFields.healthCheck])
+        case localFields.cloudletName:
+            return `${data[localFields.cloudletName]} [${data[localFields.operatorName]}]`
+        case localFields.clusterName:
+            return `${data[localFields.clusterName]} [${data[localFields.clusterdeveloper]}]`
+        case localFields.appName:
+            return `${data[localFields.appName]} [${data[localFields.version]}]`
     }
 }
 
 export const appMetricsListKeys = [
-    { field: fields.region, serverField: 'region', label: 'Region', sortable: true, visible: false, groupBy: true },
-    { field: fields.appName, serverField:'app', label: 'App', sortable: true, visible: false, groupBy: true},
-    { field: fields.organizationName, serverField:'apporg',label: 'App Developer', sortable: false, visible: false, groupBy: false },
-    { field: fields.version, serverField: 'ver', label: 'Version', sortable: true, visible: false, groupBy: true },
-    { field: fields.clusterName, serverField: 'cluster', label: 'Cluster', sortable: true, visible: true, groupBy: true, customData: true },
-    { field: fields.clusterdeveloper, serverField: 'clusterorg', label: 'Cluster Developer', sortable: true, visible: false, groupBy: true },
-    { field: fields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
-    { field: fields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, visible: false, groupBy: true },
-    { field: fields.cloudletLocation, label: 'Location', sortable: false, visible: false, groupBy: false },
-    { field: fields.deployment, label: 'Deployment' },
-    { field: fields.platformType, label: 'Platform Type' },
-    { field: fields.healthCheck, label: 'Health Check', sortable: true, visible: true, format: true, customData: true, width: 100 },
+    { field: localFields.region, serverField: 'region', label: 'Region', sortable: true, visible: false, groupBy: true },
+    { field: localFields.appName, serverField:'app', label: 'App', sortable: true, visible: false, groupBy: true},
+    { field: localFields.organizationName, serverField:'apporg',label: 'App Developer', sortable: false, visible: false, groupBy: false },
+    { field: localFields.version, serverField: 'ver', label: 'Version', sortable: true, visible: false, groupBy: true },
+    { field: localFields.clusterName, serverField: 'cluster', label: 'Cluster', sortable: true, visible: true, groupBy: true, customData: true },
+    { field: localFields.clusterdeveloper, serverField: 'clusterorg', label: 'Cluster Developer', sortable: true, visible: false, groupBy: true },
+    { field: localFields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
+    { field: localFields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, visible: false, groupBy: true },
+    { field: localFields.cloudletLocation, label: 'Location', sortable: false, visible: false, groupBy: false },
+    { field: localFields.deployment, label: 'Deployment' },
+    { field: localFields.platformType, label: 'Platform Type' },
+    { field: localFields.healthCheck, label: 'Health Check', sortable: true, visible: true, format: true, customData: true, width: 100 },
     { field: 'cpu', label: 'CPU', sortable: false, visible: true, format: true, isArray: true, width: 100 },
     { field: 'disk', label: 'Disk Usage', sortable: false, visible: true, format: true, isArray: true, width: 100 },
     { field: 'memory', label: 'Memory', sortable: false, visible: true, format: true, isArray: true, width: 100 },
@@ -74,12 +69,12 @@ export const appInstResourceKeys = () => ([
 
 /**New */
 const metricElements = [
-    { field: fields.networkSent, label: 'Network Sent', serverField: 'sendBytes', unit: UNIT_BYTES },
-    { field: fields.networkReceived, label: 'Network Received', serverField: 'recvBytes', unit: UNIT_BYTES },
-    { field: fields.cpu, label: 'CPU', serverField: 'cpu', unit: UNIT_PERCENTAGE },
-    { field: fields.mem, label: 'Memory', serverField: 'mem', unit: UNIT_BYTES },
-    { field: fields.disk, label: 'Disk', serverField: 'disk', unit: UNIT_BYTES },
-    { field: fields.activeConnections, label: 'Active Connections', serverField: 'active', unit: UNIT_FLOOR },
+    { field: localFields.networkSent, label: 'Network Sent', serverField: 'sendBytes', unit: UNIT_BYTES },
+    { field: localFields.networkReceived, label: 'Network Received', serverField: 'recvBytes', unit: UNIT_BYTES },
+    { field: localFields.cpu, label: 'CPU', serverField: 'cpu', unit: UNIT_PERCENTAGE },
+    { field: localFields.mem, label: 'Memory', serverField: 'mem', unit: UNIT_BYTES },
+    { field: localFields.disk, label: 'Disk', serverField: 'disk', unit: UNIT_BYTES },
+    { field: localFields.activeConnections, label: 'Active Connections', serverField: 'active', unit: UNIT_FLOOR },
 ]
 
 export const appInstMetricsElements = [
@@ -89,16 +84,16 @@ export const appInstMetricsElements = [
 export const fetchLocation = (avgValues, metricData, showList) => {
     for (let i = 0; i < showList.length; i++) {
         let show = showList[i]
-        let valid = metricData.includes(show[fields.region]) &&
-            metricData.includes(show[fields.appName].toLowerCase()) &&
-            metricData.includes(show[fields.organizationName]) &&
-            metricData.includes(show[fields.clusterName]) &&
-            metricData.includes(show[fields.clusterdeveloper]) &&
-            metricData.includes(show[fields.cloudletName]) &&
-            metricData.includes(show[fields.operatorName])
+        let valid = metricData.includes(show[localFields.region]) &&
+            metricData.includes(show[localFields.appName].toLowerCase()) &&
+            metricData.includes(show[localFields.organizationName]) &&
+            metricData.includes(show[localFields.clusterName]) &&
+            metricData.includes(show[localFields.clusterdeveloper]) &&
+            metricData.includes(show[localFields.cloudletName]) &&
+            metricData.includes(show[localFields.operatorName])
         if (valid) {
-            avgValues['location'] = show[fields.cloudletLocation]
-            avgValues[fields.healthCheck] = show[fields.healthCheck]
+            avgValues['location'] = show[localFields.cloudletLocation]
+            avgValues[localFields.healthCheck] = show[localFields.healthCheck]
             avgValues['showData'] = show
         }
     }
@@ -106,9 +101,8 @@ export const fetchLocation = (avgValues, metricData, showList) => {
 }
 
 export const appInstMetrics = (self, data, list) => {
-    let requestData = pick(data, [fields.region, fields.starttime, fields.endtime, fields.selector, fields.numsamples])
-    // let requestData = omit(data, fields.organizationName)
-    let organization = data[fields.organizationName]
+    let requestData = pick(data, [localFields.region, localFields.starttime, localFields.endtime, localFields.selector, localFields.numsamples])
+    let organization = data[localFields.organizationName]
     if(list)
     {
         requestData.appinsts = list 

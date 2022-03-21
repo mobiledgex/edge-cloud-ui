@@ -5,7 +5,7 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, MAIN_HEADER, DATE_PICKER
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 //model
 import { createReporter, updateReporter } from '../../../services/modules/reporter';
 import { Grid } from '@material-ui/core';
@@ -39,12 +39,12 @@ class ReporterReg extends React.Component {
     formKeys = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Report Scheduler`, formType: MAIN_HEADER, visible: true },
-            { field: fields.name, label: 'Name', formType: INPUT, placeholder: 'Enter Report Name', rules: { required: true }, visible: true, tip: 'Reporter name. Can only contain letters, digits, period, hyphen. It cannot have leading or trailing spaces or period. It cannot start with hyphen' },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, tip: ' Organization name' },
-            { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true, type: 'search' }, visible: true, update: { edit: true }, tip: 'Email to send generated reports' },
-            { field: fields.schedule, label: 'Report Interval', formType: SELECT, placeholder: 'Select Interval', rules: { required: true }, visible: true, update: { edit: true }, tip: ' Indicates how often a report should be generated, one of EveryWeek, Every15Days, Every30Days, EveryMonth' },
-            { field: fields.startdate, label: 'Start Schedule Date', formType: DATE_PICKER, placeholder: 'Enter Start Date', rules: { required: true }, visible: true, tip: 'Start date (in RFC3339 format with intended timezone) when the report is scheduled to be generated (Default: today)' },
-            { field: fields.timezone, label: 'Timezone', formType: SELECT, placeholder: 'Select Timezone', rules: { required: true }, visible: true, update: { edit: true }, tip: 'Timezone in which report has to be generated' },
+            { field: localFields.name, label: 'Name', formType: INPUT, placeholder: 'Enter Report Name', rules: { required: true }, visible: true, tip: 'Reporter name. Can only contain letters, digits, period, hyphen. It cannot have leading or trailing spaces or period. It cannot start with hyphen' },
+            { field: localFields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, tip: ' Organization name' },
+            { field: localFields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true, type: 'search' }, visible: true, update: { edit: true }, tip: 'Email to send generated reports' },
+            { field: localFields.schedule, label: 'Report Interval', formType: SELECT, placeholder: 'Select Interval', rules: { required: true }, visible: true, update: { edit: true }, tip: ' Indicates how often a report should be generated, one of EveryWeek, Every15Days, Every30Days, EveryMonth' },
+            { field: localFields.startdate, label: 'Start Schedule Date', formType: DATE_PICKER, placeholder: 'Enter Start Date', rules: { required: true }, visible: true, tip: 'Start date (in RFC3339 format with intended timezone) when the report is scheduled to be generated (Default: today)' },
+            { field: localFields.timezone, label: 'Timezone', formType: SELECT, placeholder: 'Select Timezone', rules: { required: true }, visible: true, update: { edit: true }, tip: 'Timezone in which report has to be generated' },
         ]
     }
 
@@ -60,10 +60,10 @@ class ReporterReg extends React.Component {
 
     onCreate = async (data) => {
         if (data) {
-            data[fields.startdate] = time(FORMAT_FULL_T_Z, data[fields.startdate], data[fields.timezone])
+            data[localFields.startdate] = time(FORMAT_FULL_T_Z, data[localFields.startdate], data[localFields.timezone])
             let mc = this.isUpdate ? await updateReporter(this, data) : await createReporter(this, data)
             if (mc && mc.response && mc.response.status === 200) {
-                this.props.handleAlertInfo('success', `Report Scheduler ${data[fields.name]} ${this.isUpdate ? 'updated' : 'created'} successfully`)
+                this.props.handleAlertInfo('success', `Report Scheduler ${data[localFields.name]} ${this.isUpdate ? 'updated' : 'created'} successfully`)
                 this.props.onClose(true)
             }
         }
@@ -97,13 +97,13 @@ class ReporterReg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT) {
                     switch (form.field) {
-                        case fields.organizationName:
+                        case localFields.organizationName:
                             form.options = this.organizationList;
                             break;
-                        case fields.schedule:
+                        case localFields.schedule:
                             form.options = this.scheduleList;
                             break;
-                        case fields.timezone:
+                        case localFields.timezone:
                             form.options = this.timezoneList;
                             form.value = timezonePref()
                             break;
@@ -117,7 +117,7 @@ class ReporterReg extends React.Component {
 
     loadDefaultData = async (data) => {
         if (data) {
-            let organization = { organizationName: data[fields.organizationName] }
+            let organization = { organizationName: data[localFields.organizationName] }
             this.organizationList = [organization]
         }
     }
@@ -138,7 +138,7 @@ class ReporterReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             this.updateUI(form)
-            if (form.field === fields.email) {
+            if (form.field === localFields.email) {
                 form.value = this.props.userInfo.Email
             }
             if (data) {

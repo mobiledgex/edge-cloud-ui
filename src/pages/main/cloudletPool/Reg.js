@@ -6,7 +6,7 @@ import MexForms, { MAIN_HEADER, SELECT, INPUT, DUALLIST } from '../../../hoc/for
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import { service, updateFieldData } from '../../../services';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 
 import { getOrganizationList } from '../../../services/modules/organization';
 import { cloudletKeys, fetchCloudletData, fetchCloudletField } from '../../../services/modules/cloudlet';
@@ -55,7 +55,7 @@ class CloudletPoolReg extends React.Component {
         if (region && operator) {
             this.cloudletList = await fetchCloudletData(this, { region: region, org: operator, type: perpetual.OPERATOR })
             this.cloudletList = this.cloudletList.filter((cloudlet) => {
-                return cloudlet[fields.operatorName] === operator
+                return cloudlet[localFields.operatorName] === operator
             })
             this.updateUI(form)
             this.updateState({ forms })
@@ -67,10 +67,10 @@ class CloudletPoolReg extends React.Component {
         let cloudletForm = undefined
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.operatorName) {
+            if (form.field === localFields.operatorName) {
                 operator = form.value
             }
-            else if (form.field === fields.cloudlets) {
+            else if (form.field === localFields.cloudlets) {
                 cloudletForm = form
             }
         }
@@ -82,10 +82,10 @@ class CloudletPoolReg extends React.Component {
         let cloudletForm = undefined
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.region) {
+            if (form.field === localFields.region) {
                 region = form.value
             }
-            else if (form.field === fields.cloudlets) {
+            else if (form.field === localFields.cloudlets) {
                 cloudletForm = form
             }
         }
@@ -93,10 +93,10 @@ class CloudletPoolReg extends React.Component {
     }
 
     checkForms = (form, forms, isInit, data) => {
-        if (form.field === fields.region) {
+        if (form.field === localFields.region) {
             this.regionValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.operatorName) {
+        else if (form.field === localFields.operatorName) {
             this.operatorValueChange(form, forms, isInit)
         }
     }
@@ -169,13 +169,13 @@ class CloudletPoolReg extends React.Component {
         let data = this.formattedData()
         let requestList = []
         let responseCallback = this.isOrgDelete ? this.organizationRemoveResponse : this.organizationAddResponse
-        let organizationList = (redux_org.isAdmin(this) || this.isOrgDelete) ? data[fields.organizations] : [{ organizationName: data[fields.organizationName] }]
+        let organizationList = (redux_org.isAdmin(this) || this.isOrgDelete) ? data[localFields.organizations] : [{ organizationName: data[localFields.organizationName] }]
         if (organizationList && organizationList.length > 0) {
             organizationList.forEach(organization => {
                 let newData = data
                 organization = (redux_org.isAdmin(this) || this.isOrgDelete) ? JSON.parse(organization) : organization
-                newData[fields.organizationName] = organization[fields.organizationName]
-                newData[fields.operatorName] = data[fields.operatorName]
+                newData[localFields.organizationName] = organization[localFields.organizationName]
+                newData[localFields.operatorName] = data[localFields.operatorName]
                 let request = undefined
                 switch (this.action) {
                     case perpetual.ACTION_POOL_ACCESS_ADMIN_REMOVE:
@@ -219,27 +219,27 @@ class CloudletPoolReg extends React.Component {
     }
 
     selectOrganization = async (data, isNew) => {
-        let region = data[fields.region];
-        let operator = data[fields.operatorName];
-        let selectedDatas = data[fields.organizations]
+        let region = data[localFields.region];
+        let operator = data[localFields.operatorName];
+        let selectedDatas = data[localFields.organizations]
         let errorMsg = 'No org to remove'
         if (!this.props.action || this.action === perpetual.ADD_ORGANIZATION) {
             errorMsg = 'No org to invite'
             this.organizationList = await getOrganizationList(this, { type: perpetual.DEVELOPER })
             if (!isNew) {
-                this.organizationList = constant.filterData(selectedDatas, this.organizationList, fields.organizationName);
+                this.organizationList = constant.filterData(selectedDatas, this.organizationList, localFields.organizationName);
             }
         }
         else if (this.action === perpetual.ACTION_POOL_ACCESS_ADMIN_CONFIRM || this.action === perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT) {
             errorMsg = `No pending invitation`
 
             this.organizationList = selectedDatas.filter(org => {
-                return org[fields.status] === 'Pending'
+                return org[localFields.status] === 'Pending'
             })
         }
         else if (this.action === perpetual.ACTION_POOL_ACCESS_ADMIN_REMOVE) {
             this.organizationList = selectedDatas.filter(org => {
-                return org[fields.status] !== 'Pending'
+                return org[localFields.status] !== 'Pending'
             })
         }
         else {
@@ -266,11 +266,11 @@ class CloudletPoolReg extends React.Component {
             }
             let step = [
                 { label: 'Organizations', formType: MAIN_HEADER, visible: true },
-                { field: fields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: region },
-                { field: fields.poolName, label: 'Pool Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[fields.poolName] },
-                { field: fields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: operator },
-                { field: fields.organizationName, label: 'Organization', placeholder: 'Enter Organization', formType: INPUT, rules: { required: true }, update: { edit: true }, visible: redux_org.isOperator(this) && !this.isOrgDelete },
-                { field: fields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: redux_org.isAdmin(this) || this.isOrgDelete },
+                { field: localFields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: region },
+                { field: localFields.poolName, label: 'Pool Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[localFields.poolName] },
+                { field: localFields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: operator },
+                { field: localFields.organizationName, label: 'Organization', placeholder: 'Enter Organization', formType: INPUT, rules: { required: true }, update: { edit: true }, visible: redux_org.isOperator(this) && !this.isOrgDelete },
+                { field: localFields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: redux_org.isAdmin(this) || this.isOrgDelete },
                 { label: `${label}`, formType: 'Button', onClick: this.onAddOrganizations },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]
@@ -308,8 +308,8 @@ class CloudletPoolReg extends React.Component {
     onCreate = async () => {
         let forms = this.state.forms
         let data = this.formattedData()
-        data[fields.cloudlets] = data[fields.cloudlets].map(item=>{
-            return cloudletKeys({cloudletName: item, partnerOperator : fetchCloudletField(this.cloudletList, { cloudletName: item, operatorName: data[fields.operatorName] }, fields.partnerOperator)})
+        data[localFields.cloudlets] = data[localFields.cloudlets].map(item=>{
+            return cloudletKeys({cloudletName: item, partnerOperator : fetchCloudletField(this.cloudletList, { cloudletName: item, operatorName: data[localFields.operatorName] }, localFields.partnerOperator)})
         })
         let mcRequest = undefined
         if (this.isUpdate) {
@@ -322,7 +322,7 @@ class CloudletPoolReg extends React.Component {
             mcRequest = await service.authSyncRequest(this, createCloudletPool(data))
         }
         if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-            this.props.handleAlertInfo('success', `Cloudlet Pool ${data[fields.poolName]} ${this.isUpdate ? 'updated' : 'created'} successfully`)
+            this.props.handleAlertInfo('success', `Cloudlet Pool ${data[localFields.poolName]} ${this.isUpdate ? 'updated' : 'created'} successfully`)
 
             if (this.isUpdate) {
                 this.props.onClose(true)
@@ -383,17 +383,17 @@ class CloudletPoolReg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT || form.formType === DUALLIST) {
                     switch (form.field) {
-                        case fields.region:
+                        case localFields.region:
                             form.options = this.props.regions;
                             break;
-                        case fields.operatorName:
+                        case localFields.operatorName:
                             form.options = this.operatorList
                             break;
-                        case fields.cloudlets:
-                            form.options = this.getCloudletData(this.cloudletList, fields.cloudletName)
+                        case localFields.cloudlets:
+                            form.options = this.getCloudletData(this.cloudletList, localFields.cloudletName)
                             break;
-                        case fields.organizations:
-                            form.options = this.getOrganizationData(this.organizationList, fields.organizationName)
+                        case localFields.organizations:
+                            form.options = this.getOrganizationData(this.organizationList, localFields.organizationName)
                             break;
                         default:
                             form.options = undefined;
@@ -405,12 +405,12 @@ class CloudletPoolReg extends React.Component {
 
     loadDefaultData = async (data) => {
         let operator = {}
-        operator[fields.operatorName] = data[fields.operatorName];
+        operator[localFields.operatorName] = data[localFields.operatorName];
         this.operatorList = [operator]
 
         if (this.action === perpetual.ADD_CLOUDLET) {
-            this.cloudletList = await fetchCloudletData(this, { region: data[fields.region], org: data[fields.operatorName], type: perpetual.OPERATOR })
-            data[fields.cloudlets] = data[fields.cloudlets].map(item=>item[fields.cloudletName])
+            this.cloudletList = await fetchCloudletData(this, { region: data[localFields.region], org: data[localFields.operatorName], type: perpetual.OPERATOR })
+            data[localFields.cloudlets] = data[localFields.cloudlets].map(item=>item[localFields.cloudletName])
         }
     }
 
@@ -421,7 +421,7 @@ class CloudletPoolReg extends React.Component {
         else {
             let orgList = await getOrganizationList(this, { type: perpetual.OPERATOR })
             this.operatorList = orgList.map(org => {
-                return org[fields.organizationName]
+                return org[localFields.organizationName]
             })
         }
 
@@ -431,10 +431,10 @@ class CloudletPoolReg extends React.Component {
         else {
             let forms = [
                 { label: `${this.isUpdate ? 'Update' : 'Create'} Cloudlet Pool`, formType: MAIN_HEADER, visible: true },
-                { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
-                { field: fields.poolName, label: 'Pool Name', formType: INPUT, placeholder: 'Enter Cloudlet Pool Name', rules: { required: true }, visible: true, update: { key: true } },
-                { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) ? true : false }, visible: true, value: redux_org.nonAdminOrg(this), update: { key: true } },
-                { field: fields.cloudlets, label: 'Cloudlets', formType: DUALLIST, update: { id: ['3'] }, rules: { required: false }, visible: true },
+                { field: localFields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
+                { field: localFields.poolName, label: 'Pool Name', formType: INPUT, placeholder: 'Enter Cloudlet Pool Name', rules: { required: true }, visible: true, update: { key: true } },
+                { field: localFields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) ? true : false }, visible: true, value: redux_org.nonAdminOrg(this), update: { key: true } },
+                { field: localFields.cloudlets, label: 'Cloudlets', formType: DUALLIST, update: { id: ['3'] }, rules: { required: false }, visible: true },
                 { label: `${this.isUpdate ? 'Update' : 'Create'}`, formType: 'Button', onClick: this.onCreate, validate: true },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]

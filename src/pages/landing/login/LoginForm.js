@@ -2,9 +2,8 @@ import React from 'react'
 import { Link, useHistory } from 'react-router-dom';
 import { Grid, makeStyles } from '@material-ui/core';
 import { Icon, Input, Button } from 'semantic-ui-react';
-import { perpetual } from '../../../helper/constant';
+import { VERIFY_EMAIL, VERIFY_PASSWORD } from '../../../helper/constant/perpetual';
 import clsx from 'clsx';
-
 
 const useStyles = makeStyles({
     signUp: {
@@ -36,24 +35,24 @@ const useStyles = makeStyles({
         padding: '0'
     },
     divLink1: {
-        display:'inline',
-        float:'left'
+        display: 'inline',
+        float: 'left'
     },
     divLink2: {
-        display:'inline',
-        float:'center'
+        display: 'inline',
+        float: 'center'
     },
     divLink3: {
-        display:'inline',
-        float:'right'
+        display: 'inline',
+        float: 'right'
     },
     aLink: {
         fontStyle: 'italic',
         textDecoration: 'underline',
         color: "rgba(255,255,255,.5)",
         cursor: 'pointer',
-        '&:hover':{
-            color:'#93E019',
+        '&:hover': {
+            color: '#93E019',
             textDecoration: 'underline',
         }
     }
@@ -113,8 +112,8 @@ const Login = (props) => {
                         {loginDanger}
                     </div>
                 </Grid>
-                <div className={clsx(classes.textColor, classes.validation)} onClick={() => reValidate(perpetual.VERIFY_EMAIL)}>Verify Email</div>
-                <div className={clsx(classes.textColor, classes.validation, classes.validationRight)} onClick={() => reValidate(perpetual.VERIFY_PASSWORD)}>Forgot Password</div>
+                <div className={clsx(classes.textColor, classes.validation)} onClick={() => reValidate(VERIFY_EMAIL)}>Verify Email</div>
+                <div className={clsx(classes.textColor, classes.validation, classes.validationRight)} onClick={() => reValidate(VERIFY_PASSWORD)}>Forgot Password</div>
                 <Button onClick={() => onSubmit()}>Log In</Button>
                 <br /><br />
                 <span>

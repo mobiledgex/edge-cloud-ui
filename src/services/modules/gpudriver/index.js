@@ -1,5 +1,5 @@
 import { customize } from './custom'
-import { keys, iconKeys, showGPUDrivers, createGPUDriver, deleteGPUDriver, getGPUDriverList, removeBuild } from './gpudriver'
+import { keys, iconKeys, addbuild, showGPUDrivers, createGPUDriver, deleteGPUDriver, getGPUDriverList, removeBuild } from './gpudriver'
 import { buildKey } from './primary'
 export {
     customize,
@@ -10,6 +10,7 @@ export {
     deleteGPUDriver,
     getGPUDriverList,
     removeBuild,
-    buildKey
+    buildKey,
+    addbuild
 }
 

@@ -1,14 +1,14 @@
 import { UNIT_FLOOR, UNIT_GB, UNIT_MB } from '../../../pages/main/monitoring/helper/unitConvertor';
-import { endpoint, perpetual } from '../../../helper/constant';
-import { fields } from '../../model/format';
-import { TYPE_JSON } from '../../../helper/constant/perpetual';
-import { omit, pick } from '../../../helper/constant/operators';
+import { endpoint } from '../../../helper/constant';
+import { pick } from '../../../helper/constant/operators';
 import { CK_ORG, cloudletKeys } from '../cloudlet/primary';
+import { endpoint } from '../..';
+import { localFields } from '../../fields';
 
 export const customData = (id, data) => {
     switch (id) {
-        case fields.cloudletName:
-            return `${data[fields.cloudletName]} [${data[fields.operatorName]}]`
+        case localFields.cloudletName:
+            return `${data[localFields.cloudletName]} [${data[localFields.operatorName]}]`
     }
 }
 
@@ -26,11 +26,11 @@ export const cloudletFlavorMetricsKeys = [
 ]
 
 export const cloudletMetricsListKeys = [
-    { field: fields.region, serverField: 'region', label: 'Region', sortable: true, visible: true, groupBy: true },
-    { field: fields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
-    { field: fields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, visible: false, groupBy: true },
-    { field: fields.cloudletLocation, label: 'Location', visible: false },
-    { field: fields.resourceQuotas, label: 'Resource Quotas', visible: false },
+    { field: localFields.region, serverField: 'region', label: 'Region', sortable: true, visible: true, groupBy: true },
+    { field: localFields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, visible: true, groupBy: true, customData: true },
+    { field: localFields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, visible: false, groupBy: true },
+    { field: localFields.cloudletLocation, label: 'Location', visible: false },
+    { field: localFields.resourceQuotas, label: 'Resource Quotas', visible: false },
     { field: 'cpu', label: 'CPU', resourceLabel: 'vCPUs', format: true, sortable: false, visible: true },
     { field: 'disk', label: 'Disk', resourceLabel: 'Disk', format: true, sortable: false, unit: UNIT_GB, visible: true },
     { field: 'memory', label: 'Memory', resourceLabel: 'RAM', format: true, sortable: false, unit: UNIT_MB, visible: true }
@@ -61,25 +61,25 @@ export const cloudletResourceKeys = () => ([
 
 /**New */
 const metricElements = [
-    { field: fields.networkSent, label: 'Network Sent', serverField: 'netSend', unit: UNIT_FLOOR },
-    { field: fields.networkReceived, label: 'Network Received', serverField: 'netRecv', unit: UNIT_FLOOR },
-    { field: fields.cpuUsed, label: 'vCPUs Used', serverField: 'vCpuUsed', serverFieldMax: 'vCpuMax', unit: UNIT_FLOOR },
-    { field: fields.memUsed, label: 'RAM Used', serverField: 'memUsed', serverFieldMax: 'memMax', unit: UNIT_FLOOR },
-    { field: fields.diskUsed, label: 'Disk Used', serverField: 'diskUsed', serverFieldMax: 'diskMax', unit: UNIT_FLOOR },
-    { field: fields.floatingIpsUsed, label: 'Floating IP Used', serverField: 'floatingIpsUsed', serverFieldMax: 'floatingIpsMax', unit: UNIT_FLOOR },
-    { field: fields.ipv4Used, label: 'IPv4 Used', serverField: 'ipv4Used', serverFieldMax: 'ipv4Max', unit: UNIT_FLOOR }
+    { field: localFields.networkSent, label: 'Network Sent', serverField: 'netSend', unit: UNIT_FLOOR },
+    { field: localFields.networkReceived, label: 'Network Received', serverField: 'netRecv', unit: UNIT_FLOOR },
+    { field: localFields.cpuUsed, label: 'vCPUs Used', serverField: 'vCpuUsed', serverFieldMax: 'vCpuMax', unit: UNIT_FLOOR },
+    { field: localFields.memUsed, label: 'RAM Used', serverField: 'memUsed', serverFieldMax: 'memMax', unit: UNIT_FLOOR },
+    { field: localFields.diskUsed, label: 'Disk Used', serverField: 'diskUsed', serverFieldMax: 'diskMax', unit: UNIT_FLOOR },
+    { field: localFields.floatingIpsUsed, label: 'Floating IP Used', serverField: 'floatingIpsUsed', serverFieldMax: 'floatingIpsMax', unit: UNIT_FLOOR },
+    { field: localFields.ipv4Used, label: 'IPv4 Used', serverField: 'ipv4Used', serverFieldMax: 'ipv4Max', unit: UNIT_FLOOR }
 ]
 const metricUsageElements = [
-    { field: fields.externalIpsUsed, label: 'External IP', serverField: 'externalIpsUsed', unit: UNIT_FLOOR },
-    { field: fields.floatingIpsUsed, label: 'Floating IP', serverField: 'floatingIpsUsed', unit: UNIT_FLOOR },
-    { field: fields.gpusUsed, label: 'GPUs', serverField: 'gpusUsed', unit: UNIT_FLOOR },
-    { field: fields.instancesUsed, label: 'Instances', serverField: 'instancesUsed', unit: UNIT_FLOOR },
-    { field: fields.ramUsed, label: 'RAM', serverField: 'ramUsed', unit: UNIT_MB },
-    { field: fields.cpuUsed, label: 'CPU', serverField: 'vcpusUsed', unit: UNIT_FLOOR }
+    { field: localFields.externalIpsUsed, label: 'External IP', serverField: 'externalIpsUsed', unit: UNIT_FLOOR },
+    { field: localFields.floatingIpsUsed, label: 'Floating IP', serverField: 'floatingIpsUsed', unit: UNIT_FLOOR },
+    { field: localFields.gpusUsed, label: 'GPUs', serverField: 'gpusUsed', unit: UNIT_FLOOR },
+    { field: localFields.instancesUsed, label: 'Instances', serverField: 'instancesUsed', unit: UNIT_FLOOR },
+    { field: localFields.ramUsed, label: 'RAM', serverField: 'ramUsed', unit: UNIT_MB },
+    { field: localFields.cpuUsed, label: 'CPU', serverField: 'vcpusUsed', unit: UNIT_FLOOR }
 ]
 const metricUsageFlavorElements = [
-    { field: fields.count, label: 'Flavor Count', serverField: 'count' },
-    { field: fields.flavorName, label: 'Flavor Name', serverField: 'flavor' }
+    { field: localFields.count, label: 'Flavor Count', serverField: 'count' },
+    { field: localFields.flavorName, label: 'Flavor Name', serverField: 'flavor' }
 ]   
 
 export const cloudletMetricsElements = [
@@ -96,20 +96,20 @@ export const cloudletMetricsElements = [
  * @returns cloudlet metric data
  */
 export const cloudletMetrics = (self, data, list) => {
-    let requestData = pick(data, [fields.region, fields.starttime, fields.endtime, fields.selector, fields.numsamples])
+    let requestData = pick(data, [localFields.region, localFields.starttime, localFields.endtime, localFields.selector, localFields.numsamples])
     if (list) {
         requestData.cloudlets = list
     }
     else {
         requestData.cloudlet = {
-            organization: data[fields.organizationName] ? data[fields.organizationName] : data[fields.operatorName]
+            organization: data[localFields.organizationName] ? data[localFields.organizationName] : data[localFields.operatorName]
         }
     }
     return { method: endpoint.CLOUDLET_METRICS_ENDPOINT, data: requestData, keys: cloudletMetricsKeys }
 }
 
 export const cloudletUsageMetrics = (self, data, specific = false) => {
-    let requestData = pick(data, [fields.region, fields.starttime, fields.endtime, fields.selector, fields.numsamples])
+    let requestData = pick(data, [localFields.region, localFields.starttime, localFields.endtime, localFields.selector, localFields.numsamples])
     requestData.cloudlet = cloudletKeys(data, specific ? undefined : CK_ORG)
     let keys = data.selector === 'flavorusage' ? cloudletFlavorMetricsKeys : cloudletMetricsKeys
     return { method: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, data: requestData, keys }

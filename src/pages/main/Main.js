@@ -8,7 +8,7 @@ import { pages } from '../../constant';
 import { role } from '../../helper/constant';
 import { withRouter } from 'react-router-dom';
 import { perpetual, operators } from '../../helper/constant';
-import { fields } from '../../services/model/format';
+import { localFields } from '../../services/fields';
 import { updateUserMetaData } from '../../services/modules/users';
 import { getUserMetaData } from '../../helper/ls';
 
@@ -81,7 +81,7 @@ class Main extends React.Component {
 
     updateUserPref = (orgInfo) => {
         let data = getUserMetaData()
-        data[fields.organizationInfo] = orgInfo
+        data[localFields.organizationInfo] = orgInfo
         updateUserMetaData(this, data)
     }
 

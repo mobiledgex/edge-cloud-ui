@@ -1,6 +1,6 @@
 import * as moment from 'moment'
-import { timezonePref } from './sharedPreferences_util'
 import momentTimezone from "moment-timezone";
+import { getUserMetaData } from '../helper/ls';
 
 export const FORMAT_MMM_DD = 'MMM DD'
 export const FORMAT_FULL_DATE = 'YYYY-MM-DD'
@@ -17,6 +17,11 @@ export const FORMAT_DATE_24_HH_mm = `${FORMAT_FULL_DATE} ${FORMAT_TIME_HH_mm}`
 export const FORMAT_FULL_T_Z = `${FORMAT_FULL_DATE}T${FORMAT_FULL_TIME}Z`
 export const FORMAT_FULL_T = `${FORMAT_FULL_DATE}T${FORMAT_FULL_TIME}`
 export const ONE_DAY = 86400000
+
+const timezonePref = () => {
+    let data = getUserMetaData()
+    return data['Timezone'] ?? timezoneName()
+}
 
 export const timezoneName = () => {
     return moment.tz.guess()
@@ -47,7 +52,7 @@ export const convertToUnix = (date) => {
 }
 
 export const convertToTimezone = (date, timezoneName) => {
-    const timezone = timezoneName ? timezoneName : timezonePref()
+    const timezone = timezoneName ?? timezonePref()
     return date ? moment.tz(date, timezone) : moment.tz(timezone)
 }
 

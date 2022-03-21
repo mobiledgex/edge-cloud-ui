@@ -1,8 +1,8 @@
 import {redux_org} from '../helper/reduxData'
-import { perpetual } from './constant'
+import { LS_USER_META_DATA } from './constant/perpetual'
 
 export const getUserMetaData = () => {
-    let data = localStorage.getItem(perpetual.LS_USER_META_DATA)
+    let data = localStorage.getItem(LS_USER_META_DATA)
     try {
         data = data ? JSON.parse(data) : {}
     }

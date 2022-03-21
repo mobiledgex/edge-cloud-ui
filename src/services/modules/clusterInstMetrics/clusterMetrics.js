@@ -1,14 +1,14 @@
 
 import { UNIT_BYTES, UNIT_PERCENTAGE } from '../../../pages/main/monitoring/helper/unitConvertor';
-import { fields } from '../../model/format';
-import { endpoint } from '../../../helper/constant';
+import { localFields } from '../../fields';
+import { endpoint } from '../..';
 import { redux_org } from '../../../helper/reduxData';
-import { omit, pick } from '../../../helper/constant/operators';
+import { pick } from '../../../helper/constant/operators';
 
 export const customData = (id, data) => {
     switch (id) {
-        case fields.cloudletName:
-            return `${data[fields.cloudletName]} [${data[fields.operatorName]}]`
+        case localFields.cloudletName:
+            return `${data[localFields.cloudletName]} [${data[localFields.operatorName]}]`
     }
 }
 
@@ -22,12 +22,12 @@ export const clusterMetricsKeys = [
 ]
 
 export const clusterMetricsListKeys = [
-    { field: fields.region, label: 'Region', sortable: true, visible: true, width: 70 },
-    { field: fields.clusterName, serverField: 'cluster', label: 'Cluster', sortable: true, visible: true, groupBy: true },
-    { field: fields.organizationName, serverField: 'clusterorg', label: 'Developer', sortable: true, groupBy: true },
-    { field: fields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, groupBy: true, customData: true },
-    { field: fields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, groupBy: true },
-    { field: fields.cloudletLocation, label: 'Location', sortable: false, visible: false, groupBy: false },
+    { field: localFields.region, label: 'Region', sortable: true, visible: true, width: 70 },
+    { field: localFields.clusterName, serverField: 'cluster', label: 'Cluster', sortable: true, visible: true, groupBy: true },
+    { field: localFields.organizationName, serverField: 'clusterorg', label: 'Developer', sortable: true, groupBy: true },
+    { field: localFields.cloudletName, serverField: 'cloudlet', label: 'Cloudlet', sortable: true, groupBy: true, customData: true },
+    { field: localFields.operatorName, serverField: 'cloudletorg', label: 'Operator', sortable: true, groupBy: true },
+    { field: localFields.cloudletLocation, label: 'Location', sortable: false, visible: false, groupBy: false },
     { field: 'cpu', label: 'CPU', sortable: false, visible: true, format: true, isArray: true },
     { field: 'disk', label: 'Disk Usage', sortable: false, visible: true, format: true, isArray: true },
     { field: 'memory', label: 'Memory', sortable: false, visible: true, format: true, isArray: true },
@@ -50,11 +50,11 @@ export const clusterResourceKeys = () => ([
 
 /**New */
 const metricElements = [
-    { field: fields.networkSent, label: 'N/W Sent', serverField: 'sendBytes', unit: UNIT_BYTES },
-    { field: fields.networkReceived, label: 'N/W Received', serverField: 'recvBytes', unit: UNIT_BYTES },
-    { field: fields.cpu, label: 'CPU', serverField: 'cpu', unit: UNIT_PERCENTAGE },
-    { field: fields.mem, label: 'Memory', serverField: 'mem', unit: UNIT_PERCENTAGE },
-    { field: fields.disk, label: 'Disk', serverField: 'disk', unit: UNIT_PERCENTAGE },
+    { field: localFields.networkSent, label: 'N/W Sent', serverField: 'sendBytes', unit: UNIT_BYTES },
+    { field: localFields.networkReceived, label: 'N/W Received', serverField: 'recvBytes', unit: UNIT_BYTES },
+    { field: localFields.cpu, label: 'CPU', serverField: 'cpu', unit: UNIT_PERCENTAGE },
+    { field: localFields.mem, label: 'Memory', serverField: 'mem', unit: UNIT_PERCENTAGE },
+    { field: localFields.disk, label: 'Disk', serverField: 'disk', unit: UNIT_PERCENTAGE },
 ]
 
 export const clusterInstMetricsElements = [
@@ -62,8 +62,8 @@ export const clusterInstMetricsElements = [
 ]
 
 export const clusterMetrics = (self, data, list) => {
-    let requestData = pick(data, [fields.region, fields.starttime, fields.endtime, fields.selector, fields.numsamples])
-    let organization = data[fields.organizationName]
+    let requestData = pick(data, [localFields.region, localFields.starttime, localFields.endtime, localFields.selector, localFields.numsamples])
+    let organization = data[localFields.organizationName]
     if (list) {
         requestData.clusterinsts = list
     }

@@ -1,4 +1,4 @@
-export const responseFields = {
+export const fields = {
     Org: 'Org',
     CloudletPoolOrg: 'CloudletPoolOrg',
     CloudletPool: 'CloudletPool',

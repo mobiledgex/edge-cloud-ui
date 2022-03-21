@@ -1,6 +1,6 @@
 import { MapControl, withLeaflet } from "react-leaflet";
 import L from "leaflet";
-import { fields } from "../../../../services/model/format";
+import { localFields } from "../../../../services/fields";
 import { operators } from "../../../../helper/constant";
 import { PARENT_APP_INST } from "../../../../helper/constant/perpetual";
 class Legend extends MapControl {
@@ -13,9 +13,9 @@ class Legend extends MapControl {
         let index = e.target.id
         if (index) {
             const data = this.props.data[e.target.id]
-            const location = data[fields.cloudletLocation]
-            const key = data[fields.key]
-            this.props.onClick(key, [location[fields.latitude], location[fields.longitude]])
+            const location = data[localFields.cloudletLocation]
+            const key = data[localFields.key]
+            this.props.onClick(key, [location[localFields.latitude], location[localFields.longitude]])
         }
     }
 
@@ -42,14 +42,14 @@ class Legend extends MapControl {
             if (item) {
                 gt = gt + `<tr>
                 <td style='width:50px'>
-                    <div style='width:20px;height:10px;background-color:${item[fields.color]}'></div>
+                    <div style='width:20px;height:10px;background-color:${item[localFields.color]}'></div>
                 </td>
                 <td>
-                    <code>${item[fields.cloudletName]} [${item[fields.operatorName]}]</code>
+                    <code>${item[localFields.cloudletName]} [${item[localFields.operatorName]}]</code>
                 </td>`
                 if (id === PARENT_APP_INST) {
                     gt = gt + `<td>
-                    <code>${item[fields.clusterName]} [${item[fields.clusterdeveloper]}]</code>
+                    <code>${item[localFields.clusterName]} [${item[localFields.clusterdeveloper]}]</code>
                 </td>`
                 }
                 gt = gt + `<td style='width:50px'>
@@ -63,8 +63,8 @@ class Legend extends MapControl {
             }
         })
         gt = gt + '</tbody></table>'
-        const appName = data[0][fields.appName]
-        const version = data[0][fields.version]
+        const appName = data[0][localFields.appName]
+        const version = data[0][localFields.version]
         this.legend = L.control({ position: "topright" });
         this.legend.onAdd = () => {
             const div = L.DomUtil.create("div", "info legend");

@@ -1,7 +1,5 @@
-import { endpoint, perpetual } from '../../../helper/constant'
-import * as formatter from '../../model/format'
-
-let fields = formatter.fields
+import { perpetual } from '../../../helper/constant'
+import { endpoint } from '../..';
 
 export const keys = () => ([
     { field: 'uuid', serverField: 'uid', label: 'ID' },

@@ -5,8 +5,8 @@ import { cloudletMetrics, cloudletMetricsListKeys, cloudletUsageMetrics } from '
 import { showCloudlets } from "../../../../services/modules/cloudlet";
 import { showAppInsts } from "../../../../services/modules/appInst";
 import { PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST } from '../../../../helper/constant/perpetual'
-import { endpoint } from "../../../../helper/constant";
 import { showClusterInsts } from '../../../../services/modules/clusterInst'
+import { endpoint } from '../../../../services';
 
 export const showAPIs = (moduleId) => {
     switch (moduleId) {

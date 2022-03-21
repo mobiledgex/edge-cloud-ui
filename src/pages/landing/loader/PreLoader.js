@@ -7,8 +7,10 @@ import { validatePrivateAccess } from '../../../constant';
 import './style.css'
 import { withRouter } from 'react-router-dom';
 import { redux_org } from '../../../helper/reduxData';
-import { endpoint, perpetual } from '../../../helper/constant';
-import { fetchToken, multiAuthSyncRequest } from '../../../services/service';
+import { perpetual } from '../../../helper/constant';
+import { multiAuthSyncRequest } from '../../../services/service';
+import { endpoint } from '../../../services';
+import { fetchToken } from '../../../services/config';
 
 class LogoLoader extends React.Component {
 
@@ -77,7 +79,6 @@ class LogoLoader extends React.Component {
                     }
                     else if (request.method === endpoint.SHOW_CONTROLLER) {
                         let regions = data.map(item => { return item.Region })
-                        localStorage.setItem(perpetual.LS_REGIONS, regions)
                         this.props.handleRegionInfo(regions)
                     }
                     else if (request.method === endpoint.CURRENT_USER) {

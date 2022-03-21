@@ -5,8 +5,10 @@ import { Icon } from "semantic-ui-react";
 import { Tooltip } from "@material-ui/core";
 import { regionLocation } from "../../constant";
 import isEqual from 'lodash/isEqual'
+import './style.css'
 
 export const MAP_CENTER = [3.2, 23.53]
+
 class MexMap extends React.Component {
 
     constructor(props) {
@@ -16,7 +18,6 @@ class MexMap extends React.Component {
             mapCenter: MAP_CENTER
         }
         this.map = React.createRef();
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
     }
 
     updateView = (mapCenter, zoom) => {
@@ -97,6 +98,7 @@ class MexMap extends React.Component {
                     scrollWheelZoom={wheel ? wheel : false}
                     zoomControl={false}
                     onClick={this.onMapClick}
+                    attributionControl={false}
                     maxBounds={[[-90.0, -180.0], [90.0, 180.0]]}>
                     <TileLayer
                         style={{ width: '100%', height: '100%', zIndex: 1 }}

@@ -11,7 +11,6 @@ export const COLOR_RED = '#ab2424'
 
 export const LS_THASH = '8600b1cdcdf58f43ee8a2152433448fa'
 export const LS_USER_META_DATA = 'usermetadata'
-export const LS_REGIONS = 'regions'
 export const LS_LINE_GRAPH_FULL_SCREEN = 'LineGraphFullScreen'
 export const LS_NOTIFICATION = 'Notification'
 

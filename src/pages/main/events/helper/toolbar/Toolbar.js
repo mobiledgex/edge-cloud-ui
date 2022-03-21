@@ -9,7 +9,7 @@ import { DEFAULT_DURATION_MINUTES } from '../constant';
 import SearchFilter from '../../../../../hoc/filter/SearchFilter';
 import { useSelector } from 'react-redux';
 import { redux_org } from '../../../../../helper/reduxData';
-import { fields } from '../../../../../services/model/format';
+import { localFields } from '../../../../../services/fields';
 import SelectMenu from '../../../../../hoc/selectMenu/SelectMenu';
 import './style.css'
 import { ICON_COLOR } from '../../../../../helper/constant/colors';
@@ -56,7 +56,7 @@ const LeftView = (props) => {
                         {
                             redux_org.isAdmin(orgInfo) && orgList ?
                                 <div className='calendar-dropdown-select'>
-                                    <SelectMenu color='rgba(118, 255, 3, 0.7)' search={true} labelKey={fields.organizationName} dataList={orgList} placeholder='Select Organization' onChange={(value) => onChange(ACTION_ORG, value)} />
+                                    <SelectMenu color='rgba(118, 255, 3, 0.7)' search={true} labelKey={localFields.organizationName} dataList={orgList} placeholder='Select Organization' onChange={(value) => onChange(ACTION_ORG, value)} />
                                 </div> : null
                         }
                     </Box>

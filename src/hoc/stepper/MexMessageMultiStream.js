@@ -7,7 +7,7 @@ import ErrorIcon from '@material-ui/icons/Error';
 import { green, red } from '@material-ui/core/colors';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CloseIcon from '@material-ui/icons/Close';
-import { fields } from '../../services/model/format';
+import { localFields } from '../../services/fields';
 export const CODE_FINISH = 100;
 export const CODE_SUCCESS = 200;
 export const CODE_FAILED = 400;
@@ -73,7 +73,7 @@ const useStyles = makeStyles(theme => ({
 
 export const updateStepper = (stepsArray, labels, data, serverData, wsObj) => {
     let currentSteps = null;
-    let id = data[fields.uuid]
+    let id = data[localFields.uuid]
     header = labels[0].label
     if (stepsArray && stepsArray.length > 0) {
         stepsArray = stepsArray.map((item, i) => {

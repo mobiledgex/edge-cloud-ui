@@ -1,11 +1,11 @@
 import React from 'react';
-import DataView from '../../../container/DataView';
+import DataView from '../../../hoc/datagrid/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import { redux_org } from '../../../helper/reduxData'
 
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import NetworkReg from './Reg';
 import { operatorRoles } from '../../../constant'
 import { HELP_NETWORK_LIST } from "../../../tutorial";
@@ -64,11 +64,11 @@ class NetworkList extends React.Component {
         return ({
             id: perpetual.PAGE_NETWORKS,
             headerLabel: 'Networks',
-            nameField: fields.networkName,
+            nameField: localFields.networkName,
             requestType: [showNetwork],
             selection: !redux_org.isDeveloper(this),
             isRegion: true,
-            sortBy: [fields.region, fields.networkName],
+            sortBy: [localFields.region, localFields.networkName],
             keys: this.keys,
             onAdd: this.canAdd(),
             viewMode: HELP_NETWORK_LIST

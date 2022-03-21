@@ -1,8 +1,9 @@
 import React, { Fragment } from "react";
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
+import { withRouter } from 'react-router-dom';
+import {loadingSpinner, alertInfo} from '../../../actions';
 import MexForms, { INPUT, BUTTON, POPUP_INPUT } from "../../../hoc/forms/MexForms";
-import { fields } from "../../../services/model/format";
+import { localFields } from "../../../services/fields";
 import { Icon } from "semantic-ui-react";
 import { copyData } from '../../../utils/file_util'
 import cloneDeep from "lodash/cloneDeep";
@@ -10,10 +11,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 import { Button, Dialog, DialogContent, DialogTitle, ListItemText, MenuItem, LinearProgress } from '@material-ui/core';
 import { load } from "../../../helper/zxcvbn";
-import { withRouter } from 'react-router-dom';
-import { endpoint } from "../../../helper/constant";
-import { resetPwd, updatePwd } from "../../../services/modules/users";
-import { responseValid, syncRequest } from "../../../services/service";
+import { responseValid } from "../../../services/config";
+import { publicConfig, resetPwd } from "../../../services/modules/landing";
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
 
@@ -88,11 +87,11 @@ class UpdatePassword extends React.Component {
             currentForm.error = 'Password is weak'
             return false;
         }
-        else if (currentForm.field === fields.confirmPassword) {
+        else if (currentForm.field === localFields.confirmPassword) {
             let forms = this.state.forms
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i]
-                if (form.field === fields.password) {
+                if (form.field === localFields.password) {
                     if (value !== form.value) {
                         currentForm.error = 'Password and Confirm Password do not match'
                         return false;
@@ -117,9 +116,10 @@ class UpdatePassword extends React.Component {
     }
 
     onCreate = async (data) => {
-        if (this.props.dialog) {
+        const { dialog, onUpdatePwd } = this.props
+        if (dialog) {
             this.updateState({ loading: true })
-            let mc = await updatePwd(this, { password: data.password })
+            let mc = await onUpdatePwd(data.password)
             if (responseValid(mc)) {
                 this.updateState({ open: false })
                 this.props.handleAlertInfo('success', 'Password updated successfully')
@@ -169,10 +169,10 @@ class UpdatePassword extends React.Component {
         let forms = cloneDeep(this.state.forms)
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.password || form.field === fields.confirmPassword) {
+            if (form.field === localFields.password || form.field === localFields.confirmPassword) {
                 form.value = password
             }
-            if (form.field === fields.password) {
+            if (form.field === localFields.password) {
                 form.rules.type = 'text'
             }
         }
@@ -210,8 +210,8 @@ class UpdatePassword extends React.Component {
 
     forms = () => (
         [
-            { field: fields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
-            { field: fields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword },
+            { field: localFields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
+            { field: localFields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword },
         ]
     )
 
@@ -297,9 +297,9 @@ class UpdatePassword extends React.Component {
     }
 
     fetchPublicConfig = async () => {
-        let mc = await syncRequest(this, { method: endpoint.PUBLIC_CONFIG })
-        if (mc && mc.response && mc.response.status === 200) {
-            this.passwordMinCrackTimeSec = mc.response.data.PasswordMinCrackTimeSec
+        let mc = await publicConfig(this)
+        if (responseValid(mc)) {
+            this.passwordMinCrackTimeSec = mc.response.data?.PasswordMinCrackTimeSec
             this.getFormData()
         }
     }
@@ -318,8 +318,8 @@ class UpdatePassword extends React.Component {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleLoadingSpinner: (data) => { dispatch(loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(alertInfo(mode, msg)) }
     };
 };
 
