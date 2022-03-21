@@ -1,8 +1,8 @@
-import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST } from "../../../../../helper/constant/endpoint"
 import { toJson } from "../../../../../utils/json_util"
 import { map } from "../../../../../services/format/shared";
 import { dataForms } from "./sequence";
 import { localFields } from "../../../../../services/fields";
+import { SHOW_APP_INST, SHOW_CLUSTER_INST, SHOW_CLOUDLET } from "../../../../../services/endpoint";
 
 const formatSequence = (order, index, inp, outputs) => {
     let currentOrder = order[index]

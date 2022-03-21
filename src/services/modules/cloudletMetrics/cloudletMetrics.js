@@ -1,9 +1,8 @@
 import { UNIT_FLOOR, UNIT_GB, UNIT_MB } from '../../../pages/main/monitoring/helper/unitConvertor';
-import { endpoint } from '../../../helper/constant';
 import { pick } from '../../../helper/constant/operators';
 import { CK_ORG, cloudletKeys } from '../cloudlet/primary';
-import { endpoint } from '../..';
 import { localFields } from '../../fields';
+import { endpoint } from '../..';
 
 export const customData = (id, data) => {
     switch (id) {

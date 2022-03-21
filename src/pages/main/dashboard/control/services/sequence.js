@@ -1,5 +1,5 @@
 
-import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST } from "../../../../../helper/constant/endpoint";
+import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST } from "../../../../../services/endpoint";
 import { MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION } from "../../../../../helper/constant/perpetual";
 import * as serverFields from "../../../../../helper/formatter/serverFields";
 import { localFields } from "../../../../../services/fields";

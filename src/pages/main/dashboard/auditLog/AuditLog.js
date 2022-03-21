@@ -3,8 +3,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PassFail from '../../../../hoc/charts/passFail/PassFail'
 import { Header1 } from '../../../../hoc/mexui/headers/Header1'
+import { responseValid } from '../../../../services/config'
 import { showAudits } from '../../../../services/modules/audit'
-import { responseValid } from '../../../../services/service'
 import { currentDate, FORMAT_MMM_DD, subtractDays, utcTime } from '../../../../utils/date_util'
 
 class AuditLog extends React.Component {

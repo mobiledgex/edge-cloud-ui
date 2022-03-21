@@ -1,4 +1,4 @@
-import { responseValid } from "../../../../../services/service"
+import { responseValid } from "../../../../../services/config"
 import { convertUnit } from "../../../monitoring/helper/unitConvertor"
 
 export const formatMetricData = (metricResource, numsamples, mc) => {
