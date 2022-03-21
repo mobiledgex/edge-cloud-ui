@@ -219,7 +219,7 @@ class CloudletReg extends React.Component {
     getDevelopOrg = async (form, forms, isInit) => {
         if (this.developerOrgList.length === 0) {
             this.developerOrgList = await showAuthSyncRequest(self, showOrganizations(self, { type: perpetual.DEVELOPER }))
-            this.developerOrgList = _sort(this.developerOrgList.map(org => (org[fields.organizationName])))
+            this.developerOrgList = _sort(this.developerOrgList.map(org => (org[localFields.organizationName])))
         }
         if (!isInit) {
             this.updateUI(form)
@@ -882,7 +882,7 @@ class CloudletReg extends React.Component {
             { field: localFields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version', advance: false },
             { field: localFields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },
             { field: localFields.maintenanceState, label: 'Maintenance State', formType: SELECT, placeholder: 'Select Maintenance State', rules: { required: false }, visible: this.isUpdate, update: { id: ['30'] }, tip: 'Maintenance allows for planned downtimes of Cloudlets. These states involve message exchanges between the Controller, the AutoProv service, and the CRM. Certain states are only set by certain actors', advance: false },
-            { field: localFields.singleK8sClusterOwner, formType: INPUT, placeholder: 'Enter Single K8s Cluster Owner', label: 'Single K8s Cluster Owner', visible: false, tip: 'single kubernetes cluster cloudlet platforms, cluster is owned by this organization instead of multi-tenant.', update: { id: ['48'] }, advance: false },
+            { field: localFields.singleK8sClusterOwner, formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Single Kubernetes Cluster Owner', label: 'Single K8S Owner', visible: true, tip: 'single kubernetes cluster cloudlet platforms, cluster is owned by this organization instead of multi-tenant.', advance: false },
             { field: localFields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)', advance: false },
             { field: localFields.platformHighAvailability, label: 'Platform High Availability', formType: SWITCH, visible: false, update: { id: ['50'] }, tip: 'Enable platform H/A', advance: false },
             { field: localFields.kafkaCluster, label: 'Kafka Cluster', formType: INPUT, placeholder: 'Enter Kafka Cluster Endpoint', rules: { required: false, onBlur: true }, visible: true, update: { id: ['42'] }, tip: 'Operator provided kafka cluster endpoint to push events to', advance: false },
