@@ -9,7 +9,7 @@ export const keys = (nameOnly) => {
     if (!nameOnly) {
         items = [...items,
             { field: localFields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true, format: true },
-            { field: localFields.role, label: 'Role', sortable: true, visible: true, filter: true, group: true, format: true },
+            { field: localFields.role, label: 'Role Type', sortable: true, visible: true, filter: true, group: true, format: true },
             { field: localFields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: true },
             { field: localFields.address, serverField: 'Address', label: 'Address' },
             { field: localFields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', roles: [perpetual.ADMIN_MANAGER], format: true },
