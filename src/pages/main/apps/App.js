@@ -1,9 +1,9 @@
 import React from 'react';
-import DataView from '../../../container/DataView';
+import DataView from '../../../hoc/datagrid/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import { keys, showApps, deleteApp } from '../../../services/modules/app';
 import AppReg from './Reg';
 import AppInstReg from '../appInst/Reg';
@@ -68,16 +68,16 @@ class AppList extends React.Component {
     /***Action Block */
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.scaleWithCluster) {
+        if (key.field === localFields.scaleWithCluster) {
             return labelFormatter.showYesNo(data[key.field])
         }
-        else if (key.field === fields.trusted) {
+        else if (key.field === localFields.trusted) {
             return labelFormatter.showYesNo(data[key.field])
         }
-        else if (key.field === fields.allowServerless) {
+        else if (key.field === localFields.allowServerless) {
             return labelFormatter.showYesNo(data[key.field])
         }
-        else if(key.field === fields.qosSessionDuration)
+        else if(key.field === localFields.qosSessionDuration)
         {
             return isDetail ? appendSpaceToLetter(data[key.field]) : data[key.field]
         }
@@ -87,10 +87,10 @@ class AppList extends React.Component {
         return ({
             id: perpetual.PAGE_APPS,
             headerLabel: 'Apps',
-            nameField: fields.appName,
+            nameField: localFields.appName,
             requestType: [showApps],
             isRegion: true,
-            sortBy: [fields.region, fields.appName],
+            sortBy: [localFields.region, localFields.appName],
             keys: this.keys,
             onAdd: this.onAdd,
             viewMode: HELP_APP_LIST,

@@ -4,7 +4,7 @@ import { _orderBy } from '../../../../../helper/constant/operators';
 import { legendKeys } from '../../helper/constant';
 import { Skeleton } from '@material-ui/lab';
 import { validateRole } from '../../../../../helper/constant/role';
-import { fields } from '../../../../../services/model/format';
+import { localFields } from '../../../../../services/fields';
 import { healthCheck, NoData } from '../../../../../helper/formatter/ui';
 
 class Legend extends React.Component {
@@ -74,7 +74,7 @@ class Legend extends React.Component {
                 return formatter(column, data, tools)
             }
             else {
-                if (column.field === fields.healthCheck) {
+                if (column.field === localFields.healthCheck) {
                     return healthCheck(undefined, data)
                 }
                 else {

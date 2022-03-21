@@ -1,19 +1,19 @@
 import React from 'react'
 import MyLocationOutlinedIcon from '@material-ui/icons/MyLocationOutlined';
 import { perpetual } from '../../../../../helper/constant';
-import { fields } from '../../../../../services/model/format';
+import { localFields } from '../../../../../services/fields';
 import { IconButton } from '../../../../../hoc/mexui'
 import './style.css'
 import { generateColor } from '../../../../../utils/heatmap_utils';
 import { _avg } from "../../../../../helper/constant/operators"
 
 export const keys = [
-    { label: '0 - 5 ms', field: fields._0s, default: 0 },
-    { label: '5 - 10 ms', field: fields._5ms, default: 0 },
-    { label: '10 - 25 ms', field: fields._10ms, default: 0 },
-    { label: '25 - 50 ms', field: fields._25ms, default: 0 },
-    { label: '50 - 100 ms', field: fields._50ms, default: 0 },
-    { label: '> 100 ms', field: fields._100ms, default: 0 }
+    { label: '0 - 5 ms', field: localFields._0s, default: 0 },
+    { label: '5 - 10 ms', field: localFields._5ms, default: 0 },
+    { label: '10 - 25 ms', field: localFields._10ms, default: 0 },
+    { label: '25 - 50 ms', field: localFields._25ms, default: 0 },
+    { label: '50 - 100 ms', field: localFields._50ms, default: 0 },
+    { label: '> 100 ms', field: localFields._100ms, default: 0 }
 ]
 
 const Details = (props) => {
@@ -38,7 +38,7 @@ const Details = (props) => {
                         {
                             Object.keys(values).map((key, i) => {
                                 const childTotal = values[key][perpetual.CON_TOTAL]
-                                const location = values[key][perpetual.CON_TAGS][fields.location]
+                                const location = values[key][perpetual.CON_TAGS][localFields.location]
                                 return (
                                     <tr key={i}>
                                         <td><IconButton tooltip='View aggregated location tile latency' onMouseOver={()=>{props.onMouseOver(location)}} onMouseOut={props.onMouseOut} onClick={() => { props.onClick(key, values, [location.lat, location.lng]) }}><MyLocationOutlinedIcon style={{ color: generateColor(_avg(childTotal[markerType])) }} /></IconButton></td>

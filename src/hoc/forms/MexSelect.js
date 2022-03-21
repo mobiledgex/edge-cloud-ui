@@ -134,7 +134,7 @@ const MexSelect = (props) => {
                     options={getData(form)}
                     onChange={(e, { value }) => onSelected(value)}
                     value={selected}
-                    style={{ padding: 10, backgroundColor: `${form.error ? 'rgba(211, 46, 46, 0.1)' : '#16181D'}` }} />
+                    style={{ alignItems: 'center', display: 'flex', backgroundColor: `${form.error ? 'rgba(211, 46, 46, 0.1)' : '#16181D'}` }} />
             </div>
     )
 

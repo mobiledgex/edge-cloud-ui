@@ -1,31 +1,32 @@
 import { showAuthSyncRequest } from '../../service';
 import { redux_org } from '../../../helper/reduxData'
-import { endpoint, perpetual } from '../../../helper/constant'
-import { fields } from '../../model/format';
+import { perpetual } from '../../../helper/constant'
+import { endpoint } from '../..';
+import { localFields } from '../../fields';
 import { cloudletKeys } from '../cloudlet';
 
 export const keys = () => ([
-  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key:true },
-  { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization', sortable: true, visible: true, filter: true, key:true },
-  { field: fields.autoPolicyName, serverField: 'key#OS#name', label: 'Auto Policy Name', sortable: true, visible: true, filter: true, key:true },
-  { field: fields.deployClientCount, serverField: 'deploy_client_count', label: 'Deploy Request Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
-  { field: fields.deployIntervalCount, serverField: 'deploy_interval_count', label: 'Deploy Interval Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
-  { field: fields.undeployClientCount, serverField: 'undeploy_client_count', label: 'UnDeploy Request Count', sortable: true, visible: false, dataType: 'Integer', defaultValue: 0 },
-  { field: fields.undeployIntervalCount, serverField: 'undeploy_interval_count', label: 'UnDeploy Interval Count', sortable: true, visible: false, dataType: 'Integer', defaultValue: 0 },
-  { field: fields.minActiveInstances, serverField: 'min_active_instances', label: 'Min Active Instances', sortable: true, visible: false, dataType: 'Integer' },
-  { field: fields.maxInstances, serverField: 'max_instances', label: 'Max Instances', sortable: true, visible: false, dataType: 'Integer' },
-  { field: fields.cloudletCount, label: 'Cloudlet Count', sortable: false, visible: true },
+  { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, key:true },
+  { field: localFields.organizationName, serverField: 'key#OS#organization', label: 'Organization', sortable: true, visible: true, filter: true, key:true },
+  { field: localFields.autoPolicyName, serverField: 'key#OS#name', label: 'Auto Policy Name', sortable: true, visible: true, filter: true, key:true },
+  { field: localFields.deployClientCount, serverField: 'deploy_client_count', label: 'Deploy Request Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
+  { field: localFields.deployIntervalCount, serverField: 'deploy_interval_count', label: 'Deploy Interval Count', sortable: true, visible: true, dataType: 'Integer', defaultValue: 0 },
+  { field: localFields.undeployClientCount, serverField: 'undeploy_client_count', label: 'UnDeploy Request Count', sortable: true, visible: false, dataType: 'Integer', defaultValue: 0 },
+  { field: localFields.undeployIntervalCount, serverField: 'undeploy_interval_count', label: 'UnDeploy Interval Count', sortable: true, visible: false, dataType: 'Integer', defaultValue: 0 },
+  { field: localFields.minActiveInstances, serverField: 'min_active_instances', label: 'Min Active Instances', sortable: true, visible: false, dataType: 'Integer' },
+  { field: localFields.maxInstances, serverField: 'max_instances', label: 'Max Instances', sortable: true, visible: false, dataType: 'Integer' },
+  { field: localFields.cloudletCount, label: 'Cloudlet Count', sortable: false, visible: true },
   {
-    field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets',
-    keys: [{ field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name' },
-    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator' },
-    { field: fields.partnerOperator, serverField: 'key#OS#federated_organization', label: 'Partner Operator' },
-    { field: fields.cloudletLocation, serverField: 'loc', label: 'Location', dataType: perpetual.TYPE_JSON }]
+    field: localFields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets',
+    keys: [{ field: localFields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet Name' },
+    { field: localFields.operatorName, serverField: 'key#OS#organization', label: 'Operator' },
+    { field: localFields.partnerOperator, serverField: 'key#OS#federated_organization', label: 'Partner Operator' },
+    { field: localFields.cloudletLocation, serverField: 'loc', label: 'Location', dataType: perpetual.TYPE_JSON }]
   }
 ])
 
 const getKey = (data) => {
-  return { organization: data[fields.organizationName], name: data[fields.autoPolicyName] }
+  return { organization: data[localFields.organizationName], name: data[localFields.autoPolicyName] }
 }
 
 const getAutoProvCloudletKey = (data, isCreate) => {
@@ -35,7 +36,7 @@ const getAutoProvCloudletKey = (data, isCreate) => {
     autoProvPolicyCloudlet.cloudlet_key = cloudletKeys(data)
   }
   return ({
-    region: data[fields.region],
+    region: data[localFields.region],
     autoProvPolicyCloudlet: autoProvPolicyCloudlet
   })
 }
@@ -55,17 +56,17 @@ const getAutoProvKey = (data, isCreate) => {
   let autoProvPolicy = {}
   autoProvPolicy.key = getKey(data)
   if (isCreate) {
-    autoProvPolicy.deploy_client_count = data[fields.deployClientCount] ? parseInt(data[fields.deployClientCount]) : undefined
-    autoProvPolicy.undeploy_client_count = data[fields.undeployClientCount] ? parseInt(data[fields.undeployClientCount]) : undefined
-    autoProvPolicy.deploy_interval_count = data[fields.deployIntervalCount] ? parseInt(data[fields.deployIntervalCount]) : undefined
-    autoProvPolicy.undeploy_interval_count = data[fields.undeployIntervalCount] ? parseInt(data[fields.undeployIntervalCount]) : undefined
-    autoProvPolicy.min_active_instances = data[fields.minActiveInstances] ? parseInt(data[fields.minActiveInstances]) : undefined
-    autoProvPolicy.max_instances = data[fields.maxInstances] ? parseInt(data[fields.maxInstances]) : undefined
-    autoProvPolicy.fields = data[fields.fields] ? data[fields.fields] : undefined
-    autoProvPolicy.cloudlets = data[fields.cloudlets] ? getCloudletList(data[fields.cloudlets]) : undefined
+    autoProvPolicy.deploy_client_count = data[localFields.deployClientCount] ? parseInt(data[localFields.deployClientCount]) : undefined
+    autoProvPolicy.undeploy_client_count = data[localFields.undeployClientCount] ? parseInt(data[localFields.undeployClientCount]) : undefined
+    autoProvPolicy.deploy_interval_count = data[localFields.deployIntervalCount] ? parseInt(data[localFields.deployIntervalCount]) : undefined
+    autoProvPolicy.undeploy_interval_count = data[localFields.undeployIntervalCount] ? parseInt(data[localFields.undeployIntervalCount]) : undefined
+    autoProvPolicy.min_active_instances = data[localFields.minActiveInstances] ? parseInt(data[localFields.minActiveInstances]) : undefined
+    autoProvPolicy.max_instances = data[localFields.maxInstances] ? parseInt(data[localFields.maxInstances]) : undefined
+    autoProvPolicy.fields = data[localFields.fields] ? data[localFields.fields] : undefined
+    autoProvPolicy.cloudlets = data[localFields.cloudlets] ? getCloudletList(data[localFields.cloudlets]) : undefined
   }
   return ({
-    region: data[fields.region],
+    region: data[localFields.region],
     autoProvPolicy: autoProvPolicy
   })
 }
@@ -86,7 +87,7 @@ export const getAutoProvPolicyList = async (self, data) => {
 
 export const deleteAutoProvPolicy = (self, data) => {
   let requestData = getAutoProvKey(data)
-  return { method: endpoint.DELETE_AUTO_PROV_POLICY, data: requestData, success: `Auto Provisioning Policy ${data[fields.autoPolicyName]} deleted successfully` }
+  return { method: endpoint.DELETE_AUTO_PROV_POLICY, data: requestData, success: `Auto Provisioning Policy ${data[localFields.autoPolicyName]} deleted successfully` }
 }
 
 export const createAutoProvPolicy = (data) => {
@@ -128,15 +129,15 @@ export const multiDataRequest = (keys, mcRequestList) => {
       let apps = []
       for (let j = 0; j < appList.length; j++) {
         let app = appList[j]
-        if (autoProv[fields.autoPolicyName] === app[fields.autoPolicyName]) {
-          apps.push(app[fields.appName])
+        if (autoProv[localFields.autoPolicyName] === app[localFields.autoPolicyName]) {
+          apps.push(app[localFields.appName])
         }
-        else if (app[fields.autoProvPolicies] && app[fields.autoProvPolicies].includes(autoProv[fields.autoPolicyName])) {
-          apps.push(app[fields.appName])
+        else if (app[localFields.autoProvPolicies] && app[localFields.autoProvPolicies].includes(autoProv[localFields.autoPolicyName])) {
+          apps.push(app[localFields.appName])
         }
       }
       if (apps.length > 0) {
-        autoProv[fields.apps] = apps
+        autoProv[localFields.apps] = apps
       }
     }
   }

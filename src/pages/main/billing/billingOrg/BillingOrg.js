@@ -4,8 +4,8 @@ import * as actions from '../../../../actions';
 //redux
 import { connect } from 'react-redux';
 
-import DataView from '../../../../container/DataView';
-import { fields } from '../../../../services/model/format';
+import DataView from '../../../../hoc/datagrid/DataView';
+import { localFields } from '../../../../services/fields';
 import { showBillingOrg, deleteBillingOrg, keys } from '../../../../services/modules/billingorg';
 
 import Invoices from '../invoices/Invoices';
@@ -41,7 +41,7 @@ class BillingOrg extends React.Component {
     onReg = (action, data) => {
         let valid = true
         let actionId = action ? action.id : undefined
-        if (actionId === perpetual.ACTION_BILLING_REMOVE_CHILD && data[fields.children] === undefined) {
+        if (actionId === perpetual.ACTION_BILLING_REMOVE_CHILD && data[localFields.children] === undefined) {
             valid = false
         }
         if (valid) {
@@ -53,7 +53,7 @@ class BillingOrg extends React.Component {
     }
 
     orgActionVisible = (data) => {
-        return data[fields.type] === perpetual.BILLING_TYPE_PARENT.toLowerCase()
+        return data[localFields.type] === perpetual.BILLING_TYPE_PARENT.toLowerCase()
     }
 
     invoices = async (action, data) => {
@@ -78,9 +78,9 @@ class BillingOrg extends React.Component {
         return ({
             id: perpetual.PAGE_BILLING_ORG,
             headerLabel: 'Billing Org',
-            nameField: fields.name,
+            nameField: localFields.name,
             requestType: [showBillingOrg],
-            sortBy: [fields.name],
+            sortBy: [localFields.name],
             keys: this.keys,
             onAdd: redux_org.isAdmin(this) ? this.onReg : undefined,
             grouping: false

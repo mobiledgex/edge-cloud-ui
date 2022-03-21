@@ -1,30 +1,30 @@
 import * as perpetual from "../../../helper/constant/perpetual"
 import { accessType, imageType, vmAppOS, kind, qosProfile } from "../../../helper/formatter/label"
-import { fields } from "../../model/format"
+import { localFields } from "../../fields"
 
 export const customize = (request, value) => {
-    value[fields.trusted] = value[fields.trusted] ? value[fields.trusted] : false
-    value[fields.accessType] = accessType(value[fields.accessType])
-    value[fields.imageType] = imageType(value[fields.imageType])
-    value[fields.vmappostype] = vmAppOS(value[fields.vmappostype])
-    value[fields.qosSessionProfile] = qosProfile(value[fields.qosSessionProfile])
-    value[fields.revision] = value[fields.revision] ? value[fields.revision] : '0'
-    value[fields.deploymentManifest] = value[fields.deploymentManifest] ? value[fields.deploymentManifest].trim() : value[fields.deploymentManifest]
-    if (value[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
-        value[fields.scaleWithCluster] = value[fields.scaleWithCluster] ? value[fields.scaleWithCluster] : false
-        value[fields.allowServerless] = value[fields.allowServerless] ? value[fields.allowServerless] : false
+    value[localFields.trusted] = value[localFields.trusted] ? value[localFields.trusted] : false
+    value[localFields.accessType] = accessType(value[localFields.accessType])
+    value[localFields.imageType] = imageType(value[localFields.imageType])
+    value[localFields.vmappostype] = vmAppOS(value[localFields.vmappostype])
+    value[localFields.qosSessionProfile] = qosProfile(value[localFields.qosSessionProfile])
+    value[localFields.revision] = value[localFields.revision] ? value[localFields.revision] : '0'
+    value[localFields.deploymentManifest] = value[localFields.deploymentManifest] ? value[localFields.deploymentManifest].trim() : value[localFields.deploymentManifest]
+    if (value[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
+        value[localFields.scaleWithCluster] = value[localFields.scaleWithCluster] ? value[localFields.scaleWithCluster] : false
+        value[localFields.allowServerless] = value[localFields.allowServerless] ? value[localFields.allowServerless] : false
     }
-    value[fields.createdAt] = value[fields.createdAt] ? value[fields.createdAt] : undefined
-    value[fields.updatedAt] = value[fields.updatedAt] ? value[fields.updatedAt] : undefined
-    value[fields.autoProvPolicies] = value[fields.autoPolicyName] ? [value[fields.autoPolicyName]] : value[fields.autoProvPolicies]
-    value[fields.autoPolicyName] = undefined
-    if (value[fields.configs]) {
-        let configs = value[fields.configs]
+    value[localFields.createdAt] = value[localFields.createdAt] ? value[localFields.createdAt] : undefined
+    value[localFields.updatedAt] = value[localFields.updatedAt] ? value[localFields.updatedAt] : undefined
+    value[localFields.autoProvPolicies] = value[localFields.autoPolicyName] ? [value[localFields.autoPolicyName]] : value[localFields.autoProvPolicies]
+    value[localFields.autoPolicyName] = undefined
+    if (value[localFields.configs]) {
+        let configs = value[localFields.configs]
         for (let i = 0; i < configs.length; i++) {
             let config = configs[i]
             config.kind = kind(config.kind)
         }
     }
-    value[fields.app_name_version] = `${value[fields.appName]} [${value[fields.version]}]`
+    value[localFields.app_name_version] = `${value[localFields.appName]} [${value[localFields.version]}]`
     return value
 }

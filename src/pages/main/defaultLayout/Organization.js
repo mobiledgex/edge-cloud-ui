@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { ListItem, ListItemText, Popover, Button, Tooltip } from '@material-ui/core';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import BusinessIcon from '@material-ui/icons/Business';
 import { FixedSizeList } from 'react-window';
 import { organizationInfo, privateAccess, loadingSpinner } from '../../../actions';
@@ -29,7 +29,7 @@ const Organization = (props) => {
         const { index, style } = virtualProps;
         return (
             <ListItem button style={style} key={index} onClick={()=>{onSelect(roles[index])}}>
-                <ListItemText primary={roles[index][fields.organizationName]} secondary={roles[index][fields.role]} />
+                <ListItemText primary={roles[index][localFields.organizationName]} secondary={roles[index][localFields.role]} />
             </ListItem>
         );
     }
@@ -38,10 +38,10 @@ const Organization = (props) => {
             {
                 <Tooltip title={<strong style={{ fontSize: 13 }}>Organization</strong>}>
                     <span>
-                        <Button disabled={orgInfo && orgInfo[fields.isAdmin]} style={{ marginTop: 4, textTransform: 'none', height: 30, marginTop: 12 }} onClick={(e) => { setAnchorEl(e.currentTarget) }} tooltip='Organization'>
+                        <Button disabled={orgInfo && orgInfo[localFields.isAdmin]} style={{ marginTop: 4, textTransform: 'none', height: 30, marginTop: 12 }} onClick={(e) => { setAnchorEl(e.currentTarget) }} tooltip='Organization'>
                             <BusinessIcon fontSize='medium' />&nbsp;
                             <h5>
-                                {orgInfo ? orgInfo[fields.organizationName] : 'Select Organization'}
+                                {orgInfo ? orgInfo[localFields.organizationName] : 'Select Organization'}
                             </h5>
                         </Button>
                     </span>

@@ -1,9 +1,11 @@
 import * as service from './service'
-import { fields } from './model/format'
+import * as endpoint from './endpoint'
 import { updateFieldData, updateFieldDataNew } from './update'
+import * as websocket from './socket/socket'
 export {
     service,
     updateFieldData,
     updateFieldDataNew,
-    fields
+    websocket,
+    endpoint
 }

@@ -1,14 +1,14 @@
 /* eslint-disable */
-import { fields } from '../model/format'
+import { localFields } from '../fields'
 import { sendRequest } from './fetch'
 
 const formatData = (roleInfo, org) => {
     let data = {}
-    data[fields.organizationName] = org ? org[fields.organizationName] : 'Mexadmin'
-    data[fields.type] = org ? org[fields.type] : 'admin'
-    data[fields.edgeboxOnly] = org ? org[fields.edgeboxOnly] : undefined
-    data[fields.role] = roleInfo[fields.role]
-    data[fields.username] = roleInfo[fields.username]
+    data[localFields.organizationName] = org ? org[localFields.organizationName] : 'Mexadmin'
+    data[localFields.type] = org ? org[localFields.type] : 'admin'
+    data[localFields.edgeboxOnly] = org ? org[localFields.edgeboxOnly] : undefined
+    data[localFields.role] = roleInfo[localFields.role]
+    data[localFields.username] = roleInfo[localFields.username]
     return data
 }
 const processData = async (worker) => {
@@ -19,7 +19,7 @@ const processData = async (worker) => {
             isAdmin = true
             roleInfo.isAdmin = isAdmin
             let data = formatData(roleInfo)
-            data[fields.isAdmin] = isAdmin
+            data[localFields.isAdmin] = isAdmin
             self.postMessage({ isAdmin, roles: [data] })
             break;
         }
@@ -32,7 +32,7 @@ const processData = async (worker) => {
             let orgs = mc.response.data
             for (let roleInfo of roles) {
                 for (let org of orgs) {
-                    if(org[fields.organizationName] === roleInfo['org'])
+                    if(org[localFields.organizationName] === roleInfo['org'])
                     {
                         dataList.push(formatData(roleInfo, org))
                         break;

@@ -1,29 +1,29 @@
-import { endpoint } from "../../../helper/constant"
-import { fields } from "../../model/format"
+import { endpoint } from "../.."
+import { localFields } from "../../fields"
 
 export const appInstanceKey = (data) => {
     return {
         app_key: {
-            organization: data[fields.organizationName],
-            name: data[fields.appName],
-            version: data[fields.version]
+            organization: data[localFields.organizationName],
+            name: data[localFields.appName],
+            version: data[localFields.version]
         },
         cluster_inst_key: {
             cloudlet_key: {
-                name: data[fields.cloudletName],
-                organization: data[fields.operatorName]
+                name: data[localFields.cloudletName],
+                organization: data[localFields.operatorName]
             },
             cluster_key: {
-                name: data[fields.clusterName]
+                name: data[localFields.clusterName]
             },
-            organization: data[fields.clusterdeveloper]
+            organization: data[localFields.clusterdeveloper]
         }
     }
 }
 
 export const showAppInstClient = (data) => {
     let requestData = {
-        region: data[fields.region],
+        region: data[localFields.region],
         appinstclientkey: {
             app_inst_key: appInstanceKey(data)
         },

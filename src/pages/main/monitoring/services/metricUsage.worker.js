@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { CON_TAGS, CON_TOTAL, CON_VALUES, PARENT_APP_INST } from "../../../../helper/constant/perpetual"
-import { fields } from "../../../../services/model/format"
+import { localFields } from "../../../../services/fields"
 import { center } from "../../../../utils/math_utils"
 import { fetchColorWithElimination } from "../../../../utils/color_utils"
 import { generateColor, severityHexColors } from "../../../../utils/heatmap_utils"
@@ -109,7 +109,7 @@ const formatTile = (tags, item) => {
             }
         }
     })
-    tags[fields.location] = center(...geo1, ...geo2)
+    tags[localFields.location] = center(...geo1, ...geo2)
 }
 
 const sumLatency = (columns, total, values, isObject) => {
@@ -147,7 +147,7 @@ const nGrouper = (parent, key, value, columns, selections, levellength, level) =
         value.forEach((item, i) => {
             const column = columns[i]
             if (column && column.groupBy === level) {
-                if (column.field === fields.locationtile) {
+                if (column.field === localFields.locationtile) {
                     formatTile(tags, item)
                 }
                 else {
@@ -172,8 +172,8 @@ const nGrouper = (parent, key, value, columns, selections, levellength, level) =
                     break;
                 }
             }
-            const location = selection[fields.cloudletLocation]
-            tags[fields.cloudletLocation] = location
+            const location = selection[localFields.cloudletLocation]
+            tags[localFields.cloudletLocation] = location
         }
 
         parent[key][CON_TAGS] = tags
@@ -277,7 +277,7 @@ const formatMetricUsage = (worker) => {
                     let dataValid = false
                     if (id === PARENT_APP_INST) {
                         for (let selection of selections) {
-                            if (selection[fields.cloudletName] === data[CON_TAGS]['cloudlet'] && selection[fields.operatorName] === data[CON_TAGS]['cloudletorg'] && selection[fields.clusterName] === data[CON_TAGS]['cluster'] && selection[fields.clusterdeveloper] === data[CON_TAGS]['clusterorg']) {
+                            if (selection[localFields.cloudletName] === data[CON_TAGS]['cloudlet'] && selection[localFields.operatorName] === data[CON_TAGS]['cloudletorg'] && selection[localFields.clusterName] === data[CON_TAGS]['cluster'] && selection[localFields.clusterdeveloper] === data[CON_TAGS]['clusterorg']) {
                                 dataValid = true
                                 break;
                             }
@@ -294,7 +294,7 @@ const formatMetricUsage = (worker) => {
                             let valid = false
                             for (let i = 0; i < columns.length; i++) {
                                 let column = columns[i]
-                                if (column === fields._0s || column === fields._5ms || column === fields._10ms || column === fields._25ms || column === fields._50ms || column === fields._100ms) {
+                                if (column === localFields._0s || column === localFields._5ms || column === localFields._10ms || column === localFields._25ms || column === localFields._50ms || column === localFields._100ms) {
                                     if (item[i] !== null) {
                                         valid = true
                                         break;

@@ -3,17 +3,17 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../../actions';
 import { Button, Typography } from '@material-ui/core'
 import MexTable from '../../../../../hoc/datagrid/MexTable'
-import { fields } from '../../../../../services'
 import { registerPartnerZone, showPartnerFederatorZone } from '../../../../../services/modules/partnerZones/partnerZones'
 import { authSyncRequest, showAuthSyncRequest } from '../../../../../services/service'
 import { withRouter } from 'react-router-dom';
+import { localFields } from '../../../../../services/fields';
 
 export const zoneKeys = () => ([
-    { field: fields.partnerFederationName, label: 'Federation Name', visible: true },
-    { field: fields.operatorName, label: 'Operator', visible: true },
-    { field: fields.partnerOperatorName, label: 'Partner Operator', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.zoneId, label: 'Zone', serverField: 'zoneid', visible: true },
-    { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true }
+    { field: localFields.partnerFederationName, label: 'Federation Name', visible: true },
+    { field: localFields.operatorName, label: 'Operator', visible: true },
+    { field: localFields.partnerOperatorName, label: 'Partner Operator', serverField: 'operatorid', sortable: true, visible: true, filter: true, key: true },
+    { field: localFields.zoneId, label: 'Zone', serverField: 'zoneid', visible: true },
+    { field: localFields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true }
 ])
 
 class ReviewZones extends React.Component {
@@ -41,14 +41,14 @@ class ReviewZones extends React.Component {
             let selections = []
             zones.forEach(item => {
                 if (selected.includes(item.uuid)) {
-                    selections.push(item[fields.zoneId])
+                    selections.push(item[localFields.zoneId])
                 }
             })
 
             let requestData = {
                 zoneid: selections,
-                operatorName: data[fields.operatorName],
-                partnerFederationName: data[fields.partnerFederationName]
+                operatorName: data[localFields.operatorName],
+                partnerFederationName: data[localFields.partnerFederationName]
             }
             let mc = await authSyncRequest(this, registerPartnerZone(requestData))
             if (mc && mc.response && mc.response.status === 200) {

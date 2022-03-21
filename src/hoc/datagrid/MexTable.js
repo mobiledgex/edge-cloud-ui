@@ -7,11 +7,11 @@ import Paper from '@material-ui/core/Paper';
 import { AutoSizer, Column, Table } from 'react-virtualized';
 import { Icon, IconButton } from '../mexui';
 import Actions from './action/Action';
-import { fields } from '../../services';
 import { NoData } from '../../helper/formatter/ui';
 import { ICON_COLOR } from '../../helper/constant/colors'; 
 import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined';
 import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined';
+import { localFields } from '../../services/fields';
 
 const styles = (theme) => ({
     flexContainer: {
@@ -350,11 +350,11 @@ export default function MexTable(props) {
     }, [dataList]);
 
     let columns = []
-    if (selection) { columns.push({ field: fields.checkbox, label: false, type: ELE_CHECKBOX, visible: true, width: 60, fixedWidth: true, clickable: true }) }
+    if (selection) { columns.push({ field: localFields.checkbox, label: false, type: ELE_CHECKBOX, visible: true, width: 60, fixedWidth: true, clickable: true }) }
     let columnCount = 0
 
     if (iconKeys && iconKeys.length > 0) {
-        columns.push({ field: fields.listFilter, label: '', type: ELE_ICON, visible: true, width: 37 * iconKeys.length , fixedWidth: true })
+        columns.push({ field: localFields.listFilter, label: '', type: ELE_ICON, visible: true, width: 37 * iconKeys.length , fixedWidth: true })
     }
     columns = [...columns, ...keys.filter(key => {
         let valid = key.visible
@@ -366,7 +366,7 @@ export default function MexTable(props) {
     })]
 
     if (actionMenu && actionMenu.length > 0) {
-        columns.push({ field: fields.actions, label: 'Actions', type: ELE_BUTTON, visible: true, width: 100, fixedWidth: true, clickable: true })
+        columns.push({ field: localFields.actions, label: 'Actions', type: ELE_BUTTON, visible: true, width: 100, fixedWidth: true, clickable: true })
     }
 
     const onRowClick = (e) => {
@@ -375,10 +375,10 @@ export default function MexTable(props) {
     }
 
     const onCellClick = (e, column, data) => {
-        if (column.field === fields.actions) {
+        if (column.field === localFields.actions) {
             setAnchorEl({ target: e.currentTarget, data })
         }
-        else if (column.field === fields.checkbox) {
+        else if (column.field === localFields.checkbox) {
             const exist = selected.includes(data.uuid);
             let newSelected = [];
 

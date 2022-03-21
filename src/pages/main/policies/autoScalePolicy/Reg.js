@@ -4,7 +4,7 @@ import MexForms, { INPUT, MAIN_HEADER, SELECT, MULTI_SELECT } from '../../../../
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 import { redux_org} from '../../../../helper/reduxData'
 //model
 import { getOrganizationList } from '../../../../services/modules/organization';
@@ -14,6 +14,7 @@ import { Grid } from '@material-ui/core';
 import { service, updateFieldData } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';
 import cloneDeep from 'lodash/cloneDeep';
+import { responseValid } from '../../../../services/config';
 
 class AutoScalePolicyReg extends React.Component {
     constructor(props) {
@@ -41,11 +42,11 @@ class AutoScalePolicyReg extends React.Component {
                 currentForm.error = 'Node must be greater than 0'
                 return false;
             }
-            else if (currentForm.field === fields.maximumNodes) {
+            else if (currentForm.field === localFields.maximumNodes) {
                 let forms = this.state.forms
                 for (let i = 0; i < forms.length; i++) {
                     let form = forms[i]
-                    if (form.field === fields.minimumNodes) {
+                    if (form.field === localFields.minimumNodes) {
                         let minNode = parseInt(form.value)
                         if (value <= minNode) {
                             currentForm.error = 'Maximum nodes must be greater than minimum nodes'
@@ -85,15 +86,15 @@ class AutoScalePolicyReg extends React.Component {
 
     getForms = () => ([
         { label: `${this.isUpdate ? 'Update' : 'Create'} Auto Scale Policy`, formType: MAIN_HEADER, visible: true },
-        { field: fields.region, label: 'Region', formType: MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', tip: 'Select region where you want to create policy', update: { key: true } },
-        { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Name of the Organization that this policy belongs to', update: { key: true } },
-        { field: fields.autoScalePolicyName, label: 'Auto Scale Policy Name', formType: INPUT, placeholder: 'Enter Auto Scale Policy Name', rules: { required: true }, visible: true, tip: 'Policy name', update: { key: true } },
-        { field: fields.minimumNodes, label: 'Minimum Nodes', formType: INPUT, placeholder: 'Enter Minimum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['3'] }, dataValidateFunc: this.validateNodes, tip: 'Minimum number of cluster nodes' },
-        { field: fields.maximumNodes, label: 'Maximum Nodes', formType: INPUT, placeholder: 'Enter Maximum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['4'] }, dataValidateFunc: this.validateNodes, tip: 'Maximum number of cluster nodes' },
-        { field: fields.stabilizationWindowSec, label: 'Stabilization Window (sec)', formType: INPUT, placeholder: 'Enter Stabilization Window In Seconds', unit: 'sec', visible: true, rules: { type: 'number', required: true }, update: { id: ['8'] }, tip: 'Stabilization window is the time for which past triggers are considered; the largest scale factor is always taken.' },
-        { field: fields.targetCPU, label: 'Target CPU', formType: INPUT, placeholder: 'Enter Target CPU', rules: { type: 'number' }, unit: '%', visible: true, dataValidateFunc: this.validateThreshold, update: { id: ['9'] }, tip: 'Target per-node cpu utilization (percentage between 1 to 100)' },
-        { field: fields.targetMEM, label: 'Target Memory', formType: INPUT, placeholder: 'Enter Target Memory', rules: { type: 'number' }, unit: '%', visible: true, dataValidateFunc: this.validateThreshold, update: { id: ['10'] }, tip: 'Target per-node memory utilization (percentage between 1 to 100)' },
-        { field: fields.targetActiveConnections, label: 'Target Active Connections', formType: INPUT, placeholder: 'Enter Target Active Connections', visible: true, rules: { type: 'number' }, update: { id: ['11'] }, tip: 'Target per-node number of active connections' },
+        { field: localFields.region, label: 'Region', formType: MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, serverField: 'region', tip: 'Select region where you want to create policy', update: { key: true } },
+        { field: localFields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Name of the Organization that this policy belongs to', update: { key: true } },
+        { field: localFields.autoScalePolicyName, label: 'Auto Scale Policy Name', formType: INPUT, placeholder: 'Enter Auto Scale Policy Name', rules: { required: true }, visible: true, tip: 'Policy name', update: { key: true } },
+        { field: localFields.minimumNodes, label: 'Minimum Nodes', formType: INPUT, placeholder: 'Enter Minimum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['3'] }, dataValidateFunc: this.validateNodes, tip: 'Minimum number of cluster nodes' },
+        { field: localFields.maximumNodes, label: 'Maximum Nodes', formType: INPUT, placeholder: 'Enter Maximum Nodes', rules: { type: 'number', required: true, onBlur: true }, visible: true, update: { id: ['4'] }, dataValidateFunc: this.validateNodes, tip: 'Maximum number of cluster nodes' },
+        { field: localFields.stabilizationWindowSec, label: 'Stabilization Window (sec)', formType: INPUT, placeholder: 'Enter Stabilization Window In Seconds', unit: 'sec', visible: true, rules: { type: 'number', required: true }, update: { id: ['8'] }, tip: 'Stabilization window is the time for which past triggers are considered; the largest scale factor is always taken.' },
+        { field: localFields.targetCPU, label: 'Target CPU', formType: INPUT, placeholder: 'Enter Target CPU', rules: { type: 'number' }, unit: '%', visible: true, dataValidateFunc: this.validateThreshold, update: { id: ['9'] }, tip: 'Target per-node cpu utilization (percentage between 1 to 100)' },
+        { field: localFields.targetMEM, label: 'Target Memory', formType: INPUT, placeholder: 'Enter Target Memory', rules: { type: 'number' }, unit: '%', visible: true, dataValidateFunc: this.validateThreshold, update: { id: ['10'] }, tip: 'Target per-node memory utilization (percentage between 1 to 100)' },
+        { field: localFields.targetActiveConnections, label: 'Target Active Connections', formType: INPUT, placeholder: 'Enter Target Active Connections', visible: true, rules: { type: 'number' }, update: { id: ['11'] }, tip: 'Target per-node number of active connections' },
     ])
 
 
@@ -104,7 +105,7 @@ class AutoScalePolicyReg extends React.Component {
                 let updateData = updateFieldData(this, this.state.forms, data, this.props.data)
                 if (updateData.fields.length > 0) {
                     mc = await updateAutoScalePolicy(this, updateData)
-                    if (service.responseValid(mc)) {
+                    if (responseValid(mc)) {
                         let autoscalepolicy = mc.request.data.autoscalepolicy.key.name;
                         this.props.handleAlertInfo('success', `Auto Scale Policy ${autoscalepolicy} updated successfully`)
                         this.props.onClose(true)
@@ -112,7 +113,7 @@ class AutoScalePolicyReg extends React.Component {
                 }
             }
             else {
-                let regions = data[fields.region]
+                let regions = data[localFields.region]
                 let requestList = []
                 if (regions.includes('All')) {
                     regions = cloneDeep(this.regions)
@@ -120,7 +121,7 @@ class AutoScalePolicyReg extends React.Component {
                 }
                 regions.map(region => {
                     let requestData = cloneDeep(data)
-                    requestData[fields.region] = region
+                    requestData[localFields.region] = region
                     requestList.push(createAutoScalePolicy(requestData))
                 })
 
@@ -171,7 +172,7 @@ class AutoScalePolicyReg extends React.Component {
     disableFields = (form) => {
         let rules = form.rules ? form.rules : {}
         let field = form.field
-        if (field === fields.organizationName || field === fields.region || field === fields.autoScalePolicyName) {
+        if (field === localFields.organizationName || field === localFields.region || field === localFields.autoScalePolicyName) {
             rules.disabled = true;
         }
     }
@@ -182,10 +183,10 @@ class AutoScalePolicyReg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT || form.formType === MULTI_SELECT) {
                     switch (form.field) {
-                        case fields.organizationName:
+                        case localFields.organizationName:
                             form.options = this.organizationList
                             break;
-                        case fields.region:
+                        case localFields.region:
                             form.options = this.regions
                             break;
                         default:
@@ -200,7 +201,7 @@ class AutoScalePolicyReg extends React.Component {
             else if (form.label) {
                 if (data) {
                     if (form.label === 'Outbound Security Rules') {
-                        form.visible = data[fields.outboundSecurityRules] && data[fields.outboundSecurityRules].length > 0 ? true : false
+                        form.visible = data[localFields.outboundSecurityRules] && data[localFields.outboundSecurityRules].length > 0 ? true : false
                     }
                 }
             }
@@ -215,7 +216,7 @@ class AutoScalePolicyReg extends React.Component {
             { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
         if (data) {
             let organization = {}
-            organization[fields.organizationName] = data[fields.organizationName]
+            organization[localFields.organizationName] = data[localFields.organizationName]
             this.organizationList = [organization]
 
             this.loadData(forms, data)
