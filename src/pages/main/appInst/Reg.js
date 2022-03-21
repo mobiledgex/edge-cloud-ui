@@ -330,15 +330,15 @@ class AppInstReg extends React.Component {
 
     cloudletValueChange = (currentForm, forms, isInit) => {
         let operator, valid = undefined
-        if (!isInit) {
-            valid = this.getSpecificCloudletField(currentForm.value, operator)
-        }
         for(const form of forms)
         {
             if (form.field === localFields.operatorName) {
                 operator = form.value
                 break;
             } 
+        }
+        if (!isInit) {
+            valid = this.getSpecificCloudletField(currentForm.value, operator)
         }
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
@@ -353,7 +353,7 @@ class AppInstReg extends React.Component {
                 }
                 this.updateUI(form)
             }
-            if (form.field === fields.autoClusterInstance) {
+            if (form.field === localFields.autoClusterInstance) {
                 if (!isInit) {
                     form.rules.disabled = valid
                 }
@@ -374,8 +374,8 @@ class AppInstReg extends React.Component {
     }
 
     getSpecificCloudletField = (values, operator) => {
-        return Array.isArray(values) && values && values.some(cloudletName => {
-            return fetchCloudletField(this.cloudletList, { operatorName: operator, cloudletName }, fields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
+        return Array.isArray(values) && values.some(cloudletName => {
+            return fetchCloudletField(this.cloudletList, { operatorName: operator, cloudletName }, localFields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
         })
     }
 

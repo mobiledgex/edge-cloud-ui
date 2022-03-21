@@ -54,7 +54,7 @@ export const getAppInstanceKey = (data) => {
     app_key: { organization: data[localFields.organizationName], name: data[localFields.appName], version: data[localFields.version] },
     cluster_inst_key: {
       cloudlet_key: cloudletKeys(data),
-      cluster_key: { name: data[fields.clusterName] ? data[fields.clusterName] : '' },
+      cluster_key: { name: data[localFields.clusterName] ? data[localFields.clusterName] : 'DefaultVMCluster' },
       organization: ''
     }
   }
