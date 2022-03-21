@@ -1,75 +1,77 @@
-import * as formatter from '../../model/format'
-import * as serverData from '../../model/serverData'
+
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import * as constant from '../../../constant'
 import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util'
 import { idFormatter, serverFields } from '../../../helper/formatter'
 import { redux_org } from '../../../helper/reduxData'
-import { endpoint, perpetual } from '../../../helper/constant'
+import { perpetual } from '../../../helper/constant'
+import { endpoint } from '../..';
 import { customize } from '../../modules/cloudlet'
 import { generateUUID } from '../../format/shared'
 import { cloudletKeys } from './primary';
+import { websocket } from '../..';
+import { localFields } from '../../fields';
 
-const fields = formatter.fields;
+
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
-    { field: fields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group: true, key: true },
-    { field: fields.partnerOperator, serverField: 'key#OS#federated_organization', label: 'Partner Operator' },
-    { field: fields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: perpetual.TYPE_JSON },
-    { field: fields.latitude, serverField: 'location#OS#latitude', label: 'Longitude', detailView: false },
-    { field: fields.longitude, serverField: 'location#OS#longitude', label: 'Latitude', detailView: false },
-    { field: fields.ipSupport, serverField: 'ip_support', label: 'IP Support' },
-    { field: fields.numDynamicIPs, serverField: 'num_dynamic_ips', label: 'Number of Dynamic IPs' },
-    { field: fields.physicalName, serverField: 'physical_name', label: '	Physical Name' },
-    { field: fields.platformType, serverField: 'platform_type', label: 'Platform Type' },
-    { field: fields.vmPool, serverField: 'vm_pool', label: 'VM Pool' },
-    { field: fields.openRCData, serverField: 'access_vars#OS#OPENRC_DATA', label: 'Open RC Data' },
-    { field: fields.caCertdata, serverField: 'access_vars#OS#CACERT_DATA', label: 'CA Cert Data' },
-    { field: fields.cloudletStatus, label: 'Cloudlet Status', visible: true, format: true },
-    { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true, format: true },
-    { field: fields.status, serverField: 'status', label: 'Status', dataType: perpetual.TYPE_JSON, detailView: false },
-    { field: fields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: constant.operatorRoles },
-    { field: fields.vmImageVersion, serverField: 'vm_image_version', label: 'VM Image Version', roles: constant.operatorRoles },
-    { field: fields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: perpetual.TYPE_JSON },
-    { field: fields.gpuDriverName, serverField: 'gpu_config#OS#driver#OS#name', label: 'GPU Driver' },
-    { field: fields.gpuORG, serverField: 'gpu_config#OS#driver#OS#organization', label: 'GPU Organization' },
-    { field: fields.envVars, serverField: 'env_var', label: 'Environment Variables', dataType: perpetual.TYPE_JSON },
-    { field: fields.resourceQuotas, serverField: 'resource_quotas', label: 'Resource Quotas', dataType: perpetual.TYPE_JSON },
-    { field: fields.defaultResourceAlertThreshold, serverField: 'default_resource_alert_threshold', label: 'Default Resource Alert Threshold' },
-    { field: fields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access' },
-    { field: fields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name' },
-    { field: fields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name' },
-    { field: fields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView: false },
-    { field: fields.trustPolicyName, serverField: 'trust_policy', label: 'Trust Policy' },
-    { field: fields.kafkaCluster, serverField: 'kafka_cluster', label: 'Kafka Cluster' },
-    { field: fields.errors, serverField: 'errors', label: 'Errors', dataType: perpetual.TYPE_YAML },
-    { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
-    { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
-    { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', detailView: false },
-    { field: fields.gpuExist, label: 'GPU', detailView: false },
-    { field: fields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING },
-    { field: fields.singleK8sClusterOwner, label: 'Single Kubernetes Cluster Owner', serverField: 'single_kubernetes_cluster_owner', dataType: perpetual.TYPE_STRING },
-    { field: fields.platformHighAvailability, serverField: 'platform_high_availability', label: 'Platform High Availability',format:true },
-    { field: fields.deployment, serverField: 'deployment', label: 'Deployment Type' }
+    { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
+    { field: localFields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group: true, key: true },
+    { field: localFields.partnerOperator, serverField: 'key#OS#federated_organization', label: 'Partner Operator' },
+    { field: localFields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet', sortable: true, visible: true, filter: true, key: true },
+    { field: localFields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: perpetual.TYPE_JSON },
+    { field: localFields.latitude, serverField: 'location#OS#latitude', label: 'Longitude', detailView: false },
+    { field: localFields.longitude, serverField: 'location#OS#longitude', label: 'Latitude', detailView: false },
+    { field: localFields.ipSupport, serverField: 'ip_support', label: 'IP Support' },
+    { field: localFields.numDynamicIPs, serverField: 'num_dynamic_ips', label: 'Number of Dynamic IPs' },
+    { field: localFields.physicalName, serverField: 'physical_name', label: '	Physical Name' },
+    { field: localFields.platformType, serverField: 'platform_type', label: 'Platform Type' },
+    { field: localFields.vmPool, serverField: 'vm_pool', label: 'VM Pool' },
+    { field: localFields.openRCData, serverField: 'access_vars#OS#OPENRC_DATA', label: 'Open RC Data' },
+    { field: localFields.caCertdata, serverField: 'access_vars#OS#CACERT_DATA', label: 'CA Cert Data' },
+    { field: localFields.cloudletStatus, label: 'Cloudlet Status', visible: true, format: true },
+    { field: localFields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true, format: true },
+    { field: localFields.status, serverField: 'status', label: 'Status', dataType: perpetual.TYPE_JSON, detailView: false },
+    { field: localFields.containerVersion, serverField: 'container_version', label: 'Container Version', roles: constant.operatorRoles },
+    { field: localFields.vmImageVersion, serverField: 'vm_image_version', label: 'VM Image Version', roles: constant.operatorRoles },
+    { field: localFields.restagmap, serverField: 'res_tag_map', label: 'Resource Mapping', dataType: perpetual.TYPE_JSON },
+    { field: localFields.gpuDriverName, serverField: 'gpu_config#OS#driver#OS#name', label: 'GPU Driver' },
+    { field: localFields.gpuORG, serverField: 'gpu_config#OS#driver#OS#organization', label: 'GPU Organization' },
+    { field: localFields.envVars, serverField: 'env_var', label: 'Environment Variables', dataType: perpetual.TYPE_JSON },
+    { field: localFields.resourceQuotas, serverField: 'resource_quotas', label: 'Resource Quotas', dataType: perpetual.TYPE_JSON },
+    { field: localFields.defaultResourceAlertThreshold, serverField: 'default_resource_alert_threshold', label: 'Default Resource Alert Threshold' },
+    { field: localFields.infraApiAccess, serverField: 'infra_api_access', label: 'Infra API Access' },
+    { field: localFields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name' },
+    { field: localFields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name' },
+    { field: localFields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView: false },
+    { field: localFields.trustPolicyName, serverField: 'trust_policy', label: 'Trust Policy' },
+    { field: localFields.kafkaCluster, serverField: 'kafka_cluster', label: 'Kafka Cluster' },
+    { field: localFields.errors, serverField: 'errors', label: 'Errors', dataType: perpetual.TYPE_YAML },
+    { field: localFields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
+    { field: localFields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
+    { field: localFields.trusted, label: 'Trusted', icon: 'trusted.svg', detailView: false },
+    { field: localFields.gpuExist, label: 'GPU', detailView: false },
+    { field: localFields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING },
+    { field: localFields.singleK8sClusterOwner, label: 'Single Kubernetes Cluster Owner', serverField: 'single_kubernetes_cluster_owner', dataType: perpetual.TYPE_STRING },
+    { field: localFields.platformHighAvailability, serverField: 'platform_high_availability', label: 'Platform High Availability', format:true },
+    { field: localFields.deployment, serverField: 'deployment', label: 'Deployment Type' }
 ])
 
 export const iconKeys = () => ([
-    { field: fields.gpuExist, label: 'GPU', icon: 'gpu_green.svg', clicked: false, count: 0 },
-    { field: fields.trusted, label: 'Trusted', icon: 'trusted.svg', clicked: false, count: 0 },
-    { field: fields.partnerOperator, label: 'Federation', icon: 'star_rate_outlined', clicked: false, count: 0 }
+    { field: localFields.gpuExist, label: 'GPU', icon: 'gpu_green.svg', clicked: false, count: 0 },
+    { field: localFields.trusted, label: 'Trusted', icon: 'trusted.svg', clicked: false, count: 0 },
+    { field: localFields.partnerOperator, label: 'Federation', icon: 'star_rate_outlined', clicked: false, count: 0 }
 ])
 
 export const getRequestData = (data) => {
     let cloudlet = {}
     cloudlet.key = cloudletKeys(data)
 
-    if (data[fields.allianceOrganization]) {
-        cloudlet.organization = data[fields.allianceOrganization]
+    if (data[localFields.allianceOrganization]) {
+        cloudlet.organization = data[localFields.allianceOrganization]
     }
     return ({
-        region: data[fields.region],
+        region: data[localFields.region],
         cloudletallianceorg: cloudlet
     })
 }
@@ -78,102 +80,102 @@ export const getKey = (data, isCreate) => {
     let cloudlet = {}
     cloudlet.key = cloudletKeys(data)
     if (isCreate) {
-        if (data[fields.cloudletLocation]) {
-            cloudlet.location = data[fields.cloudletLocation]
+        if (data[localFields.cloudletLocation]) {
+            cloudlet.location = data[localFields.cloudletLocation]
         }
-        if (data[fields.numDynamicIPs]) {
-            cloudlet.num_dynamic_ips = parseInt(data[fields.numDynamicIPs])
+        if (data[localFields.numDynamicIPs]) {
+            cloudlet.num_dynamic_ips = parseInt(data[localFields.numDynamicIPs])
         }
-        if (data[fields.physicalName]) {
-            cloudlet.physical_name = data[fields.physicalName]
+        if (data[localFields.physicalName]) {
+            cloudlet.physical_name = data[localFields.physicalName]
         }
-        if (data[fields.ipSupport]) {
-            cloudlet.ip_support = idFormatter.ipSupport(data[fields.ipSupport])
+        if (data[localFields.ipSupport]) {
+            cloudlet.ip_support = idFormatter.ipSupport(data[localFields.ipSupport])
         }
-        if (data[fields.platformType]) {
-            cloudlet.platform_type = idFormatter.platformType(data[fields.platformType])
+        if (data[localFields.platformType]) {
+            cloudlet.platform_type = idFormatter.platformType(data[localFields.platformType])
         }
-        if (data[fields.vmPool]) {
-            cloudlet.vm_pool = data[fields.vmPool]
+        if (data[localFields.vmPool]) {
+            cloudlet.vm_pool = data[localFields.vmPool]
         }
-        if (data[fields.infraApiAccess]) {
-            cloudlet.infra_api_access = idFormatter.infraApiAccess(data[fields.infraApiAccess])
+        if (data[localFields.infraApiAccess]) {
+            cloudlet.infra_api_access = idFormatter.infraApiAccess(data[localFields.infraApiAccess])
         }
         let accessvars = {}
-        if (data[fields.openRCData] || data[fields.caCertdata]) {
-            accessvars.OPENRC_DATA = data[fields.openRCData] ? data[fields.openRCData] : undefined
-            accessvars.CACERT_DATA = data[fields.caCertdata] ? data[fields.caCertdata] : undefined
+        if (data[localFields.openRCData] || data[localFields.caCertdata]) {
+            accessvars.OPENRC_DATA = data[localFields.openRCData] ? data[localFields.openRCData] : undefined
+            accessvars.CACERT_DATA = data[localFields.caCertdata] ? data[localFields.caCertdata] : undefined
             cloudlet.access_vars = accessvars
         }
-        if (data[fields.containerVersion]) {
-            cloudlet.container_version = data[fields.containerVersion]
+        if (data[localFields.containerVersion]) {
+            cloudlet.container_version = data[localFields.containerVersion]
         }
-        if (data[fields.vmImageVersion]) {
-            cloudlet.vm_image_version = data[fields.vmImageVersion]
+        if (data[localFields.vmImageVersion]) {
+            cloudlet.vm_image_version = data[localFields.vmImageVersion]
         }
-        if (data[fields.envVars]) {
-            cloudlet.env_var = data[fields.envVars]
+        if (data[localFields.envVars]) {
+            cloudlet.env_var = data[localFields.envVars]
         }
-        if (data[fields.resourceQuotas]) {
-            cloudlet.resource_quotas = data[fields.resourceQuotas]
+        if (data[localFields.resourceQuotas]) {
+            cloudlet.resource_quotas = data[localFields.resourceQuotas]
         }
-        if (data[fields.trustPolicyName]) {
-            cloudlet.trust_policy = data[fields.trustPolicyName]
-        }
-
-        if (data[fields.maintenanceState]) {
-            cloudlet.maintenance_state = idFormatter.maintainance(data[fields.maintenanceState])
+        if (data[localFields.trustPolicyName]) {
+            cloudlet.trust_policy = data[localFields.trustPolicyName]
         }
 
-        if (data[fields.kafkaCluster]) {
-            cloudlet.kafka_cluster = data[fields.kafkaCluster]
+        if (data[localFields.maintenanceState]) {
+            cloudlet.maintenance_state = idFormatter.maintainance(data[localFields.maintenanceState])
         }
 
-        if (data[fields.kafkaUser]) {
-            cloudlet.kafka_user = data[fields.kafkaUser]
+        if (data[localFields.kafkaCluster]) {
+            cloudlet.kafka_cluster = data[localFields.kafkaCluster]
         }
 
-        if (data[fields.kafkaPassword]) {
-            cloudlet.kafka_password = data[fields.kafkaPassword]
+        if (data[localFields.kafkaUser]) {
+            cloudlet.kafka_user = data[localFields.kafkaUser]
         }
-        cloudlet.platform_high_availability = data[fields.platformHighAvailability]
-        if (data[fields.gpuConfig]) {
+
+        if (data[localFields.kafkaPassword]) {
+            cloudlet.kafka_password = data[localFields.kafkaPassword]
+        }
+        cloudlet.platform_high_availability = data[localFields.platformHighAvailability]
+        if (data[localFields.gpuConfig]) {
             cloudlet.gpu_config = {
                 driver: {
-                    organization: data[fields.gpuORG] === perpetual.MOBILEDGEX ? '' : data[fields.gpuORG],
-                    name: data[fields.gpuDriverName]
+                    organization: data[localFields.gpuORG] === perpetual.MOBILEDGEX ? '' : data[localFields.gpuORG],
+                    name: data[localFields.gpuDriverName]
                 }
             }
         }
 
-        if (data[fields.fields]) {
-            cloudlet.fields = data[fields.fields]
+        if (data[localFields.fields]) {
+            cloudlet.fields = data[localFields.fields]
         }
         let infraConfig = undefined
-        if (data[fields.infraFlavorName]) {
+        if (data[localFields.infraFlavorName]) {
             infraConfig = infraConfig ? infraConfig : {}
-            infraConfig.flavor_name = data[fields.infraFlavorName]
+            infraConfig.flavor_name = data[localFields.infraFlavorName]
         }
-        if (data[fields.infraExternalNetworkName]) {
+        if (data[localFields.infraExternalNetworkName]) {
             infraConfig = infraConfig ? infraConfig : {}
-            infraConfig.external_network_name = data[fields.infraExternalNetworkName]
+            infraConfig.external_network_name = data[localFields.infraExternalNetworkName]
         }
         if (infraConfig) {
             cloudlet.infra_config = infraConfig
         }
-        if (data[fields.allianceOrganization]) {
-            cloudlet.alliance_orgs = data[fields.allianceOrganization]
+        if (data[localFields.allianceOrganization]) {
+            cloudlet.alliance_orgs = data[localFields.allianceOrganization]
         }
-        if (data[fields.singleK8sClusterOwner]) {
-            cloudlet.single_kubernetes_cluster_owner = data[fields.singleK8sClusterOwner]
+        if (data[localFields.singleK8sClusterOwner]) {
+            cloudlet.single_kubernetes_cluster_owner = data[localFields.singleK8sClusterOwner]
         }
-        if (data[fields.deployment]) {
-            cloudlet.deployment = data[fields.deployment]
+        if (data[localFields.deployment]) {
+            cloudlet.deployment = data[localFields.deployment]
         }
 
     }
     return ({
-        region: data[fields.region],
+        region: data[localFields.region],
         cloudlet: cloudlet
     })
 }
@@ -183,7 +185,7 @@ export const fetchCloudletField = (cloudletList, data, field) => {
     if (cloudletName && operatorName) {
         let selection = undefined
         for (const cloudlet of cloudletList) {
-            if (cloudlet[fields.cloudletName] === cloudletName && cloudlet[fields.operatorName] === operatorName) {
+            if (cloudlet[localFields.cloudletName] === cloudletName && cloudlet[localFields.operatorName] === operatorName) {
                 selection = cloudlet
                 break;
             }
@@ -211,15 +213,15 @@ export const cloudletWithInfo = (mcList, pageId) => {
         if (cloudletList && cloudletList.length > 0) {
             cloudletList = cloudletList.filter(cloudlet => {
                 let valid = false
-                if (pageId === perpetual.PAGE_CLUSTER_INSTANCES && cloudlet.platformType === perpetual.PLATFORM_TYPE_K8S_BARE_METAL || cloudlet[fields.maintenanceState] > 0) {
+                if (pageId === perpetual.PAGE_CLUSTER_INSTANCES && cloudlet.platformType === perpetual.PLATFORM_TYPE_K8S_BARE_METAL || cloudlet[localFields.maintenanceState] > 0) {
                     return valid
                 }
                 else {
                     for (let j = 0; j < cloudletInfoList.length; j++) {
                         let cloudletInfo = cloudletInfoList[j]
-                        if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
-                            cloudlet[fields.compatibilityVersion] = cloudletInfo[fields.compatibilityVersion] ? cloudletInfo[fields.compatibilityVersion] : perpetual.CLOUDLET_COMPAT_VERSION_2_4
-                            valid = cloudletInfo[fields.state] === serverFields.READY
+                        if (cloudlet[localFields.cloudletName] === cloudletInfo[localFields.cloudletName] && cloudlet[localFields.operatorName] === cloudletInfo[localFields.operatorName]) {
+                            cloudlet[localFields.compatibilityVersion] = cloudletInfo[localFields.compatibilityVersion] ? cloudletInfo[localFields.compatibilityVersion] : perpetual.CLOUDLET_COMPAT_VERSION_2_4
+                            valid = cloudletInfo[localFields.state] === serverFields.READY
                             break;
                         }
                     }
@@ -258,8 +260,8 @@ export const multiDataRequest = (keys, mcList, specific) => {
                 }
             }
             cloudlet = customize(undefined, cloudlet)
-            cloudlet[fields.uuid] = oldData[fields.uuid]
-            cloudlet[fields.cloudletStatus] = cloudlet[fields.maintenanceState] && cloudlet[fields.maintenanceState] !== 0 ? perpetual.STATUS_UNDER_MAINTAINANCE : cloudletInfo[fields.state]
+            cloudlet[localFields.uuid] = oldData[localFields.uuid]
+            cloudlet[localFields.cloudletStatus] = cloudlet[localFields.maintenanceState] && cloudlet[localFields.maintenanceState] !== 0 ? perpetual.STATUS_UNDER_MAINTAINANCE : cloudletInfo[localFields.state]
             return cloudlet
         }
         return null
@@ -282,8 +284,8 @@ export const multiDataRequest = (keys, mcList, specific) => {
                 let cloudlet = cloudletList[i]
                 for (let j = 0; j < cloudletInfoList.length; j++) {
                     let cloudletInfo = cloudletInfoList[j]
-                    if (cloudlet[fields.cloudletName] === cloudletInfo[fields.cloudletName] && cloudlet[fields.operatorName] === cloudletInfo[fields.operatorName]) {
-                        cloudlet[fields.cloudletStatus] = cloudlet[fields.maintenanceState] && cloudlet[fields.maintenanceState] !== 0 ? perpetual.STATUS_UNDER_MAINTAINANCE : cloudletInfo[fields.state]
+                    if (cloudlet[localFields.cloudletName] === cloudletInfo[localFields.cloudletName] && cloudlet[localFields.operatorName] === cloudletInfo[localFields.operatorName]) {
+                        cloudlet[localFields.cloudletStatus] = cloudlet[localFields.maintenanceState] && cloudlet[localFields.maintenanceState] !== 0 ? perpetual.STATUS_UNDER_MAINTAINANCE : cloudletInfo[localFields.state]
                     }
                 }
             }
@@ -325,27 +327,27 @@ export const fetchCloudletData = async (self, data) => {
 
 export const createCloudlet = (self, data, callback) => {
     let requestData = getKey(data, true)
-    data.uuid = data[fields.cloudletName]
+    data.uuid = data[localFields.cloudletName]
     let request = { uuid: data.uuid, method: endpoint.CREATE_CLOUDLET, data: requestData }
-    return serverData.sendWSRequest(self, request, callback, data)
+    return websocket.request(self, request, callback, data)
 }
 
 export const updateCloudlet = (self, data, callback) => {
     let requestData = getKey(data, true)
     data.uuid = data.uuid ? data.uuid : generateUUID(keys(), data)
     let request = { uuid: data.uuid, method: endpoint.UPDATE_CLOUDLET, data: requestData }
-    return serverData.sendWSRequest(self, request, callback, data)
+    return websocket.request(self, request, callback, data)
 }
 
 export const deleteCloudlet = (self, data) => {
     let requestData = getKey(data)
-    return { uuid: data.uuid, method: endpoint.DELETE_CLOUDLET, data: requestData, success: `Cloudlet ${data[fields.cloudletName]} deleted successfully` }
+    return { uuid: data.uuid, method: endpoint.DELETE_CLOUDLET, data: requestData, success: `Cloudlet ${data[localFields.cloudletName]} deleted successfully` }
 }
 
 export const getCloudletManifest = async (self, data, showSpinner) => {
     let requestData = {}
     requestData.cloudletkey = cloudletKeys(data)
-    requestData.region = data[fields.region]
+    requestData.region = data[localFields.region]
     let mc = await authSyncRequest(self, { method: endpoint.GET_CLOUDLET_MANIFEST, data: requestData, showSpinner: showSpinner })
     return mc
 }
@@ -353,36 +355,36 @@ export const getCloudletManifest = async (self, data, showSpinner) => {
 export const revokeAccessKey = async (self, data, showSpinner) => {
     let requestData = {}
     requestData.cloudletkey = cloudletKeys(data)
-    requestData.region = data[fields.region]
+    requestData.region = data[localFields.region]
     let mc = await authSyncRequest(self, { method: endpoint.REVOKE_ACCESS_KEY, data: requestData, showSpinner: showSpinner })
     return mc
 }
 
 export const streamCloudlet = (data) => {
-    let requestData = { region: data[fields.region], cloudletkey: cloudletKeys(data) }
+    let requestData = { region: data[localFields.region], cloudletkey: cloudletKeys(data) }
     return { uuid: data.uuid, method: endpoint.STREAM_CLOUDLET, data: requestData }
 }
 
 export const cloudletResourceQuota = (self, data) => {
-    let cloudletresourcequotaprops = { platform_type: idFormatter.platformType(data[fields.platformType]) }
+    let cloudletresourcequotaprops = { platform_type: idFormatter.platformType(data[localFields.platformType]) }
     if (redux_org.nonAdminOrg(self)) {
         cloudletresourcequotaprops['organization'] = redux_org.nonAdminOrg(self)
     }
     let requestData = {
         cloudletresourcequotaprops,
-        region: data[fields.region]
+        region: data[localFields.region]
     }
     return { method: endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS, data: requestData }
 }
 
 export const cloudletProps = (self, data) => {
-    let cloudletProps = { platform_type: idFormatter.platformType(data[fields.platformType]) }
+    let cloudletProps = { platform_type: idFormatter.platformType(data[localFields.platformType]) }
     if (redux_org.nonAdminOrg(self)) {
         cloudletProps['organization'] = redux_org.nonAdminOrg(self)
     }
     let requestData = {
         cloudletProps,
-        region: data[fields.region]
+        region: data[localFields.region]
     }
     return { method: endpoint.GET_CLOUDLET_PROPS, data: requestData }
 }
@@ -392,7 +394,7 @@ export const fetchShowNode = async (self, data) => {
         node: {
             key: {
                 cloudlet_key: cloudletKeys(data),
-                region: data[fields.region]
+                region: data[localFields.region]
             }
         }
     }

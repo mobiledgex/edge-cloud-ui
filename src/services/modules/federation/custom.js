@@ -1,6 +1,6 @@
-import { fields } from "../.."
+import { localFields } from "../../fields"
 
 export const customize = (request, value) => {
-    value[fields.zoneCount] =  value[fields.zoneCount] ? value[fields.zoneCount] : 0
+    value[localFields.zoneCount] =  value[localFields.zoneCount] ? value[localFields.zoneCount] : 0
     return value
 }

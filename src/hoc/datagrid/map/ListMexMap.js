@@ -1,6 +1,6 @@
 import React from 'react'
 import { Marker, Popup } from "react-leaflet";
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import Legend from './MapLegend'
 import { mapLegendColor, renderFlagSVG, renderSVG } from '../../mexmap/constant';
 import { serverFields } from '../../../helper/formatter';
@@ -13,8 +13,8 @@ const DEFAULT_ZOOM = 3
 const processMapData = (dataList) => {
     let mapData = {}
     dataList.map(data => {
-        if (data[fields.cloudletLocation]) {
-            let cloudletLocation = data[fields.cloudletLocation]
+        if (data[localFields.cloudletLocation]) {
+            let cloudletLocation = data[localFields.cloudletLocation]
             if (cloudletLocation.latitude && cloudletLocation.longitude) {
                 let key = `${cloudletLocation.latitude}_${cloudletLocation.longitude}`
                 mapData[key] = mapData[key] ? mapData[key] : { cloudletLocation }
@@ -38,10 +38,10 @@ class ListMexMap extends React.Component {
 
     renderColor = (data) => {
         let colorKey = 0
-        if (data[fields.cloudletStatus] === serverFields.READY) {
+        if (data[localFields.cloudletStatus] === serverFields.READY) {
             colorKey = 1
         }
-        else if (data[fields.cloudletStatus] === perpetual.STATUS_UNDER_MAINTAINANCE) {
+        else if (data[localFields.cloudletStatus] === perpetual.STATUS_UNDER_MAINTAINANCE) {
             colorKey = 2
         }
         return mapLegendColor[colorKey]
@@ -50,14 +50,14 @@ class ListMexMap extends React.Component {
     renderLabel = (id, data) => {
         switch (id) {
             case perpetual.PAGE_CLOUDLETS:
-                return data[fields.cloudletName]
+                return data[localFields.cloudletName]
             case perpetual.PAGE_CLUSTER_INSTANCES:
-                return data[fields.clusterName]
+                return data[localFields.clusterName]
             case perpetual.PAGE_APP_INSTANCES:
-                return `${data[fields.appName]} [${data[fields.version]}]`
+                return `${data[localFields.appName]} [${data[localFields.version]}]`
             case perpetual.PAGE_GUEST_ZONES:
             case perpetual.PAGE_HOST_ZONES:
-                return data[fields.zoneId]
+                return data[localFields.zoneId]
         }
     }
 
@@ -73,10 +73,10 @@ class ListMexMap extends React.Component {
             let maintenance = false;
 
             dataList.map(data => {
-                if (data[fields.cloudletStatus] === serverFields.READY) {
+                if (data[localFields.cloudletStatus] === serverFields.READY) {
                     online = true
                 }
-                else if (data[fields.cloudletStatus] === perpetual.STATUS_UNDER_MAINTAINANCE) {
+                else if (data[localFields.cloudletStatus] === perpetual.STATUS_UNDER_MAINTAINANCE) {
                     maintenance = true
                 }
                 else {
@@ -155,9 +155,9 @@ class ListMexMap extends React.Component {
         return data ?
             <div>
                 {Object.keys(data).map((key, i) => {
-                    let location = data[key][fields.cloudletLocation]
-                    let lat = location[fields.latitude]
-                    let lon = location[fields.longitude]
+                    let location = data[key][localFields.cloudletLocation]
+                    let lat = location[localFields.latitude]
+                    let lon = location[localFields.longitude]
                     return (
                         <React.Fragment key={key}>
                             {

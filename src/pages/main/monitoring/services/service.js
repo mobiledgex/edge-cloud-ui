@@ -1,18 +1,19 @@
 import { redux_org } from "../../../../helper/reduxData";
-import { fields } from "../../../../services/model/format";
+import { localFields } from "../../../../services/fields";
 import { requestAppInstLatency } from "../../../../services/modules/appInst";
-import { authSyncRequest, multiAuthSyncRequest, responseValid, showAuthSyncRequest } from "../../../../services/service";
+import { authSyncRequest, multiAuthSyncRequest, showAuthSyncRequest } from "../../../../services/service";
 import { showOrganizations } from '../../../../services/modules/organization';
 import { processWorker } from "../../../../services/worker/interceptor";
 import { timezonePref } from "../../../../utils/sharedPreferences_util";
 import { legendKeys, resourceAPIs, showAPIs } from "../helper/constant";
 import ShowWorker from '../services/show.worker.js'
 import { _orderBy } from "../../../../helper/constant/operators";
+import { responseValid } from "../../../../services/config";
 
 export const fetchOrgList = async (self) => {
     let dataList = await showAuthSyncRequest(self, showOrganizations(self))
     if (dataList && dataList.length > 0) {
-        return _orderBy(dataList, [item=>item[fields.organizationName].toLowerCase()])
+        return _orderBy(dataList, [item=>item[localFields.organizationName].toLowerCase()])
     }
 }
 
@@ -40,12 +41,12 @@ export const fetchResourceData = async (self, moduleId, data) => {
     const { region, organization, legends, metricRequestData, resourceKey, range, worker, selection } = data
     if (resourceKey.serverRequest && metricRequestData && metricRequestData.length > 0) {
         let data = {}
-        data[fields.region] = region
-        data[fields.starttime] = range.starttime
-        data[fields.endtime] = range.endtime
-        data[fields.selector] = resourceKey.serverField
-        data[fields.numsamples] = 50
-        let request = resourceAPIs(self, resourceKey.serverRequest, data, metricRequestData, organization ? organization[fields.organizationName] : redux_org.nonAdminOrg(self))
+        data[localFields.region] = region
+        data[localFields.starttime] = range.starttime
+        data[localFields.endtime] = range.endtime
+        data[localFields.selector] = resourceKey.serverField
+        data[localFields.numsamples] = 50
+        let request = resourceAPIs(self, resourceKey.serverRequest, data, metricRequestData, organization ? organization[localFields.organizationName] : redux_org.nonAdminOrg(self))
         let mc = await authSyncRequest(this, { ...request, format: false })
         if (responseValid(mc)) {
             let response = await processWorker(self, worker, {
@@ -71,7 +72,7 @@ export const fetchResourceData = async (self, moduleId, data) => {
 export const fetchShowData = async (self, moduleId, data) => {
     const { region, organization } = data
     let requestList = showAPIs(moduleId).map(request => {
-        return request(self, { region, org: organization[fields.organizationName], type:organization[fields.type]})
+        return request(self, { region, org: organization[localFields.organizationName], type:organization[localFields.type]})
     })
     let mcList = await multiAuthSyncRequest(this, requestList, false)
     if (mcList && mcList.length > 0) {

@@ -2,12 +2,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import * as actions from '../../../../actions';
-import { fields } from '../../../../services/model/format'
+import { localFields } from '../../../../services/fields'
 import { appInstKeys } from '../../../../services/modules/appInst'
 import { cloudletKeys } from '../../../../services/modules/cloudlet'
 import { appInstUsageMetrics, deviceKeys as appDeviceKeys } from '../../../../services/modules/appInstUsageMetrics/appInstUsageMetrics'
 import { cloudletUsageMetrics, deviceKeys as cloudletDeviceKeys } from '../../../../services/modules/cloudletMetricUsage/cloudletUsageMetrics'
-import { authSyncRequest, responseValid } from '../../../../services/service'
+import { authSyncRequest } from '../../../../services/service'
 import MexWorker from '../services/metricUsage.worker.js'
 import { Dialog, Grid, LinearProgress } from '@material-ui/core'
 import { Marker } from "react-leaflet";
@@ -29,11 +29,11 @@ import CloudletDetails from './details/CloudletDetails';
 import DeviceDetails from './details/DeviceDetails';
 import { operators } from "../../../../helper/constant";
 import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
-import { onlyNumeric } from '../../../../utils/string_utils';
 import { AIK_APP_ALL, AIK_APP_CLOUDLET_CLUSTER } from '../../../../services/modules/appInst/primary';
 import { timezonePref } from '../../../../utils/sharedPreferences_util';
 import './style.css'
 import { equal } from '../../../../helper/constant/operators';
+import { responseValid } from '../../../../services/config';
 
 const buckets = [0, 5, 10, 25, 50, 100]
 
@@ -176,14 +176,14 @@ class DMEMetrics extends React.Component {
                     Object.keys(timeData).map((key, i) => {
                         if (selectCloudlet === undefined || selectCloudlet === key) {
                             const tags = timeData[key][perpetual.CON_TAGS]
-                            let location = tags[fields.cloudletLocation]
-                            let lat = location[fields.latitude]
-                            let lon = location[fields.longitude]
-                            connectorMerge.color.push(tags[fields.color])
+                            let location = tags[localFields.cloudletLocation]
+                            let lat = location[localFields.latitude]
+                            let lon = location[localFields.longitude]
+                            connectorMerge.color.push(tags[localFields.color])
                             connectorMerge.values[i] = [[lat, lon]]
                             return (
                                 <React.Fragment key={key}>
-                                    <Marker icon={cloudIcon(i, tags[fields.color])} position={[lat, lon]} onClick={() => { this.setHistogramData(true, key, timeData, [lat, lon]) }} />
+                                    <Marker icon={cloudIcon(i, tags[localFields.color])} position={[lat, lon]} onClick={() => { this.setHistogramData(true, key, timeData, [lat, lon]) }} />
                                     {
                                         this.renderDevice(timeData[key], markerType, connectorMerge.values[i])
                                     }
@@ -217,8 +217,8 @@ class DMEMetrics extends React.Component {
             let isCloudlet = true
             let chartData = timeData
             let key = selectCloudlet
-            let location = timeData[selectCloudlet][perpetual.CON_TAGS][fields.cloudletLocation]
-            location = [location[fields.latitude], location[fields.longitude]]
+            let location = timeData[selectCloudlet][perpetual.CON_TAGS][localFields.cloudletLocation]
+            location = [location[localFields.latitude], location[localFields.longitude]]
             if (selectDevice) {
                 key = selectDevice
                 chartData = timeData[selectCloudlet][perpetual.CON_VALUES]
@@ -333,7 +333,7 @@ class DMEMetrics extends React.Component {
                 this.fetchData()
                 break;
             case ACTION_LATENCY_RANGE:
-                this.setState({ latencyRange: onlyNumeric(value) }, () => {
+                this.setState({ latencyRange: parseInt(value) }, () => {
                     this.onLatencyRangeChange()
                 })
                 break;
@@ -362,7 +362,7 @@ class DMEMetrics extends React.Component {
         const { data, id, group } = this.props
         const tempData = data[0]
         const commonRequest = {
-            region: tempData[fields.region],
+            region: tempData[localFields.region],
             selector: 'latency',
             starttime: this.range.from,
             endtime: this.range.to

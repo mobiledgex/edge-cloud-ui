@@ -1,13 +1,14 @@
 import React from 'react'
-import DataView from '../../../../container/DataView';
-import { fields } from '../../../../services/model/format';
+import DataView from '../../../../hoc/datagrid/DataView';
+import { localFields } from '../../../../services/fields';
 import * as actions from '../../../../actions';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { perpetual } from '../../../../helper/constant';
 import { showPartnerFederatorZone, keys, iconKeys, deregisterPartnerZone, registerPartnerZone } from '../../../../services/modules/partnerZones';
-import { authSyncRequest, multiAuthSyncRequest, responseValid } from '../../../../services/service';
+import { authSyncRequest, multiAuthSyncRequest } from '../../../../services/service';
 import { uiFormatter } from '../../../../helper/formatter';
+import { responseValid } from '../../../../services/config';
 
 class PartnerZones extends React.Component {
     constructor(props) {
@@ -23,14 +24,14 @@ class PartnerZones extends React.Component {
     }
 
     onPreRegisterZone = (type, action, data) => {
-        return action.id === perpetual.ACTION_REGISTER_ZONES ? !data[fields.registered] : data[fields.registered]
+        return action.id === perpetual.ACTION_REGISTER_ZONES ? !data[localFields.registered] : data[localFields.registered]
     }
 
     onRegisterZone = async (action, data, callback) => {
-        let request = data[fields.registered] ? deregisterPartnerZone : registerPartnerZone
+        let request = data[localFields.registered] ? deregisterPartnerZone : registerPartnerZone
         let mc = await authSyncRequest(this, request(data))
         if (responseValid(mc)) {
-            this.props.handleAlertInfo('success', `Partner zone ${data[fields.zoneId]} ${data[fields.registered] ? 'de' : ''}registered successfully`)
+            this.props.handleAlertInfo('success', `Partner zone ${data[localFields.zoneId]} ${data[localFields.registered] ? 'de' : ''}registered successfully`)
             callback()
         }
     }
@@ -39,7 +40,7 @@ class PartnerZones extends React.Component {
         let requestList = []
         let request = action.id === perpetual.ACTION_DEREGISTER_ZONES ? deregisterPartnerZone : registerPartnerZone
         dataList.forEach(item => {
-            if ((!item[fields.registered] && action.id === perpetual.ACTION_REGISTER_ZONES) || (item[fields.registered] && action.id === perpetual.ACTION_DEREGISTER_ZONES)) {
+            if ((!item[localFields.registered] && action.id === perpetual.ACTION_REGISTER_ZONES) || (item[localFields.registered] && action.id === perpetual.ACTION_DEREGISTER_ZONES)) {
                 requestList.push(request(item))
             }
         })
@@ -75,7 +76,7 @@ class PartnerZones extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.registered) {
+        if (key.field === localFields.registered) {
             return uiFormatter.renderYesNo(key, data[key.field], isDetail)
         }
     }
@@ -84,9 +85,9 @@ class PartnerZones extends React.Component {
         return ({
             id: perpetual.PAGE_GUEST_ZONES,
             headerLabel: 'Guest - Zones',
-            nameField: fields.zoneId,
+            nameField: localFields.zoneId,
             requestType: [showPartnerFederatorZone],
-            sortBy: [fields.partnerFederationName],
+            sortBy: [localFields.partnerFederationName],
             selection: false,
             keys: this.keys,
             onAdd: undefined,

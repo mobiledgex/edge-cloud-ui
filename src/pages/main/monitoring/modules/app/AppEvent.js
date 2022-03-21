@@ -7,7 +7,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { IconButton, Tooltip } from '@material-ui/core'
 import { authSyncRequest } from '../../../../../services/service'
 import { equal } from '../../../../../helper/constant/operators'
-import { fields } from '../../../../../services/model/format'
+import { localFields } from '../../../../../services/fields'
 import { Skeleton } from '@material-ui/lab';
 
 const appEventKeys = [
@@ -103,7 +103,7 @@ class MexAppEvent extends React.Component {
             this.updateState({ loading: true })
             const requestData = orgEvents({
                 match: {
-                    orgs: [organization[fields.organizationName]],
+                    orgs: [organization[localFields.organizationName]],
                     types: ["event"],
                     tags: { app: "*" }
                 },

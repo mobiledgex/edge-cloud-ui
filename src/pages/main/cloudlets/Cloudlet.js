@@ -1,27 +1,26 @@
 import React from 'react';
-import DataView from '../../../container/DataView';
+import DataView from '../../../hoc/datagrid/DataView';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
 import { redux_org } from '../../../helper/reduxData'
 
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import { keys, showCloudlets, deleteCloudlet, streamCloudlet, multiDataRequest, iconKeys } from '../../../services/modules/cloudlet';
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import CloudletReg from './Reg';
 import { operatorRoles } from '../../../constant'
-import * as shared from '../../../services/model/shared';
 import { Icon, Popup } from 'semantic-ui-react';
 import { HELP_CLOUDLET_LIST } from "../../../tutorial";
 import { getCloudletManifest, revokeAccessKey, fetchShowNode } from '../../../services/modules/cloudlet';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 import { serverFields, uiFormatter } from '../../../helper/formatter';
 import { perpetual, role } from '../../../helper/constant';
-import { responseValid } from '../../../services/service';
 import ShowNode from './ShowNode'
 import AllianceOrganization from './AllianceOrganization';
 import { ICON_COLOR } from '../../../helper/constant/colors';
+import { responseValid } from '../../../services/config';
 
 class CloudletList extends React.Component {
     constructor(props) {
@@ -34,7 +33,7 @@ class CloudletList extends React.Component {
         this.action = '';
         this.data = {};
         this.keys = keys();
-        this.multiStepperHeader = [{ label: 'Cloudlet', field: fields.cloudletName }, { label: 'Operator', field: fields.operatorName }]
+        this.multiStepperHeader = [{ label: 'Cloudlet', field: localFields.cloudletName }, { label: 'Operator', field: localFields.operatorName }]
     }
 
     updateState = (data) => {
@@ -79,12 +78,12 @@ class CloudletList extends React.Component {
     }
 
     onCloudletManifestVisible = (data) => {
-        return data[fields.infraApiAccess] === perpetual.INFRA_API_ACCESS_RESTRICTED
+        return data[localFields.infraApiAccess] === perpetual.INFRA_API_ACCESS_RESTRICTED
     }
 
     onPreAction = (type, action, data) => {
         if (type === perpetual.ACTION_DISABLE) {
-            let disable = redux_org.isAdmin(this) || data[fields.operatorName] === redux_org.orgName(this)
+            let disable = redux_org.isAdmin(this) || data[localFields.operatorName] === redux_org.orgName(this)
             return !disable
         }
     }
@@ -120,7 +119,7 @@ class CloudletList extends React.Component {
     }
 
     onActionAllianceOrg = (action, data) => {
-        data[fields.allianceOrganization] || action.id === perpetual.ACTION_ADD_ALLIANCE_ORG ? this.updateState({ currentView: <AllianceOrganization data={data} org={true} action={action.id} onClose={() => this.resetView()} /> }) : this.props.handleAlertInfo('error', 'No Alliance Organization to Remove')
+        data[localFields.allianceOrganization] || action.id === perpetual.ACTION_ADD_ALLIANCE_ORG ? this.updateState({ currentView: <AllianceOrganization data={data} org={true} action={action.id} onClose={() => this.resetView()} /> }) : this.props.handleAlertInfo('error', 'No Alliance Organization to Remove')
     }
 
     groupActionMenu = () => {
@@ -130,7 +129,7 @@ class CloudletList extends React.Component {
     }
 
     customStream = (data) => {
-        return data[fields.infraApiAccess] === serverFields.RESTRICTED_ACCESS && data[fields.cloudletStatus] !== serverFields.READY
+        return data[localFields.infraApiAccess] === serverFields.RESTRICTED_ACCESS && data[localFields.cloudletStatus] !== serverFields.READY
     }
 
     canAdd = () => {
@@ -140,13 +139,13 @@ class CloudletList extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.cloudletStatus) {
+        if (key.field === localFields.cloudletStatus) {
             return uiFormatter.cloudletInfoState(key, data, isDetail)
         }
-        else if (key.field === fields.state) {
+        else if (key.field === localFields.state) {
             return this.showProgress(data, isDetail)
         }
-        else if (key.field === fields.trusted || key.field === fields.gpuExist || key.field === fields.platformHighAvailability) {
+        else if (key.field === localFields.trusted || key.field === localFields.gpuExist || key.field === localFields.platformHighAvailability) {
             return uiFormatter.renderYesNo(key, data[key.field], isDetail)
         }
     }
@@ -155,14 +154,14 @@ class CloudletList extends React.Component {
         return ({
             id: perpetual.PAGE_CLOUDLETS,
             headerLabel: 'Cloudlets',
-            nameField: fields.cloudletName,
+            nameField: localFields.cloudletName,
             requestType: [showCloudlets, showCloudletInfoData],
             streamType: !redux_org.isDeveloper(this) && streamCloudlet,
             customStream: this.customStream,
             isRegion: true,
             isMap: true,
             selection: !redux_org.isDeveloper(this),
-            sortBy: [fields.region, fields.cloudletName],
+            sortBy: [localFields.region, localFields.cloudletName],
             keys: this.keys,
             onAdd: this.canAdd(),
             viewMode: HELP_CLOUDLET_LIST,
@@ -180,7 +179,7 @@ class CloudletList extends React.Component {
             progressRender = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading color={ICON_COLOR} name='circle notch' />} />
         }
         else {
-            progressRender = shared.showProgress(data, isDetailView, redux_org.isDeveloper(this))
+            progressRender = uiFormatter.showProgress(data, isDetailView, redux_org.isDeveloper(this))
         }
         return progressRender
     }

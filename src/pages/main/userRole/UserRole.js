@@ -1,7 +1,7 @@
 import React from 'react';
-import DataView from '../../../container/DataView';
+import DataView from '../../../hoc/datagrid/DataView';
 import { withRouter } from 'react-router-dom';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import { keys, showUsers, deleteUser } from '../../../services/modules/users';
 import { HELP_USER_ROLES } from '../../../tutorial';
 import { connect } from 'react-redux';
@@ -22,14 +22,14 @@ class UserList extends React.Component {
 
     /**Action menu block */
     getDeleteActionMessage = (action, data) => {
-        return `Are you sure you want to remove ${data[fields.username]} from Organization ${data[fields.organizationName]}?`
+        return `Are you sure you want to remove ${data[localFields.username]} from Organization ${data[localFields.organizationName]}?`
     }
 
     onDeleteAction = (type, action, data) => {
         if (this.props.roleInfo && !redux_org.isAdmin(this)) {
             let roleInfoList = this.props.roleInfo;
             for (let roleInfo of roleInfoList) {
-                if (roleInfo[fields.organizationName] === data[fields.organizationName]) {
+                if (roleInfo[localFields.organizationName] === data[localFields.organizationName]) {
                     return !roleInfo.role.includes('Manager')
                 }
             }
@@ -53,9 +53,9 @@ class UserList extends React.Component {
         return ({
             id: perpetual.PAGE_USER_ROLES,
             headerLabel: 'Users & Roles',
-            nameField: fields.username,
+            nameField: localFields.username,
             requestType: [showUsers],
-            sortBy: [fields.username],
+            sortBy: [localFields.username],
             selection: true,
             keys: this.keys,
             viewMode: HELP_USER_ROLES,

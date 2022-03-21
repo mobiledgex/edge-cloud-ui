@@ -1,5 +1,5 @@
 import { SHAPE_ROUND_RECTANGLE, SHAPE_ELLIPSE } from './flowConstant'
-import { fields } from '../../services/model/format'
+import { localFields } from '../../services/fields'
 import * as svgIcons from './svgicons'
 import { perpetual } from '../../helper/constant';
 const flowColor = 'white';
@@ -25,7 +25,7 @@ export const defaultFlow = () => (
 )
 
 export const ipAccessFlow = (data) => {
-    let label = data[fields.ipAccess] ? data[fields.ipAccess].toUpperCase() : ''
+    let label = data[localFields.ipAccess] ? data[localFields.ipAccess].toUpperCase() : ''
     return (
         {
             id: 1, dataList: [
@@ -71,7 +71,7 @@ export const portFlow = (count, type) => {
 
 export const deploymentTypeFlow = (data, type) => {
     let dataList = []
-    if (data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES || data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_HELM) {
+    if (data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES || data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_HELM) {
         dataList.push({ type: 'nodes', data: { id: 2, label: 'K8s Cluster', shape: SHAPE_ROUND_RECTANGLE, width: 170, height: 100, bg: '#FFB97F', bw: 2, tva: 'top', tmy: -10, bc: '#ffd9ba' }, position: { x: 600, y: 185 } })
         dataList.push({ type: 'nodes', data: { id: 20001, shape: SHAPE_ROUND_RECTANGLE, label: '', width: 170, height: 100, bg: '#FFB97F', bw: 2, bc: '#ffd9ba', zi: 1 }, position: { x: 605, y: 190 } })
         dataList.push({ type: 'nodes', data: { id: 20002, shape: SHAPE_ROUND_RECTANGLE, label: '', width: 170, height: 100, bg: '#FFB97F', bw: 2, zi: 2, bc: '#ffd9ba' }, position: { x: 610, y: 195 } })
@@ -81,7 +81,7 @@ export const deploymentTypeFlow = (data, type) => {
         }
         dataList.push({ type: 'edges', data: { id: 2101, source: 2, target: 104, as: 'none' } })
     }
-    else if (data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_DOCKER) {
+    else if (data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_DOCKER) {
         dataList.push({ type: 'nodes', data: { id: 2, shape: SHAPE_ROUND_RECTANGLE, label: 'Docker VM', width: 170, height: 110, bg: '#5AB1EF', zi: 1, tva: 'top', tmy: -10, bw: 2, bc: '#c3daf9' }, position: { x: 600, y: 185 } })
         dataList.push({ type: 'nodes', data: { id: 20004, shape: SHAPE_ELLIPSE, label: 'App', width: 100, height: 50, bg: '#FFF', bw: 1, zi: 4, tc: '#5AB1EF' }, position: { x: 600, y: 185 } })
         if (type === perpetual.PAGE_APPS) {
@@ -90,7 +90,7 @@ export const deploymentTypeFlow = (data, type) => {
 
         dataList.push({ type: 'edges', data: { id: 2101, source: 2, target: 104, as: 'none' } })
     }
-    else if (data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_VM) {
+    else if (data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_VM) {
         dataList.push({ type: 'nodes', data: { id: 2, shape: SHAPE_ROUND_RECTANGLE, label: 'App', width: 170, height: 110, zi: 1, bg: '#009FE6', bw: 2, bc: '#abe5ff' }, position: { x: 600, y: 185 } })
         dataList.push({ type: 'edges', data: { id: 99905, source: 102, target: 2, ls: 'dashed', zi: 3, lc: flowColor, tdn: '85px', tac: flowColor }, classes: 'taxi' })
         dataList.push({ type: 'edges', data: { id: 2101, source: 2, target: 104, as: 'none' } })
@@ -102,9 +102,9 @@ export const deploymentTypeFlow = (data, type) => {
 
 export const clusterFlow = (data) => {
     let dataList = []
-    if (data[fields.autoClusterInstance] || (data[fields.clusterName] && data[fields.clusterName].includes('autocluster'))) {
-        dataList.push({ type: 'update', data: { id: 1, label: `${data[fields.ipAccess] ? data[fields.ipAccess].toUpperCase() : ''} ROOT LB` } })
-        if (data[fields.ipAccess] === perpetual.IP_ACCESS_SHARED) {
+    if (data[localFields.autoClusterInstance] || (data[localFields.clusterName] && data[localFields.clusterName].includes('autocluster'))) {
+        dataList.push({ type: 'update', data: { id: 1, label: `${data[localFields.ipAccess] ? data[localFields.ipAccess].toUpperCase() : ''} ROOT LB` } })
+        if (data[localFields.ipAccess] === perpetual.IP_ACCESS_SHARED) {
             dataList.push({ type: 'nodes', data: { id: 4, shape: SHAPE_ROUND_RECTANGLE, label: `Other Clusters/App VM`, width: 200, height: 1, bg: '#FFF', tmy: 15 }, position: { x: 250, y: 400 } })
             dataList.push({ type: 'edges', data: { id: 4100011, source: 10001, target: 4, ls: 'dashed', zi: 1, lc: '#3A589E', tac: '#3A589E', te: '-10% -10%' } })
             dataList.push({ type: 'edges', data: { id: 4100012, source: 10001, target: 4, ls: 'dashed', zi: 1, lc: '#3A589E', tac: '#3A589E' } })

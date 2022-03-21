@@ -7,7 +7,7 @@ import { Card, ImageList, ImageListItem } from '@material-ui/core'
 import Legend from '../../common/legend/Legend'
 import Module from '../../common/Module'
 import Map from '../../common/map/Map'
-import DragButton from '../../list/DragButton'
+import VerticalSliderBtn from '../../../../../hoc/verticalSlider/VerticalSliderButton'
 import AppClient from './AppClient'
 import AppEvent from './AppEvent'
 import DMEMetrics from '../../dme/DMEMetrics'
@@ -15,7 +15,7 @@ import AppInstClientMap from './AppInstClientMap'
 
 import { requestLantency } from '../../services/service'
 import { perpetual } from '../../../../../helper/constant'
-import { fields } from '../../../../../services/model/format';
+import { localFields } from '../../../../../services/fields';
 
 export const actionMenu = [
     { id: perpetual.ACTION_LATENCY_METRICS, label: 'Show Latency Metrics', roles: [perpetual.ADMIN, perpetual.DEVELOPER], group: true },
@@ -47,29 +47,29 @@ class AppMonitoring extends React.Component {
         const { moduleId, regions, search, range, organization, visibility } = tools
         return (
             <React.Fragment>
-                <Legend tools={tools} data={legends} loading={loading} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} groupBy={[fields.region, fields.appName, fields.version]} />
-                <div style={{ position: 'relative', height: 4 }}>
-                    <DragButton height={400} />
+                <Legend id={moduleId} tools={tools} data={legends} loading={loading} handleAction={this.handleAction} actionMenu={actionMenu} handleSelectionStateChange={handleSelectionStateChange} groupBy={[localFields.region, localFields.appName, localFields.version]} />
+                <div className='legend-drag-btn'>
+                    <VerticalSliderBtn height={400} selector='block-1'/>
                 </div>
-                <div id='resource-block' className="block block-2">
+                <div id='resource-block' className="block-2">
                     <ImageList cols={4} rowHeight={300} >
                         {
-                            visibility.includes(fields.client) ?
+                            visibility.includes(localFields.client) ?
                                 <ImageListItem cols={1}>
-                                    <Card style={{ height: 300, width: '100%' }}>
+                                    <Card className='app-client'>
                                         <AppClient regions={regions} range={range} search={search} organization={organization} />
                                     </Card>
                                 </ImageListItem> : null
                         }
                         {
-                            visibility.includes(fields.map) ? <ImageListItem cols={2}>
+                            visibility.includes(localFields.map) ? <ImageListItem cols={2}>
                                 <Map moduleId={moduleId} search={search} regions={regions} data={legends} selection={selection} zoom={2} />
                             </ImageListItem> : null
                         }
                         {
-                            visibility.includes(fields.event) ?
+                            visibility.includes(localFields.event) ?
                                 <ImageListItem cols={1}>
-                                    <Card style={{ height: 300 }}>
+                                    <Card className='window-height-300'>
                                         <AppEvent regions={regions} tools={tools} search={search} range={range} organization={organization} />
                                     </Card>
                                 </ImageListItem> : null

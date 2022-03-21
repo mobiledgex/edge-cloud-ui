@@ -5,7 +5,7 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, SWITCH, MAIN_HEADER } fr
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 //model
 import { createFlavor } from '../../../services/modules/flavor';
 import { HELP_FLAVOR_REG } from "../../../tutorial";
@@ -20,7 +20,7 @@ class FlavorReg extends React.Component {
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
-        this.regions = localStorage.regions ? localStorage.regions.split(",") : [];
+        this.regions = props.regions
     }
 
     updateState = (data) => {
@@ -32,12 +32,12 @@ class FlavorReg extends React.Component {
     formKeys = () => {
         return [
             { label: 'Create Flavor', formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
-            { field: fields.flavorName, label: 'Flavor Name', formType: INPUT, placeholder: 'Enter Flavor Name', rules: { required: true }, visible: true, tip: 'Flavor name' },
-            { field: fields.ram, label: 'RAM Size', formType: INPUT, placeholder: 'Enter RAM Size (MB)', unit: 'MB', rules: { required: true, type: 'number' }, visible: true, tip: 'RAM in megabytes' },
-            { field: fields.vCPUs, label: 'Number of vCPUs', formType: INPUT, placeholder: 'Enter Number of vCPUs', rules: { required: true, type: 'number' }, visible: true, tip: 'Number of virtual CPUs' },
-            { field: fields.disk, label: 'Disk Space', formType: INPUT, placeholder: 'Enter Disk Space (GB)', unit: 'GB', rules: { required: true, type: 'number' }, visible: true, tip: 'Amount of disk space in gigabytes' },
-            { field: fields.gpu, label: 'GPU', formType: SWITCH, visible: true, value: false, update: true, tip: 'Optional Resources request, key = [gpu, nas, nic] gpu kinds: [gpu, vgpu, pci] form: $resource=$kind:[$alias]$count ex: optresmap=gpu=vgpus:nvidia-63:1' },
+            { field: localFields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers' },
+            { field: localFields.flavorName, label: 'Flavor Name', formType: INPUT, placeholder: 'Enter Flavor Name', rules: { required: true }, visible: true, tip: 'Flavor name' },
+            { field: localFields.ram, label: 'RAM Size', formType: INPUT, placeholder: 'Enter RAM Size (MB)', unit: 'MB', rules: { required: true, type: 'number' }, visible: true, tip: 'RAM in megabytes' },
+            { field: localFields.vCPUs, label: 'Number of vCPUs', formType: INPUT, placeholder: 'Enter Number of vCPUs', rules: { required: true, type: 'number' }, visible: true, tip: 'Number of virtual CPUs' },
+            { field: localFields.disk, label: 'Disk Space', formType: INPUT, placeholder: 'Enter Disk Space (GB)', unit: 'GB', rules: { required: true, type: 'number' }, visible: true, tip: 'Amount of disk space in gigabytes' },
+            { field: localFields.gpu, label: 'GPU', formType: SWITCH, visible: true, value: false, update: true, tip: 'Optional Resources request, key = [gpu, nas, nic] gpu kinds: [gpu, vgpu, pci] form: $resource=$kind:[$alias]$count ex: optresmap=gpu=vgpus:nvidia-63:1' },
         ]
     }
 
@@ -60,7 +60,7 @@ class FlavorReg extends React.Component {
             else {
                 let mcRequest = await createFlavor(this, data)
                 if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                    this.props.handleAlertInfo('success', `Flavor ${data[fields.flavorName]} created successfully`)
+                    this.props.handleAlertInfo('success', `Flavor ${data[localFields.flavorName]} created successfully`)
                     this.props.onClose(true)
                 }
             }
@@ -95,7 +95,7 @@ class FlavorReg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT || form.formType === MULTI_SELECT) {
                     switch (form.field) {
-                        case fields.region:
+                        case localFields.region:
                             form.options = this.regions;
                             break;
                         default:
@@ -156,6 +156,12 @@ class FlavorReg extends React.Component {
     }
 };
 
+const mapStateToProps = (state) => {
+    return {
+        regions: state.regionInfo.region
+    }
+};
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
@@ -164,4 +170,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(FlavorReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(FlavorReg));

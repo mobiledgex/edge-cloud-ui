@@ -1,7 +1,7 @@
 import React, { Component, Suspense, lazy } from 'react';
 import { HashRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import { connect } from 'react-redux';
-import * as actions from './actions';
+import { toggleTheme } from './actions';
 import { ThemeProvider } from "@material-ui/styles";
 import { getDarkTheme, getLightTheme, THEME_TYPE } from "./themeStyle";
 import LogoSpinner from './hoc/loader/LogoSpinner';
@@ -54,7 +54,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        toggleTheme: (data) => { dispatch(actions.toggleTheme(data)) },
+        toggleTheme: (data) => { dispatch(toggleTheme(data)) },
     };
 };
 

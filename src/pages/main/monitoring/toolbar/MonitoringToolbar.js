@@ -17,7 +17,7 @@ import MonitoringMenu from './MonitoringMenu'
 import MexTimer from '../common/picker/MexTimer'
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 import { monitoringPref, PREF_M_APP_VISIBILITY, PREF_M_CLOUDLET_VISIBILITY, PREF_M_CLUSTER_VISIBILITY, PREF_M_REGION } from '../../../../utils/sharedPreferences_util';
 
 const timeRangeInMin = (range) => {
@@ -107,13 +107,12 @@ const Module = (props) => {
 const Statistics = (props) => {
     const { order, value, onUpdate } = props
     const dataList = ['max', 'avg', 'min']
-
     const onChange = (value) => {
         onUpdate({ stats: value })
     }
 
     return (
-        value.moduleId !== PARENT_CLOUDLET ? <MonitoringMenu order={order} data={dataList} onChange={onChange} default={dataList[0]} fCaps={true} /> : null
+        value.moduleId !== PARENT_CLOUDLET ? <MonitoringMenu order={order} data={dataList} onChange={onChange} default={value?.stats} fCaps={true} /> : null
     )
 }
 
@@ -155,13 +154,13 @@ const Organization = (props) => {
 
     const onChange = (value) => {
         if (!redux_org.isAdmin(value)) {
-            let moduleId = value[fields.type] === DEVELOPER ? PARENT_APP_INST : PARENT_CLOUDLET
+            let moduleId = value[localFields.type] === DEVELOPER ? PARENT_APP_INST : PARENT_CLOUDLET
             onUpdate({ organization: value, moduleId, visibility: preVisibility(moduleId, value), regions: monitoringPref(orgInfo, PREF_M_REGION) ? monitoringPref(orgInfo, PREF_M_REGION) : regions })
         }
     }
 
     return (
-        dataList && dataList.length > 0 ? <MonitoringMenu order={order} data={dataList} onChange={onChange} labelKey={fields.organizationName} placeHolder={'Select Org'} disableDefault={true} search={true} large={true} /> : null
+        dataList && dataList.length > 0 ? <MonitoringMenu order={order} data={dataList} onChange={onChange} labelKey={localFields.organizationName} placeHolder={'Select Org'} disableDefault={true} search={true} large={true} /> : null
     )
 }
 
@@ -241,10 +240,10 @@ const MexToolbar = (props) => {
 
     return (
         <React.Fragment>
-            <Card style={{ height: 50, marginBottom: 2 }}>
+            <Card className='toolbar'>
                 <Toolbar>
-                    <Typography variant={'h5'} className='monitoring-header'>Monitoring</Typography>
-                    <div style={{ width: '100%' }}>
+                    <Typography variant={'h5'} className='headerBar'>Monitoring</Typography>
+                    <div className='container'>
                         <Box display="flex" justifyContent="flex-end">
                             {value && value.organization ?
                                 <React.Fragment>
