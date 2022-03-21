@@ -5,12 +5,11 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, MAIN_HEADER } from '../.
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../../actions';
-import { fields } from '../../../../../services/model/format';
+import { localFields } from '../../../../../services/fields';
 import {redux_org} from '../../../../../helper/reduxData'
 //model
 import { createAlertReceiver } from '../../../../../services/modules/alerts';
-import { sendRequests } from '../../../../../services/model/serverWorker'
-import * as constant from '../../../../../constant'
+import { sendRequests } from '../../../../../services/worker/serverWorker'
 import { showOrganizations } from '../../../../../services/modules/organization';
 import { showCloudlets } from '../../../../../services/modules/cloudlet';
 import { showAppInsts } from '../../../../../services/modules/appInst';
@@ -18,9 +17,10 @@ import { showClusterInsts } from '../../../../../services/modules/clusterInst';
 import cloneDeep from 'lodash/cloneDeep';
 import { Grid, LinearProgress } from '@material-ui/core'
 import { resetFormValue } from '../../../../../hoc/forms/helper/constant';
-import { endpoint, perpetual } from '../../../../../helper/constant';
-import { responseValid } from '../../../../../services/service';
+import { perpetual } from '../../../../../helper/constant';
 import { uniqueId } from '../../../../../helper/constant/shared';
+import { responseValid } from '../../../../../services/config';
+import { endpoint } from '../../../../../services';
 
 const RECEIVER_TYPE = [perpetual.RECEIVER_TYPE_EMAIL, perpetual.RECEIVER_TYPE_SLACK, perpetual.RECEIVER_TYPE_PAGER_DUTY]
 const RECEIVER_SEVERITY = [perpetual.INFO, perpetual.WARNING, perpetual.ERROR]
@@ -45,7 +45,7 @@ class FlavorReg extends React.Component {
             loading: true
         }
         this.isUpdate = this.props.isUpdate
-        this.regions = constant.regions()
+        this.regions = props.regions
         this.organizationList = []
         this.cloudletList = [];
         this.appInstList = [];
@@ -64,42 +64,42 @@ class FlavorReg extends React.Component {
     }
 
     slackForm = () => ([
-        { field: fields.slackchannel, label: 'Slack Channel', formType: INPUT, placeholder: 'Enter Slack Channel to be Receiving the Alert', rules: { required: true }, width: 8, visible: true },
-        { field: fields.slackwebhook, label: 'Slack URL', formType: INPUT, placeholder: 'Enter Slack Webhook URL', rules: { required: true }, width: 8, visible: true }
+        { field: localFields.slackchannel, label: 'Slack Channel', formType: INPUT, placeholder: 'Enter Slack Channel to be Receiving the Alert', rules: { required: true }, width: 8, visible: true },
+        { field: localFields.slackwebhook, label: 'Slack URL', formType: INPUT, placeholder: 'Enter Slack Webhook URL', rules: { required: true }, width: 8, visible: true }
     ])
 
 
     formKeys = () => {
         return [
             { label: 'Create Alert Receiver', formType: MAIN_HEADER, visible: true },
-            { field: fields.alertname, label: 'Alert Name', formType: INPUT, placeholder: 'Enter Alert Name', rules: { required: true }, visible: true, tip: 'Unique name of this receiver' },
-            { field: fields.type, label: 'Receiver Type', formType: SELECT, placeholder: 'Select Receiver Type', rules: { required: true }, visible: true, tip: 'Email\\Slack\\Pagerduty' },
-            { uuid: uniqueId(), field: fields.slack, label: 'Slack', formType: INPUT, rules: { required: true }, visible: false, forms: this.slackForm(), tip: 'Slack channel to be receiving the alert\nSlack webhook url' },
-            { field: fields.pagerDutyIntegrationKey, label: 'PagerDuty Integration Key', formType: INPUT, placeholder: 'Enter PagerDuty integration key', rules: { required: true }, visible: false, dataValidateFunc: this.validatePageDutyVersion },
-            { field: fields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true, type: 'search' }, visible: false, tip: 'Email address receiving the alert (by default email associated with the account)' },
-            { field: fields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true, firstCaps:true }, visible: true, tip: 'Alert severity level - one of "info", "warning", "error"' },
-            { field: fields.selector, label: 'Selector', formType: SELECT, placeholder: 'Select Selector', rules: { required: true, disabled: true }, visible: true, tip: 'Selector for which you want to receive alerts' },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: false }, visible: false },
-            { field: fields.organizationName, label: 'Developer', formType: SELECT, placeholder: 'Select Developer', rules: { required: false, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: false, tip: 'Cluster or App Developer' },
-            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.region, strictDependency: false }] },
-            { field: fields.cloudletName, label: 'Cloudlet', formType: SELECT, placeholder: 'Select Cloudlet', rules: { required: false }, visible: false, dependentData: [{ index: 9, field: fields.operatorName }], strictDependency: false },
-            { field: fields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Cluster', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.region, strictDependency: false }, { index: 8, field: fields.organizationName }, { index: 9, field: fields.operatorName, strictDependency: false }, { index: 10, field: fields.cloudletName, strictDependency: false }] },
-            { field: fields.appName, label: 'App Instance', formType: SELECT, placeholder: 'Select App Instance', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.region, strictDependency: false }, { index: 8, field: fields.organizationName }, { index: 9, field: fields.operatorName }, { index: 10, field: fields.cloudletName }, { index: 11, field: fields.clusterName }], strictDependency: false },
-            { field: fields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: fields.region, strictDependency: false }, { index: 8, field: fields.organizationName }, { index: 9, field: fields.operatorName }, { index: 10, field: fields.cloudletName }, { index: 11, field: fields.clusterName }, { index: 12, field: fields.appName }], strictDependency: false }
+            { field: localFields.alertname, label: 'Alert Name', formType: INPUT, placeholder: 'Enter Alert Name', rules: { required: true }, visible: true, tip: 'Unique name of this receiver' },
+            { field: localFields.type, label: 'Receiver Type', formType: SELECT, placeholder: 'Select Receiver Type', rules: { required: true }, visible: true, tip: 'Email\\Slack\\Pagerduty' },
+            { uuid: uniqueId(), field: localFields.slack, label: 'Slack', formType: INPUT, rules: { required: true }, visible: false, forms: this.slackForm(), tip: 'Slack channel to be receiving the alert\nSlack webhook url' },
+            { field: localFields.pagerDutyIntegrationKey, label: 'PagerDuty Integration Key', formType: INPUT, placeholder: 'Enter PagerDuty integration key', rules: { required: true }, visible: false, dataValidateFunc: this.validatePageDutyVersion },
+            { field: localFields.email, label: 'Email', formType: INPUT, placeholder: 'Enter Email Address', rules: { required: true, type: 'search' }, visible: false, tip: 'Email address receiving the alert (by default email associated with the account)' },
+            { field: localFields.severity, label: 'Severity', formType: SELECT, placeholder: 'Select Severity', rules: { required: true, firstCaps:true }, visible: true, tip: 'Alert severity level - one of "info", "warning", "error"' },
+            { field: localFields.selector, label: 'Selector', formType: SELECT, placeholder: 'Select Selector', rules: { required: true, disabled: true }, visible: true, tip: 'Selector for which you want to receive alerts' },
+            { field: localFields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: false }, visible: false },
+            { field: localFields.organizationName, label: 'Developer', formType: SELECT, placeholder: 'Select Developer', rules: { required: false, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: false, tip: 'Cluster or App Developer' },
+            { field: localFields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: localFields.region, strictDependency: false }] },
+            { field: localFields.cloudletName, label: 'Cloudlet', formType: SELECT, placeholder: 'Select Cloudlet', rules: { required: false }, visible: false, dependentData: [{ index: 9, field: localFields.operatorName }], strictDependency: false },
+            { field: localFields.clusterName, label: 'Cluster', formType: SELECT, placeholder: 'Select Cluster', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: localFields.region, strictDependency: false }, { index: 8, field: localFields.organizationName }, { index: 9, field: localFields.operatorName, strictDependency: false }, { index: 10, field: localFields.cloudletName, strictDependency: false }] },
+            { field: localFields.appName, label: 'App Instance', formType: SELECT, placeholder: 'Select App Instance', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: localFields.region, strictDependency: false }, { index: 8, field: localFields.organizationName }, { index: 9, field: localFields.operatorName }, { index: 10, field: localFields.cloudletName }, { index: 11, field: localFields.clusterName }], strictDependency: false },
+            { field: localFields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: false }, visible: false, dependentData: [{ index: 7, field: localFields.region, strictDependency: false }, { index: 8, field: localFields.organizationName }, { index: 9, field: localFields.operatorName }, { index: 10, field: localFields.cloudletName }, { index: 11, field: localFields.clusterName }, { index: 12, field: localFields.appName }], strictDependency: false }
         ]
     }
 
     typeChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.email) {
+            if (form.field === localFields.email) {
                 form.visible = currentForm.value === perpetual.RECEIVER_TYPE_EMAIL
                 form.value = this.email
             }
-            else if (form.field === fields.slack) {
+            else if (form.field === localFields.slack) {
                 form.visible = currentForm.value === perpetual.RECEIVER_TYPE_SLACK
             }
-            else if (form.field === fields.pagerDutyIntegrationKey) {
+            else if (form.field === localFields.pagerDutyIntegrationKey) {
                 form.visible = currentForm.value === perpetual.RECEIVER_TYPE_PAGER_DUTY
             }
         }
@@ -111,7 +111,7 @@ class FlavorReg extends React.Component {
     appNameValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.version) {
+            if (form.field === localFields.version) {
                 form.value = undefined
                 this.updateUI(form)
             }
@@ -124,11 +124,11 @@ class FlavorReg extends React.Component {
     regionValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.cloudletName || form.field === fields.appName || form.field === fields.version || form.field === fields.clusterName) {
+            if (form.field === localFields.cloudletName || form.field === localFields.appName || form.field === localFields.version || form.field === localFields.clusterName) {
                 form.value = undefined
                 this.updateUI(form)
             }
-            else if (form.field === fields.operatorName) {
+            else if (form.field === localFields.operatorName) {
                 form.value = redux_org.isOperator(this) ? redux_org.orgName(this) : undefined
                 this.updateUI(form)
             }
@@ -141,7 +141,7 @@ class FlavorReg extends React.Component {
     organizationValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.appName || form.field === fields.version || form.field === fields.clusterName) {
+            if (form.field === localFields.appName || form.field === localFields.version || form.field === localFields.clusterName) {
                 form.value = undefined
                 this.updateUI(form)
             }
@@ -154,7 +154,7 @@ class FlavorReg extends React.Component {
     clusterValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.appName || form.field === fields.version) {
+            if (form.field === localFields.appName || form.field === localFields.version) {
                 form.value = undefined
                 this.updateUI(form)
             }
@@ -167,7 +167,7 @@ class FlavorReg extends React.Component {
     cloudletValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.appName || form.field === fields.version || form.field === fields.clusterName) {
+            if (form.field === localFields.appName || form.field === localFields.version || form.field === localFields.clusterName) {
                 form.value = undefined
                 this.updateUI(form)
             }
@@ -180,7 +180,7 @@ class FlavorReg extends React.Component {
     operatorValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.appName || form.field === fields.version || form.field === fields.clusterName || form.field === fields.cloudletName) {
+            if (form.field === localFields.appName || form.field === localFields.version || form.field === localFields.clusterName || form.field === localFields.cloudletName) {
                 form.value = undefined
                 this.updateUI(form)
             }
@@ -197,27 +197,27 @@ class FlavorReg extends React.Component {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
             switch (form.field) {
-                case fields.organizationName:
+                case localFields.organizationName:
                     let valid = isAppInst || isCluster
                     form.rules.required = valid
                     form.visible = valid
                     break;
-                case fields.region:
+                case localFields.region:
                     form.visible = isCloudlet || isAppInst || isCluster
                     break;
-                case fields.appName:
+                case localFields.appName:
                     form.visible = isAppInst
                     break;
-                case fields.version:
+                case localFields.version:
                     form.visible = isAppInst
                     break;
-                case fields.clusterName:
+                case localFields.clusterName:
                     form.visible = isAppInst || isCluster
                     break;
-                case fields.cloudletName:
+                case localFields.cloudletName:
                     form.visible = isCloudlet || isAppInst || isCluster
                     break;
-                case fields.operatorName:
+                case localFields.operatorName:
                     form.rules.required = isCloudlet
                     form.visible = isCloudlet || isAppInst || isCluster
                     form.value = isCloudlet ? redux_org.nonAdminOrg(this) : undefined
@@ -233,28 +233,28 @@ class FlavorReg extends React.Component {
 
 
     checkForms = (form, forms, isInit = false) => {
-        if (form.field === fields.type) {
+        if (form.field === localFields.type) {
             this.typeChange(form, forms, isInit)
         }
-        else if (form.field === fields.selector) {
+        else if (form.field === localFields.selector) {
             this.selectorValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.region) {
+        else if (form.field === localFields.region) {
             this.regionValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.organizationName) {
+        else if (form.field === localFields.organizationName) {
             this.organizationValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.operatorName) {
+        else if (form.field === localFields.operatorName) {
             this.operatorValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.appName) {
+        else if (form.field === localFields.appName) {
             this.appNameValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.cloudletName) {
+        else if (form.field === localFields.cloudletName) {
             this.cloudletValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.clusterName) {
+        else if (form.field === localFields.clusterName) {
             this.clusterValueChange(form, forms, isInit)
         }
     }
@@ -275,9 +275,9 @@ class FlavorReg extends React.Component {
                     let uuid = form.uuid;
                     let multiFormData = data[uuid]
                     if (multiFormData) {
-                        if (form.field === fields.slack) {
-                            data[fields.slackchannel] = multiFormData[fields.slackchannel]
-                            data[fields.slackwebhook] = multiFormData[fields.slackwebhook]
+                        if (form.field === localFields.slack) {
+                            data[localFields.slackchannel] = multiFormData[localFields.slackchannel]
+                            data[localFields.slackwebhook] = multiFormData[localFields.slackwebhook]
                         }
                     }
                     data[uuid] = undefined
@@ -285,7 +285,7 @@ class FlavorReg extends React.Component {
             }
             let mcRequest = await createAlertReceiver(this, data)
             if (mcRequest && mcRequest.response && mcRequest.response.status === 200) {
-                this.props.handleAlertInfo('success', `Alert Receiver ${data[fields.alertname]} created successfully`)
+                this.props.handleAlertInfo('success', `Alert Receiver ${data[localFields.alertname]} created successfully`)
                 this.props.onClose(true)
             }
         }
@@ -316,34 +316,34 @@ class FlavorReg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT || form.formType === MULTI_SELECT) {
                     switch (form.field) {
-                        case fields.region:
+                        case localFields.region:
                             form.options = this.regions
                             break;
-                        case fields.organizationName:
+                        case localFields.organizationName:
                             form.options = this.organizationList
                             break;
-                        case fields.type:
+                        case localFields.type:
                             form.options = RECEIVER_TYPE;
                             break;
-                        case fields.severity:
+                        case localFields.severity:
                             form.options = RECEIVER_SEVERITY;
                             break;
-                        case fields.selector:
+                        case localFields.selector:
                             form.options = selector(this);
                             break;
-                        case fields.operatorName:
+                        case localFields.operatorName:
                             form.options = this.cloudletList
                             break;
-                        case fields.cloudletName:
+                        case localFields.cloudletName:
                             form.options = this.cloudletList
                             break;
-                        case fields.appName:
+                        case localFields.appName:
                             form.options = this.appInstList
                             break;
-                        case fields.version:
+                        case localFields.version:
                             form.options = this.appInstList
                             break;
-                        case fields.clusterName:
+                        case localFields.clusterName:
                             form.options = this.clusterInstList
                             break;
                         default:
@@ -408,8 +408,8 @@ class FlavorReg extends React.Component {
             if (this.cloudletList.length === 0) {
                 this.regions.map(region => {
                     let cloudlet = {}
-                    cloudlet[fields.operatorName] = redux_org.nonAdminOrg(this)
-                    cloudlet[fields.region] = region
+                    cloudlet[localFields.operatorName] = redux_org.nonAdminOrg(this)
+                    cloudlet[localFields.region] = region
                     this.cloudletList.push(cloudlet)
                 })
             }
@@ -440,7 +440,7 @@ class FlavorReg extends React.Component {
             this.onListEmpty()
             let forms = cloneDeep(this.state.forms)
             for (const form of forms) {
-                if (form.field === fields.selector) {
+                if (form.field === localFields.selector) {
                     form.rules.disabled = false
                 }
                 this.updateUI(form)
@@ -474,7 +474,8 @@ class FlavorReg extends React.Component {
 const mapStateToProps = (state) => {
     return {
         userInfo: state.userInfo.data,
-        organizationInfo: state.organizationInfo.data
+        organizationInfo: state.organizationInfo.data,
+        regions: state.regionInfo.region
     }
 };
 

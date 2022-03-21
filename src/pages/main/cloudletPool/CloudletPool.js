@@ -1,10 +1,10 @@
 import React from 'react';
-import DataView from '../../../container/DataView';
+import DataView from '../../../hoc/datagrid/DataView';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import { redux_org } from '../../../helper/reduxData';
 import { keys, showCloudletPools, deleteCloudletPool, multiDataRequest } from '../../../services/modules/cloudletPool';
 import CloudletPoolReg from './Reg';
@@ -47,7 +47,7 @@ class CloudletPoolList extends React.Component {
 
     showDeleteCloudletPool = (action, data) => {
         let valid = true
-        if(data[fields.organizationCount] !== 0)
+        if(data[localFields.organizationCount] !== 0)
         {
             this.props.handleAlertInfo('error', 'Please unlink all organizations before deleting cloudlet pool');
             valid = false
@@ -83,10 +83,10 @@ class CloudletPoolList extends React.Component {
         return ({
             id: perpetual.PAGE_CLOUDLET_POOLS,
             headerLabel: 'Cloudlet Pools',
-            nameField: fields.poolName,
+            nameField: localFields.poolName,
             requestType: [showCloudletPools, showConfirmation, showInvitation],
             isRegion: true,
-            sortBy: [fields.poolName],
+            sortBy: [localFields.poolName],
             selection:true,
             keys: this.keys,
             onAdd: role.validateRole(operatorRoles, this.props.organizationInfo) ? this.onAdd : undefined,

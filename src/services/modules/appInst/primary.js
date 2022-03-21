@@ -1,4 +1,4 @@
-import { fields } from "../../model/format"
+import { localFields } from "../../fields"
 import { cloudletKeys } from "../../modules/cloudlet/primary"
 
 const initialize = (parent, field, value) => {
@@ -23,12 +23,12 @@ export const appInstKeys = (data, include) => {
   let appKey = undefined
 
   if (include === AIK_APP_ORG || include === AIK_APP_ALL || include === AIK_APP_CLOUDLET_CLUSTER) {
-    appKey = initialize(appKey, 'organization', data[fields.organizationName])
+    appKey = initialize(appKey, 'organization', data[localFields.organizationName])
   }
 
   if (include === AIK_APP_ALL || include === AIK_APP_CLOUDLET_CLUSTER) {
-    appKey = initialize(appKey, 'name', data[fields.appName])
-    appKey = initialize(appKey, 'version', data[fields.version])
+    appKey = initialize(appKey, 'name', data[localFields.appName])
+    appKey = initialize(appKey, 'version', data[localFields.version])
   }
 
 
@@ -39,9 +39,9 @@ export const appInstKeys = (data, include) => {
 
   if (include === AIK_APP_CLOUDLET_CLUSTER || include === AIK_APP_CLUSTER || include === AIK_CLOUDLET_CLUSTER) {
     let clusterKey = undefined
-    clusterKey = initialize(clusterKey, 'name', data[fields.clusterName])
+    clusterKey = initialize(clusterKey, 'name', data[localFields.clusterName])
     clusterInstKey = initialize(clusterInstKey, 'cluster_key', clusterKey)
-    clusterInstKey = initialize(clusterInstKey, 'organization', data[fields.clusterdeveloper])
+    clusterInstKey = initialize(clusterInstKey, 'organization', data[localFields.clusterdeveloper])
   }
 
   let appInstKey = undefined

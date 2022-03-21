@@ -1,5 +1,5 @@
 import * as dateUtil from '../../../utils/date_util'
-import { endpoint } from '../../../helper/constant'
+import { endpoint } from '../..'
 
 export const appUsageKeys = [
     { label: 'Region', serverField: 'region', visible: true, filter: true },

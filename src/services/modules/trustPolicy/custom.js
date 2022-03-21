@@ -1,8 +1,8 @@
-import { fields } from "../../model/format"
+import { localFields } from "../../fields"
 
 export const customize = (request, value) => {
-    value[fields.outboundSecurityRulesCount] = value[fields.outboundSecurityRules].length;
-    value[fields.fullIsolation] = value[fields.outboundSecurityRulesCount] <= 0
-    value[fields.outboundSecurityRulesCount] = value[fields.outboundSecurityRulesCount] === 0 ? 'Full Isolation' : value[fields.outboundSecurityRulesCount];
+    value[localFields.outboundSecurityRulesCount] = value[localFields.outboundSecurityRules].length;
+    value[localFields.fullIsolation] = value[localFields.outboundSecurityRulesCount] <= 0
+    value[localFields.outboundSecurityRulesCount] = value[localFields.outboundSecurityRulesCount] === 0 ? 'Full Isolation' : value[localFields.outboundSecurityRulesCount];
     return value
 }

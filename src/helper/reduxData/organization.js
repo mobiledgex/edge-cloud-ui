@@ -1,11 +1,11 @@
-import { fields } from "../../services/model/format"
+import { localFields } from "../../services/fields"
 import { perpetual } from "../constant"
 
 const getObject = (self) => {
     if (self && self.props && self.props.organizationInfo) {
         return self.props.organizationInfo
     }
-    else if(self && self[fields.organizationName])
+    else if(self && self[localFields.organizationName])
     {
         return self
     }
@@ -54,14 +54,14 @@ export const isDeveloper = (self) => {
 export const orgName = (self) => {
     let info = getObject(self)
     if (info) {
-        return info[fields.organizationName]
+        return info[localFields.organizationName]
     }
 }
 
 export const role = (self) => {
     let info = getObject(self)
     if (info) {
-        return info[fields.role]
+        return info[localFields.role]
     }
 }
 
@@ -74,14 +74,14 @@ export const isViewer = (self) => {
 export const roleType = (self) => {
     let info = getObject(self)
     if (info) {
-        return info[fields.type]
+        return info[localFields.type]
     }
 }
 
 export const edgeboxOnly = (self) => {
     let info = getObject(self)
     if (info) {
-        return info[fields.edgeboxOnly]
+        return info[localFields.edgeboxOnly]
     }
     return false
 }

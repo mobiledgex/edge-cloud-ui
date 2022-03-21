@@ -1,51 +1,50 @@
 
-import * as formatter from '../../model/format'
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
-import { endpoint, perpetual } from '../../../helper/constant'
+import { perpetual } from '../../../helper/constant';
+import { endpoint } from '../..';
 import { redux_org } from '../../../helper/reduxData';
-import { sendWSRequest } from '../../model/serverData';
 import { ADMIN, TYPE_JSON } from '../../../helper/constant/perpetual';
-
-let fields = formatter.fields
+import { websocket } from '../..';
+import { localFields } from '../../fields';
 
 export const buildKeys = [
-    { field: fields.buildName, serverField: 'name', label: 'Name' },
-    { field: fields.operatingSystem, serverField: 'operating_system', label: 'Operating System' },
-    { field: fields.kernelVersion, serverField: 'kernel_version', label: 'Kernel Version' },
-    { field: fields.hypervisorInfo, serverField: 'hypervisor_info', label: 'Hypervisor Info' },
-    { field: fields.driverPath, serverField: 'driver_path', label: 'Driver Path', roles: [ADMIN] },
-    { field: fields.md5Sum, serverField: 'md5sum', label: 'MD5 Sum' }
+    { field: localFields.buildName, serverField: 'name', label: 'Name' },
+    { field: localFields.operatingSystem, serverField: 'operating_system', label: 'Operating System' },
+    { field: localFields.kernelVersion, serverField: 'kernel_version', label: 'Kernel Version' },
+    { field: localFields.hypervisorInfo, serverField: 'hypervisor_info', label: 'Hypervisor Info' },
+    { field: localFields.driverPath, serverField: 'driver_path', label: 'Driver Path', roles: [ADMIN] },
+    { field: localFields.md5Sum, serverField: 'md5sum', label: 'MD5 Sum' }
 ]
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.gpuDriverName, serverField: 'key#OS#name', label: 'GPU Driver', sortable: true, visible: true, filter: true, key: true },
-    { field: fields.organizationName, serverField: 'key#OS#organization', label: 'Organization', sortable: true, visible: true },
+    { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, key: true },
+    { field: localFields.gpuDriverName, serverField: 'key#OS#name', label: 'GPU Driver', sortable: true, visible: true, filter: true, key: true },
+    { field: localFields.organizationName, serverField: 'key#OS#organization', label: 'Organization', sortable: true, visible: true },
     {
-        field: fields.builds, serverField: 'builds', label: 'Builds',
+        field: localFields.builds, serverField: 'builds', label: 'Builds',
         keys: buildKeys
     },
-    { field: fields.buildCount, label: 'Number of Builds', visible: true, detailView: false },
-    { field: fields.licenseConfig, serverField: 'license_config', label: 'License Configuration', format: true },
-    { field: fields.properties, serverField: 'properties', label: 'Properties', format: true, dataType: TYPE_JSON }
+    { field: localFields.buildCount, label: 'Number of Builds', visible: true, detailView: false },
+    { field: localFields.licenseConfig, serverField: 'license_config', label: 'License Configuration', format: true },
+    { field: localFields.properties, serverField: 'properties', label: 'Properties', format: true, dataType: TYPE_JSON }
 ])
 
 export const iconKeys = () => ([
-    { field: fields.licenseConfig, label: 'License Configuration', icon: 'certificate.svg' },
+    { field: localFields.licenseConfig, label: 'License Configuration', icon: 'certificate.svg' },
 ])
 
 export const getKey = (data, isCreate) => {
     let gpuDriver = {}
-    const organization = data[fields.organizationName] === perpetual.MOBILEDGEX ? '' : data[fields.organizationName]
-    gpuDriver.key = { name: data[fields.gpuDriverName], organization }
+    const organization = data[localFields.organizationName] === perpetual.MOBILEDGEX ? '' : data[localFields.organizationName]
+    gpuDriver.key = { name: data[localFields.gpuDriverName], organization }
 
     if (isCreate) {
-        gpuDriver.builds = data[fields.builds]
-        gpuDriver.properties = data[fields.properties]
-        gpuDriver.license_config = data[fields.licenseConfig]
+        gpuDriver.builds = data[localFields.builds]
+        gpuDriver.properties = data[localFields.properties]
+        gpuDriver.license_config = data[localFields.licenseConfig]
     }
     return ({
-        region: data[fields.region],
+        region: data[localFields.region],
         gpuDriver
     })
 }
@@ -65,38 +64,38 @@ export const getGPUDriverList = async (self, data) => {
 
 export const createGPUDriver = async (self, data, callback) => {
     let requestData = getKey(data, true)
-    data.uuid = data[fields.cloudletName]
+    data.uuid = data[localFields.cloudletName]
     let request = { uuid: data.uuid, method: endpoint.CREATE_GPU_DRIVER, data: requestData }
-    return sendWSRequest(self, request, callback, data)
+    return websocket.request(self, request, callback, data)
 }
 
 export const deleteGPUDriver = (self, data) => {
     let requestData = getKey(data);
-    return { method: endpoint.DELETE_GPU_DRIVER, data: requestData, success: `GPU Driver ${data[fields.gpuDriverName]} deleted successfully` }
+    return { method: endpoint.DELETE_GPU_DRIVER, data: requestData, success: `GPU Driver ${data[localFields.gpuDriverName]} deleted successfully` }
 }
 
 export const getGPUDriverBuildURL = async (self, data) => {
-    let organization = data[fields.organizationName] === perpetual.MOBILEDGEX ? '' : data[fields.organizationName]
+    let organization = data[localFields.organizationName] === perpetual.MOBILEDGEX ? '' : data[localFields.organizationName]
     let requestData = {
         gpuDriverBuildMember: {
-            build: { name: data[fields.buildName] },
-            key: { name: data[fields.gpuDriverName], organization }
+            build: { name: data[localFields.buildName] },
+            key: { name: data[localFields.gpuDriverName], organization }
         },
-        region: data[fields.region]
+        region: data[localFields.region]
     }
     return await authSyncRequest(self, { method: endpoint.GET_GPU_DRIVER_BUILD_URL, data: requestData })
 }
 
 export const addbuild = (self, data) => {
     let primaryKey = getKey(data)
-    let requestData = { region: primaryKey[fields.region] }
+    let requestData = { region: primaryKey[localFields.region] }
     requestData.gpuDriverBuildMember = { build: data.build, ...primaryKey.gpuDriver }
     return { method: endpoint.ADD_GPU_DRIVER_BUILD, data: requestData }
 }
 
 export const removeBuild = (self, data) => {
     let primaryKey = getKey(data)
-    let requestData = { region: primaryKey[fields.region] }
+    let requestData = { region: primaryKey[localFields.region] }
     requestData.gpuDriverBuildMember = { build: data.build, ...primaryKey.gpuDriver }
     return { method: endpoint.REMOVE_GPU_DRIVER_BUILD, data: requestData }
 }

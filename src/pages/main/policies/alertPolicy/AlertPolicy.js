@@ -1,5 +1,5 @@
 import React from 'react';
-import DataView from '../../../../container/DataView';
+import DataView from '../../../../hoc/datagrid/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -8,7 +8,7 @@ import * as actions from '../../../../actions';
 import Reg from './Reg'
 import { deleteAlertPolicy, keys, showAlertPolicy, multiDataRequest } from '../../../../services/modules/alertPolicy';
 import { perpetual } from '../../../../helper/constant';
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 import { uiFormatter } from '../../../../helper/formatter';
 import { showApps } from '../../../../services/modules/app';
 import { redux_org } from '../../../../helper/reduxData';
@@ -50,8 +50,8 @@ class AlertPolicy extends React.Component {
     onDelete = (data, success, errorInfo) => {
         if (!success, errorInfo) {
             let cloudlets = []
-            if (data[fields.cloudlets]) {
-                cloudlets = data[fields.cloudlets]
+            if (data[localFields.cloudlets]) {
+                cloudlets = data[localFields.cloudlets]
             }
             if (errorInfo.message === 'Policy in use by Cloudlet') {
                 this.props.handleAlertInfo('error', `Policy in use by Cloudlet${cloudlets.length > 1 ? 's' : ''} ${cloudlets.map(cloudlet => {
@@ -75,10 +75,10 @@ class AlertPolicy extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.severity) {
+        if (key.field === localFields.severity) {
             return uiFormatter.RenderSeverity(data, isDetail)
         }
-        else if (key.field === fields.triggerTime) {
+        else if (key.field === localFields.triggerTime) {
             return isDetail ? appendSpaceToLetter(data[key.field]) : data[key.field]
         }
     }
@@ -89,8 +89,8 @@ class AlertPolicy extends React.Component {
             headerLabel: 'Alert Policy',
             requestType: [showAlertPolicy, showApps],
             isRegion: true,
-            nameField: fields.alertPolicyName,
-            sortBy: [fields.region, fields.alertPolicyName],
+            nameField: localFields.alertPolicyName,
+            sortBy: [localFields.region, localFields.alertPolicyName],
             keys: this.keys,
             selection: true,
             onAdd: redux_org.isViewer(this) ? null : this.onAdd,

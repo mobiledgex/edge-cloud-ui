@@ -6,11 +6,9 @@ import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, SWITCH, TEXT_AREA, ICON_
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import { redux_org } from '../../../helper/reduxData';
-//model
-import * as serverData from '../../../services/model/serverData'
-import { service, updateFieldData } from '../../../services'
+import { endpoint, service, updateFieldData, websocket } from '../../../services'
 import { getOrganizationList } from '../../../services/modules/organization';
 import { getFlavorList, showFlavors } from '../../../services/modules/flavor/flavor';
 import { getAutoProvPolicyList, showAutoProvPolicies } from '../../../services/modules/autoProvPolicy';
@@ -24,10 +22,10 @@ import { uniqueId, validateRemoteCIDR } from '../../../helper/constant/shared'
 
 import * as appFlow from '../../../hoc/mexFlow/appFlow'
 import { Grid } from '@material-ui/core';
-import { endpoint, perpetual } from '../../../helper/constant';
+import { perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
-import { responseValid } from '../../../services/service';
 import { changeHostName } from '../../../utils/location_utils';
+import { responseValid } from '../../../services/config';
 
 const MexFlow = lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const SERVERCONFIG_HEADER = 'ServerLess Config'
@@ -86,10 +84,10 @@ class AppReg extends Component {
         let portRange = undefined
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.protocol) {
+            if (form.field === localFields.protocol) {
                 protocol = form.value
             }
-            else if (form.field === fields.portRangeMax || form.field === fields.portRangeMin) {
+            else if (form.field === localFields.portRangeMax || form.field === localFields.portRangeMin) {
                 portRange = form.value
             }
         }
@@ -104,7 +102,7 @@ class AppReg extends Component {
                     currentForm.error = 'App cannot use tcp port 22, as it is reserved for platform inter-node SSH'
                     return false;
                 }
-                else if (currentForm.field === fields.portRangeMax || currentForm.field === fields.portRangeMin) {
+                else if (currentForm.field === localFields.portRangeMax || currentForm.field === localFields.portRangeMin) {
                     let portRangeMin = portRange > currentForm.value ? currentForm.value : portRange
                     let portRangeMax = portRange < currentForm.value ? currentForm.value : portRange
                     if (22 >= portRangeMin && 22 <= portRangeMax) {
@@ -150,68 +148,68 @@ class AppReg extends Component {
     }
 
     deploymentManifestForm = () => ([
-        { field: fields.deploymentManifest, formType: TEXT_AREA, rules: { required: false, onBlur: true }, update: { edit: true }, width: 14, visible: true },
+        { field: localFields.deploymentManifest, formType: TEXT_AREA, rules: { required: false, onBlur: true }, update: { edit: true }, width: 14, visible: true },
         { icon: 'browse', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.addManifestData },
         { icon: 'clear', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
     ])
 
     portForm = () => ([
-        { field: fields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 7, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
-        { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
-        { field: fields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 1, update: { edit: true } },
-        { field: fields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
+        { field: localFields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 7, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
+        { field: localFields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
+        { field: localFields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 1, update: { edit: true } },
+        { field: localFields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
     ])
 
     getPortForm = (form) => {
-        return ({ uuid: uniqueId(), field: fields.ports, formType: MULTI_FORM, forms: form ? form : this.portForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: localFields.ports, formType: MULTI_FORM, forms: form ? form : this.portForm(), width: 3, visible: true })
     }
 
     annotationForm = () => ([
-        { field: fields.key, label: 'Key', formType: INPUT, rules: { required: true }, width: 7, visible: true, update: { edit: true } },
-        { field: fields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 7, visible: true, update: { edit: true } },
+        { field: localFields.key, label: 'Key', formType: INPUT, rules: { required: true }, width: 7, visible: true, update: { edit: true } },
+        { field: localFields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 7, visible: true, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     getAnnotationForm = (form) => {
-        return ({ uuid: uniqueId(), field: fields.annotationmulti, formType: MULTI_FORM, forms: form ? form : this.annotationForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: localFields.annotationmulti, formType: MULTI_FORM, forms: form ? form : this.annotationForm(), width: 3, visible: true })
     }
 
     multiPortForm = () => ([
-        { field: fields.portRangeMin, label: 'Port Min', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
+        { field: localFields.portRangeMin, label: 'Port Min', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
-        { field: fields.portRangeMax, label: 'Port Max', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
-        { field: fields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
-        { field: fields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 1, update: { edit: true } },
-        { field: fields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
+        { field: localFields.portRangeMax, label: 'Port Max', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
+        { field: localFields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
+        { field: localFields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 1, update: { edit: true } },
+        { field: localFields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
     ])
 
     getMultiPortForm = (form) => {
-        return ({ uuid: uniqueId(), field: fields.ports, formType: MULTI_FORM, forms: form ? form : this.multiPortForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: localFields.ports, formType: MULTI_FORM, forms: form ? form : this.multiPortForm(), width: 3, visible: true })
     }
 
     configForm = () => ([
-        { field: fields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, rows: 4 }, width: 9, visible: true, update: { edit: true } },
-        { field: fields.kind, label: 'Kind', formType: SELECT, placeholder: 'Select Kind', rules: { required: true }, width: 5, visible: true, options: this.configOptions, update: { edit: true } },
+        { field: localFields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, rows: 4 }, width: 9, visible: true, update: { edit: true } },
+        { field: localFields.kind, label: 'Kind', formType: SELECT, placeholder: 'Select Kind', rules: { required: true }, width: 5, visible: true, options: this.configOptions, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 2, onClick: this.removeMultiForm }
     ])
 
     getConfigForm = (form) => {
-        return ({ uuid: uniqueId(), field: fields.configmulti, formType: MULTI_FORM, forms: form ? form : this.configForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: localFields.configmulti, formType: MULTI_FORM, forms: form ? form : this.configForm(), width: 3, visible: true })
     }
 
     outboundConnectionsForm = () => ([
-        { field: fields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp', 'icmp'], update: { edit: true } },
-        { field: fields.ocPortMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
+        { field: localFields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp', 'icmp'], update: { edit: true } },
+        { field: localFields.ocPortMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
-        { field: fields.ocPortMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
-        { field: fields.ocRemoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: validateRemoteCIDR },
+        { field: localFields.ocPortMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
+        { field: localFields.ocRemoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: validateRemoteCIDR },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     getOutboundConnectionsForm = (form) => {
-        return ({ uuid: uniqueId(), field: fields.requiredOutboundConnectionmulti, formType: MULTI_FORM, forms: form ? form : this.outboundConnectionsForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: localFields.requiredOutboundConnectionmulti, formType: MULTI_FORM, forms: form ? form : this.outboundConnectionsForm(), width: 3, visible: true })
     }
 
     removeMultiForm = (e, form) => {
@@ -238,16 +236,16 @@ class AppReg extends Component {
             let deployment = undefined
             let appName = undefined
             for (let form of forms) {
-                if (form.field === fields.organizationName) {
+                if (form.field === localFields.organizationName) {
                     organizationName = form.value
                 }
-                else if (form.field === fields.version) {
+                else if (form.field === localFields.version) {
                     version = form.value
                 }
-                else if (form.field === fields.deployment) {
+                else if (form.field === localFields.deployment) {
                     deployment = form.value
                 }
-                else if (form.field === fields.appName) {
+                else if (form.field === localFields.appName) {
                     appName = form.value
                 }
             }
@@ -271,45 +269,45 @@ class AppReg extends Component {
 
     deploymentValueChange = (currentForm, forms, isInit) => {
         forms = forms.filter((form) => {
-            if (form.field === fields.imageType) {
+            if (form.field === localFields.imageType) {
                 form.value = currentForm.value === perpetual.DEPLOYMENT_TYPE_HELM ? perpetual.IMAGE_TYPE_HELM :
                     currentForm.value === perpetual.DEPLOYMENT_TYPE_VM ? perpetual.IMAGE_TYPE_QCOW : perpetual.IMAGE_TYPE_DOCKER
                 return form
             }
-            else if (form.field === fields.imagePath) {
+            else if (form.field === localFields.imagePath) {
                 this.updateImagePath(forms, form)
                 return form
             }
-            else if (form.field === fields.scaleWithCluster) {
+            else if (form.field === localFields.scaleWithCluster) {
                 form.visible = currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES
                 return form
             }
-            else if (form.field === fields.configs) {
+            else if (form.field === localFields.configs) {
                 form.visible = currentForm.value === perpetual.DEPLOYMENT_TYPE_HELM || currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES
                 this.configOptions = currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES ? [perpetual.CONFIG_ENV_VAR] : [perpetual.CONFIG_HELM_CUST]
                 return form
             }
-            else if (form.field === fields.annotations) {
+            else if (form.field === localFields.annotations) {
                 form.visible = currentForm.value === perpetual.DEPLOYMENT_TYPE_HELM
                 return form
             }
-            else if (form.field === fields.annotationmulti) {
+            else if (form.field === localFields.annotationmulti) {
                 if (currentForm.value === perpetual.DEPLOYMENT_TYPE_HELM) {
                     return form
                 }
             }
-            else if (form.field === fields.configmulti) {
+            else if (form.field === localFields.configmulti) {
                 if (currentForm.value === perpetual.DEPLOYMENT_TYPE_HELM || currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
                     return form
                 }
             }
-            else if (form.field === fields.vmappostype) {
+            else if (form.field === localFields.vmappostype) {
                 const deployTypeVM = currentForm.value === perpetual.DEPLOYMENT_TYPE_VM
                 form.visible = deployTypeVM
                 form.value = deployTypeVM ? form.value : undefined
                 return form
             }
-            else if (form.field === fields.allowServerless) {
+            else if (form.field === localFields.allowServerless) {
                 form.visible = currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES
                 form.value = false
                 this.allowServerLess(form, forms, isInit)
@@ -357,10 +355,10 @@ class AppReg extends Component {
 
         for (let i = 0; i < childForms.length; i++) {
             let form = childForms[i]
-            if (form.field === fields.tls) {
+            if (form.field === localFields.tls) {
                 form.visible = currentForm.value === 'tcp'
             }
-            else if (form.field === fields.skipHCPorts) {
+            else if (form.field === localFields.skipHCPorts) {
                 form.visible = currentForm.value === 'tcp'
             }
         }
@@ -373,13 +371,13 @@ class AppReg extends Component {
         if (!isInit) {
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i]
-                if (form.field === fields.autoProvPolicies) {
+                if (form.field === localFields.autoProvPolicies) {
                     this.getAutoProvPolicy(region, form, forms)
                 }
-                if (form.field === fields.alertPolicies) {
+                if (form.field === localFields.alertPolicies) {
                     this.getAlertPolicy(region, form, forms)
                 }
-                else if (form.field === fields.flavorName) {
+                else if (form.field === localFields.flavorName) {
                     this.getFlavorInfo(region, form, forms)
                 }
             }
@@ -407,7 +405,7 @@ class AppReg extends Component {
     organizationValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
-            if (form.field === fields.imagePath) {
+            if (form.field === localFields.imagePath) {
                 this.updateImagePath(forms, form)
             }
         }
@@ -419,7 +417,7 @@ class AppReg extends Component {
     versionValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
-            if (form.field === fields.imagePath) {
+            if (form.field === localFields.imagePath) {
                 this.updateImagePath(forms, form)
             }
         }
@@ -438,7 +436,7 @@ class AppReg extends Component {
         let manifest = currentForm.value
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
-            if (form.field === fields.imagePath) {
+            if (form.field === localFields.imagePath) {
                 let imagePath = form.value
                 if ((manifest && manifest.length > 0) && (imagePath && imagePath.length > 0) && !this.imagePathTyped) {
                     this.props.handleAlertInfo('warning', 'Please verify if imagepath is valid, as it was auto generated')
@@ -453,11 +451,11 @@ class AppReg extends Component {
 
     trustedChange = (currentForm, forms, isInit) => {
         forms = forms.filter((form) => {
-            if (form.field === fields.requiredOutboundConnections) {
+            if (form.field === localFields.requiredOutboundConnections) {
                 form.visible = currentForm.value
                 return form
             }
-            else if (form.field === fields.requiredOutboundConnectionmulti) {
+            else if (form.field === localFields.requiredOutboundConnectionmulti) {
                 if (currentForm.value) {
                     return form
                 }
@@ -497,7 +495,7 @@ class AppReg extends Component {
             let form = forms[i];
             if (form.uuid === parentForm.uuid) {
                 for (let outboundConnectionForm of form.forms) {
-                    if (outboundConnectionForm.field === fields.ocPortMin || outboundConnectionForm.field === fields.ocPortMax) {
+                    if (outboundConnectionForm.field === localFields.ocPortMin || outboundConnectionForm.field === localFields.ocPortMax) {
                         outboundConnectionForm.visible = !(currentForm.value === 'icmp')
                         outboundConnectionForm.value = undefined
                     }
@@ -512,7 +510,7 @@ class AppReg extends Component {
 
     qosSessionProfileChange = (currentForm, forms, isInit) => {
         for (let form of forms) {
-            if (form.field === fields.qosSessionDuration) {
+            if (form.field === localFields.qosSessionDuration) {
                 form.visible = currentForm.value !== perpetual.QOS_NO_PRIORITY
                 break;
             }
@@ -524,51 +522,51 @@ class AppReg extends Component {
 
     checkForms = (form, forms, isInit = false, data) => {
         let flowDataList = []
-        if (form.field === fields.region) {
+        if (form.field === localFields.region) {
             this.regionValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.organizationName) {
+        else if (form.field === localFields.organizationName) {
             this.organizationValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.version || form.field === fields.appName) {
+        else if (form.field === localFields.version || form.field === localFields.appName) {
             this.versionValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.deployment) {
+        else if (form.field === localFields.deployment) {
             this.deploymentValueChange(form, forms, isInit)
             let finalData = isInit ? data : formattedData(forms)
             flowDataList.push(appFlow.deploymentTypeFlow(finalData, perpetual.PAGE_APPS))
             flowDataList.push(appFlow.ipAccessFlowApp(finalData))
             flowDataList.push(appFlow.portFlow(this.tlsCount))
         }
-        else if (form.field === fields.imagePath) {
+        else if (form.field === localFields.imagePath) {
             this.imagePathTyped = true
         }
-        else if (form.field === fields.protocol) {
+        else if (form.field === localFields.protocol) {
             this.protcolValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.ocProtocol) {
+        else if (form.field === localFields.ocProtocol) {
             this.ocProtcolValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.tls) {
+        else if (form.field === localFields.tls) {
             this.tlsValueChange(form, forms, isInit)
             flowDataList.push(appFlow.portFlow(this.tlsCount))
         }
-        else if (form.field === fields.accessType) {
+        else if (form.field === localFields.accessType) {
             let finalData = isInit ? data : formattedData(forms)
             flowDataList.push(appFlow.deploymentTypeFlow(finalData, perpetual.PAGE_APPS))
             flowDataList.push(appFlow.ipAccessFlowApp(finalData))
             flowDataList.push(appFlow.portFlow(this.tlsCount))
         }
-        else if (form.field === fields.deploymentManifest) {
+        else if (form.field === localFields.deploymentManifest) {
             this.deploymentManifestChange(form, forms, isInit)
         }
-        else if (form.field === fields.trusted) {
+        else if (form.field === localFields.trusted) {
             this.trustedChange(form, forms, isInit)
         }
-        else if (form.field === fields.allowServerless) {
+        else if (form.field === localFields.allowServerless) {
             this.allowServerLess(form, forms, isInit)
         }
-        else if (form.field === fields.qosSessionProfile) {
+        else if (form.field === localFields.qosSessionProfile) {
             this.qosSessionProfileChange(form, forms, isInit)
         }
         if (flowDataList.length > 0) {
@@ -633,7 +631,7 @@ class AppReg extends Component {
             if (mc.response && mc.response.data) {
                 responseData = mc.response.data;
             }
-            let labels = [{ label: 'App', field: fields.appName }]
+            let labels = [{ label: 'App', field: localFields.appName }]
             this.updateState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
     }
@@ -683,56 +681,56 @@ class AppReg extends Component {
                     let uuid = form.uuid;
                     let multiFormData = data[uuid]
                     if (multiFormData) {
-                        if (multiFormData[fields.portRangeMin] && multiFormData[fields.portRangeMax]) {
+                        if (multiFormData[localFields.portRangeMin] && multiFormData[localFields.portRangeMax]) {
                             ports = ports.length > 0 ? ports + ',' : ports
-                            let newPort = multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMin] + '-' + multiFormData[fields.portRangeMax]
+                            let newPort = multiFormData[localFields.protocol].toUpperCase() + ':' + multiFormData[localFields.portRangeMin] + '-' + multiFormData[localFields.portRangeMax]
                             ports = ports + newPort
-                            if (multiFormData[fields.protocol] === 'tcp') {
-                                ports = ports + (multiFormData[fields.tls] ? ':tls' : '')
-                                if (!multiFormData[fields.skipHCPorts]) {
+                            if (multiFormData[localFields.protocol] === 'tcp') {
+                                ports = ports + (multiFormData[localFields.tls] ? ':tls' : '')
+                                if (!multiFormData[localFields.skipHCPorts]) {
                                     skipHCPorts = skipHCPorts.length > 0 ? skipHCPorts + ',' : skipHCPorts
                                     skipHCPorts = skipHCPorts + newPort
                                 }
                             }
-                            else if (multiFormData[fields.protocol] === 'udp') {
-                                udpPorts.push([multiFormData[fields.portRangeMin], multiFormData[fields.portRangeMax]])
+                            else if (multiFormData[localFields.protocol] === 'udp') {
+                                udpPorts.push([multiFormData[localFields.portRangeMin], multiFormData[localFields.portRangeMax]])
                             }
                         }
-                        else if (multiFormData[fields.portRangeMax]) {
+                        else if (multiFormData[localFields.portRangeMax]) {
                             ports = ports.length > 0 ? ports + ',' : ports
-                            let newPort = multiFormData[fields.protocol].toUpperCase() + ':' + multiFormData[fields.portRangeMax]
+                            let newPort = multiFormData[localFields.protocol].toUpperCase() + ':' + multiFormData[localFields.portRangeMax]
                             ports = ports + newPort
-                            if (multiFormData[fields.protocol] === 'tcp') {
-                                ports = ports + (multiFormData[fields.tls] ? ':tls' : '')
-                                if (!multiFormData[fields.skipHCPorts] && multiFormData[fields.protocol] === 'tcp') {
+                            if (multiFormData[localFields.protocol] === 'tcp') {
+                                ports = ports + (multiFormData[localFields.tls] ? ':tls' : '')
+                                if (!multiFormData[localFields.skipHCPorts] && multiFormData[localFields.protocol] === 'tcp') {
                                     skipHCPorts = skipHCPorts.length > 0 ? skipHCPorts + ',' : skipHCPorts
                                     skipHCPorts = skipHCPorts + newPort
                                 }
                             }
-                            else if (multiFormData[fields.protocol] === 'udp') {
-                                udpPorts.push(multiFormData[fields.portRangeMax])
+                            else if (multiFormData[localFields.protocol] === 'udp') {
+                                udpPorts.push(multiFormData[localFields.portRangeMax])
                             }
                         }
-                        else if (form.field === fields.deploymentManifest && multiFormData[fields.deploymentManifest]) {
-                            data[fields.deploymentManifest] = multiFormData[fields.deploymentManifest].trim()
+                        else if (form.field === localFields.deploymentManifest && multiFormData[localFields.deploymentManifest]) {
+                            data[localFields.deploymentManifest] = multiFormData[localFields.deploymentManifest].trim()
                         }
-                        else if (multiFormData[fields.key] && multiFormData[fields.value]) {
+                        else if (multiFormData[localFields.key] && multiFormData[localFields.value]) {
                             annotations = annotations.length > 0 ? annotations + ',' : annotations
-                            annotations = annotations + `${multiFormData[fields.key]}=${multiFormData[fields.value]}`
+                            annotations = annotations + `${multiFormData[localFields.key]}=${multiFormData[localFields.value]}`
                         }
-                        else if (multiFormData[fields.kind] && multiFormData[fields.config]) {
+                        else if (multiFormData[localFields.kind] && multiFormData[localFields.config]) {
                             configs.push(multiFormData)
                         }
-                        else if (form.field === fields.requiredOutboundConnectionmulti) {
+                        else if (form.field === localFields.requiredOutboundConnectionmulti) {
                             let requiredOutboundConnection = {}
-                            requiredOutboundConnection.remote_cidr = multiFormData[fields.ocRemoteCIDR]
-                            if (multiFormData[fields.ocPortMax]) {
-                                requiredOutboundConnection.port_range_max = parseInt(multiFormData[fields.ocPortMax])
+                            requiredOutboundConnection.remote_cidr = multiFormData[localFields.ocRemoteCIDR]
+                            if (multiFormData[localFields.ocPortMax]) {
+                                requiredOutboundConnection.port_range_max = parseInt(multiFormData[localFields.ocPortMax])
                             }
-                            if (multiFormData[fields.ocPortMin]) {
-                                requiredOutboundConnection.port_range_min = parseInt(multiFormData[fields.ocPortMin])
+                            if (multiFormData[localFields.ocPortMin]) {
+                                requiredOutboundConnection.port_range_min = parseInt(multiFormData[localFields.ocPortMin])
                             }
-                            requiredOutboundConnection.protocol = multiFormData[fields.ocProtocol]
+                            requiredOutboundConnection.protocol = multiFormData[localFields.ocProtocol]
                             requiredOutboundConnections.push(requiredOutboundConnection)
                         }
                     }
@@ -740,49 +738,49 @@ class AppReg extends Component {
                 }
             }
 
-            if ((data[fields.imagePath] && data[fields.imagePath].length > 0) || (data[fields.deploymentManifest] && data[fields.deploymentManifest].length > 0)) {
-                    data[fields.accessPorts] = ports
-                    data[fields.skipHCPorts] = skipHCPorts.length > 0 ? skipHCPorts : undefined
+            if ((data[localFields.imagePath] && data[localFields.imagePath].length > 0) || (data[localFields.deploymentManifest] && data[localFields.deploymentManifest].length > 0)) {
+                    data[localFields.accessPorts] = ports
+                    data[localFields.skipHCPorts] = skipHCPorts.length > 0 ? skipHCPorts : undefined
 
                     if (annotations.length > 0) {
-                        data[fields.annotations] = annotations
+                        data[localFields.annotations] = annotations
                     }
                     if (configs.length > 0) {
-                        data[fields.configs] = configs
+                        data[localFields.configs] = configs
                     }
                     if (requiredOutboundConnections.length > 0) {
-                        data[fields.requiredOutboundConnections] = requiredOutboundConnections
+                        data[localFields.requiredOutboundConnections] = requiredOutboundConnections
                     }
 
                     if (udpPorts.length > 0 && this.updRangeExceeds(udpPorts)) {
-                        if (data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
+                        if (data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
                             valid = false
                             this.props.handleAlertInfo('error', 'Maximum 1000 UDP ports are allowed for deployment type kubernetes app')
                         }
                     }
                     if (valid) {
                         if (this.isUpdate) {
-                            let autoProvPolicies = data[fields.autoProvPolicies]
-                            let alertPolicies = data[fields.alertPolicies]
+                            let autoProvPolicies = data[localFields.autoProvPolicies]
+                            let alertPolicies = data[localFields.alertPolicies]
                             if (autoProvPolicies && autoProvPolicies.length > 0) {
-                                data[fields.autoProvPolicies] = data[fields.autoProvPolicies][0].value
+                                data[localFields.autoProvPolicies] = data[localFields.autoProvPolicies][0].value
                             }
                             if (alertPolicies && alertPolicies.length > 0) {
-                                data[fields.alertPolicies] = data[fields.alertPolicies][0].value
+                                data[localFields.alertPolicies] = data[localFields.alertPolicies][0].value
                             }
                             let updateData = updateFieldData(this, forms, data, this.originalData)
-                            if (updateData[fields.trusted] !== undefined) {
-                                let roc = this.originalData[fields.requiredOutboundConnection]
-                                if (!updateData[fields.trusted] && roc && roc.length > 0) {
-                                    updateData[fields.fields].push("38", "38.1", "38.2", "38.4")
+                            if (updateData[localFields.trusted] !== undefined) {
+                                let roc = this.originalData[localFields.requiredOutboundConnection]
+                                if (!updateData[localFields.trusted] && roc && roc.length > 0) {
+                                    updateData[localFields.fields].push("38", "38.1", "38.2", "38.4")
                                 }
                             }
                             if (updateData.fields.length > 0) {
                                 let mc = await updateApp(this, updateData)
                                 if (responseValid(mc)) {
-                                    this.props.handleAlertInfo('success', `App ${data[fields.appName]} updated successfully`)
-                                    if (data[fields.refreshAppInst]) {
-                                        serverData.sendWSRequest(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
+                                    this.props.handleAlertInfo('success', `App ${data[localFields.appName]} updated successfully`)
+                                    if (data[localFields.refreshAppInst]) {
+                                        websocket.request(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
                                     }
                                     else {
                                         this.props.onClose(true)
@@ -791,7 +789,7 @@ class AppReg extends Component {
                             }
                         }
                         else {
-                            let regions = data[fields.region]
+                            let regions = data[localFields.region]
                             let requestList = []
                             if (regions.includes('All')) {
                                 regions = cloneDeep(this.regions)
@@ -799,36 +797,36 @@ class AppReg extends Component {
                             }
                             regions.map(region => {
                                 let requestData = cloneDeep(data)
-                                requestData[fields.region] = region
-                                requestData[fields.flavorName] = undefined
-                                for (let i = 0; i < data[fields.flavorName].length; i++) {
-                                    let flavor = data[fields.flavorName][i]
+                                requestData[localFields.region] = region
+                                requestData[localFields.flavorName] = undefined
+                                for (let i = 0; i < data[localFields.flavorName].length; i++) {
+                                    let flavor = data[localFields.flavorName][i]
                                     if (flavor && flavor.parent.includes(region)) {
-                                        requestData[fields.flavorName] = flavor.value
+                                        requestData[localFields.flavorName] = flavor.value
                                         break;
                                     }
                                 }
-                                if (data[fields.autoProvPolicies]) {
-                                    requestData[fields.autoProvPolicies] = undefined
-                                    for (let i = 0; i < data[fields.autoProvPolicies].length; i++) {
-                                        let autoPolicy = data[fields.autoProvPolicies][i]
+                                if (data[localFields.autoProvPolicies]) {
+                                    requestData[localFields.autoProvPolicies] = undefined
+                                    for (let i = 0; i < data[localFields.autoProvPolicies].length; i++) {
+                                        let autoPolicy = data[localFields.autoProvPolicies][i]
                                         if (autoPolicy && autoPolicy.parent.includes(region)) {
-                                            requestData[fields.autoProvPolicies] = autoPolicy.value
+                                            requestData[localFields.autoProvPolicies] = autoPolicy.value
                                             break;
                                         }
                                     }
                                 }
-                                if (data[fields.alertPolicies]) {
-                                    requestData[fields.alertPolicies] = undefined
-                                    for (let i = 0; i < data[fields.alertPolicies].length; i++) {
-                                        let alertPolicy = data[fields.alertPolicies][i]
+                                if (data[localFields.alertPolicies]) {
+                                    requestData[localFields.alertPolicies] = undefined
+                                    for (let i = 0; i < data[localFields.alertPolicies].length; i++) {
+                                        let alertPolicy = data[localFields.alertPolicies][i]
                                         if (alertPolicy && alertPolicy.parent.includes(region)) {
-                                            requestData[fields.alertPolicies] = alertPolicy.value
+                                            requestData[localFields.alertPolicies] = alertPolicy.value
                                             break;
                                         }
                                     }
                                 }
-                                requestData[fields.serverLessConfig] = data[fields.serverLessConfig]
+                                requestData[localFields.serverLessConfig] = data[localFields.serverLessConfig]
                                 requestList.push(createApp(requestData))
                             })
 
@@ -872,28 +870,28 @@ class AppReg extends Component {
             if (form.field) {
                 if (form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === SELECT_RADIO_TREE) {
                     switch (form.field) {
-                        case fields.region:
+                        case localFields.region:
                             form.options = this.regions;
                             break;
-                        case fields.organizationName:
+                        case localFields.organizationName:
                             form.options = this.organizationList
                             break;
-                        case fields.flavorName:
+                        case localFields.flavorName:
                             form.options = this.flavorList
                             break;
-                        case fields.autoProvPolicies:
+                        case localFields.autoProvPolicies:
                             form.options = this.autoProvPolicyList
                             break;
-                        case fields.alertPolicies:
+                        case localFields.alertPolicies:
                             form.options = this.alertPolicyList
                             break;
-                        case fields.vmappostype:
+                        case localFields.vmappostype:
                             form.options = [perpetual.OS_LINUX, perpetual.OS_WINDOWS_10, perpetual.OS_WINDOWS_2012, perpetual.OS_WINDOWS_2016, perpetual.OS_WINDOWS_2019]
                             break;
-                        case fields.deployment:
+                        case localFields.deployment:
                             form.options = [perpetual.DEPLOYMENT_TYPE_DOCKER, perpetual.DEPLOYMENT_TYPE_KUBERNETES, perpetual.DEPLOYMENT_TYPE_VM, perpetual.DEPLOYMENT_TYPE_HELM]
                             break;
-                        case fields.qosSessionProfile:
+                        case localFields.qosSessionProfile:
                             form.options = [perpetual.QOS_LOW_LATENCY, perpetual.QOS_NO_PRIORITY, perpetual.QOS_THROUGHPUT_DOWN_S, perpetual.QOS_THROUGHPUT_DOWN_M, perpetual.QOS_THROUGHPUT_DOWN_L]
                             break;
                         default:
@@ -907,39 +905,39 @@ class AppReg extends Component {
     formKeys = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Apps`, formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers', update: { key: true } },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Organization or Company Name that a Developer is part of', update: { key: true } },
-            { field: fields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name', dataValidateFunc: this.validateAppName, update: { key: true } },
-            { field: fields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version', update: { key: true } },
-            { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
-            { field: fields.vmappostype, label: 'VM App OS Type', formType: SELECT, placeholder: 'Select OS Type', rules: { required: false }, visible: false, update: { id: ['41'] }, tip: 'OS Type for VM Apps, one of Linux, Windows 10, Windows 2012, Windows 2016, Windows 2019' },
-            { field: fields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Image Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
-            { field: fields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: { id: ['4'] }, tip: 'URI of where image resides' },
-            { field: fields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, update: { id: ['9.1'] }, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: fields.region }] },
-            { field: fields.autoProvPolicies, showField: fields.autoPolicyName, label: 'Auto Provisioning Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policies', rules: { required: false }, visible: true, update: { id: ['32'] }, multiple: true, tip: 'Auto provisioning policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }] },
-            { uuid: uniqueId(), field: fields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: { id: ['16'] }, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
-            { field: fields.refreshAppInst, label: 'Upgrade All App Instances', formType: SWITCH, visible: this.isUpdate, value: false, update: { edit: true }, tip: 'Upgrade App Instances running in the cloudlets' },
-            { field: fields.trusted, label: 'Trusted', formType: SWITCH, visible: true, value: false, update: { id: ['37'] }, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
-            { field: fields.allowServerless, label: 'Allow Serverless', formType: SWITCH, value: false, tip: 'App is allowed to deploy as serverless containers', visible: false, rules: { disabled: false }, update: { id: ['39'] } },
-            { field: fields.accessPorts, label: 'Ports', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], update: { id: ['7'], ignoreCase: true }, visible: true, tip: 'Ports:</b>Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443\nHealth Check:</b> Periodically tests the health of applications as TCP packets are generated from the load balancer to the application and its associated port. This information is useful for Developers to manage and mitigate issues.' },
-            { field: fields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, update: { id: ['21', '21.1', '21.2'] }, tip: 'Customization files passed through to implementing services' },
-            { field: fields.annotations, label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, update: { id: ['14'] }, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
-            { field: fields.requiredOutboundConnections, label: 'Required Outbound Connections', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Connections', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getOutboundConnectionsForm }], visible: false, update: { id: ['38', '38.1', '38.2', '38.4'] }, tip: 'Connections this app require to determine if the app is compatible with a trust policy' },
+            { field: localFields.region, label: 'Region', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Allows developer to upload app info to different controllers', update: { key: true } },
+            { field: localFields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'Organization or Company Name that a Developer is part of', update: { key: true } },
+            { field: localFields.appName, label: 'App Name', formType: INPUT, placeholder: 'Enter App Name', rules: { required: true, onBlur: true }, visible: true, tip: 'App name', dataValidateFunc: this.validateAppName, update: { key: true } },
+            { field: localFields.version, label: 'App Version', formType: INPUT, placeholder: 'Enter App Version', rules: { required: true, onBlur: true }, visible: true, tip: 'App version', update: { key: true } },
+            { field: localFields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)' },
+            { field: localFields.vmappostype, label: 'VM App OS Type', formType: SELECT, placeholder: 'Select OS Type', rules: { required: false }, visible: false, update: { id: ['41'] }, tip: 'OS Type for VM Apps, one of Linux, Windows 10, Windows 2012, Windows 2016, Windows 2019' },
+            { field: localFields.imageType, label: 'Image Type', formType: INPUT, placeholder: 'Select Image Type', rules: { required: true, disabled: true }, visible: true, tip: 'ImageType specifies image type of an App' },
+            { field: localFields.imagePath, label: 'Image Path', formType: INPUT, placeholder: 'Enter Image Path', rules: { required: false }, visible: true, update: { id: ['4'] }, tip: 'URI of where image resides' },
+            { field: localFields.flavorName, label: 'Default Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, update: { id: ['9.1'] }, tip: 'FlavorKey uniquely identifies a Flavor.', dependentData: [{ index: 1, field: localFields.region }] },
+            { field: localFields.autoProvPolicies, showField: localFields.autoPolicyName, label: 'Auto Provisioning Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Auto Provisioning Policies', rules: { required: false }, visible: true, update: { id: ['32'] }, multiple: true, tip: 'Auto provisioning policies', dependentData: [{ index: 1, field: localFields.region }, { index: 2, field: localFields.organizationName }] },
+            { uuid: uniqueId(), field: localFields.deploymentManifest, label: 'Deployment Manifest', formType: TEXT_AREA, visible: true, update: { id: ['16'] }, forms: this.deploymentManifestForm(), tip: 'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file' },
+            { field: localFields.refreshAppInst, label: 'Upgrade All App Instances', formType: SWITCH, visible: this.isUpdate, value: false, update: { edit: true }, tip: 'Upgrade App Instances running in the cloudlets' },
+            { field: localFields.trusted, label: 'Trusted', formType: SWITCH, visible: true, value: false, update: { id: ['37'] }, tip: 'Indicates that an instance of this app can be started on a trusted cloudlet' },
+            { field: localFields.allowServerless, label: 'Allow Serverless', formType: SWITCH, value: false, tip: 'App is allowed to deploy as serverless containers', visible: false, rules: { disabled: false }, update: { id: ['39'] } },
+            { field: localFields.accessPorts, label: 'Ports', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Port Mappings', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getPortForm }, { formType: ICON_BUTTON, label: 'Add Multiport Mappings', icon: 'add_mult', visible: true, onClick: this.addMultiForm, multiForm: this.getMultiPortForm }], update: { id: ['7'], ignoreCase: true }, visible: true, tip: 'Ports:</b>Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443\nHealth Check:</b> Periodically tests the health of applications as TCP packets are generated from the load balancer to the application and its associated port. This information is useful for Developers to manage and mitigate issues.' },
+            { field: localFields.configs, label: 'Configs', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Configs', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getConfigForm }], visible: false, update: { id: ['21', '21.1', '21.2'] }, tip: 'Customization files passed through to implementing services' },
+            { field: localFields.annotations, label: 'Annotations', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Annotations', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getAnnotationForm }], visible: false, update: { id: ['14'] }, tip: 'Annotations is a comma separated map of arbitrary key value pairs' },
+            { field: localFields.requiredOutboundConnections, label: 'Required Outbound Connections', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Connections', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getOutboundConnectionsForm }], visible: false, update: { id: ['38', '38.1', '38.2', '38.4'] }, tip: 'Connections this app require to determine if the app is compatible with a trust policy' },
             { label: SERVERCONFIG_HEADER, formType: HEADER, visible: false, forms: [{ formType: ICON_BUTTON, icon: 'expand_less', visible: true, onClick: this.serverlessConfigMenu }], visible: false },
-            { field: fields.serverlessVcpu, label: 'Virtual CPU', formType: INPUT, placeholder: 'Enter vCPUs per container', rules: { required: false }, visible: false, update: { id: ['40', '40.1'] }, dataValidateFunc: this.validateDecimalInteger, serverless: true, tip: 'Virtual CPUs allocation per container when serverless, may be decimal in increments of 0.001' },
-            { field: fields.serverlessRam, label: 'RAM', formType: INPUT, placeholder: 'Enter RAM allocation per container', rules: { required: false, type: 'number' }, visible: false, update: { id: ['40', '40.2'] }, serverless: true, tip: 'RAM allocation in megabytes per container when serverless' },
-            { field: fields.serverlessMinReplicas, label: 'Min Replicas', formType: INPUT, placeholder: 'Enter min replicas', rules: { required: false, type: 'number' }, visible: false, update: { id: ['40', '40.3'] }, serverless: true, tip: 'Minimum number of replicas when serverless' },
+            { field: localFields.serverlessVcpu, label: 'Virtual CPU', formType: INPUT, placeholder: 'Enter vCPUs per container', rules: { required: false }, visible: false, update: { id: ['40', '40.1'] }, dataValidateFunc: this.validateDecimalInteger, serverless: true, tip: 'Virtual CPUs allocation per container when serverless, may be decimal in increments of 0.001' },
+            { field: localFields.serverlessRam, label: 'RAM', formType: INPUT, placeholder: 'Enter RAM allocation per container', rules: { required: false, type: 'number' }, visible: false, update: { id: ['40', '40.2'] }, serverless: true, tip: 'RAM allocation in megabytes per container when serverless' },
+            { field: localFields.serverlessMinReplicas, label: 'Min Replicas', formType: INPUT, placeholder: 'Enter min replicas', rules: { required: false, type: 'number' }, visible: false, update: { id: ['40', '40.3'] }, serverless: true, tip: 'Minimum number of replicas when serverless' },
             { label: 'Advanced Settings', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Advance Options', icon: 'expand_less', visible: true, onClick: this.advanceMenu }], visible: true },
-            { field: fields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: { id: ['12'] }, tip: 'public key used for authentication', advance: false },
-            { field: fields.alertPolicies, showField: fields.alertPolicyName, label: 'Alert Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Alert Policies', rules: { required: false }, visible: true, update: { id: ['42'] }, multiple: true, tip: 'Alert policies', dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.organizationName }], advance: false },
-            { field: fields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, update: { id: ['25'] }, tip: 'Official FQDN is the FQDN that the app uses to connect by default', advance: false },
-            { field: fields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: { id: ['18'] }, tip: 'Android package name used to match the App name from the Android package', advance: false },
-            { field: fields.scaleWithCluster, label: 'Scale With Cluster', formType: SWITCH, visible: false, value: false, update: { id: ['22'] }, advance: false, tip: 'Option to run App on all nodes of the cluster' },
-            { field: fields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: { id: ['13'] }, tip: 'Command that the container runs to start service', advance: false },
-            { field: fields.templateDelimiter, label: 'Template Delimeter', formType: INPUT, placeholder: 'Enter Template Delimeter', rules: { required: false }, visible: true, update: { id: ['33'] }, tip: 'Delimiter to be used for template parsing, defaults to [[ ]]', advance: false },
-            { field: fields.qosSessionProfile, label: 'QOS Network Prioritization', formType: SELECT, placeholder: 'Select Profile', visible: true, update: { id: ['43'] }, tip: 'Qualifier for the requested latency profile, one of NoPriority, LowLatency, ThroughputDownS, ThroughputDownM, ThroughputDownL', advance: false },
-            { field: fields.qosSessionDuration, label: 'QOS Session Duration', formType: TIME_COUNTER, placeholder: 'Enter Duration', rules: { required: false, onBlur: true }, visible: false, update: { id: ['44'] }, tip: 'Session duration in seconds. Maximal value of 24 hours is used if not set', default: '24h', advance: false },
-            { field: fields.skipHCPorts, update: { id: ['34'], ignoreCase: true } },
+            { field: localFields.authPublicKey, label: 'Auth Public Key', formType: TEXT_AREA, placeholder: 'Enter Auth Public Key', rules: { required: false }, visible: true, update: { id: ['12'] }, tip: 'public key used for authentication', advance: false },
+            { field: localFields.alertPolicies, showField: localFields.alertPolicyName, label: 'Alert Policies', formType: SELECT_RADIO_TREE, placeholder: 'Select Alert Policies', rules: { required: false }, visible: true, update: { id: ['42'] }, multiple: true, tip: 'Alert policies', dependentData: [{ index: 1, field: localFields.region }, { index: 2, field: localFields.organizationName }], advance: false },
+            { field: localFields.officialFQDN, label: 'Official FQDN', formType: INPUT, placeholder: 'Enter Official FQDN', rules: { required: false }, visible: true, update: { id: ['25'] }, tip: 'Official FQDN is the FQDN that the app uses to connect by default', advance: false },
+            { field: localFields.androidPackageName, label: 'Android Package Name', formType: INPUT, placeholder: 'Enter Package Name', rules: { required: false }, visible: true, update: { id: ['18'] }, tip: 'Android package name used to match the App name from the Android package', advance: false },
+            { field: localFields.scaleWithCluster, label: 'Scale With Cluster', formType: SWITCH, visible: false, value: false, update: { id: ['22'] }, advance: false, tip: 'Option to run App on all nodes of the cluster' },
+            { field: localFields.command, label: 'Command', formType: INPUT, placeholder: 'Enter Command', rules: { required: false }, visible: true, update: { id: ['13'] }, tip: 'Command that the container runs to start service', advance: false },
+            { field: localFields.templateDelimiter, label: 'Template Delimeter', formType: INPUT, placeholder: 'Enter Template Delimeter', rules: { required: false }, visible: true, update: { id: ['33'] }, tip: 'Delimiter to be used for template parsing, defaults to [[ ]]', advance: false },
+            { field: localFields.qosSessionProfile, label: 'QOS Network Prioritization', formType: SELECT, placeholder: 'Select Profile', visible: true, update: { id: ['43'] }, tip: 'Qualifier for the requested latency profile, one of NoPriority, LowLatency, ThroughputDownS, ThroughputDownM, ThroughputDownL', advance: false },
+            { field: localFields.qosSessionDuration, label: 'QOS Session Duration', formType: TIME_COUNTER, placeholder: 'Enter Duration', rules: { required: false, onBlur: true }, visible: false, update: { id: ['44'] }, tip: 'Session duration in seconds. Maximal value of 24 hours is used if not set', default: '24h', advance: false },
+            { field: localFields.skipHCPorts, update: { id: ['34'], ignoreCase: true } },
         ]
     }
 
@@ -947,12 +945,12 @@ class AppReg extends Component {
         if (data) {
             let requestList = []
             let organization = {}
-            let region = data[fields.region]
-            organization[fields.organizationName] = data[fields.organizationName];
+            let region = data[localFields.region]
+            organization[localFields.organizationName] = data[localFields.organizationName];
             this.organizationList = [organization]
 
             if (region) {
-                requestList.push(showAppInsts(this, { region: region, appinst: { key: { app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] } } } }, true))
+                requestList.push(showAppInsts(this, { region: region, appinst: { key: { app_key: { organization: data[localFields.organizationName], name: data[localFields.appName], version: data[localFields.version] } } } }, true))
                 requestList.push(showFlavors(this, { region: region }))
                 requestList.push(showAutoProvPolicies(this, { region: region }))
                 requestList.push(showAlertPolicy(this, { region: region }))
@@ -977,14 +975,14 @@ class AppReg extends Component {
                 }
             }
 
-            if (data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
+            if (data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
                 this.configOptions = [perpetual.CONFIG_ENV_VAR]
             }
             let multiFormCount = 0
 
-            if (data[fields.accessPorts]) {
-                let portArray = data[fields.accessPorts].split(',')
-                let skipHCPortArray = data[fields.skipHCPorts] ? data[fields.skipHCPorts].split(',') : []
+            if (data[localFields.accessPorts]) {
+                let portArray = data[localFields.accessPorts].split(',')
+                let skipHCPortArray = data[localFields.skipHCPorts] ? data[localFields.skipHCPorts].split(',') : []
                 for (let i = 0; i < portArray.length; i++) {
                     let portInfo = portArray[i].split(':')
                     let protocol = portInfo[0].toLowerCase();
@@ -1007,20 +1005,20 @@ class AppReg extends Component {
 
                     for (let j = 0; j < portForms.length; j++) {
                         let portForm = portForms[j];
-                        if (portForm.field === fields.protocol) {
+                        if (portForm.field === localFields.protocol) {
                             portForm.value = protocol
                         }
-                        else if (portForm.field === fields.portRangeMax) {
+                        else if (portForm.field === localFields.portRangeMax) {
                             portForm.value = portMaxNo
                         }
-                        else if (portForm.field === fields.portRangeMin) {
+                        else if (portForm.field === localFields.portRangeMin) {
                             portForm.value = portMinNo
                         }
-                        else if (portForm.field === fields.tls) {
+                        else if (portForm.field === localFields.tls) {
                             portForm.visible = protocol === 'tcp'
                             portForm.value = tls
                         }
-                        else if (portForm.field === fields.skipHCPorts) {
+                        else if (portForm.field === localFields.skipHCPorts) {
                             portForm.visible = protocol === 'tcp'
                             portForm.value = !skipHCPort
                         }
@@ -1030,8 +1028,8 @@ class AppReg extends Component {
                 }
             }
 
-            if (data[fields.annotations]) {
-                let annotationArray = data[fields.annotations].split(',')
+            if (data[localFields.annotations]) {
+                let annotationArray = data[localFields.annotations].split(',')
                 for (let i = 0; i < annotationArray.length; i++) {
                     let annotation = annotationArray[i].split('=')
                     let annotationForms = this.annotationForm()
@@ -1040,10 +1038,10 @@ class AppReg extends Component {
 
                     for (let j = 0; j < annotationForms.length; j++) {
                         let annotationForm = annotationForms[j];
-                        if (annotationForm.field === fields.key) {
+                        if (annotationForm.field === localFields.key) {
                             annotationForm.value = key
                         }
-                        else if (annotationForm.field === fields.value) {
+                        else if (annotationForm.field === localFields.value) {
                             annotationForm.value = value
                         }
                     }
@@ -1052,18 +1050,18 @@ class AppReg extends Component {
                 }
             }
 
-            if (data[fields.configs]) {
-                let configs = data[fields.configs]
+            if (data[localFields.configs]) {
+                let configs = data[localFields.configs]
                 for (let i = 0; i < configs.length; i++) {
                     let config = configs[i]
                     let configForms = this.configForm()
                     for (let j = 0; j < configForms.length; j++) {
                         let configForm = configForms[j];
-                        if (configForm.field === fields.kind) {
-                            configForm.value = config[fields.kind]
+                        if (configForm.field === localFields.kind) {
+                            configForm.value = config[localFields.kind]
                         }
-                        else if (configForm.field === fields.config) {
-                            configForm.value = config[fields.config]
+                        else if (configForm.field === localFields.config) {
+                            configForm.value = config[localFields.config]
                         }
                     }
                     forms.splice(18 + multiFormCount, 0, this.getConfigForm(configForms))
@@ -1071,24 +1069,24 @@ class AppReg extends Component {
                 }
             }
 
-            if (data[fields.requiredOutboundConnections]) {
-                let requiredOutboundConnections = data[fields.requiredOutboundConnections]
+            if (data[localFields.requiredOutboundConnections]) {
+                let requiredOutboundConnections = data[localFields.requiredOutboundConnections]
                 for (let i = 0; i < requiredOutboundConnections.length; i++) {
                     let requiredOutboundConnection = requiredOutboundConnections[i]
                     let outboundConnectionsForms = this.outboundConnectionsForm()
                     for (let j = 0; j < outboundConnectionsForms.length; j++) {
                         let outboundConnectionsForm = outboundConnectionsForms[j];
-                        if (outboundConnectionsForm.field === fields.ocProtocol) {
+                        if (outboundConnectionsForm.field === localFields.ocProtocol) {
                             outboundConnectionsForm.value = requiredOutboundConnection['protocol']
                         }
-                        else if (outboundConnectionsForm.field === fields.ocRemoteCIDR) {
+                        else if (outboundConnectionsForm.field === localFields.ocRemoteCIDR) {
                             outboundConnectionsForm.value = requiredOutboundConnection['remote_cidr']
                         }
-                        else if (outboundConnectionsForm.field === fields.ocPortMin) {
+                        else if (outboundConnectionsForm.field === localFields.ocPortMin) {
                             outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
                             outboundConnectionsForm.value = requiredOutboundConnection['port_range_min']
                         }
-                        else if (outboundConnectionsForm.field === fields.ocPortMax) {
+                        else if (outboundConnectionsForm.field === localFields.ocPortMax) {
                             outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
                             outboundConnectionsForm.value = requiredOutboundConnection['port_range_max']
                         }
@@ -1106,8 +1104,8 @@ class AppReg extends Component {
             this.updateUI(form)
             if (data) {
 
-                if (form.field === fields.refreshAppInst) {
-                    form.visible = this.appInstExist && (data[fields.deployment] !== perpetual.DEPLOYMENT_TYPE_VM)
+                if (form.field === localFields.refreshAppInst) {
+                    form.visible = this.appInstExist && (data[localFields.deployment] !== perpetual.DEPLOYMENT_TYPE_VM)
                 }
                 if (form.forms && form.formType !== HEADER && form.formType !== MULTI_FORM) {
                     this.updateFormData(form.forms, data)
@@ -1129,7 +1127,7 @@ class AppReg extends Component {
                 }
 
                 if (this.appInstExist === false) {
-                    if (form.field == fields.deployment) {
+                    if (form.field == localFields.deployment) {
                         form.update = { id: ['15'] }
                     }
                 }
@@ -1141,22 +1139,22 @@ class AppReg extends Component {
     getFormData = async (data) => {
         let forms = this.formKeys()
         if (data) {
-            if (data[fields.accessServerlessConfig]) {
-                data[fields.serverlessVcpu] = data[fields.accessServerlessConfig]['vcpus']
-                data[fields.serverlessRam] = data[fields.accessServerlessConfig]['ram']
-                data[fields.serverlessMinReplicas] = data[fields.accessServerlessConfig]['min_replicas']
+            if (data[localFields.accessServerlessConfig]) {
+                data[localFields.serverlessVcpu] = data[localFields.accessServerlessConfig]['vcpus']
+                data[localFields.serverlessRam] = data[localFields.accessServerlessConfig]['ram']
+                data[localFields.serverlessMinReplicas] = data[localFields.accessServerlessConfig]['min_replicas']
             }
-            this.tlsCount = data[fields.accessPorts] ? (data[fields.accessPorts].match(/tls/g) || []).length : 0;
+            this.tlsCount = data[localFields.accessPorts] ? (data[localFields.accessPorts].match(/tls/g) || []).length : 0;
             this.updateFlowDataList.push(appFlow.portFlow(this.tlsCount))
             this.originalData = cloneDeep(data)
             await this.loadDefaultData(forms, data)
             if (this.isClone) {
 
-                this.requestedRegionList.push(data[fields.region])
-                data[fields.region] = [data[fields.region]]
+                this.requestedRegionList.push(data[localFields.region])
+                data[localFields.region] = [data[localFields.region]]
                 //clear manifest if auto generated
-                if (data[fields.deploymentGenerator] === 'kubernetes-basic') {
-                    data[fields.deploymentManifest] = undefined
+                if (data[localFields.deploymentGenerator] === 'kubernetes-basic') {
+                    data[localFields.deploymentManifest] = undefined
                 }
             }
         }

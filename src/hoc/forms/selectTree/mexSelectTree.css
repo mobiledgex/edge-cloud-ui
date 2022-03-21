@@ -1,4 +1,4 @@
-.header{
+.mex-select-tree .header{
     width: calc(100% - 0px);
     min-height: 40px;
     text-align: left;
@@ -12,7 +12,7 @@
     color:#ACACAC
 }
 
-.header_active{
+.mex-select-tree .header_active{
     width: calc(100% - 0px);
     min-height: 40px;
     text-align: left;
