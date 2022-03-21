@@ -3,17 +3,18 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../../actions';
 import { Button, Typography } from '@material-ui/core'
 import MexTable from '../../../../../hoc/datagrid/MexTable'
-import { fields } from '../../../../../services'
 import { showFederatorZones } from '../../../../../services/modules/zones';
-import { multiAuthSyncRequest, responseValid, showAuthSyncRequest } from '../../../../../services/service'
+import { multiAuthSyncRequest, showAuthSyncRequest } from '../../../../../services/service'
 import { withRouter } from 'react-router-dom';
 import { shareZones } from '../../../../../services/modules/zones/zones';
 import { ACTION_UNSHARE_ZONES } from '../../../../../helper/constant/perpetual';
+import { responseValid } from '../../../../../services/config';
+import { localFields } from '../../../../../services/fields';
 
 export const zoneKeys = () => ([
-    { field: fields.operatorName, label: 'Operator', visible: true },
-    { field: fields.zoneId, label: 'Zone', serverField: 'zoneid', visible: true },
-    { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true }
+    { field: localFields.operatorName, label: 'Operator', visible: true },
+    { field: localFields.zoneId, label: 'Zone', serverField: 'zoneid', visible: true },
+    { field: localFields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true }
 ])
 
 class ShareZones extends React.Component {
@@ -43,14 +44,14 @@ class ShareZones extends React.Component {
             let selections = []
             zones.forEach(item => {
                 if (selected.includes(item.uuid)) {
-                    selections.push(item[fields.zoneId])
+                    selections.push(item[localFields.zoneId])
                 }
             })
 
             let requestList = []
             selections.forEach(item => {
                 let request = data
-                request[fields.zoneId] = item
+                request[localFields.zoneId] = item
                 requestList.push(shareZones(this, request, this.isUnshare))
             })
 
@@ -90,8 +91,8 @@ class ShareZones extends React.Component {
     fetchZones = async () => {
         const { id, data, handleAlertInfo, onClose } = this.props
         let zones = []
-        if (this.isUnshare && data[fields.zoneId]) {
-            zones = data[fields.zoneId].map(zone => {
+        if (this.isUnshare && data[localFields.zoneId]) {
+            zones = data[localFields.zoneId].map(zone => {
                 return { ...data, zoneId: zone }
             })
         }

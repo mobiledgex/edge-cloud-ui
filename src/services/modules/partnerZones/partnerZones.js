@@ -1,34 +1,33 @@
-import { endpoint, perpetual } from '../../../helper/constant'
+import { endpoint } from '../..';
+import { perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData';
-import * as formatter from '../../model/format'
-
-let fields = formatter.fields
+import { localFields } from '../../fields';
 
 export const keys = () => {
     return [
-        { field: fields.zoneId, label: 'Zone', serverField: 'zoneid', sortable: true, visible: true, filter: true, key: true },
-        { field: fields.partnerFederationName, serverField: 'federationname', label: 'Federation Name', sortable: true, visible: true, filter: true, key: true },
-        { field: fields.operatorName, serverField: 'selfoperatorid', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
-        { field: fields.partnerOperatorName, serverField: 'operatorid', label: 'Partner Operator', visible: true, filter: true, key: true },
-        { field: fields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', dataType: perpetual.TYPE_ARRAY, detailView: true },
-        { field: fields.cloudletLocation, label: 'Location', serverField: 'geolocation', dataType: perpetual.TYPE_JSON},
-        { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true },
-        { field: fields.locality, label: 'Locality', serverField: 'locality' },
-        { field: fields.city, label: 'City', serverField: 'city' },
-        { field: fields.state, label: 'State', serverField: 'state' },
-        { field: fields.registered, serverField: 'Registered', label: 'Registered', format:true }
+        { field: localFields.zoneId, label: 'Zone', serverField: 'zoneid', sortable: true, visible: true, filter: true, key: true },
+        { field: localFields.partnerFederationName, serverField: 'federationname', label: 'Federation Name', sortable: true, visible: true, filter: true, key: true },
+        { field: localFields.operatorName, serverField: 'selfoperatorid', label: 'Operator', sortable: true, visible: true, filter: true, key: true },
+        { field: localFields.partnerOperatorName, serverField: 'operatorid', label: 'Partner Operator', visible: true, filter: true, key: true },
+        { field: localFields.cloudlets, serverField: 'cloudlets', label: 'Cloudlets', dataType: perpetual.TYPE_ARRAY, detailView: true },
+        { field: localFields.cloudletLocation, label: 'Location', serverField: 'geolocation', dataType: perpetual.TYPE_JSON},
+        { field: localFields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true },
+        { field: localFields.locality, label: 'Locality', serverField: 'locality' },
+        { field: localFields.city, label: 'City', serverField: 'city' },
+        { field: localFields.state, label: 'State', serverField: 'state' },
+        { field: localFields.registered, serverField: 'Registered', label: 'Registered', format:true }
     ]
 }
 
 export const iconKeys = () => ([
-    { field: fields.registered, label: 'Registered', icon: 'bookmark_added', count: 0 },
+    { field: localFields.registered, label: 'Registered', icon: 'bookmark_added', count: 0 },
 ])
 
 export const getKey = (data) => {
     let federation = {}
-    federation['selfOperatorId'] = data[fields.operatorName]
-    federation['zones'] = Array.isArray(data[fields.zoneId]) ?  data[fields.zoneId] : [data[fields.zoneId]]
-    federation['federationname'] = data[fields.partnerFederationName]
+    federation['selfOperatorId'] = data[localFields.operatorName]
+    federation['zones'] = Array.isArray(data[localFields.zoneId]) ?  data[localFields.zoneId] : [data[localFields.zoneId]]
+    federation['federationname'] = data[localFields.partnerFederationName]
     return federation
 }
 
@@ -46,8 +45,8 @@ export const showPartnerFederatorZone = (self, data, specific) => {
     let requestData = {}
     let organization = undefined
     if (specific) {
-        requestData['federationname'] = data[fields.partnerFederationName]
-        organization = data[fields.operatorName]
+        requestData['federationname'] = data[localFields.partnerFederationName]
+        organization = data[localFields.operatorName]
     }
     else if (redux_org.isOperator(self)) {
         organization = redux_org.nonAdminOrg(self)

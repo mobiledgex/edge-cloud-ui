@@ -1,10 +1,10 @@
-import { fields } from "../../services/model/format"
+import { localFields } from "../../services/fields"
 
 const getObject = (self) => {
     if (self && self.props && self.props.privateAccess) {
         return self.props.privateAccess
     }
-    else if(self && self[fields.isPrivate])
+    else if(self && self[localFields.isPrivate])
     {
         return self
     }

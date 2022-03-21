@@ -1,10 +1,10 @@
-import { ALERT_SHOW_RECEIVER } from "../../../helper/constant/endpoint"
-import { fields } from "../../model/format"
+import { ALERT_SHOW_RECEIVER } from "../../endpoint"
+import { localFields } from "../../fields"
 
 export const customize = (request, value) => {
     if (request.method === ALERT_SHOW_RECEIVER && value) {
-        value[fields.receiverAddress] = value[fields.type] === 'pagerduty' ? 'PagerDuty' : value[fields.type] === 'email' ? value[fields.email] : value[fields.slackchannel]
-        value[fields.receiverAddress] = value[fields.type] + '#OS#' + value[fields.receiverAddress]
+        value[localFields.receiverAddress] = value[localFields.type] === 'pagerduty' ? 'PagerDuty' : value[localFields.type] === 'email' ? value[localFields.email] : value[localFields.slackchannel]
+        value[localFields.receiverAddress] = value[localFields.type] + '#OS#' + value[localFields.receiverAddress]
     }
     return value
 }

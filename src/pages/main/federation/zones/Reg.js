@@ -3,19 +3,21 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM } from '../../../../hoc/forms/MexForms';
+import MexForms, { SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM } from '../../../../hoc/forms/MexForms';
 import ListMexMap from '../../../../hoc/datagrid/map/ListMexMap';
 import MexTab from '../../../../hoc/forms/tab/MexTab';
 import { redux_org } from '../../../../helper/reduxData'
 import { perpetual } from '../../../../helper/constant';
 //model
-import { service, fields } from '../../../../services';
+import { service } from '../../../../services';
 import { createFederatorZone } from '../../../../services/modules/zones';
 import { Grid } from '@material-ui/core';
 import { showCloudlets } from '../../../../services/modules/cloudlet';
 import { HELP_ZONES_REG } from '../../../../tutorial';
 import { uniqueId } from '../../../../helper/constant/shared';
 import { readJsonFile } from '../../../../utils/file_util';
+import { responseValid } from '../../../../services/config';
+import { localFields } from '../../../../services/fields';
 
 class ZoneReg extends React.Component {
     constructor(props) {
@@ -50,10 +52,10 @@ class ZoneReg extends React.Component {
             let longitude = undefined
             for (let i = 0; i < childForms.length; i++) {
                 let form = childForms[i]
-                if (form.field === fields.latitude) {
+                if (form.field === localFields.latitude) {
                     latitude = form.value
                 }
-                else if (form.field === fields.longitude) {
+                else if (form.field === localFields.longitude) {
                     longitude = form.value
                 }
             }
@@ -69,7 +71,7 @@ class ZoneReg extends React.Component {
             let latitude = undefined
             let longitude = undefined
             for (let form of forms) {
-                if (form.field === fields.cloudletName) {
+                if (form.field === localFields.cloudletName) {
                     if (latitude && longitude) {
                         let zone = {}
                         zone.cloudletLocation = { latitude, longitude }
@@ -88,7 +90,7 @@ class ZoneReg extends React.Component {
 
     operatorValueChange = (currentForm, forms, isInit) => {
         for (let form of forms) {
-            if (form.field === fields.cloudletName) {
+            if (form.field === localFields.cloudletName) {
                 this.updateUI(form)
                 if (!isInit) {
                     this.updateState({ forms })
@@ -102,7 +104,7 @@ class ZoneReg extends React.Component {
         let region = currentForm.value;
         if (region) {
             for (let form of forms) {
-                if (form.field === fields.operatorName) {
+                if (form.field === localFields.operatorName) {
                     if (!isInit) {
                         this.getCloudletInfo(region, form, forms)
                     }
@@ -125,23 +127,23 @@ class ZoneReg extends React.Component {
             } else {
                 this.updateState({ mapData: [] })
             }
-            if (form.field === fields.cloudletLocation) {
+            if (form.field === localFields.cloudletLocation) {
                 this.onMapClick(this.locationCloudlet)
             }
         }
     }
 
     checkForms = (form, forms, isInit = false) => {
-        if (form.field === fields.region) {
+        if (form.field === localFields.region) {
             this.regionValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.operatorName) {
+        else if (form.field === localFields.operatorName) {
             this.operatorValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.cloudletName) {
+        else if (form.field === localFields.cloudletName) {
             this.cloudletValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.latitude || form.field === fields.longitude) {
+        else if (form.field === localFields.latitude || form.field === localFields.longitude) {
             this.locationChange(form, forms, isInit)
         }
 
@@ -165,16 +167,16 @@ class ZoneReg extends React.Component {
                     let uuid = form.uuid;
                     let multiFormData = data[uuid]
                     if (multiFormData) {
-                        if (form.field === fields.cloudletLocation) {
-                            data[fields.cloudletLocation] = multiFormData.latitude + ',' + multiFormData.longitude
+                        if (form.field === localFields.cloudletLocation) {
+                            data[localFields.cloudletLocation] = multiFormData.latitude + ',' + multiFormData.longitude
                         }
                     }
                     data[uuid] = undefined
                 }
             }
             mc = await createFederatorZone(this, data)
-            if (service.responseValid(mc)) {
-                this.props.handleAlertInfo('success', `Zone ${data[fields.zoneId]} created successfully`)
+            if (responseValid(mc)) {
+                this.props.handleAlertInfo('success', `Zone ${data[localFields.zoneId]} created successfully`)
                 this.props.onClose(true)
             }
         }
@@ -185,17 +187,17 @@ class ZoneReg extends React.Component {
         let forms = this.state.forms
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.cloudletLocation && !form.rules.disabled) {
+            if (form.field === localFields.cloudletLocation && !form.rules.disabled) {
                 let zone = {}
                 zone.cloudletLocation = { latitude: location[0] ? location[0].cloudletLocation.latitude : location.lat, longitude: location[0] ? location[0].cloudletLocation.longitude : location.long }
                 this.updateState({ mapData: [zone] })
                 let childForms = form.forms;
                 for (let j = 0; j < childForms.length; j++) {
                     let childForm = childForms[j]
-                    if (childForm.field === fields.latitude) {
+                    if (childForm.field === localFields.latitude) {
                         childForm.value = location[0] ? location[0].cloudletLocation.latitude : location.lat
                     }
-                    else if (childForm.field === fields.longitude) {
+                    else if (childForm.field === localFields.longitude) {
                         childForm.value = location[0] ? location[0].cloudletLocation.longitude : location.long
                     }
                 }
@@ -265,16 +267,16 @@ class ZoneReg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT) {
                     switch (form.field) {
-                        case fields.operatorName:
+                        case localFields.operatorName:
                             form.options = this.cloudletList
                             break;
-                        case fields.region:
+                        case localFields.region:
                             form.options = this.props.regions;
                             break;
-                        case fields.cloudletName:
+                        case localFields.cloudletName:
                             form.options = this.cloudletList
                             break;
-                        case fields.countryCode:
+                        case localFields.countryCode:
                             form.options = this.countryCodes
                             break;
                         default:
@@ -286,22 +288,22 @@ class ZoneReg extends React.Component {
     }
 
     locationForm = () => ([
-        { field: fields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } },
-        { field: fields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } }
+        { field: localFields.latitude, label: 'Latitude', formType: INPUT, placeholder: '-90 ~ 90', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } },
+        { field: localFields.longitude, label: 'Longitude', formType: INPUT, placeholder: '-180 ~ 180', rules: { required: true, type: 'number', onBlur: true }, width: 8, visible: true, update: { edit: true } }
     ])
 
     formKeys = () => {
         return [
             { label: 'Create Zones', formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to deploy.', update: { key: true } },
-            { field: fields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), dependentData: [{ index: 1, field: fields.region }], tip: 'Organization of the cloudlet site', update: { key: true } },
-            { field: fields.cloudletName, label: 'Cloudlet Name', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true }, dependentData: [{ index: 1, field: fields.region }, { index: 2, field: fields.operatorName }] },
-            { field: fields.zoneId, label: 'Zone ID', formType: INPUT, placeholder: 'Enter Zone Name', rules: { required: true }, visible: true, tip: ' Globally unique string used to authenticate operations over federation interface', update: { key: true } },
-            { field: fields.countryCode, label: 'Country Code', formType: SELECT, placeholder: 'Select Country Code', rules: { required: true }, visible: true, tip: 'Country where operator platform is located' },
-            { uuid: uniqueId(), field: fields.cloudletLocation, label: 'Zone Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS co-ordinates associated with the zone' },
-            { field: fields.locality, label: 'Locality', formType: INPUT, placeholder: 'Enter Locality', visible: true, tip: 'Type of locality eg rural, urban etc.' },
-            { field: fields.state, label: 'State', formType: INPUT, placeholder: 'Enter State Name', width: 5, visible: true, update: { edit: true } },
-            { field: fields.city, label: 'City', formType: INPUT, placeholder: 'Enter City Name', width: 7, visible: true },
+            { field: localFields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want to deploy.', update: { key: true } },
+            { field: localFields.operatorName, label: 'Operator', formType: this.isUpdate || redux_org.nonAdminOrg(this) ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), dependentData: [{ index: 1, field: localFields.region }], tip: 'Organization of the cloudlet site', update: { key: true } },
+            { field: localFields.cloudletName, label: 'Cloudlet Name', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Name', rules: { required: true }, visible: true, tip: 'Name of the cloudlet.', update: { key: true }, dependentData: [{ index: 1, field: localFields.region }, { index: 2, field: localFields.operatorName }] },
+            { field: localFields.zoneId, label: 'Zone ID', formType: INPUT, placeholder: 'Enter Zone Name', rules: { required: true }, visible: true, tip: ' Globally unique string used to authenticate operations over federation interface', update: { key: true } },
+            { field: localFields.countryCode, label: 'Country Code', formType: SELECT, placeholder: 'Select Country Code', rules: { required: true }, visible: true, tip: 'Country where operator platform is located' },
+            { uuid: uniqueId(), field: localFields.cloudletLocation, label: 'Zone Location', formType: INPUT, rules: { required: true }, visible: true, forms: this.locationForm(), tip: 'GPS co-ordinates associated with the zone' },
+            { field: localFields.locality, label: 'Locality', formType: INPUT, placeholder: 'Enter Locality', visible: true, tip: 'Type of locality eg rural, urban etc.' },
+            { field: localFields.state, label: 'State', formType: INPUT, placeholder: 'Enter State Name', width: 5, visible: true, update: { edit: true } },
+            { field: localFields.city, label: 'City', formType: INPUT, placeholder: 'Enter City Name', width: 7, visible: true },
         ]
     }
 

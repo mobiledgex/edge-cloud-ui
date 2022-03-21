@@ -1,6 +1,7 @@
-import { Button } from '@material-ui/core'
 import React from 'react'
+import { Button } from '@material-ui/core'
 import { Grid, Image } from 'semantic-ui-react'
+
 class MexOTP extends React.Component {
 
     constructor(props) {

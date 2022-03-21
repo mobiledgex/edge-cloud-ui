@@ -1,7 +1,7 @@
 import { reporterInterval } from "../../../helper/formatter/label"
-import { fields } from "../../model/format"
+import { localFields } from "../../fields"
 
 export const customize = (request, value) => {
-    value[fields.schedule] = reporterInterval(value[fields.schedule])
+    value[localFields.schedule] = reporterInterval(value[localFields.schedule])
     return value
 }

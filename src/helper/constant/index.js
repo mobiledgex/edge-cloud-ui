@@ -3,12 +3,10 @@ import * as operators from './operators'
 import * as shared from './shared'
 import * as role from './role'
 import * as colors from './colors'
-import * as endpoint from './endpoint'
 export {
     perpetual,
     operators,
     shared,
     role,
-    endpoint,
     colors
 }

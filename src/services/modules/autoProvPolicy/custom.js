@@ -1,6 +1,6 @@
-import { fields } from "../../model/format"
+import { localFields } from "../../fields"
 
 export const customize = (request, value) => {
-    value[fields.cloudletCount] = value[fields.cloudlets].length;
+    value[localFields.cloudletCount] = value[localFields.cloudlets].length;
     return value
 }

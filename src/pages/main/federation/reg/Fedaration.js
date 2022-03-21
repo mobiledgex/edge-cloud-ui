@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import { redux_org } from '../../../../helper/reduxData'
 import MexForms, { BUTTON, INPUT, MAIN_HEADER, SELECT } from '../../../../hoc/forms/MexForms'
-import { fields } from '../../../../services'
-import { responseValid } from '../../../../services/service';
+import { localFields } from "../../../../services/fields";
 import { createFederation } from '../../../../services/modules/federation';
 import { readJsonFile } from '../../../../utils/file_util';
+import { responseValid } from '../../../../services/config';
 
 class RegisterPartner extends React.Component {
     constructor(props) {
@@ -21,16 +21,16 @@ class RegisterPartner extends React.Component {
     elements = () => {
         return [
             { label: 'Enter Partner Details', formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: INPUT, placeholder: 'Select Region', rules: { disabled: true }, visible: true, update: { key: true } },
-            { field: fields.operatorName, label: 'Operator', formType: INPUT, placeholder: 'Select Operator', rules: { disabled: true }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
-            { field: fields.countryCode, label: ' Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { disabled: true, type: 'search' }, visible: true, tip: 'Country where operator platform is located' },
-            { field: fields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, rules: { disabled: true }, tip: 'Self federation ID' },
-            { field: fields.partnerOperatorName, label: 'Partner Operator', formType: INPUT, placeholder: 'Enter Partner Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'Globally unique string to identify an operator platform' },
-            { field: fields.partnerCountryCode, selectField: fields.countryCode, label: 'Partner Country Code', formType: SELECT, placeholder: 'Select Partner Country Code', rules: { required: true }, visible: true, update: { key: true }, tip: 'Country where operator platform is located' },
-            { field: fields.partnerFederationId, label: 'Partner Federation ID', formType: INPUT, placeholder: 'Enter Partner Federation ID', visible: true, rules: { required: true }, tip: 'Globally unique string used to indentify a federation with partner federation' },
-            { field: fields.partnerFederationAddr, label: 'Partner Federation Addr', formType: INPUT, placeholder: 'Enter Partner Federation Addr', rules: { required: true }, visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
-            { field: fields.partnerAPIKey, label: 'Partner API Key', formType: INPUT, placeholder: 'Enter Partner API Key', rules: { required: true, type:'password' }, visible: true, tip: 'API Key used for authentication (stored in secure storage)' },
-            { field: fields.partnerFederationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Federation Name', rules: { required: true }, visible: true, tip: 'Name to uniquely identify a federation' }
+            { field: localFields.region, label: 'Region', formType: INPUT, placeholder: 'Select Region', rules: { disabled: true }, visible: true, update: { key: true } },
+            { field: localFields.operatorName, label: 'Operator', formType: INPUT, placeholder: 'Select Operator', rules: { disabled: true }, visible: true, value: redux_org.nonAdminOrg(this), tip: 'Organization of the federation site', update: { key: true } },
+            { field: localFields.countryCode, label: ' Country Code', formType: INPUT, placeholder: 'Enter Country Code', rules: { disabled: true, type: 'search' }, visible: true, tip: 'Country where operator platform is located' },
+            { field: localFields.federationId, label: 'Federation ID', formType: INPUT, placeholder: 'Enter Federation ID', visible: true, rules: { disabled: true }, tip: 'Self federation ID' },
+            { field: localFields.partnerOperatorName, label: 'Partner Operator', formType: INPUT, placeholder: 'Enter Partner Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: localFields.region }], tip: 'Globally unique string to identify an operator platform' },
+            { field: localFields.partnerCountryCode, selectField: localFields.countryCode, label: 'Partner Country Code', formType: SELECT, placeholder: 'Select Partner Country Code', rules: { required: true }, visible: true, update: { key: true }, tip: 'Country where operator platform is located' },
+            { field: localFields.partnerFederationId, label: 'Partner Federation ID', formType: INPUT, placeholder: 'Enter Partner Federation ID', visible: true, rules: { required: true }, tip: 'Globally unique string used to indentify a federation with partner federation' },
+            { field: localFields.partnerFederationAddr, label: 'Partner Federation Addr', formType: INPUT, placeholder: 'Enter Partner Federation Addr', rules: { required: true }, visible: true, tip: 'Globally unique string used to indentify a federation with partner federation' },
+            { field: localFields.partnerAPIKey, label: 'Partner API Key', formType: INPUT, placeholder: 'Enter Partner API Key', rules: { required: true, type:'password' }, visible: true, tip: 'API Key used for authentication (stored in secure storage)' },
+            { field: localFields.partnerFederationName, label: 'Federation Name', formType: INPUT, placeholder: 'Enter Partner Federation Name', rules: { required: true }, visible: true, tip: 'Name to uniquely identify a federation' }
         ]
     }
 
@@ -67,7 +67,7 @@ class RegisterPartner extends React.Component {
         const {onDialogOpen, onClose, handleAlertInfo} = this.props
         let mc = await createFederation(this, data)
         if (responseValid(mc)) {
-            handleAlertInfo('success', `Partner federation ${data[fields.partnerFederationName]} created successfully !`)
+            handleAlertInfo('success', `Partner federation ${data[localFields.partnerFederationName]} created successfully !`)
             onDialogOpen ? onDialogOpen(data) : onClose(data)
         }
     }
@@ -92,7 +92,7 @@ class RegisterPartner extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT) {
                     switch (form.field) {
-                        case fields.partnerCountryCode:
+                        case localFields.partnerCountryCode:
                             form.options = this.countryCodes;
                             break;
                         default:

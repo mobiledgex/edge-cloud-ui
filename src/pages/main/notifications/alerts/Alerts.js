@@ -2,10 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Chip, Divider, IconButton, List, ListItem, Typography, Tooltip } from '@material-ui/core'
-import { regions } from '../../../../constant';
 import { showAlertKeys } from '../../../../services/modules/alerts';
 import { Icon } from '../../../../hoc/mexui';
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import NotificationImportantOutlinedIcon from '@material-ui/icons/NotificationImportantOutlined';
@@ -32,7 +31,7 @@ class AlertLocal extends React.Component {
         this.state = {
             dataList: undefined
         }
-        this.regions = regions()
+        this.regions = props.regions
     }
 
     onClose = () => {
@@ -57,7 +56,7 @@ class AlertLocal extends React.Component {
         let label = 'Firing'
         let icon = <WhatshotIcon />
         let color = '#FF7043'
-        switch (data[fields.state]) {
+        switch (data[localFields.state]) {
             case 'resolved':
                 icon = <DoneAllIcon />
                 color = '#66BB6A'
@@ -71,30 +70,30 @@ class AlertLocal extends React.Component {
     header = (data) => {
         return (
             <div style={{ width: 500 }}>
-                <h4><b>{data[fields.title] ? data[fields.title] : data[fields.alertname]}</b>{this.renderState(data)}</h4>
-                <h5 style={{ color: '#A9A9A9', width: 440, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', }}>{data[fields.description]}</h5>
+                <h4><b>{data[localFields.title] ? data[localFields.title] : data[localFields.alertname]}</b>{this.renderState(data)}</h4>
+                <h5 style={{ color: '#A9A9A9', width: 440, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', }}>{data[localFields.description]}</h5>
                 <div style={{ marginTop: 10 }}></div>
-                <MChip label={'Region'} value={data[fields.region]} />
-                <MChip icon='access_alarm' value={time(FORMAT_FULL_DATE_TIME, parseInt(data[fields.activeAt] + '000'))} />
+                <MChip label={'Region'} value={data[localFields.region]} />
+                <MChip icon='access_alarm' value={time(FORMAT_FULL_DATE_TIME, parseInt(data[localFields.activeAt] + '000'))} />
             </div>
         )
     }
 
     dataFormatter = (key, value) => {
-        if (key.field === fields.activeAt) {
+        if (key.field === localFields.activeAt) {
             return time(FORMAT_FULL_DATE_TIME, parseInt(value[key.field] + '000'))
         }
-        else if (key.field === fields.status) {
+        else if (key.field === localFields.status) {
             return labelFormatter.healthCheck(value[key.field])
         }
-        else if (key.field === fields.appName) {
-            return `${value[fields.appName]} - ${value[fields.version]} [${value[fields.appDeveloper]}]`
+        else if (key.field === localFields.appName) {
+            return `${value[localFields.appName]} - ${value[localFields.version]} [${value[localFields.appDeveloper]}]`
         }
-        else if (key.field === fields.cloudletName) {
-            return `${value[fields.cloudletName]} [${value[fields.operatorName]}]`
+        else if (key.field === localFields.cloudletName) {
+            return `${value[localFields.cloudletName]} [${value[localFields.operatorName]}]`
         }
-        else if (key.field === fields.clusterName) {
-            return `${value[fields.clusterName]} [${value[fields.clusterdeveloper]}]`
+        else if (key.field === localFields.clusterName) {
+            return `${value[localFields.clusterName]} [${value[localFields.clusterdeveloper]}]`
         }
     }
 
@@ -184,4 +183,10 @@ class AlertLocal extends React.Component {
     }
 }
 
-export default withRouter(connect(null, null)(AlertLocal));
+const mapStateToProps = (state) => {
+    return {
+        regions: state.regionInfo.region
+    }
+};
+
+export default withRouter(connect(mapStateToProps, null)(AlertLocal));
