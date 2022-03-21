@@ -5,19 +5,18 @@ import MexForms, { SELECT, BUTTON, INPUT, MAIN_HEADER, MULTI_FORM, HEADER, ICON_
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 //model
 import { Grid } from '@material-ui/core';
 import { redux_org } from '../../../../helper/reduxData';
 import MexMultiStepper, { updateStepper } from '../../../../hoc/stepper/MexMessageMultiStream'
 import { ACTION_UPDATE, OS_LINUX } from '../../../../helper/constant/perpetual';
 import { buildTip, osList } from './shared';
-import { buildKey, removeBuild } from '../../../../services/modules/gpudriver';
-import { addbuild } from '../../../../services/modules/gpudriver/gpudriver';
-import { sendWSRequest } from '../../../../services/model/serverData';
+import { buildKey, addbuild, removeBuild } from '../../../../services/modules/gpudriver';
 import { uniqueId } from '../../../../helper/constant/shared';
+import { websocket } from '../../../../services';
 
-class GPUDriverReg extends React.Component {
+class BuildReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -62,27 +61,27 @@ class GPUDriverReg extends React.Component {
     }
 
     buildForm = (disabled) => ([
-        { field: fields.buildName, label: 'Name', formType: INPUT, placeholder: 'Enter Build Name', rules: { required: true, disabled }, width: 2, visible: true },
-        { field: fields.driverPath, label: 'Driver Path', formType: INPUT, placeholder: 'Enter Driver Path', rules: { required: true, disabled }, width: 2, visible: true },
-        { field: fields.md5Sum, label: 'MD5 Sum', formType: INPUT, placeholder: 'Enter MD5 Sum', rules: { required: true, disabled }, width: 2, visible: true, },
-        { field: fields.driverPathCreds, label: 'Driver Path Creds', formType: INPUT, placeholder: 'Enter username:password', rules: { required: false, type: 'password', disabled }, width: 2, visible: true },
-        { field: fields.operatingSystem, label: 'Operating System', formType: SELECT, placeholder: 'Select Operating System', rules: { required: true, disabled }, width: 2, visible: true, options: osList },
-        { field: fields.kernelVersion, label: 'Kernel Version', formType: INPUT, placeholder: 'Enter Kernel Version', rules: { required: false, disabled }, width: 2, visible: true },
-        { field: fields.hypervisorInfo, label: 'Hypervisor Info', formType: INPUT, placeholder: 'Enter Hypervisor Info', rules: { required: false, disabled }, width: 2, visible: true },
+        { field: localFields.buildName, label: 'Name', formType: INPUT, placeholder: 'Enter Build Name', rules: { required: true, disabled }, width: 2, visible: true },
+        { field: localFields.driverPath, label: 'Driver Path', formType: INPUT, placeholder: 'Enter Driver Path', rules: { required: true, disabled }, width: 2, visible: true },
+        { field: localFields.md5Sum, label: 'MD5 Sum', formType: INPUT, placeholder: 'Enter MD5 Sum', rules: { required: true, disabled }, width: 2, visible: true, },
+        { field: localFields.driverPathCreds, label: 'Driver Path Creds', formType: INPUT, placeholder: 'Enter username:password', rules: { required: false, type: 'password', disabled }, width: 2, visible: true },
+        { field: localFields.operatingSystem, label: 'Operating System', formType: SELECT, placeholder: 'Select Operating System', rules: { required: true, disabled }, width: 2, visible: true, options: osList },
+        { field: localFields.kernelVersion, label: 'Kernel Version', formType: INPUT, placeholder: 'Enter Kernel Version', rules: { required: false, disabled }, width: 2, visible: true },
+        { field: localFields.hypervisorInfo, label: 'Hypervisor Info', formType: INPUT, placeholder: 'Enter Hypervisor Info', rules: { required: false, disabled }, width: 2, visible: true },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     buildMultiForm = (form) => {
-        return ({ uuid: uniqueId(), field: fields.build, formType: MULTI_FORM, forms: form ? form : this.buildForm(), width: 3, visible: true })
+        return ({ uuid: uniqueId(), field: localFields.build, formType: MULTI_FORM, forms: form ? form : this.buildForm(), width: 3, visible: true })
     }
 
     formKeys = () => {
         return [
             { label: 'Update Builds', formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true, disabled: true }, visible: true, tip: 'Region name' },
-            { field: fields.gpuDriverName, label: 'GPU Driver Name', formType: INPUT, placeholder: 'Enter GPU Driver Name', rules: { required: true, disabled: true }, visible: true, tip: 'Name of the driver' },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: ' Organization to which the driver belongs to', update: { key: true } },
-            { field: fields.builds, label: 'Builds', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Build', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.buildMultiForm }], update: { id: ['7'], ignoreCase: true }, visible: true, tip: buildTip }
+            { field: localFields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true, disabled: true }, visible: true, tip: 'Region name' },
+            { field: localFields.gpuDriverName, label: 'GPU Driver Name', formType: INPUT, placeholder: 'Enter GPU Driver Name', rules: { required: true, disabled: true }, visible: true, tip: 'Name of the driver' },
+            { field: localFields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Organization', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: ' Organization to which the driver belongs to', update: { key: true } },
+            { field: localFields.builds, label: 'Builds', formType: HEADER, forms: [{ formType: ICON_BUTTON, label: 'Add Build', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.buildMultiForm }], update: { id: ['7'], ignoreCase: true }, visible: true, tip: buildTip }
         ]
     }
 
@@ -91,7 +90,7 @@ class GPUDriverReg extends React.Component {
         for (const form of forms) {
             if (form.uuid === parentForm.uuid) {
                 for (const childForm of form.forms) {
-                    if (childForm.field === fields.kernelVersion) {
+                    if (childForm.field === localFields.kernelVersion) {
                         childForm.rules.required = currentForm.value === OS_LINUX
                         break;
                     }
@@ -105,7 +104,7 @@ class GPUDriverReg extends React.Component {
     }
 
     checkForms = (form, forms, isInit = false) => {
-        if (form.field === fields.operatingSystem) {
+        if (form.field === localFields.operatingSystem) {
             this.onOperatingSystemChange(form, forms, isInit)
         }
     }
@@ -121,7 +120,7 @@ class GPUDriverReg extends React.Component {
         if (requestList.length > 0) {
             let item = requestList[0]
             requestList.splice(0, 1)
-            sendWSRequest(this, item.request, this.onUpdateResponse, { data: item.orgData, requestList })
+            websocket.request(this, item.request, this.onUpdateResponse, { data: item.orgData, requestList })
         }
         else {
             this.canCloseStepper = true
@@ -139,19 +138,19 @@ class GPUDriverReg extends React.Component {
             if (mc.response && mc.response.data) {
                 responseData = mc.response.data;
             }
-            this.updateState({ multiStepsArray: updateStepper(this.state.multiStepsArray, [{ label: 'Build Name', field: fields.name }], data, responseData, mc.wsObj) })
+            this.updateState({ multiStepsArray: updateStepper(this.state.multiStepsArray, [{ label: 'Build Name', field: localFields.name }], data, responseData, mc.wsObj) })
         }
     }
 
     onUpdate = (data) => {
-        let requestData = { region: data[fields.region], organizationName: data[fields.organizationName], gpuDriverName: data[fields.gpuDriverName] }
+        let requestData = { region: data[localFields.region], organizationName: data[localFields.organizationName], gpuDriverName: data[localFields.gpuDriverName] }
         let requestList = []
         if (this.removeList.length > 0) {
             for (const item of this.removeList) {
                 let forms = item.forms
                 let build = {}
                 for (const form of forms) {
-                    if (form.value && form.field === fields.buildName) {
+                    if (form.value && form.field === localFields.buildName) {
                         build[form.field] = form.value
                         break;
                     }
@@ -168,7 +167,7 @@ class GPUDriverReg extends React.Component {
                     if (this.addList.includes(uuid)) {
                         let multiFormData = data[uuid]
                         if (multiFormData) {
-                            if (form.field === fields.build) {
+                            if (form.field === localFields.build) {
                                 let build = buildKey(multiFormData)
                                 requestList.push({ request: addbuild(this, { ...requestData, build }), orgData: { uuid, ...build } })
                             }
@@ -177,6 +176,10 @@ class GPUDriverReg extends React.Component {
                     data[uuid] = undefined
                 }
             }
+        }
+        else
+        {
+            this.props.handleAlertInfo('error', 'Nothing to update')
         }
 
         if (requestList.length > 0) {
@@ -214,13 +217,13 @@ class GPUDriverReg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT) {
                     switch (form.field) {
-                        case fields.region:
+                        case localFields.region:
                             form.options = this.props.regions;
                             break;
-                        case fields.organizationName:
+                        case localFields.organizationName:
                             form.options = this.organizationList;
                             break;
-                        case fields.operatingSystem:
+                        case localFields.operatingSystem:
                             form.options = osList
                             break;
                         default:
@@ -250,32 +253,32 @@ class GPUDriverReg extends React.Component {
 
     loadDefaultData = async (forms, data) => {
         let organization = {}
-        organization[fields.organizationName] = data[fields.organizationName];
+        organization[localFields.organizationName] = data[localFields.organizationName];
         this.organizationList = [organization]
 
         let multiFormCount = 0
-        if (data[fields.builds]) {
-            let builds = data[fields.builds]
+        if (data[localFields.builds]) {
+            let builds = data[localFields.builds]
             for (const build of builds) {
                 let buildForms = this.buildForm(true)
                 for (let form of buildForms) {
-                    if (form.field === fields.buildName) {
-                        form.value = build[fields.buildName]
+                    if (form.field === localFields.buildName) {
+                        form.value = build[localFields.buildName]
                     }
-                    else if (form.field === fields.driverPath) {
-                        form.value = build[fields.driverPath]
+                    else if (form.field === localFields.driverPath) {
+                        form.value = build[localFields.driverPath]
                     }
-                    else if (form.field === fields.md5Sum) {
-                        form.value = build[fields.md5Sum]
+                    else if (form.field === localFields.md5Sum) {
+                        form.value = build[localFields.md5Sum]
                     }
-                    else if (form.field === fields.operatingSystem) {
-                        form.value = build[fields.operatingSystem] ? build[fields.operatingSystem] : OS_LINUX
+                    else if (form.field === localFields.operatingSystem) {
+                        form.value = build[localFields.operatingSystem] ? build[localFields.operatingSystem] : OS_LINUX
                     }
-                    else if (form.field === fields.hypervisorInfo) {
-                        form.value = build[fields.hypervisorInfo]
+                    else if (form.field === localFields.hypervisorInfo) {
+                        form.value = build[localFields.hypervisorInfo]
                     }
-                    else if (form.field === fields.kernelVersion) {
-                        form.value = build[fields.kernelVersion]
+                    else if (form.field === localFields.kernelVersion) {
+                        form.value = build[localFields.kernelVersion]
                     }
                 }
                 forms.splice(5 + multiFormCount, 0, { ...this.buildMultiForm(buildForms), existing: true })
@@ -348,4 +351,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(GPUDriverReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(BuildReg));

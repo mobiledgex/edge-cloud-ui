@@ -1,28 +1,28 @@
-import { endpoint } from '../../../helper/constant';
-import { fields } from '../../model/format';
+import { endpoint } from '../..';
+import { localFields } from '../../fields';
 
 export const deviceKeys = [
-    { label: '0 - 5 ms', field: fields._0s, default: 0 },
-    { label: '5 - 10 ms', field: fields._5ms, default: 0 },
-    { label: '10 - 25 ms', field: fields._10ms, default: 0 },
-    { label: '25 - 50 ms', field: fields._25ms, default: 0 },
-    { label: '50 - 100 ms', field: fields._50ms, default: 0 },
-    { label: '> 100 ms', field: fields._100ms, default: 0 },
-    { label: 'Network', field: fields.networkType, default: 'N/A' }
+    { label: '0 - 5 ms', field: localFields._0s, default: 0 },
+    { label: '5 - 10 ms', field: localFields._5ms, default: 0 },
+    { label: '10 - 25 ms', field: localFields._10ms, default: 0 },
+    { label: '25 - 50 ms', field: localFields._25ms, default: 0 },
+    { label: '50 - 100 ms', field: localFields._50ms, default: 0 },
+    { label: '> 100 ms', field: localFields._100ms, default: 0 },
+    { label: 'Network', field: localFields.networkType, default: 'N/A' }
 ]
 
 const keys = () => (
     [
         { label: 'Date', field: 'time', serverField: 'time', visible: false, groupBy: 1 },
-        { label: 'Region', field: fields.region, visible: true, groupBy: 2 },
-        { label: 'App', field: fields.appName, serverField: 'app', visible: true, groupBy: 2, filter: true },
-        { label: 'Version', field: fields.version, serverField: 'ver', visible: true, groupBy: 2 },
-        { label: 'App Developer', field: fields.organizationName, serverField: 'apporg', visible: true, groupBy: 2 },
-        { label: 'Cluster', field: fields.clusterName, serverField: 'cluster', visible: true, groupBy: 2 },
-        { label: 'Cluster Developer', field: fields.clusterdeveloper, serverField: 'clusterorg', visible: true, groupBy: 2 },
-        { label: 'Cloudlet', field: fields.cloudletName, serverField: 'cloudlet', visible: true, groupBy: 2 },
-        { label: 'Operator', field: fields.operatorName, serverField: 'cloudletorg', visible: true, groupBy: 2 },
-        { label: 'Network Type', field: fields.networkType, serverField: 'datanetworktype' },
+        { label: 'Region', field: localFields.region, visible: true, groupBy: 2 },
+        { label: 'App', field: localFields.appName, serverField: 'app', visible: true, groupBy: 2, filter: true },
+        { label: 'Version', field: localFields.version, serverField: 'ver', visible: true, groupBy: 2 },
+        { label: 'App Developer', field: localFields.organizationName, serverField: 'apporg', visible: true, groupBy: 2 },
+        { label: 'Cluster', field: localFields.clusterName, serverField: 'cluster', visible: true, groupBy: 2 },
+        { label: 'Cluster Developer', field: localFields.clusterdeveloper, serverField: 'clusterorg', visible: true, groupBy: 2 },
+        { label: 'Cloudlet', field: localFields.cloudletName, serverField: 'cloudlet', visible: true, groupBy: 2 },
+        { label: 'Operator', field: localFields.operatorName, serverField: 'cloudletorg', visible: true, groupBy: 2 },
+        { label: 'Network Type', field: localFields.networkType, serverField: 'datanetworktype' },
         { label: '0s', field: '0s', serverField: '0s', sum: true },
         { label: '5ms', field: '5ms', serverField: '5ms', sum: true },
         { label: '10ms', field: '10ms', serverField: '10ms', sum: true },
@@ -35,7 +35,7 @@ const keys = () => (
         { label: 'Variance', field: 'variance', serverField: 'variance' },
         { label: 'Stddev', field: 'stddev', serverField: 'stddev' },
         { label: 'Samples', field: 'numsamples', serverField: 'numsamples' },
-        { label: 'Location', field: fields.locationtile, serverField: 'locationtile', groupBy: 3 }
+        { label: 'Location', field: localFields.locationtile, serverField: 'locationtile', groupBy: 3 }
     ]
 )
 

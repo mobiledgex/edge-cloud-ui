@@ -6,7 +6,7 @@ import MexTab from '../../../hoc/forms/tab/MexTab';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import { redux_org } from '../../../helper/reduxData'
 //model
 import { createClusterInst, updateClusterInst } from '../../../services/modules/clusterInst';
@@ -21,10 +21,10 @@ import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/MexMessageM
 import { HELP_CLUSTER_INST_REG } from "../../../tutorial";
 
 import * as clusterFlow from '../../../hoc/mexFlow/appFlow'
-import { sendRequests } from '../../../services/model/serverWorker'
+import { sendRequests } from '../../../services/worker/serverWorker'
 import { Grid } from '@material-ui/core';
-import { endpoint, perpetual } from '../../../helper/constant';
-import { service, updateFieldData } from '../../../services';
+import { perpetual } from '../../../helper/constant';
+import { endpoint, service, updateFieldData } from '../../../services';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 import cloneDeep from 'lodash/cloneDeep';
 import { showAuthSyncRequest } from '../../../services/service';
@@ -71,10 +71,10 @@ class ClusterInstReg extends React.Component {
         let organizationName = undefined;
         for (let i = 0; i < forms.length; i++) {
             let tempForm = forms[i]
-            if (tempForm.field === fields.region) {
+            if (tempForm.field === localFields.region) {
                 region = tempForm.value
             }
-            else if (tempForm.field === fields.organizationName) {
+            else if (tempForm.field === localFields.organizationName) {
                 organizationName = tempForm.value
             }
         }
@@ -99,13 +99,13 @@ class ClusterInstReg extends React.Component {
         let cloudletList = undefined
         let operatorName = undefined
         for (const form of forms) {
-            if (form.field === fields.region) {
+            if (form.field === localFields.region) {
                 region = form.value
             }
-            else if (form.field === fields.cloudletName) {
+            else if (form.field === localFields.cloudletName) {
                 cloudletList = form.value
             }
-            else if (form.field === fields.operatorName) {
+            else if (form.field === localFields.operatorName) {
                 operatorName = form.value
             }
         }
@@ -114,7 +114,7 @@ class ClusterInstReg extends React.Component {
             await Promise.all(cloudletList.map(async (cloudletName) => {
                 let key = `${region}>${operatorName}>${cloudletName}`
                 if (this.flavorOrgList[key] === undefined) {
-                    let flavorList = await fetchCloudletFlavors(this, { region: region, cloudletName, operatorName, partnerOperator: fetchCloudletField(this.cloudletList, { operatorName, cloudletName }, fields.partnerOperator) })
+                    let flavorList = await fetchCloudletFlavors(this, { region: region, cloudletName, operatorName, partnerOperator: fetchCloudletField(this.cloudletList, { operatorName, cloudletName }, localFields.partnerOperator) })
                     if (flavorList && flavorList.length > 0) {
                         this.flavorOrgList[key] = flavorList
                     }
@@ -132,13 +132,13 @@ class ClusterInstReg extends React.Component {
         let cloudletList = undefined
         let operatorName = undefined
         for (const form of forms) {
-            if (form.field === fields.region) {
+            if (form.field === localFields.region) {
                 region = form.value
             }
-            else if (form.field === fields.cloudletName) {
+            else if (form.field === localFields.cloudletName) {
                 cloudletList = form.value
             }
-            else if (form.field === fields.operatorName) {
+            else if (form.field === localFields.operatorName) {
                 operatorName = form.value
             }
         }
@@ -148,7 +148,7 @@ class ClusterInstReg extends React.Component {
             await Promise.all(cloudletList.map(async (cloudletName) => {
                 let key = `${region}>${operatorName}>${cloudletName}`
                 if (this.networkOrgList[key] === undefined) {
-                    const partnerOperator = fetchCloudletField(this.cloudletList, { operatorName, cloudletName }, fields.partnerOperator)
+                    const partnerOperator = fetchCloudletField(this.cloudletList, { operatorName, cloudletName }, localFields.partnerOperator)
                     let networkList = await showAuthSyncRequest(this, showNetwork(this, { region, cloudletName, operatorName, partnerOperator }))
                     if (networkList.length > 0) {
                         networkList = networkList.map((data) => {
@@ -183,13 +183,13 @@ class ClusterInstReg extends React.Component {
         if (region) {
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i]
-                if (form.field === fields.operatorName) {
+                if (form.field === localFields.operatorName) {
                     this.operatorValueChange(form, forms, isInit)
                     if (!isInit) {
                         this.getCloudletInfo(form, forms)
                     }
                 }
-                else if (form.field === fields.autoScalePolicyName) {
+                else if (form.field === localFields.autoScalePolicyName) {
                     if (!isInit) {
                         this.getAutoScalePolicy(region, form, forms)
                     }
@@ -202,13 +202,13 @@ class ClusterInstReg extends React.Component {
     organizationValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.operatorName) {
+            if (form.field === localFields.operatorName) {
                 this.operatorValueChange(form, forms, isInit)
                 if (!isInit) {
                     this.getCloudletInfo(form, forms)
                 }
             }
-            else if (form.field === fields.autoScalePolicyName) {
+            else if (form.field === localFields.autoScalePolicyName) {
                 this.updateUI(form)
                 this.updateState({ forms })
             }
@@ -218,19 +218,19 @@ class ClusterInstReg extends React.Component {
     operatorValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.cloudletName) {
+            if (form.field === localFields.cloudletName) {
                 this.updateUI(form)
                 if (!isInit) {
                     this.updateState({ forms, mapData: [] })
                 }
             }
-            else if (form.field === fields.flavorName) {
+            else if (form.field === localFields.flavorName) {
                 if (!isInit) {
                     this.flavorList = {}
                     this.updateUI(form)
                 }
             }
-            else if (form.field === fields.network) {
+            else if (form.field === localFields.network) {
                 if (!isInit) {
                     this.networkList = {}
                     this.updateUI(form)
@@ -242,15 +242,15 @@ class ClusterInstReg extends React.Component {
     deploymentValueChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
-            if (form.field === fields.numberOfMasters) {
+            if (form.field === localFields.numberOfMasters) {
                 form.value = currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES ? 1 : undefined
                 form.visible = currentForm.value === perpetual.DEPLOYMENT_TYPE_DOCKER ? false : true
             }
-            else if (form.field === fields.numberOfNodes || form.field === fields.sharedVolumeSize) {
+            else if (form.field === localFields.numberOfNodes || form.field === localFields.sharedVolumeSize) {
                 form.value = currentForm.value === perpetual.DEPLOYMENT_TYPE_KUBERNETES ? form.value : undefined
                 form.visible = currentForm.value === perpetual.DEPLOYMENT_TYPE_DOCKER ? false : true
             }
-            else if (form.field === fields.autoScalePolicyName) {
+            else if (form.field === localFields.autoScalePolicyName) {
                 form.visible = currentForm.value !== perpetual.DEPLOYMENT_TYPE_DOCKER
             }
         }
@@ -264,19 +264,19 @@ class ClusterInstReg extends React.Component {
         let couldlets = this.cloudletList;
         for (let i = 0; i < couldlets.length; i++) {
             let cloudlet = couldlets[i];
-            if (form.value && form.value.includes(cloudlet[fields.cloudletName])) {
+            if (form.value && form.value.includes(cloudlet[localFields.cloudletName])) {
                 mapData.push(cloudlet)
             }
         }
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.flavorName) {
+            if (form.field === localFields.flavorName) {
                 if (!isInit) {
                     this.getFlavorInfo(form, forms)
                 }
                 break;
             }
-            if (form.field === fields.network) {
+            if (form.field === localFields.network) {
                 if (!isInit) {
                     this.getNetworkData(form, forms)
                 }
@@ -290,7 +290,7 @@ class ClusterInstReg extends React.Component {
     reservableChange = (currentForm, forms, isInit) => {
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i];
-            if (form.field === fields.ipAccess) {
+            if (form.field === localFields.ipAccess) {
                 form.value = currentForm.value ? perpetual.IP_ACCESS_DEDICATED : form.value
                 form.rules.disabled = currentForm.value
             }
@@ -302,29 +302,29 @@ class ClusterInstReg extends React.Component {
 
     checkForms = (form, forms, isInit = false, data) => {
         let flowDataList = []
-        if (form.field === fields.region) {
+        if (form.field === localFields.region) {
             this.regionValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.organizationName) {
+        else if (form.field === localFields.organizationName) {
             this.organizationValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.operatorName) {
+        else if (form.field === localFields.operatorName) {
             this.operatorValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.deployment) {
+        else if (form.field === localFields.deployment) {
             this.deploymentValueChange(form, forms, isInit)
             let finalData = isInit ? data : formattedData(forms)
             flowDataList.push(clusterFlow.deploymentTypeFlow(finalData))
             flowDataList.push(clusterFlow.ipAccessFlow({}))
         }
-        else if (form.field === fields.ipAccess) {
+        else if (form.field === localFields.ipAccess) {
             let finalData = isInit ? data : formattedData(forms)
             flowDataList.push(clusterFlow.ipAccessFlow(finalData))
         }
-        else if (form.field === fields.cloudletName) {
+        else if (form.field === localFields.cloudletName) {
             this.cloudletValueChange(form, forms, isInit)
         }
-        else if (form.field === fields.reservable) {
+        else if (form.field === localFields.reservable) {
             this.reservableChange(form, forms, isInit)
         }
         if (flowDataList.length > 0) {
@@ -352,7 +352,7 @@ class ClusterInstReg extends React.Component {
             if (mcRequest.response && mcRequest.response.data) {
                 responseData = mcRequest.response.data;
             }
-            let labels = [{ label: 'Cloudlet', field: fields.cloudletName }]
+            let labels = [{ label: 'Cloudlet', field: localFields.cloudletName }]
             this.updateState({ stepsArray: updateStepper(this.state.stepsArray, labels, request.orgData, responseData) })
         }
     }
@@ -360,9 +360,9 @@ class ClusterInstReg extends React.Component {
     onCreate = async (data) => {
         if (data) {
             let forms = this.state.forms
-            let cloudlets = data[fields.cloudletName];
-            let flavors = data[fields.flavorName]
-            let network = data[fields.network]
+            let cloudlets = data[localFields.cloudletName];
+            let flavors = data[localFields.flavorName]
+            let network = data[localFields.network]
             if (this.props.isUpdate) {
                 let updateData = updateFieldData(this, forms, data, this.props.data)
                 if (updateData.fields.length > 0) {
@@ -375,10 +375,10 @@ class ClusterInstReg extends React.Component {
                     for (let i = 0; i < cloudlets.length; i++) {
                         let newData = cloneDeep(data)
                         let cloudlet = cloudlets[i];
-                        newData[fields.cloudletName] = cloudlet;
-                        newData[fields.partnerOperator] = fetchCloudletField(this.cloudletList, { operatorName: data[fields.operatorName], cloudletName: cloudlet }, fields.partnerOperator)
-                        newData[fields.flavorName] = flavors[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]
-                        newData[fields.network] = network ? [network[`${data[fields.region]}>${data[fields.operatorName]}>${cloudlet}`]] : undefined
+                        newData[localFields.cloudletName] = cloudlet;
+                        newData[localFields.partnerOperator] = fetchCloudletField(this.cloudletList, { operatorName: data[localFields.operatorName], cloudletName: cloudlet }, localFields.partnerOperator)
+                        newData[localFields.flavorName] = flavors[`${data[localFields.region]}>${data[localFields.operatorName]}>${cloudlet}`]
+                        newData[localFields.network] = network ? [network[`${data[localFields.region]}>${data[localFields.operatorName]}>${cloudlet}`]] : undefined
                         this.props.handleLoadingSpinner(true)
                         createClusterInst(this, Object.assign({}, newData), this.onCreateResponse)
                     }
@@ -472,31 +472,31 @@ class ClusterInstReg extends React.Component {
             if (form.field) {
                 if (form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === SELECT_RADIO_TREE_GROUP) {
                     switch (form.field) {
-                        case fields.organizationName:
+                        case localFields.organizationName:
                             form.options = this.organizationList
                             break;
-                        case fields.region:
+                        case localFields.region:
                             form.options = this.props.regions;
                             break;
-                        case fields.operatorName:
+                        case localFields.operatorName:
                             form.options = this.cloudletList
                             break;
-                        case fields.cloudletName:
+                        case localFields.cloudletName:
                             form.options = this.cloudletList
                             break;
-                        case fields.flavorName:
+                        case localFields.flavorName:
                             form.options = this.flavorList
                             break;
-                        case fields.deployment:
+                        case localFields.deployment:
                             form.options = [perpetual.DEPLOYMENT_TYPE_DOCKER, perpetual.DEPLOYMENT_TYPE_KUBERNETES]
                             break;
-                        case fields.autoScalePolicyName:
+                        case localFields.autoScalePolicyName:
                             form.options = this.autoScalePolicyList
                             break;
-                        case fields.ipAccess:
+                        case localFields.ipAccess:
                             form.options = this.ipAccessList;
                             break;
-                        case fields.network:
+                        case localFields.network:
                             form.options = this.networkList;
                             break;
                         default:
@@ -510,29 +510,29 @@ class ClusterInstReg extends React.Component {
     loadDefaultData = async (data) => {
         if (data) {
             let organization = {}
-            organization[fields.organizationName] = data[fields.organizationName];
+            organization[localFields.organizationName] = data[localFields.organizationName];
             this.organizationList = [organization]
 
             let cloudlet = {}
-            cloudlet[fields.region] = data[fields.region]
-            cloudlet[fields.cloudletName] = data[fields.cloudletName]
-            cloudlet[fields.operatorName] = data[fields.operatorName]
-            cloudlet[fields.cloudletLocation] = data[fields.cloudletLocation]
+            cloudlet[localFields.region] = data[localFields.region]
+            cloudlet[localFields.cloudletName] = data[localFields.cloudletName]
+            cloudlet[localFields.operatorName] = data[localFields.operatorName]
+            cloudlet[localFields.cloudletLocation] = data[localFields.cloudletLocation]
             this.cloudletList = [cloudlet]
             this.updateState({ mapData: [cloudlet] })
 
             let flavor = {}
-            flavor[fields.region] = data[fields.region]
-            flavor[fields.flavorName] = data[fields.flavorName]
+            flavor[localFields.region] = data[localFields.region]
+            flavor[localFields.flavorName] = data[localFields.flavorName]
             this.flavorList = [flavor]
             let network = {}
-            network[fields.region] = data[fields.region]
-            network[fields.network] = data[fields.flavorName]
+            network[localFields.region] = data[localFields.region]
+            network[localFields.network] = data[localFields.flavorName]
             this.networkList = [network]
 
             let requestList = []
-            if (data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
-                requestList.push(showAutoScalePolicies(this, { region: data[fields.region] }))
+            if (data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
+                requestList.push(showAutoScalePolicies(this, { region: data[localFields.region] }))
             }
 
             let mcList = await service.multiAuthSyncRequest(this, requestList)
@@ -551,21 +551,21 @@ class ClusterInstReg extends React.Component {
     formKeys = () => {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} Cluster Instances`, formType: MAIN_HEADER, visible: true },
-            { field: fields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
-            { field: fields.clusterName, label: 'Cluster Name', formType: INPUT, placeholder: 'Enter Cluster Inst Name', rules: { required: true }, visible: true, update: { key: true } },
-            { field: fields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), update: { key: true } },
-            { field: fields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], update: { key: true } },
-            { field: fields.partnerOperator, label: 'Partner Operator', formType: INPUT, visible: false, update: { key: true }},
-            { field: fields.cloudletName, label: 'Cloudlet', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: fields.region }, { index: 4, field: fields.operatorName }], update: { key: true } },
-            { field: fields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: false, tip: 'Deployment type (kubernetes or docker)' },
-            { field: fields.ipAccess, label: 'IP Access', formType: SELECT, placeholder: 'Select IP Access', visible: true, update: false, tip: 'IpAccess indicates the type of RootLB that Developer requires for their App' },
-            { field: fields.autoScalePolicyName, label: 'Auto Scale Policy', formType: SELECT, placeholder: 'Select Auto Scale Policy', visible: true, update: { id: ['18'] } },
-            { field: fields.network, label: 'Network', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE_GROUP, placeholder: 'Select Network', visible: true },
-            { field: fields.flavorName, label: 'Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE_GROUP, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, dependentData: [{ index: 1, field: fields.region }], tip: 'FlavorKey uniquely identifies a Flavor' },
-            { field: fields.numberOfMasters, label: 'Number of Masters', formType: INPUT, placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, tip: 'Number of k8s masters (In case of docker deployment, this field is not required)' },
-            { field: fields.numberOfNodes, label: 'Number of Workers', formType: INPUT, placeholder: 'Enter Number of Workers', rules: { type: 'number' }, visible: false, update: { id: ['14'] }, tip: 'Number of k8s nodes (In case of docker deployment, this field is not required)' },
-            { field: fields.sharedVolumeSize, label: 'Shared Volume Size', formType: INPUT, placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false, update: false, tip: 'Size of an optional shared volume to be mounted on the master' },
-            { field: fields.reservable, label: 'Reservable', formType: SWITCH, visible: true, roles: [perpetual.ADMIN_MANAGER], value: false, update: false, tip: 'For reservable MobiledgeX ClusterInsts, the current developer tenant' },
+            { field: localFields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true } },
+            { field: localFields.clusterName, label: 'Cluster Name', formType: INPUT, placeholder: 'Enter Cluster Inst Name', rules: { required: true }, visible: true, update: { key: true } },
+            { field: localFields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, visible: true, value: redux_org.nonAdminOrg(this), update: { key: true } },
+            { field: localFields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: localFields.region }], update: { key: true } },
+            { field: localFields.partnerOperator, label: 'Partner Operator', formType: INPUT, visible: false, update: { key: true }},
+            { field: localFields.cloudletName, label: 'Cloudlet', formType: this.isUpdate ? SELECT : MULTI_SELECT, placeholder: 'Select Cloudlet', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: localFields.region }, { index: 4, field: localFields.operatorName }], update: { key: true } },
+            { field: localFields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', rules: { required: true }, visible: true, update: false, tip: 'Deployment type (kubernetes or docker)' },
+            { field: localFields.ipAccess, label: 'IP Access', formType: SELECT, placeholder: 'Select IP Access', visible: true, update: false, tip: 'IpAccess indicates the type of RootLB that Developer requires for their App' },
+            { field: localFields.autoScalePolicyName, label: 'Auto Scale Policy', formType: SELECT, placeholder: 'Select Auto Scale Policy', visible: true, update: { id: ['18'] } },
+            { field: localFields.network, label: 'Network', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE_GROUP, placeholder: 'Select Network', visible: true },
+            { field: localFields.flavorName, label: 'Flavor', formType: this.isUpdate ? SELECT : SELECT_RADIO_TREE_GROUP, placeholder: 'Select Flavor', rules: { required: true, copy: true }, visible: true, dependentData: [{ index: 1, field: localFields.region }], tip: 'FlavorKey uniquely identifies a Flavor' },
+            { field: localFields.numberOfMasters, label: 'Number of Masters', formType: INPUT, placeholder: 'Enter Number of Masters', rules: { type: 'number', disabled: true }, visible: false, value: 1, tip: 'Number of k8s masters (In case of docker deployment, this field is not required)' },
+            { field: localFields.numberOfNodes, label: 'Number of Workers', formType: INPUT, placeholder: 'Enter Number of Workers', rules: { type: 'number' }, visible: false, update: { id: ['14'] }, tip: 'Number of k8s nodes (In case of docker deployment, this field is not required)' },
+            { field: localFields.sharedVolumeSize, label: 'Shared Volume Size', formType: INPUT, placeholder: 'Enter Shared Volume Size', unit: 'GB', rules: { type: 'number' }, visible: false, update: false, tip: 'Size of an optional shared volume to be mounted on the master' },
+            { field: localFields.reservable, label: 'Reservable', formType: SWITCH, visible: true, roles: [perpetual.ADMIN_MANAGER], value: false, update: false, tip: 'For reservable MobiledgeX ClusterInsts, the current developer tenant' },
         ]
     }
 
@@ -587,8 +587,8 @@ class ClusterInstReg extends React.Component {
             let form = forms[i]
             this.updateUI(form)
             if (data) {
-                if (form.field === fields.network) {
-                    form.visible = data[fields.network] !== undefined
+                if (form.field === localFields.network) {
+                    form.visible = data[localFields.network] !== undefined
                 }
                 form.value = data[form.field]
                 this.checkForms(form, forms, true, data)

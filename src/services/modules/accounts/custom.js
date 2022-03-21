@@ -1,7 +1,7 @@
-import { fields } from "../../model/format"
+import { localFields } from "../../fields"
 
 export const customize = (request, value) => {
-    value[fields.emailVerified] = value[fields.emailVerified] ? value[fields.emailVerified] : false
-    value[fields.locked] = value[fields.locked] ? value[fields.locked] : false
+    value[localFields.emailVerified] = value[localFields.emailVerified] ? value[localFields.emailVerified] : false
+    value[localFields.locked] = value[localFields.locked] ? value[localFields.locked] : false
     return value
 }

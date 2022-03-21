@@ -8,7 +8,7 @@ import { showBillingOrg, keys } from '../../../services/modules/billingorg';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import PaymentOutlinedIcon from '@material-ui/icons/PaymentOutlined';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import { operators } from '../../../helper/constant';
 import { redux_org } from '../../../helper/reduxData';
 import cloneDeep from 'lodash/cloneDeep';
@@ -16,11 +16,11 @@ import { service } from '../../../services';
 import { ICON_COLOR } from '../../../helper/constant/colors';
 
 const orgKeys = [
-    { field: fields.name, label: 'Billing Org' },
-    { field: fields.firstName, label: 'First Name' },
-    { field: fields.lastName, label: 'Last Name' },
-    { field: fields.email, label: 'Email' },
-    { field: fields.createdAt, label: 'Created Date' },
+    { field: localFields.name, label: 'Billing Org' },
+    { field: localFields.firstName, label: 'First Name' },
+    { field: localFields.lastName, label: 'Last Name' },
+    { field: localFields.email, label: 'Email' },
+    { field: localFields.createdAt, label: 'Created Date' },
 ]
 
 class Billing extends React.Component {
@@ -127,9 +127,9 @@ class Billing extends React.Component {
         this.setState({ billingOrg: undefined }, () => {
             if (redux_org.nonAdminOrg(this) && this.billingOrgList) {
                 this.billingOrgList.map(billingOrg => {
-                    if (redux_org.nonAdminOrg(this) === billingOrg[fields.name]) {
+                    if (redux_org.nonAdminOrg(this) === billingOrg[localFields.name]) {
                         let data = cloneDeep(billingOrg)
-                        data[fields.createdAt] = time(FORMAT_FULL_DATE_TIME, data[fields.createdAt])
+                        data[localFields.createdAt] = time(FORMAT_FULL_DATE_TIME, data[localFields.createdAt])
                         this.setState({ billingOrg: data })
                     }
                 })

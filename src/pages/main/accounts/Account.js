@@ -1,18 +1,19 @@
 import React, { Component, Fragment } from 'react';
-import DataView from '../../../container/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
+import DataView from '../../../hoc/datagrid/DataView';
 import { keys, showAccounts, deleteAccount, multiDataRequest, iconKeys } from '../../../services/modules/accounts';
 import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
-import * as serverData from '../../../services/model/serverData';
 import { perpetual } from '../../../helper/constant';
 import { showUsers } from '../../../services/modules/users';
 import { ADMIN_MANAGER } from '../../../helper/constant/perpetual';
 import { EmailVerfied, Lock } from '../../../helper/formatter/ui';
 import { hostURL } from '../../../utils/location_utils';
+import { settingLock } from '../../../services/modules/accounts/accounts';
+import { sendVerify } from '../../../services/modules/landing';
 
 class AccountList extends Component {
     constructor(props) {
@@ -36,7 +37,7 @@ class AccountList extends Component {
 
     /**Action menu block */
     deleteAction = (type, action, data) => {
-        return data[fields.role] === ADMIN_MANAGER
+        return data[localFields.role] === ADMIN_MANAGER
     }
 
     actionMenu = () => {
@@ -58,21 +59,21 @@ class AccountList extends Component {
 
     onLocking = async (data) => {
         let locked = true;
-        if (data[fields.locked]) {
+        if (data[localFields.locked]) {
             locked = false
         }
 
-        let requestData = { email: data[fields.email], locked: locked }
-        if (await serverData.settingLock(this, requestData)) {
-            data[fields.locked] = locked
+        let requestData = { email: data[localFields.email], locked: locked }
+        if (await settingLock(this, requestData)) {
+            data[localFields.locked] = locked
             this.updateState({ refreshViewToggle: !this.state.refreshViewToggle })
         }
-        return data[fields.locked]
+        return data[localFields.locked]
     }
 
     onSendEmail = async (username, email) => {
         let data = { username: username, email: email, callbackurl: `https://${hostURL()}/#/verify` }
-        if (await serverData.sendVerify(this, data)) {
+        if (await sendVerify(this, data)) {
             this.props.handleAlertInfo('success', 'Verification email sent')
         }
     }
@@ -82,7 +83,7 @@ class AccountList extends Component {
         this.updateState({ dialogMessageInfo: {} })
         if (valid) {
             switch (action.field) {
-                case fields.emailVerified:
+                case localFields.emailVerified:
                     this.onSendEmail(action.username, action.email)
                     break;
             }
@@ -94,7 +95,7 @@ class AccountList extends Component {
             dialogMessageInfo: {
                 message: `Are you sure you want to send a verification email to ${email}?`,
                 action: {
-                    field: fields.emailVerified,
+                    field: localFields.emailVerified,
                     username: username,
                     email: email
                 }
@@ -103,10 +104,10 @@ class AccountList extends Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.emailVerified) {
-            return <EmailVerfied column={key} data={data} isDetail={isDetail} callback={() => this.sendEmailWarning(data[fields.username], data[fields.email])} />
+        if (key.field === localFields.emailVerified) {
+            return <EmailVerfied column={key} data={data} isDetail={isDetail} callback={() => this.sendEmailWarning(data[localFields.username], data[localFields.email])} />
         }
-        else if (key.field === fields.locked) {
+        else if (key.field === localFields.locked) {
             return <Lock column={key} data={data} isDetail={isDetail} callback={this.onLocking} />
         }
     }
@@ -115,10 +116,10 @@ class AccountList extends Component {
         return ({
             id: perpetual.PAGE_ACCOUNTS,
             headerLabel: 'Accounts',
-            nameField: fields.username,
+            nameField: localFields.username,
             selection: true,
             requestType: [showAccounts, showUsers],
-            sortBy: [fields.username],
+            sortBy: [localFields.username],
             filter: { role: ADMIN_MANAGER },
             keys: this.keys,
             viewMode: null,

@@ -1,36 +1,36 @@
-import * as formatter from '../../model/format'
-import { endpoint, perpetual } from '../../../helper/constant';
+import { perpetual } from '../../../helper/constant';
+import { endpoint } from '../..';
 import { authSyncRequest } from "../../service";
 import { getAppKey } from '../app';
 import { getCloudletPoolKey } from '../cloudletPool';
 import { tpeState } from '../../../helper/formatter/id';
-let fields = formatter.fields;
+import { localFields } from '../../fields';
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
-    { field: fields.trustPolicyExceptionName, label: 'Name', sortable: true, serverField: 'key#OS#name', visible: true, filter: true, group: true, key: true },
-    { field: fields.organizationName, label: 'App Developer', sortable: true, serverField: 'key#OS#app_key#OS#organization', visible: true, filter: true, group: true, key: true },
-    { field: fields.appName, label: 'App Name', sortable: true, serverField: 'key#OS#app_key#OS#name', visible: false, filter: true, group: true, key: true },
-    { field: fields.version, label: 'App Version', sortable: true, serverField: 'key#OS#app_key#OS#version', visible: false, filter: true, group: true, key: true },
-    { field: fields.operatorName, label: 'Operator', sortable: true, serverField: 'key#OS#cloudlet_pool_key#OS#organization', visible: true, filter: true, group: true, key: true },
-    { field: fields.poolName, label: 'cloudlet Pool Name', serverField: 'key#OS#cloudlet_pool_key#OS#name', visible: false, key: true },
-    { field: fields.requiredOutboundConnections, serverField: 'outbound_security_rules', label: 'Required Outbound Connections', visible: false, dataType: perpetual.TYPE_JSON },
-    { field: fields.state, label: 'State', sortable: true, serverField: 'state', visible: true, filter: true, group: true, key: true, format: true, detailView: false },
+    { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
+    { field: localFields.trustPolicyExceptionName, label: 'Name', sortable: true, serverField: 'key#OS#name', visible: true, filter: true, group: true, key: true },
+    { field: localFields.organizationName, label: 'App Developer', sortable: true, serverField: 'key#OS#app_key#OS#organization', visible: true, filter: true, group: true, key: true },
+    { field: localFields.appName, label: 'App Name', sortable: true, serverField: 'key#OS#app_key#OS#name', visible: false, filter: true, group: true, key: true },
+    { field: localFields.version, label: 'App Version', sortable: true, serverField: 'key#OS#app_key#OS#version', visible: false, filter: true, group: true, key: true },
+    { field: localFields.operatorName, label: 'Operator', sortable: true, serverField: 'key#OS#cloudlet_pool_key#OS#organization', visible: true, filter: true, group: true, key: true },
+    { field: localFields.poolName, label: 'cloudlet Pool Name', serverField: 'key#OS#cloudlet_pool_key#OS#name', visible: false, key: true },
+    { field: localFields.requiredOutboundConnections, serverField: 'outbound_security_rules', label: 'Required Outbound Connections', visible: false, dataType: perpetual.TYPE_JSON },
+    { field: localFields.state, label: 'State', sortable: true, serverField: 'state', visible: true, filter: true, group: true, key: true, format: true, detailView: false },
 ])
 
 export const getTPEKey = (data, isCreate) => {
     let trustPolicyException = {}
-    trustPolicyException.key = { app_key: getAppKey(data), Name: data[fields.trustPolicyExceptionName], cloudlet_pool_key: getCloudletPoolKey(data) }
+    trustPolicyException.key = { app_key: getAppKey(data), Name: data[localFields.trustPolicyExceptionName], cloudlet_pool_key: getCloudletPoolKey(data) }
     if (isCreate) {
-        if (data[fields.state]) {
-            trustPolicyException.state = tpeState(data[fields.state])
+        if (data[localFields.state]) {
+            trustPolicyException.state = tpeState(data[localFields.state])
         }
-        if (data[fields.requiredOutboundConnections]) {
-            trustPolicyException.outbound_security_rules = data[fields.requiredOutboundConnections]
+        if (data[localFields.requiredOutboundConnections]) {
+            trustPolicyException.outbound_security_rules = data[localFields.requiredOutboundConnections]
         }
     }
     return ({
-        region: data[fields.region],
+        region: data[localFields.region],
         trustPolicyException
     })
 }
@@ -53,5 +53,5 @@ export const updateTrustPolicyException = async (self, data) => {
 
 export const deleteTrustPolicyException = (self, data) => {
     let requestData = getTPEKey(data)
-    return { method: endpoint.DELETE_TRUST_POLICY_EXCEPTION, data: requestData, success: `Trust Policy Exception ${data[fields.trustPolicyExceptionName]} deleted successfully` }
+    return { method: endpoint.DELETE_TRUST_POLICY_EXCEPTION, data: requestData, success: `Trust Policy Exception ${data[localFields.trustPolicyExceptionName]} deleted successfully` }
 }

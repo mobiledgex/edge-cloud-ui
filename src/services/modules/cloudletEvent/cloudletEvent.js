@@ -1,9 +1,9 @@
-import { endpoint } from '../../../helper/constant'
+import { endpoint } from '../..'
 import { cloudletKeys } from '../cloudlet/primary'
-import { fields } from '../../model/format'
+import { localFields } from '../../fields'
 
 export const cloudletEventKeys = [
-    { field: fields.time, label: 'Starttime', serverField: 'time', visible: true, detailedView: false, format: true },
+    { field: localFields.time, label: 'Starttime', serverField: 'time', visible: true, detailedView: false, format: true },
     { label: 'Region', serverField: 'region', visible: true, detailedView: false, groupBy: true, filter: true },
     { label: 'Cloudlet', serverField: 'cloudlet', visible: true, detailedView: false, groupBy: true, filter: true },
     { label: 'Operator', serverField: 'cloudletorg', visible: true, detailedView: false, groupBy: true },
@@ -13,9 +13,9 @@ export const cloudletEventKeys = [
 
 export const cloudletEventLogs = (self, data) => {
     let requestData = {
-        region: data[fields.region],
-        starttime: data[fields.starttime],
-        endtime: data[fields.endtime]
+        region: data[localFields.region],
+        starttime: data[localFields.starttime],
+        endtime: data[localFields.endtime]
     }
     requestData.cloudlet = cloudletKeys(data)
     return { method: endpoint.CLOUDLET_EVENT_LOG_ENDPOINT, data: requestData, keys: cloudletEventKeys }

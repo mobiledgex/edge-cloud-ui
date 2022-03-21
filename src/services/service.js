@@ -1,157 +1,16 @@
-import { fetchHttpURL, validateExpiry } from "./config"
+import { errorResponse, fetchHttpURL, instance, showProgress } from "./config"
 import axios from 'axios';
 import { formatData } from "./format";
-import { isBoolean } from "../utils/boolean_utils";
-import { WS_TOKEN } from "../helper/constant/endpoint";
 import { LS_THASH } from "../helper/constant/perpetual";
-import { isLocal } from "../utils/location_utils";
 
 const formatter = (request, response, format = true, self) => {
-    format = isBoolean(request.format) ? request.format : format
+    format = request?.format ?? format
     if (format) {
         return formatData(request, response, self)
     }
     else {
         return { request, response: { status: response.status, data: response.data } }
     }
-}
-/**
- * Show progress while fetching data from server, default is true
- * @param {*} request
- */
-const showProgress = (self, request) => {
-    const flag = request ? isBoolean(request.showSpinner) ? request.showSpinner : true : false
-    if (self && self.props && self.props.handleLoadingSpinner) {
-        self.props.handleLoadingSpinner(flag)
-    }
-}
-
-/**
- * Show error alert message default is true
- * @param {*} request
- */
-const showMessage = (self, request, message) => {
-    const flag = request ? isBoolean(request.showMessage) ? request.showMessage : true : false
-    if (flag && self && self.props && self.props.handleAlertInfo && message !== 'Forbidden' && message !== 'No bearer token found') {
-        self.props.handleAlertInfo('error', message)
-    }
-}
-
-
-/**
- * fetch token for websocket
- * @param {*} request 
- * @param {*} auth 
- * @returns
- */
-export const fetchWSToken = async (self) => {
-    let mc = await authSyncRequest(self, { method: WS_TOKEN })
-    if (responseValid(mc)) {
-        return mc.response.data.token
-    }
-    else {
-        if (self && self.props && self.props.history) {
-            self.props.history.push('/logout');
-        }
-    }
-}
-
-/**
- * 
- * @param {*} request 
- * @param {*} auth 
- * @returns
- */
-export const fetchToken = (self) => {
-    if (isLocal()) {
-        let token = localStorage.getItem(LS_THASH)
-        if (token) {
-            return token
-        }
-        if (self && self.props && self.props.history) {
-            self.props.history.push('/logout');
-        }
-    }
-}
-
-/**
- * 
- * @param {*} request 
- * @returns headers
- */
-export const fetchHeader = (self, request, auth) => {
-    const token = auth && fetchToken(self)
-    let headers = {};
-    if (token && auth) {
-        headers = {
-            'Authorization': `Bearer ${token}`
-        }
-    }
-    if (request.headers) {
-        headers = { ...headers, ...request.headers }
-    }
-    return headers;
-}
-
-export const fetchResponseType = (request) => {
-    return request.responseType ? request.responseType : undefined
-}
-
-const instance = (self, request, auth) => {
-    return axios.create({
-        headers: fetchHeader(self, request, auth),
-        responseType: fetchResponseType(request)
-    })
-}
-
-const responseStatus = (self, status) => {
-    let valid = true
-    let msg = ''
-    switch (status) {
-        case 504:
-            msg = '504 Gateway Timeout'
-            valid = false
-            break;
-        case 502:
-            msg = '502 Bad Gateway'
-            valid = false
-            break;
-    }
-
-    if (!valid && self && self.props && self.props.handleAlertInfo) {
-        self.props.handleAlertInfo('error', msg)
-    }
-    return valid
-}
-
-const errorResponse = (self, request, error, callback, auth = true) => {
-    if (error && error.response) {
-        const response = error.response
-        const code = response.status
-        const data = response.data
-        let message = 'Unknown'
-
-        if (responseStatus(self, code) && data) {
-            if (request.responseType === 'arraybuffer') {
-                var decodedString = String.fromCharCode.apply(null, new Uint8Array(data));
-                var obj = JSON.parse(decodedString);
-                message = obj['message'];
-            }
-            else {
-                message = data.message ? data.message : message
-            }
-        }
-        if (!auth || validateExpiry(self, message)) {
-            showMessage(self, request, message)
-            if (callback) {
-                callback({ request, error: { code, message } })
-            }
-        }
-    }
-}
-
-export const responseValid = (mc) => {
-    return mc && mc.response && mc.response.status === 200
 }
 
 /**

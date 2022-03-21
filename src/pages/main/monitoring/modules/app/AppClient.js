@@ -4,12 +4,13 @@ import { connect } from 'react-redux'
 import HorizontalBar from '../../charts/horizontalBar/MexHorizontalBar'
 import { clientMetrics } from '../../../../../services/modules/clientMetrics'
 import MexWorker from '../../services/client.worker.js'
-import { authSyncRequest, responseValid } from '../../../../../services/service'
+import { authSyncRequest } from '../../../../../services/service'
 import { equal } from '../../../../../helper/constant/operators'
 import { Skeleton } from '@material-ui/lab'
-import { fields } from '../../../../../services/model/format'
+import { localFields } from '../../../../../services/fields'
 import isEmpty from 'lodash/isEmpty'
 import { NoData } from '../../helper/NoData'
+import { responseValid } from '../../../../../services/config'
 
 
 class MexAppClient extends React.Component {
@@ -43,7 +44,7 @@ class MexAppClient extends React.Component {
             numsamples: 1,
             starttime: range.starttime,
             endtime: range.endtime
-        }, organization[fields.organizationName])
+        }, organization[localFields.organizationName])
 
         let mc = await authSyncRequest(this, { ...requestData, format: false })
         if (responseValid(mc)) {

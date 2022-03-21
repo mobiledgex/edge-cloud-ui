@@ -3,8 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import { Card } from '@material-ui/core';
-import { fields } from '../../services/model/format';
-import * as serverData from '../../services/model/serverData';
+import { localFields } from '../../services/fields';
 
 import MexToolbar, { ACTION_CLOSE, ACTION_REGION, ACTION_REFRESH, REGION_ALL, ACTION_NEW, ACTION_MAP, ACTION_SEARCH, ACTION_GROUP, ACTION_PICKER } from './MexToolbar';
 import DetailViewer from './detail/DetailViewer';
@@ -16,7 +15,7 @@ import MexMessageDialog from '../dialog/mexWarningDialog'
 import cloneDeep from 'lodash/cloneDeep';
 import { operators, shared, perpetual } from '../../helper/constant';
 import { fetchDataFromServer } from './services/service';
-import { service } from '../../services';
+import { service, websocket } from '../../services';
 import { timeRangeInMin } from '../mexui/Picker';
 import MexTable from './MexTable';
 import { redux_org } from '../../helper/reduxData';
@@ -82,7 +81,7 @@ class DataGrid extends React.Component {
         this.selectedRow = row
         let data = row
 
-        if (key && key.field === fields.state) {
+        if (key && key.field === localFields.state) {
             this.onProgress(data)
         }
         else if (key && key.clickable) {
@@ -115,7 +114,7 @@ class DataGrid extends React.Component {
         if (data) {
             if (action.ws) {
                 this.props.handleLoadingSpinner(true);
-                serverData.sendWSRequest(this, action.onClick(this, data), this.onDeleteWSResponse, data)
+                websocket.request(this, action.onClick(this, data), this.onDeleteWSResponse, data)
             }
             else {
                 let valid = false
@@ -179,7 +178,7 @@ class DataGrid extends React.Component {
     onDeleteMultiple = async (action, data) => {
         if (action.ws) {
             this.props.handleLoadingSpinner(true)
-            serverData.sendWSRequest(this, action.onClick(this, data), this.onMultiResponse, { action: action, data: data })
+            websocket.request(this, action.onClick(this, data), this.onMultiResponse, { action: action, data: data })
         }
         else {
             let mc = await service.authSyncRequest(this, action.onClick(this, data))
@@ -205,9 +204,9 @@ class DataGrid extends React.Component {
 
 
     onUpdate = async (action, data) => {
-        if (data[fields.forceupdate] || data[fields.updateAvailable]) {
+        if (data[localFields.forceupdate] || data[localFields.updateAvailable]) {
             this.props.handleLoadingSpinner(true)
-            serverData.sendWSRequest(this, action.onClick(data), this.onMultiResponse, { action: action, data: data })
+            websocket.request(this, action.onClick(data), this.onMultiResponse, { action: action, data: data })
         }
     }
 
@@ -534,13 +533,13 @@ class DataGrid extends React.Component {
                 for (let i = 0; i < regions.length; i++) {
                     region = regions[i];
                     let filter = requestInfo.filter === undefined ? {} : requestInfo.filter;
-                    filter[fields.region] = region;
+                    filter[localFields.region] = region;
                     filterList.push(Object.assign({}, filter))
                 }
             }
             else {
                 let filter = requestInfo.filter === undefined ? {} : requestInfo.filter;
-                filter[fields.region] = region;
+                filter[localFields.region] = region;
                 filterList.push(filter)
             }
         }
@@ -574,7 +573,7 @@ class DataGrid extends React.Component {
                 let requestData = mcList[0].request.data
                 if (requestData && requestData.region) {
                     dataList = dataList.filter(function (obj) {
-                        return obj[fields.region] !== requestData.region;
+                        return obj[localFields.region] !== requestData.region;
                     });
                 }
             }

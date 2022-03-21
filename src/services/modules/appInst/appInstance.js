@@ -1,69 +1,68 @@
-import * as formatter from '../../model/format'
-import * as serverData from '../../model/serverData'
 import { authSyncRequest, showAuthSyncRequest } from '../../service';
 import { FORMAT_FULL_DATE_TIME } from '../../../utils/date_util'
 import { redux_org } from '../../../helper/reduxData'
-import { endpoint, perpetual } from '../../../helper/constant'
+import { perpetual } from '../../../helper/constant'
+import { endpoint } from '../..';
 import { customize } from '.'
 import { generateUUID } from '../../format/shared'
-import { REQUEST_APP_INST_LATENCY } from '../../../helper/constant/endpoint';
+import { REQUEST_APP_INST_LATENCY } from '../../endpoint';
 import { AIK_APP_CLOUDLET_CLUSTER,  appInstKeys } from './primary';
 import {  cloudletKeys } from '../cloudlet';
 import { serverFields } from '../../../helper/formatter';
-
-let fields = formatter.fields;
+import { websocket } from '../..';
+import { localFields } from '../../fields';
 
 export const keys = () => ([
-  { field: fields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true, format: true },
-  { field: fields.organizationName, serverField: 'key#OS#app_key#OS#organization', sortable: true, label: 'Organization', visible: true, filter: true, group: true, key: true },
-  { field: fields.app_name_version, label: 'App [Version]', visible: true, sortable: true, detailView: false },
-  { field: fields.appName, serverField: 'key#OS#app_key#OS#name', sortable: true, label: 'App', visible: false, filter: true, group: true, key: true },
-  { field: fields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: false, key: true },
-  { field: fields.cloudlet_name_operator, label: 'Cloudlet [Operator]', sortable: true, visible: true, detailView: false },
-  { field: fields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: false, filter: true, group: true, key: true },
-  { field: fields.partnerOperator, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#federated_organization', label: 'Partner Operator', visible: false, key: true },
-  { field: fields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: false, filter: true, group: true, key: true },
-  { field: fields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: perpetual.TYPE_JSON },
-  { field: fields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false, key: true },
-  { field: fields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true, filter: true, group: true, key: true },
-  { field: fields.realclustername, serverField: 'real_cluster_name', sortable: true, label: 'Real Cluster Name', visible: false, filter: false },
-  { field: fields.deployment, label: 'Deployment', sortable: true, visible: true, filter: true, group: true, roles: [perpetual.ADMIN, perpetual.DEVELOPER] },
-  { field: fields.accessType, label: 'Access Type' },
-  { field: fields.uri, serverField: 'uri', label: 'URI' },
-  { field: fields.liveness, serverField: 'liveness', label: 'Liveness' },
-  { field: fields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: perpetual.TYPE_JSON },
-  { field: fields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor' },
-  { field: fields.ipAccess, serverField: 'auto_cluster_ip_access', label: 'IP Access' },
-  { field: fields.sharedVolumeSize, serverField: 'shared_volume_size', label: 'Shared Volume Size' },
-  { field: fields.revision, serverField: 'revision', label: 'Revision', visible: false },
-  { field: fields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true, format: true },
-  { field: fields.powerState, serverField: 'power_state', label: 'Power State', visible: false, format: true },
-  { field: fields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: perpetual.TYPE_JSON },
-  { field: fields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
-  { field: fields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
-  { field: fields.status, serverField: 'status', label: 'Status', dataType: perpetual.TYPE_JSON },
-  { field: fields.configs, serverField: 'configs', label: 'Configs', dataType: perpetual.TYPE_JSON },
-  { field: fields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true, format: true },
-  { field: fields.autoPolicyName, label: 'Auto Prov Policy', visible: false },
-  { field: fields.dedicatedIp, label: 'Dedicated IP', serverFields: 'dedicated_ip', visible: false, format: true },
-  { field: fields.trusted, label: 'Trusted', visible: false, sortable: true, format: true }
+  { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true, format: true },
+  { field: localFields.organizationName, serverField: 'key#OS#app_key#OS#organization', sortable: true, label: 'Organization', visible: true, filter: true, group: true, key: true },
+  { field: localFields.app_name_version, label: 'App [Version]', visible: true, sortable: true, detailView: false },
+  { field: localFields.appName, serverField: 'key#OS#app_key#OS#name', sortable: true, label: 'App', visible: false, filter: true, group: true, key: true },
+  { field: localFields.version, serverField: 'key#OS#app_key#OS#version', label: 'Version', visible: false, key: true },
+  { field: localFields.cloudlet_name_operator, label: 'Cloudlet [Operator]', sortable: true, visible: true, detailView: false },
+  { field: localFields.operatorName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#organization', sortable: true, label: 'Operator', visible: false, filter: true, group: true, key: true },
+  { field: localFields.partnerOperator, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#federated_organization', label: 'Partner Operator', visible: false, key: true },
+  { field: localFields.cloudletName, serverField: 'key#OS#cluster_inst_key#OS#cloudlet_key#OS#name', sortable: true, label: 'Cloudlet', visible: false, filter: true, group: true, key: true },
+  { field: localFields.cloudletLocation, serverField: 'cloudlet_loc', label: 'Cloudlet Location', dataType: perpetual.TYPE_JSON },
+  { field: localFields.clusterdeveloper, serverField: 'key#OS#cluster_inst_key#OS#organization', sortable: true, label: 'Cluster Developer', visible: false, key: true },
+  { field: localFields.clusterName, serverField: 'key#OS#cluster_inst_key#OS#cluster_key#OS#name', sortable: true, label: 'Cluster Instance', visible: true, filter: true, group: true, key: true },
+  { field: localFields.realclustername, serverField: 'real_cluster_name', sortable: true, label: 'Real Cluster Name', visible: false, filter: false },
+  { field: localFields.deployment, label: 'Deployment', sortable: true, visible: true, filter: true, group: true, roles: [perpetual.ADMIN, perpetual.DEVELOPER] },
+  { field: localFields.accessType, label: 'Access Type' },
+  { field: localFields.uri, serverField: 'uri', label: 'URI' },
+  { field: localFields.liveness, serverField: 'liveness', label: 'Liveness' },
+  { field: localFields.mappedPorts, serverField: 'mapped_ports', label: 'Mapped Port', dataType: perpetual.TYPE_JSON },
+  { field: localFields.flavorName, serverField: 'flavor#OS#name', label: 'Flavor' },
+  { field: localFields.ipAccess, serverField: 'auto_cluster_ip_access', label: 'IP Access' },
+  { field: localFields.sharedVolumeSize, serverField: 'shared_volume_size', label: 'Shared Volume Size' },
+  { field: localFields.revision, serverField: 'revision', label: 'Revision', visible: false },
+  { field: localFields.state, serverField: 'state', label: 'Progress', visible: true, clickable: true, format: true },
+  { field: localFields.powerState, serverField: 'power_state', label: 'Power State', visible: false, format: true },
+  { field: localFields.runtimeInfo, serverField: 'runtime_info', label: 'Runtime', dataType: perpetual.TYPE_JSON },
+  { field: localFields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
+  { field: localFields.updatedAt, serverField: 'updated_at', label: 'Updated', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
+  { field: localFields.status, serverField: 'status', label: 'Status', dataType: perpetual.TYPE_JSON },
+  { field: localFields.configs, serverField: 'configs', label: 'Configs', dataType: perpetual.TYPE_JSON },
+  { field: localFields.healthCheck, serverField: 'health_check', label: 'Health Status', visible: true, format: true },
+  { field: localFields.autoPolicyName, label: 'Auto Prov Policy', visible: false },
+  { field: localFields.dedicatedIp, label: 'Dedicated IP', serverFields: 'dedicated_ip', visible: false, format: true },
+  { field: localFields.trusted, label: 'Trusted', visible: false, sortable: true, format: true }
 ])
 
 const getClusterOrg = (data) => {
-  if (data[fields.autoClusterInstance]) {
-    return data[fields.compatibilityVersion] >= perpetual.CLOUDLET_COMPAT_VERSION_2_4_1 ? 'MobiledgeX' : data[fields.organizationName]
+  if (data[localFields.autoClusterInstance]) {
+    return data[localFields.compatibilityVersion] >= perpetual.CLOUDLET_COMPAT_VERSION_2_4_1 ? 'MobiledgeX' : data[localFields.organizationName]
   }
   else {
-    return data[fields.clusterdeveloper] ? data[fields.clusterdeveloper] : data[fields.organizationName]
+    return data[localFields.clusterdeveloper] ? data[localFields.clusterdeveloper] : data[localFields.organizationName]
   }
 }
 
 export const getAppInstanceKey = (data) => {
   return {
-    app_key: { organization: data[fields.organizationName], name: data[fields.appName], version: data[fields.version] },
+    app_key: { organization: data[localFields.organizationName], name: data[localFields.appName], version: data[localFields.version] },
     cluster_inst_key: {
       cloudlet_key: cloudletKeys(data),
-      cluster_key: { name: data[fields.clusterName] ? data[fields.clusterName] : 'DefaultVMCluster' },
+      cluster_key: { name: data[localFields.clusterName] ? data[localFields.clusterName] : 'DefaultVMCluster' },
       organization: getClusterOrg(data)
     }
   }
@@ -73,31 +72,31 @@ export const getKey = (data, isCreate) => {
   let appinst = {}
   appinst.key = getAppInstanceKey(data)
 
-  if (data[fields.forceupdate]) {
-    appinst.force_update = data[fields.forceupdate]
+  if (data[localFields.forceupdate]) {
+    appinst.force_update = data[localFields.forceupdate]
   }
 
   if (isCreate) {
 
-    if (data[fields.configs]) {
-      appinst.configs = data[fields.configs]
+    if (data[localFields.configs]) {
+      appinst.configs = data[localFields.configs]
     }
 
-    if (data[fields.flavorName]) {
-      appinst.flavor = { name: data[fields.flavorName] }
+    if (data[localFields.flavorName]) {
+      appinst.flavor = { name: data[localFields.flavorName] }
     }
 
-    if (data[fields.fields]) {
-      appinst.fields = data[fields.fields]
+    if (data[localFields.fields]) {
+      appinst.fields = data[localFields.fields]
     }
-    if (data[fields.dedicatedIp]) {
-      appinst.dedicated_ip = data[fields.dedicatedIp]
+    if (data[localFields.dedicatedIp]) {
+      appinst.dedicated_ip = data[localFields.dedicatedIp]
     }
 
   }
 
   return ({
-    region: data[fields.region],
+    region: data[localFields.region],
     appinst: appinst
   })
 }
@@ -113,13 +112,13 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
         if (dataList && dataList.length > 0) {
           let newData = dataList[0]
           let oldData = mcRequestList.old
-          newData[fields.uuid] = oldData[fields.uuid]
-          newData[fields.accessType] = oldData[fields.accessType]
-          newData[fields.autoPolicyName] = oldData[fields.autoPolicyName]
-          newData[fields.deployment] = oldData[fields.deployment]
-          newData[fields.updateAvailable] = oldData[fields.updateAvailable]
-          newData[fields.appRevision] = oldData[fields.appRevision]
-          newData[fields.cloudletStatus] = oldData[fields.cloudletStatus]
+          newData[localFields.uuid] = oldData[localFields.uuid]
+          newData[localFields.accessType] = oldData[localFields.accessType]
+          newData[localFields.autoPolicyName] = oldData[localFields.autoPolicyName]
+          newData[localFields.deployment] = oldData[localFields.deployment]
+          newData[localFields.updateAvailable] = oldData[localFields.updateAvailable]
+          newData[localFields.appRevision] = oldData[localFields.appRevision]
+          newData[localFields.cloudletStatus] = oldData[localFields.cloudletStatus]
           newData = customize(undefined, newData)
           return newData
         }
@@ -149,24 +148,24 @@ export const multiDataRequest = (keys, mcRequestList, specific) => {
         let appInst = appInstList[i]
         for (let j = 0; j < appList.length; j++) {
           let app = appList[j]
-          if (appInst[fields.appName] === app[fields.appName] && appInst[fields.version] === app[fields.version] && appInst[fields.organizationName] === app[fields.organizationName]) {
-            appInst[fields.autoPolicyName] = app[fields.autoPolicyName] ? app[fields.autoPolicyName] : 'NA';
-            appInst[fields.deployment] = app[fields.deployment];
-            appInst[fields.accessType] = app[fields.accessType];
-            appInst[fields.trusted] = app[fields.trusted];
-            appInst[fields.updateAvailable] = String(appInst[fields.revision]) !== String(app[fields.revision]);
-            appInst[fields.appRevision] = app[fields.revision]
+          if (appInst[localFields.appName] === app[localFields.appName] && appInst[localFields.version] === app[localFields.version] && appInst[localFields.organizationName] === app[localFields.organizationName]) {
+            appInst[localFields.autoPolicyName] = app[localFields.autoPolicyName] ? app[localFields.autoPolicyName] : 'NA';
+            appInst[localFields.deployment] = app[localFields.deployment];
+            appInst[localFields.accessType] = app[localFields.accessType];
+            appInst[localFields.trusted] = app[localFields.trusted];
+            appInst[localFields.updateAvailable] = String(appInst[localFields.revision]) !== String(app[localFields.revision]);
+            appInst[localFields.appRevision] = app[localFields.revision]
             break;
           }
         }
         for (let j = 0; j < cloudletInfoList.length; j++) {
           let cloudletInfo = cloudletInfoList[j]
-          if (appInst[fields.cloudletName] === cloudletInfo[fields.cloudletName] && appInst[fields.operatorName] === cloudletInfo[fields.operatorName]) {
-            appInst[fields.cloudletStatus] = cloudletInfo[fields.state]
-            appInst[fields.compatibilityVersion] = cloudletInfo[fields.compatibilityVersion]
+          if (appInst[localFields.cloudletName] === cloudletInfo[localFields.cloudletName] && appInst[localFields.operatorName] === cloudletInfo[localFields.operatorName]) {
+            appInst[localFields.cloudletStatus] = cloudletInfo[localFields.state]
+            appInst[localFields.compatibilityVersion] = cloudletInfo[localFields.compatibilityVersion]
           }
         }
-        appInst[fields.cloudletStatus] = appInst[fields.cloudletStatus] ? appInst[fields.cloudletStatus] : serverFields.UNKNOWN
+        appInst[localFields.cloudletStatus] = appInst[localFields.cloudletStatus] ? appInst[localFields.cloudletStatus] : serverFields.UNKNOWN
       }
     }
     return appInstList;
@@ -213,40 +212,40 @@ export const getAppInstList = async (self, data) => {
 
 export const createAppInst = (self, data, callback) => {
   let requestData = getKey(data, true)
-  data.uuid = data[fields.cloudletName]
+  data.uuid = data[localFields.cloudletName]
   let request = { uuid: data.uuid, method: endpoint.CREATE_APP_INST, data: requestData }
-  return serverData.sendWSRequest(self, request, callback, data)
+  return websocket.request(self, request, callback, data)
 }
 
 export const updateAppInst = (self, data, callback) => {
   let requestData = getKey(data, true)
   let request = { uuid: data.uuid ? data.uuid : generateUUID(keys(), data), method: endpoint.UPDATE_APP_INST, data: requestData }
-  return serverData.sendWSRequest(self, request, callback, data)
+  return websocket.request(self, request, callback, data)
 }
 
 export const changePowerState = (data) => {
   let requestData = getKey(data)
-  requestData.appinst.power_state = data[fields.powerState]
+  requestData.appinst.power_state = data[localFields.powerState]
   requestData.appinst.fields = ['31']
   return { uuid: data.uuid, method: endpoint.UPDATE_APP_INST, data: requestData }
 }
 
 export const deleteAppInst = (self, data) => {
   let requestData = getKey(data)
-  if (data[fields.cloudletStatus] !== serverFields.READY && redux_org.isAdmin(self)) {
+  if (data[localFields.cloudletStatus] !== serverFields.READY && redux_org.isAdmin(self)) {
     requestData.appinst.crm_override = perpetual.CRM_OVERRIDE_IGNORE_CRM
   }
-  return { uuid: data.uuid, method: endpoint.DELETE_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]} deleted successfully` }
+  return { uuid: data.uuid, method: endpoint.DELETE_APP_INST, data: requestData, success: `App Instance ${data[localFields.appName]} deleted successfully` }
 }
 
 export const refreshAppInst = (data) => {
   let requestData = getKey(data)
-  return { uuid: data.uuid, method: endpoint.REFRESH_APP_INST, data: requestData, success: `App Instance ${data[fields.appName]}` }
+  return { uuid: data.uuid, method: endpoint.REFRESH_APP_INST, data: requestData, success: `App Instance ${data[localFields.appName]}` }
 }
 
 export const requestAppInstLatency = async (self, data) => {
   let requestData = {
-    region: data[fields.region],
+    region: data[localFields.region],
     appInstLatency: { key: appInstKeys(data, AIK_APP_CLOUDLET_CLUSTER) }
   }
   return await authSyncRequest(self, { method: REQUEST_APP_INST_LATENCY, data: requestData })
@@ -254,13 +253,13 @@ export const requestAppInstLatency = async (self, data) => {
 
 export const refreshAllAppInst = (data) => {
   let requestData = {
-    region: data[fields.region],
+    region: data[localFields.region],
     appinst: {
       key: {
         app_key: {
-          organization: data[fields.organizationName],
-          name: data[fields.appName],
-          version: data[fields.version]
+          organization: data[localFields.organizationName],
+          name: data[localFields.appName],
+          version: data[localFields.version]
         }
       },
       update_multiple: true
@@ -270,6 +269,6 @@ export const refreshAllAppInst = (data) => {
 }
 
 export const streamAppInst = (data) => {
-  let requestData = { region: data[fields.region], appinstkey: getAppInstanceKey(data) }
+  let requestData = { region: data[localFields.region], appinstkey: getAppInstanceKey(data) }
   return { uuid: data.uuid, method: endpoint.STREAM_APP_INST, data: requestData }
 }

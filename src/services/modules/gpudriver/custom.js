@@ -1,16 +1,16 @@
 import { OS_LINUX } from "../../../helper/constant/perpetual"
-import { fields } from "../../model/format"
+import { localFields } from "../../fields"
 
 export const customize = (request, value) => {
-    value[fields.gpuConfig] = `${value[fields.gpuDriverName]}${value[fields.organizationName] ? '' : ' [MobiledgeX]'}`
-    value[fields.organizationName] = value[fields.organizationName] ? value[fields.organizationName] : 'MobiledgeX'
-    value[fields.operatorName] = value[fields.organizationName]
-    value[fields.buildCount] = value[fields.builds] ? value[fields.builds].length : 0
-    value[fields.licenseConfig] = value[fields.licenseConfig] !== undefined ? true : false
-    if(value[fields.buildCount] > 0)
+    value[localFields.gpuConfig] = `${value[localFields.gpuDriverName]}${value[localFields.organizationName] ? '' : ' [MobiledgeX]'}`
+    value[localFields.organizationName] = value[localFields.organizationName] ? value[localFields.organizationName] : 'MobiledgeX'
+    value[localFields.operatorName] = value[localFields.organizationName]
+    value[localFields.buildCount] = value[localFields.builds] ? value[localFields.builds].length : 0
+    value[localFields.licenseConfig] = value[localFields.licenseConfig] !== undefined ? true : false
+    if(value[localFields.buildCount] > 0)
     {
-        value[fields.builds].forEach(build=>{
-            build[fields.operatingSystem] = build[fields.operatingSystem] ? build[fields.operatingSystem] : OS_LINUX
+        value[localFields.builds].forEach(build=>{
+            build[localFields.operatingSystem] = build[localFields.operatingSystem] ? build[localFields.operatingSystem] : OS_LINUX
         })
     }
     return value

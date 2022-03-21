@@ -1,10 +1,10 @@
 import React from 'react';
-import DataView from '../../../container/DataView';
+import DataView from '../../../hoc/datagrid/DataView';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import { keys, showConfirmation, showInvitation, multiDataRequest, deleteConfirmation, createConfirmation } from '../../../services/modules/poolAccess';
 import { perpetual } from '../../../helper/constant';
 import { labelFormatter } from '../../../helper/formatter';
@@ -25,7 +25,7 @@ class PoolAccessList extends React.Component {
     }
 
     onPrePoolAccess = (type, action, data) => {
-        let isRemove = data[fields.confirm]
+        let isRemove = data[localFields.confirm]
         if (type === perpetual.ACTION_LABEL) {
             return isRemove ? 'Withdraw' : 'Accept'
         }
@@ -35,10 +35,10 @@ class PoolAccessList extends React.Component {
     }
 
     onPoolAccess = async (action, data, callback) => {
-        let isRemove = data[fields.confirm]
+        let isRemove = data[localFields.confirm]
         let request = deleteConfirmation
         if (!isRemove) {
-            data[fields.decision] = action.id === perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT ? 'reject' : 'accept'
+            data[localFields.decision] = action.id === perpetual.ACTION_POOL_ACCESS_DEVELOPER_REJECT ? 'reject' : 'accept'
             request = createConfirmation
         }
         let mc = await service.authSyncRequest(this, request(data))
@@ -49,7 +49,7 @@ class PoolAccessList extends React.Component {
     }
 
     onRejectVisible = (data) => {
-        let isRemove = data[fields.confirm]
+        let isRemove = data[localFields.confirm]
         return !isRemove
     }
 
@@ -61,7 +61,7 @@ class PoolAccessList extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.decision) {
+        if (key.field === localFields.decision) {
             return labelFormatter.decision(data[key.field])
         }
     }
@@ -70,9 +70,9 @@ class PoolAccessList extends React.Component {
         return ({
             id: perpetual.PAGE_POOL_ACCESS,
             headerLabel: 'Cloudlet Pools',
-            nameField: fields.poolName,
+            nameField: localFields.poolName,
             requestType: [showConfirmation, showInvitation],
-            sortBy: [fields.poolName],
+            sortBy: [localFields.poolName],
             isRegion: true,
             keys: this.keys,
             formatData: this.dataFormatter,

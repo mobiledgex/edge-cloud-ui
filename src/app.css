@@ -34,6 +34,7 @@ body {
     background-color: rgba(0,0,0,.6);
     border: solid 1px rgba(255,255,255,.2);
     color: rgba(255,255,255,.6) !important;
+    line-height: 1.1em !important;
 }
 .ui.selection.dropdown:hover {
     border-color: rgba(255,255,255,.4);
@@ -217,3 +218,26 @@ h6 {
     background-color: rgba(204, 236, 255, 0.3);
 }
 /* Legend Role Marker */
+
+/* Reg Map */
+.panel_worldmap {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border: solid 0 rgba(255,255,255,.125);
+    background-color: rgba(0,0,0,.2);
+}
+.panel_worldmap > div{
+    height: 100%;
+}
+/* Reg Map */
+
+/* Main Header Toolbar */
+.MuiToolbar-regular {
+    min-height: 48px !important;
+}
+
+.MuiToolbar-root>label, .MuiToolbar-root>button, .MuiToolbar-root>button.ui.button {
+    margin-right:20px !important;
+}
+/* Main Header Toolbar */

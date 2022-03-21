@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
-import * as serverData from '../../../services/model/serverData';
-import MexOTPValidation from './MexOTPValidation';
-import LoginForm from './LoginForm'
 import { withRouter } from 'react-router-dom';
-import { perpetual } from '../../../helper/constant';
+import { loadingSpinner, alertInfo } from '../../../actions';
+import { LS_THASH } from '../../../helper/constant/perpetual';
 import { isLocal } from '../../../utils/location_utils';
+import { login } from '../../../services/modules/landing';
+import LoginForm from './LoginForm';
+import MexOTPValidation from './MexOTPValidation';
+
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -24,11 +25,10 @@ class Login extends Component {
     loadMainPage = (data) => {
         if (data && data.token) {
             if (isLocal()) {
-                localStorage.setItem(perpetual.LS_THASH, data.token)
+                localStorage.setItem(LS_THASH, data.token)
             }
-            else
-            {
-                localStorage.setItem(perpetual.LS_THASH, true)  
+            else {
+                localStorage.setItem(LS_THASH, true)
             }
             this.props.history.push('preloader')
         }
@@ -39,13 +39,13 @@ class Login extends Component {
             email: username,
             password: password,
         }
-        let mc = await serverData.login(this, { username, password })
+        let mc = await login(this, { username, password })
         if (mc && mc.response && mc.response.status === 200) {
             this.loadMainPage(mc.response.data)
         }
         else if (mc && mc.error) {
             let response = mc.error.response
-            if (response.status === 511) {
+            if (response?.status === 511) {
                 this.setState({ loginOTP: mc.request.data })
             }
             else {
@@ -64,7 +64,7 @@ class Login extends Component {
     onOTPValidation = async (totp) => {
         let data = this.state.loginOTP
         let username = data.username
-        let mc = await serverData.login(this, { username: username, password: data.password, totp })
+        let mc = await login(this, { username: username, password: data.password, totp })
         if (mc && mc.response && mc.response.status === 200) {
             let data = mc.response.data;
             if (data.token) {
@@ -72,9 +72,9 @@ class Login extends Component {
                 this.setState({ loginOTP: undefined })
             }
         }
-        else if (mc && mc.error) {
+        else if (mc?.error) {
             let response = mc.error.response
-            if (response.status === 511) {
+            if (response?.status === 511) {
                 this.setState({ loginOTP: mc.request.data })
             }
             else {
@@ -97,15 +97,15 @@ class Login extends Component {
     render() {
         return (
             this.state.loginOTP ? this.renderOTPForm() :
-            < LoginForm onSubmit={this.onLogin}/>
+                < LoginForm onSubmit={this.onLogin} />
         );
     }
 }
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleLoadingSpinner: (data) => { dispatch(loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(alertInfo(mode, msg)) }
     };
 };
 
