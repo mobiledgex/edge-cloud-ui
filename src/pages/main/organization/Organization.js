@@ -23,6 +23,7 @@ import { ACTION_REFRESH } from '../../../hoc/datagrid/MexToolbar';
 import { ICON_COLOR } from '../../../helper/constant/colors';
 import { showUserRoles } from '../../../services/modules/users/users';
 import { fetchToken } from '../../../services/config';
+import { splitByCaps, toFirstUpperCase } from '../../../utils/string_utils';
 
 class OrganizationList extends React.Component {
     constructor(props) {
@@ -38,6 +39,9 @@ class OrganizationList extends React.Component {
         this.keys = keys().map(key => {
             if (key.field === localFields.manage || key.field === localFields.role) {
                 key.visible = !redux_org.isAdmin(this)
+            }
+            else if (key.field === localFields.type) {
+                key.visible = redux_org.isAdmin(this)
             }
             return key
         })
@@ -223,6 +227,12 @@ class OrganizationList extends React.Component {
         }
         else if (key.field === localFields.edgeboxOnly) {
             return uiFormatter.edgeboxOnly(key, data, isDetail)
+        }
+        else if (key.field === localFields.type) {
+            return <strong>{toFirstUpperCase(data[key.field])}</strong>
+        }
+        else if (key.field === localFields.role) {
+            return <strong>{splitByCaps(data[key.field])}</strong>
         }
     }
 
