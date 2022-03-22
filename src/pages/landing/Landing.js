@@ -67,9 +67,14 @@ class Landing extends Component {
             mexAlertMessage: undefined,
             clientSysInfo: {}
         }
+        this._isMounted = false
     }
 
-
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
+    }
 
     onPasswordReset = async (email) => {
         const { clientSysInfo } = this.state
@@ -136,7 +141,7 @@ class Landing extends Component {
                     </div>
                 </div>
                 {this.state.mexAlertMessage ?
-                    <MexAlert data={this.state.mexAlertMessage} onClose={() => this.setState({ mexAlertMessage: undefined })} /> : null}
+                    <MexAlert data={this.state.mexAlertMessage} onClose={() => this.updateState({ mexAlertMessage: undefined })} /> : null}
             </div>
         )
     }
@@ -148,13 +153,14 @@ class Landing extends Component {
             let clientSysInfo = { os: resultPs.os, browser: resultPs.browser };
             let IPAddress = await publicIp.v4()
             clientSysInfo['clientIP'] = IPAddress ? IPAddress : '127.0.0.1';
-            this.setState({ clientSysInfo })
+            this.updateState({ clientSysInfo })
         }
         catch (e) {
         }
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.receiveClientIp()
         if (this.props.match.path === '/logout') {
             localStorage.clear();
@@ -163,8 +169,13 @@ class Landing extends Component {
             this.props.history.push(`/main/${PAGE_ORGANIZATIONS.toLowerCase()}`)
         }
     }
+
+    componentWillUnmount() {
+        this._isMounted = false
+    }
 }
-function mapStateToProps(state) {
+
+const mapStateToProps = (state) => {
     return {
         user: state.user,
         loginMode: state.loginMode ? state.loginMode.mode : null,
@@ -172,6 +183,7 @@ function mapStateToProps(state) {
         alertInfo: { mode: state.alertInfo.mode, msg: state.alertInfo.msg }
     }
 }
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleAlertInfo: (mode, msg) => { dispatch(alertInfo(mode, msg)) }
