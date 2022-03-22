@@ -201,10 +201,10 @@ class AppReg extends Component {
 
     outboundConnectionsForm = () => ([
         { field: localFields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp', 'icmp'], update: { edit: true } },
+        { field: localFields.ocRemoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: validateRemoteCIDR },
         { field: localFields.ocPortMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: localFields.ocPortMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
-        { field: localFields.ocRemoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: validateRemoteCIDR },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
@@ -491,13 +491,13 @@ class AppReg extends Component {
 
     ocProtcolValueChange = (currentForm, forms, isInit) => {
         let parentForm = currentForm.parent.form
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i];
+        let isICMP = currentForm.value === 'icmp'
+        for (const form of forms) {
             if (form.uuid === parentForm.uuid) {
-                for (let outboundConnectionForm of form.forms) {
-                    if (outboundConnectionForm.field === localFields.ocPortMin || outboundConnectionForm.field === localFields.ocPortMax) {
-                        outboundConnectionForm.visible = !(currentForm.value === 'icmp')
-                        outboundConnectionForm.value = undefined
+                for (let childForm of form.forms) {
+                    if (childForm.field === localFields.ocPortMin || childForm.field === localFields.ocPortMax || childForm.icon === '~') {
+                        childForm.visible = !isICMP
+                        childForm.value = undefined
                     }
                 }
                 break;
