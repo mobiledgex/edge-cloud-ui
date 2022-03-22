@@ -243,7 +243,7 @@ export const TPEState = (data, isDetailView) => {
     let id = data[localFields.state]
     let color = id === perpetual.APPROVE ? 'green' : id === perpetual.REJECT ? 'red' : 'orange'
     let label = id === perpetual.APPROVE ? 'Approved' : id === perpetual.REJECT ? 'Rejected' : id
-    return isDetailView ? id : <IconButton tooltip={label}><Icon color={color} size={16}>circle</Icon></IconButton>
+    return isDetailView ? label : <IconButton tooltip={label}><Icon color={color} size={16}>circle</Icon></IconButton>
 }
 
 
