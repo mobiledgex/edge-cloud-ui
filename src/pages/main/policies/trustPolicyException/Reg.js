@@ -46,7 +46,11 @@ class TrustPolicyExceptionReg extends React.Component {
 
     getAppInfo = async (region, form, forms) => {
         if (!this.requestedRegionList.includes(region)) {
-            this.appList = [...this.appList, ...await getAppList(this, { region: region })]
+            let dataList = await getAppList(this, { region: region })
+            dataList = dataList.filter(item => {
+                return Boolean(item.trusted)
+            })
+            this.appList = [...this.appList, ...dataList]
         }
         this.updateUI(form)
         this.appNameValueChange(form, forms, true)
@@ -128,12 +132,13 @@ class TrustPolicyExceptionReg extends React.Component {
 
     ocProtcolValueChange = (currentForm, forms, isInit) => {
         let parentForm = currentForm.parent.form
+        let isICMP = currentForm.value === perpetual.PROTOCOL_ICMP
         for (const form of forms) {
             if (form.uuid === parentForm.uuid) {
-                for (let outboundConnectionForm of form.forms) {
-                    if (outboundConnectionForm.field === localFields.ocPortMin || outboundConnectionForm.field === localFields.ocPortMax) {
-                        outboundConnectionForm.visible = !(currentForm.value === perpetual.PROTOCOL_ICMP)
-                        outboundConnectionForm.value = undefined
+                for (let childForm of form.forms) {
+                    if (childForm.field === localFields.ocPortMin || childForm.field === localFields.ocPortMax || childForm.icon === '~') {
+                        childForm.visible = !isICMP
+                        childForm.value = undefined
                     }
                 }
                 break;
@@ -276,11 +281,11 @@ class TrustPolicyExceptionReg extends React.Component {
             { field: localFields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, tip: 'Select region where you want Trust Exception Policy.', update: { key: true } },
             { field: localFields.organizationName, label: 'Organization', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this), disabled: !redux_org.isAdmin(this) }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'The name of the organization you are currently managing.', update: { key: true } },
             { field: localFields.trustPolicyExceptionName, label: 'Trust Policy Exception', formType: INPUT, placeholder: 'Enter Name', rules: { required: true }, visible: true, update: { key: true }, tip: 'Name of the Trust Policy Exception.' },
-            { field: localFields.appName, label: 'App', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: localFields.region }, { index: 2, field: localFields.organizationName }], update: { key: true }, tip: 'The name of the application to deploy.' },
-            { field: localFields.version, label: 'App Version', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: localFields.appName }], update: { key: true }, tip: 'The version of the application to deploy.' },
+            { field: localFields.appName, label: 'App', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: localFields.region }, { index: 2, field: localFields.organizationName }], update: { key: true }, tip: 'The name of the application to deploy, only trusted apps' },
+            { field: localFields.version, label: 'App Version', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 4, field: localFields.appName }], update: { key: true }, tip: 'The version of the application to deploy.' },
             { field: localFields.operatorName, label: 'Operator', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: localFields.region }], tip: 'Organization of the cloudlet pool site', update: { key: true } },
             { field: localFields.poolName, label: 'Cloudlet Pool', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Cloudlet Pool', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: localFields.region }, { index: 6, field: localFields.operatorName }], update: { key: true }, tip: 'CloudletPool Name' },
-            { field: localFields.state, label: 'Action', formType: SELECT, placeholder: 'Select Action', rules: { required: true }, visible: !redux_org.isDeveloper(this), tip: 'State of the exception within the approval process.', update: { edit: true } },
+            { field: localFields.state, label: 'Action', formType: SELECT, placeholder: 'Select Action', rules: { required: true }, visible: redux_org.isOperator(this), tip: 'State of the exception within the approval process.', update: { edit: true } },
             { field: localFields.requiredOutboundConnections, label: 'Required Outbound Connections', formType: HEADER, forms: !redux_org.isOperator(this) ? [{ formType: ICON_BUTTON, label: 'Add Connections', icon: 'add', visible: true, onClick: this.addMultiForm, multiForm: this.getOutboundConnectionsForm }] : undefined, update: { edit: true, ignoreCase: true }, visible: true, tip: 'Connections this app require to determine if the app is compatible with a trust policy Exception' },
         ]
     }
@@ -302,13 +307,13 @@ class TrustPolicyExceptionReg extends React.Component {
         }
     }
 
-    outboundConnectionsForm = () => ([
-        { field: localFields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true, required: true, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 4, visible: true, options: [perpetual.PROTOCOL_TCP, perpetual.PROTOCOL_UDP, perpetual.PROTOCOL_ICMP], update: { edit: true } },
+    outboundConnectionsForm = (canDelete = true) => ([
+        { field: localFields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true, required: true, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 3, visible: true, options: [perpetual.PROTOCOL_TCP, perpetual.PROTOCOL_UDP, perpetual.PROTOCOL_ICMP], update: { edit: true } },
+        { field: localFields.ocRemoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: validateRemoteCIDR },
         { field: localFields.ocPortMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number', min: 1, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: localFields.ocPortMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number', min: 1, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
-        { field: localFields.ocRemoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: validateRemoteCIDR },
-        { icon: 'delete', formType: 'IconButton', visible: role.validateRole(developerRoles, this.props.organizationInfo) ? true : false, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
+        { icon: 'delete', formType: 'IconButton', visible: canDelete && role.validateRole(developerRoles, this.props.organizationInfo) ? true : false, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     getOutboundConnectionsForm = (form) => {
@@ -345,13 +350,11 @@ class TrustPolicyExceptionReg extends React.Component {
         let multiFormCount = 0
         if (data[localFields.requiredOutboundConnections]) {
             let requiredOutboundConnections = data[localFields.requiredOutboundConnections]
-            for (let i = 0; i < requiredOutboundConnections.length; i++) {
-                let requiredOutboundConnection = requiredOutboundConnections[i]
+            for (const requiredOutboundConnection of requiredOutboundConnections) {
                 let outboundConnectionsForms = this.outboundConnectionsForm()
-                for (let j = 0; j < outboundConnectionsForms.length; j++) {
-                    let outboundConnectionsForm = outboundConnectionsForms[j];
+                for (let outboundConnectionsForm of outboundConnectionsForms) {
                     if (outboundConnectionsForm.field === localFields.ocProtocol) {
-                        outboundConnectionsForm.value = requiredOutboundConnection['protocol'].toLowerCase()
+                        outboundConnectionsForm.value = requiredOutboundConnection['protocol']
                     }
                     else if (outboundConnectionsForm.field === localFields.ocRemoteCIDR) {
                         outboundConnectionsForm.value = requiredOutboundConnection['remote_cidr']
@@ -377,18 +380,20 @@ class TrustPolicyExceptionReg extends React.Component {
 
     getFormData = async (data) => {
         let forms = this.formKeys()
-        forms.push(
-            { label: this.isUpdate ? 'Update' : 'Create', formType: 'Button', onClick: this.onCreate, validate: true },
-            { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
+
         if (data) {
             this.originalData = cloneDeep(data)
             await this.loadDefaultData(forms, data)
         }
-        if (!this.isUpdate) {
+        else {
             let organizationList = await getOrganizationList(this, { type: perpetual.DEVELOPER })
             this.organizationList = _sort(organizationList.map(org => org[localFields.organizationName]))
+            forms.push(this.getOutboundConnectionsForm(this.outboundConnectionsForm(false)))
         }
         this.updateFormData(forms, data)
+        forms.push(
+            { label: this.isUpdate ? 'Update' : 'Create', formType: 'Button', onClick: this.onCreate, validate: true },
+            { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel })
         this.updateState({
             forms
         })
