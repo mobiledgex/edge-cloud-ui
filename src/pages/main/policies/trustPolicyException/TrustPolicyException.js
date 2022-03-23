@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { localFields } from '../../../../services/fields';
-import { developerRoles, operatorRoles } from '../../../../constant'
+import { developerRoles } from '../../../../constant'
 import { perpetual, role } from '../../../../helper/constant';
 import { keys, showTrustPolicyException, deleteTrustPolicyException } from '../../../../services/modules/trustPolicyException/trustPolicyException';
 import TrustPolicyExceptionReg from './Reg'
@@ -46,7 +46,7 @@ class TrustPolicyExceptionList extends React.Component {
     }
 
     onDeleteAction = (type, action, data) => {
-        return role.validateRole(operatorRoles, this.props.organizationInfo)
+        return redux_org.isOperator(this)
     }
 
     actionMenu = () => {
@@ -79,6 +79,7 @@ class TrustPolicyExceptionList extends React.Component {
             return this.onAdd
         }
     }
+    
     requestInfo = () => {
         return ({
             id: perpetual.PAGE_TRUST_POLICY_EXCEPTION,
