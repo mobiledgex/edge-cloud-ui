@@ -16,7 +16,7 @@ export const keys = () => ([
     { field: localFields.nickName, serverField: 'Nickname', label: 'Nickname' },
     { field: localFields.createdAt, serverField: 'CreatedAt', label: 'Created At' },
     { field: localFields.updatedAt, serverField: 'UpdatedAt', label: 'Updated At' },
-    { field: localFields.locked, serverField: 'Locked', label: 'Locked', sortable: false, visible: true, clickable: true, format: true },
+    { field: localFields.locked, serverField: 'Locked', label: 'Locked', sortable: true, visible: true, clickable: true, format: true },
     { field: localFields.role, label: 'Admin Manager', icon: 'admin_manager.svg', detailView: false }
 ])
 
