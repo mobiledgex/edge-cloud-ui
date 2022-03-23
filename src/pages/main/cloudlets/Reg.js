@@ -24,6 +24,7 @@ import { _sort } from '../../../helper/constant/operators';
 import { uniqueId } from '../../../helper/constant/shared';
 import { responseValid } from '../../../services/config';
 import { localFields } from '../../../services/fields';
+import { fields } from '../../../services/fields/localFields';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const CloudletManifest = React.lazy(() => componentLoader(import('./CloudletManifest')));
@@ -123,7 +124,8 @@ class CloudletReg extends React.Component {
                                     if (data.properties) {
                                         this.resourceQuotaList = data.properties
                                         this.resourceQuotaList = this.resourceQuotaList.map(quota => {
-                                            return quota.name
+                                            quota[fields.resourceName] = quota.name
+                                            return quota
                                         })
                                     }
                                 }
@@ -353,6 +355,41 @@ class CloudletReg extends React.Component {
         }
     }
 
+    onResourceQuotaChange = (currentForm, forms, isInit) => {
+        let keyData = undefined
+        for (const item of this.resourceQuotaList) {
+            if (item[currentForm.field] === currentForm.value) {
+                keyData = item
+                break;
+            }
+        }
+        if (keyData) {
+            let description = keyData[fields.description]
+            let parentForm = currentForm.parent.form
+            for (let form of forms) {
+                if (form.uuid === parentForm.uuid) {
+                    for (let childForm of form.forms) {
+                        if (childForm.formType === TIP) {
+                            childForm.tip = description
+                        }
+                        else if (childForm.field === localFields.resourceValue) {
+                            let start = description.indexOf('(')
+                            if (start >= 0) {
+                                let end = description.indexOf(')')
+                                childForm.unit = description.substring(start + 1, end)
+                            }
+                            else {
+                                childForm.unit = undefined
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+            this.updateState({ forms })
+        }
+    }
+
     checkForms = (form, forms, isInit = false, data) => {
         let flowDataList = []
         if (form.field === localFields.region) {
@@ -380,6 +417,10 @@ class CloudletReg extends React.Component {
         }
         else if (form.field === localFields.key) {
             this.onCloudletPropsKeyChange(form, forms, isInit)
+        }
+        else if(form.field === localFields.resourceName)
+        {
+            this.onResourceQuotaChange(form, forms, isInit)
         }
 
         if (flowDataList.length > 0) {
@@ -811,8 +852,9 @@ class CloudletReg extends React.Component {
     resourceQuotaForm = () => ([
         { field: localFields.resourceName, label: 'Name', formType: SELECT, placeholder: 'Select Name', rules: { required: true }, width: 5, visible: true, options: this.resourceQuotaList, update: { edit: true } },
         { field: localFields.alertThreshold, label: 'Alert Threshold', formType: INPUT, unit: '%', rules: { required: true }, width: 4, visible: true, update: { edit: true }, value: this.isUpdate ? this.props.data[localFields.defaultResourceAlertThreshold] : undefined },
-        { field: localFields.resourceValue, label: 'Value', formType: INPUT, rules: { required: true }, width: 5, visible: true, update: { edit: true } },
-        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
+        { field: localFields.resourceValue, label: 'Value', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true } },
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm },
+        { formType: TIP, visible: true, width: 1 }
     ])
 
     getEnvForm = (form) => {
