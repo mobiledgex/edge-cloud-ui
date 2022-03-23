@@ -24,7 +24,6 @@ import { _sort } from '../../../helper/constant/operators';
 import { uniqueId } from '../../../helper/constant/shared';
 import { responseValid } from '../../../services/config';
 import { localFields } from '../../../services/fields';
-import { fields } from '../../../services/fields/localFields';
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const CloudletManifest = React.lazy(() => componentLoader(import('./CloudletManifest')));
@@ -124,7 +123,7 @@ class CloudletReg extends React.Component {
                                     if (data.properties) {
                                         this.resourceQuotaList = data.properties
                                         this.resourceQuotaList = this.resourceQuotaList.map(quota => {
-                                            quota[fields.resourceName] = quota.name
+                                            quota[localFields.resourceName] = quota.name
                                             return quota
                                         })
                                     }
@@ -364,7 +363,7 @@ class CloudletReg extends React.Component {
             }
         }
         if (keyData) {
-            let description = keyData[fields.description]
+            let description = keyData[localFields.description]
             let parentForm = currentForm.parent.form
             for (let form of forms) {
                 if (form.uuid === parentForm.uuid) {
