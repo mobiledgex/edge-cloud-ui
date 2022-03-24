@@ -127,7 +127,6 @@ class TrustPolicyReg extends React.Component {
         { field: localFields.portRangeMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, serverField: 'port_range_min', dataValidateFunc: this.validatePortRange, update: { edit: true }, value: portRangeMin },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: localFields.portRangeMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, serverField: 'port_range_max', dataValidateFunc: this.validatePortRange, update: { edit: true }, value: portRangeMax },
-        { field: localFields.empty, visible: false, width: 7 },
         { icon: 'delete', formType: 'IconButton', visible: true, style: { color: 'white', top: 15 }, width: 1, onClick: this.removeRulesForm }
     ])
 
@@ -327,10 +326,6 @@ class TrustPolicyReg extends React.Component {
                         outboundRule.value = OutboundSecurityRule[outboundRule.field]
                         if (outboundRule.field === localFields.protocol) {
                             isICMP = outboundRule.value === perpetual.PROTOCOL_ICMP ? true : false;
-                        }
-                        if(isICMP && outboundRule.field === localFields.empty)
-                        {
-                            outboundRule.visible = true; 
                         }
                         if ((outboundRule.field === localFields.portRangeMin || outboundRule.field === localFields.portRangeMax || outboundRule.icon === '~') && isICMP) {
                             outboundRule.visible = false;
