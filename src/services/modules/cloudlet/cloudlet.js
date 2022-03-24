@@ -12,11 +12,13 @@ import { cloudletKeys } from './primary';
 import { websocket } from '../..';
 import { localFields } from '../../fields';
 
-
-
+/**
+ * visible : show data column on datagrid
+ * dvisible : show data on dashboard
+ */
 export const keys = () => ([
     { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
-    { field: localFields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group: true, key: true },
+    { field: localFields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, dvisible:true, filter: true, group: true, key: true },
     { field: localFields.partnerOperator, serverField: 'key#OS#federated_organization', label: 'Partner Operator' },
     { field: localFields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet', sortable: true, visible: true, filter: true, key: true },
     { field: localFields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: perpetual.TYPE_JSON },
@@ -25,7 +27,7 @@ export const keys = () => ([
     { field: localFields.ipSupport, serverField: 'ip_support', label: 'IP Support' },
     { field: localFields.numDynamicIPs, serverField: 'num_dynamic_ips', label: 'Number of Dynamic IPs' },
     { field: localFields.physicalName, serverField: 'physical_name', label: '	Physical Name' },
-    { field: localFields.platformType, serverField: 'platform_type', label: 'Platform Type' },
+    { field: localFields.platformType, serverField: 'platform_type', label: 'Platform Type', dvisible:true },
     { field: localFields.vmPool, serverField: 'vm_pool', label: 'VM Pool' },
     { field: localFields.openRCData, serverField: 'access_vars#OS#OPENRC_DATA', label: 'Open RC Data' },
     { field: localFields.caCertdata, serverField: 'access_vars#OS#CACERT_DATA', label: 'CA Cert Data' },
@@ -53,7 +55,7 @@ export const keys = () => ([
     { field: localFields.gpuExist, label: 'GPU', detailView: false },
     { field: localFields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING },
     { field: localFields.platformHighAvailability, serverField: 'platform_high_availability', label: 'Platform High Availability', format:true },
-    { field: localFields.deployment, serverField: 'deployment', label: 'Deployment Type' }
+    { field: localFields.deployment, serverField: 'deployment', label: 'Deployment Type', dvisible:true }
 ])
 
 export const iconKeys = () => ([

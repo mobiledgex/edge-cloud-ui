@@ -136,7 +136,7 @@ const updatePath = (path, pathBorder, label, update = false, t) => {
 }
 
 const Sunburst = (props) => {
-    const { toggle, sequence, dataset, onMore, style } = props
+    const { toggle, sequence, dataset, onMore } = props
     const [data, setData] = useState(undefined)
     const [dataFlow, setDataFlow] = useState([])
     const classes = useStyles({ btnVisibility: Boolean(data) })
@@ -274,7 +274,7 @@ const Sunburst = (props) => {
             <div style={{ margin: 10, marginBottom: -25 }} align='center'>
                 <SequenceHorizontal key={uniqueId()} dataset={dataFlow} colors={color} />
             </div>
-            <div style={{ ...style, position: 'relative' }} ref={sbRef} />
+            <div style={{ position: 'relative' }} ref={sbRef} />
         </div>
     )
 }

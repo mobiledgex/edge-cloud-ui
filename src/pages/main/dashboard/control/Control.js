@@ -1,6 +1,7 @@
 import React from 'react'
 import Sunburst from '../../../../hoc/charts/d3/sunburst/Sunburst';
 import SequenceFunnel from '../../../../hoc/charts/d3/sequence/SequenceFunnel';
+import { localFields } from '../../../../services/fields';
 import { withStyles } from '@material-ui/styles';
 import { controlStyles } from './styles/control-styling'
 import { uniqueId } from '../../../../helper/constant/shared';
@@ -9,18 +10,20 @@ import { processWorker } from '../../../../services/worker/interceptor';
 import DashbordWorker from './services/dashboard.worker.js';
 import Total from './total/Total';
 import { fetchShowData, fetchSpecificResources } from './services/service';
-import './styles/style.css'
-import clsx from 'clsx';
 import { Divider, Grid } from '@material-ui/core';
 import { Header1 } from '../../../../hoc/mexui/headers/Header1';
 import Resources from './total/Resources';
-import { localFields } from '../../../../services/fields';
+import { toFirstUpperCase } from '../../../../utils/string_utils';
+import clsx from 'clsx';
+import './styles/style.css'
+import ShowMore from './ShowMore';
 
 const states = [
     {label:'Success', color:'#66BC6A'},
     {label:'Transient', color:'#AE4140'},
     {label:'Error', color:'#D99E48'},
 ]
+
 class Control extends React.Component {
     constructor(props) {
         super(props)
@@ -33,17 +36,24 @@ class Control extends React.Component {
             showMore: undefined,
             resources: undefined
         }
+        this._isMounted = false
         this.worker = new DashbordWorker()
     }
 
-    fetchResources = async (item) => {
-        this.setState({ resources: await fetchSpecificResources(this, item) })
+    updateState = (data) => {
+        if (this._isMounted) {
+            this.setState({ ...data })
+        }
     }
 
-    onMore = (show) => {
-        this.setState({ showMore: show })
-        if (show) {
-            this.fetchResources(show)
+    fetchResources = async (item) => {
+        this.updateState({ resources: await fetchSpecificResources(this, item) })
+    }
+
+    onMore = (showMore) => {
+        this.updateState({ showMore })
+        if (showMore) {
+            this.fetchResources(showMore)
         }
     }
 
@@ -53,12 +63,8 @@ class Control extends React.Component {
             sequence
         })
         if (response?.status === 200) {
-            this.setState({ dataset: response.data, toggle: !this.state.toggle })
+            this.updateState({ dataset: response.data, toggle: !this.state.toggle })
         }
-
-    }
-
-    renderMarker = () => {
 
     }
 
@@ -83,52 +89,28 @@ class Control extends React.Component {
                             <Total label='App Instances' data={total[localFields.appName]} />
                         </div> : null}
                     </div>
-                    {
-                        showMore ? <div className={clsx('content2')}>
-                         
-                            <div style={{ paddingLeft: 10 }}>
-                                <Header1 size={14}>{`${showMore.header}`}</Header1>
-                            </div>
-                            <Divider />
-                            <div style={{ padding: 10}}>
-                            <Grid container>
-                                <Grid item xs={6}>
-                                <h5>{`Name: ${showMore.name}`}</h5>
-                                <h5>{showMore.children ? `Total ${showMore.childrenLabel}: ${showMore.children.length}` : null}</h5>
-                                </Grid>
-
-                                <Grid item xs={6}>
-                                {resources ? <div style={{ padding: 10 }}>
-                                    <Resources data={resources}></Resources>
-                                    
-
-                                </div> : null
-                                }
-                                </Grid>
-                            </Grid>
-                            </div>
-                        </div> : null
-                    }
+                    {showMore ? <ShowMore data={showMore} resources={resources}/> : null}
                     {children}
                 </div>
             </div>
         )
     }
 
-    componentDidUpdate() {
-
-    }
-
     fetchInitData = async () => {
         let response = await fetchShowData(this, this.worker)
         if (response?.status === 200) {
             const { data: dataset, total, dataList: rawList } = response
-            this.setState({ dataset, total: total, rawList })
+            this.updateState({ dataset, total, rawList })
         }
     }
 
     componentDidMount() {
+        this._isMounted = true
         this.fetchInitData()
+    }
+    
+    componentWillUnmount(){
+        this._isMounted = false
     }
 }
 
