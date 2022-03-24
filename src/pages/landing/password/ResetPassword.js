@@ -10,7 +10,6 @@ const ResetPassword = (props) => {
             <span className='title'>Reset password</span>
             <Grid >
                 <UpdatePassword onReset={() => { history.push('/') }} />
-                <br />
             </Grid>
         </React.Fragment>
 

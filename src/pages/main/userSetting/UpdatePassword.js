@@ -133,8 +133,8 @@ class UpdatePassword extends React.Component {
             this.props.handleLoadingSpinner(true)
             let token = this.props.location.search
             token = token.substring(token.indexOf('token=') + 6)
-            const { currentPassword, password } = data
-            let mc = await resetPwd(this, { token, currentPassword, password })
+            const { password } = data
+            let mc = await resetPwd(this, { token, password })
             if (responseValid(mc)) {
                 this.props.handleAlertInfo('success', mc.response.data.message)
                 this.props.onReset()
@@ -209,9 +209,9 @@ class UpdatePassword extends React.Component {
         )
     }
 
-    forms = () => (
+    forms = (dialog) => (
         [
-            { field: localFields.currentPassword, label: 'Current Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Current Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true },
+            { field: localFields.currentPassword, label: 'Current Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Current Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: dialog },
             { field: localFields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
             { field: localFields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword },
         ]
@@ -247,10 +247,11 @@ class UpdatePassword extends React.Component {
         return (
             <Fragment>
                 {dialog ?
-                    <React.Fragment><MenuItem onClick={this.handleOpen}>
-                        <LockOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
-                        <ListItemText primary="Reset Password" />
-                    </MenuItem>
+                    <React.Fragment>
+                        <MenuItem onClick={this.handleOpen}>
+                            <LockOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
+                            <ListItemText primary="Reset Password" />
+                        </MenuItem>
                         <Dialog open={open} onClose={this.onDialogClose} aria-labelledby="update_password" disableEscapeKeyDown={true}>
                             {loading ? <LinearProgress /> : null}
                             <DialogTitle id="update_password">
@@ -263,32 +264,28 @@ class UpdatePassword extends React.Component {
                             </DialogContent>
                         </Dialog>
                     </React.Fragment> :
-                    <React.Fragment>
-                        {this.renderPasswordForm()}
-                    </React.Fragment>
+                    this.renderPasswordForm()
                 }
             </Fragment>
         );
     }
 
     getFormData = () => {
-        let style = { position: 'absolute', border: 'solid 1px rgba(128, 170, 255, .5) !important', color: 'white', zIndex: 9999 }
-        if (this.props.dialog) {
+        const { dialog } = this.props
+        let style = { border: 'solid 1px rgba(128, 170, 255, .5) !important', color: 'white'}
+        if (dialog) {
             style.width = 70
-            style.right = 80
             style.height = 30
             style.backgroundColor = 'rgba(118, 255, 3, 0.7)'
         }
         else {
-            style.width = 200
-            style.marginLeft = 60
-            style.marginTop = 20
+            style.width = 240
             style.backgroundColor = 'rgba(0, 85, 255, .25)'
         }
 
-        let forms = this.forms()
-        forms.push({ label: 'Update', formType: BUTTON, onClick: this.onCreate, validate: true, style: style })
-        if (this.props.dialog) {
+        let forms = this.forms(dialog)
+        forms.push({ label: 'Reset', formType: BUTTON, onClick: this.onCreate, validate: true, style: {...style, marginLeft: dialog ? 180: 60} })
+        if (dialog) {
             let cStyle = cloneDeep(style)
             cStyle.right = 0
             forms.push({ label: 'Cancel', formType: BUTTON, onClick: this.handleClose, style: cStyle })
