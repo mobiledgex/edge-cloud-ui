@@ -2,9 +2,9 @@ The Edge Cloud UI Platform uses third-party libraries or other resources
 that may be distributed under licenses different than the one
 from this software. These licenses are listed below.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/facebook/react
-----------------------------------------------------------------
+---------------------------------------------------
 
 MIT License
 
@@ -28,9 +28,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/facebook/create-react-app
-----------------------------------------------------------------
+---------------------------------------------------
 
 MIT License
 
@@ -54,9 +54,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/danvk/source-map-explorer
-----------------------------------------------------------------
+---------------------------------------------------
 
                                 Apache License
                            Version 2.0, January 2004
@@ -260,9 +260,9 @@ License notice for https://github.com/danvk/source-map-explorer
    See the License for the specific language governing permissions and
    limitations under the License.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/webpack-contrib/terser-webpack-plugin
-----------------------------------------------------------------
+---------------------------------------------------
 
    Copyright JS Foundation and other contributors
 
@@ -285,9 +285,9 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/webpack/webpack
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright JS Foundation and other contributors
 
@@ -310,9 +310,9 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/babel/minify
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright (c) 2015-2016 Amjad Masad <amjad.masad@gmail.com>
 
@@ -337,9 +337,9 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/gsoft-inc/craco
-----------------------------------------------------------------
+---------------------------------------------------
 
                                 Apache License
                            Version 2.0, January 2004
@@ -518,9 +518,9 @@ License notice for https://github.com/gsoft-inc/craco
 
    END OF TERMS AND CONDITIONS
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/less/less.js
-----------------------------------------------------------------
+---------------------------------------------------
 
                               Apache License
                         Version 2.0, January 2004
@@ -699,9 +699,9 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
     END OF TERMS AND CONDITIONS
     
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/webpack-contrib/less-loader
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright JS Foundation and other contributors
 
@@ -724,9 +724,9 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/remix-run/history
-----------------------------------------------------------------
+---------------------------------------------------
 
 MIT License
 
@@ -752,9 +752,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/chimurai/http-proxy-middleware
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -778,9 +778,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/webpack-contrib/css-loader
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -805,21 +805,9 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
-License notice for https://github.com/webpack-contrib/css-loader
-----------------------------------------------------------------
-
-Copyright © 2022 LuÃ­s Couto <couto@15minuteslate.net>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/babel/babel-loader
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright (c) 2014-2019 Luís Couto <hello@luiscouto.pt>
 
@@ -844,9 +832,36 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
+License notice for https://github.com/babel/babel
+---------------------------------------------------
+
+MIT License
+
+Copyright (c) 2014-2017 Sebastian McKenzie <sebmck@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---------------------------------------------------
 License notice for https://github.com/facebook/prop-types
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -870,9 +885,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
+License notice for https://github.com/reduxjs/react-redux
+---------------------------------------------------
+
+The MIT License (MIT)
+
+Copyright (c) 2015-present Dan Abramov
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---------------------------------------------------
 License notice for https://github.com/reduxjs/redux
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -896,9 +925,35 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
+License notice for https://github.com/redux-form/redux-form
+---------------------------------------------------
+
+The MIT License (MIT)
+
+Copyright (c) 2015 Erik Rasmussen
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---------------------------------------------------
 License notice for https://github.com/webpack-contrib/style-loader
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright JS Foundation and other contributors
 
@@ -921,9 +976,9 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/microsoft/TypeScript
-----------------------------------------------------------------
+---------------------------------------------------
 
 Apache License
 
@@ -981,9 +1036,9 @@ If the Work includes a "NOTICE" text file as part of its distribution, then any 
 
 END OF TERMS AND CONDITIONS
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/remix-run/react-router
-----------------------------------------------------------------
+---------------------------------------------------
 
 MIT License
 
@@ -1009,9 +1064,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/hot-loader/react-dom
-----------------------------------------------------------------
+---------------------------------------------------
 
 MIT License
 
@@ -1036,10 +1091,60 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+---------------------------------------------------
+License notice for https://github.com/webpack-contrib/worker-loader
+---------------------------------------------------
 
-----------------------------------------------------------------
+Copyright JS Foundation and other contributors
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---------------------------------------------------
+License notice for https://github.com/gaearon/react-hot-loader
+---------------------------------------------------
+
+MIT License
+
+Copyright (c) 2016 Dan Abramov
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---------------------------------------------------
 License notice for https://github.com/enzymejs/enzyme
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -1063,9 +1168,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/enzymejs/enzyme-matchers
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -1089,9 +1194,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/mui/material-ui
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -1115,9 +1220,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/mui/material-ui-pickers
-----------------------------------------------------------------
+---------------------------------------------------
 
 MIT License
 
@@ -1142,9 +1247,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/date-fns/date-fns
-----------------------------------------------------------------
+---------------------------------------------------
 
 MIT License
 
@@ -1168,9 +1273,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/dmtrKovalenko/date-io
-----------------------------------------------------------------
+---------------------------------------------------
 
 MIT License
 
@@ -1194,9 +1299,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/bvaughn/react-virtualized
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -1220,9 +1325,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/bvaughn/react-window
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -1246,9 +1351,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/Leaflet/Leaflet
-----------------------------------------------------------------
+---------------------------------------------------
 
 BSD 2-Clause License
 
@@ -1277,9 +1382,9 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/PaulLeCam/react-leaflet
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright 2020 Paul Le Cam and contributors (“Licensor”)
 
@@ -1315,9 +1420,9 @@ Permission and Conditions. The Licensor grants permission by this license (“Li
 
 This Hippocratic License is an Ethical Source license (https://ethicalsource.dev) and is offered for use by licensors and licensees at their own risk, on an “AS IS” basis, and with no warranties express or implied, to the maximum extent permitted by Laws.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/LiveBy/react-leaflet-control
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright (c) 2016, LiveBy
 
@@ -1333,9 +1438,9 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/epozsh/react-leaflet-curve
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -1359,9 +1464,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/Semantic-Org/Semantic-UI-CSS
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -1385,9 +1490,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/Semantic-Org/Semantic-UI-React
-----------------------------------------------------------------
+---------------------------------------------------
 
 MIT License
 
@@ -1411,9 +1516,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/taye/interact.js
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright (c) 2012-present Taye Adeyemi <dev@taye.me>
 
@@ -1439,9 +1544,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/namespace-ee/react-calendar-timeline
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright (c) 2015-2017 Marius Andra <marius.andra@gmail.com>; Namespace OÜ <info@namespace.ee>
 
@@ -1451,9 +1556,9 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/jakezatecky/react-dual-listbox
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -1477,9 +1582,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/chartjs/Chart.js
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -1491,9 +1596,9 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/reactchartjs/react-chartjs-2
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright 2020 Jeremy Ayerst
 
@@ -1503,9 +1608,9 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/cytoscape/cytoscape.js
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright (c) 2016-2022, The Cytoscape Consortium.
 
@@ -1527,9 +1632,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/d3/d3
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright 2010-2021 Mike Bostock
 
@@ -1545,9 +1650,9 @@ OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
 THIS SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/react-ga/react-ga
-----------------------------------------------------------------
+---------------------------------------------------
 
 Apache License
 
@@ -1563,9 +1668,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/axios/axios
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright (c) 2014-present Matt Zabriskie
 
@@ -1587,9 +1692,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/lodash/lodash
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License
 
@@ -1636,9 +1741,9 @@ maintained libraries used by this software which have their own
 licenses; we recommend you read them, as their terms may differ from the
 terms above.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/moment/moment
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright (c) JS Foundation and other contributors
 
@@ -1663,9 +1768,9 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/moment/moment-timezone
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -1688,9 +1793,9 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/sindresorhus/public-ip
-----------------------------------------------------------------
+---------------------------------------------------
 
 MIT License
 
@@ -1703,9 +1808,9 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/davidmerfield/randomColor
-----------------------------------------------------------------
+---------------------------------------------------
 
 CC0 1.0 Universal
 
@@ -1824,9 +1929,9 @@ Affirmer's express Statement of Purpose.
 For more information, please see
 <http://creativecommons.org/publicdomain/zero/1.0/>
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/parallax/jsPDF
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright
 (c) 2010-2021 James Hall, https://github.com/MrRio/jsPDF
@@ -1851,9 +1956,9 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/react-csv/react-csv
-----------------------------------------------------------------
+---------------------------------------------------
 
 MIT License
 
@@ -1877,9 +1982,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/react-syntax-highlighter/react-syntax-highlighter
-----------------------------------------------------------------
+---------------------------------------------------
 
 MIT License
 
@@ -1903,9 +2008,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/faisalman/ua-parser-js
-----------------------------------------------------------------
+---------------------------------------------------
 
 MIT License
 
@@ -1917,9 +2022,9 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/uuidjs/uuid
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -1931,9 +2036,9 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/xtermjs/xterm.js
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright (c) 2017-2019, The xterm.js authors (https://github.com/xtermjs/xterm.js)
 Copyright (c) 2014-2016, SourceLair Private Company (https://www.sourcelair.com)
@@ -1957,9 +2062,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/connec/yaml-js
-----------------------------------------------------------------
+---------------------------------------------------
 
    DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
                     Version 2, December 2004 
@@ -1973,9 +2078,9 @@ License notice for https://github.com/connec/yaml-js
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
    TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION 
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/dropbox/zxcvbn
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright (c) 2012-2016 Dan Wheeler and Dropbox, Inc.
 
@@ -1998,9 +2103,9 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/xurei/zxcvbn-async
-----------------------------------------------------------------
+---------------------------------------------------
 
 Copyright 2017 Xurei Lab
 
@@ -2017,9 +2122,9 @@ WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEM
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/dozoisch/react-google-recaptcha
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
@@ -2043,9 +2148,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/janjakubnanista/downsample
-----------------------------------------------------------------
+---------------------------------------------------
 
 MIT License
 
@@ -2069,9 +2174,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-----------------------------------------------------------------
+---------------------------------------------------
 License notice for https://github.com/brendanashworth/generate-password
-----------------------------------------------------------------
+---------------------------------------------------
 
 The MIT License (MIT)
 
