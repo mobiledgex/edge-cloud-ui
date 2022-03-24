@@ -116,7 +116,6 @@ class UpdatePassword extends React.Component {
     }
 
     onCreate = async (data) => {
-        console.log(data)
         const { dialog, onUpdatePwd } = this.props
         if (dialog) {
             this.updateState({ loading: true })
