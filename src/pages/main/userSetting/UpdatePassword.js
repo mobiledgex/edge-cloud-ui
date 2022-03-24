@@ -116,10 +116,11 @@ class UpdatePassword extends React.Component {
     }
 
     onCreate = async (data) => {
+        console.log(data)
         const { dialog, onUpdatePwd } = this.props
         if (dialog) {
             this.updateState({ loading: true })
-            let mc = await onUpdatePwd(data.password)
+            let mc = await onUpdatePwd(data)
             if (responseValid(mc)) {
                 this.updateState({ open: false })
                 this.props.handleAlertInfo('success', 'Password updated successfully')
@@ -133,7 +134,8 @@ class UpdatePassword extends React.Component {
             this.props.handleLoadingSpinner(true)
             let token = this.props.location.search
             token = token.substring(token.indexOf('token=') + 6)
-            let mc = await resetPwd(this, { token, password: data.password })
+            const { currentPassword, password } = data
+            let mc = await resetPwd(this, { token, currentPassword, password })
             if (responseValid(mc)) {
                 this.props.handleAlertInfo('success', mc.response.data.message)
                 this.props.onReset()
@@ -210,6 +212,7 @@ class UpdatePassword extends React.Component {
 
     forms = () => (
         [
+            { field: localFields.currentPassword, label: 'Current Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Current Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true },
             { field: localFields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
             { field: localFields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword },
         ]
@@ -247,13 +250,13 @@ class UpdatePassword extends React.Component {
                 {dialog ?
                     <React.Fragment><MenuItem onClick={this.handleOpen}>
                         <LockOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />
-                        <ListItemText primary="Change Password" />
+                        <ListItemText primary="Reset Password" />
                     </MenuItem>
                         <Dialog open={open} onClose={this.onDialogClose} aria-labelledby="update_password" disableEscapeKeyDown={true}>
                             {loading ? <LinearProgress /> : null}
                             <DialogTitle id="update_password">
                                 <div style={{ float: "left", display: 'inline-block' }}>
-                                    <h3>Update Password</h3>
+                                    <h3>Reset Password</h3>
                                 </div>
                             </DialogTitle>
                             <DialogContent style={{ width: 400 }}>

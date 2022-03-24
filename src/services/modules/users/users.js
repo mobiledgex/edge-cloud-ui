@@ -58,6 +58,6 @@ export const updateUserMetaData = async (self, data) => {
 }
 
 export const updatePwd = async (self, data) => {
-    let request = { method: endpoint.NEW_PASSWORD, data: data }
-    return await authSyncRequest(self, request,)
+    let request = { method: endpoint.NEW_PASSWORD, data }
+    return await authSyncRequest(self, request)
 }
