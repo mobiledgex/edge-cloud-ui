@@ -147,7 +147,10 @@ class RegisterOperator extends React.Component {
         if (responseValid(mc)) {
             const responseData = mc.response.data
             this.props.handleAlertInfo('success', `Federation ${this.isUpdate ? 'updated' : 'created'} successfully !`)
-            if (!this.isUpdate) {
+            if (this.isUpdate) {
+                this.onCancel()
+            }
+            else {
                 let keyData = { ...data }
                 keyData[localFields.federationId] = responseData.federationid
                 keyData[localFields.apiKey] = responseData.apikey
@@ -158,7 +161,6 @@ class RegisterOperator extends React.Component {
                 }
                 this.updateState({ keyData })
             }
-            this.isUpdate && this.onCancel()
         }
     }
 
