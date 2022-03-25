@@ -1,6 +1,5 @@
-import ServerWorker from '../worker/server.worker.js'
-import { validateExpiry } from '../config.js'
-import { fetchToken } from '../service.js'
+import ServerWorker from './server.worker.js'
+import { fetchToken, validateExpiry } from '../config.js'
 
 const responseListener = (self, worker, callback) => {
     worker.addEventListener('message', event => {

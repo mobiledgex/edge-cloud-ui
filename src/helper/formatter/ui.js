@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react'
 import { useSelector } from "react-redux";
-import { fields } from '../../services/model/format';
+import { localFields } from '../../services/fields';
 import { IconButton as MIB, Tooltip, CircularProgress, makeStyles } from '@material-ui/core';
 import { labelFormatter, serverFields } from '.';
 import { redux_org } from '../reduxData';
-
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import { colors, perpetual } from '../constant';
 import { toFirstUpperCase } from '../../utils/string_utils';
 import { Icon, IconButton } from '../../hoc/mexui';
 import { ICON_COLOR } from '../constant/colors';
+import { lightGreen } from '@material-ui/core/colors';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 
 const useStyles = makeStyles((theme) => ({
     text_icon: {
@@ -53,7 +53,7 @@ export const trusted = (key, data, isDetail) => {
 export const Manage = (props) => {
     const orgInfo = useSelector(state => state.organizationInfo.data)
     const { data } = props
-    let active = redux_org.orgName(orgInfo) === data[fields.organizationName]
+    let active = redux_org.orgName(orgInfo) === data[localFields.organizationName]
     return (
         <TextIcon value={active ? 'ACTIVE' : 'MANAGE'} color={colors.COLOR_RGB_SUCCESS} clickable={!active} inverse={active}/>
     )
@@ -61,7 +61,7 @@ export const Manage = (props) => {
 
 export const edgeboxOnly = (key, data, isDetail) => {
     let edgeboxOnly = data[key.field]
-    let isOperator = data[fields.type].includes(perpetual.OPERATOR)
+    let isOperator = data[localFields.type].includes(perpetual.OPERATOR)
     if (isDetail) {
         return labelFormatter.showYesNo(edgeboxOnly)
     }
@@ -135,8 +135,8 @@ export const appInstRegion = (key, data, isDetail) => {
     let value = data[key.field]
     return (
         isDetail ? value :
-            data[fields.updateAvailable] ?
-                <Tooltip title={<div><strong style={{ fontSize: 13 }}>{`Current Version: ${data[fields.revision]}`}</strong><br /><br /><strong style={{ fontSize: 13 }}>{`Available Version: ${data[fields.appRevision]}`}</strong></div>}>
+            data[localFields.updateAvailable] ?
+                <Tooltip title={<div><strong style={{ fontSize: 13 }}>{`Current Version: ${data[localFields.revision]}`}</strong><br /><br /><strong style={{ fontSize: 13 }}>{`Available Version: ${data[localFields.appRevision]}`}</strong></div>}>
                     <label style={{display:'flex'}}>
                         <Icon color='orange' size={14}>arrow_circle_up</Icon>&nbsp;{value}
                     </label>
@@ -212,7 +212,7 @@ export const NoData = (props) => {
 }
 
 export const RenderSeverity = (data, isDetailView) => {
-    let id = data[fields.severity]
+    let id = data[localFields.severity]
     let color = colors.COLOR_RGB_ERROR
     let label = 'Error'
     let icon = 'cancel'
@@ -240,8 +240,114 @@ export const RenderSeverity = (data, isDetailView) => {
 }
 
 export const TPEState = (data, isDetailView) => {
-    let id = data[fields.state]
+    let id = data[localFields.state]
     let color = id === perpetual.APPROVE ? 'green' : id === perpetual.REJECT ? 'red' : 'orange'
     let label = id === perpetual.APPROVE ? 'Approved' : id === perpetual.REJECT ? 'Rejected' : id
-    return isDetailView ? id : <IconButton tooltip={label}><Icon color={color} size={16}>circle</Icon></IconButton>
+    return isDetailView ? label : <IconButton tooltip={label}><Icon color={color} size={16}>circle</Icon></IconButton>
+}
+
+
+export const additionalDetail = (data) => {
+    return (
+        data[localFields.type] && data[localFields.type] === perpetual.DEVELOPER ?
+            <div style={{ margin: 20, color: 'white' }}>
+                <div className="newOrg3-2">
+                    <div>
+                        If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker commands.
+                </div>
+                    <br></br>
+                    <div>
+                        {`$ docker login -u <username> docker.mobiledgex.net`}
+                    </div>
+                    <div>
+                        {`$ docker tag <your application> docker.mobiledgex.net/` + String(data[localFields.organizationName]).toLowerCase() + `/images/<application name>:<version>`}
+                    </div>
+                    <div>
+                        {`$ docker push docker.mobiledgex.net/` + String(data[localFields.organizationName]).toLowerCase() + `/images/<application name>:<version>`}
+                    </div>
+                    <div>
+                        $ docker logout docker.mobiledgex.net
+                </div>
+                </div>
+                <br></br>
+                <div className="newOrg3-3">
+                    <div>
+                        If you image is VM, please upload your image with your MobiledgeX Account Credentials to our VM registry using the following curl command.
+                </div>
+                    <br />
+                    <div>
+                        {'$ curl -u<username> -T <path_to_file>'} <code style={{ color: lightGreen['A700'] }}>{`"https://artifactory.mobiledgex.net/artifactory/repo-${data[localFields.organizationName]}/<target_file_path>"`}</code> {'--progress-bar -o <upload status filename>'}
+                    </div>
+                </div>
+            </div> : null)
+}
+
+const getStateStatus = (id) => {
+    switch (id) {
+        case serverFields.TRACKED_STATE_UNKNOWN:
+            return "Tracked State Unknown"
+        case serverFields.NOT_PRESENT:
+            return "Not Present"
+        case serverFields.CREATE_REQUESTED:
+            return "Create Requested"
+        case serverFields.CREATING:
+            return "Creating"
+        case serverFields.CREATE_ERROR:
+            return "Create Error"
+        case serverFields.READY:
+            return "Ready"
+        case serverFields.UPDATE_REQUESTED:
+            return "Update Requested"
+        case serverFields.UPDATING:
+            return "Updating"
+        case serverFields.UPDATE_ERROR:
+            return "Update Error"
+        case serverFields.DELETE_REQUESTED:
+            return "Delete Requested"
+        case serverFields.DELETING:
+            return "Deleting"
+        case serverFields.DELETE_ERROR:
+            return "Delete Error"
+        case serverFields.DELETE_PREPARE:
+            return "Delete Prepare"
+        case serverFields.CRM_INITOK:
+            return "CRM Init"
+        case serverFields.CREATING_DEPENDENCIES:
+            return "Creating"
+        case serverFields.DELETE_DONE:
+            return "Deleted"
+        default:
+            return id
+    }
+}
+
+export const showProgress = (data, isDetailView, disableProgress = false) => {
+    let state = data[localFields.state]
+    if (isDetailView) {
+        return getStateStatus(state)
+    }
+    else {
+        let icon = null;
+        switch (state) {
+            case serverFields.READY:
+                icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon color={ICON_COLOR} size={16}>check</Icon></IconButton>
+                break;
+            case serverFields.CREATE_REQUESTED:
+            case serverFields.CREATING:
+            case serverFields.UPDATE_REQUESTED:
+            case serverFields.UPDATING:
+            case serverFields.CREATING_DEPENDENCIES:
+            case serverFields.CRM_INITOK:
+                icon = <IconButton disabled={disableProgress} tooltip={`${disableProgress ? 'In' : 'View'} Progress`}><CircularProgress size={14} style={{ color: ICON_COLOR }} /></IconButton>
+                break;
+            case serverFields.DELETE_REQUESTED:
+            case serverFields.DELETING:
+            case serverFields.DELETE_PREPARE:
+                icon = <IconButton disabled={disableProgress} tooltip={`${disableProgress ? 'In' : 'View'} Progress`}><CircularProgress size={14} style={{ color: 'red' }} /></IconButton>
+                break;
+            default:
+                icon = <IconButton disabled tooltip={getStateStatus(state)}><Icon color='red' size={16}>close</Icon></IconButton>
+        }
+        return icon
+    }
 }

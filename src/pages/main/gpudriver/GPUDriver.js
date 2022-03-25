@@ -1,10 +1,10 @@
 import React from 'react';
-import DataView from '../../../container/DataView';
+import DataView from '../../../hoc/datagrid/DataView';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import { keys, iconKeys, showGPUDrivers, deleteGPUDriver } from '../../../services/modules/gpudriver';
 import GPUDriverReg from './reg/Reg';
 import BuildReg from './reg/BuildReg';
@@ -13,11 +13,11 @@ import { uiFormatter } from '../../../helper/formatter';
 import { operatorRoles } from '../../../constant';
 import { DialogTitle, Icon, IconButton } from '../../../hoc/mexui';
 import { getGPUDriverBuildURL } from '../../../services/modules/gpudriver/gpudriver';
-import { responseValid } from '../../../services/service';
 import { Dialog, DialogContent, Typography } from '@material-ui/core';
 import { lightGreen } from '@material-ui/core/colors';
 import { parseDuration } from '../../../utils/date_util';
 import { codeHighLighter } from '../../../hoc/highLighter/highLighter';
+import { responseValid } from '../../../services/config';
 
 const DetailAction = (props) => {
     const { data, onDone, self } = props
@@ -89,7 +89,7 @@ class GPUDrivers extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.licenseConfig) {
+        if (key.field === localFields.licenseConfig) {
             return uiFormatter.renderYesNo(key, data[key.field], isDetail)
         }
     }
@@ -100,10 +100,10 @@ class GPUDrivers extends React.Component {
         return ({
             id: perpetual.PAGE_GPU_DRIVER,
             headerLabel: 'GPU Drivers',
-            nameField: fields.gpuDriverName,
+            nameField: localFields.gpuDriverName,
             isRegion: true,
             requestType: [showGPUDrivers],
-            sortBy: [fields.region, fields.gpuDriverName],
+            sortBy: [localFields.region, localFields.gpuDriverName],
             selection: true,
             keys: this.keys,
             iconKeys: iconKeys(),
@@ -151,7 +151,7 @@ class GPUDrivers extends React.Component {
                                 </li>
                                 <li style={{ marginBottom: 10 }}>
                                     <Typography display='inline'>{`MD5 Sum: `}</Typography>
-                                    <div style={{display:'inline'}}>{codeHighLighter(request[fields.md5Sum])}</div>
+                                    <div style={{display:'inline'}}>{codeHighLighter(request[localFields.md5Sum])}</div>
                                 </li>
                                 <br/>
                                 <Typography style={{ color: '#FFC107' }}>{`Note: The build URL is only valid for ${parseDuration(response['validity'])}`}</Typography>

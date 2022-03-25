@@ -93,6 +93,7 @@ export const fields = {
     ram: 'ram',
     vCPUs: 'vCPUs',
     disk: 'disk',
+    memory:'memory',
     sent: 'sent',
     received: 'received',
     network: 'networks',
@@ -128,6 +129,7 @@ export const fields = {
     nextDate: 'nextDate',
     timezone: 'timezone',
     password: 'password',
+    currentPassword:'currentPassword',
     confirmPassword: 'confirmPassword',
     role: 'role',
     email: 'email',
@@ -327,6 +329,6 @@ export const fields = {
     zones:'zones',
     mncmulti: 'mncmulti',
     dedicatedIp: 'dedicatedIp',
-    singleKubernetesClusterOwner: 'singleKubernetesClusterOwner',
+    singleK8sClusterOwner: 'singleK8sClusterOwner',
     platformHighAvailability: 'platformHighAvailability'
 }

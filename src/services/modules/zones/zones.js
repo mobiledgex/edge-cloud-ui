@@ -1,64 +1,63 @@
 
-import * as formatter from '../../model/format'
 import { authSyncRequest } from '../../service';
-import { endpoint, perpetual } from '../../../helper/constant'
+import { perpetual } from '../../../helper/constant'
 import { redux_org } from '../../../helper/reduxData'
 import { TYPE_JSON } from '../../../helper/constant/perpetual';
-
-let fields = formatter.fields
+import { endpoint } from '../..';
+import { localFields } from '../../fields';
 
 export const keys = () => ([
-    { field: fields.region, label: 'Region', serverField: 'region', sortable: true, visible: true, filter: true },
-    { field: fields.zoneId, label: 'Zone Id', serverField: 'zoneid', sortable: true, visible: true, filter: true },
-    { field: fields.operatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true },
-    { field: fields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets', dataType: perpetual.TYPE_STRING },
-    { field: fields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true },
-    { field: fields.cloudletLocation, label: 'Zone Location', serverField: 'geolocation', dataType:TYPE_JSON },
-    { field: fields.locality, label: 'Locality', serverField: 'locality' },
-    { field: fields.city, label: 'City', serverField: 'city' },
-    { field: fields.state, label: 'State', serverField: 'state' },
-    { field: fields.zoneCount, label: 'Shared With', visible:true, sortable: true, detailView: false },
+    { field: localFields.region, label: 'Region', serverField: 'region', sortable: true, visible: true, filter: true },
+    { field: localFields.zoneId, label: 'Zone Id', serverField: 'zoneid', sortable: true, visible: true, filter: true },
+    { field: localFields.operatorName, label: 'Operator Name', serverField: 'operatorid', sortable: true, visible: true, filter: true },
+    { field: localFields.cloudlets, label: 'Cloudlets', serverField: 'cloudlets', dataType: perpetual.TYPE_STRING },
+    { field: localFields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true },
+    { field: localFields.cloudletLocation, label: 'Zone Location', serverField: 'geolocation', dataType:TYPE_JSON },
+    { field: localFields.locality, label: 'Locality', serverField: 'locality' },
+    { field: localFields.city, label: 'City', serverField: 'city' },
+    { field: localFields.state, label: 'State', serverField: 'state' },
+    { field: localFields.zoneCount, label: 'Shared With', visible:true, sortable: true, detailView: false },
     {
-        field: fields.zonesShared, label: 'Zones Shared',
+        field: localFields.zonesShared, label: 'Zones Shared',
         keys: [
-            { field: fields.partnerFederationName, label: 'Federation Name' },
-            { field: fields.registered, label: 'Registered' }
+            { field: localFields.partnerFederationName, label: 'Federation Name' },
+            { field: localFields.registered, label: 'Registered' }
         ]
     },
-    { field: fields.revision, label: 'Revision', serverField: 'revision' }
+    { field: localFields.revision, label: 'Revision', serverField: 'revision' }
 ])
 
 export const iconKeys = () => ([
-    { field:  fields.zoneCount, label: 'Shared', icon: 'share', count: 0}
+    { field:  localFields.zoneCount, label: 'Shared', icon: 'share', count: 0}
 ])
 
 export const sharedkeys = () => ([
-    { field: fields.zoneId, label: 'Zone Id', serverField: 'zoneid', sortable: true, visible: true, filter: true },
-    { field: fields.operatorName, label: 'Operator Name', serverField: 'selfoperatorid', sortable: true, visible: true, filter: true },
-    { field: fields.partnerFederationName, label: 'Operator Name', serverField: 'federationname', sortable: true, visible: true, filter: true },
-    { field: fields.registered, label: 'Operator Name', serverField: 'Registered', sortable: true, visible: true },
-    { field: fields.revision, label: 'Revision', serverField: 'revision' }
+    { field: localFields.zoneId, label: 'Zone Id', serverField: 'zoneid', sortable: true, visible: true, filter: true },
+    { field: localFields.operatorName, label: 'Operator Name', serverField: 'selfoperatorid', sortable: true, visible: true, filter: true },
+    { field: localFields.partnerFederationName, label: 'Operator Name', serverField: 'federationname', sortable: true, visible: true, filter: true },
+    { field: localFields.registered, label: 'Operator Name', serverField: 'Registered', sortable: true, visible: true },
+    { field: localFields.revision, label: 'Revision', serverField: 'revision' }
 ])
 
 export const getKey = (data, isCreate = false) => {
     let selfZone = {}
-    data[fields.operatorName] ? selfZone.operatorid = data[fields.operatorName] : null
-    data[fields.countryCode] ? selfZone.countryCode = data[fields.countryCode].toUpperCase() : null
-    selfZone.federationId = data[fields.federationId] ? data[fields.federationId] : null
-    selfZone.zoneId = data[fields.zoneId]
+    data[localFields.operatorName] ? selfZone.operatorid = data[localFields.operatorName] : null
+    data[localFields.countryCode] ? selfZone.countryCode = data[localFields.countryCode].toUpperCase() : null
+    selfZone.federationId = data[localFields.federationId] ? data[localFields.federationId] : null
+    selfZone.zoneId = data[localFields.zoneId]
     if (isCreate) {
-        selfZone.geolocation = data[fields.cloudletLocation].toString()
-        selfZone.region = data[fields.region]
-        selfZone.cloudlets = [data[fields.cloudletName]]
+        selfZone.geolocation = data[localFields.cloudletLocation].toString()
+        selfZone.region = data[localFields.region]
+        selfZone.cloudlets = [data[localFields.cloudletName]]
     }
-    if (data[fields.city]) {
-        selfZone.city = data[fields.city]
+    if (data[localFields.city]) {
+        selfZone.city = data[localFields.city]
     }
-    if (data[fields.state]) {
-        selfZone.locatorendpoint = data[fields.state]
+    if (data[localFields.state]) {
+        selfZone.locatorendpoint = data[localFields.state]
     }
-    if (data[fields.locality]) {
-        selfZone.locality = data[fields.locality]
+    if (data[localFields.locality]) {
+        selfZone.locality = data[localFields.locality]
     }
     return selfZone
 }
@@ -81,9 +80,9 @@ export const showFederatorZones = (self) => {
 
 export const shareZones = (self, data, unshare = false) => {
     let requestData = {}
-    requestData['zoneid'] = data[fields.zoneId]
-    requestData['selfoperatorid'] = data[fields.operatorName]
-    requestData['federationname'] = data[fields.partnerFederationName]
+    requestData['zoneid'] = data[localFields.zoneId]
+    requestData['selfoperatorid'] = data[localFields.operatorName]
+    requestData['federationname'] = data[localFields.partnerFederationName]
     return { method: unshare ? endpoint.SELF_ZONES_UNSHARE : endpoint.SELF_ZONES_SHARE, data: requestData, success: 'Zones Shared Successfully' }
 }
 
@@ -95,7 +94,7 @@ export const createFederatorZone = async (self, data) => {
 
 export const deleteFederatorZone = (self, data) => {
     let requestData = getKey(data);
-    return { method: endpoint.DELETE_FEDERATOR_SELF_ZONE, data: requestData, success: `Zone ${data[fields.zoneId]} removed successfully` }
+    return { method: endpoint.DELETE_FEDERATOR_SELF_ZONE, data: requestData, success: `Zone ${data[localFields.zoneId]} removed successfully` }
 }
 
 export const multiDataRequest = (keys, mcList) => {
@@ -114,15 +113,15 @@ export const multiDataRequest = (keys, mcList) => {
 
         if (zoneList.length > 0) {
             for (let zone of zoneList) {
-                zone[fields.zonesShared] = []
+                zone[localFields.zonesShared] = []
                 if (sharedZoneList.length > 0) {
                     for (let sharedZone of sharedZoneList) {
-                        if (sharedZone[fields.zoneId] === zone[fields.zoneId]) {
-                            zone[fields.zonesShared].push({ ...sharedZone, registered: sharedZone[fields.registered] ? perpetual.YES : perpetual.NO })
+                        if (sharedZone[localFields.zoneId] === zone[localFields.zoneId]) {
+                            zone[localFields.zonesShared].push({ ...sharedZone, registered: sharedZone[localFields.registered] ? perpetual.YES : perpetual.NO })
                         }
                     }
                 }
-                zone[fields.zoneCount] = zone[fields.zonesShared].length
+                zone[localFields.zoneCount] = zone[localFields.zonesShared].length
             }
         }
     }

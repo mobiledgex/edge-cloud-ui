@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Button, Grid, Input } from 'semantic-ui-react'
 import { alertInfo } from '../../../actions';
-import { perpetual } from '../../../helper/constant';
+import { VERIFY_PASSWORD } from '../../../helper/constant/perpetual';
 import { validateEmail } from '../../../utils/validation_utils';
 
 const Message = (props) => {
@@ -12,10 +12,10 @@ const Message = (props) => {
     return (
         <Grid>
             <Grid.Row>
-                <span className='title'>{type === perpetual.VERIFY_PASSWORD ? 'Reset your password' : 'Verify your email'}</span>
+                <span className='title'>{type === VERIFY_PASSWORD ? 'Reset Password' : 'Verify Email'}</span>
             </Grid.Row>
             <Grid.Row>
-                <span className="login-text">{`Check your email for a link to ${type === perpetual.VERIFY_PASSWORD ? 'reset your password' : 'verify your email'}. If it doesn’t appear within a few minutes, check your spam folder.`}</span>
+                <span className="login-text">{`Check your email for a link to ${type === VERIFY_PASSWORD ? 'reset your password' : 'verify your email'}. If it doesn’t appear within a few minutes, check your spam folder.`}</span>
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column>
@@ -36,7 +36,7 @@ const ForgotPassword = (props) => {
     const type = location.state && location.state.type ? location.state.type : 0
     const onReset = async () => {
         if (validateEmail(email)) {
-            if (type === perpetual.VERIFY_PASSWORD) {
+            if (type === VERIFY_PASSWORD) {
                 setSuccess(await onPasswordReset(email))
             }
             else {
@@ -54,7 +54,7 @@ const ForgotPassword = (props) => {
         <Message type={type}/> :
         <Grid >
             <Grid.Row>
-                <span className='title'>{type === perpetual.VERIFY_PASSWORD ? 'Recover your password' : 'Verify your email'}</span>
+                <span className='title'>{type === VERIFY_PASSWORD ? 'Recover your password' : 'Verify your email'}</span>
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column>

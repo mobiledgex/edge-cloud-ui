@@ -1,32 +1,32 @@
-import * as formatter from '../../model/format'
-import { endpoint } from '../../../helper/constant'
 import { ADMIN_MANAGER } from '../../../helper/constant/perpetual'
-
-let fields = formatter.fields
+import { authSyncRequest } from '../../service'
+import { responseValid } from '../../config'
+import { endpoint } from '../..'
+import { localFields } from '../../fields'
 
 export const keys = () => ([
-    { field: fields.username, serverField: 'Name', sortable: true, label: 'Username', visible: true, filter: true },
-    { field: fields.email, serverField: 'Email', sortable: true, label: 'Email', visible: true, filter: true },
-    { field: fields.emailVerified, serverField: 'EmailVerified', sortable: true, label: 'Email Verified', visible: true, clickable: true, format: true },
-    { field: fields.passHash, serverField: 'Passhash', label: 'Passhash' },
-    { field: fields.iter, serverField: 'Iter', label: 'Iter' },
-    { field: fields.familyName, serverField: 'FamilyName', label: 'Family Name' },
-    { field: fields.givenName, serverField: 'GivenName', label: 'GivenName' },
-    { field: fields.picture, serverField: 'Picture', label: 'Picture' },
-    { field: fields.nickName, serverField: 'Nickname', label: 'Nickname' },
-    { field: fields.createdAt, serverField: 'CreatedAt', label: 'Created At' },
-    { field: fields.updatedAt, serverField: 'UpdatedAt', label: 'Updated At' },
-    { field: fields.locked, serverField: 'Locked', label: 'Locked', sortable: false, visible: true, clickable: true, format: true },
-    { field: fields.role, label: 'Admin Manager', icon: 'admin_manager.svg', detailView: false }
+    { field: localFields.username, serverField: 'Name', sortable: true, label: 'Username', visible: true, filter: true },
+    { field: localFields.email, serverField: 'Email', sortable: true, label: 'Email', visible: true, filter: true },
+    { field: localFields.emailVerified, serverField: 'EmailVerified', sortable: true, label: 'Email Verified', visible: true, clickable: true, format: true },
+    { field: localFields.passHash, serverField: 'Passhash', label: 'Passhash' },
+    { field: localFields.iter, serverField: 'Iter', label: 'Iter' },
+    { field: localFields.familyName, serverField: 'FamilyName', label: 'Family Name' },
+    { field: localFields.givenName, serverField: 'GivenName', label: 'GivenName' },
+    { field: localFields.picture, serverField: 'Picture', label: 'Picture' },
+    { field: localFields.nickName, serverField: 'Nickname', label: 'Nickname' },
+    { field: localFields.createdAt, serverField: 'CreatedAt', label: 'Created At' },
+    { field: localFields.updatedAt, serverField: 'UpdatedAt', label: 'Updated At' },
+    { field: localFields.locked, serverField: 'Locked', label: 'Locked', sortable: true, visible: true, clickable: true, format: true },
+    { field: localFields.role, label: 'Admin Manager', icon: 'admin_manager.svg', detailView: false }
 ])
 
 export const iconKeys = () => ([
-    { field: fields.role, label: 'Admin Manager', icon: 'admin_manager.svg', clicked: false }
+    { field: localFields.role, label: 'Admin Manager', icon: 'admin_manager.svg', clicked: false }
 ])
 
 export const getKey = (data) => {
     return ({
-        name: data[fields.username]
+        name: data[localFields.username]
     })
 }
 
@@ -36,7 +36,12 @@ export const showAccounts = () => {
 
 export const deleteAccount = (self, data) => {
     let requestData = getKey(data)
-    return { method: endpoint.DELETE_ACCOUNT, data: requestData, success: `Account ${data[fields.username]} deleted successfully` }
+    return { method: endpoint.DELETE_ACCOUNT, data: requestData, success: `Account ${data[localFields.username]} deleted successfully` }
+}
+
+export const settingLock = async (self, data) => {
+    let mc = await authSyncRequest(self, { method: endpoint.SETTING_LOCK, data: data })
+    return responseValid(mc)
 }
 
 export const multiDataRequest = (keys, mcList, specific) => {
@@ -55,9 +60,9 @@ export const multiDataRequest = (keys, mcList, specific) => {
         }
     }
     let dataList = accountDataList.map(account => {
-        let user = userDataList.find(user => user[fields.username] === account[fields.username]);
-        if (user && user[fields.role] === ADMIN_MANAGER) {
-            account[fields.role] = user[fields.role];
+        let user = userDataList.find(user => user[localFields.username] === account[localFields.username]);
+        if (user && user[localFields.role] === ADMIN_MANAGER) {
+            account[localFields.role] = user[localFields.role];
         }
         return account
     });

@@ -8,7 +8,7 @@ import { timeRangeInMin } from '../../../../hoc/mexui/Picker';
 import { DEFAULT_DURATION_MINUTES } from '../helper/constant';
 import { useSelector } from 'react-redux';
 import { redux_org } from '../../../../helper/reduxData';
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 import SelectMenu from '../../../../hoc/selectMenu/SelectMenu';
 import { fetchObject, storeObject } from '../../../../helper/ls';
 import { filterData } from '../../../../constant';
@@ -80,7 +80,7 @@ const Filter = (props) => {
 
     const handleOrg = (value) => {
         if (value.length > 0) {
-            setOrg(value[0][fields.organizationName])
+            setOrg(value[0][localFields.organizationName])
         }
     }
 
@@ -185,7 +185,7 @@ const Filter = (props) => {
                         {
                             redux_org.isAdmin(orgInfo) && props.orgList ?
                             <div style={{padding: 5, border: '1px solid white', borderRadius: 5, margin:14 }}>
-                            <SelectMenu search={true} clear={true} labelKey={fields.organizationName} labelWidth={300} dataList={props.orgList} placeholder='Select Organization' onChange={handleOrg} default={org}/>
+                            <SelectMenu search={true} clear={true} labelKey={localFields.organizationName} labelWidth={300} dataList={props.orgList} placeholder='Select Organization' onChange={handleOrg} default={org}/>
                         </div> : null
                         }
                         <div>

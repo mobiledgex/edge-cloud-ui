@@ -1,23 +1,22 @@
 import React from 'react';
-import DataView from '../../../container/DataView';
+import DataView from '../../../hoc/datagrid/DataView';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../../actions';
 //redux
 import { connect } from 'react-redux';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import { changePowerState, deleteAppInst, keys, multiDataRequest, refreshAppInst, showAppInsts, streamAppInst } from '../../../services/modules/appInst';
 import { showApps } from '../../../services/modules/app';
 import { showCloudletInfoData } from '../../../services/modules/cloudletInfo';
 import AppInstReg from './Reg';
-import * as shared from '../../../services/model/shared';
 import { Dialog } from '@material-ui/core';
 import { HELP_APP_INST_LIST } from "../../../tutorial";
 import { perpetual, role } from '../../../helper/constant';
-import * as serverData from '../../../services/model/serverData'
 import { idFormatter, labelFormatter, serverFields, uiFormatter } from '../../../helper/formatter';
 import { redux_org } from '../../../helper/reduxData';
 import { developerRoles } from '../../../constant';
 import TerminalViewer from '../../../hoc/terminal/TerminalViewer';
+import { websocket } from '../../../services';
 
 class AppInstList extends React.Component {
     constructor(props) {
@@ -32,7 +31,7 @@ class AppInstList extends React.Component {
         this.action = '';
         this.data = {};
         this.keys = keys();
-        this.multiStepperHeader = [{ label: 'App', field: fields.appName }, { label: 'Cloudlet', field: fields.cloudletName }, { label: 'Operator', field: fields.operatorName }, { label: 'Cluster', field: fields.clusterName }]
+        this.multiStepperHeader = [{ label: 'App', field: localFields.appName }, { label: 'Cloudlet', field: localFields.cloudletName }, { label: 'Operator', field: localFields.operatorName }, { label: 'Cluster', field: localFields.clusterName }]
     }
 
     updateState = (data) => {
@@ -59,13 +58,13 @@ class AppInstList extends React.Component {
     onTerminalVisible = (type, action ,data) => {
         let visible = false;
         if (data) {
-            if (data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_VM) {
+            if (data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_VM) {
                 visible = redux_org.role(this) !== perpetual.DEVELOPER_VIEWER
             }
             else {
-                let runtimeInfo = data[fields.runtimeInfo]
+                let runtimeInfo = data[localFields.runtimeInfo]
                 if (runtimeInfo) {
-                    let containers = runtimeInfo[fields.container_ids]
+                    let containers = runtimeInfo[localFields.container_ids]
                     if (containers && containers.length > 0) {
                         visible = true
                     }
@@ -80,8 +79,8 @@ class AppInstList extends React.Component {
     }
 
     onPrePowerState = (type, action, data) => {
-        let powerState = labelFormatter.powerState(data[fields.powerState])
-        let visible = data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_VM
+        let powerState = labelFormatter.powerState(data[localFields.powerState])
+        let visible = data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_VM
         if (visible) {
             if (action.id === perpetual.ACTION_POWER_ON) {
                 visible = powerState === perpetual.POWER_STATE_POWER_OFF
@@ -97,26 +96,26 @@ class AppInstList extends React.Component {
     }
 
     onUpgradeVisible = (type, action ,data) => {
-        return data[fields.updateAvailable]
+        return data[localFields.updateAvailable]
     }
 
     onRefreshAction = (type, action, data)=>{
-        return data[fields.deployment] !== perpetual.DEPLOYMENT_TYPE_VM && !data[fields.updateAvailable]
+        return data[localFields.deployment] !== perpetual.DEPLOYMENT_TYPE_VM && !data[localFields.updateAvailable]
     }
 
     onUpdateVisible = (type, action ,data) => {
-        return data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES || data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_HELM
+        return data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES || data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_HELM
     }
 
     getDeleteActionMessage = (action, data) => {
-        if (data[fields.cloudletStatus] !== serverFields.READY && redux_org.isAdmin(this)) {
-            return `Cloudlet status is not online, do you still want to proceed with ${data[fields.appName]} App Instance deletion?`
+        if (data[localFields.cloudletStatus] !== serverFields.READY && redux_org.isAdmin(this)) {
+            return `Cloudlet status is not online, do you still want to proceed with ${data[localFields.appName]} App Instance deletion?`
         }
     }
 
     getDialogNote = (data) => {
-        if (data[fields.clusterName]) {
-            return data[fields.clusterName].includes('autocluster') || data[fields.deployment] === perpetual.DEPLOYMENT_TYPE_VM ? '' :
+        if (data[localFields.clusterName]) {
+            return data[localFields.clusterName].includes('autocluster') || data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_VM ? '' :
                 'Note: Deleting this Application Instance will not automatically delete the Cluster Instance associated with this Application Instance. You must go in and manually delete the Cluster Instance'
         }
     }
@@ -134,9 +133,9 @@ class AppInstList extends React.Component {
                 powerState = idFormatter.powerState(perpetual.POWER_STATE_REBOOT)
                 break;
         }
-        data[fields.powerState] = powerState
+        data[localFields.powerState] = powerState
         this.props.handleLoadingSpinner(true)
-        serverData.sendWSRequest(this, changePowerState(data), callback, data)
+        websocket.request(this, changePowerState(data), callback, data)
     }
 
     refreshNote = (data)=>{
@@ -166,27 +165,27 @@ class AppInstList extends React.Component {
 
     showPowerState = (data, isDetail) => {
         if (isDetail) {
-            return labelFormatter.powerState(data[fields.powerState])
+            return labelFormatter.powerState(data[localFields.powerState])
         }
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.state) {
-            return shared.showProgress(data, isDetail)
+        if (key.field === localFields.state) {
+            return uiFormatter.showProgress(data, isDetail)
         }
-        else if (key.field === fields.region) {
+        else if (key.field === localFields.region) {
             return uiFormatter.appInstRegion(key, data, isDetail)
         }
-        else if (key.field === fields.powerState) {
+        else if (key.field === localFields.powerState) {
             return this.showPowerState(data, isDetail)
         }
-        else if (key.field === fields.healthCheck) {
+        else if (key.field === localFields.healthCheck) {
             return uiFormatter.healthCheck(key, data, isDetail)
         }
-        else if (key.field === fields.trusted) {
+        else if (key.field === localFields.trusted) {
             return labelFormatter.showYesNo(data[key.field])
         }
-        else if (key.field === fields.dedicatedIp) {
+        else if (key.field === localFields.dedicatedIp) {
             return labelFormatter.showYesNo(data[key.field])
         }
     }
@@ -195,13 +194,13 @@ class AppInstList extends React.Component {
         return ({
             id: perpetual.PAGE_APP_INSTANCES,
             headerLabel: 'App Instances',
-            nameField: fields.appName,
+            nameField: localFields.appName,
             requestType: redux_org.isOperator(this) ? [showAppInsts, showCloudletInfoData] : [showAppInsts, showApps, showCloudletInfoData],
             streamType: streamAppInst,
             isRegion: true,
             isMap: true,
             selection: !redux_org.isOperator(this),
-            sortBy: [fields.region, fields.appName],
+            sortBy: [localFields.region, localFields.appName],
             keys: this.keys,
             onAdd:  role.validateRole(developerRoles, this.props.organizationInfo) ? this.onAdd : undefined,
             viewMode: HELP_APP_INST_LIST,

@@ -11,6 +11,7 @@ import { ListItemText, Menu, MenuItem } from '@material-ui/core';
 import {IconButton} from '../../../hoc/mexui'
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 import { redux_org } from '../../../helper/reduxData';
+import { updatePwd } from '../../../services/modules/users';
 
 class UserMenu extends React.Component {
     constructor(props) {
@@ -45,9 +46,15 @@ class UserMenu extends React.Component {
         this.props.handleUserInfo(userInfo)
     }
 
+    //kept seperate to isolate landing module
+    onUpdatePwd = async (data) => {
+        const {currentPassword, password} = data
+        return await updatePwd(this, { currentPassword, password })
+    }
+
     render() {
         const { anchorEl } = this.state
-        const {userInfo} = this.props
+        const { userInfo } = this.props
         return (
             <div style={{ marginTop: '0.4em' }}>
                 <IconButton tooltip='User Settings' onClick={this.handleClick}>
@@ -62,7 +69,7 @@ class UserMenu extends React.Component {
                 >
                     <Profile onClose={this.handleClose} userInfo={userInfo} updateUserInfo={this.updateUserInfo} />
                     {redux_org.isAdmin(this) || redux_org.nonAdminOrg(this) ? <Preferences close={this.handleClose} /> : null}
-                    <UpdatePassword close={this.handleClose} dialog={true} />
+                    <UpdatePassword close={this.handleClose} dialog={true} onUpdatePwd={this.onUpdatePwd}/>
                     {/* {redux_org.isDeveloperManager(this) ? <Billing onClose={this.handleClose}/> : null} */}
                     <MenuItem onClick={() => this.logout()}>
                         <ExitToAppOutlinedIcon fontSize="small" style={{ marginRight: 15 }} />

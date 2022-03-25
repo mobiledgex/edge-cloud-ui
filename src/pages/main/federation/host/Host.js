@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from 'react-router-dom';
-import DataView from '../../../../container/DataView';
+import DataView from '../../../../hoc/datagrid/DataView';
 //Mex
 //redux
 import { connect } from 'react-redux';
@@ -9,7 +9,7 @@ import * as actions from '../../../../actions';
 import { HELP_OUTBOUND_LIST } from "../../../../tutorial";
 import { perpetual } from "../../../../helper/constant";
 import { codeHighLighter } from '../../../../hoc/highLighter/highLighter';
-import { fields } from '../../../../services'
+import { localFields } from "../../../../services/fields";
 import { showFederator, showFederation, keys, iconKeys, deleteFederator, generateApiKey, multiDataRequest } from "../../../../services/modules/federation"
 import { showFederationZones } from "../../../../services/modules/zones";
 import { uiFormatter } from '../../../../helper/formatter';
@@ -18,7 +18,7 @@ import RegisterOperator from "../reg/Federator";
 import RegisterPartner from "../reg/Fedaration";
 import ShareZones from "./reg/ShareZones";
 import { InfoDialog } from "../../../../hoc/mexui";
-import { responseValid } from "../../../../services/service";
+import { responseValid } from "../../../../services/config";
 
 class Host extends React.Component {
     constructor(props) {
@@ -69,11 +69,11 @@ class Host extends React.Component {
     }
 
     createVisible = (data) => {
-        return data[fields.partnerFederationId] === undefined
+        return data[localFields.partnerFederationId] === undefined
     }
 
     federationNameVisible = (type, action, data) => {
-        return true//data[fields.partnerFederationId] !== undefined
+        return true//data[localFields.partnerFederationId] !== undefined
     }
 
     onDialogClose = () => {
@@ -114,10 +114,10 @@ class Host extends React.Component {
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.partnerRoleShareZoneWithSelf) {
+        if (key.field === localFields.partnerRoleShareZoneWithSelf) {
             return uiFormatter.renderYesNo(key, data[key.field], isDetail)
         }
-        if (key.field === fields.partnerRoleAccessToSelfZones) {
+        if (key.field === localFields.partnerRoleAccessToSelfZones) {
             return uiFormatter.renderYesNo(key, data[key.field], isDetail)
         }
     }
@@ -127,11 +127,11 @@ class Host extends React.Component {
             id: perpetual.PAGE_OUTBOUND_FEDERATION,
             headerLabel: 'Host - Federation',
             requestType: [showFederation, showFederator, showFederationZones],
-            sortBy: [fields.region],
+            sortBy: [localFields.region],
             // isRegion: true,
             keys: this.keys,
             onAdd: this.onAdd,
-            nameField: fields.partnerFederationName,
+            nameField: localFields.partnerFederationName,
             viewMode: HELP_OUTBOUND_LIST,
             iconKeys: iconKeys(true),
             formatData: this.dataFormatter
@@ -143,7 +143,7 @@ class Host extends React.Component {
         return (
             <React.Fragment>
                 <DataView id={perpetual.PAGE_FEDERATION} multiDataRequest={multiDataRequest} resetView={this.resetView} currentView={currentView} actionMenu={this.actionMenu} requestInfo={this.requestInfo} onClick={this.onListViewClick} tableHeight={tableHeight} handleListViewClick={this.handleListViewClick} />
-                <InfoDialog open={open} onClose={this.onDialogClose} title={'Federation API Key'} onClose={() => { this.updateState({ open: false }) }} note={'Make sure to copy API key now. You won\'t be able to see it again!'}>
+                <InfoDialog open={open} onClose={this.onDialogClose} title={'Federation API Key'} note={'Make sure to copy API key now. You won\'t be able to see it again!'}>
                     <p>One-time generated key used for authenticating federation requests from partner operator</p>
                     {codeHighLighter(this.apiKey)}
                 </InfoDialog>

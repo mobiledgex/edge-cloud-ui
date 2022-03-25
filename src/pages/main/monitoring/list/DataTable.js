@@ -7,9 +7,9 @@ import Paper from '@material-ui/core/Paper';
 import { AutoSizer, Column, Table, defaultTableRowRenderer } from 'react-virtualized';
 import { Icon, IconButton } from '../../../../hoc/mexui';
 import Actions from './Actions';
-import AppGroupView from '../modules/app/AppGroupView';
 import cloneDeep from 'lodash/cloneDeep';
 import { ICON_COLOR } from '../../../../helper/constant/colors';
+import GroupView from './GroupView';
 
 const styles = (theme) => ({
     flexContainer: {
@@ -27,11 +27,6 @@ const styles = (theme) => ({
     },
     tableRow: {
         cursor: 'pointer',
-    },
-    tableRowHover: {
-        '&:hover': {
-            // backgroundColor: theme.palette.grey[200],
-        },
     },
     tableCell: {
         flex: 1,
@@ -61,7 +56,7 @@ class MuiVirtualizedTable extends React.PureComponent {
     };
 
     cellRenderer = ({ rowData, cellData, columnIndex, rowIndex }) => {
-        const { columns, classes, rowHeight, onRowClick, selection, formatter, onAction, onHover } = this.props;
+        const { id, columns, classes, rowHeight, onRowClick, selection, formatter, onAction, onHover } = this.props;
         let column = columns[columnIndex]
         return (
             <TableCell
@@ -76,7 +71,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                 {
                     column.type === 'button' ? <IconButton onClick={(e) => { onAction(e, rowData) }}><Icon color={ICON_COLOR} style={{ height: 18 }}>list</Icon></IconButton> :
                         column.type === 'checkbox' ? <Icon style={{ color: rowData.color }}>{`${selection[rowData.key] ? 'check_box' : 'check_box_outline_blank'}`}</Icon> :
-                            column.format ? formatter(column, cellData) :
+                            column.format ? formatter(id, column, cellData) :
                                 <span style={{ width: column.width - 10, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }} onMouseEnter={(e) => { onHover(e, { type: 'Default', column, data: cellData }) }} onMouseLeave={() => { onHover() }}>{cellData}</span>
                 }
             </TableCell>
@@ -101,6 +96,7 @@ class MuiVirtualizedTable extends React.PureComponent {
 
     rowRenderer = (props) => {
         const { style, className, key, rowData } = props
+        const { id } = this.props
         const { action, onAction } = this.props
         if (rowData.group) {
             return (
@@ -116,7 +112,7 @@ class MuiVirtualizedTable extends React.PureComponent {
                             fontSize: 14
                         }}
                     >
-                        <AppGroupView data={rowData} />
+                        <GroupView id={id} data={rowData} />
                     </div>
                     {action ? <div style={{ display: 'inline', width: 85 }}>
                         <IconButton onClick={(e) => { onAction(e, rowData, true) }}><Icon color={ICON_COLOR} style={{ height: 18 }}>list</Icon></IconButton>
@@ -192,7 +188,7 @@ MuiVirtualizedTable.propTypes = {
 const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
 export default function ReactVirtualizedTable(props) {
-    const { dataList, keys, formatter, handleAction, actionMenu, groupBy, onHover } = props
+    const { id, dataList, keys, formatter, handleAction, actionMenu, groupBy, onHover } = props
     const [selection, setSelection] = React.useState({ count: 0 })
     const [anchorEl, setAnchorEl] = React.useState(undefined)
     let fixedWidth = 50
@@ -203,13 +199,13 @@ export default function ReactVirtualizedTable(props) {
         ...cloneDeep(keys).filter(key => {
             if (key.visible) {
                 columnCount = columnCount + (key.width ? 0 : 1)
-                fixedWidth = fixedWidth + (key.width ? key.width : 0)
+                fixedWidth = fixedWidth + (key.width ?? 0)
                 key.fixedWidth = Boolean(key.width)
                 return true
             }
         })
     ]
-    if (actionMenu && actionMenu.length > 0) {
+    if (actionMenu?.length > 0) {
         fixedWidth = fixedWidth + 100
         columns.push({ field: false, label: 'Actions', type: 'button', visible: true, width: 100, fixedWidth: true })
     }
@@ -239,13 +235,14 @@ export default function ReactVirtualizedTable(props) {
         <React.Fragment>
             <Paper id='table-container' style={{ height: 'inherit', width: '100%' }}>
                 <VirtualizedTable
+                    id={id}
                     rowCount={dataList.length}
                     rowGetter={({ index }) => dataList[index]}
                     columns={columns}
                     formatter={formatter}
                     onRowClick={onRowClick}
                     selection={selection}
-                    action={actionMenu && actionMenu.length > 0}
+                    action={actionMenu?.length > 0}
                     onAction={onActionMenu}
                     groupBy={groupBy}
                     onHover={onHover}
@@ -253,7 +250,7 @@ export default function ReactVirtualizedTable(props) {
                     columnCount={columnCount}
                 />
             </Paper>
-            <Actions anchorEl={anchorEl && anchorEl.target} onClose={() => { setAnchorEl(undefined) }} onClick={onActionClick} actionMenu={actionMenu} group={anchorEl && anchorEl.group} />
+            <Actions anchorEl={anchorEl?.target} onClose={() => { setAnchorEl(undefined) }} onClick={onActionClick} actionMenu={actionMenu} group={anchorEl?.group} />
         </React.Fragment>
     );
 }

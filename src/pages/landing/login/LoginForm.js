@@ -1,10 +1,9 @@
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom';
-import { Grid, makeStyles } from '@material-ui/core';
+import {Grid, makeStyles } from '@material-ui/core';
 import { Icon, Input, Button } from 'semantic-ui-react';
-import { perpetual } from '../../../helper/constant';
+import { VERIFY_EMAIL, VERIFY_PASSWORD } from '../../../helper/constant/perpetual';
 import clsx from 'clsx';
-
 
 const useStyles = makeStyles({
     signUp: {
@@ -32,28 +31,21 @@ const useStyles = makeStyles({
     },
     validationRight: { float: 'right', right: 0 },
     linkContainer: {
-        fontSize: 15,
-        padding: '0'
-    },
-    divLink1: {
-        display:'inline',
-        float:'left'
-    },
-    divLink2: {
-        display:'inline',
-        float:'center'
-    },
-    divLink3: {
-        display:'inline',
-        float:'right'
+        fontSize: 13,
+        padding: '0',
+        marginTop:30,
+        display:'flex',
+        alignItems:'center',
+        justifyContent:'center',
+        gap:15
     },
     aLink: {
         fontStyle: 'italic',
         textDecoration: 'underline',
         color: "rgba(255,255,255,.5)",
         cursor: 'pointer',
-        '&:hover':{
-            color:'#93E019',
+        '&:hover': {
+            color: '#93E019',
             textDecoration: 'underline',
         }
     }
@@ -96,7 +88,6 @@ const Login = (props) => {
     }
     return (
         <React.Fragment>
-            <br />
             <span className='title'>Sign into your account</span>
             <div className={classes.container}>
                 <Grid className={classes.signUp}>
@@ -113,23 +104,15 @@ const Login = (props) => {
                         {loginDanger}
                     </div>
                 </Grid>
-                <div className={clsx(classes.textColor, classes.validation)} onClick={() => reValidate(perpetual.VERIFY_EMAIL)}>Verify Email</div>
-                <div className={clsx(classes.textColor, classes.validation, classes.validationRight)} onClick={() => reValidate(perpetual.VERIFY_PASSWORD)}>Forgot Password</div>
+                <div className={clsx(classes.textColor, classes.validation)} onClick={() => reValidate(VERIFY_EMAIL)}>Verify Email</div>
+                <div className={clsx(classes.textColor, classes.validation, classes.validationRight)} onClick={() => reValidate(VERIFY_PASSWORD)}>Forgot Password</div>
                 <Button onClick={() => onSubmit()}>Log In</Button>
-                <br /><br />
-                <span>
-                    <div className={classes.linkContainer}>
-                        <div className={classes.divLink1}>
-                            <Link className={classes.aLink} to="/terms-of-use" target="_blank">Terms of Use</Link>
-                        </div>
-                        <div className={classes.divLink2}>
-                            <Link className={classes.aLink} to="/acceptable-use-policy" target="_blank" >Acceptable Use Policy</Link>
-                        </div>
-                        <div className={classes.divLink3}>
-                            <a className={classes.aLink} href="https://status.mobiledgex.com" target="_blank">Status</a>
-                        </div>
-                    </div>
-                </span>
+                <div className={classes.linkContainer}>
+                    <Link className={classes.aLink} to="/terms-of-use" target="_blank">Terms of Use</Link>
+                    <Link className={classes.aLink} to="/acceptable-use-policy" target="_blank" >Acceptable Use Policy</Link>
+                    <a className={classes.aLink} href="https://mobiledgex.com/privacy-policy/" target="_blank">Privacy Policy</a>
+                    <a className={classes.aLink} href="https://status.mobiledgex.com" target="_blank">Status</a>
+                </div>
             </div>
         </React.Fragment>
     )

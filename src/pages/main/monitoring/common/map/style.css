@@ -1,0 +1,47 @@
+/* Map Popup */
+
+/* Popup Scroller */
+::-webkit-scrollbar {
+    width: 6px !important;
+
+}
+
+::-webkit-scrollbar-thumb {
+    border-right: 3px #55616b solid;
+    border-left: 3px #55616b solid;
+    background-clip: padding-box;
+}
+
+.thinScrBar {
+    scrollbar-width: thin !important;
+}
+/* Popup Scroller */
+
+.map-popup .leaflet-popup-content-wrapper {
+    overflow: auto;
+    height: 100px;
+    background-color: #292c33;
+    border-style: none;
+}
+
+.map-popup .container .header {
+    text-transform: uppercase; 
+    font-size: 13px; 
+    margin-bottom:10px; 
+    font-weight:900;
+}
+
+.map-popup .container .content {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap:10px;
+    line-height: 1;
+    cursor: not-allowed;
+    font-weight: 400; 
+    font-size: 12px; 
+}
+
+.map-popup .container .content .subcontent {
+    color:#74B724
+}

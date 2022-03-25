@@ -1,28 +1,29 @@
 import React from 'react';
-import DataView from '../../../container/DataView';
+import DataView from '../../../hoc/datagrid/DataView';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
-import { fields } from '../../../services/model/format';
+import { localFields } from '../../../services/fields';
 import { redux_org } from '../../../helper/reduxData';
 import { keys, iconKeys, showOrganizations, deleteOrganization, edgeboxOnlyAPI, multiDataRequest } from '../../../services/modules/organization';
 import OrganizationReg from './Reg';
-import * as serverData from '../../../services/model/serverData'
-import * as shared from '../../../services/model/shared';
 import RoleWorker from '../../../services/worker/role.worker.js'
 import { Box, Card, IconButton, Typography, CardHeader } from '@material-ui/core';
 import { HELP_ORG_LIST } from "../../../tutorial";
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { perpetual } from '../../../helper/constant';
 import { uiFormatter } from '../../../helper/formatter'
-import { authSyncRequest, fetchToken } from '../../../services/service';
+import { authSyncRequest } from '../../../services/service';
 import { validatePrivateAccess } from '../../../constant';
 import { getUserMetaData } from '../../../helper/ls';
 import { updateUserMetaData } from '../../../services/modules/users';
 import { showUsers, showUser } from '../../../services/modules/users';
 import { ACTION_REFRESH } from '../../../hoc/datagrid/MexToolbar';
 import { ICON_COLOR } from '../../../helper/constant/colors';
+import { showUserRoles } from '../../../services/modules/users/users';
+import { fetchToken } from '../../../services/config';
+import { splitByCaps, toFirstUpperCase } from '../../../utils/string_utils';
 
 class OrganizationList extends React.Component {
     constructor(props) {
@@ -36,8 +37,11 @@ class OrganizationList extends React.Component {
         this.data = {}
         this.worker = new RoleWorker();
         this.keys = keys().map(key => {
-            if (key.field === fields.manage || key.field === fields.role) {
+            if (key.field === localFields.manage || key.field === localFields.role) {
                 key.visible = !redux_org.isAdmin(this)
+            }
+            else if (key.field === localFields.type) {
+                key.visible = redux_org.isAdmin(this)
             }
             return key
         })
@@ -119,17 +123,17 @@ class OrganizationList extends React.Component {
 
     /**Action menu block */
     onAudit = (action, data) => {
-        this.props.handleShowAuditLog({ type: 'audit', org: data[fields.organizationName] })
+        this.props.handleShowAuditLog({ type: 'audit', org: data[localFields.organizationName] })
     }
 
     onDelete = async (data, success) => {
         if (success) {
-            const roles = this.props.roleInfo.filter((role) => role[fields.organizationName] !== data[fields.organizationName])
+            const roles = this.props.roleInfo.filter((role) => role[localFields.organizationName] !== data[localFields.organizationName])
             this.props.handleRoleInfo(roles)
-            if (data[fields.organizationName] === redux_org.orgName(this)) {
+            if (data[localFields.organizationName] === redux_org.orgName(this)) {
                 let data = getUserMetaData()
-                if (data && data[fields.organizationInfo]) {
-                    data[fields.organizationInfo] = undefined
+                if (data && data[localFields.organizationInfo]) {
+                    data[localFields.organizationInfo] = undefined
                     updateUserMetaData(this, data)
                     this.props.handleOrganizationInfo(undefined)
                 }
@@ -143,7 +147,7 @@ class OrganizationList extends React.Component {
     onEdgebox = async (action, data, callback) => {
         let mc = await authSyncRequest(this, edgeboxOnlyAPI(data))
         if (mc && mc.response && mc.response.status === 200) {
-            this.props.handleAlertInfo('success', `Edgebox ${data[fields.edgeboxOnly] ? 'disabled' : 'enabled'} successfully for organization ${data[fields.organizationName]}`)
+            this.props.handleAlertInfo('success', `Edgebox ${data[localFields.edgeboxOnly] ? 'disabled' : 'enabled'} successfully for organization ${data[localFields.organizationName]}`)
             callback(mc)
         }
     }
@@ -151,11 +155,11 @@ class OrganizationList extends React.Component {
     onPreEdgebox = (type, action, data) => {
         switch (type) {
             case perpetual.ACTION_LABEL:
-                return data[fields.edgeboxOnly] ? 'Disable Edgebox' : 'Enable Edgebox'
+                return data[localFields.edgeboxOnly] ? 'Disable Edgebox' : 'Enable Edgebox'
             case perpetual.ACTION_WARNING:
-                return `${data[fields.edgeboxOnly] ? 'disable' : 'enable'} edgebox feature for`
+                return `${data[localFields.edgeboxOnly] ? 'disable' : 'enable'} edgebox feature for`
             case perpetual.ACTION_DISABLE:
-                return data[fields.type].includes(perpetual.DEVELOPER)
+                return data[localFields.type].includes(perpetual.DEVELOPER)
         }
     }
 
@@ -179,11 +183,11 @@ class OrganizationList extends React.Component {
 
     cacheOrgInfo = (data, roleInfo) => {
         let organizationInfo = {}
-        organizationInfo[fields.organizationName] = data[fields.organizationName]
-        organizationInfo[fields.type] = data[fields.type]
-        organizationInfo[fields.edgeboxOnly] = data[fields.edgeboxOnly]
-        organizationInfo[fields.role] = roleInfo[fields.role]
-        organizationInfo[fields.username] = roleInfo[fields.username]
+        organizationInfo[localFields.organizationName] = data[localFields.organizationName]
+        organizationInfo[localFields.type] = data[localFields.type]
+        organizationInfo[localFields.edgeboxOnly] = data[localFields.edgeboxOnly]
+        organizationInfo[localFields.role] = roleInfo[localFields.role]
+        organizationInfo[localFields.username] = roleInfo[localFields.username]
         return organizationInfo
     }
 
@@ -199,7 +203,7 @@ class OrganizationList extends React.Component {
         if (this.props.roleInfo) {
             let roleInfoList = this.props.roleInfo;
             for (let roleInfo of roleInfoList) {
-                if (roleInfo[fields.organizationName] === data[fields.organizationName]) {
+                if (roleInfo[localFields.organizationName] === data[localFields.organizationName]) {
                     let organizationInfo = this.cacheOrgInfo(data, roleInfo)
                     this.props.handleOrganizationInfo(organizationInfo)
                     this.updateState({ tableHeight: redux_org.isViewer(organizationInfo) ? undefined : 271 })
@@ -212,17 +216,23 @@ class OrganizationList extends React.Component {
 
     onListViewClick = (key, data) => {
         switch (key.field) {
-            case fields.manage:
+            case localFields.manage:
                 this.onManage(key, data)
         }
     }
 
     dataFormatter = (key, data, isDetail) => {
-        if (key.field === fields.manage) {
+        if (key.field === localFields.manage) {
             return <uiFormatter.Manage data={data} key={key} detail={isDetail} />
         }
-        else if (key.field === fields.edgeboxOnly) {
+        else if (key.field === localFields.edgeboxOnly) {
             return uiFormatter.edgeboxOnly(key, data, isDetail)
+        }
+        else if (key.field === localFields.type) {
+            return <strong>{toFirstUpperCase(data[key.field])}</strong>
+        }
+        else if (key.field === localFields.role) {
+            return <strong>{splitByCaps(data[key.field])}</strong>
         }
     }
 
@@ -230,12 +240,12 @@ class OrganizationList extends React.Component {
         return ({
             id: perpetual.PAGE_ORGANIZATIONS,
             headerLabel: 'Organizations',
-            nameField: fields.organizationName,
+            nameField: localFields.organizationName,
             requestType: [showOrganizations, showUsers, showUser],
-            sortBy: [fields.organizationName],
+            sortBy: [localFields.organizationName],
             keys: this.keys,
             iconKeys:iconKeys(),
-            additionalDetail: shared.additionalDetail,
+            additionalDetail: uiFormatter.additionalDetail,
             viewMode: HELP_ORG_LIST,
             grouping: true,
             formatData: this.dataFormatter
@@ -268,7 +278,7 @@ class OrganizationList extends React.Component {
     }
 
     refreshRole = async () => {
-        let mc = await serverData.showUserRoles(this)
+        let mc = await showUserRoles(this)
         if (mc && mc.response && mc.response.status === 200) {
             this.worker.postMessage({ data: mc.response.data, request: showOrganizations(), token: fetchToken(this) })
             this.worker.addEventListener('message', async (event) => {

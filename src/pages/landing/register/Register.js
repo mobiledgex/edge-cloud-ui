@@ -1,25 +1,54 @@
 import React from "react";
 import { connect } from 'react-redux';
-import * as actions from '../../../actions';
+import { Link, useHistory } from 'react-router-dom';
+import { loadingSpinner, alertInfo } from '../../../actions';
 import MexForms, { INPUT, BUTTON, POPUP_INPUT, SWITCH } from "../../../hoc/forms/MexForms";
-import { fields } from "../../../services/model/format";
-import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
-import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
-import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
-import * as serverData from '../../../services/model/serverData';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import { Icon, Grid, Button as SButton } from "semantic-ui-react";
-import { Button, Checkbox, FormControlLabel } from "@material-ui/core";
-import { copyData } from '../../../utils/file_util'
+import { createUser as _createUser, publicConfig as _publicConfig } from '../../../services/modules/landing';
 import cloneDeep from "lodash/cloneDeep";
 import { load } from "../../../helper/zxcvbn";
 import ReCAPTCHA from "react-google-recaptcha";
-import MexOTPRegistration from '../otp/MexOTPRegistration';
-import { Link, useHistory } from 'react-router-dom';
-import { endpoint } from "../../../helper/constant";
-import { responseValid, syncRequest } from "../../../services/service";
-import { hostURL } from "../../../utils/location_utils";
 import { validateEmail as _validateEmail } from "../../../utils/validation_utils";
+import { copyData } from '../../../utils/file_util';
+import { Icon, Grid, Button as SButton } from "semantic-ui-react";
+import { Button, Checkbox, FormControlLabel, LinearProgress } from "@material-ui/core";
+//Icons
+import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
+import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
+import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
+import MexOTPRegistration from '../otp/MexOTPRegistration';
+import { withStyles } from "@material-ui/styles";
+import { localFields } from "../../../services/fields";
+import { responseValid } from "../../../services/config";
+
+const styles = theme => ({
+    customForm: {
+        marginLeft: '10%',
+        marginBottom:10
+    },
+    pwdHelper: {
+        fontSize: 12
+    },
+    generatePwd: {
+        float: 'right'
+    },
+    generatePwdBtn: {
+        backgroundColor: '#7CC01D',
+        textTransform: 'none'
+    },
+    color_017E1C: {
+        color: '#017E1C'
+    },
+    color_CCCCCC: {
+        color: '#CCCCCC'
+    },
+    color_F5382F: {
+        color: '#F5382F'
+    },
+    captcha : {
+        marginTop:50,
+        marginBottom:20
+    }
+})
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
 
@@ -53,7 +82,6 @@ const calculatePercentage = (passwordMinCrackTimeSec, score) => {
 const Success = (props) => {
     const { data, onVerificationEmail } = props
     const history = useHistory()
-
     return (
         <Grid>
             <Grid.Row>
@@ -145,11 +173,11 @@ class RegistryUserForm extends React.Component {
             currentForm.error = 'Password is weak'
             return false;
         }
-        else if (currentForm.field === fields.confirmPassword) {
+        else if (currentForm.field === localFields.confirmPassword) {
             let forms = this.state.forms
             for (let i = 0; i < forms.length; i++) {
                 let form = forms[i]
-                if (form.field === fields.password) {
+                if (form.field === localFields.password) {
                     if (value !== form.value) {
                         currentForm.error = 'Password and Confirm Password do not match'
                         return false;
@@ -168,19 +196,14 @@ class RegistryUserForm extends React.Component {
     }
 
     createUser = async (data) => {
-        const { clientSysInfo } = this.props
-        let mc = await serverData.createUser(this, {
-            name: data[fields.username],
-            passhash: data[fields.password],
-            email: data[fields.email],
+        let mc = await _createUser(this, {
+            name: data[localFields.username],
+            passhash: data[localFields.password],
+            email: data[localFields.email],
             verify: {
-                email: data[fields.email],
-                operatingsystem: clientSysInfo.os.name,
-                browser: clientSysInfo.browser.name,
-                callbackurl: `https://${hostURL()}/#/verify`,
-                clientip: clientSysInfo.clientIP,
+                email: data[localFields.email]
             },
-            EnableTOTP: data[fields.otp],
+            EnableTOTP: data[localFields.otp],
         })
         if (mc) {
             if (mc.response) {
@@ -243,7 +266,7 @@ class RegistryUserForm extends React.Component {
         let forms = cloneDeep(this.state.forms)
         for (let i = 0; i < forms.length; i++) {
             let form = forms[i]
-            if (form.field === fields.password || form.field === fields.confirmPassword) {
+            if (form.field === localFields.password || form.field === localFields.confirmPassword) {
                 form.value = password
             }
         }
@@ -252,6 +275,7 @@ class RegistryUserForm extends React.Component {
     }
 
     passwordHelper = (form) => {
+        const { classes } = this.props
         let value = form.value ? form.value : ''
         let score = this.calculateStrength(value)
         let letterCase = validateLetterCase(value)
@@ -261,20 +285,20 @@ class RegistryUserForm extends React.Component {
         let consecutive = validateConsecutive(value)
         let color = score < this.passwordMinCrackTimeSec ? '#F5382F' : '#F2F2F2'
         return (
-            <div style={{ fontSize: 12 }}>
+            <div className={classes.pwdHelper}>
                 <p>Your password must have :</p>
-                <p style={{ color: count ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> 13 or more characters</p>
-                <p style={{ color: letterCase ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> upper &amp; lowercase letters</p>
-                <p style={{ color: digit ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> at least one number</p>
-                <p style={{ color: symbol ? '#017E1C' : '#CCCCCC' }}><Icon name='check circle outline' /> at least one symbol</p>
+                <p className={count ? classes.color_017E1C : classes.color_CCCCCC}><Icon name='check circle outline' /> 13 or more characters</p>
+                <p className={letterCase ? classes.color_017E1C : classes.color_CCCCCC}><Icon name='check circle outline' /> upper &amp; lowercase letters</p>
+                <p className={digit ? classes.color_017E1C : classes.color_CCCCCC}><Icon name='check circle outline' /> at least one number</p>
+                <p className={symbol ? classes.color_017E1C : classes.color_CCCCCC}><Icon name='check circle outline' /> at least one symbol</p>
                 <p>Strength:</p>
                 <LinearProgress variant="determinate" value={calculatePercentage(this.passwordMinCrackTimeSec, score)} style={{ backgroundColor: color }} />
                 <br />
                 {consecutive ?
-                    <p style={{ color: '#F5382F' }}>Too many consecutive identical characters</p> :
-                    <p style={{ color: '#CCCCCC' }}>To safeguard your password, avoid password reuse. Do not use recognizable words, such as house, car, password, etc. To meet the password strength criteria, use random characters, or click the Generate button to allow the system to generate a secure password for you. Make sure you copy and paste the password to a secure location.</p>
+                    <p className={classes.color_F5382F}>Too many consecutive identical characters</p> :
+                    <p className={classes.color_CCCCCC}>To safeguard your password, avoid password reuse. Do not use recognizable words, such as house, car, password, etc. To meet the password strength criteria, use random characters, or click the Generate button to allow the system to generate a secure password for you. Make sure you copy and paste the password to a secure location.</p>
                 }
-                <div style={{ float: 'right' }}><Button onMouseDown={() => { this.generatePassword(13) }} size='small' style={{ backgroundColor: '#7CC01D', textTransform: 'none' }}>Generate</Button></div>
+                <div className={classes.generatePwd}><Button onMouseDown={() => { this.generatePassword(13) }} size='small' className={classes.generatePwdBtn}>Generate</Button></div>
             </div>
         )
     }
@@ -285,7 +309,7 @@ class RegistryUserForm extends React.Component {
             let visibility = !prevState.visibility
             let type = visibility ? 'text' : 'password'
             for (let form of forms) {
-                if (form.field === fields.password || form.field === fields.confirmPassword) {
+                if (form.field === localFields.password || form.field === localFields.confirmPassword) {
                     form.rules.type = type
                 }
             }
@@ -294,8 +318,9 @@ class RegistryUserForm extends React.Component {
     }
 
     customForm = () => {
+        const { classes } = this.props
         return (
-            <div style={{ marginLeft: '10%' }}>
+            <div className={classes.customForm}>
                 <FormControlLabel control={<Checkbox name="showPassword" value={this.state.visibility} onChange={this.onVisibilityChange} />} label="Show Password" />
             </div>
         )
@@ -303,12 +328,12 @@ class RegistryUserForm extends React.Component {
 
     forms = () => (
         [
-            { field: fields.username, label: 'Username', labelIcon: <PersonOutlineOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Username', rules: { required: true, autoComplete: "off", requiredColor: '#FFF', type:'search' }, visible: true, dataValidateFunc: this.validateUsername },
-            { field: fields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
-            { field: fields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword },
-            { field: fields.email, label: 'Email', labelIcon: <EmailOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Email ID', rules: { required: true, type: 'email', requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validateEmail },
-            { field: fields.otp, label: '2FA', labelStyle: { fontWeight: 500, color: '#FFF', fontSize: 14 }, formType: SWITCH, visible: true, value: false, style: { float: 'left', marginTop: -11 } },
-            { custom: this.customForm }
+            { field: localFields.username, label: 'Username', labelIcon: <PersonOutlineOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Username', rules: { required: true, autoComplete: "off", requiredColor: '#FFF', type: 'search' }, visible: true, dataValidateFunc: this.validateUsername },
+            { field: localFields.email, label: 'Email', labelIcon: <EmailOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Email ID', rules: { required: true, type: 'email', requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validateEmail },
+            { field: localFields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
+            { field: localFields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword },
+            { custom: this.customForm },
+            { field: localFields.otp, label: '2FA', labelStyle: { fontWeight: 500, color: '#FFF', fontSize: 14 }, formType: SWITCH, visible: true, value: false, style: { float: 'left', marginTop: -11 } },
         ]
     )
 
@@ -327,41 +352,41 @@ class RegistryUserForm extends React.Component {
 
     render() {
         const { totp, success, forms } = this.state
-        const { onVerificationEmail } = this.props
+        const { onVerificationEmail, classes } = this.props
         return (
             success ? <Success data={success} onVerificationEmail={onVerificationEmail} /> :
                 totp ? <MexOTPRegistration onComplete={this.onOTPComplete} data={totp} showDone={true} /> :
-                    <Grid>
-                        <Grid.Row>
-                            <span className='title'>Create New Account</span>
-                        </Grid.Row>
-                        <MexForms forms={forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
-                        <Grid.Row style={{ marginTop: 40, marginLeft: 25 }}>
+                    <React.Fragment> <span className='title'>Create New Account</span>
+                        <div style={{display:'flex', justifyContent:'center'}}>
+                            <div style={{ width: 400 }}>
+                                <MexForms forms={forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
+                            </div>
+                        </div>
+                        <div align='center' className={classes.captcha}>
                             <ReCAPTCHA
                                 sitekey={process.env.REACT_APP_CAPTCHA_V2_KEY}
                                 onChange={this.onCaptchaChange}
                                 onExpired={() => { this.setState({ captchaValidated: false }) }}
                             />
-                        </Grid.Row>
-                        <Grid.Row>
-                            <span>
-                                By clicking Sign Up, you agree to our <Link to="/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</Link> and <Link to="/acceptable-use-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Acceptable Use Policy</Link>.
-                            </span>
-                        </Grid.Row>
-                    </Grid>
+                        </div>
+                        <div>
+                            By clicking Sign Up, you agree to our <Link to="/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</Link> and <Link to="/acceptable-use-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Acceptable Use Policy</Link>.
+                        </div>
+                        <br/>
+                    </React.Fragment>
         );
     }
 
     getFormData = () => {
         let forms = this.forms()
-        forms.push({ label: 'Sign Up', formType: BUTTON, onClick: this.onCreate, validate: true, style: { width: 320, marginLeft: 65, marginTop: 20, position: 'absolute', zIndex: 9999, backgroundColor: 'rgba(0, 85, 255, .25)', border: 'solid 1px rgba(128, 170, 255, .5) !important', color: 'white' } })
+        forms.push({ label: 'Sign Up', formType: BUTTON, onClick: this.onCreate, validate: true, style: { width: 307, marginLeft: 47, marginTop: 20, position: 'absolute', zIndex: 9999, backgroundColor: 'rgba(0, 85, 255, .25)', border: 'solid 1px rgba(128, 170, 255, .5) !important', color: 'white' } })
         this.setState({
             forms
         })
     }
 
     publicConfig = async () => {
-        let mc = await syncRequest(this, { method: endpoint.PUBLIC_CONFIG })
+        let mc = await _publicConfig(this)
         if (responseValid(mc)) {
             this.passwordMinCrackTimeSec = mc.response.data.PasswordMinCrackTimeSec
             this.getFormData()
@@ -376,9 +401,9 @@ class RegistryUserForm extends React.Component {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
+        handleLoadingSpinner: (data) => { dispatch(loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(alertInfo(mode, msg)) }
     };
 };
 
-export default connect(null, mapDispatchProps)(RegistryUserForm);
+export default connect(null, mapDispatchProps)(withStyles(styles)(RegistryUserForm));

@@ -1,12 +1,12 @@
-import { perpetual } from "."
 import { v1 as uuidv1 } from 'uuid';
+import { PAGE_ORGANIZATIONS } from "./perpetual";
 
 export const uniqueId = ()=>{
     return uuidv1()
 }
 
 export const isPathOrg = (self)=>{
-    return self.props.history.location.pathname.includes(perpetual.PAGE_ORGANIZATIONS.toLowerCase())
+    return self.props.history.location.pathname.includes(PAGE_ORGANIZATIONS.toLowerCase())
 }
 
 export const validateRemoteCIDR = (form) => {

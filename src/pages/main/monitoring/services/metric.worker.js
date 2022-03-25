@@ -7,9 +7,9 @@ import minBy from 'lodash/minBy';
 import { convertUnit } from '../helper/unitConvertor';
 import { generateDataset, generateDataset2 } from './chart';
 import { formatData } from '../../../../services/format/format';
-import { fields } from '../../../../services/model/format';
+import { localFields } from '../../../../services/fields';
 import { DEPLOYMENT_TYPE_VM, PARENT_APP_INST, PARENT_CLOUDLET, PARENT_CLUSTER_INST, PLATFORM_TYPE_OPEN_STACK, PLATFORM_TYPE_VCD } from '../../../../helper/constant/perpetual';
-import { CLOUDLET_METRICS_ENDPOINT, APP_INST_METRICS_ENDPOINT, CLUSTER_METRICS_ENDPOINT } from '../../../../helper/constant/endpoint';
+import { CLOUDLET_METRICS_ENDPOINT, APP_INST_METRICS_ENDPOINT, CLUSTER_METRICS_ENDPOINT } from '../../../../services/endpoint';
 import { processFlavorData, processFlavorSelection } from './flavor';
 
 const processLineChartData = (chartDataList, values, worker) => {
@@ -111,9 +111,9 @@ const processData2 = (worker) => {
                         // if(parentId === PARENT_APP_INST)
                         // {
                         //     //skip disk and network data for app inst module (due to data inconsistency)
-                        //     skip = item.field === fields.disk || item.field === fields.sent || item.field === fields.received
-                        //     skip =  skip && legend[fields.deployment] === DEPLOYMENT_TYPE_VM
-                        //     skip = skip && (legend[fields.platformType] === PLATFORM_TYPE_OPEN_STACK || legend[fields.platformType] === PLATFORM_TYPE_VCD)
+                        //     skip = item.field === localFields.disk || item.field === localFields.sent || item.field === localFields.received
+                        //     skip =  skip && legend[localFields.deployment] === DEPLOYMENT_TYPE_VM
+                        //     skip = skip && (legend[localFields.platformType] === PLATFORM_TYPE_OPEN_STACK || legend[localFields.platformType] === PLATFORM_TYPE_VCD)
                         // }
                         let avg = meanBy(values, v => (v[item.position]))
                         let max = maxBy(values, v => (v[item.position]))[item.position]
@@ -165,7 +165,7 @@ export const format = (worker) => {
             processData2({ ...worker, dataList: response.data })
         }
         else {
-            if (request.data.selector === fields.flavorusage) {
+            if (request.data.selector === localFields.flavorusage) {
                 let chartData = processFlavorData({ ...worker, data: response.data })
                 if (chartData) {
                     self.postMessage({ status: 200, data: [chartData] })

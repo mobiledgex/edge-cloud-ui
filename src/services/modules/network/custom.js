@@ -1,7 +1,7 @@
 import { connectionType } from "../../../helper/formatter/label"
-import { fields } from "../../model/format"
+import { localFields } from "../../fields"
 
 export const customize = (request, value, self) => {
-    value[fields.connectionType] = connectionType(value[fields.connectionType])
+    value[localFields.connectionType] = connectionType(value[localFields.connectionType])
     return value
 }
