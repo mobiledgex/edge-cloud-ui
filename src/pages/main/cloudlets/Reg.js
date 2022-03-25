@@ -81,6 +81,13 @@ class CloudletReg extends React.Component {
         }
     }
 
+    updateResoursceQuotaList = (dataList) => {
+        this.resourceQuotaList = dataList.map(quota => {
+            quota[localFields.resourceName] = quota.name
+            return quota
+        })
+    }
+
     // load dynamic tooltip for environments variables
     loadEnvTip = (data) => {
         const { key, name, value, description } = data
@@ -122,11 +129,7 @@ class CloudletReg extends React.Component {
                                 }
                                 else if (method === endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
                                     if (data.properties) {
-                                        this.resourceQuotaList = data.properties
-                                        this.resourceQuotaList = this.resourceQuotaList.map(quota => {
-                                            quota[localFields.resourceName] = quota.name
-                                            return quota
-                                        })
+                                        this.updateResoursceQuotaList(data.properties)
                                     }
                                 }
                             }
@@ -772,9 +775,8 @@ class CloudletReg extends React.Component {
             let mcList = await service.multiAuthSyncRequest(this, requestList)
 
             if (mcList && mcList.length > 0) {
-                for (let i = 0; i < mcList.length; i++) {
-                    let mc = mcList[i];
-                    if (mc && mc.response && mc.response.data) {
+                for (const mc of mcList) {
+                    if (mc?.response?.data) {
                         let responseData = mc.response.data
                         let request = mc.request;
                         if (request.method === endpoint.SHOW_ORG) {
@@ -788,10 +790,7 @@ class CloudletReg extends React.Component {
                         }
                         else if (request.method === endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
                             if (responseData.properties) {
-                                this.resourceQuotaList = responseData.properties
-                                this.resourceQuotaList = this.resourceQuotaList.map(quota => {
-                                    return quota.name
-                                })
+                                this.updateResoursceQuotaList(responseData.properties)
                             }
                         }
                     }
