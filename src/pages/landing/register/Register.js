@@ -7,7 +7,6 @@ import { createUser as _createUser, publicConfig as _publicConfig } from '../../
 import cloneDeep from "lodash/cloneDeep";
 import { load } from "../../../helper/zxcvbn";
 import ReCAPTCHA from "react-google-recaptcha";
-import { hostURL } from "../../../utils/location_utils";
 import { validateEmail as _validateEmail } from "../../../utils/validation_utils";
 import { copyData } from '../../../utils/file_util';
 import { Icon, Grid, Button as SButton } from "semantic-ui-react";
@@ -197,17 +196,12 @@ class RegistryUserForm extends React.Component {
     }
 
     createUser = async (data) => {
-        const { clientSysInfo } = this.props
         let mc = await _createUser(this, {
             name: data[localFields.username],
             passhash: data[localFields.password],
             email: data[localFields.email],
             verify: {
-                email: data[localFields.email],
-                operatingsystem: clientSysInfo.os.name,
-                browser: clientSysInfo.browser.name,
-                callbackurl: `https://${hostURL()}/#/verify`,
-                clientip: clientSysInfo.clientIP,
+                email: data[localFields.email]
             },
             EnableTOTP: data[localFields.otp],
         })
