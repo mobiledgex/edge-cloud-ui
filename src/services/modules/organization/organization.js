@@ -8,12 +8,12 @@ export const keys = (nameOnly) => {
     let items = [{ field: localFields.organizationName, serverField: 'Name', label: 'Organization', sortable: true, visible: true, filter: true }]
     if (!nameOnly) {
         items = [...items,
-        { field: localFields.type, serverField: 'Type', label: 'Type', sortable: true },
-        { field: localFields.role, label: 'Role', sortable: true, visible: true, filter: true, group: true },
-        { field: localFields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: true },
-        { field: localFields.address, serverField: 'Address', label: 'Address' },
-        { field: localFields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', roles: [perpetual.ADMIN_MANAGER], format: true },
-        { field: localFields.publicImages, serverField: 'PublicImages', label: 'Public Image', sortable: true, visible: true },
+            { field: localFields.type, serverField: 'Type', label: 'Type', sortable: true, visible: true, format: true },
+            { field: localFields.role, label: 'Role Type', sortable: true, visible: true, filter: true, group: true, format: true },
+            { field: localFields.phone, serverField: 'Phone', label: 'Phone', sortable: true, visible: true },
+            { field: localFields.address, serverField: 'Address', label: 'Address' },
+            { field: localFields.edgeboxOnly, serverField: 'EdgeboxOnly', label: 'Edgebox Only', roles: [perpetual.ADMIN_MANAGER], format: true },
+            { field: localFields.publicImages, serverField: 'PublicImages', label: 'Public Image', sortable: true, visible: true },
         {
             field: localFields.userList, label: 'User List', sortable: true, visible: false,
             keys: [{ field: localFields.username, label: 'Username' }, { field: localFields.userRole, label: 'Role' }]

@@ -8,17 +8,6 @@ export const isLocal = () => {
 }
 
 /*
-*desc: if host local then use REACT_APP_API_ENDPOINT value from .env
-*/
-export const hostURL = () => {
-    let host = window.location.origin
-    if (isLocal()) {
-        host = process.env.REACT_APP_API_ENDPOINT
-    }
-    return host
-}
-
-/*
 *desc: change default hostname with user defined value
 */
 export const changeHostName = (changeWith, value) => {
