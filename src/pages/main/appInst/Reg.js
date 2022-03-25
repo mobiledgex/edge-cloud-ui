@@ -329,51 +329,47 @@ class AppInstReg extends React.Component {
     }
 
     cloudletValueChange = (currentForm, forms, isInit) => {
-        let operator, valid = undefined
-        for(const form of forms)
-        {
-            if (form.field === localFields.operatorName) {
-                operator = form.value
-                break;
-            } 
-        }
+        let isK8sBareMetal = false
         if (!isInit) {
-            valid = this.getSpecificCloudletField(currentForm.value, operator)
-        }
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            if (form.field === localFields.dedicatedIp) {
-                form.visible = valid
+            for (const form of forms) {
+                if (form.field === localFields.operatorName) {
+                    isK8sBareMetal = this.isK8sBareMetal(currentForm.value, form.value)
+                    break;
+                }
             }
-            if (form.field === localFields.clusterName) {
+        }
+        for (let form of forms) {
+            if (form.field === localFields.dedicatedIp) {
                 if (!isInit) {
-                    form.formType = valid ? INPUT : SELECT
-                    form.rules.required = !valid
-                    form.placeholder = valid ? 'Enter Cluster Name' : 'Select Clusters'
+                    form.visible = isK8sBareMetal
+                }
+            }
+            else if (form.field === localFields.clusterName) {
+                if (!isInit) {
+                    form.formType = isK8sBareMetal ? INPUT : SELECT
+                    form.rules.required = !isK8sBareMetal
+                    form.placeholder = isK8sBareMetal ? 'Enter Cluster Name' : 'Select Clusters'
                 }
                 this.updateUI(form)
             }
-            if (form.field === localFields.autoClusterInstance) {
+            else if (form.field === localFields.autoClusterInstance) {
                 if (!isInit) {
-                    form.rules.disabled = valid
+                    form.visible = !isK8sBareMetal
                 }
             }
-        }
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            if (form.field === localFields.flavorName) {
+            else if (form.field === localFields.flavorName) {
                 if (!isInit) {
                     this.getFlavorInfo(form, forms)
                 }
-                break;
             }
         }
+
         if (!isInit) {
             this.updateState({ forms })
         }
     }
 
-    getSpecificCloudletField = (values, operator) => {
+    isK8sBareMetal = (values, operator) => {
         return Array.isArray(values) && values.some(cloudletName => {
             return fetchCloudletField(this.cloudletList, { operatorName: operator, cloudletName }, localFields.platformType) === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
         })
@@ -415,7 +411,7 @@ class AppInstReg extends React.Component {
         return [
             { label: `${this.isUpdate ? 'Update' : 'Create'} App Instances`, formType: MAIN_HEADER, visible: true },
             { field: localFields.region, label: 'Region', formType: SELECT, placeholder: 'Select Region', rules: { required: true }, visible: true, update: { key: true }, tip:'Select region where you want to deploy.' },
-            { field: localFields.organizationName, label: 'Organization', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'The name of the organization you are currently managing.', update: { key: true } },
+            { field: localFields.organizationName, label: 'Developer', formType: SELECT, placeholder: 'Select Developer', rules: { required: redux_org.isAdmin(this) ? false : true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, tip: 'The name of the organization you are currently managing.', update: { key: true } },
             { field: localFields.appName, label: 'App', formType: SELECT, placeholder: 'Select App', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: localFields.region }, { index: 2, field: localFields.organizationName }], update: { key: true }, tip:'The name of the application to deploy.' },
             { field: localFields.version, label: 'App Version', formType: SELECT, placeholder: 'Select App Version', rules: { required: true }, visible: true, dependentData: [{ index: 3, field: localFields.appName }], update: { key: true }, tip:'The version of the application to deploy.' },
             { field: localFields.operatorName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true }, visible: true, dependentData: [{ index: 1, field: localFields.region }], update: { key: true }, tip:'Which operator do you want to deploy this applicaton? Please select one.' },
@@ -728,10 +724,7 @@ class AppInstReg extends React.Component {
             { label: this.isUpdate ? 'Update' : 'Create', formType: BUTTON, onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: BUTTON, onClick: this.onAddCancel })
 
-
-
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
+        for (let form of forms) {
             this.updateUI(form, data)
             if (data) {
                 if (!this.isUpdate && form.field === localFields.flavorName) {
