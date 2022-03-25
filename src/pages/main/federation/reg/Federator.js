@@ -147,15 +147,20 @@ class RegisterOperator extends React.Component {
         if (responseValid(mc)) {
             const responseData = mc.response.data
             this.props.handleAlertInfo('success', `Federation ${this.isUpdate ? 'updated' : 'created'} successfully !`)
-            let keyData = { ...data }
-            keyData[localFields.federationId] = responseData.federationid
-            keyData[localFields.apiKey] = responseData.apikey
-
-            let fedAddrs = responseData.federationaddr.split(':')
-            if (fedAddrs && fedAddrs.length === 2) {
-                keyData[localFields.federationAddr] = `${urlWithoutPort()}:${fedAddrs[1]}`
+            if (this.isUpdate) {
+                this.onCancel()
             }
-            this.updateState({ keyData })
+            else {
+                let keyData = { ...data }
+                keyData[localFields.federationId] = responseData.federationid
+                keyData[localFields.apiKey] = responseData.apikey
+
+                let fedAddrs = responseData.federationaddr.split(':')
+                if (fedAddrs && fedAddrs.length === 2) {
+                    keyData[localFields.federationAddr] = `${urlWithoutPort()}:${fedAddrs[1]}`
+                }
+                this.updateState({ keyData })
+            }
         }
     }
 

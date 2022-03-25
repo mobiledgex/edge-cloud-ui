@@ -7,7 +7,6 @@ import { createUser as _createUser, publicConfig as _publicConfig } from '../../
 import cloneDeep from "lodash/cloneDeep";
 import { load } from "../../../helper/zxcvbn";
 import ReCAPTCHA from "react-google-recaptcha";
-import { hostURL } from "../../../utils/location_utils";
 import { validateEmail as _validateEmail } from "../../../utils/validation_utils";
 import { copyData } from '../../../utils/file_util';
 import { Icon, Grid, Button as SButton } from "semantic-ui-react";
@@ -23,7 +22,8 @@ import { responseValid } from "../../../services/config";
 
 const styles = theme => ({
     customForm: {
-        marginLeft: '10%'
+        marginLeft: '10%',
+        marginBottom:10
     },
     pwdHelper: {
         fontSize: 12
@@ -43,6 +43,10 @@ const styles = theme => ({
     },
     color_F5382F: {
         color: '#F5382F'
+    },
+    captcha : {
+        marginTop:50,
+        marginBottom:20
     }
 })
 
@@ -192,17 +196,12 @@ class RegistryUserForm extends React.Component {
     }
 
     createUser = async (data) => {
-        const { clientSysInfo } = this.props
         let mc = await _createUser(this, {
             name: data[localFields.username],
             passhash: data[localFields.password],
             email: data[localFields.email],
             verify: {
-                email: data[localFields.email],
-                operatingsystem: clientSysInfo.os.name,
-                browser: clientSysInfo.browser.name,
-                callbackurl: `https://${hostURL()}/#/verify`,
-                clientip: clientSysInfo.clientIP,
+                email: data[localFields.email]
             },
             EnableTOTP: data[localFields.otp],
         })
@@ -330,11 +329,11 @@ class RegistryUserForm extends React.Component {
     forms = () => (
         [
             { field: localFields.username, label: 'Username', labelIcon: <PersonOutlineOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Username', rules: { required: true, autoComplete: "off", requiredColor: '#FFF', type: 'search' }, visible: true, dataValidateFunc: this.validateUsername },
+            { field: localFields.email, label: 'Email', labelIcon: <EmailOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Email ID', rules: { required: true, type: 'email', requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validateEmail },
             { field: localFields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
             { field: localFields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword },
-            { field: localFields.email, label: 'Email', labelIcon: <EmailOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Email ID', rules: { required: true, type: 'email', requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validateEmail },
+            { custom: this.customForm },
             { field: localFields.otp, label: '2FA', labelStyle: { fontWeight: 500, color: '#FFF', fontSize: 14 }, formType: SWITCH, visible: true, value: false, style: { float: 'left', marginTop: -11 } },
-            { custom: this.customForm }
         ]
     )
 
@@ -353,34 +352,34 @@ class RegistryUserForm extends React.Component {
 
     render() {
         const { totp, success, forms } = this.state
-        const { onVerificationEmail } = this.props
+        const { onVerificationEmail, classes } = this.props
         return (
             success ? <Success data={success} onVerificationEmail={onVerificationEmail} /> :
                 totp ? <MexOTPRegistration onComplete={this.onOTPComplete} data={totp} showDone={true} /> :
-                    <Grid>
-                        <Grid.Row>
-                            <span className='title'>Create New Account</span>
-                        </Grid.Row>
-                        <MexForms forms={forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
-                        <Grid.Row style={{ marginTop: 40, marginLeft: 25 }}>
+                    <React.Fragment> <span className='title'>Create New Account</span>
+                        <div style={{display:'flex', justifyContent:'center'}}>
+                            <div style={{ width: 400 }}>
+                                <MexForms forms={forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
+                            </div>
+                        </div>
+                        <div align='center' className={classes.captcha}>
                             <ReCAPTCHA
                                 sitekey={process.env.REACT_APP_CAPTCHA_V2_KEY}
                                 onChange={this.onCaptchaChange}
                                 onExpired={() => { this.setState({ captchaValidated: false }) }}
                             />
-                        </Grid.Row>
-                        <Grid.Row>
-                            <span>
-                                By clicking Sign Up, you agree to our <Link to="/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</Link> and <Link to="/acceptable-use-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Acceptable Use Policy</Link>.
-                            </span>
-                        </Grid.Row>
-                    </Grid>
+                        </div>
+                        <div>
+                            By clicking Sign Up, you agree to our <Link to="/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</Link> and <Link to="/acceptable-use-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Acceptable Use Policy</Link>.
+                        </div>
+                        <br/>
+                    </React.Fragment>
         );
     }
 
     getFormData = () => {
         let forms = this.forms()
-        forms.push({ label: 'Sign Up', formType: BUTTON, onClick: this.onCreate, validate: true, style: { width: 320, marginLeft: 65, marginTop: 20, position: 'absolute', zIndex: 9999, backgroundColor: 'rgba(0, 85, 255, .25)', border: 'solid 1px rgba(128, 170, 255, .5) !important', color: 'white' } })
+        forms.push({ label: 'Sign Up', formType: BUTTON, onClick: this.onCreate, validate: true, style: { width: 307, marginLeft: 47, marginTop: 20, position: 'absolute', zIndex: 9999, backgroundColor: 'rgba(0, 85, 255, .25)', border: 'solid 1px rgba(128, 170, 255, .5) !important', color: 'white' } })
         this.setState({
             forms
         })

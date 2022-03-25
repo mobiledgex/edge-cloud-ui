@@ -3,7 +3,7 @@ import { authSyncRequest } from '../../service';
 import { perpetual } from '../../../helper/constant'
 import { endpoint } from '../..';
 import { redux_org } from '../../../helper/reduxData'
-import { unionBy } from 'lodash';
+import unionBy from 'lodash/unionBy';
 import { responseValid } from '../../config';
 import { localFields } from '../../fields';
 
@@ -45,7 +45,7 @@ export const keys = (host = false) => {
 }
 
 export const iconKeys = (host = false) => ([
-    { field: host ? localFields.partnerRoleAccessToSelfZones : localFields.partnerRoleShareZoneWithSelf, label: 'Registered', icon: 'bookmark_added', count: 0}
+    { field: host ? localFields.partnerRoleAccessToSelfZones : localFields.partnerRoleShareZoneWithSelf, label: 'Registered', icon: 'bookmark_added', count: 0 }
 ])
 
 export const multiDataRequest = (keys, mcList) => {
@@ -68,7 +68,7 @@ export const multiDataRequest = (keys, mcList) => {
             zoneList = data
         }
     }
-    
+
     if (federatorList && federatorList.length > 0) {
         for (let federator of federatorList) {
             for (let federation of federationList) {

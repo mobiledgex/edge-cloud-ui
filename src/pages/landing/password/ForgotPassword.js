@@ -12,7 +12,7 @@ const Message = (props) => {
     return (
         <Grid>
             <Grid.Row>
-                <span className='title'>{type === VERIFY_PASSWORD ? 'Reset your password' : 'Verify your email'}</span>
+                <span className='title'>{type === VERIFY_PASSWORD ? 'Reset Password' : 'Verify Email'}</span>
             </Grid.Row>
             <Grid.Row>
                 <span className="login-text">{`Check your email for a link to ${type === VERIFY_PASSWORD ? 'reset your password' : 'verify your email'}. If it doesn’t appear within a few minutes, check your spam folder.`}</span>

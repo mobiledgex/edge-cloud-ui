@@ -47,8 +47,9 @@ class UserMenu extends React.Component {
     }
 
     //kept seperate to isolate landing module
-    onUpdatePwd = async (password) => {
-        return await updatePwd(this, { password })
+    onUpdatePwd = async (data) => {
+        const {currentPassword, password} = data
+        return await updatePwd(this, { currentPassword, password })
     }
 
     render() {
