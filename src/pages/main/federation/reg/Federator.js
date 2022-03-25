@@ -14,7 +14,6 @@ import FederationKey from './FederatorKey';
 import { readJsonFile } from '../../../../utils/file_util';
 import { urlWithoutPort } from '../../../../utils/location_utils';
 import { responseValid } from '../../../../services/config';
-
 class RegisterOperator extends React.Component {
     constructor(props) {
         super(props)
@@ -70,7 +69,7 @@ class RegisterOperator extends React.Component {
     }
 
     federationIdElements = () => ([
-        { field: localFields.federationId, formType: INPUT, placeholder: 'Enter/Generate Federation ID', rules: { required: true }, width: 15, visible: true },
+        { field: localFields.federationId, formType: INPUT, placeholder: 'Enter/Generate Federation ID', width: 15, visible: true },
         { icon: 'vpn_key', tooltip: 'Generate Federation Key', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: -10 }, width: 1, onClick: this.generateFederationId }
     ])
 
@@ -241,12 +240,10 @@ class RegisterOperator extends React.Component {
                 return item[localFields.organizationName]
             }))
         }
-
         forms.push(
             { label: `${this.isUpdate ? 'Update' : 'Create'}`, formType: BUTTON, onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: BUTTON, onClick: this.onCancel }
         )
-
         this.updateFormData(forms, data)
         this.updateState({
             forms

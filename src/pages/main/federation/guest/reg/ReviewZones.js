@@ -7,6 +7,9 @@ import { registerPartnerZone, showPartnerFederatorZone } from '../../../../../se
 import { authSyncRequest, showAuthSyncRequest } from '../../../../../services/service'
 import { withRouter } from 'react-router-dom';
 import { localFields } from '../../../../../services/fields';
+import { NoData } from '../../../../../helper/formatter/ui'
+import { styleComponent } from '../../host/reg/ShareZones'
+import { withStyles } from '@material-ui/core/styles';
 
 export const zoneKeys = () => ([
     { field: localFields.partnerFederationName, label: 'Federation Name', visible: true },
@@ -16,6 +19,14 @@ export const zoneKeys = () => ([
     { field: localFields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true }
 ])
 
+const styles = {
+    btnDiv: {
+        ...styleComponent.btnDiv
+    },
+    greenBtn: {
+        ...styleComponent.greenBtn
+    }
+};
 class ReviewZones extends React.Component {
 
     constructor(props) {
@@ -64,16 +75,16 @@ class ReviewZones extends React.Component {
 
     render() {
         const { selected, zones } = this.state
-        const { onClose } = this.props
+        const { onClose, loading, classes } = this.props
         return (
             <React.Fragment>
                 <br />
                 <Typography variant='h5'>Partner Zones</Typography>
                 <br />
-                {zones.length > 0 ? <MexTable dataList={zones} keys={zoneKeys()} setSelected={(selected) => this.updateState({ selected })} selected={selected} selection={true} style={{ height: zones.length * 100, maxHeight: 400 }} borderless /> : null}
-                <div style={{ width: '100%', display: 'flex', gap: 20, marginTop: 20, justifyContent: 'right' }}>
-                    <Button style={{ backgroundColor: '#447700' }} onClick={this.onRegisterZone}>Register Zones</Button>
-                    <Button style={{ backgroundColor: '#447700' }} onClick={onClose}>Close</Button>
+                {zones.length > 0 ? <MexTable dataList={zones} keys={zoneKeys()} setSelected={(selected) => this.updateState({ selected })} selected={selected} selection={true} style={{ height: zones.length * 100, maxHeight: 400 }} borderless /> : <NoData loading={loading} />}
+                <div className={classes.btnDiv}>
+                    <Button className={classes.greenBtn} onClick={this.onRegisterZone}>Register Zones</Button>
+                    <Button className={classes.greenBtn} onClick={onClose}>Close</Button>
                 </div>
             </React.Fragment>
         )
@@ -106,4 +117,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(ReviewZones));
+export default withRouter(connect(null, mapDispatchProps)(withStyles(styles)(ReviewZones)))

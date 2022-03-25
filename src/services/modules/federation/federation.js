@@ -68,7 +68,6 @@ export const multiDataRequest = (keys, mcList) => {
             zoneList = data
         }
     }
-
     if (federatorList && federatorList.length > 0) {
         for (let federator of federatorList) {
             for (let federation of federationList) {
@@ -86,7 +85,7 @@ export const multiDataRequest = (keys, mcList) => {
             federator[localFields.zones] = []
             for (let zone of zoneList) {
                 if (federator[localFields.partnerFederationName] === zone[localFields.partnerFederationName] && federator[localFields.operatorName] === zone[localFields.operatorName]) {
-                    federator[localFields.zones].push({ ...zone, registered: zone[localFields.registered] ? perpetual.YES : perpetual.NO })
+                    federator[localFields.zones].push({ ...zone, registered: zone[localFields.registered] ? perpetual.YES : perpetual.NO, countryCode: isShared ? federator[localFields.countryCode] : federator[localFields.partnerCountryCode] })
                 }
             }
             federator[localFields.zoneCount] = federator[localFields.zones].length
