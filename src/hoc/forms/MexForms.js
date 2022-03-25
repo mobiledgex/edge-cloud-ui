@@ -497,11 +497,20 @@ const MexForms = (props) => {
         )
     }
 
+    //hide form if condition fail
+    const formVisibility = (form) => {
+        let visible = form.visible
+        if (visible && props.isUpdate && !Boolean(form.forms) && form.rules?.disabled) {
+            visible = form.value !== undefined
+        }
+        return visible
+    }
+
     return (
         forms ?
             <div style={props.style ? {} : { paddingTop: `${error ? 60 : 10}px`, backgroundColor: '#292c33', position: 'relative', }}>
                 {error ?
-                    <div style={props.style ? props.style : { position: 'absolute', zIndex: 999, left: 0, right: 0, top: 0 }}>
+                    <div style={props.style ?? { position: 'absolute', zIndex: 999, left: 0, right: 0, top: 0 }}>
                         <Alert severity="error">{error}</Alert>
                         {props.style ? null : <div><br /><br /></div>}
                     </div> : null}
@@ -509,6 +518,7 @@ const MexForms = (props) => {
                     <Form.Group widths="equal" className={classes.formGroup}>
                         <Grid columns={2}>
                             {forms.map((form, i) => {
+                                const visible = formVisibility(form)
                                 if (form.custom) {
                                     return (
                                         <React.Fragment key={i}>
@@ -520,7 +530,7 @@ const MexForms = (props) => {
                                     initValidateRules(form);
                                     checkRole(form)
                                     return (
-                                        (form.advance === undefined || form.advance === true) && form.visible ?
+                                        (form.advance === undefined || form.advance === true) && visible ?
                                             form.formType === MAIN_HEADER ?
                                                 loadMainHeader(i, form) :
                                                 form.formType === HEADER ?
