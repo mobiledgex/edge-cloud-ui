@@ -12,8 +12,6 @@ import { cloudletKeys } from './primary';
 import { websocket } from '../..';
 import { localFields } from '../../fields';
 
-
-
 export const keys = () => ([
     { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
     { field: localFields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group: true, key: true },
@@ -53,6 +51,7 @@ export const keys = () => ([
     { field: localFields.gpuExist, label: 'GPU', detailView: false },
     { field: localFields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING },
     { field: localFields.platformHighAvailability, serverField: 'platform_high_availability', label: 'Platform High Availability', format:true },
+    { field: localFields.singleK8sClusterOwner, label: 'Single K8s Cluster Owner', serverField: 'single_kubernetes_cluster_owner', dataType: perpetual.TYPE_STRING },
     { field: localFields.deployment, serverField: 'deployment', label: 'Deployment Type' }
 ])
 
