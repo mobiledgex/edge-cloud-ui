@@ -814,7 +814,7 @@ class CloudletReg extends React.Component {
                             envForm.value = value
                         }
                     }
-                    forms.splice(18 + multiFormCount, 0, this.getEnvForm(envForms))
+                    forms.splice(17 + multiFormCount, 0, this.getEnvForm(envForms))
                     multiFormCount += 1
                 })
             }
@@ -836,7 +836,7 @@ class CloudletReg extends React.Component {
                             resourceQuotaForm.value = item['alert_threshold'] ? item['alert_threshold'] : data[localFields.defaultResourceAlertThreshold]
                         }
                     }
-                    forms.splice(19 + multiFormCount, 0, this.getResoureQuotaForm(resourceQuotaForms))
+                    forms.splice(18 + multiFormCount, 0, this.getResoureQuotaForm(resourceQuotaForms))
                     multiFormCount += 1
                 })
             }
