@@ -72,12 +72,20 @@ class CloudletReg extends React.Component {
         this.gpuDriverList = [];
         this.kafkaRequired = true;
         this.allianceList = []
+        this.developerOrgList = []
     }
 
     updateState = (data) => {
         if (this._isMounted) {
             this.setState({ ...data })
         }
+    }
+
+    updateResoursceQuotaList = (dataList) => {
+        this.resourceQuotaList = dataList.map(quota => {
+            quota[localFields.resourceName] = quota.name
+            return quota
+        })
     }
 
     // load dynamic tooltip for environments variables
@@ -121,11 +129,7 @@ class CloudletReg extends React.Component {
                                 }
                                 else if (method === endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
                                     if (data.properties) {
-                                        this.resourceQuotaList = data.properties
-                                        this.resourceQuotaList = this.resourceQuotaList.map(quota => {
-                                            quota[localFields.resourceName] = quota.name
-                                            return quota
-                                        })
+                                        this.updateResoursceQuotaList(data.properties)
                                     }
                                 }
                             }
@@ -158,11 +162,22 @@ class CloudletReg extends React.Component {
                         envForm.visible = false
                     }
                 }
-                forms.splice(17 + count, 0, this.getEnvForm(envForms))
+                forms.splice(18 + count, 0, this.getEnvForm(envForms))
                 count++
             }
         })
         this.setState({ forms })
+    }
+
+    getDeveloperOrg = async (form, forms, isInit) => {
+        if (!isInit) {
+            if (this.developerOrgList.length === 0) {
+                this.developerOrgList = await showAuthSyncRequest(self, showOrganizations(self, { type: perpetual.DEVELOPER }, true))
+                this.developerOrgList = this.developerOrgList.sort()
+            }
+            this.updateUI(form)
+            this.updateState({ forms })
+        }
     }
 
     platformTypeValueChange = async (currentForm, forms, isInit) => {
@@ -202,6 +217,7 @@ class CloudletReg extends React.Component {
             }
             else if (form.field === localFields.singleK8sClusterOwner) {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
+                form.visible && this.getDeveloperOrg(form, forms, isInit)
             }
             return valid
         })
@@ -698,6 +714,9 @@ class CloudletReg extends React.Component {
                         case localFields.operatorName:
                             form.options = this.operatorList
                             break;
+                        case localFields.singleK8sClusterOwner:
+                            form.options = this.developerOrgList
+                            break;
                         case localFields.region:
                             form.options = this.props.regions;
                             break;
@@ -756,9 +775,8 @@ class CloudletReg extends React.Component {
             let mcList = await service.multiAuthSyncRequest(this, requestList)
 
             if (mcList && mcList.length > 0) {
-                for (let i = 0; i < mcList.length; i++) {
-                    let mc = mcList[i];
-                    if (mc && mc.response && mc.response.data) {
+                for (const mc of mcList) {
+                    if (mc?.response?.data) {
                         let responseData = mc.response.data
                         let request = mc.request;
                         if (request.method === endpoint.SHOW_ORG) {
@@ -772,10 +790,7 @@ class CloudletReg extends React.Component {
                         }
                         else if (request.method === endpoint.GET_CLOUDLET_RESOURCE_QUOTA_PROPS) {
                             if (responseData.properties) {
-                                this.resourceQuotaList = responseData.properties
-                                this.resourceQuotaList = this.resourceQuotaList.map(quota => {
-                                    return quota.name
-                                })
+                                this.updateResoursceQuotaList(responseData.properties)
                             }
                         }
                     }
@@ -907,7 +922,7 @@ class CloudletReg extends React.Component {
             { field: localFields.containerVersion, label: 'Container Version', formType: INPUT, placeholder: 'Enter Container Version', rules: { required: false }, visible: true, tip: 'Cloudlet container version', advance: false },
             { field: localFields.vmImageVersion, label: 'VM Image Version', formType: INPUT, placeholder: 'Enter VM Image Version', rules: { required: false }, visible: true, tip: 'MobiledgeX baseimage version where CRM services reside', advance: false },
             { field: localFields.maintenanceState, label: 'Maintenance State', formType: SELECT, placeholder: 'Select Maintenance State', rules: { required: false }, visible: this.isUpdate, update: { id: ['30'] }, tip: 'Maintenance allows for planned downtimes of Cloudlets. These states involve message exchanges between the Controller, the AutoProv service, and the CRM. Certain states are only set by certain actors', advance: false },
-            { field: localFields.singleK8sClusterOwner, formType: INPUT, placeholder: 'Enter Single K8s Cluster Owner', label: 'Single K8s Cluster Owner', visible: false, tip: 'single kubernetes cluster cloudlet platforms, cluster is owned by this organization instead of multi-tenant.', update: { id: ['48'] }, advance: false },
+            { field: localFields.singleK8sClusterOwner, label: 'Single K8s Cluster Owner', formType: this.isUpdate ? INPUT : SELECT, placeholder: 'Select Single K8s Cluster Owner', visible: true, tip: 'single K8s cluster cloudlet platforms, cluster is owned by this organization instead of multi-tenant.', advance: false },
             { field: localFields.deployment, label: 'Deployment Type', formType: SELECT, placeholder: 'Select Deployment Type', visible: true, tip: 'Deployment type (Kubernetes, Docker, or VM)', advance: false },
             { field: localFields.platformHighAvailability, label: 'Platform High Availability', formType: SWITCH, visible: false, update: { id: ['50'] }, tip: 'Enable platform H/A', advance: false },
             { field: localFields.kafkaCluster, label: 'Kafka Cluster', formType: INPUT, placeholder: 'Enter Kafka Cluster Endpoint', rules: { required: false, onBlur: true }, visible: true, update: { id: ['42'] }, tip: 'Operator provided kafka cluster endpoint to push events to', advance: false },
