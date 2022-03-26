@@ -500,9 +500,10 @@ const MexForms = (props) => {
     //hide form if condition fail
     const formVisibility = (form) => {
         let visible = form.visible
-        if (visible && props.isUpdate && !Boolean(form.forms) && form.rules?.disabled) {
-            visible = form.value !== undefined
-        }
+        //implement in 3.2 dualist causing issue
+        // if (visible && props.isUpdate && !Boolean(form.forms) && form.rules?.disabled) {
+        //     visible = form.value !== undefined
+        // }
         return visible
     }
 
