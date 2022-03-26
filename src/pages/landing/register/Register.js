@@ -18,11 +18,9 @@ import MexOTPRegistration from '../otp/MexOTPRegistration';
 import { Link, useHistory } from 'react-router-dom';
 import { endpoint } from "../../../helper/constant";
 import { authSyncRequest } from "../../../services/service";
-
-
+import { validateEmail as _validateEmail } from "../../../utils/validation_utils";
 
 const BRUTE_FORCE_GUESSES_PER_SECOND = 1000000
-const HOST = window.location.host;
 
 const validateLetterCase = (value) => {
     return /[a-z]/.test(value) && /[A-Z]/.test(value)
@@ -99,7 +97,7 @@ class RegistryUserForm extends React.Component {
     }
 
     validateEmail = (form) => {
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value)) {
+        if (!_validateEmail(form.value)) {
             form.error = 'Invalid email address'
             return false;
         }
@@ -175,11 +173,7 @@ class RegistryUserForm extends React.Component {
             passhash: data[fields.password],
             email: data[fields.email],
             verify: {
-                email: data[fields.email],
-                operatingsystem: clientSysInfo.os.name,
-                browser: clientSysInfo.browser.name,
-                callbackurl: `https://${HOST}/#/verify`,
-                clientip: clientSysInfo.clientIP,
+                email: data[fields.email]
             },
             EnableTOTP: data[fields.otp],
         })
@@ -332,24 +326,24 @@ class RegistryUserForm extends React.Component {
         return (
             success ? <Success data={success} onVerificationEmail={onVerificationEmail} /> :
                 totp ? <MexOTPRegistration onComplete={this.onOTPComplete} data={totp} showDone={true} /> :
-                    <Grid>
-                        <Grid.Row>
-                            <span className='title'>Create New Account</span>
-                        </Grid.Row>
-                        <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
-                        <Grid.Row style={{ marginTop: 40, marginLeft: 25 }}>
-                            <ReCAPTCHA
-                                sitekey={process.env.REACT_APP_CAPTCHA_V2_KEY}
-                                onChange={this.onCaptchaChange}
-                                onExpired={() => { this.setState({ captchaValidated: false }) }}
-                            />
-                        </Grid.Row>
-                        <Grid.Row>
-                            <span>
-                                By clicking Sign Up, you agree to our <Link to="/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</Link> and <Link to="/acceptable-use-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Acceptable Use Policy</Link>.
-                            </span>
-                        </Grid.Row>
-                    </Grid>
+                    <React.Fragment>
+                        <span className='title'>Create New Account</span>
+                        <Grid>
+                            <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{ marginTop: 5 }} />
+                            <Grid.Row style={{ marginTop: 40, marginLeft: 25 }}>
+                                <ReCAPTCHA
+                                    sitekey={process.env.REACT_APP_CAPTCHA_V2_KEY}
+                                    onChange={this.onCaptchaChange}
+                                    onExpired={() => { this.setState({ captchaValidated: false }) }}
+                                />
+                            </Grid.Row>
+                            <Grid.Row>
+                                <span>
+                                    By clicking Sign Up, you agree to our <Link to="/terms-of-use" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0' }}>Terms of Use</Link> and <Link to="/acceptable-use-policy" target="_blank" className="login-text" style={{ fontStyle: 'italic', textDecoration: 'underline', cursor: 'pointer', color: "rgba(255,255,255,.5)", padding: '0', }}>Acceptable Use Policy</Link>.
+                                </span>
+                            </Grid.Row>
+                        </Grid>
+                    </React.Fragment>
         );
     }
 

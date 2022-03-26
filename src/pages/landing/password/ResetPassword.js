@@ -6,13 +6,12 @@ import UpdatePassword from '../../main/userSetting/UpdatePassword';
 const ResetPassword = (props) => {
     const history = useHistory()
     return (
-        <Grid >
-            <Grid.Row>
-                <span className='title'>Reset your password</span>
-            </Grid.Row>
-            <UpdatePassword onReset={() => { history.push('/') }} />
-            <br />
-        </Grid>
+        <React.Fragment>
+            <span className='title'>Reset password</span>
+            <Grid >
+                <UpdatePassword onReset={() => { history.push('/') }} />
+            </Grid>
+        </React.Fragment>
     )
 }
 

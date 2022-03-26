@@ -30,20 +30,13 @@ const useStyles = makeStyles({
     },
     validationRight: { float: 'right', right: 0 },
     linkContainer: {
-        fontSize: 15,
-        padding: '0'
-    },
-    divLink1: {
-        display: 'inline',
-        float: 'left'
-    },
-    divLink2: {
-        display: 'inline',
-        float: 'center'
-    },
-    divLink3: {
-        display: 'inline',
-        float: 'right'
+        fontSize: 13,
+        padding: '0',
+        marginTop:30,
+        display:'flex',
+        alignItems:'center',
+        justifyContent:'center',
+        gap:15
     },
     aLink: {
         fontStyle: 'italic',
@@ -94,7 +87,6 @@ const Login = (props) => {
     }
     return (
         <React.Fragment>
-            <br />
             <span className='title'>Sign into your account</span>
             <div style={{ padding: 30 }}>
                 <Grid className="signUpBD" style={{ padding: '0 20px 0 20px' }}>
@@ -114,20 +106,12 @@ const Login = (props) => {
                 <div style={{ float: 'left', display: 'inline', left: 0, color: 'white', cursor: 'pointer', marginBottom: 15, marginTop: 0, color: '#C4D3DC' }} onClick={() => reValidate(perpetual.VERIFY_EMAIL)}>Verify Email</div>
                 <div style={{ float: 'right', display: 'inline', right: 0, color: 'white', cursor: 'pointer', marginBottom: 15, marginTop: 0, color: '#C4D3DC' }} onClick={() => reValidate(perpetual.VERIFY_PASSWORD)}>Forgot Password</div>
                 <Button onClick={() => onSubmit()}>Log In</Button>
-                <br /><br />
-                <span>
-                    <div className={classes.linkContainer}>
-                        <div className={classes.divLink1}>
-                            <Link className={classes.aLink} to="/terms-of-use" target="_blank">Terms of Use</Link>
-                        </div>
-                        <div className={classes.divLink2}>
-                            <Link className={classes.aLink} to="/acceptable-use-policy" target="_blank" >Acceptable Use Policy</Link>
-                        </div>
-                        <div className={classes.divLink3}>
-                            <a className={classes.aLink} href="https://mobiledgex.com/privacy-policy/" target="_blank">Privacy Policy</a>
-                        </div>
-                    </div>
-                </span>
+                <div className={classes.linkContainer}>
+                    <Link className={classes.aLink} to="/terms-of-use" target="_blank">Terms of Use</Link>
+                    <Link className={classes.aLink} to="/acceptable-use-policy" target="_blank" >Acceptable Use Policy</Link>
+                    <a className={classes.aLink} href="https://mobiledgex.com/privacy-policy/" target="_blank">Privacy Policy</a>
+                    <a className={classes.aLink} href="https://status.mobiledgex.com" target="_blank">Status</a>
+                </div>
             </div>
         </React.Fragment>
     )

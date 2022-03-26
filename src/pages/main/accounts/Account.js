@@ -68,7 +68,7 @@ class AccountList extends React.Component {
     }
 
     onSendEmail = async (username, email) => {
-        let data = { username: username, email: email, callbackurl: `https://${window.location.host}/#/verify` }
+        let data = { username, email }
         if (await serverData.sendVerify(this, data)) {
             this.props.handleAlertInfo('success', 'Verification email sent')
         }
@@ -131,11 +131,11 @@ class AccountList extends React.Component {
         )
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this._isMounted = true
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         this._isMounted = false
     }
 };

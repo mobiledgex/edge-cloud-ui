@@ -11,8 +11,6 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 import * as serverData from '../../services/model/serverData';
 import MexAlert from '../../hoc/alert/AlertDialog';
-import PublicIP from 'public-ip';
-import UAParser from 'ua-parser-js';
 import { Container } from 'semantic-ui-react';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import './style.css'
@@ -35,19 +33,13 @@ class Landing extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            mexAlertMessage: undefined,
-            clientSysInfo: {}
+            mexAlertMessage: undefined
         }
     }
 
     onPasswordReset = async (email) => {
-        const { clientSysInfo } = this.state
         let requestData = {
-            email,
-            operatingsystem: clientSysInfo.os.name,
-            browser: clientSysInfo.browser.name,
-            callbackurl: `https://${HOST}/#/passwordreset`,
-            clientip: clientSysInfo.clientIP
+            email
         }
         let valid = await serverData.resetPasswordRequest(this, requestData)
         if (valid) {
@@ -57,7 +49,7 @@ class Landing extends Component {
     }
 
     onVerificationEmail = async (email) => {
-        let valid = await serverData.sendVerify(this, { email, callbackurl: `https://${HOST}/#/verify` })
+        let valid = await serverData.sendVerify(this, { email })
         if (valid) {
             this.props.handleAlertInfo('success', 'We have e-mailed your verification link')
         }
@@ -79,7 +71,6 @@ class Landing extends Component {
 
     render() {
         const { history, classes, loading } = this.props
-        const { clientSysInfo } = this.state
         const path = history.location.pathname
         return (
             <div className="login_main">
@@ -95,10 +86,10 @@ class Landing extends Component {
                             <Container style={{ width: path === '/register' ? 500 : 400 }}>
                                 {
                                     path === '/forgotpassword' ? <ForgotPassword onPasswordReset={this.onPasswordReset} onVerificationEmail={this.onVerificationEmail}/> :
-                                        path === '/register' ? <Register clientSysInfo={clientSysInfo} onVerificationEmail={this.onVerificationEmail} /> :
+                                        path === '/register' ? <Register onVerificationEmail={this.onVerificationEmail} /> :
                                             path === '/passwordreset' ? <ResetPassword /> :
                                                 path === '/verify' ? <Verify /> :
-                                                    <Login clientSysInfo={clientSysInfo} />
+                                                    <Login />
                                 }
                             </Container>
                         </div>
@@ -110,25 +101,9 @@ class Landing extends Component {
         )
     }
 
-    receiveClientIp = async () => {
-        try {
-            var parser = new UAParser();
-            let resultPs = parser.getResult();
-            let clientSysInfo = { os: resultPs.os, browser: resultPs.browser };
-            let IPAddress = await PublicIP.v4()
-            clientSysInfo['clientIP'] = IPAddress ? IPAddress : '127.0.0.1';
-            this.setState({ clientSysInfo })
-        }
-        catch (e) {
-        }
-    }
-
     componentDidMount() {
-        this.receiveClientIp()
         if (this.props.match.path === '/logout') {
-            localStorage.removeItem(perpetual.LOCAL_STRAGE_KEY);
-            localStorage.removeItem(perpetual.LS_USER_META_DATA);
-            localStorage.removeItem(perpetual.LS_REGIONS);
+            localStorage.clear();
         }
         else if (localStorage.getItem(perpetual.LOCAL_STRAGE_KEY)) {
             this.props.history.push(`/main/${perpetual.PAGE_ORGANIZATIONS.toLowerCase()}`)

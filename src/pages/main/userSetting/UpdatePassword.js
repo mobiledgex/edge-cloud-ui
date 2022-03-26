@@ -117,9 +117,11 @@ class UpdatePassword extends React.Component {
     }
 
     onCreate = async (data) => {
-        if (this.props.dialog) {
+        const { dialog } = this.props
+        if (dialog) {
             this.updateState({ loading: true })
-            let mc = await updatePwd(this, { password: data.password })
+            const { password, currentPassword } = data
+            let mc = await updatePwd(this, { password, currentPassword })
             if (responseValid(mc)) {
                 this.updateState({ open: false })
                 this.props.handleAlertInfo('success', 'Password updated successfully')
@@ -208,8 +210,9 @@ class UpdatePassword extends React.Component {
         )
     }
 
-    forms = () => (
+    forms = (dialog) => (
         [
+            { field: fields.currentPassword, label: 'Current Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Current Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: dialog },
             { field: fields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
             { field: fields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword },
         ]
@@ -253,7 +256,7 @@ class UpdatePassword extends React.Component {
                             {loading ? <LinearProgress /> : null}
                             <DialogTitle id="update_password">
                                 <div style={{ float: "left", display: 'inline-block' }}>
-                                    <h3>Update Password</h3>
+                                    <h3>Reset Password</h3>
                                 </div>
                             </DialogTitle>
                             <DialogContent style={{ width: 400 }}>
@@ -270,23 +273,21 @@ class UpdatePassword extends React.Component {
     }
 
     getFormData = () => {
-        let style = { position: 'absolute', border: 'solid 1px rgba(128, 170, 255, .5) !important', color: 'white', zIndex: 9999 }
-        if (this.props.dialog) {
+        let style = { border: 'solid 1px rgba(128, 170, 255, .5) !important', color: 'white'}
+        const { dialog } = this.props
+        if (dialog) {
             style.width = 70
-            style.right = 80
             style.height = 30
             style.backgroundColor = 'rgba(118, 255, 3, 0.7)'
         }
         else {
-            style.width = 200
-            style.marginLeft = 60
-            style.marginTop = 20
+            style.width = 240
             style.backgroundColor = 'rgba(0, 85, 255, .25)'
         }
 
-        let forms = this.forms()
-        forms.push({ label: 'Update', formType: BUTTON, onClick: this.onCreate, validate: true, style: style })
-        if (this.props.dialog) {
+        let forms = this.forms(dialog)
+        forms.push({ label: 'Reset', formType: BUTTON, onClick: this.onCreate, validate: true, style: {...style, marginLeft: dialog ? 180: 60} })
+        if (dialog) {
             let cStyle = cloneDeep(style)
             cStyle.right = 0
             forms.push({ label: 'Cancel', formType: BUTTON, onClick: this.handleClose, style: cStyle })

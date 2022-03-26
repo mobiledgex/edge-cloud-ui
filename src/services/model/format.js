@@ -118,6 +118,7 @@ export const fields = {
     nextDate: 'nextDate',
     timezone: 'timezone',
     password: 'password',
+    currentPassword:'currentPassword',
     confirmPassword: 'confirmPassword',
     role: 'role',
     email: 'email',

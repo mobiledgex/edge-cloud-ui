@@ -12,7 +12,6 @@ class VerifyContent extends Component {
             verified: false,
             success: false
         };
-
     }
 
     requestVerify = async () => {
