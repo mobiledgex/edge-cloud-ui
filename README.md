@@ -17,7 +17,7 @@ To Start Application:
 
 `npm start`  
 
-To Visit App:
+To Visit Application:
 
 `localhost:3000`  
 
