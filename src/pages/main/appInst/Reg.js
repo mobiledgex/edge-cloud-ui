@@ -346,9 +346,9 @@ class AppInstReg extends React.Component {
             }
             else if (form.field === localFields.clusterName) {
                 if (!isInit) {
-                    form.formType = isK8sBareMetal ? INPUT : SELECT
-                    form.rules.required = !isK8sBareMetal
-                    form.placeholder = isK8sBareMetal ? 'Enter Cluster Name' : 'Select Clusters'
+                    form.formType = currentForm.value.length === 1 && isK8sBareMetal ? INPUT : SELECT
+                    form.rules.required = currentForm.value.length === 1 ? !isK8sBareMetal : true
+                    form.placeholder = currentForm.value.length === 1 && isK8sBareMetal ? 'Enter Cluster Name' : 'Select Clusters'
                 }
                 this.updateUI(form)
             }
@@ -538,6 +538,7 @@ class AppInstReg extends React.Component {
                         newData[localFields.dedicatedIp] =  fetchedFields[0] === perpetual.PLATFORM_TYPE_K8S_BARE_METAL ? data[localFields.dedicatedIp] : undefined
                         newData[localFields.cloudletName] = cloudlet;
                         newData[localFields.partnerOperator] = fetchedFields[1] 
+                        newData[localFields.clusterName] = this.isK8sBareMetal([cloudlet], data[localFields.operatorName]) ? null : data[localFields.clusterName]
                         newData[localFields.compatibilityVersion] = this.fetchCompabilityVersion(data, cloudlet)
                         if (flavors) {
                             newData[localFields.flavorName] = flavors[`${data[localFields.region]}>${data[localFields.operatorName]}>${cloudlet}`]
