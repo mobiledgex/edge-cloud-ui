@@ -29,7 +29,8 @@ const Total = (props) => {
                 return (
                     <div key={totalKey.field} >
                         <div className='mex-card' style={{ height: '100%' }} align={'center'}>
-                            {loading ? <LinearProgress /> : <div style={{ padding: 10, paddingTop: 20 }}>
+                            {loading ? <LinearProgress /> : null}
+                            <div style={{ padding: 10, paddingTop: 20 }}>
                                 <Doughnut size={80} data={item} colors={colors} label={count} />
                                 <div style={{ marginTop: 15 }}>
                                     {Object.keys(colors).map(colorKey => {
@@ -46,7 +47,7 @@ const Total = (props) => {
                                         <Typography variant='overline'>{totalKey.label}</Typography>
                                     </div>
                                 </div>
-                            </div>}
+                            </div>
                         </div>
                     </div>
                 )

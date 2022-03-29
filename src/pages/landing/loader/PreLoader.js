@@ -22,7 +22,8 @@ class LogoLoader extends React.Component {
     loadMainPage = () => {
         this.props.handleLoadMain(true)
         let currentPage = this.props.location.state ? this.props.location.state.currentPage : undefined
-        this.props.history.push(currentPage ? currentPage : `/main/${perpetual.PAGE_DASHBOARD.toLowerCase()}`)
+        let page = redux_org.isAdmin(this) ? perpetual.PAGE_DASHBOARD : perpetual.PAGE_ORGANIZATIONS
+        this.props.history.push(currentPage ? currentPage : `/main/${page.toLowerCase()}`)
     }
 
     fetchOrgInfo = (userInfo) => {
@@ -121,7 +122,8 @@ class LogoLoader extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        loadMain: state.loadMain.data
+        loadMain: state.loadMain.data,
+        organizationInfo: state.organizationInfo.data
     }
 };
 
