@@ -185,6 +185,7 @@ export const HEALTH_CLOUDLET_OFFLINE = 'Cloudlet Offline'
 export const OFFLINE = 'Offline'
 export const ONLINE = 'Online'
 
+export const PAGE_DASHBOARD = 'Dashboard'
 export const PAGE_ORGANIZATIONS = 'Organizations'
 export const PAGE_USER_ROLES = 'UserRoles'
 export const PAGE_ACCOUNTS = 'Accounts'

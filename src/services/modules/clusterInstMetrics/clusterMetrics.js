@@ -3,6 +3,7 @@ import { UNIT_BYTES, UNIT_PERCENTAGE } from '../../../pages/main/monitoring/help
 import { localFields } from '../../fields';
 import { endpoint } from '../..';
 import { redux_org } from '../../../helper/reduxData';
+import { pick } from '../../../helper/constant/operators';
 
 export const customData = (id, data) => {
     switch (id) {
@@ -47,13 +48,28 @@ export const clusterResourceKeys = () => ([
     { field: 'map', header: 'Map' }
 ])
 
-export const clusterMetrics = (self, data, list, organization) => {
+/**New */
+const metricElements = [
+    { field: localFields.networkSent, label: 'N/W Sent', serverField: 'sendBytes', unit: UNIT_BYTES, icon:'network_wifi' },
+    { field: localFields.networkReceived, label: 'N/W Received', serverField: 'recvBytes', unit: UNIT_BYTES, icon:'network_wifi' },
+    { field: localFields.cpu, label: 'CPU', serverField: 'cpu', unit: UNIT_PERCENTAGE, icon:'cpu.svg' },
+    { field: localFields.mem, label: 'Memory', serverField: 'mem', unit: UNIT_PERCENTAGE, icon:'ram.svg' },
+    { field: localFields.disk, label: 'Disk', serverField: 'disk', unit: UNIT_PERCENTAGE, icon:'save' },
+]
+
+export const clusterInstMetricsElements = [
+    { serverRequest: endpoint.CLUSTER_METRICS_ENDPOINT, keys: metricElements },
+]
+
+export const clusterMetrics = (self, data, list) => {
+    let requestData = pick(data, [localFields.region, localFields.starttime, localFields.endtime, localFields.selector, localFields.numsamples])
+    let organization = data[localFields.organizationName]
     if (list) {
-        data.clusterinsts = list
+        requestData.clusterinsts = list
     }
-    else {
-        data.clusterinst = redux_org.isOperator(self) ? { cloudlet_key: { organization } } : { organization }
+    else if (organization) {
+        requestData.clusterinst = redux_org.isOperator(self) ? { cloudlet_key: { organization } } : { organization }
     }
-    return { method: endpoint.CLUSTER_METRICS_ENDPOINT, data, keys: clusterMetricsKeys }
+    return { method: endpoint.CLUSTER_METRICS_ENDPOINT, data: requestData, keys: clusterMetricsKeys }
 }
 

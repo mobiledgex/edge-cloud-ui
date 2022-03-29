@@ -58,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
     drawer: {
         width: drawerWidth,
         flexShrink: 0,
+        marginBottom: 5,
         whiteSpace: 'nowrap',
     },
     drawerOpen: {
@@ -104,8 +105,10 @@ const useStyles = makeStyles((theme) => ({
     },
     logo: {
         width: 160,
-        marginTop: 5,
-        marginRight: 10
+        marginRight: 29
+    },
+    drawerControl: {
+        marginBottom: 5
     },
     drawerControl: {
         marginBottom: 5

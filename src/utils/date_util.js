@@ -2,6 +2,7 @@ import * as moment from 'moment'
 import momentTimezone from "moment-timezone";
 import { getUserMetaData } from '../helper/ls';
 
+export const FORMAT_MMM_DD = 'MMM DD'
 export const FORMAT_FULL_DATE = 'YYYY-MM-DD'
 export const FORMAT_DATE_FILE_NAME = 'YYYY-MM-DD-HH-mm'
 export const FORMAT_FULL_TIME = 'HH:mm:ss'
@@ -82,6 +83,11 @@ export const utcTime = (format, date) => {
 export const subtractDays = (value, date) => {
     let obj = date ? moment(date) : moment()
     return value ? obj.subtract(value, 'days') : obj.subtract('days')
+}
+
+export const addDays = (value, date) => {
+    let obj = date ? moment(date) : moment()
+    return value ? obj.add(value, 'days') : obj.add('days')
 }
 
 export const isAfter = (start, end) => {

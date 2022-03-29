@@ -11,10 +11,10 @@ export const showEvents = async (self, data, showSpinner) => {
     return mcRequest
 }
 
-export const showAudits = async (self, data, org, showSpinner) => {
+export const showAudits = async (self, data, org=undefined, showSpinner) => {
     let match = data.match ? data.match : {}
     match.types = [data.type]
-    if (!redux_org.isAdmin(self) || org) {
+    if (!redux_org.isAdmin(self) || Boolean(org)) {
         match.orgs = redux_org.nonAdminOrg(self) ? [redux_org.nonAdminOrg(self)] : [org]
     }
     data.match = match
