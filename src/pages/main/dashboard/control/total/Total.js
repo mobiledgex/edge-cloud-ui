@@ -1,9 +1,9 @@
-import { CircularProgress, Typography } from '@material-ui/core'
-import { Skeleton } from '@material-ui/lab'
-import React, { useEffect } from 'react'
+import { Typography } from '@material-ui/core'
+import React from 'react'
 import Doughnut from '../../../../../hoc/charts/d3/doughnut/Doughnut'
 import { localFields } from '../../../../../services/fields'
 import { toFirstUpperCase } from '../../../../../utils/string_utils'
+import LinearProgress from '../../../../../hoc/loader/LinearProgress'
 
 {/* <div className='total'>
                             <Total label='Cloudlet' data={total[localFields.cloudletName]} />
@@ -19,7 +19,7 @@ const totalKeys = [
 ]
 
 const Total = (props) => {
-    const { data } = props
+    const { data, loading } = props
     return (
         <div className='total'>
             {data ? totalKeys.map(totalKey => {
@@ -28,28 +28,30 @@ const Total = (props) => {
                 Object.keys(item).forEach(key => count = count + item[key])
                 return (
                     <div key={totalKey.field} >
-                        <div className='mex-card' style={{ height: '100%', padding: 10, paddingTop: 20 }} align={'center'}>
-                            <Doughnut size={80} data={item} colors={colors} label={count} />
-                            <div style={{ marginTop: 15 }}>
-                                {Object.keys(colors).map(colorKey => {
-                                    return (
-                                        <div key={colorKey} align='center'>
-                                            <div style={{ width: 108, display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'left', fontWeight: 900, color: 'white' }}>
-                                                <div style={{ width: 20, height: 5, backgroundColor: colors[colorKey] }}></div>
-                                                <p>{`${toFirstUpperCase(colorKey)}: ${item[colorKey] ?? 0}`}</p>
+                        <div className='mex-card' style={{ height: '100%' }} align={'center'}>
+                            {loading ? <LinearProgress /> : <div style={{ padding: 10, paddingTop: 20 }}>
+                                <Doughnut size={80} data={item} colors={colors} label={count} />
+                                <div style={{ marginTop: 15 }}>
+                                    {Object.keys(colors).map(colorKey => {
+                                        return (
+                                            <div key={colorKey} align='center'>
+                                                <div style={{ width: 108, display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'left', fontWeight: 900, color: 'white' }}>
+                                                    <div style={{ width: 20, height: 5, backgroundColor: colors[colorKey] }}></div>
+                                                    <p>{`${toFirstUpperCase(colorKey)}: ${item[colorKey] ?? 0}`}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    )
-                                })}
-                                <div style={{ marginTop: 8 }}>
-                                    <Typography variant='overline'>{totalKey.label}</Typography>
+                                        )
+                                    })}
+                                    <div style={{ marginTop: 8 }}>
+                                        <Typography variant='overline'>{totalKey.label}</Typography>
+                                    </div>
                                 </div>
-                            </div>
+                            </div>}
                         </div>
                     </div>
                 )
-            }) : Object.keys(colors).map(colorKey=>{
-                return <div key={colorKey} className='mex-card' style={{ display:'flex', alignItems:'center', height: '100%', justifyContent:'center' }} ><CircularProgress size={80} thickness={1}/></div>
+            }) : Object.keys(colors).map(colorKey => {
+                return <div key={colorKey} className='mex-card' ><LinearProgress /></div>
             })}
         </div>
 

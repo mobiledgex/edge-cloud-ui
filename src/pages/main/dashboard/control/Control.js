@@ -1,7 +1,7 @@
 import React from 'react'
+import clsx from 'clsx';
 import Sunburst from '../../../../hoc/charts/d3/sunburst/Sunburst';
 import SequenceFunnel from '../../../../hoc/charts/d3/sequence/SequenceFunnel';
-import { localFields } from '../../../../services/fields';
 import { withStyles } from '@material-ui/styles';
 import { controlStyles } from './styles/control-styling'
 import { uniqueId } from '../../../../helper/constant/shared';
@@ -10,13 +10,12 @@ import { processWorker } from '../../../../services/worker/interceptor';
 import DashbordWorker from './services/dashboard.worker.js';
 import Total from './total/Total';
 import { fetchShowData, fetchSpecificResources } from './services/service';
-import clsx from 'clsx';
-import './styles/style.css'
 import ShowMore from './ShowMore';
 import { CircularProgress } from '@material-ui/core';
 import { Icon, IconButton } from '../../../../hoc/mexui';
 import { connect } from 'react-redux';
 import LinearProgress from '../../../../hoc/loader/LinearProgress';
+import './styles/style.css'
 
 class Control extends React.Component {
     constructor(props) {
@@ -108,7 +107,7 @@ class Control extends React.Component {
                         <div className='mex-card'>
                             <SequenceFunnel sequence={sequence} onChange={this.onSequenceChange} key={uniqueId()}></SequenceFunnel>
                         </div>
-                        <Total data={total} />
+                        <Total data={total} loading={loading}/>
                     </div>
                     {showMore ? <ShowMore data={showMore} resources={resources} loading={loadingResources} /> : null}
                     {children}
