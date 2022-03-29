@@ -7,6 +7,7 @@ import Select from './select/Select'
 import Slider from './slider/Slider'
 import DialogTitle from './dialog/DialogTitle'
 import InfoDialog from './dialog/InfoDialog'
+import Popup from './popup/Popup'
 import Icon from './Icon'
 
 export {
@@ -19,5 +20,6 @@ export {
     Icon,
     Picker,
     DialogTitle,
-    InfoDialog
+    InfoDialog,
+    Popup
 }

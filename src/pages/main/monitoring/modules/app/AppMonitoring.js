@@ -75,7 +75,7 @@ class AppMonitoring extends React.Component {
                                 </ImageListItem> : null
                         }
                         {regions.map(region => (
-                            legends && legends[region] ? <Module key={region} region={region} legends={legends[region]} metricRequestData={metricRequestData[region]} moduleId={moduleId} visibility={visibility} search={search} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} /> : null
+                            legends && legends[region] ? <Module key={region} region={region} legends={legends[region]} metricRequestData={metricRequestData[region]} moduleId={moduleId} visibility={visibility} search={search} range={range} orgInfo={organization} selection={selection} handleDataStateChange={handleDataStateChange} /> : null
                         ))}
                     </ImageList>
                     {actionView && actionView.id === perpetual.ACTION_LATENCY_METRICS ? <DMEMetrics group={Boolean(actionView.group)} id={moduleId} onClose={() => { this.setState({ actionView: undefined }) }} data={[actionView.data]} /> : null}

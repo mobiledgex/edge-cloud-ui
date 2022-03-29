@@ -28,6 +28,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+export const MexIcon = (props) => {
+    const { name } = props
+    const isSVG = name.includes('.svg')
+    return isSVG ? <img src={`/assets/icons/${name}`} width={24} /> : <Icon size={24} outlined={true} color='#FFF'>{name}</Icon>
+}
+
 const TextIcon = (props) => {
     const { color, value, onClick, clickable, inverse } = props
     const click = clickable || onClick
@@ -163,6 +169,7 @@ export const Lock = (props) => {
     const [locked, setLocked] = React.useState(false)
     const [loading, setLoading] = React.useState(false)
     let id = data[column.field]
+    
     useEffect(() => {
         setLocked(id)
     }, [id]);
@@ -201,12 +208,12 @@ export const renderYesNo = (key, data, isDetail) => {
 }
 
 export const NoData = (props) => {
-    const { search, loading } = props
+    const { search, loading, title, result } = props
     const text = search && search.length > 0 ? `found for search text "${search}"` : ''
     return (
         <div align='center' style={{ position: 'relative', top: '50%', transform: 'translateY(-50%)' }}>
             {loading ? <Icon style={{ color: '#808080', fontSize: 40 }} animation={true}>hourglass_empty</Icon> : <img src={`assets/icons/inbox_empty.svg`} />}
-            {<h4 style={{ color: 'grey' }}><b>{loading ? 'Fetching data from the server' : `No data ${text}`}</b></h4>}
+            {<h4 style={{ color: 'grey' }}><b>{loading ? title ?? 'Fetching data from the server' : result ?? `No data ${text}`}</b></h4>}
         </div>
     )
 }
