@@ -69,12 +69,12 @@ export const appInstResourceKeys = () => ([
 
 /**New */
 const metricElements = [
-    { field: localFields.networkSent, label: 'Network Sent', serverField: 'sendBytes', unit: UNIT_BYTES },
-    { field: localFields.networkReceived, label: 'Network Received', serverField: 'recvBytes', unit: UNIT_BYTES },
-    { field: localFields.cpu, label: 'CPU', serverField: 'cpu', unit: UNIT_PERCENTAGE },
-    { field: localFields.mem, label: 'Memory', serverField: 'mem', unit: UNIT_BYTES },
-    { field: localFields.disk, label: 'Disk', serverField: 'disk', unit: UNIT_BYTES },
-    { field: localFields.activeConnections, label: 'Active Connections', serverField: 'active', unit: UNIT_FLOOR },
+    { field: localFields.networkSent, label: 'Network Sent', serverField: 'sendBytes', unit: UNIT_BYTES, icon: 'network_wifi' },
+    { field: localFields.networkReceived, label: 'Network Received', serverField: 'recvBytes', unit: UNIT_BYTES, icon: 'network_wifi' },
+    { field: localFields.cpu, label: 'CPU', serverField: 'cpu', unit: UNIT_PERCENTAGE, icon: 'cpu.svg' },
+    { field: localFields.mem, label: 'Memory', serverField: 'mem', unit: UNIT_BYTES, icon: 'ram.svg' },
+    { field: localFields.disk, label: 'Disk', serverField: 'disk', unit: UNIT_BYTES, icon: 'save' },
+    { field: localFields.activeConnections, label: 'Active Connections', serverField: 'active', unit: UNIT_FLOOR, icon: 'link' },
 ]
 
 export const appInstMetricsElements = [

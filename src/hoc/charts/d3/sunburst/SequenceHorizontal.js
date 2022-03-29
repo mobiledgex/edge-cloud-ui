@@ -1,7 +1,7 @@
 import React from 'react';
 import * as d3 from 'd3';
 
-const b = { w: 120, h: 20, s: 3, t: 10 };
+const b = { w: 115, h: 30, s: 3, t: 10 };
 
 const breadcrumbPoints = (d, i) => {
   var points = [];
@@ -32,7 +32,7 @@ class SequenceHorizontal extends React.Component {
   }
 
   draw = (data) => {
-    const  {colors} = this.props
+    const { colors } = this.props
     var svg = d3.select(this.shRef.current)
       .append('svg')
       .attr("width", data.length * 135)
@@ -54,10 +54,10 @@ class SequenceHorizontal extends React.Component {
       .attr("y", b.h / 2)
       .attr("dy", "0.35em")
       .attr("text-anchor", "middle")
-      .text(d => d.data.name.substring(0, 14) + (d.data.name.length > 14 ? '...' : ''))
+      .text(d => d.data.name.substring(0, 11) + (d.data.name.length > 11 ? '...' : ''))
       .attr('font-weight', 900)
       .attr('font-size', 13)
-      .attr('fill', function (d) { return colors(d.data.name)});
+      .attr('fill', function (d) { return colors(d.data.name) });
 
     entering.attr("transform", function (d, i) {
       return "translate(" + i * (b.w + b.s) + ", 0)";

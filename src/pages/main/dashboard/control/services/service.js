@@ -7,11 +7,11 @@ import { clusterInstKeys, showClusterInsts } from "../../../../../services/modul
 import { clusterInstMetricsElements, clusterMetrics } from "../../../../../services/modules/clusterInstMetrics";
 import { authSyncRequest, multiAuthSyncRequest } from "../../../../../services/service";
 import { processWorker } from "../../../../../services/worker/interceptor";
-import { sequence } from './sequence';
 import { formatMetricData } from "./metric";
 import { AIK_APP_CLOUDLET_CLUSTER } from "../../../../../services/modules/appInst/primary";
 import { CIK_CLOUDLET_CLUSTER } from "../../../../../services/modules/clusterInst/primary";
 import { localFields } from "../../../../../services/fields";
+import { isEmpty } from '../../../../../utils/json_util';
 
 /**
  * 
@@ -20,12 +20,14 @@ import { localFields } from "../../../../../services/fields";
  */
 export const fetchSpecificResources = async (self, item) => {
     let resources = undefined
-    if (item.data) {
+    if (item?.data) {
         let data = item.data
         let numsamples = 1
         data.region = 'US'
         data.selector = '*'
         data.numsamples = numsamples
+        data.starttime = '2022-03-17T11:03:06+00:00'
+        data.endtime = '2022-03-18T11:03:06+00:00'
         if (item.field === localFields.cloudletName || item.field === localFields.appName || item.field === localFields.clusterName) {
             let elements
             let request
@@ -45,11 +47,11 @@ export const fetchSpecificResources = async (self, item) => {
                 request.data.selector = element.selector ? element.selector : request.data.selector
                 let mc = await authSyncRequest(self, { ...request, format: false })
                 let metricData = formatMetricData(element, numsamples, mc)
-                if (metricData) {
+                if (!isEmpty(metricData)) {
                     if (element.selector === 'flavorusage' && metricData) {
                         const { flavorName, count } = metricData
-                        resources = resources ? resources : {}
-                        resources.flavor = { label: 'Flavor', value: `${flavorName?.value} [${count?.value ?? 0}]` }
+                        resources = resources ?? {}
+                        resources.flavor = { label: 'Flavor', icon: element.icon, value: `${count?.value ?? 0}  \u2715  ${flavorName?.value}` }
                     }
                     else {
                         resources = { ...resources, ...metricData }
@@ -61,28 +63,44 @@ export const fetchSpecificResources = async (self, item) => {
     return resources
 }
 
+const mergeFirstSequence = (sequence, responseList) => {
+    let temp = { dataList: [], data: { name: '', children: [] } }
+    responseList.forEach(response => {
+        const { status, dataList, data, total } = response
+        temp.data.children = [...temp.data.children, ...data.children]
+        temp.dataList = [...temp.dataList, ...dataList]
+        temp.total = total
+        temp.status = status
+    })
+    return temp
+}
+
 /**
  * 
  * @param {Object} worker control worker object 
  * @returns 
  */
-export const fetchShowData = async (self, worker) => {
-    let response = undefined
-    await Promise.all(['US'].map(async (region) => {
+export const fetchShowData = async (self, worker, sequence, regions) => {
+    let responseList = []
+    let total = {}
+    await Promise.all(regions.map(async (region) => {
         let requestList = [];
         [showCloudlets, showCloudletInfoData, showClusterInsts, showAppInsts].forEach(requestType => {
             let request = requestType(self, Object.assign({}, { region }))
-            requestList.push(request)
+            requestList.push({...request, showSpinner:false})
         })
         if (requestList.length > 0) {
             let mcList = await multiAuthSyncRequest(self, requestList, false)
-            response = await processWorker(self, worker, {
+            let response = await processWorker(self, worker, {
                 region,
                 rawList: mcList,
                 initFormat: true,
-                sequence
+                sequence,
+                total
             })
+            total = response.total
+            responseList.push(response)
         }
     }))
-    return response
+    return mergeFirstSequence(sequence, responseList)
 }

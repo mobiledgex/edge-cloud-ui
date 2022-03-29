@@ -1,7 +1,7 @@
-import { Grid } from '@material-ui/core'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import AuditLog from './auditLog/AuditLog'
+import { EVENT } from '../../../helper/constant/perpetual'
+import Logs from './auditLog/Logs'
 import Control from './control/Control'
 
 class Dashboard extends React.Component {
@@ -13,7 +13,7 @@ class Dashboard extends React.Component {
         return (
             <div className='dashboard'>
                 <Control>
-                    <AuditLog type='audit'/>
+                    <Logs type={EVENT}/>
                 </Control>
             </div>
         )

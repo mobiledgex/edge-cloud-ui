@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { ImageList, ImageListItem, makeStyles, Popover, Tooltip, Typography } from '@material-ui/core';
-import { addDays, FORMAT_MMM_DD, subtractDays } from '../../../utils/date_util';
+import { addDays, FORMAT_FULL_DATE, FORMAT_FULL_DATE_TIME, FORMAT_MMM_DD, subtractDays } from '../../../utils/date_util';
 import { Popup } from '../../mexui';
 
 const useStyles = makeStyles((theme) => ({
@@ -41,7 +41,6 @@ const PassFail = (props) => {
     const [anchorEl, setAnchorEl] = React.useState(undefined)
 
     useEffect(() => {
-        if (logs) {
             const { endtime } = range
             let endRange = addDays(3, endtime)
             let startRange = subtractDays(36, endRange)
@@ -50,9 +49,10 @@ const PassFail = (props) => {
                 let date = m.format(FORMAT_MMM_DD)
                 let status = {} 
                 status.date = date
+                status.fullDate = m.format(FORMAT_FULL_DATE)
                 status.disabled = true
                 status.level = 0
-                let data = logs[date]
+                let data = logs && logs[date]
                 if (data) {
                     status.disabled = false
                     status.level = (data.failed / data.total) * 100
@@ -62,7 +62,6 @@ const PassFail = (props) => {
                 statusList.push(status);
             }
             setDateList(statusList)
-        }
     }, [logs]);
 
     const handlePopoverClose = ()=>{
@@ -75,12 +74,16 @@ const PassFail = (props) => {
         }
     }
 
+    const onBlock = (data)=>{
+        props.onClick(data.fullDate)
+    }
+
     return (
         <React.Fragment>
             <ImageList cols={6} rowHeight={35} gap={3} >
-                {dateList && dateList.map((item) => {
+                {dateList?.map((item) => {
                     return (
-                        <ImageListItem key={item.date}><PassFailBar data={item} properties={{ onMouseEnter: (e) => { handlePopoverOpen(e, item) }, onMouseLeave: handlePopoverClose }}>{item.date}</PassFailBar></ImageListItem>
+                        <ImageListItem key={item.date}><PassFailBar data={item} properties={{ onClick: () => { onBlock(item) }, onMouseEnter: (e) => { handlePopoverOpen(e, item) }, onMouseLeave: handlePopoverClose }}>{item.date}</PassFailBar></ImageListItem>
                     )
                 })}
             </ImageList>

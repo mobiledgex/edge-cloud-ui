@@ -115,7 +115,7 @@ const calculateTotal = (order, total, data) => {
             let field = item.field
             let values = item.values
             if (values.includes(data[field])) {
-                type = item.type ? item.type : 'success'
+                type = item.type ?? 'success'
             }
         })
         total[order.field][type] = total[order.field][type] ? total[order.field][type] : 0
@@ -124,9 +124,8 @@ const calculateTotal = (order, total, data) => {
 }
 
 const format = (worker) => {
-    const { region, rawList, initFormat, sequence } = worker
+    const { region, rawList, initFormat, sequence, total } = worker
     let dataList = initFormat ? [] : rawList
-    let total = {}
     if (initFormat) {
         let rawListObject = {}
         rawList.map(item => {

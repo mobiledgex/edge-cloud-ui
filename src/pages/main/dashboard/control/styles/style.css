@@ -1,9 +1,8 @@
 .dashboard {
     --marginBottom:2px;
-    height: 99.91%;
     min-width: 900px;
     min-height: 560px;
-    overflow: auto;
+    overflow: hidden;
     box-sizing: border-box;
 }
 
@@ -16,34 +15,60 @@
 }
 
 .dashboard .control {
-    height: calc(95vh - 5px);
     display: flex;
     gap: 2px;
     width: 100%;
+    height: calc(95vh - 7px);
 }
 
 .dashboard .control .col-left{
+    overflow: auto;
+    overflow-x: hidden;
+    height: inherit;
     width: 50%;
+}
+
+.dashboard .control .col-left .sunburstMain {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding:1;
-}
+ }
 
-.dashboard .control .col-left .sunburst {
-   width: 98%
-}
+
+ .dashboard .control .col-left .sunburstMain .sunburst {
+    aspect-ratio: 16/9;
+    width: calc(45vw - 10px);
+ }
+
+ .dashboard .control .col-left .sunburstLoader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: inherit; 
+    position: relative;
+ }
+
+ .dashboard .control .col-left .sunburstLoader1 {
+    position: absolute;
+ }
+
+ .dashboard .control .col-left .toolbar {
+    display: flex;
+    justify-content: right; 
+    padding: 10px;
+ }
 
 .dashboard .control .col-right{
     height: 100%;
     overflow: auto;
+    overflow-x: hidden;
     width: 50%;
     /* border: 1px solid red; */
 }
 
 .dashboard .control .col-right .content1  {
     display: grid;
-    grid-template-columns: 220px auto;
+    grid-template-columns: 240px auto;
     column-gap: 2px;
     margin-bottom: var(--marginBottom);
 }
@@ -58,18 +83,12 @@
     margin-bottom: var(--marginBottom);
 }  
 
-.dashboard .audit-log {
+.dashboard .logs {
     margin-bottom: var(--marginBottom); 
 }
 
 .dashboard .control .col-right .title {
     text-align: start;
-}
-
-.dashboard .control .col-right .resources {
-    display: grid;
-    grid-template-columns: auto auto;
-    column-gap: 10px;
 }
 
 /* MUI  */

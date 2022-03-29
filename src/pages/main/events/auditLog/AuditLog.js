@@ -81,6 +81,13 @@ class AuditLog extends Component {
         if (this._isMounted) {
             this.setState({ dataList: [] }, () => {
                 defaultRange(this)
+                const { data } = this.props
+                if (data) {
+                    const { starttime, endtime, type } = data
+                    this.starttime = starttime ?? this.starttime
+                    this.endtime = endtime ?? this.endtime
+                    this.type = type ?? this.type
+                }
                 this.getDataAudit(this.starttime, this.endtime);
             })
         }
@@ -88,8 +95,8 @@ class AuditLog extends Component {
 
     orgResponse = (mc) => {
         if (responseValid(mc)) {
-            const organizationList = sortBy(mc.response.data, [item => item[localFields.organizationName]], ['asc']);
-            this.setState({ orgList: organizationList })
+            const orgList = sortBy(mc.response.data, [item => item[localFields.organizationName]], ['asc']);
+            this.setState({ orgList })
         }
     }
 

@@ -21,7 +21,7 @@ export const formatMetricData = (metricResource, numsamples, mc) => {
                                 if (index >= 0) {
                                     let value = values[0][index]
                                     value = type.unit ? convertUnit(type.unit, value) : value
-                                    let resource = { 'label': type.label, value }
+                                    let resource = { 'label': type.label, icon: type.icon, value }
                                     if (type.serverFieldMax) {
                                         resource.max = values[0][columns.indexOf(type.serverFieldMax)]
                                     }

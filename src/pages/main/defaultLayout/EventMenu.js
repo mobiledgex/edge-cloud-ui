@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -7,6 +7,8 @@ import { lightGreen } from '@material-ui/core/colors';
 import UsageLog from '../events/usageLog/UsageLog';
 import AuditLog from '../events/auditLog/AuditLog';
 import { AUDIT, EVENT } from '../../../helper/constant/perpetual';
+import { useSelector, useDispatch } from 'react-redux';
+import { showAuditLog } from '../../../actions';
 
 const AUDIT_LOG = 1
 const EVENT_LOG = 2
@@ -73,8 +75,17 @@ const EventMenu = (props) => {
     const { open, onClose } = props
     const [pageId, setPageId] = React.useState(undefined);
     const classes = useStyles();
+    const showAugitLogs = useSelector(state => state.showAuditLog.audit)
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (Boolean(showAugitLogs)) {
+            setPageId(AUDIT_LOG)
+        }
+    }, [showAugitLogs]);
 
     const handleClose = () => {
+        dispatch(showAuditLog(undefined))
         setPageId(undefined)
     }
 
@@ -87,7 +98,7 @@ const EventMenu = (props) => {
             case USAGE_LOG:
                 return <UsageLog close={handleClose} />
             case AUDIT_LOG:
-                return <AuditLog type={AUDIT} close={handleClose} />
+                return <AuditLog type={AUDIT} close={handleClose} data={showAugitLogs}/>
             case EVENT_LOG:
                 return <AuditLog type={EVENT} close={handleClose} />
         }

@@ -1,9 +1,8 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { uniqueId } from '../../../../helper/constant/shared';
 import { sequence } from '../../../../pages/main/dashboard/control/services/sequence';
 
-const CON_WIDTH = 34
+const CON_WIDTH = 38
 const COLOR_GREEN = '#388E3C'
 const COLOR_RED = '#757575'
 /***********
@@ -11,7 +10,7 @@ const COLOR_RED = '#757575'
 **h:height**
 **s:space***
 **t:vertex**/
-const b = { w: 20, h: 20, s: 6, t: 12 };
+const b = { w: 24, h: 20, s: 6, t: 12 };
 
 const breadCrumbColor = (flag) => {
   return flag ? COLOR_GREEN : COLOR_RED
@@ -42,8 +41,8 @@ export const updateElements = (sequence, onSwap) => {
     .style('display', 'inline')
     .attr("stroke-linejoin", "round")
     .attr("stroke-width", '5px')
-    .attr("stroke", function (d, i) { return breadCrumbColor(i < 2) })
-    .style("fill", function (d, i) { return breadCrumbColor(i < 2) })
+    .attr("stroke", function (d, i) { return breadCrumbColor(d.active) })
+    .style("fill", function (d, i) { return breadCrumbColor(d.active) })
 
 
   //add label
@@ -94,7 +93,7 @@ class Sequence extends React.Component {
 
   render() {
     return (
-      <div id='sequencefunnel' key={uniqueId()} ref={this.sbRef} style={{ width: this.width }}></div>
+      <div id='sequencefunnel' ref={this.sbRef} style={{ width: this.width }}></div>
     );
   }
 

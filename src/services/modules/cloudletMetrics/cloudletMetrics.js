@@ -69,12 +69,12 @@ const metricElements = [
     { field: localFields.ipv4Used, label: 'IPv4 Used', serverField: 'ipv4Used', serverFieldMax: 'ipv4Max', unit: UNIT_FLOOR }
 ]
 const metricUsageElements = [
-    { field: localFields.externalIpsUsed, label: 'External IP', serverField: 'externalIpsUsed', unit: UNIT_FLOOR },
-    { field: localFields.floatingIpsUsed, label: 'Floating IP', serverField: 'floatingIpsUsed', unit: UNIT_FLOOR },
-    { field: localFields.gpusUsed, label: 'GPUs', serverField: 'gpusUsed', unit: UNIT_FLOOR },
-    { field: localFields.instancesUsed, label: 'Instances', serverField: 'instancesUsed', unit: UNIT_FLOOR },
-    { field: localFields.ramUsed, label: 'RAM', serverField: 'ramUsed', unit: UNIT_MB },
-    { field: localFields.cpuUsed, label: 'CPU', serverField: 'vcpusUsed', unit: UNIT_FLOOR }
+    { field: localFields.externalIpsUsed, label: 'External IP', serverField: 'externalIpsUsed', unit: UNIT_FLOOR, icon: 'language' },
+    { field: localFields.floatingIpsUsed, label: 'Floating IP', serverField: 'floatingIpsUsed', unit: UNIT_FLOOR, icon: 'language' },
+    { field: localFields.gpusUsed, label: 'GPUs', serverField: 'gpusUsed', unit: UNIT_FLOOR, icon:'gpu.svg' },
+    { field: localFields.instancesUsed, label: 'Instances', serverField: 'instancesUsed', unit: UNIT_FLOOR, icon:'filter_none' },
+    { field: localFields.ramUsed, label: 'RAM', serverField: 'ramUsed', unit: UNIT_MB, icon:'ram.svg' },
+    { field: localFields.cpuUsed, label: 'CPU', serverField: 'vcpusUsed', unit: UNIT_FLOOR, icon: 'cpu.svg' }
 ]
 const metricUsageFlavorElements = [
     { field: localFields.count, label: 'Flavor Count', serverField: 'count' },
@@ -84,7 +84,7 @@ const metricUsageFlavorElements = [
 export const cloudletMetricsElements = [
     // { serverRequest: endpoint.CLOUDLET_METRICS_ENDPOINT, keys: metricElements },
     { serverRequest: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, keys: metricUsageElements },
-    { serverRequest: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, keys: metricUsageFlavorElements, selector:'flavorusage' },
+    { serverRequest: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, keys: metricUsageFlavorElements, selector:'flavorusage', icon:'free_breakfast' },
 ]
 /**New */
 

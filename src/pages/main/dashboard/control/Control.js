@@ -5,38 +5,36 @@ import { localFields } from '../../../../services/fields';
 import { withStyles } from '@material-ui/styles';
 import { controlStyles } from './styles/control-styling'
 import { uniqueId } from '../../../../helper/constant/shared';
-import { sequence } from './services/sequence';
+import { sequence as _sequence } from './services/sequence';
 import { processWorker } from '../../../../services/worker/interceptor';
 import DashbordWorker from './services/dashboard.worker.js';
 import Total from './total/Total';
 import { fetchShowData, fetchSpecificResources } from './services/service';
-import { Divider, Grid } from '@material-ui/core';
-import { Header1 } from '../../../../hoc/mexui/headers/Header1';
-import Resources from './total/Resources';
-import { toFirstUpperCase } from '../../../../utils/string_utils';
 import clsx from 'clsx';
 import './styles/style.css'
 import ShowMore from './ShowMore';
-
-const states = [
-    {label:'Success', color:'#66BC6A'},
-    {label:'Transient', color:'#AE4140'},
-    {label:'Error', color:'#D99E48'},
-]
+import { CircularProgress } from '@material-ui/core';
+import { Icon, IconButton } from '../../../../hoc/mexui';
+import { connect } from 'react-redux';
+import LinearProgress from '../../../../hoc/loader/LinearProgress';
 
 class Control extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            sequence: _sequence,
             chartData: undefined,
             rawList: undefined,
             total: undefined,
             dataset: undefined,
             toggle: false,
             showMore: undefined,
-            resources: undefined
+            resources: undefined,
+            loading: false,
+            loadingResources: false
         }
         this._isMounted = false
+        this.regions = props.regions
         this.worker = new DashbordWorker()
     }
 
@@ -47,17 +45,31 @@ class Control extends React.Component {
     }
 
     fetchResources = async (item) => {
+        this.updateState({ loadingResources: true })
         this.updateState({ resources: await fetchSpecificResources(this, item) })
+        this.updateState({ loadingResources: false })
     }
 
     onMore = (showMore) => {
-        this.updateState({ showMore })
+        this.updateState({ showMore, resources: undefined})
         if (showMore) {
             this.fetchResources(showMore)
         }
     }
 
+    onUpdateSequence = (data) => {
+        let sequence = [...this.state.sequence]
+        sequence = sequence.map((item, i) => {
+            item.active = i === data.y0 || i === data.y1
+            return item
+        })
+        this.setState({ sequence })
+    }
+
     onSequenceChange = async (sequence) => {
+        sequence.forEach((item, i) => {
+            item.active = i < 2
+        })
         let response = await processWorker(this, this.worker, {
             rawList: this.state.rawList,
             sequence
@@ -65,31 +77,40 @@ class Control extends React.Component {
         if (response?.status === 200) {
             this.updateState({ dataset: response.data, toggle: !this.state.toggle })
         }
+    }
 
+    onRefreshSunburst = ()=>{
+        this.fetchInitData()
     }
 
     render() {
-        const { toggle, showMore, dataset, total, resources } = this.state
+        const { sequence, toggle, showMore, dataset, total, resources, loading, loadingResources } = this.state
         const { children } = this.props
         return (
             <div className='control'>
-                <div className={clsx('col-left', 'mex-card')} >
-                    <div className='sunburst'>
-                        {dataset ? <Sunburst sequence={sequence} dataset={dataset} toggle={toggle} onMore={this.onMore} /> : null}
+                <div className={clsx('col-left', 'mex-card')}>
+                    {(Boolean(dataset) && loading) ? <LinearProgress /> : null}
+                    <div className='toolbar'>
+                        <IconButton disabled={loading} onClick={this.onRefreshSunburst}><Icon>refresh</Icon></IconButton>
                     </div>
+                    {dataset ? <div className='sunburstMain'>
+                        <div className='sunburst'>
+                            <Sunburst dataset={dataset} toggle={toggle} onClick={this.onMore} onUpdateSequence={this.onUpdateSequence} />
+                        </div>
+                    </div> :
+                        <div className='sunburstLoader'>
+                            <CircularProgress size={400} thickness={0.3} className='sunburstLoader1' />
+                            <CircularProgress size={600} thickness={0.2} />
+                        </div>}
                 </div>
                 <div className='col-right'>
                     <div className='content1'>
                         <div className='mex-card'>
                             <SequenceFunnel sequence={sequence} onChange={this.onSequenceChange} key={uniqueId()}></SequenceFunnel>
                         </div>
-                        {total ? <div className='total'>
-                            <Total label='Cloudlet' data={total[localFields.cloudletName]} />
-                            <Total label='Cluster Instances' data={total[localFields.clusterName]} />
-                            <Total label='App Instances' data={total[localFields.appName]} />
-                        </div> : null}
+                        <Total data={total} />
                     </div>
-                    {showMore ? <ShowMore data={showMore} resources={resources}/> : null}
+                    {showMore ? <ShowMore data={showMore} resources={resources} loading={loadingResources} /> : null}
                     {children}
                 </div>
             </div>
@@ -97,7 +118,10 @@ class Control extends React.Component {
     }
 
     fetchInitData = async () => {
-        let response = await fetchShowData(this, this.worker)
+        const { sequence } = this.state
+        this.updateState({ loading: true })
+        let response = await fetchShowData(this, this.worker, sequence, this.regions)
+        this.updateState({ loading: false, dataset: undefined })
         if (response?.status === 200) {
             const { data: dataset, total, dataList: rawList } = response
             this.updateState({ dataset, total, rawList })
@@ -108,10 +132,16 @@ class Control extends React.Component {
         this._isMounted = true
         this.fetchInitData()
     }
-    
-    componentWillUnmount(){
+
+    componentWillUnmount() {
         this._isMounted = false
     }
 }
 
-export default withStyles(controlStyles)(Control)
+const mapStateToProps = (state) => {
+    return {
+        regions: state.regionInfo.region
+    }
+};
+
+export default connect(mapStateToProps, null)(withStyles(controlStyles)(Control));

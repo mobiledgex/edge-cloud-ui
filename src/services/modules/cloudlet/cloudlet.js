@@ -46,7 +46,7 @@ export const keys = () => ([
     { field: localFields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name' },
     { field: localFields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name' },
     { field: localFields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView: false },
-    { field: localFields.trustPolicyName, serverField: 'trust_policy', label: 'Trust Policy' },
+    { field: localFields.trustPolicyName, serverField: 'trust_policy', label: 'Trust Policy', dvisible:true },
     { field: localFields.kafkaCluster, serverField: 'kafka_cluster', label: 'Kafka Cluster' },
     { field: localFields.errors, serverField: 'errors', label: 'Errors', dataType: perpetual.TYPE_YAML },
     { field: localFields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
@@ -56,7 +56,7 @@ export const keys = () => ([
     { field: localFields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING },
     { field: localFields.platformHighAvailability, serverField: 'platform_high_availability', label: 'Platform High Availability', format:true },
     { field: localFields.singleK8sClusterOwner, label: 'Single K8s Cluster Owner', serverField: 'single_kubernetes_cluster_owner', dataType: perpetual.TYPE_STRING },
-    { field: localFields.deployment, serverField: 'deployment', label: 'Deployment Type' }
+    { field: localFields.deployment, serverField: 'deployment', label: 'Deployment Type', dvisible:true }
 ])
 
 export const iconKeys = () => ([

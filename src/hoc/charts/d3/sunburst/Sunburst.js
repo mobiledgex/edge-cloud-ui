@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { useStyles } from './sunburst-styling';
 import SequenceHorizontal from './SequenceHorizontal'
 import { uniqueId } from '../../../../helper/constant/shared';
 
@@ -57,18 +56,17 @@ const showAlert = (target, data) => {
 const tooltipContent = (d, tooltip, format) => {
     const { children, data } = d
     const { alert } = data
-    let error = alert && alert.field ? `${alert.field}: ${alert.value}` : undefined
-    if (children || error) {
-        tooltip.html(() => {
-            let g = '<div style="font-size:10px;color:black;" align="left">'
-            g = g + `<p>${data.header}: ${data.name}</p>`
-            g = g + (children ? `<p>${data.childrenLabel}:  ${format(children.length)}</p>` : '')
-            g = g + (error ? `<p>${error}</p>` : '')
-            g = g + '</div>'
-            return g
-        });
-        tooltip.style("visibility", "visible");
-    }
+    let error = alert?.field ? `${alert.field}: ${alert.value}` : undefined
+
+    tooltip.html(() => {
+        let g = '<div style="font-size:10px;color:black;" align="left">'
+        g = g + `<p>${data.header}: ${data.name}</p>`
+        g = g + (children ? `<p>${data.childrenLabel}:  ${format(children.length)}</p>` : '')
+        g = g + (error ? `<p>${error}</p>` : '')
+        g = g + '</div>'
+        return g
+    });
+    tooltip.style("visibility", "visible");
 }
 
 const arc = d3.arc()
@@ -136,27 +134,22 @@ const updatePath = (path, pathBorder, label, update = false, t) => {
 }
 
 const Sunburst = (props) => {
-    const { toggle, sequence, dataset, onMore } = props
-    const [data, setData] = useState(undefined)
+    const { toggle, dataset, onClick, onUpdateSequence } = props
     const [dataFlow, setDataFlow] = useState([])
-    const classes = useStyles({ btnVisibility: Boolean(data) })
     const sbRef = useRef(null)
 
-    const sunburstChart = (sequence, dataset) => {
+    const sunburstChart = (dataset) => {
         const format = d3.format(",d")
         const root = partition(dataset);
 
         //on click
         const clicked = (event, p) => {
-            onMore(p.depth > 0 ? p.data : undefined)
+            onClick(p.depth > 0 ? p.data : undefined)
             if (p.data.children) {
-                d3.selectAll('polygon')
-                    .style("fill", function (d) { return d === sequence[p.y0] || d === sequence[p.y1] ? '#388E3C' : '#757575' })
-                    .attr("stroke", function (d) { return d === sequence[p.y0] || d === sequence[p.y1] ? '#388E3C' : '#757575' });
-
+                onUpdateSequence(p)
                 parent.datum(p.parent || root);
 
-                logo.style("visibility", p.depth === 0 ? "visible" : "hidden");
+                // logo.style("visibility", p.depth === 0 ? "visible" : "hidden");
 
                 root.each(d => d.target = {
                     x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
@@ -165,21 +158,20 @@ const Sunburst = (props) => {
                     y1: Math.max(0, d.y1 - p.depth)
                 });
 
-                parentLabel.text(p.data.name).style('fill', 'white')
-                setData(p.depth > 0 ? p.data : undefined)
-
-                var flow = [];
-                var current = p;
-                while (current.parent) {
-                    flow.unshift(current);
-                    current = current.parent;
-                }
-                setDataFlow(flow)
+                // parentLabel.text(p.data.name).style('fill', 'white')
 
                 const t = svg.transition().duration(750);
-
                 updatePath(path, pathBorder, label, true, t)
             }
+
+            //SequenceHorizontal
+            var flow = [];
+            var current = p;
+            while (current.parent) {
+                flow.unshift(current);
+                current = current.parent;
+            }
+            setDataFlow(flow)
 
         }
 
@@ -236,7 +228,7 @@ const Sunburst = (props) => {
             .data(root.descendants().slice(1))
             .join("text")
             .attr("dy", "0.35em")
-            .text(d => d.data.name.substring(0, 13) + (d.data.name.length > 14 ? '...' : ''))
+            .text(d => d.data.name.substring(0, 12) + (d.data.name.length > 12 ? '...' : ''))
             .style('font-size', 13)
             .style('fill', 'white')
 
@@ -250,12 +242,12 @@ const Sunburst = (props) => {
             .attr("pointer-events", "all")
             .on("click", clicked)
 
-        const parentLabel = svg.append("text")
-            .attr("class", "total")
-            .attr("text-anchor", "middle")
-            .attr('font-size', '1.7em')
-            .attr('y', 12)
-            .attr('x', 1)
+        // const parentLabel = svg.append("text")
+        //     .attr("class", "total")
+        //     .attr("text-anchor", "middle")
+        //     .attr('font-size', '1.7em')
+        //     .attr('y', 12)
+        //     .attr('x', 1)
 
         const logo = svg.append("svg:image")
             .attr('x', -50)
@@ -266,15 +258,15 @@ const Sunburst = (props) => {
 
     useEffect(() => {
         d3.select('#chart').remove()
-        sunburstChart(sequence, dataset)
+        sunburstChart(dataset)
     }, [toggle]);
 
     return (
         <div align='center'>
-            <div style={{ margin: 10, marginBottom: -25 }} align='center'>
+            <div style={{ position: 'relative' }} ref={sbRef} />
+             <div style={{padding:'0px 10px 0px 20px'}} align='center'>
                 <SequenceHorizontal key={uniqueId()} dataset={dataFlow} colors={color} />
             </div>
-            <div style={{ position: 'relative' }} ref={sbRef} />
         </div>
     )
 }
