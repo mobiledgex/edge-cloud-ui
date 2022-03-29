@@ -339,6 +339,7 @@ class AppInstReg extends React.Component {
             }
         }
         for (let form of forms) {
+            const isFieldVisible = currentForm.value.length === 1 && isK8sBareMetal ? false : true
             if (form.field === localFields.dedicatedIp) {
                 if (!isInit) {
                     form.visible = isK8sBareMetal
@@ -346,12 +347,12 @@ class AppInstReg extends React.Component {
             }
             else if (form.field === localFields.clusterName) {
                 if (!isInit) {
-                    form.visible = currentForm.value.length === 1 && isK8sBareMetal ? false : true
+                    form.visible = isFieldVisible
                 }
             }
             else if (form.field === localFields.autoClusterInstance) {
                 if (!isInit) {
-                    form.visible = !isK8sBareMetal
+                    form.visible = isFieldVisible
                 }
             }
             else if (form.field === localFields.flavorName) {
