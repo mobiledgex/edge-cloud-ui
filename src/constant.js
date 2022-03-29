@@ -4,7 +4,7 @@ import { perpetual } from "./helper/constant"
 import { authSyncRequest } from "./services/service"
 
 export const pages = [
-    { label: 'Dashboard', icon: 'home', id: perpetual.PAGE_DASHBOARD, path: 'dashboard', visible: true, roles: [perpetual.ADMIN] },
+    { label: 'Dashboard', icon: 'home', id: perpetual.PAGE_DASHBOARD, path: 'dashboard', visible: true },
     { label: 'Organizations', icon: 'supervisor_account', id: perpetual.PAGE_ORGANIZATIONS, path: 'organizations', visible: true },
     { label: 'Users & Roles', icon: 'assignment_ind', id: perpetual.PAGE_USER_ROLES, path: 'user-roles', visible: true },
     { label: 'Accounts', icon: 'dvr', id: perpetual.PAGE_ACCOUNTS, path: 'accounts', roles: [perpetual.ADMIN], visible: true },
