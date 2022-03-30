@@ -937,6 +937,17 @@ class CloudletReg extends React.Component {
                     this.kafkaRequired = data[localFields.kafkaCluster] === undefined
                     form.value = data[localFields.kafkaCluster]
                 }
+                else if (form.field === localFields.allianceOrganization) {
+                    let allianceOrgs = data[localFields.allianceOrganization]
+                    if (allianceOrgs) {
+                        let value = ''
+                        let length = allianceOrgs.length - 1
+                        allianceOrgs.forEach((org, i) => {
+                            value = value + org + (i < length ? '\n' : '')
+                        })
+                        form.value = value
+                    }
+                }
                 else {
                     form.value = data[form.field]
                     this.checkForms(form, forms, true, data)

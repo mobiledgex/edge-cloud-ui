@@ -152,7 +152,8 @@ export const errorResponse = (self, request, error, callback, auth = true) => {
  * @param {*} request
  */
 export const showProgress = (self, request) => {
-    if (self?.props?.handleLoadingSpinner) {
+    let isDashboard = Boolean(self?.props?.history?.location.pathname === '/main/dashboard')
+    if (!isDashboard && self?.props?.handleLoadingSpinner) {
         self.props.handleLoadingSpinner(request ? request.showSpinner ?? true : false)
     }
 }
