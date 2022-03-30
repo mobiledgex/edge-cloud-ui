@@ -4,12 +4,8 @@ import Doughnut from '../../../../../hoc/charts/d3/doughnut/Doughnut'
 import { localFields } from '../../../../../services/fields'
 import { toFirstUpperCase } from '../../../../../utils/string_utils'
 import LinearProgress from '../../../../../hoc/loader/LinearProgress'
+import { isEmpty } from '../../../../../utils/json_util'
 
-{/* <div className='total'>
-                            <Total label='Cloudlet' data={total[localFields.cloudletName]} />
-                            <Total label='Cluster Instances' data={total[localFields.clusterName]} />
-                            <Total label='App Instances' data={total[localFields.appName]} />
-                        </div> */}
 const colors = { success: '#66BC6A', transient: '#D99E48', error: '#AE4140' }
 
 const totalKeys = [
@@ -22,10 +18,10 @@ const Total = (props) => {
     const { data, loading } = props
     return (
         <div className='total'>
-            {data ? totalKeys.map(totalKey => {
+            {!isEmpty(data) ? totalKeys.map(totalKey => {
                 let item = data[totalKey.field]
                 let count = 0
-                Object.keys(item).forEach(key => count = count + item[key])
+                item && Object.keys(item).forEach(key => count = count + item[key])
                 return (
                     <div key={totalKey.field} >
                         <div className='mex-card' style={{ height: '100%' }} align={'center'}>
@@ -38,7 +34,7 @@ const Total = (props) => {
                                             <div key={colorKey} align='center'>
                                                 <div style={{ width: 108, display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'left', fontWeight: 900, color: 'white' }}>
                                                     <div style={{ width: 20, height: 5, backgroundColor: colors[colorKey] }}></div>
-                                                    <p>{`${toFirstUpperCase(colorKey)}: ${item[colorKey] ?? 0}`}</p>
+                                                    <p>{`${toFirstUpperCase(colorKey)}: ${item ? item[colorKey] ?? 0 : 0}`}</p>
                                                 </div>
                                             </div>
                                         )
@@ -52,7 +48,7 @@ const Total = (props) => {
                     </div>
                 )
             }) : Object.keys(colors).map(colorKey => {
-                return <div key={colorKey} className='mex-card' ><LinearProgress /></div>
+                return <div key={colorKey} className='mex-card' >{loading ? <LinearProgress /> : null}</div>
             })}
         </div>
 
