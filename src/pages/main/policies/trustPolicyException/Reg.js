@@ -352,6 +352,7 @@ class TrustPolicyExceptionReg extends React.Component {
             let requiredOutboundConnections = data[localFields.requiredOutboundConnections]
             for (const requiredOutboundConnection of requiredOutboundConnections) {
                 let outboundConnectionsForms = this.outboundConnectionsForm()
+                let isNotICMP = requiredOutboundConnection['protocol'] !== perpetual.PROTOCOL_ICMP
                 for (let outboundConnectionsForm of outboundConnectionsForms) {
                     if (outboundConnectionsForm.field === localFields.ocProtocol) {
                         outboundConnectionsForm.value = requiredOutboundConnection['protocol']
@@ -360,12 +361,15 @@ class TrustPolicyExceptionReg extends React.Component {
                         outboundConnectionsForm.value = requiredOutboundConnection['remote_cidr']
                     }
                     else if (outboundConnectionsForm.field === localFields.ocPortMin) {
-                        outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== perpetual.PROTOCOL_ICMP
+                        outboundConnectionsForm.visible = isNotICMP
                         outboundConnectionsForm.value = requiredOutboundConnection['port_range_min']
                     }
                     else if (outboundConnectionsForm.field === localFields.ocPortMax) {
-                        outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== perpetual.PROTOCOL_ICMP
+                        outboundConnectionsForm.visible = isNotICMP
                         outboundConnectionsForm.value = requiredOutboundConnection['port_range_max']
+                    }
+                    else if (outboundConnectionsForm.icon ==='~') {
+                        outboundConnectionsForm.visible = isNotICMP
                     }
                 }
                 forms.splice(19 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
