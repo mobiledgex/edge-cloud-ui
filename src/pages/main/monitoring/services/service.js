@@ -45,8 +45,9 @@ export const fetchResourceData = async (self, moduleId, data) => {
         data[localFields.starttime] = range.starttime
         data[localFields.endtime] = range.endtime
         data[localFields.selector] = resourceKey.serverField
+        data[localFields.organizationName] = orgInfo ? orgInfo[localFields.organizationName] : redux_org.nonAdminOrg(self)
         data[localFields.numsamples] = 50
-        let request = resourceAPIs(self, resourceKey.serverRequest, data, metricRequestData, orgInfo ? orgInfo[localFields.organizationName] : redux_org.nonAdminOrg(self))
+        let request = resourceAPIs(self, resourceKey.serverRequest, data, metricRequestData)
         let mc = await authSyncRequest(this, { ...request, format: false })
         if (responseValid(mc)) {
             let response = await processWorker(self, worker, {

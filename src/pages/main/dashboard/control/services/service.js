@@ -12,6 +12,7 @@ import { AIK_APP_CLOUDLET_CLUSTER } from "../../../../../services/modules/appIns
 import { CIK_CLOUDLET_CLUSTER } from "../../../../../services/modules/clusterInst/primary";
 import { localFields } from "../../../../../services/fields";
 import { isEmpty } from '../../../../../utils/json_util';
+import { redux_org } from "../../../../../helper/reduxData";
 
 /**
  * 
@@ -85,7 +86,13 @@ export const fetchShowData = async (self, worker, sequence, regions) => {
     let total = {}
     await Promise.all(regions.map(async (region) => {
         let requestList = [];
-        [showCloudlets, showCloudletInfoData, showClusterInsts, showAppInsts].forEach(requestType => {
+        let requestMethods = [showCloudlets, showCloudletInfoData]
+        if(!redux_org.isOperator(self))
+        {
+            requestMethods.push(showClusterInsts)
+            requestMethods.push(showAppInsts)
+        }
+        requestMethods.forEach(requestType => {
             let request = requestType(self, Object.assign({}, { region }))
             requestList.push({...request, showSpinner:false})
         })
