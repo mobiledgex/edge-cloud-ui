@@ -134,7 +134,7 @@ const MexDetailViewer = (props) => {
                                 getHighLighter('json', JSON.stringify(data, null, 1)) :
                                 item.dataType === perpetual.TYPE_YAML ?
                                     getHighLighter('yaml', data.toString()) :
-                                    <div style={{ wordBreak: 'break-all' }}>{item.format ? props.formatData(item, info, true) : data}</div>
+                                    <div style={{ wordBreak: 'break-all' }}>{item.format && props.formatData ? props.formatData(item, info, true) : data}</div>
             )
         }
     }
