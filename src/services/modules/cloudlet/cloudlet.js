@@ -166,7 +166,9 @@ export const getKey = (data, isCreate) => {
             cloudlet.infra_config = infraConfig
         }
         if (data[localFields.allianceOrganization]) {
-            cloudlet.alliance_orgs = data[localFields.allianceOrganization]
+            let allianceOrganization = data[localFields.allianceOrganization]
+            allianceOrganization = allianceOrganization.split('\n')
+            cloudlet.alliance_orgs = allianceOrganization
         }
         if (data[localFields.singleK8sClusterOwner]) {
             cloudlet.single_kubernetes_cluster_owner = data[localFields.singleK8sClusterOwner]
