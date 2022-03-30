@@ -25,7 +25,7 @@ const MexTextArea = (props) => {
     const getForm = () => (
         <TextArea
             id={form.field}
-            rows={rules ? rules.rows : 5}
+            rows={rules?.rows ?? 3}
             icon={form.error ? <Icon color='red' name='times circle outline' /> : null}
             label={props.label ? props.label : null}
             placeholder={form.placeholder ? form.placeholder : null}

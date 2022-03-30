@@ -116,11 +116,10 @@ class ListViewer extends React.Component {
         const { viewerEdit } = this.props
         return (
             this.actionMenu.length > 0 ?
-                <Popper open={Boolean(actionEl)} anchorEl={actionEl} role={undefined} transition disablePortal>
+                <Popper open={Boolean(actionEl)} anchorEl={actionEl} role={undefined} transition disablePortal style={{zIndex:5}}>
                     {({ TransitionProps, placement }) => (
                         <Grow
                             {...TransitionProps}
-                            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center right' }}
                         >
                             <Paper style={{ backgroundColor: '#212121', color: 'white' }}>
                                 <ClickAwayListener onClickAway={() => this.setState({ actionEl: null })}>
