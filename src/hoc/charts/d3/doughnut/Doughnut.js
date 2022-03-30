@@ -8,15 +8,16 @@ class Doughnut extends React.Component {
     }
 
     render() {
+        const { data, size } = this.props
         return (
             <React.Fragment>
-                <div ref={this.chart} style={{ position: 'relative' }}></div>
+                {data ? <div ref={this.chart} style={{ position: 'relative' }}></div> : <div style={{height:size ?? 40}}></div>}
             </React.Fragment>
         )
     }
 
     draw = () => {
-        const { size, data, colors, label:_label} = this.props
+        const { size, data, colors, label: _label } = this.props
 
         const width = size ?? 40
         const height = width
@@ -46,9 +47,9 @@ class Doughnut extends React.Component {
             .data(data_ready)
             .join('path')
             .attr('d', d3.arc()
-                .innerRadius(radius/1.5)         // This is the size of the donut hole
+                .innerRadius(radius / 1.5)         // This is the size of the donut hole
                 .outerRadius(radius)
-        )
+            )
             .attr('fill', d => colors[d.data[0]])
             .style("opacity", 1)
 
@@ -94,7 +95,7 @@ class Doughnut extends React.Component {
         //   .on("mouseout", (e, d) => { return tooltip.style("visibility", "hidden"); });
     }
 
-    updateLabel = (text)=>{
+    updateLabel = (text) => {
         this.label.text(text)
     }
 
@@ -106,7 +107,9 @@ class Doughnut extends React.Component {
     }
 
     componentDidMount() {
-        this.draw()
+        if (this.props.data) {
+            this.draw()
+        }
     }
 }
 

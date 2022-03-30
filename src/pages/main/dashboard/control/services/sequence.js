@@ -29,7 +29,7 @@ export const dataForms = [
         method: SHOW_APP_INST,
         field: localFields.appName,
         fields: [localFields.cloudletName, localFields.operatorName, localFields.clusterName, localFields.clusterdeveloper, [localFields.state, localFields.healthCheck], localFields.organizationName],
-        alerts: [{ field: localFields.state, values: [serverFields.READY] },{ type: 'transient', field: localFields.state, values: STATE_IN_PROGRESS }],
+        alerts: [{ field: localFields.state, values: [serverFields.READY] }, { type: 'transient', field: localFields.state, values: STATE_IN_PROGRESS }],
         skip: [{ field: localFields.appName, values: [MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION] }]
     },
     {

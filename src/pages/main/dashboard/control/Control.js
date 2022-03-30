@@ -139,6 +139,7 @@ class Control extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
+        organizationInfo: state.organizationInfo.data,
         regions: state.regionInfo.region
     }
 };
