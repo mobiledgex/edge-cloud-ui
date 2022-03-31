@@ -88,15 +88,19 @@ class AllianceOrganization extends React.Component {
             let orgList = allianceOrgs.split('\n')
             if (orgList?.length > 0) {
                 if (this.isAllianceCloudletAdd && oldOrgList?.length > 0) {
-                    orgList = orgList.filter(item => !oldOrgList.includes(item))
+                    orgList = orgList.filter(item => {
+                        return Boolean(item) && !oldOrgList.includes(item.trim())
+                    })
                 }
                 if (orgList?.length > 0) {
                     let requestList = []
                     let requestCall = this.isAllianceCloudletAdd ? addClouldletAllianceOrgs : removeClouldletAllianceOrgs
                     orgList.forEach(org => {
-                        let requestData = { ...data }
-                        requestData[localFields.allianceOrganization] = org
-                        requestList.push(requestCall(requestData))
+                        if (Boolean(org)) {
+                            let requestData = { ...data }
+                            requestData[localFields.allianceOrganization] = org
+                            requestList.push(requestCall(requestData))
+                        }
                     })
                     if (requestList?.length > 0) {
                         this.props.handleLoadingSpinner(true)
