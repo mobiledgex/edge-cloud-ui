@@ -73,7 +73,7 @@ const ShowMore = (props) => {
             <div className={classes.main}>
                 <Grid container>
                     <Grid item xs={6}>
-                        <h5><b>Name:</b>{` ${toFirstUpperCase(name)}`}</h5>
+                        <h5><b>Name:</b>{` ${name}`}</h5>
                         <Content data={data.data} keys={keys} />
                     </Grid>
 
