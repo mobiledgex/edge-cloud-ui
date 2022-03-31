@@ -54,7 +54,7 @@ export const showConfirmation = (self, data) => {
 export const showInvitation = (self, data) => {
     let requestData = getShowRequestData(self, data)
     if (requestData) {
-        return { method: endpoint.SHOW_POOL_ACCESS_INVITATION, data, keys: keys() }
+        return { method: endpoint.SHOW_POOL_ACCESS_INVITATION, data: requestData, keys: keys() }
     }
 }
 
@@ -83,7 +83,7 @@ export const accessGranted = (self, orgInfo) => {
 export const accessPending = (self, data) => {
     let requestData = getShowRequestData(self, data)
     if (requestData) {
-        return { method: endpoint.SHOW_POOL_ACCESS_PENDING, data }
+        return { method: endpoint.SHOW_POOL_ACCESS_PENDING, data: requestData }
     }
 }
 
