@@ -165,8 +165,10 @@ class AppInstReg extends React.Component {
                 appName = form.value
             }
             else if (form.field === localFields.clusterName) {
-                form.visible = !isAuto
-                form.error = isAuto ? undefined : form.error
+                if (!isInit) {
+                    form.visible = !isAuto
+                    form.error = isAuto ? undefined : form.error
+                }
             }
             else if (form.field === localFields.autoClusterNameGroup) {
                 form.visible = isAuto
