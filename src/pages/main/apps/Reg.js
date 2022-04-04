@@ -2,7 +2,7 @@ import React, { Suspense, Component, lazy, Fragment } from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, SWITCH, TEXT_AREA, ICON_BUTTON, SELECT_RADIO_TREE, formattedData, HEADER, MULTI_FORM, MAIN_HEADER, TIME_COUNTER } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, INPUT, SWITCH, TEXT_AREA, ICON_BUTTON, SELECT_RADIO_TREE, formattedData, HEADER, MULTI_FORM, MAIN_HEADER, TIME_COUNTER, findIndexs } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -739,102 +739,102 @@ class AppReg extends Component {
             }
 
             if ((data[localFields.imagePath] && data[localFields.imagePath].length > 0) || (data[localFields.deploymentManifest] && data[localFields.deploymentManifest].length > 0)) {
-                    data[localFields.accessPorts] = ports
-                    data[localFields.skipHCPorts] = skipHCPorts.length > 0 ? skipHCPorts : undefined
+                data[localFields.accessPorts] = ports
+                data[localFields.skipHCPorts] = skipHCPorts.length > 0 ? skipHCPorts : undefined
 
-                    if (annotations.length > 0) {
-                        data[localFields.annotations] = annotations
-                    }
-                    if (configs.length > 0) {
-                        data[localFields.configs] = configs
-                    }
-                    if (requiredOutboundConnections.length > 0) {
-                        data[localFields.requiredOutboundConnections] = requiredOutboundConnections
-                    }
+                if (annotations.length > 0) {
+                    data[localFields.annotations] = annotations
+                }
+                if (configs.length > 0) {
+                    data[localFields.configs] = configs
+                }
+                if (requiredOutboundConnections.length > 0) {
+                    data[localFields.requiredOutboundConnections] = requiredOutboundConnections
+                }
 
-                    if (udpPorts.length > 0 && this.updRangeExceeds(udpPorts)) {
-                        if (data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
-                            valid = false
-                            this.props.handleAlertInfo('error', 'Maximum 1000 UDP ports are allowed for deployment type kubernetes app')
+                if (udpPorts.length > 0 && this.updRangeExceeds(udpPorts)) {
+                    if (data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
+                        valid = false
+                        this.props.handleAlertInfo('error', 'Maximum 1000 UDP ports are allowed for deployment type kubernetes app')
+                    }
+                }
+                if (valid) {
+                    if (this.isUpdate) {
+                        let autoProvPolicies = data[localFields.autoProvPolicies]
+                        let alertPolicies = data[localFields.alertPolicies]
+                        if (autoProvPolicies && autoProvPolicies.length > 0) {
+                            data[localFields.autoProvPolicies] = data[localFields.autoProvPolicies][0].value
                         }
-                    }
-                    if (valid) {
-                        if (this.isUpdate) {
-                            let autoProvPolicies = data[localFields.autoProvPolicies]
-                            let alertPolicies = data[localFields.alertPolicies]
-                            if (autoProvPolicies && autoProvPolicies.length > 0) {
-                                data[localFields.autoProvPolicies] = data[localFields.autoProvPolicies][0].value
-                            }
-                            if (alertPolicies && alertPolicies.length > 0) {
-                                data[localFields.alertPolicies] = data[localFields.alertPolicies][0].value
-                            }
-                            let updateData = updateFieldData(this, forms, data, this.originalData)
-                            if (updateData[localFields.trusted] !== undefined) {
-                                let roc = this.originalData[localFields.requiredOutboundConnection]
-                                if (!updateData[localFields.trusted] && roc && roc.length > 0) {
-                                    updateData[localFields.fields].push("38", "38.1", "38.2", "38.4")
-                                }
-                            }
-                            if (updateData.fields.length > 0) {
-                                let mc = await updateApp(this, updateData)
-                                if (responseValid(mc)) {
-                                    this.props.handleAlertInfo('success', `App ${data[localFields.appName]} updated successfully`)
-                                    if (data[localFields.refreshAppInst]) {
-                                        websocket.request(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
-                                    }
-                                    else {
-                                        this.props.onClose(true)
-                                    }
-                                }
+                        if (alertPolicies && alertPolicies.length > 0) {
+                            data[localFields.alertPolicies] = data[localFields.alertPolicies][0].value
+                        }
+                        let updateData = updateFieldData(this, forms, data, this.originalData)
+                        if (updateData[localFields.trusted] !== undefined) {
+                            let roc = this.originalData[localFields.requiredOutboundConnection]
+                            if (!updateData[localFields.trusted] && roc && roc.length > 0) {
+                                updateData[localFields.fields].push("38", "38.1", "38.2", "38.4")
                             }
                         }
-                        else {
-                            let regions = data[localFields.region]
-                            let requestList = []
-                            if (regions.includes('All')) {
-                                regions = cloneDeep(this.regions)
-                                regions.splice(0, 1)
+                        if (updateData.fields.length > 0) {
+                            let mc = await updateApp(this, updateData)
+                            if (responseValid(mc)) {
+                                this.props.handleAlertInfo('success', `App ${data[localFields.appName]} updated successfully`)
+                                if (data[localFields.refreshAppInst]) {
+                                    websocket.request(this, refreshAllAppInst(data), this.onUpgradeResponse, data)
+                                }
+                                else {
+                                    this.props.onClose(true)
+                                }
                             }
-                            regions.map(region => {
-                                let requestData = cloneDeep(data)
-                                requestData[localFields.region] = region
-                                requestData[localFields.flavorName] = undefined
-                                for (let i = 0; i < data[localFields.flavorName].length; i++) {
-                                    let flavor = data[localFields.flavorName][i]
-                                    if (flavor && flavor.parent.includes(region)) {
-                                        requestData[localFields.flavorName] = flavor.value
+                        }
+                    }
+                    else {
+                        let regions = data[localFields.region]
+                        let requestList = []
+                        if (regions.includes('All')) {
+                            regions = cloneDeep(this.regions)
+                            regions.splice(0, 1)
+                        }
+                        regions.map(region => {
+                            let requestData = cloneDeep(data)
+                            requestData[localFields.region] = region
+                            requestData[localFields.flavorName] = undefined
+                            for (let i = 0; i < data[localFields.flavorName].length; i++) {
+                                let flavor = data[localFields.flavorName][i]
+                                if (flavor && flavor.parent.includes(region)) {
+                                    requestData[localFields.flavorName] = flavor.value
+                                    break;
+                                }
+                            }
+                            if (data[localFields.autoProvPolicies]) {
+                                requestData[localFields.autoProvPolicies] = undefined
+                                for (let i = 0; i < data[localFields.autoProvPolicies].length; i++) {
+                                    let autoPolicy = data[localFields.autoProvPolicies][i]
+                                    if (autoPolicy && autoPolicy.parent.includes(region)) {
+                                        requestData[localFields.autoProvPolicies] = autoPolicy.value
                                         break;
                                     }
                                 }
-                                if (data[localFields.autoProvPolicies]) {
-                                    requestData[localFields.autoProvPolicies] = undefined
-                                    for (let i = 0; i < data[localFields.autoProvPolicies].length; i++) {
-                                        let autoPolicy = data[localFields.autoProvPolicies][i]
-                                        if (autoPolicy && autoPolicy.parent.includes(region)) {
-                                            requestData[localFields.autoProvPolicies] = autoPolicy.value
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (data[localFields.alertPolicies]) {
-                                    requestData[localFields.alertPolicies] = undefined
-                                    for (let i = 0; i < data[localFields.alertPolicies].length; i++) {
-                                        let alertPolicy = data[localFields.alertPolicies][i]
-                                        if (alertPolicy && alertPolicy.parent.includes(region)) {
-                                            requestData[localFields.alertPolicies] = alertPolicy.value
-                                            break;
-                                        }
-                                    }
-                                }
-                                requestData[localFields.serverLessConfig] = data[localFields.serverLessConfig]
-                                requestList.push(createApp(requestData))
-                            })
-
-                            if (requestList && requestList.length > 0) {
-                                service.multiAuthRequest(this, requestList, this.onAddResponse)
                             }
+                            if (data[localFields.alertPolicies]) {
+                                requestData[localFields.alertPolicies] = undefined
+                                for (let i = 0; i < data[localFields.alertPolicies].length; i++) {
+                                    let alertPolicy = data[localFields.alertPolicies][i]
+                                    if (alertPolicy && alertPolicy.parent.includes(region)) {
+                                        requestData[localFields.alertPolicies] = alertPolicy.value
+                                        break;
+                                    }
+                                }
+                            }
+                            requestData[localFields.serverLessConfig] = data[localFields.serverLessConfig]
+                            requestList.push(createApp(requestData))
+                        })
+
+                        if (requestList && requestList.length > 0) {
+                            service.multiAuthRequest(this, requestList, this.onAddResponse)
                         }
                     }
+                }
             }
             else {
                 this.props.handleAlertInfo('error', 'Please input image path or deployment manifest')
@@ -978,121 +978,116 @@ class AppReg extends Component {
             if (data[localFields.deployment] === perpetual.DEPLOYMENT_TYPE_KUBERNETES) {
                 this.configOptions = [perpetual.CONFIG_ENV_VAR]
             }
+
             let multiFormCount = 0
+            let indexs = findIndexs(forms, [localFields.accessPorts, localFields.configs, localFields.annotations, localFields.requiredOutboundConnections])
 
-            if (data[localFields.accessPorts]) {
-                let portArray = data[localFields.accessPorts].split(',')
-                let skipHCPortArray = data[localFields.skipHCPorts] ? data[localFields.skipHCPorts].split(',') : []
-                for (let i = 0; i < portArray.length; i++) {
-                    let portInfo = portArray[i].split(':')
-                    let protocol = portInfo[0].toLowerCase();
-                    let portMaxNo = portInfo[1];
-                    let tls = false
-                    let skipHCPort = skipHCPortArray.includes(portArray[i].replace(':tls', ''))
-                    if (portInfo.length === 3 && portInfo[2] === 'tls') {
-                        tls = true
+            for (let form of forms) {
+                if (data[localFields.accessPorts] && form.field === localFields.accessPorts) {
+                    let portArray = data[localFields.accessPorts].split(',')
+                    let skipHCPortArray = data[localFields.skipHCPorts] ? data[localFields.skipHCPorts].split(',') : []
+                    for (let ports of portArray) {
+                        let portInfo = ports.split(':')
+                        let protocol = portInfo[0].toLowerCase();
+                        let portMaxNo = portInfo[1];
+                        let tls = false
+                        let skipHCPort = skipHCPortArray.includes(ports.replace(':tls', ''))
+                        if (portInfo.length === 3 && portInfo[2] === 'tls') {
+                            tls = true
+                        }
+                        let portMinNo = undefined
+
+                        let portForms = this.portForm()
+
+                        if (portMaxNo.includes('-')) {
+                            portForms = this.multiPortForm()
+                            let portNos = portMaxNo.split('-')
+                            portMinNo = portNos[0]
+                            portMaxNo = portNos[1]
+                        }
+
+                        for (let portForm of portForms) {
+                            if (portForm.field === localFields.protocol) {
+                                portForm.value = protocol
+                            }
+                            else if (portForm.field === localFields.portRangeMax) {
+                                portForm.value = portMaxNo
+                            }
+                            else if (portForm.field === localFields.portRangeMin) {
+                                portForm.value = portMinNo
+                            }
+                            else if (portForm.field === localFields.tls) {
+                                portForm.visible = protocol === 'tcp'
+                                portForm.value = tls
+                            }
+                            else if (portForm.field === localFields.skipHCPorts) {
+                                portForm.visible = protocol === 'tcp'
+                                portForm.value = !skipHCPort
+                            }
+                        }
+                        forms.splice(indexs[form.field] + multiFormCount, 0, this.getPortForm(portForms))
+                        multiFormCount += 1
                     }
-                    let portMinNo = undefined
-
-                    let portForms = this.portForm()
-
-                    if (portMaxNo.includes('-')) {
-                        portForms = this.multiPortForm()
-                        let portNos = portMaxNo.split('-')
-                        portMinNo = portNos[0]
-                        portMaxNo = portNos[1]
-                    }
-
-                    for (let j = 0; j < portForms.length; j++) {
-                        let portForm = portForms[j];
-                        if (portForm.field === localFields.protocol) {
-                            portForm.value = protocol
-                        }
-                        else if (portForm.field === localFields.portRangeMax) {
-                            portForm.value = portMaxNo
-                        }
-                        else if (portForm.field === localFields.portRangeMin) {
-                            portForm.value = portMinNo
-                        }
-                        else if (portForm.field === localFields.tls) {
-                            portForm.visible = protocol === 'tcp'
-                            portForm.value = tls
-                        }
-                        else if (portForm.field === localFields.skipHCPorts) {
-                            portForm.visible = protocol === 'tcp'
-                            portForm.value = !skipHCPort
-                        }
-                    }
-                    forms.splice(16 + multiFormCount, 0, this.getPortForm(portForms))
-                    multiFormCount += 1
                 }
-            }
-
-            if (data[localFields.annotations]) {
-                let annotationArray = data[localFields.annotations].split(',')
-                for (let i = 0; i < annotationArray.length; i++) {
-                    let annotation = annotationArray[i].split('=')
-                    let annotationForms = this.annotationForm()
-                    let key = annotation[0]
-                    let value = annotation[1]
-
-                    for (let j = 0; j < annotationForms.length; j++) {
-                        let annotationForm = annotationForms[j];
-                        if (annotationForm.field === localFields.key) {
-                            annotationForm.value = key
+                else if (data[localFields.configs] && form.field === localFields.configs) {
+                    let configs = data[localFields.configs]
+                    for (let config of configs) {
+                        let configForms = this.configForm()
+                        for (let configForm of configForms) {
+                            if (configForm.field === localFields.kind) {
+                                configForm.value = config[localFields.kind]
+                            }
+                            else if (configForm.field === localFields.config) {
+                                configForm.value = config[localFields.config]
+                            }
                         }
-                        else if (annotationForm.field === localFields.value) {
-                            annotationForm.value = value
-                        }
+                        forms.splice(indexs[form.field] + multiFormCount, 0, this.getConfigForm(configForms))
+                        multiFormCount += 1
                     }
-                    forms.splice(17 + multiFormCount, 0, this.getAnnotationForm(annotationForms))
-                    multiFormCount += 1
                 }
-            }
+                else if (data[localFields.annotations] && localFields.annotations === form.field) {
+                    let annotationArray = data[localFields.annotations].split(',')
+                    for (let annotation of annotationArray) {
+                        let annotations = annotation.split('=')
+                        let annotationForms = this.annotationForm()
+                        let key = annotations[0]
+                        let value = annotations[1]
 
-            if (data[localFields.configs]) {
-                let configs = data[localFields.configs]
-                for (let i = 0; i < configs.length; i++) {
-                    let config = configs[i]
-                    let configForms = this.configForm()
-                    for (let j = 0; j < configForms.length; j++) {
-                        let configForm = configForms[j];
-                        if (configForm.field === localFields.kind) {
-                            configForm.value = config[localFields.kind]
+                        for (let annotationForm of annotationForms) {
+                            if (annotationForm.field === localFields.key) {
+                                annotationForm.value = key
+                            }
+                            else if (annotationForm.field === localFields.value) {
+                                annotationForm.value = value
+                            }
                         }
-                        else if (configForm.field === localFields.config) {
-                            configForm.value = config[localFields.config]
-                        }
+                        forms.splice(indexs[form.field] + multiFormCount, 0, this.getAnnotationForm(annotationForms))
+                        multiFormCount += 1
                     }
-                    forms.splice(18 + multiFormCount, 0, this.getConfigForm(configForms))
-                    multiFormCount += 1
                 }
-            }
-
-            if (data[localFields.requiredOutboundConnections]) {
-                let requiredOutboundConnections = data[localFields.requiredOutboundConnections]
-                for (let i = 0; i < requiredOutboundConnections.length; i++) {
-                    let requiredOutboundConnection = requiredOutboundConnections[i]
-                    let outboundConnectionsForms = this.outboundConnectionsForm()
-                    for (let j = 0; j < outboundConnectionsForms.length; j++) {
-                        let outboundConnectionsForm = outboundConnectionsForms[j];
-                        if (outboundConnectionsForm.field === localFields.ocProtocol) {
-                            outboundConnectionsForm.value = requiredOutboundConnection['protocol']
+                else if (data[localFields.requiredOutboundConnections] && localFields.requiredOutboundConnections === form.field) {
+                    let requiredOutboundConnections = data[localFields.requiredOutboundConnections]
+                    for (let requiredOutboundConnection of requiredOutboundConnections) {
+                        let outboundConnectionsForms = this.outboundConnectionsForm()
+                        for (let outboundConnectionsForm of outboundConnectionsForms) {
+                            if (outboundConnectionsForm.field === localFields.ocProtocol) {
+                                outboundConnectionsForm.value = requiredOutboundConnection['protocol']
+                            }
+                            else if (outboundConnectionsForm.field === localFields.ocRemoteCIDR) {
+                                outboundConnectionsForm.value = requiredOutboundConnection['remote_cidr']
+                            }
+                            else if (outboundConnectionsForm.field === localFields.ocPortMin) {
+                                outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
+                                outboundConnectionsForm.value = requiredOutboundConnection['port_range_min']
+                            }
+                            else if (outboundConnectionsForm.field === localFields.ocPortMax) {
+                                outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
+                                outboundConnectionsForm.value = requiredOutboundConnection['port_range_max']
+                            }
                         }
-                        else if (outboundConnectionsForm.field === localFields.ocRemoteCIDR) {
-                            outboundConnectionsForm.value = requiredOutboundConnection['remote_cidr']
-                        }
-                        else if (outboundConnectionsForm.field === localFields.ocPortMin) {
-                            outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
-                            outboundConnectionsForm.value = requiredOutboundConnection['port_range_min']
-                        }
-                        else if (outboundConnectionsForm.field === localFields.ocPortMax) {
-                            outboundConnectionsForm.visible = requiredOutboundConnection['protocol'] !== 'icmp'
-                            outboundConnectionsForm.value = requiredOutboundConnection['port_range_max']
-                        }
+                        forms.splice(indexs[form.field] + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
+                        multiFormCount += 1
                     }
-                    forms.splice(19 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
-                    multiFormCount += 1
                 }
             }
         }

@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, BUTTON, SWITCH, ICON_BUTTON, TEXT_AREA, MAIN_HEADER, HEADER, SELECT_RADIO_TREE_GROUP, MULTI_FORM, INPUT } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, BUTTON, SWITCH, ICON_BUTTON, TEXT_AREA, MAIN_HEADER, HEADER, SELECT_RADIO_TREE_GROUP, MULTI_FORM, INPUT, findIndexs } from '../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -657,13 +657,12 @@ class AppInstReg extends React.Component {
                 this.flavorList = [flavor]
 
                 let multiFormCount = 0
+                let index = findIndexs(forms, localFields.configs)
                 if (data[localFields.configs]) {
                     let configs = data[localFields.configs]
-                    for (let i = 0; i < configs.length; i++) {
-                        let config = configs[i]
+                    for (let config of configs) {
                         let configForms = this.configForm()
-                        for (let j = 0; j < configForms.length; j++) {
-                            let configForm = configForms[j];
+                        for (let configForm of configForms) {
                             if (configForm.field === localFields.kind) {
                                 configForm.value = config[localFields.kind]
                             }
@@ -671,8 +670,8 @@ class AppInstReg extends React.Component {
                                 configForm.value = config[localFields.config]
                             }
                         }
-                        forms.splice(14 + multiFormCount, 0, this.getConfigForm(configForms))
-                        multiFormCount += 1
+                        forms.splice(index + multiFormCount, 0, this.getConfigForm(configForms))
+                        multiFormCount++
                     }
                 }
             }

@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON, fetchDataByField } from '../../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON, fetchDataByField, findIndexs } from '../../../../hoc/forms/MexForms';
 import { redux_org } from '../../../../helper/reduxData'
 //model
 import { service, updateFieldDataNew } from '../../../../services';
@@ -348,6 +348,7 @@ class TrustPolicyExceptionReg extends React.Component {
 
     loadDefaultData = (forms, data) => {
         let multiFormCount = 0
+        let index = findIndexs(forms, localFields.requiredOutboundConnections)
         if (data[localFields.requiredOutboundConnections]) {
             let requiredOutboundConnections = data[localFields.requiredOutboundConnections]
             for (const requiredOutboundConnection of requiredOutboundConnections) {
@@ -372,8 +373,8 @@ class TrustPolicyExceptionReg extends React.Component {
                         outboundConnectionsForm.visible = isNotICMP
                     }
                 }
-                forms.splice(19 + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
-                multiFormCount += 1
+                forms.splice(index + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
+                multiFormCount++
             }
         }
     }
