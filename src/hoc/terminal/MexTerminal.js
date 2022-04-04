@@ -1,14 +1,14 @@
 
 import React from 'react';
 import { Terminal } from 'xterm'
-import '../../../node_modules/xterm/css/xterm.css'
 import * as actions from "../../actions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import './style.css'
 import * as date_util from '../../utils/date_util';
 import { FitAddon } from 'xterm-addon-fit';
 import { perpetual } from '../../helper/constant';
+import '../../../node_modules/xterm/css/xterm.css'
+import './style.css'
 
 class MexTerminal extends React.Component {
 
