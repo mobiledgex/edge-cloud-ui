@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, MAIN_HEADER, HEADER, MULTI_FORM, ICON_BUTTON, findIndexs } from '../../../hoc/forms/MexForms';
 import { redux_org } from '../../../helper/reduxData'
 //model
 import { service, updateFieldData } from '../../../services';
@@ -254,6 +254,7 @@ class NetworkReg extends React.Component {
     
     loadDefaultData = (forms, data) => {
             let multiFormCount = 0
+            let index = findIndexs(forms, localFields.accessRoutes)
             if (data[localFields.accessRoutes]) {
                 let routeArray = data[localFields.accessRoutes]
                 for (let i = 0; i < routeArray.length; i++) {
@@ -268,8 +269,8 @@ class NetworkReg extends React.Component {
                             routeForm.value = routeArr[localFields.nextHopIp]
                         }
                     }
-                    forms.splice(8 + multiFormCount, 0, this.getRoutesForm(routeForms))
-                    multiFormCount = +1
+                    forms.splice(index + multiFormCount, 0, this.getRoutesForm(routeForms))
+                    multiFormCount++
                 }
             }
     }

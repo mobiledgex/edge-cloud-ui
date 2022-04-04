@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 //Mex
-import MexForms, { SELECT, BUTTON, INPUT, MAIN_HEADER, MULTI_FORM, HEADER, ICON_BUTTON } from '../../../../hoc/forms/MexForms';
+import MexForms, { SELECT, BUTTON, INPUT, MAIN_HEADER, MULTI_FORM, HEADER, ICON_BUTTON, findIndexs } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -257,6 +257,7 @@ class BuildReg extends React.Component {
         this.organizationList = [organization]
 
         let multiFormCount = 0
+        let index = findIndexs(forms, localFields.builds)
         if (data[localFields.builds]) {
             let builds = data[localFields.builds]
             for (const build of builds) {
@@ -281,8 +282,8 @@ class BuildReg extends React.Component {
                         form.value = build[localFields.kernelVersion]
                     }
                 }
-                forms.splice(5 + multiFormCount, 0, { ...this.buildMultiForm(buildForms), existing: true })
-                multiFormCount += 1
+                forms.splice(index + multiFormCount, 0, { ...this.buildMultiForm(buildForms), existing: true })
+                multiFormCount++
             }
         }
     }
