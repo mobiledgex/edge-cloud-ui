@@ -36,14 +36,15 @@ class OrganizationList extends React.Component {
         this.action = '';
         this.data = {}
         this.worker = new RoleWorker();
-        this.keys = keys().map(key => {
+        this.keys = keys().filter(key => {
+            let valid = true
             if (key.field === localFields.manage || key.field === localFields.role) {
-                key.visible = !redux_org.isAdmin(this)
+                valid = !redux_org.isAdmin(this)
             }
             else if (key.field === localFields.type) {
-                key.visible = redux_org.isAdmin(this)
+                valid = redux_org.isAdmin(this)
             }
-            return key
+            return valid
         })
     }
 
@@ -232,7 +233,7 @@ class OrganizationList extends React.Component {
             return <strong>{toFirstUpperCase(data[key.field])}</strong>
         }
         else if (key.field === localFields.role) {
-            return redux_org.isAdmin(this) && isDetail ? undefined : <strong>{splitByCaps(data[key.field])}</strong>
+            return <strong>{splitByCaps(data[key.field])}</strong>
         }
     }
 
