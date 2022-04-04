@@ -155,8 +155,8 @@ class AppReg extends Component {
 
     portForm = () => ([
         { field: localFields.portRangeMax, label: 'Port', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 7, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
-        { field: localFields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
-        { field: localFields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 1, update: { edit: true } },
+        { field: localFields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
+        { field: localFields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
         { field: localFields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
     ])
@@ -179,8 +179,8 @@ class AppReg extends Component {
         { field: localFields.portRangeMin, label: 'Port Min', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: localFields.portRangeMax, label: 'Port Max', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
-        { field: localFields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
-        { field: localFields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 1, update: { edit: true } },
+        { field: localFields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
+        { field: localFields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
         { field: localFields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
         { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
     ])
