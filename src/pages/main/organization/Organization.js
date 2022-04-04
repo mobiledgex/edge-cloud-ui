@@ -232,7 +232,7 @@ class OrganizationList extends React.Component {
             return <strong>{toFirstUpperCase(data[key.field])}</strong>
         }
         else if (key.field === localFields.role) {
-            return <strong>{splitByCaps(data[key.field])}</strong>
+            return redux_org.isAdmin(this) && isDetail ? undefined : <strong>{splitByCaps(data[key.field])}</strong>
         }
     }
 
@@ -301,8 +301,6 @@ class OrganizationList extends React.Component {
     componentWillUnmount() {
         this._isMounted = false
     }
-
-
 };
 
 const mapStateToProps = (state) => {
