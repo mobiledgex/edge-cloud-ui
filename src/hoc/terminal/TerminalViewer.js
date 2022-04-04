@@ -216,13 +216,12 @@ class TerminalViewer extends Component {
         let forms = this.state.forms;
         if (currentForm.field === 'Request') {
             this.request = currentForm.value
-            for (let i = 0; i < forms.length; i++) {
-                let form = forms[i];
+            for (let form of forms) {
                 if (form.field === 'Command') {
-                    form.visible = currentForm.value === perpetual.SHOW_LOGS ? false : true
+                    form.visible = currentForm.value !== perpetual.SHOW_LOGS
                 }
                 if (form.field === 'LogOptions') {
-                    form.visible = currentForm.value === perpetual.SHOW_LOGS ? true : false
+                    form.visible = currentForm.value === perpetual.SHOW_LOGS
                 }
             }
             this.reloadForms()
@@ -255,8 +254,9 @@ class TerminalViewer extends Component {
     )
 
     loadVMPage = () => {
-        return this.state.vmURL ?
-            <iframe title='VM' ref={this.vmPage} src={this.state.vmURL} style={{ width: '100%', height: window.innerHeight - 65 }}></iframe> : null
+        const { vmURL } = this.state
+        return vmURL ?
+            <iframe title='VM' ref={this.vmPage} src={vmURL} style={{ width: '100%', height: window.innerHeight - 65 }}></iframe> : null
     }
 
     socketStatus = (flag, diff, ws) => {
@@ -271,13 +271,14 @@ class TerminalViewer extends Component {
     }
 
     loadCommandSelector = (containerIds) => {
+        const { tempURL, forms, optionView } = this.state
         return (
             containerIds.length > 0 ?
-                this.state.optionView ?
+                optionView ?
                     <div style={style.layout}>
                         <div style={style.container} align='center'>
                             <Paper variant="outlined" style={style.optionBody}>
-                                <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{}} />
+                                <MexForms forms={forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} style={{}} />
                                 <div>
                                     <p style={{ color: '#FFC107' }}>Note: Only running containers are accessible</p>
                                 </div>
@@ -285,10 +286,10 @@ class TerminalViewer extends Component {
                         </div>
                     </div>
                     :
-                    this.state.tempURL ?
+                    tempURL ?
                         <Suspense fallback={<div></div>}>
                             <div className={`${this.request === perpetual.RUN_COMMAND ? 'terminal_run_head' : 'terminal_log_head'}`}>
-                                <Terminal status={this.socketStatus} url={this.state.tempURL} request={this.request} />
+                                <Terminal status={this.socketStatus} url={tempURL} request={this.request} />
                             </div>
                         </Suspense> :
                         null
