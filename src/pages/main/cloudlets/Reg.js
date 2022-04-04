@@ -95,6 +95,16 @@ class CloudletReg extends React.Component {
         }
     }
 
+    readResourceQuotaUnit = (description)=>{
+        let start = description.indexOf('(')
+        let unit = undefined
+        if (start >= 0) {
+            let end = description.indexOf(')')
+            unit = description.substring(start + 1, end)
+        }
+        return unit
+    }
+
     fetchRegionDependentData = async (region, platformType) => {
         let requestList = []
         if (region) {
@@ -377,14 +387,7 @@ class CloudletReg extends React.Component {
                             childForm.tip = description
                         }
                         else if (childForm.field === localFields.resourceValue) {
-                            let start = description.indexOf('(')
-                            if (start >= 0) {
-                                let end = description.indexOf(')')
-                                childForm.unit = description.substring(start + 1, end)
-                            }
-                            else {
-                                childForm.unit = undefined
-                            }
+                            childForm.unit = this.readResourceQuotaUnit(description)
                         }
                     }
                     break;
@@ -805,16 +808,24 @@ class CloudletReg extends React.Component {
                 }
                 else if (data[localFields.resourceQuotas] && form.field === localFields.resourceQuotas) {
                     let resourceQuotaArray = data[localFields.resourceQuotas]
+                    let descriptions = {}
+                    this.resourceQuotaList.forEach(item => {
+                        descriptions[item.name] = item.description
+                    })
                     resourceQuotaArray.forEach(item => {
                         let multiForms = this.resourceQuotaForm()
+                        let description = descriptions[item['name']]
+
                         for (let multiForm of multiForms) {
                             if (multiForm.field === localFields.resourceName) {
                                 multiForm.value = item['name']
-
                             }
                             else if (multiForm.field === localFields.resourceValue) {
                                 multiForm.value = item['value']
-
+                                multiForm.unit = description ? this.readResourceQuotaUnit(description) : undefined
+                            }
+                            else if (multiForm.formType === TIP) {
+                                multiForm.tip = description
                             }
                             else if (multiForm.field === localFields.alertThreshold) {
                                 multiForm.value = item['alert_threshold'] ? item['alert_threshold'] : data[localFields.defaultResourceAlertThreshold]
