@@ -200,7 +200,7 @@ class AppReg extends Component {
     }
 
     outboundConnectionsForm = () => ([
-        { field: localFields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 4, visible: true, options: ['tcp', 'udp', 'icmp'], update: { edit: true } },
+        { field: localFields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp', 'icmp'], update: { edit: true } },
         { field: localFields.ocRemoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: validateRemoteCIDR },
         { field: localFields.ocPortMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
         { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
