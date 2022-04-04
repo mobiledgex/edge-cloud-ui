@@ -109,6 +109,18 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
+export const findIndexs = (forms, fields)=>{
+    let indexs = {}
+    let isArray = Array.isArray(fields)
+    forms.forEach((form, i)=>{
+        if((isArray && fields.includes(form.field)) || form.field === fields)
+        {
+            indexs[form.field] = i+1
+        }
+    })
+    return isArray ? indexs : indexs[fields]
+}
+
 export const fetchDataByField = (forms, fields) => {
     let data = {}
     for (const form of forms) {

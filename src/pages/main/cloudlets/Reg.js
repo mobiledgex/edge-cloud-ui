@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA, ICON_BUTTON, formattedData, MAIN_HEADER, HEADER, MULTI_FORM, TIP, SWITCH } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA, ICON_BUTTON, formattedData, MAIN_HEADER, HEADER, MULTI_FORM, TIP, SWITCH, findIndexs } from '../../../hoc/forms/MexForms';
 import ListMexMap from '../../../hoc/datagrid/map/ListMexMap';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/MexMessageMultiStream'
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
@@ -140,32 +140,32 @@ class CloudletReg extends React.Component {
     }
 
     loadEnvMandatoryForms = (forms) => {
-        let count = 0
+        let index = findIndexs(forms, localFields.envVars)
+        let multiFormCount = 0
         this.cloudletPropsList.forEach((item, i) => {
             if (item.mandatory) {
-                let envForms = this.envForm()
+                let multiForms = this.envForm()
                 let key = item.key
                 let value = item.value
-                for (let envForm of envForms) {
-                    if (envForm.field === localFields.key) {
-                        envForm.value = key
-                        envForm.rules.disabled = true
+                for (let multiForm of multiForms) {
+                    if (multiForm.field === localFields.key) {
+                        multiForm.value = key
+                        multiForm.rules.disabled = true
                     }
-                    else if (envForm.field === localFields.value) {
-                        envForm.value = value
+                    else if (multiForm.field === localFields.value) {
+                        multiForm.value = value
                     }
-                    else if (envForm.formType === TIP) {
-                        envForm.tip = this.loadEnvTip(item)
+                    else if (multiForm.formType === TIP) {
+                        multiForm.tip = this.loadEnvTip(item)
                     }
                     else {
-                        envForm.visible = false
+                        multiForm.visible = false
                     }
                 }
-                forms.splice(17 + count, 0, this.getEnvForm(envForms))
-                count++
+                forms.splice(index + multiFormCount, 0, this.getEnvForm(multiForms))
+                multiFormCount++
             }
         })
-        this.setState({ forms })
     }
 
     getDeveloperOrg = async (form, forms, isInit) => {
@@ -184,6 +184,13 @@ class CloudletReg extends React.Component {
         if (currentForm.value !== undefined && valid) {
             await this.fetchRegionDependentData(this.state.region, currentForm.value)
         }
+
+        if (valid) {
+            if (currentForm.value !== undefined && this.state.region) {
+                this.loadEnvMandatoryForms(forms)
+            }
+        }
+        
         let nforms = forms.filter(form => {
             let valid = true
             if (form.field === localFields.deployment && !isInit) {
@@ -199,9 +206,8 @@ class CloudletReg extends React.Component {
             if (form.field === localFields.infraApiAccess) {
                 let curr_form = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
                 this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT]
-                if(curr_form)
-                {
-                    this.infraApiAccessList.push(perpetual.INFRA_API_ACCESS_RESTRICTED)   
+                if (curr_form) {
+                    this.infraApiAccessList.push(perpetual.INFRA_API_ACCESS_RESTRICTED)
                 }
                 form.value = curr_form ? undefined : perpetual.INFRA_API_ACCESS_DIRECT
                 form.rules.disabled = !curr_form
@@ -212,7 +218,7 @@ class CloudletReg extends React.Component {
             }
             else if (form.field === localFields.vmPool) {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_VMPOOL
-                form.rules.required = currentForm.value === perpetual.PLATFORM_TYPE_VMPOOL
+                form.rules.required = form.visible
             }
             else if (form.field === localFields.singleK8sClusterOwner) {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
@@ -220,14 +226,7 @@ class CloudletReg extends React.Component {
             }
             return valid
         })
-        if (valid) {
-            if (currentForm.value !== undefined && this.state.region) {
-                this.loadEnvMandatoryForms(nforms)
-            }
-            else {
-                this.updateState({ forms: nforms })
-            }
-        }
+        this.updateState({ forms: nforms }) 
     }
 
     infraAPIAccessChange = (currentForm, forms, isInit) => {
@@ -284,12 +283,8 @@ class CloudletReg extends React.Component {
                 }
                 return valid
             })
-            if (platformType && region) {
-                this.loadEnvMandatoryForms(nforms)
-            }
-            else {
-                this.updateState({ forms: nforms })
-            }
+            this.loadEnvMandatoryForms(nforms)
+            this.updateState({ forms: nforms })
             this.requestedRegionList.push(region);
         }
     }
@@ -427,8 +422,7 @@ class CloudletReg extends React.Component {
         else if (form.field === localFields.key) {
             this.onCloudletPropsKeyChange(form, forms, isInit)
         }
-        else if(form.field === localFields.resourceName)
-        {
+        else if (form.field === localFields.resourceName) {
             this.onResourceQuotaChange(form, forms, isInit)
         }
 
@@ -750,11 +744,9 @@ class CloudletReg extends React.Component {
     }
 
 
-
     loadDefaultData = async (forms, data) => {
         if (data) {
             let requestList = []
-
             let operator = {}
             operator[localFields.operatorName] = data[localFields.operatorName];
             this.operatorList = [operator]
@@ -765,7 +757,7 @@ class CloudletReg extends React.Component {
             requestList.push(showOrganizations(this, { type: perpetual.OPERATOR }))
             let mcList = await service.multiAuthSyncRequest(this, requestList)
 
-            if (mcList && mcList.length > 0) {
+            if (mcList?.length > 0) {
                 for (const mc of mcList) {
                     if (mc?.response?.data) {
                         let responseData = mc.response.data
@@ -789,47 +781,49 @@ class CloudletReg extends React.Component {
             }
             data[localFields.maintenanceState] = undefined
 
+            let indexs = findIndexs(forms, [localFields.envVars, localFields.resourceQuotas])
             let multiFormCount = 0
-            if (data[localFields.envVars]) {
-                let envVarsArray = data[localFields.envVars]
-                Object.keys(envVarsArray).map(item => {
-                    let envForms = this.envForm()
-                    let key = item
-                    let value = envVarsArray[item]
-                    for (let j = 0; j < envForms.length; j++) {
-                        let envForm = envForms[j]
-                        if (envForm.field === localFields.key) {
-                            envForm.value = key
-                        }
-                        else if (envForm.field === localFields.value) {
-                            envForm.value = value
-                        }
-                    }
-                    forms.splice(17 + multiFormCount, 0, this.getEnvForm(envForms))
-                    multiFormCount += 1
-                })
-            }
 
-            if (data[localFields.resourceQuotas]) {
-                let resourceQuotaArray = data[localFields.resourceQuotas]
-                resourceQuotaArray.map(item => {
-                    let resourceQuotaForms = this.resourceQuotaForm()
-                    for (let resourceQuotaForm of resourceQuotaForms) {
-                        if (resourceQuotaForm.field === localFields.resourceName) {
-                            resourceQuotaForm.value = item['name']
+            for (let form of forms) {
+                if (data[localFields.envVars] && form.field === localFields.envVars) {
+                    let envVarsArray = data[localFields.envVars]
+                    Object.keys(envVarsArray).forEach(item => {
+                        let multiForms = this.envForm()
+                        let key = item
+                        let value = envVarsArray[item]
+                        for (let multiForm of multiForms) {
+                            if (multiForm.field === localFields.key) {
+                                multiForm.value = key
+                            }
+                            else if (multiForm.field === localFields.value) {
+                                multiForm.value = value
+                            }
+                        }
+                        forms.splice(indexs[form.field] + multiFormCount, 0, this.getEnvForm(multiForms))
+                        multiFormCount++
+                    })
+                }
+                else if (data[localFields.resourceQuotas] && form.field === localFields.resourceQuotas) {
+                    let resourceQuotaArray = data[localFields.resourceQuotas]
+                    resourceQuotaArray.forEach(item => {
+                        let multiForms = this.resourceQuotaForm()
+                        for (let multiForm of multiForms) {
+                            if (multiForm.field === localFields.resourceName) {
+                                multiForm.value = item['name']
 
-                        }
-                        else if (resourceQuotaForm.field === localFields.resourceValue) {
-                            resourceQuotaForm.value = item['value']
+                            }
+                            else if (multiForm.field === localFields.resourceValue) {
+                                multiForm.value = item['value']
 
+                            }
+                            else if (multiForm.field === localFields.alertThreshold) {
+                                multiForm.value = item['alert_threshold'] ? item['alert_threshold'] : data[localFields.defaultResourceAlertThreshold]
+                            }
                         }
-                        else if (resourceQuotaForm.field === localFields.alertThreshold) {
-                            resourceQuotaForm.value = item['alert_threshold'] ? item['alert_threshold'] : data[localFields.defaultResourceAlertThreshold]
-                        }
-                    }
-                    forms.splice(18 + multiFormCount, 0, this.getResoureQuotaForm(resourceQuotaForms))
-                    multiFormCount += 1
-                })
+                        forms.splice(indexs[form.field] + multiFormCount, 0, this.getResoureQuotaForm(multiForms))
+                        multiFormCount++
+                    })
+                }
             }
         }
     }

@@ -265,7 +265,7 @@ class Reg extends React.Component {
                     }
                 }
                 forms.splice(position + multiFormCount, 0, newForm(newForms))
-                multiFormCount += 1
+                multiFormCount++
             })
         }
     }
