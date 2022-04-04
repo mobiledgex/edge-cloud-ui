@@ -1026,7 +1026,7 @@ class AppReg extends Component {
                             }
                         }
                         forms.splice(indexs[form.field] + multiFormCount, 0, this.getPortForm(portForms))
-                        multiFormCount += 1
+                        multiFormCount++
                     }
                 }
                 else if (data[localFields.configs] && form.field === localFields.configs) {
@@ -1042,7 +1042,7 @@ class AppReg extends Component {
                             }
                         }
                         forms.splice(indexs[form.field] + multiFormCount, 0, this.getConfigForm(configForms))
-                        multiFormCount += 1
+                        multiFormCount++
                     }
                 }
                 else if (data[localFields.annotations] && localFields.annotations === form.field) {
@@ -1062,7 +1062,7 @@ class AppReg extends Component {
                             }
                         }
                         forms.splice(indexs[form.field] + multiFormCount, 0, this.getAnnotationForm(annotationForms))
-                        multiFormCount += 1
+                        multiFormCount++
                     }
                 }
                 else if (data[localFields.requiredOutboundConnections] && localFields.requiredOutboundConnections === form.field) {
@@ -1086,7 +1086,7 @@ class AppReg extends Component {
                             }
                         }
                         forms.splice(indexs[form.field] + multiFormCount, 0, this.getOutboundConnectionsForm(outboundConnectionsForms))
-                        multiFormCount += 1
+                        multiFormCount++
                     }
                 }
             }
