@@ -263,7 +263,7 @@ const Sunburst = (props) => {
 
     return (
         <div align='center'>
-            <div style={{ position: 'relative' }} ref={sbRef} />
+            <div style={{ position: 'relative', width:'95%' }} ref={sbRef} />
              <div style={{padding:'0px 10px 0px 20px'}} align='center'>
                 <SequenceHorizontal key={uniqueId()} dataset={dataFlow} colors={color} />
             </div>
