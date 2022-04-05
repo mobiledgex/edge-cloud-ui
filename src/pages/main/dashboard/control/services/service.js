@@ -24,11 +24,8 @@ export const fetchSpecificResources = async (self, item) => {
     if (item?.data) {
         let data = item.data
         let numsamples = 1
-        data.region = 'US'
         data.selector = '*'
         data.numsamples = numsamples
-        data.starttime = '2022-03-17T11:03:06+00:00'
-        data.endtime = '2022-03-18T11:03:06+00:00'
         if (item.field === localFields.cloudletName || item.field === localFields.appName || item.field === localFields.clusterName) {
             let elements
             let request

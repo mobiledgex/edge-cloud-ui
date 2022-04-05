@@ -156,7 +156,7 @@ const format = (worker) => {
                                 dataList.forEach(final => {
                                     if (final[localFields.clusterName].name === data[localFields.clusterName] && final[localFields.clusterdeveloper].name === data[localFields.organizationName]) {
                                         final[localFields.clusterName].state = data[localFields.state]
-                                        final[localFields.clusterName].data = data
+                                        final[localFields.clusterName].data = { ...data, region }
                                         exist = true
                                     }
                                 })
@@ -165,7 +165,7 @@ const format = (worker) => {
                                 dataList.forEach(final => {
                                     if (final[localFields.cloudletName].name === data[localFields.cloudletName] && final[localFields.operatorName].name === data[localFields.operatorName]) {
                                         final[localFields.cloudletName].state = data[localFields.state]
-                                        final[localFields.cloudletName].data = data
+                                        final[localFields.cloudletName].data = { ...data, region }
                                         exist = true
                                     }
                                 })
