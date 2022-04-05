@@ -11,7 +11,7 @@ const STATE_IN_PROGRESS = [serverFields.CREATING, serverFields.CREATE_REQUESTED,
 
 const cloudletAlerts = [{ field: localFields.state, states: [{ values: [serverFields.READY] }, { type: 'transient', color: '#FFA000', values: STATE_IN_PROGRESS }] }]
 const clusterAlerts = [{ field: localFields.state, states: [{ values: [serverFields.READY] }, { type: 'transient', color: '#FFA000', values: STATE_IN_PROGRESS }] }]
-const appInstAlerts = [{ field: localFields.state, states: [{ type: 'transient', color: '#FFA000', values: STATE_IN_PROGRESS }] }, { field: localFields.healthCheck, states: [{ values: [serverFields.OK] }] }]
+const appInstAlerts = [{ field: localFields.state, states: [{ values: [serverFields.READY] }, { type: 'transient', color: '#FFA000', values: STATE_IN_PROGRESS }] }, { field: localFields.healthCheck, states: [{ values: [serverFields.OK] }] }]
 
 export const sequence = () => ([
     { label: 'Region', active: true, field: localFields.region },
