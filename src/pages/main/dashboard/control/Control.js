@@ -21,7 +21,7 @@ class Control extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            sequence: _sequence,
+            sequence: _sequence(),
             chartData: undefined,
             rawList: undefined,
             total: undefined,
@@ -50,7 +50,7 @@ class Control extends React.Component {
     }
 
     onMore = (showMore) => {
-        this.updateState({ showMore, resources: undefined})
+        this.updateState({ showMore, resources: undefined })
         if (showMore) {
             this.fetchResources(showMore)
         }
@@ -65,10 +65,14 @@ class Control extends React.Component {
         this.setState({ sequence })
     }
 
-    onSequenceChange = async (sequence) => {
+    resetSequence = (sequence) => {
         sequence.forEach((item, i) => {
             item.active = i < 2
         })
+    }
+
+    onSequenceChange = async (sequence) => {
+        this.resetSequence(sequence)
         let response = await processWorker(this, this.worker, {
             rawList: this.state.rawList,
             sequence
@@ -78,7 +82,7 @@ class Control extends React.Component {
         }
     }
 
-    onRefreshSunburst = ()=>{
+    onRefreshSunburst = () => {
         this.fetchInitData()
     }
 
@@ -107,7 +111,7 @@ class Control extends React.Component {
                         <div className='mex-card'>
                             <SequenceFunnel sequence={sequence} onChange={this.onSequenceChange} key={uniqueId()}></SequenceFunnel>
                         </div>
-                        <Total data={total} loading={loading}/>
+                        <Total data={total} loading={loading} />
                     </div>
                     {showMore ? <ShowMore data={showMore} resources={resources} loading={loadingResources} /> : null}
                     {children}
@@ -117,13 +121,14 @@ class Control extends React.Component {
     }
 
     fetchInitData = async () => {
-        const { sequence } = this.state
+        let sequence = [...this.state.sequence]
         this.updateState({ loading: true })
         let response = await fetchShowData(this, this.worker, sequence, this.regions)
         this.updateState({ loading: false, dataset: undefined })
         if (response?.status === 200) {
+            this.resetSequence(sequence)
             const { data: dataset, total, dataList: rawList } = response
-            this.updateState({ dataset, total, rawList })
+            this.updateState({ dataset, total, rawList, sequence })
         }
     }
 

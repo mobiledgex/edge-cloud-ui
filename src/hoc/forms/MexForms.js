@@ -109,6 +109,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
+export const clearMultiForms = (forms, fields)=>{
+    return forms.filter(form=>{
+        return !fields.includes(form.field)
+    })
+}
+
 export const findIndexs = (forms, fields)=>{
     let indexs = {}
     let isArray = Array.isArray(fields)

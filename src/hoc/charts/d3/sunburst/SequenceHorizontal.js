@@ -63,6 +63,8 @@ class SequenceHorizontal extends React.Component {
       return "translate(" + i * (b.w + b.s) + ", 0)";
     });
 
+    entering.style("cursor", "pointer").on('click', this.props.onClick)
+
     g.exit().remove()
 
   }

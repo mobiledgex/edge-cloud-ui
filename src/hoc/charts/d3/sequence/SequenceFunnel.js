@@ -1,6 +1,5 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { sequence } from '../../../../pages/main/dashboard/control/services/sequence';
 
 const CON_WIDTH = 38
 const COLOR_GREEN = '#388E3C'
@@ -16,10 +15,11 @@ const breadCrumbColor = (flag) => {
   return flag ? COLOR_GREEN : COLOR_RED
 }
 
-const breadcrumbPoints = (d, i, j) => {
-  var w = (b.w * sequence.length) + i * b.t
+const breadcrumbPoints = (d, i, length) => {
+  let j = length - i
+  let w = (b.w * length) + i * b.t
   w = w + (2 * i)
-  var points = [];
+  let points = [];
   points.push(3 + j * b.t + ",0");
   points.push(w + b.t + ",0");
   points.push(w + "," + b.h);
@@ -29,15 +29,15 @@ const breadcrumbPoints = (d, i, j) => {
 }
 
 export const updateElements = (sequence, onSwap) => {
-  var swap = undefined
-  var g = d3.select("#trail")
+  let swap = undefined
+  let g = d3.select("#trail")
     .selectAll("g")
     .data(sequence, (d) => { return `${Math.random()}_${d.field}` });
-  var entering = g.enter().append("svg:g");
+  let entering = g.enter().append("svg:g");
 
   //add polygon
   entering.append("svg:polygon")
-    .attr("points", (d, i) => { return breadcrumbPoints(d, i, sequence.length - i) })
+    .attr("points", (d, i) => { return breadcrumbPoints(d, i, sequence.length) })
     .style('display', 'inline')
     .attr("stroke-linejoin", "round")
     .attr("stroke-width", '5px')
