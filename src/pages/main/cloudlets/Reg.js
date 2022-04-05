@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 //Mex
-import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA, ICON_BUTTON, formattedData, MAIN_HEADER, HEADER, MULTI_FORM, TIP, SWITCH, findIndexs } from '../../../hoc/forms/MexForms';
+import MexForms, { SELECT, MULTI_SELECT, INPUT, TEXT_AREA, ICON_BUTTON, formattedData, MAIN_HEADER, HEADER, MULTI_FORM, TIP, SWITCH, findIndexs, clearMultiForms } from '../../../hoc/forms/MexForms';
 import ListMexMap from '../../../hoc/datagrid/map/ListMexMap';
 import MexMultiStepper, { updateStepper } from '../../../hoc/stepper/MexMessageMultiStream'
 import * as cloudletFLow from '../../../hoc/mexFlow/cloudletFlow'
@@ -185,7 +185,6 @@ class CloudletReg extends React.Component {
                 this.developerOrgList = this.developerOrgList.sort()
             }
             this.updateUI(form)
-            this.updateState({ forms })
         }
     }
 
@@ -195,32 +194,24 @@ class CloudletReg extends React.Component {
             await this.fetchRegionDependentData(this.state.region, currentForm.value)
         }
 
-        if (valid) {
-            if (currentForm.value !== undefined && this.state.region) {
-                this.loadEnvMandatoryForms(forms)
-            }
-        }
-        
-        let nforms = forms.filter(form => {
-            let valid = true
+        forms = clearMultiForms(forms, [localFields.envVar, localFields.resourceQuota])
+
+        for (let form of forms) {
             if (form.field === localFields.deployment && !isInit) {
                 this.updateUI(form)
             }
-            if (form.field === localFields.platformHighAvailability && !isInit) {
+            else if (form.field === localFields.platformHighAvailability && !isInit) {
                 form.visible = false
                 form.value = false
             }
-            if (form.field === localFields.envVar || form.field === localFields.resourceQuota) {
-                valid = false
-            }
-            if (form.field === localFields.infraApiAccess) {
-                let curr_form = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
+            else if (form.field === localFields.infraApiAccess) {
+                let isOpenStack = currentForm.value === perpetual.PLATFORM_TYPE_OPEN_STACK
                 this.infraApiAccessList = [perpetual.INFRA_API_ACCESS_DIRECT]
-                if (curr_form) {
+                if (isOpenStack) {
                     this.infraApiAccessList.push(perpetual.INFRA_API_ACCESS_RESTRICTED)
                 }
-                form.value = curr_form ? undefined : perpetual.INFRA_API_ACCESS_DIRECT
-                form.rules.disabled = !curr_form
+                form.value = ~isOpenStack ? perpetual.INFRA_API_ACCESS_DIRECT : undefined
+                form.rules.disabled = !isOpenStack
                 this.updateUI(form)
             }
             else if (form.field === localFields.openRCData || form.field === localFields.caCertdata) {
@@ -234,9 +225,15 @@ class CloudletReg extends React.Component {
                 form.visible = currentForm.value === perpetual.PLATFORM_TYPE_K8S_BARE_METAL
                 form.visible && this.getDeveloperOrg(form, forms, isInit)
             }
-            return valid
-        })
-        this.updateState({ forms: nforms }) 
+        }
+
+        if (valid) {
+            if (currentForm.value !== undefined && this.state.region) {
+                this.loadEnvMandatoryForms(forms)
+            }
+        }
+
+        this.updateState({ forms }) 
     }
 
     infraAPIAccessChange = (currentForm, forms, isInit) => {
@@ -283,18 +280,14 @@ class CloudletReg extends React.Component {
         if (region && !isInit) {
             const platformType = fetchFormValue(forms, localFields.platformType)
             await this.fetchRegionDependentData(region, platformType)
-            let nforms = forms.filter(form => {
-                let valid = true
+            forms = clearMultiForms(forms, [localFields.envVar, localFields.resourceQuotas])
+            for (let form of forms) {
                 if (form.field === localFields.trustPolicyName || form.field === localFields.gpuConfig) {
                     this.updateUI(form)
                 }
-                else if (form.field === localFields.envVar || form.field === localFields.resourceQuota) {
-                    valid = false
-                }
-                return valid
-            })
-            this.loadEnvMandatoryForms(nforms)
-            this.updateState({ forms: nforms })
+            }
+            this.loadEnvMandatoryForms(forms)
+            this.updateState({ forms })
             this.requestedRegionList.push(region);
         }
     }

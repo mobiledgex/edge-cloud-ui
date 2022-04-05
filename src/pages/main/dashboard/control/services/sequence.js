@@ -1,4 +1,3 @@
-
 import { SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST } from "../../../../../services/endpoint";
 import { MEX_PROMETHEUS_APP_NAME, NFS_AUTO_PROVISION } from "../../../../../helper/constant/perpetual";
 import * as serverFields from "../../../../../helper/formatter/serverFields";
@@ -12,9 +11,9 @@ const STATE_IN_PROGRESS = [serverFields.CREATING, serverFields.CREATE_REQUESTED,
 
 const cloudletAlerts = [{ field: localFields.state, states: [{ values: [serverFields.READY] }, { type: 'transient', color: '#FFA000', values: STATE_IN_PROGRESS }] }]
 const clusterAlerts = [{ field: localFields.state, states: [{ values: [serverFields.READY] }, { type: 'transient', color: '#FFA000', values: STATE_IN_PROGRESS }] }]
-const appInstAlerts = [{ field: localFields.state, states: [{ type: 'transient', color: '#FFA000', values: STATE_IN_PROGRESS }] }, { field: localFields.healthCheck, states: [{ values: [serverFields.OK] }] }]
+const appInstAlerts = [{ field: localFields.state, states: [{ values: [serverFields.READY] }, { type: 'transient', color: '#FFA000', values: STATE_IN_PROGRESS }] }, { field: localFields.healthCheck, states: [{ values: [serverFields.OK] }] }]
 
-export const sequence = [
+export const sequence = () => ([
     { label: 'Region', active: true, field: localFields.region },
     { label: 'Operator', active: true, field: localFields.operatorName },
     { label: 'Cloudlet', active: false, field: localFields.cloudletName, alerts: cloudletAlerts },
@@ -22,7 +21,7 @@ export const sequence = [
     { label: 'Cluster', active: false, field: localFields.clusterName, alerts: clusterAlerts },
     // { label: 'App Developer', active: false, field: localFields.appDeveloper },
     { label: 'App', active: false, field: localFields.appName, alerts: appInstAlerts },
-]
+])
 
 export const dataForms = [
     {

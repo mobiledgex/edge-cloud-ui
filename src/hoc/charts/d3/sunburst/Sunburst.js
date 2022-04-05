@@ -14,7 +14,8 @@ export const fetchColor = (d) => {
 }
 
 const arcVisible = (d) => {
-    return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
+    let item = d.target ?? d
+    return item.y1 <= 3 && item.y0 >= 1 && item.x1 > item.x0;
 }
 
 const labelVisible = (d) => {
@@ -161,6 +162,9 @@ const Sunburst = (props) => {
                 // parentLabel.text(p.data.name).style('fill', 'white')
 
                 const t = svg.transition().duration(750);
+
+                path.style("cursor", (d) => { return arcVisible(d) ? "pointer" : 'default' })
+                    .on('click', (e, d) => { return arcVisible(d) ? clicked(e, d) : undefined });
                 updatePath(path, pathBorder, label, true, t)
             }
 
@@ -202,11 +206,13 @@ const Sunburst = (props) => {
             .join("path")
 
 
-        path.style("cursor", "pointer")
+        path.filter((d) => { return arcVisible(d) }).style("cursor", "pointer")
             .on('click', clicked);
 
         path.on("mouseover", (e, d) => {
-            tooltipContent(d, tooltip, format)
+            if (arcVisible(d)) {
+                tooltipContent(d, tooltip, format)
+            }
         })
             .on("mousemove", function (e, d) { return tooltip.style("top", (e.offsetY + 10) + "px").style("left", (e.offsetX + 30) + "px"); })
             .on("mouseout", function (e, d) { return tooltip.style("visibility", "hidden"); });
@@ -263,8 +269,8 @@ const Sunburst = (props) => {
 
     return (
         <div align='center'>
-            <div style={{ position: 'relative', width:'95%' }} ref={sbRef} />
-             <div style={{padding:'0px 10px 0px 20px'}} align='center'>
+            <div style={{ position: 'relative', width: '90%' }} ref={sbRef} />
+            <div style={{ padding: '0px 10px 0px 20px' }} align='center'>
                 <SequenceHorizontal key={uniqueId()} dataset={dataFlow} colors={color} />
             </div>
         </div>
