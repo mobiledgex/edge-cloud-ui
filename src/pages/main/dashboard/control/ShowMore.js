@@ -52,8 +52,6 @@ const ShowMore = (props) => {
     const [keys, setKeys] = React.useState(undefined)
     const { header, name, alert } = data
     const classes = useStyles({ alertColor: alert?.color })
-
-
     useEffect(() => {
         const keys = data.field === localFields.cloudletName ?
             cloudletKeys() : data.field === localFields.clusterName ?
@@ -65,7 +63,7 @@ const ShowMore = (props) => {
         keys ? <div className={clsx('content2', 'mex-card')}>
             <div className={classes.header}>
                 <Header1 size={14}>{`${header}`}</Header1>
-                {alert ?
+                {alert?.field ?
                     <Chip label={`${toFirstUpperCase(alert.type)}${alert.value ? `: ${alert.value}` : ''}`} size='small' className={classes.headerChip} />
                     : null}
             </div>
@@ -80,7 +78,7 @@ const ShowMore = (props) => {
                     <Grid item xs={6}>
                         {resources ? <div className={classes.resources}>
                             <Resources data={resources}></Resources>
-                        </div> : <NoData loading={loading} title={'Fetching current usage data from server'} result={'Usage data not found'} />
+                        </div> : <NoData loading={loading} title={'Fetching current usage data from server'} result={'Metric data not found'} />
                         }
                     </Grid>
                 </Grid>

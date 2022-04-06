@@ -124,7 +124,7 @@ class Control extends React.Component {
         let sequence = [...this.state.sequence]
         this.updateState({ loading: true })
         let response = await fetchShowData(this, this.worker, sequence, this.regions)
-        this.updateState({ loading: false, dataset: undefined })
+        this.updateState({ loading: false, dataset: undefined, showMore: undefined, resources: undefined })
         if (response?.status === 200) {
             this.resetSequence(sequence)
             const { data: dataset, total, dataList: rawList } = response

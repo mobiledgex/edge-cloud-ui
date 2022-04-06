@@ -124,84 +124,94 @@ const calculateTotal = (order, total, data) => {
 }
 
 const format = (worker) => {
-    const { region, rawList, initFormat, sequence, total } = worker
-    let dataList = initFormat ? [] : rawList
-    if (initFormat && rawList?.length > 0) {
-        let rawListObject = {}
-        rawList.map(item => {
-            const { request, response } = item
-            let dataArray = toJson(response.data);
-            let method = request.method
-            if (method === SHOW_ORG_CLOUDLET) {
-                method = SHOW_CLOUDLET
-            }
-            rawListObject[method] = { dataList: dataArray, keys: request.keys }
-        })
-        dataForms.forEach((form, index) => {
-            if (rawListObject[form.method]) {
-                let keys = rawListObject[form.method].keys
-                let rawDataList = rawListObject[form.method].dataList
-                let tempFields = form.fields
-                for (const item of rawDataList) {
-                    let rawData = item?.data ?? item
-                    if (rawData) {
-                        let data = map({}, rawData, keys)
-                        if (form.skip && skipData(form, data)) {
-                            continue;
-                        }
-                        let exist = false
-                        calculateTotal(form, total, data)
-                        if (index > 0) {
-                            if (form.method === SHOW_CLUSTER_INST) {
-                                dataList.forEach(final => {
-                                    if (final[localFields.clusterName].name === data[localFields.clusterName] && final[localFields.clusterdeveloper].name === data[localFields.organizationName]) {
-                                        final[localFields.clusterName].state = data[localFields.state]
-                                        final[localFields.clusterName].data = { ...data, region }
-                                        exist = true
-                                    }
-                                })
+    const { mcsList, initFormat, sequence } = worker
+    let total = {}
+    let temp = { dataList: [], data: { name: '', children: [] } }
+
+    mcsList.forEach(item => {
+        const { region, rawList } = item
+        let dataList = initFormat ? [] : rawList
+        if (initFormat && rawList?.length > 0) {
+            let rawListObject = {}
+            rawList.map(item => {
+                const { request, response } = item
+                let dataArray = toJson(response.data);
+                let method = request.method
+                if (method === SHOW_ORG_CLOUDLET) {
+                    method = SHOW_CLOUDLET
+                }
+                rawListObject[method] = { dataList: dataArray, keys: request.keys }
+            })
+            dataForms.forEach((form, index) => {
+                if (rawListObject[form.method]) {
+                    let keys = rawListObject[form.method].keys
+                    let rawDataList = rawListObject[form.method].dataList
+                    let tempFields = form.fields
+                    for (const item of rawDataList) {
+                        let rawData = item?.data ?? item
+                        if (rawData) {
+                            let data = map({}, rawData, keys)
+                            if (form.skip && skipData(form, data)) {
+                                continue;
                             }
-                            else if (form.method === SHOW_CLOUDLET) {
-                                dataList.forEach(final => {
-                                    if (final[localFields.cloudletName].name === data[localFields.cloudletName] && final[localFields.operatorName].name === data[localFields.operatorName]) {
-                                        final[localFields.cloudletName].state = data[localFields.state]
-                                        final[localFields.cloudletName].data = { ...data, region }
-                                        exist = true
-                                    }
-                                })
-                            }
-                        }
-                        if (!exist) {
-                            let final = {}
-                            final[localFields.region] = { name: region }
-                            final[form.field] = {}
-                            final[form.field].name = data[form.field]
-                            final[form.field].data = { ...data, region }
-                            tempFields.forEach(field => {
-                                if (Array.isArray(field)) {
-                                    field.forEach(item => {
-                                        final[form.field][item] = data[item]
+                            let exist = false
+                            calculateTotal(form, total, data)
+                            if (index > 0) {
+                                if (form.method === SHOW_CLUSTER_INST) {
+                                    dataList.forEach(final => {
+                                        if (final[localFields.clusterName].name === data[localFields.clusterName] && final[localFields.clusterdeveloper].name === data[localFields.organizationName]) {
+                                            final[localFields.clusterName].state = data[localFields.state]
+                                            final[localFields.clusterName].data = { ...data, region }
+                                            exist = true
+                                        }
                                     })
                                 }
-                                else {
-                                    final[field] = { name: data[field] }
+                                else if (form.method === SHOW_CLOUDLET) {
+                                    dataList.forEach(final => {
+                                        if (final[localFields.cloudletName].name === data[localFields.cloudletName] && final[localFields.operatorName].name === data[localFields.operatorName]) {
+                                            final[localFields.cloudletName].state = data[localFields.state]
+                                            final[localFields.cloudletName].data = { ...data, region }
+                                            exist = true
+                                        }
+                                    })
                                 }
-                            })
-                            if (form.method === SHOW_APP_INST) {
-                                final[localFields.appDeveloper] = final[localFields.organizationName]
                             }
-                            else if (form.method === SHOW_CLUSTER_INST) {
-                                final[localFields.clusterdeveloper] = final[localFields.organizationName]
+                            if (!exist) {
+                                let final = {}
+                                final[localFields.region] = { name: region }
+                                final[form.field] = {}
+                                final[form.field].name = data[form.field]
+                                final[form.field].data = { ...data, region }
+                                tempFields.forEach(field => {
+                                    if (Array.isArray(field)) {
+                                        field.forEach(item => {
+                                            final[form.field][item] = data[item]
+                                        })
+                                    }
+                                    else {
+                                        final[field] = { name: data[field] }
+                                    }
+                                })
+                                if (form.method === SHOW_APP_INST) {
+                                    final[localFields.appDeveloper] = final[localFields.organizationName]
+                                }
+                                else if (form.method === SHOW_CLUSTER_INST) {
+                                    final[localFields.clusterdeveloper] = final[localFields.organizationName]
+                                }
+                                dataList.push(final)
                             }
-                            dataList.push(final)
                         }
                     }
                 }
-            }
-        })
-    }
-    let sunburstData = formatData(sequence, dataList)
-    postMessage({ status: 200, data: sunburstData, total, dataList })
+            })
+        }
+        let sunburstData = formatData(sequence, dataList)
+        temp.data.children = [...temp.data.children, ...sunburstData.children]
+        temp.dataList = [...temp.dataList, ...dataList]
+        temp.total = total
+    })
+    
+    postMessage({ status: 200, ...temp })
 }
 
 addEventListener("message", (event) => {
