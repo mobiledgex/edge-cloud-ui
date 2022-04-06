@@ -124,7 +124,6 @@ const updatePath = (path, pathBorder, label, update = false, t) => {
         label.transition(t)
             .attrTween("transform", d => () => labelTransform(d.current))
             .attr("fill-opacity", d => +labelVisible(d.target));
-
     }
     else {
         output.attr("d", d => arc(d));
@@ -138,47 +137,48 @@ const Sunburst = (props) => {
     const { toggle, dataset, onClick, onUpdateSequence } = props
     const [dataFlow, setDataFlow] = useState([])
     const sbRef = useRef(null)
+    const root = partition(dataset);
+
+    const onSunburstClick = (e, p) => {
+        onClick(p.depth > 0 ? p.data : undefined)
+        if (p.data.children) {
+            onUpdateSequence(p)
+            const svg = d3.select(sbRef.current)
+
+            const parent = d3.select(".parent")
+            parent.datum(p.parent || root);
+            
+            root.each(d => d.target = {
+                x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+                x1: Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+                y0: Math.max(0, d.y0 - p.depth),
+                y1: Math.max(0, d.y1 - p.depth)
+            });
+
+            const t = svg.transition().duration(750);
+
+            const path = d3.select(".path").selectAll("path")
+            path.style("cursor", (d) => { return arcVisible(d) ? "pointer" : 'default' })
+                .on('click', (e, d) => { return arcVisible(d) ? onSunburstClick(e, d) : undefined });
+
+
+            const pathBorder = d3.select('.path-border').selectAll('path')
+            const label = d3.select(".arc-label").selectAll('text')
+
+            updatePath(path, pathBorder, label, true, t)
+        }
+        var flow = [];
+        var current = p;
+        while (current.parent) {
+            flow.unshift(current);
+            current = current.parent;
+        }
+        setDataFlow(flow)
+
+    }
 
     const sunburstChart = (dataset) => {
         const format = d3.format(",d")
-        const root = partition(dataset);
-
-        //on click
-        const clicked = (event, p) => {
-            onClick(p.depth > 0 ? p.data : undefined)
-            if (p.data.children) {
-                onUpdateSequence(p)
-                parent.datum(p.parent || root);
-
-                // logo.style("visibility", p.depth === 0 ? "visible" : "hidden");
-
-                root.each(d => d.target = {
-                    x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-                    x1: Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
-                    y0: Math.max(0, d.y0 - p.depth),
-                    y1: Math.max(0, d.y1 - p.depth)
-                });
-
-                // parentLabel.text(p.data.name).style('fill', 'white')
-
-                const t = svg.transition().duration(750);
-
-                path.style("cursor", (d) => { return arcVisible(d) ? "pointer" : 'default' })
-                    .on('click', (e, d) => { return arcVisible(d) ? clicked(e, d) : undefined });
-                updatePath(path, pathBorder, label, true, t)
-            }
-
-            //SequenceHorizontal
-            var flow = [];
-            var current = p;
-            while (current.parent) {
-                flow.unshift(current);
-                current = current.parent;
-            }
-            setDataFlow(flow)
-
-        }
-
 
         const svg = d3.select(sbRef.current).append("svg")
             .attr('id', 'chart')
@@ -201,13 +201,14 @@ const Sunburst = (props) => {
             .style("padding", "10px")
 
         const path = svg.append("g")
+            .attr('class', 'path')
             .selectAll("path")
             .data(root.descendants().slice(1))
             .join("path")
 
 
         path.filter((d) => { return arcVisible(d) }).style("cursor", "pointer")
-            .on('click', clicked);
+            .on('click', onSunburstClick);
 
         path.on("mouseover", (e, d) => {
             if (arcVisible(d)) {
@@ -218,6 +219,7 @@ const Sunburst = (props) => {
             .on("mouseout", function (e, d) { return tooltip.style("visibility", "hidden"); });
 
         const pathBorder = svg.append("g")
+            .attr('class', 'path-border')
             .selectAll("path")
             .data(root.descendants().slice(1))
             .join("path")
@@ -227,6 +229,7 @@ const Sunburst = (props) => {
        **********/
 
         const label = svg.append("g")
+            .attr('class', 'arc-label')
             .attr("pointer-events", "none")
             .attr("text-anchor", "middle")
             .style("user-select", "none")
@@ -242,20 +245,14 @@ const Sunburst = (props) => {
         updatePath(path, pathBorder, label)
 
         const parent = svg.append("circle")
+            .attr('class', 'parent')
             .datum(root)
             .attr("r", radius)
             .attr("fill", "none")
             .attr("pointer-events", "all")
-            .on("click", clicked)
+            .on("click", onSunburstClick)
 
-        // const parentLabel = svg.append("text")
-        //     .attr("class", "total")
-        //     .attr("text-anchor", "middle")
-        //     .attr('font-size', '1.7em')
-        //     .attr('y', 12)
-        //     .attr('x', 1)
-
-        const logo = svg.append("svg:image")
+        svg.append("svg:image")
             .attr('x', -50)
             .attr('y', -21)
             .attr('width', 100)
