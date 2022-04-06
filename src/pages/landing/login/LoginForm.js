@@ -98,7 +98,7 @@ const Login = (props) => {
                     <br />
                     <Grid item>
                         <Icon name='keyboard outline' className={clsx(classes.textColor)} /><sup >{' *'}</sup>
-                        <Input icon={<Icon className={clsx(classes.textColor)} name={visiblity ? 'unhide' : 'hide'} link onClick={() => { setVisiblity(!visiblity) }} />} autoComplete="off" className={classes.userInput} placeholder='Password' name='password' type={visiblity ? 'text' : 'password'} onChange={onChangePassword} onKeyPress={event => { if (event.key === 'Enter') { onSubmit() } }}></Input>
+                        <Input icon={<Icon className={clsx(classes.textColor)} inverted name={visiblity ? 'unhide' : 'hide'} link onClick={() => { setVisiblity(!visiblity) }} />} autoComplete="off" className={classes.userInput} placeholder='Password' name='password' type={visiblity ? 'text' : 'password'} onChange={onChangePassword} onKeyPress={event => { if (event.key === 'Enter') { onSubmit() } }}></Input>
                     </Grid>
                     <div className="loginValidation">
                         {loginDanger}
