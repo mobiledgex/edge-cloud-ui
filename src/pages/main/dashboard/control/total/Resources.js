@@ -39,7 +39,7 @@ const Resources = (props) => {
         for (let circle of circleElements) {
           angle += dangle;
           circle.style.transform = `rotate(${angle}deg) translate(${circlechart.clientWidth /
-            2}px) rotate(-${angle}deg)`;
+            2.3}px) rotate(-${angle}deg)`;
         }
       }, []);
 

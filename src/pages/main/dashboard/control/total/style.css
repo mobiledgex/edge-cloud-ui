@@ -18,8 +18,8 @@
     color: white;
     position: absolute;
     border: 1px solid white;
-    width: calc(50% - 2px * 2);
-    height: calc(50% - 2px * 2);
+    width: calc(40% - 2px * 2);
+    height: calc(40% - 2px * 2);
     z-index: 99;
     border-radius: 50%;
   }
