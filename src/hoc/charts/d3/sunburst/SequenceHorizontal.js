@@ -38,6 +38,16 @@ class SequenceHorizontal extends React.Component {
       .attr("width", data.length * 135)
       .attr("height", 50)
 
+    var tooltip = d3.select(this.shRef.current)
+      .append("div")
+      .style("position", "absolute")
+      .style("visibility", "hidden")
+      .style("background-color", "white")
+      .style("border", "solid")
+      .style("border-width", "1px")
+      .style("border-radius", "5px")
+      .style("padding", "10px")
+
     var g = svg
       .selectAll("g")
       .data(data, function (d) { return d; });
@@ -63,6 +73,19 @@ class SequenceHorizontal extends React.Component {
       return "translate(" + i * (b.w + b.s) + ", 0)";
     });
 
+    entering.on("mouseover", (e, d) => {
+      tooltip.html(() => {
+        let g = '<div style="font-size:10px;color:black;" align="left">'
+        g = g + `<p>${d?.data?.name}</p>`
+        g = g + '</div>'
+        return g
+    });
+
+      tooltip.style("visibility", "visible");
+    })
+      .on("mousemove", (e, d) => { return tooltip.style("top", (e.pageY - 850) + "px").style("left", (e.pageX - 250) + "px"); })
+      .on("mouseout", (e, d) => { return tooltip.style("visibility", "hidden"); });
+
     if (onClick) {
       entering.style("cursor", "pointer").on('click', onClick)
     }
@@ -73,7 +96,7 @@ class SequenceHorizontal extends React.Component {
 
   render() {
     return (
-      <div id='sequence-horizontal' ref={this.shRef} ></div>
+      <div id='sequence-horizontal' ref={this.shRef} style={{position:'relative', width:'100%'}}></div>
     );
   }
 
