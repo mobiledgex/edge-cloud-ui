@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import {loadingSpinner, alertInfo} from '../../../actions';
+import { loadingSpinner, alertInfo } from '../../../actions';
 import MexForms, { INPUT, BUTTON, POPUP_INPUT } from "../../../hoc/forms/MexForms";
 import { localFields } from "../../../services/fields";
 import { Icon } from "semantic-ui-react";
@@ -9,7 +9,7 @@ import { copyData } from '../../../utils/file_util'
 import cloneDeep from "lodash/cloneDeep";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
-import { Button, Dialog, DialogContent, DialogTitle, ListItemText, MenuItem, LinearProgress } from '@material-ui/core';
+import { Button, Dialog, DialogContent, DialogTitle, ListItemText, MenuItem, LinearProgress, FormControlLabel, Checkbox } from '@material-ui/core';
 import { load } from "../../../helper/zxcvbn";
 import { responseValid } from "../../../services/config";
 import { publicConfig, resetPwd } from "../../../services/modules/landing";
@@ -49,6 +49,7 @@ class UpdatePassword extends React.Component {
         this.state = {
             forms: [],
             loading: false,
+            visibility: false,
             open: false
         }
         this._isMounted = false
@@ -209,11 +210,34 @@ class UpdatePassword extends React.Component {
         )
     }
 
+    onVisibilityChange = () => {
+        this.setState(prevState => {
+            let forms = prevState.forms
+            let visibility = !prevState.visibility
+            let type = visibility ? 'text' : 'password'
+            for (let form of forms) {
+                if (form.field === localFields.password || form.field === localFields.confirmPassword || form.field === localFields.currentPassword) {
+                    form.rules.type = type
+                }
+            }
+            return { visibility, forms }
+        })
+    }
+
+    customForm = (dialog) => {
+        return (
+            <div style={{ marginLeft: dialog ? '5%' : '8%' }}>
+                <FormControlLabel control={<Checkbox name="showPassword" value={this.state.visibility} onChange={this.onVisibilityChange} />} label="Show Password" />
+            </div>
+        )
+    }
+
     forms = (dialog) => (
         [
             { field: localFields.currentPassword, label: 'Current Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Current Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: dialog },
             { field: localFields.password, label: 'Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: POPUP_INPUT, placeholder: 'Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword, popup: this.passwordHelper },
             { field: localFields.confirmPassword, label: 'Confirm Password', labelIcon: <VpnKeyOutlinedIcon style={{ color: "#FFF" }} />, formType: INPUT, placeholder: 'Confirm Password', rules: { required: true, type: 'password', autocomplete: "off", copy: false, paste: false, requiredColor: '#FFF' }, visible: true, dataValidateFunc: this.validatePassword },
+            { custom: ()=>this.customForm(dialog) }
         ]
     )
 
@@ -272,7 +296,7 @@ class UpdatePassword extends React.Component {
 
     getFormData = () => {
         const { dialog } = this.props
-        let style = { border: 'solid 1px rgba(128, 170, 255, .5) !important', color: 'white'}
+        let style = { border: 'solid 1px rgba(128, 170, 255, .5) !important', color: 'white' }
         if (dialog) {
             style.width = 70
             style.height = 30
@@ -284,7 +308,7 @@ class UpdatePassword extends React.Component {
         }
 
         let forms = this.forms(dialog)
-        forms.push({ label: 'Reset', formType: BUTTON, onClick: this.onCreate, validate: true, style: {...style, marginLeft: dialog ? 180: 60} })
+        forms.push({ label: 'Reset', formType: BUTTON, onClick: this.onCreate, validate: true, style: { ...style, marginLeft: dialog ? 180 : 60 } })
         if (dialog) {
             let cStyle = cloneDeep(style)
             cStyle.right = 0
