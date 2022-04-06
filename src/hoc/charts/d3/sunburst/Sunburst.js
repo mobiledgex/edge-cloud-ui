@@ -147,7 +147,7 @@ const Sunburst = (props) => {
 
             const parent = d3.select(".parent")
             parent.datum(p.parent || root);
-            
+
             root.each(d => d.target = {
                 x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
                 x1: Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
@@ -263,6 +263,10 @@ const Sunburst = (props) => {
         d3.select('#chart').remove()
         sunburstChart(dataset)
     }, [toggle]);
+
+    const onSequence = (e, p) => {
+        onSunburstClick(e, p)
+    }
 
     return (
         <div align='center'>

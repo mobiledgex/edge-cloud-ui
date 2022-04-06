@@ -32,7 +32,7 @@ class SequenceHorizontal extends React.Component {
   }
 
   draw = (data) => {
-    const { colors } = this.props
+    const { colors, onClick } = this.props
     var svg = d3.select(this.shRef.current)
       .append('svg')
       .attr("width", data.length * 135)
@@ -63,7 +63,9 @@ class SequenceHorizontal extends React.Component {
       return "translate(" + i * (b.w + b.s) + ", 0)";
     });
 
-    entering.style("cursor", "pointer").on('click', this.props.onClick)
+    if (onClick) {
+      entering.style("cursor", "pointer").on('click', onClick)
+    }
 
     g.exit().remove()
 

@@ -61,26 +61,13 @@ export const fetchSpecificResources = async (self, item) => {
     return resources
 }
 
-const mergeFirstSequence = (sequence, responseList) => {
-    let temp = { dataList: [], data: { name: '', children: [] } }
-    responseList.forEach(response => {
-        const { status, dataList, data, total } = response
-        temp.data.children = [...temp.data.children, ...data.children]
-        temp.dataList = [...temp.dataList, ...dataList]
-        temp.total = total
-        temp.status = status
-    })
-    return temp
-}
-
 /**
  * 
  * @param {Object} worker control worker object 
  * @returns 
  */
 export const fetchShowData = async (self, worker, sequence, regions) => {
-    let responseList = []
-    let total = {}
+    let mcsList = []
     await Promise.all(regions.map(async (region) => {
         let requestList = [];
         let requestMethods = [showCloudlets, showCloudletInfoData]
@@ -95,16 +82,12 @@ export const fetchShowData = async (self, worker, sequence, regions) => {
         })
         if (requestList.length > 0) {
             let mcList = await multiAuthSyncRequest(self, requestList, false)
-            let response = await processWorker(self, worker, {
-                region,
-                rawList: mcList,
-                initFormat: true,
-                sequence,
-                total
-            })
-            total = response.total
-            responseList.push(response)
+            mcsList.push({rawList:mcList, region})
         }
     }))
-    return mergeFirstSequence(sequence, responseList)
+    return await processWorker(self, worker, {
+        mcsList,
+        sequence,
+        initFormat: true
+    })
 }
