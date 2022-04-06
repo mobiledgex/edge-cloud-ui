@@ -83,7 +83,7 @@ class SequenceHorizontal extends React.Component {
 
       tooltip.style("visibility", "visible");
     })
-      .on("mousemove", (e, d) => { return tooltip.style("top", (e.pageY - 850) + "px").style("left", (e.pageX - 250) + "px"); })
+      .on("mousemove", (e, d) => { return tooltip.style("top", (e.pageY - 870) + "px").style("left", (e.pageX - 250) + "px"); })
       .on("mouseout", (e, d) => { return tooltip.style("visibility", "hidden"); });
 
     if (onClick) {
