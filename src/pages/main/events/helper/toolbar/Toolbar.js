@@ -11,9 +11,9 @@ import { useSelector } from 'react-redux';
 import { redux_org } from '../../../../../helper/reduxData';
 import { localFields } from '../../../../../services/fields';
 import SelectMenu from '../../../../../hoc/selectMenu/SelectMenu';
-import './style.css'
 import { ICON_COLOR } from '../../../../../helper/constant/colors';
 import LinearProgress from '../../../../../hoc/loader/LinearProgress';
+import './style.css'
 
 export const ACION_SEARCH = 0
 export const ACTION_PICKER = 1
