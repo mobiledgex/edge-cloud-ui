@@ -1,0 +1,8 @@
+.sunburst .main .chart {
+    position: relative;
+    width: 95%;
+}
+
+.sunburst .main .sequence {
+    padding: 0px 10px 0px 20px;
+}

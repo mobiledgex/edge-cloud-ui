@@ -1,5 +1,6 @@
 import React from 'react';
 import * as d3 from 'd3';
+import './style.css'
 
 const b = { w: 115, h: 30, s: 3, t: 10 };
 
@@ -33,20 +34,15 @@ class SequenceHorizontal extends React.Component {
 
   draw = (data) => {
     const { colors, onClick } = this.props
+
     var svg = d3.select(this.shRef.current)
       .append('svg')
       .attr("width", data.length * 135)
       .attr("height", 50)
 
-    var tooltip = d3.select(this.shRef.current)
+    var tooltip = d3.select('body')
       .append("div")
-      .style("position", "absolute")
-      .style("visibility", "hidden")
-      .style("background-color", "white")
-      .style("border", "solid")
-      .style("border-width", "1px")
-      .style("border-radius", "5px")
-      .style("padding", "10px")
+      .attr('class', 'sequence-horizontal-tooltip')
 
     var g = svg
       .selectAll("g")
@@ -72,19 +68,17 @@ class SequenceHorizontal extends React.Component {
     entering.attr("transform", function (d, i) {
       return "translate(" + i * (b.w + b.s) + ", 0)";
     });
-
+    
     entering.on("mouseover", (e, d) => {
       tooltip.html(() => {
         let g = '<div style="font-size:10px;color:black;" align="left">'
         g = g + `<p>${d?.data?.name}</p>`
         g = g + '</div>'
         return g
-    });
-
-      tooltip.style("visibility", "visible");
+      }).style("opacity", 1);
     })
-      .on("mousemove", (e, d) => { return tooltip.style("top", (e.pageY - 870) + "px").style("left", (e.pageX - 250) + "px"); })
-      .on("mouseout", (e, d) => { return tooltip.style("visibility", "hidden"); });
+      .on("mousemove", (e, d) => { return tooltip.style("top", `${e.clientY + 10}px`).style("left", `${e.clientX + 10}px`) })
+      .on("mouseout", (e, d) => { return tooltip.style("opacity", 0); });
 
     if (onClick) {
       entering.style("cursor", "pointer").on('click', onClick)
@@ -96,7 +90,7 @@ class SequenceHorizontal extends React.Component {
 
   render() {
     return (
-      <div id='sequence-horizontal' ref={this.shRef} style={{position:'relative', width:'100%'}}></div>
+      <div id='sequence-horizontal' ref={this.shRef} ></div>
     );
   }
 

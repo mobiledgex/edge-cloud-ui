@@ -67,7 +67,7 @@ class Reporter extends React.Component {
     toolbarAction = () => {
         return (
             <Box style={{display: 'flex', alignItems: 'center' }}>
-                <IconButton tooltip='History' style={{ marginTop: -2 }} onClick={() => { this.updateState({ open: true }) }}><ListAltOutlinedIcon style={{ color: lightGreen['A700'] }} /></IconButton>
+                <IconButton tooltip='History' onClick={() => { this.updateState({ open: true }) }}><ListAltOutlinedIcon style={{ color: lightGreen['A700'] }} /></IconButton>
             </Box>
         )
     }

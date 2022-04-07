@@ -9,51 +9,31 @@ export const ACTION_CLOSE = 'Close'
 export const ACTION_PICKER = 'Picker'
 
 const DataType = (props) => {
-    const {order} = props
     const dataTypeList = ['avg', 'min', 'max']
 
     const onChange = (value) => {
         props.onChange(ACTION_DATA_TYPE, value)
     }
-    
+
     return (
-        <Box order={order} m={1.2}>
-            <Select list={dataTypeList} onChange={onChange} value={dataTypeList[0]} width={60} height={120} upper={true} color='rgba(118, 255, 3, 0.7)' border={true}/>
-        </Box>
+        <div style={{ border: '1px solid rgba(118, 255, 3, 0.7)', padding: '1px 5px 1px 5px', borderRadius: 5 }}>
+            <Select list={dataTypeList} onChange={onChange} height={150} value={dataTypeList[0]} title={true} color='rgba(118, 255, 3, 0.7)' />
+        </div>
+
     )
 }
 
-const LatencyRange = (props) =>{
-    const {order} = props
-    const dataTypeList = ['> 0ms', '> 5ms', '> 10ms', '> 25ms', '> 50ms', '> 100ms']
+const LatencyRange = (props) => {
+    const dataTypeList = ['\u003E 0ms', '\u003E 5ms', '\u003E 10ms', '\u003E 25ms', '\u003E 50ms', '\u003E 100ms']
 
     const onChange = (value) => {
         props.onChange(ACTION_LATENCY_RANGE, value)
     }
-    
-    return (
-        <Box order={order} m={1.2}>
-            <Select list={dataTypeList} onChange={onChange} value={dataTypeList[0]} width={85} height={150} upper={true} color='rgba(118, 255, 3, 0.7)' border={true}/>
-        </Box>
-    )
-}
-
-const MPicker = (props) => {
-    const { order } = props
-    return (
-        <Box order={order} style={{ marginLeft: 15, marginRight: 10 }} m={1.2}>
-            <Picker onChange={(value) => { props.onChange(ACTION_PICKER, value) }} relativemax={6}/>
-        </Box>
-    )
-}
-
-const Close = (props) => {
-    const {order} = props
 
     return (
-        <Box order={order}>
-            <IconButton tooltip='Close' onClick={()=>{props.onChange(ACTION_CLOSE)}}><Icon style={{color:'rgba(118, 255, 3, 0.7)'}}>close</Icon></IconButton>
-        </Box> 
+        <div style={{ border: '1px solid rgba(118, 255, 3, 0.7)', padding: '1px 5px 1px 5px', borderRadius: 5 }}>
+            <Select list={dataTypeList} onChange={onChange} value={dataTypeList[0]} height={200} color='rgba(118, 255, 3, 0.7)' />
+        </div>
     )
 }
 
@@ -63,16 +43,18 @@ const DMEToolbar = (props) => {
         <Toolbar>
             <div style={{ width: '100%' }}>
                 <Box display="flex" justifyContent="flex-end">
-                    <Close order={5} {...props} />
-                    {csvData ? <Box order={4}>
-                        <CSVLink filename={filename} data={csvData}>
-                            <IconButton tooltip='Download CSV'><img src='/assets/icons/csv.svg' width={24} /></IconButton>
-                        </CSVLink>
-                    </Box> : null
-                    }
-                    <DataType order={2} {...props} />
-                    <LatencyRange order={3} {...props} />
-                    <MPicker order={1} {...props} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap:10 }}>
+                        <Picker onChange={(value) => { props.onChange(ACTION_PICKER, value) }} relativemax={6}/>
+                        <DataType {...props} />
+                        <LatencyRange {...props} />
+                        {csvData ?
+                            <CSVLink filename={filename} data={csvData}>
+                                <IconButton tooltip='Download CSV'><img src='/assets/icons/csv.svg' width={24} /></IconButton>
+                            </CSVLink>
+                            : null
+                        }
+                        <IconButton tooltip='Close' onClick={()=>{props.onChange(ACTION_CLOSE)}}><Icon style={{color:'rgba(118, 255, 3, 0.7)'}}>close</Icon></IconButton>
+                    </div>
                 </Box>
             </div>
         </Toolbar>

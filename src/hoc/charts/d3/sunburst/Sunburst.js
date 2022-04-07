@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import SequenceHorizontal from './SequenceHorizontal'
+import SequenceHorizontal from './legend/SequenceHorizontal'
 import { uniqueId } from '../../../../helper/constant/shared';
+import './style.css'
 
 const width = 732;
 const radius = width / 6.5
@@ -269,9 +270,9 @@ const Sunburst = (props) => {
     }
 
     return (
-        <div align='center'>
-            <div style={{ position: 'relative', width: '90%' }} ref={sbRef} />
-            <div style={{ padding: '0px 10px 0px 20px' }} align='center'>
+        <div className='main' align='center'>
+            <div className='chart' ref={sbRef} />
+            <div className='sequence' align='center'>
                 <SequenceHorizontal key={uniqueId()} dataset={dataFlow} colors={color} />
             </div>
         </div>

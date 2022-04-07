@@ -78,7 +78,7 @@ const ShowMore = (props) => {
                     <Grid item xs={6}>
                         {resources ? <div className={classes.resources}>
                             <Resources data={resources}></Resources>
-                        </div> : <NoData loading={loading} title={'Fetching current usage data from server'} result={'Metric data not found'} />
+                        </div> : <NoData loading={loading} title={'Fetching metric data from server'} result={'Metric data not found'} />
                         }
                     </Grid>
                 </Grid>

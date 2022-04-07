@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import { Popover, Grid, Button, Divider, Tooltip } from '@material-ui/core';
+import { Popover, Grid, Button, Divider } from '@material-ui/core';
 import * as moment from 'moment'
-import { Icon } from 'semantic-ui-react';
 
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -12,6 +11,8 @@ import {
 import { useDispatch } from 'react-redux';
 import { alertInfo } from '../../actions';
 import * as dateUtil from '../../utils/date_util';
+import IconButton from './IconButton';
+import Icon from './Icon';
 
 export const relativeTimeRanges = [
     { label: 'Last 5 minutes', duration: 5 },
@@ -110,11 +111,13 @@ const MexTimer = (props) => {
 
     return (
         <React.Fragment>
-            <Tooltip title={<strong style={{ fontSize: 13 }}>{rangeLabel(value, relativeRange)}</strong>} arrow>
-                <button size='small' aria-controls="mex-timer" aria-haspopup="true" onClick={handleClick} style={{ backgroundColor: 'transparent', border: `1px solid ${color ? color : 'rgba(118, 255, 3, 0.7)'}`, borderRadius: 5, cursor: 'pointer', padding: 5 }}>
-                    <Icon name='clock outline' style={{ color: color ? color : 'rgba(118, 255, 3, 0.7)' }} /><strong style={{ marginLeft: 5, color: color ? color : 'rgba(118, 255, 3, 0.7)' }}>{relativeRange.label}</strong><Icon name='chevron down' style={{ marginLeft: 5, color: color ? color : 'rgba(118, 255, 3, 0.7)' }} />
-                </button>
-            </Tooltip>
+            <IconButton tooltip={<strong style={{ fontSize: 13 }}>{rangeLabel(value, relativeRange)}</strong>} onClick={handleClick} style={{ backgroundColor: 'transparent', border: `1px solid ${color ?? 'rgba(118, 255, 3, 0.7)'}`, borderRadius: 5, padding: 3 }}>
+                <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
+                    <Icon color={color ?? 'rgba(118, 255, 3, 0.7)'} >access_time</Icon>
+                    <strong style={{ fontSize: 13, marginLeft: 5, color: color ?? 'rgba(118, 255, 3, 0.7)' }}>{relativeRange.label}</strong>
+                    <Icon color={color ?? 'rgba(118, 255, 3, 0.7)'}>keyboard_arrow_down</Icon>
+                </div>
+            </IconButton>
             <Popover
                 id={id}
                 open={open}
