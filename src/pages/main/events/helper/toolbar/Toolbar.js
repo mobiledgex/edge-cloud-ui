@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Box, Typography, Card, LinearProgress } from '@material-ui/core';
+import { Box, Typography, Card } from '@material-ui/core';
 import Help from '../Help'
 import { lightGreen } from '@material-ui/core/colors';
 import CloseIcon from '@material-ui/icons/Close';
@@ -11,8 +11,9 @@ import { useSelector } from 'react-redux';
 import { redux_org } from '../../../../../helper/reduxData';
 import { localFields } from '../../../../../services/fields';
 import SelectMenu from '../../../../../hoc/selectMenu/SelectMenu';
-import './style.css'
 import { ICON_COLOR } from '../../../../../helper/constant/colors';
+import LinearProgress from '../../../../../hoc/loader/LinearProgress';
+import './style.css'
 
 export const ACION_SEARCH = 0
 export const ACTION_PICKER = 1
@@ -30,7 +31,7 @@ const LeftView = (props) => {
     const { onChange, loading, orgList, header, tip, children, filter } = props
     const orgInfo = useSelector(state => state.organizationInfo.data)
     const searchfilter = React.useRef(null)
-    const [range, setRange] = React.useState(filter && filter.range ? filter.range : undefined)
+    const [range, setRange] = React.useState(filter?.range)
 
     const onPickerChange = (range) => {
         setRange(range)
@@ -38,52 +39,49 @@ const LeftView = (props) => {
     }
 
     useEffect(() => {
-        setRange(filter && filter.range ? filter.range : undefined)
-    }, [filter]);
+        setRange(filter?.range)
+    }, [filter?.range]);
 
     return (
         <React.Fragment>
             {loading ? <LinearProgress /> : null}
-            <Card style={{ height: 50, marginBottom: 2 }}>
+            <Card>
                 <Box display="flex">
                     <Box p={1} flexGrow={1}>
                         <Typography gutterBottom variant="h5" component="h4" style={{ display: 'flex', alignItems: 'center', color: lightGreen['A700'] }}>
                             <Icon outline={true}>book</Icon><label style={{ marginLeft: 10 }}>{header}</label>
                         </Typography>
                     </Box>
-                    {children}
-                    <Box p={1.1}>
-                        {
-                            redux_org.isAdmin(orgInfo) && orgList ?
-                                <div className='calendar-dropdown-select'>
-                                    <SelectMenu color='rgba(118, 255, 3, 0.7)' search={true} labelKey={localFields.organizationName} dataList={orgList} placeholder='Select Organization' onChange={(value) => onChange(ACTION_ORG, value)} />
-                                </div> : null
-                        }
-                    </Box>
-                    <Box p={1.1}>
-                        <Picker onChange={onPickerChange} defaultDuration={DEFAULT_DURATION_MINUTES} value={range}/>
-                    </Box>
                     <Box>
-                        <SearchFilter onFilter={(value) => { onChange(ACION_SEARCH, value) }} ref={searchfilter} compact={true} style={{ marginTop: 7, marginLeft: 8 }} />
-                    </Box>
-                    <Box>
-                        <IconButton tooltip={'Refresh data'} onClick={() => { onChange(ACTION_REFRESH) }}>
-                            <Icon color={ICON_COLOR}>refresh</Icon>
-                        </IconButton>
-                    </Box>
-                    {tip ? <Box>
-                        <Help data={tip} color={ICON_COLOR} />
-                    </Box> : null}
-                    <Box>
-                        <IconButton tooltip={'Close'} onClick={() => { onChange(ACTION_CLOSE) }}>
-                            <CloseIcon className={classes.icon_color} />
-                        </IconButton>
+                        <div style={{ display: 'flex', gap: 3, alignItems: 'center' }}>
+                            {children}
+                            {
+                                redux_org.isAdmin(orgInfo) && orgList ?
+                                    <div className='calendar-dropdown-select'>
+                                        <SelectMenu color='rgba(118, 255, 3, 0.7)' search={true} labelKey={localFields.organizationName} dataList={orgList} placeholder='Select Organization' onChange={(value) => onChange(ACTION_ORG, value)} />
+                                    </div> : null
+                            }
+
+                            <Picker onChange={onPickerChange} defaultDuration={DEFAULT_DURATION_MINUTES} value={range} />
+                            <div style={{width:15}}></div>
+                            <SearchFilter onFilter={(value) => { onChange(ACION_SEARCH, value) }} ref={searchfilter} compact={true} />
+                            <IconButton tooltip={'Refresh data'} onClick={() => { onChange(ACTION_REFRESH) }}>
+                                <Icon color={ICON_COLOR}>refresh</Icon>
+                            </IconButton>
+                            {tip ? <Help data={tip} color={ICON_COLOR} /> : null}
+
+
+                            <IconButton tooltip={'Close'} onClick={() => { onChange(ACTION_CLOSE) }}>
+                                <CloseIcon className={classes.icon_color} />
+                            </IconButton>
+
+                        </div>
                     </Box>
                 </Box>
             </Card>
         </React.Fragment >
     )
-      
+
 }
 
 export default LeftView

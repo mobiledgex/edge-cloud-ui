@@ -235,9 +235,7 @@ class AuditLogView extends Component {
         return (
             <Fragment>
                 <Toolbar type={type} header={`${toFirstUpperCase(type)} Logs`} tip={tip} onChange={this.onToolbarChange} loading={loading} filter={this.filter}>
-                    <Box>
-                        <ServerFilter type={type} onChange={this.onToolbarChange} orgList={orgList} filter={this.filter} />
-                    </Box>
+                    <ServerFilter type={type} onChange={this.onToolbarChange} orgList={orgList} filter={this.filter} />
                 </Toolbar>
                 <div style={{ height: 'calc(100vh - 50px)' }} id='event_log'>
                     {dataList.length > 0 ? <Grid container>

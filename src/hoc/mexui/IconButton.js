@@ -28,14 +28,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function IconButton(props) {
     const classes = useStyles();
-    const { id, tooltip, disabled, style, loading, onClick, children, inline, className, onMouseOver, onMouseOut } = props
+    const { id, size, tooltip, disabled, style, loading, onClick, children, inline, className, onMouseOver, onMouseOut } = props
     return (
         <div className={clsx(classes.root, inline ? classes.inline : {})}>
             <div className={classes.wrapper}>
-                <Tooltip title={tooltip ? <strong style={{fontSize:13}}>{tooltip}</strong> : ''}>
+                <Tooltip title={tooltip ? <strong style={{fontSize:13}}>{tooltip}</strong> : ''} arrow>
                     <span>
                         <IB
                             id={id}
+                            size={size ?? 'medium'}
                             aria-label={id}
                             onClick={onClick}
                             onMouseOver={onMouseOver}

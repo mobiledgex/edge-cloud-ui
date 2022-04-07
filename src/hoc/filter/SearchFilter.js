@@ -61,13 +61,11 @@ class SearchFilter extends React.Component {
 
     render() {
         const { focused } = this.state
-        const { classes, compact, style, clear } = this.props;
-        const inputStyle = focused ? { ...style, marginTop: 0 } : style
+        const { classes, compact, clear } = this.props;
         return (
             <Input
                 size="small"
-                fullWidth
-                style={inputStyle}
+                fullWidth={!compact}
                 value={this.state.filterText}
                 onFocus={() => {
                     this.setState({ focused: true })

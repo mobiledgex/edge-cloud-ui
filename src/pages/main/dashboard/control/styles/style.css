@@ -1,6 +1,6 @@
 .dashboard {
     --marginBottom:2px;
-    min-width: 900px;
+    min-width: 1200px;
     min-height: 560px;
     overflow: hidden;
     box-sizing: border-box;
