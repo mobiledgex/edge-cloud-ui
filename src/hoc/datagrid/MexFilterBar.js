@@ -30,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
     text: {
         marginLeft: 6,
         lineHeight:2
+    },
+    empty:{
+        height:35
     }
 }));
 
@@ -51,7 +54,7 @@ const IconBar = (props) => {
                 return (key?.count ? <div className={clsx(classes.content, key.clicked ? classes.clicked : {})} key={i} onClick={() => { onChange(i, key) }}>
                     {isSVG ? <img src={`/assets/icons/${key.icon}`} width={24} /> : <Icon color={'#388E3C'} size={24} outlined={true}>{key.icon}</Icon>}
                     <strong className={classes.text}>{`${key.label}: ${key.count}`}</strong>
-                </div> : <div style={{height:35}}></div>)
+                </div> : <div className={classes.empty}></div>)
             }) : null}
         </div>
     )
