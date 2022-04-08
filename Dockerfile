@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y \
 	ca-certificates \
 	curl \
 	git
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get update && apt-get install -y \
 	nodejs
 
