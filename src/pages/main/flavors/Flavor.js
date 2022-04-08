@@ -10,7 +10,6 @@ import FlavorReg from './Reg';
 import { HELP_FLAVOR_LIST } from "../../../tutorial";
 import { perpetual } from '../../../helper/constant';
 import { uiFormatter } from '../../../helper/formatter';
-import { developerRoles } from '../../../constant';
 
 class FlavorList extends React.Component {
     constructor(props) {
@@ -62,11 +61,7 @@ class FlavorList extends React.Component {
         ]
     }
 
-    dataFormatter = (key, data, isDetail) => {
-        if (key.field === localFields.gpu) {
-            return uiFormatter.flavorGPU(key, data, isDetail)
-        }
-    }
+  
 
     /*Action menu block*/
 
@@ -82,7 +77,6 @@ class FlavorList extends React.Component {
             keys: this.keys,
             iconKeys : iconKeys(),
             onAdd: redux_org.isAdmin(this) ? this.onAdd : undefined,
-            formatData: this.dataFormatter,
             viewMode: HELP_FLAVOR_LIST
         })
     }
