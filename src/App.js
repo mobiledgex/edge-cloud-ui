@@ -7,7 +7,7 @@ import { getDarkTheme, getLightTheme, THEME_TYPE } from "./themeStyle";
 import LogoSpinner from './hoc/loader/LogoSpinner';
 import { componentLoader } from './hoc/loader/componentLoader';
 import Policy from './pages/landing/policy/Policy';
-import 'semantic-ui-css/semantic.min.css';
+import './semanticcss/semantic.min.css';
 import './app.css';
 import './css/index.css';
 
