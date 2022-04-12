@@ -15,6 +15,7 @@ import { perpetual } from '../../../../helper/constant';
 import { createAlertPolicy, updateAlertPolicy } from '../../../../services/modules/alertPolicy';
 import { uniqueId } from '../../../../helper/constant/shared';
 import { responseValid } from '../../../../services/config';
+import MexMessageDialog from '../../../../hoc/dialog/mexWarningDialog';
 
 const ALERT_SEVERITY = [perpetual.INFO, perpetual.WARNING, perpetual.ERROR]
 class Reg extends React.Component {
@@ -23,6 +24,7 @@ class Reg extends React.Component {
         this.state = {
             forms: [],
             stepsArray: [],
+            dialogMessageInfo: {}
         }
         this._isMounted = false
         this.isUpdate = this.props.action === perpetual.UPDATE
@@ -223,8 +225,12 @@ class Reg extends React.Component {
         this.props.onClose(true)
     }
 
+    onDialogClose = (valid) => {
+        valid ? this.props.onClose(false) : this.updateState({ dialogMessageInfo: {} })
+    }
 
     render() {
+        const { dialogMessageInfo } = this.state
         return (
             <div className="round_panel">
                 <Grid container>
@@ -233,12 +239,17 @@ class Reg extends React.Component {
                     </Grid>
                 </Grid>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
+                <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} /> 
             </div>
         )
     }
 
     onAddCancel = () => {
-        this.props.onClose(false)
+        this.updateState({
+            dialogMessageInfo: {
+                message: perpetual.EXIT_MESSAGE
+            }
+        })
     }
 
     disableFields = (form) => {

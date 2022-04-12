@@ -54,7 +54,7 @@ const IconBar = (props) => {
                 return (key?.count ? <div className={clsx(classes.content, key.clicked ? classes.clicked : {})} key={i} onClick={() => { onChange(i, key) }}>
                     {isSVG ? <img src={`/assets/icons/${key.icon}`} width={24} /> : <Icon color={'#388E3C'} size={24} outlined={true}>{key.icon}</Icon>}
                     <strong className={classes.text}>{`${key.label}: ${key.count}`}</strong>
-                </div> : <div className={classes.empty}></div>)
+                </div> : <div key={i} className={classes.empty}></div>)
             }) : null}
         </div>
     )

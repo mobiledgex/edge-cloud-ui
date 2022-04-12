@@ -13,12 +13,14 @@ import { createAutoProvPolicy, updateAutoProvPolicy, addAutoProvCloudletKey, del
 import { HELP_AUTO_PROV_REG_2, HELP_AUTO_PROV_REG_1 } from "../../../../tutorial";
 import { Grid } from '@material-ui/core';
 import { perpetual } from '../../../../helper/constant';
+import MexMessageDialog from '../../../../hoc/dialog/mexWarningDialog';
 
 class AutoProvPolicyReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            forms: []
+            forms: [],
+            dialogMessageInfo: {}
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
@@ -273,12 +275,18 @@ class AutoProvPolicyReg extends React.Component {
         })
     }
 
+    onDialogClose = (valid) => {
+        valid ? this.props.onClose(false) : this.updateState({ dialogMessageInfo: {} })
+    }
+
     render() {
+        const { dialogMessageInfo } = this.state
         return (
             <div className="round_panel">
                 <Grid container>
                     <Grid item xs={12}>
                         <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                        <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} /> 
                     </Grid>
                 </Grid>
             </div>
@@ -286,7 +294,11 @@ class AutoProvPolicyReg extends React.Component {
     }
 
     onAddCancel = () => {
-        this.props.onClose(false)
+        this.updateState({
+            dialogMessageInfo: {
+                message: perpetual.EXIT_MESSAGE
+            }
+        })
     }
 
     resetFormValue = (form) => {

@@ -16,12 +16,14 @@ import { fetchCloudletField, showCloudlets } from '../../../services/modules/clo
 import { uniqueId, validateRemoteCIDR, validateRemoteIP } from '../../../helper/constant/shared';
 import { responseValid } from '../../../services/config';
 import { localFields } from '../../../services/fields';
+import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 
 class NetworkReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            forms: []
+            forms: [],
+            dialogMessageInfo: {}
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
@@ -143,9 +145,12 @@ class NetworkReg extends React.Component {
         })
     }
 
+    onDialogClose = (valid) => {
+        valid ? this.props.onClose(false) : this.updateState({ dialogMessageInfo: {} })
+    }
 
     render() {
-        const { forms } = this.state
+        const { forms, dialogMessageInfo } = this.state
         return (
             <div>
                 <Grid container>
@@ -155,6 +160,7 @@ class NetworkReg extends React.Component {
                         </div>
                     </Grid>
                 </Grid>
+                <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} /> 
             </div>
         )
     }
@@ -276,7 +282,11 @@ class NetworkReg extends React.Component {
     }
 
     onAddCancel = () => {
-        this.props.onClose(false)
+        this.updateState({
+            dialogMessageInfo: {
+                message: perpetual.EXIT_MESSAGE
+            }
+        })
     }
 
     getFormData = async (data) => {

@@ -14,13 +14,15 @@ import FederationKey from './FederatorKey';
 import { readJsonFile } from '../../../../utils/file_util';
 import { urlWithoutPort } from '../../../../utils/location_utils';
 import { responseValid } from '../../../../services/config';
+import MexMessageDialog from '../../../../hoc/dialog/mexWarningDialog';
 
 class RegisterOperator extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             forms: [],
-            keyData: undefined
+            keyData: undefined,
+            dialogMessageInfo: {}
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
@@ -112,12 +114,17 @@ class RegisterOperator extends React.Component {
         this.updateState({ keyData: undefined })
     }
 
+    onDialogClose = (valid) => {
+        valid ? this.props.onClose(false) : this.updateState({ dialogMessageInfo: {} })
+    }
+
     render() {
-        const { forms, keyData } = this.state
+        const { forms, keyData, dialogMessageInfo } = this.state
         return (
-            < React.Fragment >
+            <React.Fragment>
                 <MexForms forms={forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
                 <FederationKey data={keyData} onClose={this.onFederationKeyDialogClose} />
+                <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} /> 
             </React.Fragment >
         )
     }
@@ -165,7 +172,11 @@ class RegisterOperator extends React.Component {
     }
 
     onCancel = async () => {
-        this.props.onClose(false)
+        this.updateState({
+            dialogMessageInfo: {
+                message: perpetual.EXIT_MESSAGE
+            }
+        })
     }
 
     resetFormValue = (form) => {

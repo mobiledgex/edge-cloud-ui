@@ -8,12 +8,13 @@ import { localFields } from "../../../../services/fields";
 import { createFederation } from '../../../../services/modules/federation';
 import { readJsonFile } from '../../../../utils/file_util';
 import { responseValid } from '../../../../services/config';
-
+import MexMessageDialog from '../../../../hoc/dialog/mexWarningDialog';
 class RegisterPartner extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            forms: []
+            forms: [],
+            dialogMessageInfo: {}
         }
         this._isMounted = false
     }
@@ -53,13 +54,16 @@ class RegisterPartner extends React.Component {
     reloadForms = () => {
 
     }
-
+    onDialogClose = (valid) => {
+        valid ? this.props.onClose(false) : this.updateState({ dialogMessageInfo: {} })
+    }
     render() {
         const { forms } = this.state
         return (
-            < React.Fragment >
+            <React.Fragment>
                 <MexForms forms={forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
-            </React.Fragment >
+                <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} />
+            </React.Fragment>
         )
     }
 
@@ -73,7 +77,11 @@ class RegisterPartner extends React.Component {
     }
 
     onCancel = async () => {
-        this.props.onClose(false)
+        this.updateState({
+            dialogMessageInfo: {
+                message: perpetual.EXIT_MESSAGE
+            }
+        })
     }
 
     resetFormValue = (form) => {

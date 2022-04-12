@@ -27,6 +27,7 @@ import { endpoint, service, updateFieldData } from '../../../services';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 import cloneDeep from 'lodash/cloneDeep';
 import { uniqueId } from '../../../helper/constant/shared';
+import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog'
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 
@@ -37,7 +38,8 @@ class AppInstReg extends React.Component {
             forms: [],
             stepsArray: [],
             showGraph: false,
-            flowDataList: []
+            flowDataList: [],
+            dialogMessageInfo: {}
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
@@ -557,7 +559,11 @@ class AppInstReg extends React.Component {
     }
 
     onAddCancel = () => {
-        this.props.onClose(false)
+        this.updateState({
+            dialogMessageInfo: {
+                message: perpetual.EXIT_MESSAGE
+            }
+        })
     }
 
     resetFormValue = (form) => {
@@ -744,7 +750,12 @@ class AppInstReg extends React.Component {
         this.props.onClose(true)
     }
 
+    onDialogClose = (valid) => {
+        valid ? this.props.onClose(false) : this.updateState({ dialogMessageInfo: {} })
+    }
+
     render() {
+        const { dialogMessageInfo } = this.state
         return (
             <div>
                 <Grid container>
@@ -761,6 +772,7 @@ class AppInstReg extends React.Component {
                         </Grid> : null}
                 </Grid>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
+                <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} /> 
             </div >
         )
     }

@@ -17,6 +17,7 @@ import { perpetual } from '../../../../helper/constant';
 import cloneDeep from 'lodash/cloneDeep';
 import { uniqueId, validateRemoteCIDR } from '../../../../helper/constant/shared';
 import { responseValid } from '../../../../services/config';
+import MexMessageDialog from '../../../../hoc/dialog/mexWarningDialog';
 
 class TrustPolicyReg extends React.Component {
     constructor(props) {
@@ -24,6 +25,7 @@ class TrustPolicyReg extends React.Component {
         this.state = {
             forms: [],
             stepsArray: [],
+            dialogMessageInfo: {}
         }
         this._isMounted = false
         this.regions = cloneDeep(this.props.regions)
@@ -241,8 +243,12 @@ class TrustPolicyReg extends React.Component {
         this.props.onClose(true)
     }
 
+    onDialogClose = (valid) => {
+        valid ? this.props.onClose(false) : this.updateState({ dialogMessageInfo: {} })
+    }
 
     render() {
+        const { dialogMessageInfo } = this.state
         return (
             <div className="round_panel">
                 <Grid container>
@@ -251,12 +257,17 @@ class TrustPolicyReg extends React.Component {
                     </Grid>
                 </Grid>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
+                <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} /> 
             </div>
         )
     }
 
     onAddCancel = () => {
-        this.props.onClose(false)
+        this.updateState({
+            dialogMessageInfo: {
+                message: perpetual.EXIT_MESSAGE
+            }
+        })
     }
 
     disableFields = (form) => {

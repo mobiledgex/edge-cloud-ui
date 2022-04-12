@@ -17,6 +17,7 @@ import { ACTION_UPDATE, OS_LINUX } from '../../../../helper/constant/perpetual';
 import { uploadData } from '../../../../utils/file_util';
 import { buildTip, osList } from './shared';
 import { uniqueId } from '../../../../helper/constant/shared';
+import MexMessageDialog from '../../../../hoc/dialog/mexWarningDialog';
 
 class GPUDriverReg extends React.Component {
     constructor(props) {
@@ -25,6 +26,7 @@ class GPUDriverReg extends React.Component {
             step: 0,
             forms: [],
             stepsArray: [],
+            dialogMessageInfo: {}
         }
         this._isMounted = false
         this.canCloseStepper = false;
@@ -215,7 +217,11 @@ class GPUDriverReg extends React.Component {
     }
 
     onAddCancel = () => {
-        this.props.onClose(false)
+        this.updateState({
+            dialogMessageInfo: {
+                message: perpetual.EXIT_MESSAGE
+            }
+        })
     }
 
     resetFormValue = (form) => {
@@ -299,8 +305,12 @@ class GPUDriverReg extends React.Component {
         }
     }
 
+    onDialogClose = (valid) => {
+        valid ? this.props.onClose(false) : this.updateState({ dialogMessageInfo: {} })
+    }
+
     render() {
-        const { stepsArray, forms } = this.state
+        const { stepsArray, forms, dialogMessageInfo } = this.state
         return (
             <div className="round_panel">
                 <Grid container>
@@ -309,6 +319,7 @@ class GPUDriverReg extends React.Component {
                     </Grid>
                 </Grid>
                 <MexMultiStepper multiStepsArray={stepsArray} onClose={this.stepperClose} />
+                <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} /> 
             </div>
         )
     }

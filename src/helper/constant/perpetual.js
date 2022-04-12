@@ -282,3 +282,5 @@ export const PROTOCOL_ICMP = 'ICMP'
 export const PROTOCOL_UDP = 'UDP'
 
 export const CHART_BULLET = 'Bullet'
+export const EXIT_MESSAGE = 'Are you sure you want to exist ?'
+

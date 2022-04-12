@@ -24,6 +24,7 @@ import { _sort } from '../../../helper/constant/operators';
 import { uniqueId } from '../../../helper/constant/shared';
 import { responseValid } from '../../../services/config';
 import { localFields } from '../../../services/fields';
+import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog'
 
 const MexFlow = React.lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const CloudletManifest = React.lazy(() => componentLoader(import('./CloudletManifest')));
@@ -53,7 +54,8 @@ class CloudletReg extends React.Component {
             activeIndex: 0,
             flowDataList: [],
             flowInstance: undefined,
-            region: undefined
+            region: undefined,
+            dialogMessageInfo: {}
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
@@ -653,8 +655,11 @@ class CloudletReg extends React.Component {
         }
     }
 
+    onDialogClose = (valid) => {
+        valid ? this.props.onClose(false) : this.updateState({ dialogMessageInfo: {} })
+    }
     render() {
-        const { forms, showCloudletManifest, cloudletManifest, stepsArray, activeIndex } = this.state
+        const { forms, showCloudletManifest, cloudletManifest, stepsArray, activeIndex, dialogMessageInfo } = this.state
         return (
             <div>
                 {showCloudletManifest ?
@@ -671,12 +676,17 @@ class CloudletReg extends React.Component {
                     </Grid>
                 }
                 <MexMultiStepper multiStepsArray={stepsArray} onClose={this.stepperClose} />
+                <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} /> 
             </div>
         )
     }
 
     onAddCancel = () => {
-        this.props.onClose(false)
+        this.updateState({
+            dialogMessageInfo: {
+                message: perpetual.EXIT_MESSAGE
+            }
+        })
     }
 
     resetFormValue = (form) => {

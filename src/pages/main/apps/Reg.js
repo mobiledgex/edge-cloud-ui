@@ -26,6 +26,7 @@ import { perpetual } from '../../../helper/constant';
 import { componentLoader } from '../../../hoc/loader/componentLoader';
 import { changeHostName } from '../../../utils/location_utils';
 import { responseValid } from '../../../services/config';
+import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog'
 
 const MexFlow = lazy(() => componentLoader(import('../../../hoc/mexFlow/MexFlow')));
 const SERVERCONFIG_HEADER = 'ServerLess Config'
@@ -37,7 +38,8 @@ class AppReg extends Component {
             forms: [],
             stepsArray: [],
             showGraph: false,
-            flowDataList: []
+            flowDataList: [],
+            dialogMessageInfo: {}
         }
         this._isMounted = false
         this.isUpdate = this.props.id === perpetual.ACTION_UPDATE
@@ -851,7 +853,11 @@ class AppReg extends Component {
     }
 
     onAddCancel = () => {
-        this.props.onClose(false)
+        this.updateState({
+            dialogMessageInfo: {
+                message: perpetual.EXIT_MESSAGE
+            }
+        })
     }
 
     resetFormValue = (form) => {
@@ -1183,7 +1189,12 @@ class AppReg extends Component {
         this.props.onClose(true)
     }
 
+    onDialogClose = (valid) => {
+        valid ? this.props.onClose(false) : this.updateState({ dialogMessageInfo: {} })
+    }
+
     render() {
+        const { dialogMessageInfo } = this.state
         return (
             <Fragment>
                 <Grid container>
@@ -1199,6 +1210,7 @@ class AppReg extends Component {
                     </Grid> : null}
                 </Grid>
                 <MexMultiStepper multiStepsArray={this.state.stepsArray} onClose={this.stepperClose} />
+                <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} /> 
             </Fragment>
         )
     }

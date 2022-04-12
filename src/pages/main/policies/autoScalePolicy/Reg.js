@@ -15,12 +15,14 @@ import { service, updateFieldData } from '../../../../services';
 import { perpetual } from '../../../../helper/constant';
 import cloneDeep from 'lodash/cloneDeep';
 import { responseValid } from '../../../../services/config';
+import MexMessageDialog from '../../../../hoc/dialog/mexWarningDialog';
 
 class AutoScalePolicyReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            forms: []
+            forms: [],
+            dialogMessageInfo: {}
         }
         this._isMounted = false
         this.isUpdate = this.props.action === 'Update'
@@ -150,13 +152,18 @@ class AutoScalePolicyReg extends React.Component {
         })
     }
 
+    onDialogClose = (valid) => {
+        valid ? this.props.onClose(false) : this.updateState({ dialogMessageInfo: {} })
+    }
 
     render() {
+        const { dialogMessageInfo } = this.state
         return (
             <div className="round_panel">
                 <Grid container>
                     <Grid item xs={12}>
                         <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} />
+                        <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} /> 
                     </Grid>
                 </Grid>
             </div>
@@ -164,10 +171,12 @@ class AutoScalePolicyReg extends React.Component {
     }
 
     onAddCancel = () => {
-        this.props.onClose(false)
+        this.updateState({
+            dialogMessageInfo: {
+                message: perpetual.EXIT_MESSAGE
+            }
+        })
     }
-
-
 
     disableFields = (form) => {
         let rules = form.rules ? form.rules : {}

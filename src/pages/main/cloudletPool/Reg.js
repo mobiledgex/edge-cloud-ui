@@ -17,6 +17,7 @@ import * as constant from '../../../constant';
 import { HELP_CLOUDLET_POOL_REG_3, HELP_CLOUDLET_POOL_REG_1 } from "../../../tutorial";
 import { perpetual } from '../../../helper/constant';
 import { redux_org } from '../../../helper/reduxData'
+import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog'
 
 const stepData = [
     {
@@ -34,7 +35,8 @@ class CloudletPoolReg extends React.Component {
         super(props);
         this.state = {
             step: 0,
-            forms: []
+            forms: [],
+            dialogMessageInfo: {}
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
@@ -340,7 +342,12 @@ class CloudletPoolReg extends React.Component {
         })
     }
 
+    onDialogClose = (valid) => {
+        valid ? this.props.onClose(false) : this.updateState({ dialogMessageInfo: {} })
+    }
+
     render() {
+        const { dialogMessageInfo } = this.state
         return (
             <div className="round_panel">
                 <Item className='content create-org' style={{ margin: '30px auto 0px auto', maxWidth: 1200 }}>
@@ -358,13 +365,18 @@ class CloudletPoolReg extends React.Component {
                             }
                         </Step.Group>}
                     <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                    <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} /> 
                 </Item>
             </div>
         )
     }
 
     onAddCancel = () => {
-        this.props.onClose(false)
+        this.updateState({
+            dialogMessageInfo: {
+                message: perpetual.EXIT_MESSAGE
+            }
+        })
     }
 
     resetFormValue = (form) => {

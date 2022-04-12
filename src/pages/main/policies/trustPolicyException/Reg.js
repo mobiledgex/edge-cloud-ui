@@ -21,12 +21,14 @@ import cloneDeep from 'lodash/cloneDeep';
 import { showConfirmation } from '../../../../services/modules/poolAccess';
 import { responseValid } from '../../../../services/config';
 import { localFields } from '../../../../services/fields';
+import MexMessageDialog from '../../../../hoc/dialog/mexWarningDialog';
 
 class TrustPolicyExceptionReg extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            forms: []
+            forms: [],
+            dialogMessageInfo: {}
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
@@ -214,8 +216,12 @@ class TrustPolicyExceptionReg extends React.Component {
         })
     }
 
+    onDialogClose = (valid) => {
+        valid ? this.props.onClose(false) : this.updateState({ dialogMessageInfo: {} })
+    }
+
     render() {
-        const { forms } = this.state
+        const { dialogMessageInfo, forms } = this.state
         return (
             <div>
                 <Grid container>
@@ -225,10 +231,18 @@ class TrustPolicyExceptionReg extends React.Component {
                         </div>
                     </Grid>
                 </Grid>
+                <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} /> 
             </div>
         )
     }
 
+    onAddCancel = () => {
+        this.updateState({
+            dialogMessageInfo: {
+                message: perpetual.EXIT_MESSAGE
+            }
+        })
+    }
 
     resetFormValue = (form) => {
         let rules = form.rules
@@ -377,10 +391,6 @@ class TrustPolicyExceptionReg extends React.Component {
                 multiFormCount++
             }
         }
-    }
-
-    onAddCancel = () => {
-        this.props.onClose(false)
     }
 
     getFormData = async (data) => {

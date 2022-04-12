@@ -10,6 +10,7 @@ import { localFields } from '../../../services/fields';
 import { createFlavor } from '../../../services/modules/flavor';
 import { HELP_FLAVOR_REG } from "../../../tutorial";
 import { Grid } from '@material-ui/core';
+import MexMessageDialog from '../../../hoc/dialog/mexWarningDialog';
 
 class FlavorReg extends React.Component {
     constructor(props) {
@@ -17,6 +18,7 @@ class FlavorReg extends React.Component {
         this.state = {
             step: 0,
             forms: [],
+            dialogMessageInfo: {}
         }
         this._isMounted = false
         this.isUpdate = this.props.isUpdate
@@ -28,7 +30,6 @@ class FlavorReg extends React.Component {
             this.setState({ ...data })
         }
     }
-
     formKeys = () => {
         return [
             { label: 'Create Flavor', formType: MAIN_HEADER, visible: true },
@@ -76,7 +77,11 @@ class FlavorReg extends React.Component {
     }
 
     onAddCancel = () => {
-        this.props.onClose(false)
+        this.updateState({
+            dialogMessageInfo: {
+                message: perpetual.EXIT_MESSAGE
+            }
+        })
     }
 
     resetFormValue = (form) => {
@@ -132,13 +137,17 @@ class FlavorReg extends React.Component {
         }
         this.updateState({ forms })
     }
-
+    onDialogClose = (valid) => {
+        valid ? this.props.onClose(false) : this.updateState({ dialogMessageInfo: {} })
+    }
     render() {
+        const { dialogMessageInfo } = this.state
         return (
             <div className="round_panel">
                 <Grid container>
                     <Grid item xs={12}>
                         <MexForms forms={this.state.forms} onValueChange={this.onValueChange} reloadForms={this.reloadForms} isUpdate={this.isUpdate} />
+                        <MexMessageDialog messageInfo={dialogMessageInfo} onClick={this.onDialogClose} /> 
                     </Grid>
                 </Grid>
             </div>
