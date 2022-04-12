@@ -68,7 +68,7 @@ class BuildReg extends React.Component {
         { field: localFields.operatingSystem, label: 'Operating System', formType: SELECT, placeholder: 'Select Operating System', rules: { required: true, disabled }, width: 2, visible: true, options: osList },
         { field: localFields.kernelVersion, label: 'Kernel Version', formType: INPUT, placeholder: 'Enter Kernel Version', rules: { required: false, disabled }, width: 2, visible: true },
         { field: localFields.hypervisorInfo, label: 'Hypervisor Info', formType: INPUT, placeholder: 'Enter Hypervisor Info', rules: { required: false, disabled }, width: 2, visible: true },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     buildMultiForm = (form) => {

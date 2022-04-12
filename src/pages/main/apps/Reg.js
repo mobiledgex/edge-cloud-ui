@@ -149,8 +149,8 @@ class AppReg extends Component {
 
     deploymentManifestForm = () => ([
         { field: localFields.deploymentManifest, formType: TEXT_AREA, rules: { required: false, onBlur: true }, update: { edit: true }, width: 14, visible: true },
-        { icon: 'browse', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.addManifestData },
-        { icon: 'clear', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
+        { icon: 'browse', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.addManifestData },
+        { icon: 'clear', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
     ])
 
     portForm = () => ([
@@ -158,7 +158,7 @@ class AppReg extends Component {
         { field: localFields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
         { field: localFields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
         { field: localFields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
     ])
 
     getPortForm = (form) => {
@@ -168,7 +168,7 @@ class AppReg extends Component {
     annotationForm = () => ([
         { field: localFields.key, label: 'Key', formType: INPUT, rules: { required: true }, width: 7, visible: true, update: { edit: true } },
         { field: localFields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 7, visible: true, update: { edit: true } },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     getAnnotationForm = (form) => {
@@ -177,12 +177,12 @@ class AppReg extends Component {
 
     multiPortForm = () => ([
         { field: localFields.portRangeMin, label: 'Port Min', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
-        { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
+        { icon: '~', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: localFields.portRangeMax, label: 'Port Max', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validatePortRange },
         { field: localFields.protocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp'], update: { edit: true } },
         { field: localFields.tls, label: 'TLS', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
         { field: localFields.skipHCPorts, label: 'Health Check', formType: SWITCH, visible: false, value: false, width: 2, update: { edit: true } },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
     ])
 
     getMultiPortForm = (form) => {
@@ -192,7 +192,7 @@ class AppReg extends Component {
     configForm = () => ([
         { field: localFields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, rows: 4 }, width: 9, visible: true, update: { edit: true } },
         { field: localFields.kind, label: 'Kind', formType: SELECT, placeholder: 'Select Kind', rules: { required: true }, width: 5, visible: true, options: this.configOptions, update: { edit: true } },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 2, onClick: this.removeMultiForm }
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 2, onClick: this.removeMultiForm }
     ])
 
     getConfigForm = (form) => {
@@ -203,9 +203,9 @@ class AppReg extends Component {
         { field: localFields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true }, width: 3, visible: true, options: ['tcp', 'udp', 'icmp'], update: { edit: true } },
         { field: localFields.ocRemoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: validateRemoteCIDR },
         { field: localFields.ocPortMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
-        { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
+        { icon: '~', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: localFields.ocPortMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number', min: 1 }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     getOutboundConnectionsForm = (form) => {

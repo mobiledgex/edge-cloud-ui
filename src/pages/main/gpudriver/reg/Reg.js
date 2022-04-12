@@ -63,7 +63,7 @@ class GPUDriverReg extends React.Component {
         { field: localFields.operatingSystem, label: 'Operating System', formType: SELECT, placeholder: 'Select Operating System', rules: { required: true }, width: 2, visible: true, update: { edit: true }, options: osList },
         { field: localFields.kernelVersion, label: 'Kernel Version', formType: INPUT, placeholder: 'Enter Kernel Version', rules: { required: false, type: 'search' }, width: 2, visible: true, update: { edit: true } },
         { field: localFields.hypervisorInfo, label: 'Hypervisor Info', formType: INPUT, placeholder: 'Enter Hypervisor Info', rules: { required: false, type: 'search' }, width: 2, visible: true, update: { edit: true } },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm, update: { edit: true } }
     ])
 
     buildMultiForm = (form) => {
@@ -74,7 +74,7 @@ class GPUDriverReg extends React.Component {
         { field: localFields.key, label: 'Key', formType: INPUT, rules: { required: true }, width: 7, visible: true },
         { field: localFields.value, label: 'Value', formType: INPUT, rules: { required: true }, width: 7, visible: true },
         this.isUpdate ? {} :
-            { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 2, onClick: this.removeMultiForm }
+            { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 2, onClick: this.removeMultiForm }
     ])
 
     getPropertyForm = (form) => {
@@ -100,8 +100,8 @@ class GPUDriverReg extends React.Component {
 
     deploymentManifestForm = () => ([
         { field: localFields.licenseConfig, formType: TEXT_AREA, rules: { required: false, onBlur: true }, update: { edit: true }, width: 14, visible: true },
-        { icon: 'browse', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.addLicenseConfig },
-        { icon: 'clear', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
+        { icon: 'browse', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.addLicenseConfig },
+        { icon: 'clear', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.clearManifestData }
     ])
 
     formKeys = () => {

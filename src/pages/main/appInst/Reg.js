@@ -379,7 +379,7 @@ class AppInstReg extends React.Component {
     configForm = () => ([
         { field: localFields.config, label: 'Config', formType: TEXT_AREA, rules: { required: true, type: 'number', rows: 2 }, width: 9, visible: true, update: { edit: true } },
         { field: localFields.kind, label: 'Kind', formType: SELECT, placeholder: 'Select Kind', rules: { required: true }, width: 5, visible: true, options: this.configOptions, update: { edit: true } },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeConfigForm }
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeConfigForm }
     ])
 
     getConfigForm = (form) => (
@@ -394,7 +394,7 @@ class AppInstReg extends React.Component {
 
     autoClusterNameForm = () => ([
         { field: perpetual.AUTOCLUSTER, formType: INPUT, rules: { disabled: true}, width: 7, visible: true, value:perpetual.AUTOCLUSTER },
-        { icon: 'add', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: -8}, width: 2},
+        { icon: 'add', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white'}, width: 2},
         { field: localFields.autoClusterName, formType: INPUT, rules: { required: true }, visible: true, width: 7 },
     ])
 

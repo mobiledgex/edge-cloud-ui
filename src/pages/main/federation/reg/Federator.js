@@ -70,8 +70,8 @@ class RegisterOperator extends React.Component {
     }
 
     federationIdElements = () => ([
-        { field: localFields.federationId, formType: INPUT, placeholder: 'Enter/Generate Federation ID', rules: { required: true }, width: 15, visible: true },
-        { icon: 'vpn_key', tooltip: 'Generate Federation Key', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: -10 }, width: 1, onClick: this.generateFederationId }
+        { field: localFields.federationId, formType: INPUT, placeholder: 'Enter/Generate Federation ID', width: 15, visible: true },
+        { icon: 'vpn_key', tooltip: 'Generate Federation Key', formType: ICON_BUTTON, visible: true, color: 'white', width: 1, onClick: this.generateFederationId }
     ])
 
     elements = () => {
@@ -247,12 +247,10 @@ class RegisterOperator extends React.Component {
                 return item[localFields.organizationName]
             }))
         }
-
         forms.push(
             { label: `${this.isUpdate ? 'Update' : 'Create'}`, formType: BUTTON, onClick: this.onCreate, validate: true },
             { label: 'Cancel', formType: BUTTON, onClick: this.onCancel }
         )
-
         this.updateFormData(forms, data)
         this.updateState({
             forms
