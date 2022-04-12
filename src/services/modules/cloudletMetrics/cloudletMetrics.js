@@ -1,6 +1,8 @@
 import { UNIT_FLOOR, UNIT_GB, UNIT_MB } from '../../../pages/main/monitoring/helper/unitConvertor';
-import { endpoint } from '../..';
+import { pick } from '../../../helper/constant/operators';
+import { CK_ORG, cloudletKeys } from '../cloudlet/primary';
 import { localFields } from '../../fields';
+import { endpoint } from '../..';
 
 export const customData = (id, data) => {
     switch (id) {
@@ -56,31 +58,58 @@ export const cloudletResourceKeys = () => ([
     { field: 'event', header: 'Event' },
 ])
 
+/**New */
+const metricElements = [
+    { field: localFields.networkSent, label: 'Network Sent', serverField: 'netSend', unit: UNIT_FLOOR },
+    { field: localFields.networkReceived, label: 'Network Received', serverField: 'netRecv', unit: UNIT_FLOOR },
+    { field: localFields.cpuUsed, label: 'vCPUs Used', serverField: 'vCpuUsed', serverFieldMax: 'vCpuMax', unit: UNIT_FLOOR },
+    { field: localFields.memUsed, label: 'RAM Used', serverField: 'memUsed', serverFieldMax: 'memMax', unit: UNIT_FLOOR },
+    { field: localFields.diskUsed, label: 'Disk Used', serverField: 'diskUsed', serverFieldMax: 'diskMax', unit: UNIT_FLOOR },
+    { field: localFields.floatingIpsUsed, label: 'Floating IP Used', serverField: 'floatingIpsUsed', serverFieldMax: 'floatingIpsMax', unit: UNIT_FLOOR },
+    { field: localFields.ipv4Used, label: 'IPv4 Used', serverField: 'ipv4Used', serverFieldMax: 'ipv4Max', unit: UNIT_FLOOR }
+]
+const metricUsageElements = [
+    { field: localFields.externalIpsUsed, label: 'External IP', serverField: 'externalIpsUsed', unit: UNIT_FLOOR, icon: 'language' },
+    { field: localFields.floatingIpsUsed, label: 'Floating IP', serverField: 'floatingIpsUsed', unit: UNIT_FLOOR, icon: 'language' },
+    { field: localFields.gpusUsed, label: 'GPUs', serverField: 'gpusUsed', unit: UNIT_FLOOR, icon:'gpu.svg' },
+    { field: localFields.instancesUsed, label: 'Instances', serverField: 'instancesUsed', unit: UNIT_FLOOR, icon:'filter_none' },
+    { field: localFields.ramUsed, label: 'RAM', serverField: 'ramUsed', unit: UNIT_MB, icon:'ram.svg' },
+    { field: localFields.cpuUsed, label: 'CPU', serverField: 'vcpusUsed', unit: UNIT_FLOOR, icon: 'cpu.svg' }
+]
+const metricUsageFlavorElements = [
+    { field: localFields.count, label: 'Flavor Count', serverField: 'count' },
+    { field: localFields.flavorName, label: 'Flavor Name', serverField: 'flavor' }
+]   
+
+export const cloudletMetricsElements = [
+    // { serverRequest: endpoint.CLOUDLET_METRICS_ENDPOINT, keys: metricElements },
+    { serverRequest: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, keys: metricUsageElements },
+    { serverRequest: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, keys: metricUsageFlavorElements, selector:'flavorusage', icon:'free_breakfast' },
+]
+/**New */
+
 /**
  * 
  * @param {*} data request data
  * @param {*} list extracts specific cloudlet data
- * @param {*} org cloudlet organization
  * @returns cloudlet metric data
  */
-export const cloudletMetrics = (data, list, org) => {
-    let requestData = { ...data }
+export const cloudletMetrics = (self, data, list) => {
+    let requestData = pick(data, [localFields.region, localFields.starttime, localFields.endtime, localFields.selector, localFields.numsamples])
     if (list) {
         requestData.cloudlets = list
     }
     else {
         requestData.cloudlet = {
-            organization: org
+            organization: data[localFields.organizationName] ? data[localFields.organizationName] : data[localFields.operatorName]
         }
     }
     return { method: endpoint.CLOUDLET_METRICS_ENDPOINT, data: requestData, keys: cloudletMetricsKeys }
 }
 
-export const cloudletUsageMetrics = (data, org) => {
-    let requestData = { ...data }
-    requestData.cloudlet = data.cloudlet ? data.cloudlet : {
-        organization: org
-    }
+export const cloudletUsageMetrics = (self, data, specific = false) => {
+    let requestData = pick(data, [localFields.region, localFields.starttime, localFields.endtime, localFields.selector, localFields.numsamples])
+    requestData.cloudlet = cloudletKeys(data, specific ? undefined : CK_ORG)
     let keys = data.selector === 'flavorusage' ? cloudletFlavorMetricsKeys : cloudletMetricsKeys
     return { method: endpoint.CLOUDLET_METRICS_USAGE_ENDPOINT, data: requestData, keys }
 }

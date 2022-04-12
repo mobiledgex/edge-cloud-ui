@@ -12,11 +12,13 @@ import { cloudletKeys } from './primary';
 import { websocket } from '../..';
 import { localFields } from '../../fields';
 
-
-
+/**
+ * visible : show data column on datagrid
+ * dvisible : show data on dashboard
+ */
 export const keys = () => ([
     { field: localFields.region, label: 'Region', sortable: true, visible: true, filter: true, group: true, key: true },
-    { field: localFields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, filter: true, group: true, key: true },
+    { field: localFields.operatorName, serverField: 'key#OS#organization', label: 'Operator', sortable: true, visible: true, dvisible:true, filter: true, group: true, key: true },
     { field: localFields.partnerOperator, serverField: 'key#OS#federated_organization', label: 'Partner Operator' },
     { field: localFields.cloudletName, serverField: 'key#OS#name', label: 'Cloudlet', sortable: true, visible: true, filter: true, key: true },
     { field: localFields.cloudletLocation, serverField: 'location', label: 'Cloudlet Location', dataType: perpetual.TYPE_JSON },
@@ -25,7 +27,7 @@ export const keys = () => ([
     { field: localFields.ipSupport, serverField: 'ip_support', label: 'IP Support' },
     { field: localFields.numDynamicIPs, serverField: 'num_dynamic_ips', label: 'Number of Dynamic IPs' },
     { field: localFields.physicalName, serverField: 'physical_name', label: '	Physical Name' },
-    { field: localFields.platformType, serverField: 'platform_type', label: 'Platform Type' },
+    { field: localFields.platformType, serverField: 'platform_type', label: 'Platform Type', dvisible:true },
     { field: localFields.vmPool, serverField: 'vm_pool', label: 'VM Pool' },
     { field: localFields.openRCData, serverField: 'access_vars#OS#OPENRC_DATA', label: 'Open RC Data' },
     { field: localFields.caCertdata, serverField: 'access_vars#OS#CACERT_DATA', label: 'CA Cert Data' },
@@ -44,7 +46,7 @@ export const keys = () => ([
     { field: localFields.infraFlavorName, serverField: 'infra_config#OS#flavor_name', label: 'Infra Flavor Name' },
     { field: localFields.infraExternalNetworkName, serverField: 'infra_config#OS#external_network_name', label: 'Infra External Network Name' },
     { field: localFields.maintenanceState, serverField: 'maintenance_state', label: 'Maintenance State', detailView: false },
-    { field: localFields.trustPolicyName, serverField: 'trust_policy', label: 'Trust Policy' },
+    { field: localFields.trustPolicyName, serverField: 'trust_policy', label: 'Trust Policy', dvisible:true },
     { field: localFields.kafkaCluster, serverField: 'kafka_cluster', label: 'Kafka Cluster' },
     { field: localFields.errors, serverField: 'errors', label: 'Errors', dataType: perpetual.TYPE_YAML },
     { field: localFields.createdAt, serverField: 'created_at', label: 'Created', dataType: perpetual.TYPE_DATE, date: { format: FORMAT_FULL_DATE_TIME } },
@@ -53,7 +55,8 @@ export const keys = () => ([
     { field: localFields.gpuExist, label: 'GPU', detailView: false },
     { field: localFields.allianceOrganization, label: 'Alliance Organization', serverField: 'alliance_orgs', dataType: perpetual.TYPE_STRING },
     { field: localFields.platformHighAvailability, serverField: 'platform_high_availability', label: 'Platform High Availability', format:true },
-    { field: localFields.deployment, serverField: 'deployment', label: 'Deployment Type' }
+    { field: localFields.singleK8sClusterOwner, label: 'Single K8s Cluster Owner', serverField: 'single_kubernetes_cluster_owner', dataType: perpetual.TYPE_STRING },
+    { field: localFields.deployment, serverField: 'deployment', label: 'Deployment Type', dvisible:true }
 ])
 
 export const iconKeys = () => ([
@@ -163,7 +166,9 @@ export const getKey = (data, isCreate) => {
             cloudlet.infra_config = infraConfig
         }
         if (data[localFields.allianceOrganization]) {
-            cloudlet.alliance_orgs = data[localFields.allianceOrganization]
+            let allianceOrganization = data[localFields.allianceOrganization]
+            allianceOrganization = allianceOrganization.split('\n')
+            cloudlet.alliance_orgs = allianceOrganization
         }
         if (data[localFields.singleK8sClusterOwner]) {
             cloudlet.single_kubernetes_cluster_owner = data[localFields.singleK8sClusterOwner]

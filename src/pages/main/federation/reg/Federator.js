@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import { redux_org } from '../../../../helper/reduxData'
-import MexForms, { BUTTON, HEADER, ICON_BUTTON, INPUT, MAIN_HEADER, MULTI_FORM, SELECT } from '../../../../hoc/forms/MexForms'
+import MexForms, { BUTTON, findIndexs, HEADER, ICON_BUTTON, INPUT, MAIN_HEADER, MULTI_FORM, SELECT } from '../../../../hoc/forms/MexForms'
 import { localFields } from "../../../../services/fields";
 import { _sort } from '../../../../helper/constant/operators';
 import { getOrganizationList } from '../../../../services/modules/organization';
@@ -146,15 +146,20 @@ class RegisterOperator extends React.Component {
         if (responseValid(mc)) {
             const responseData = mc.response.data
             this.props.handleAlertInfo('success', `Federation ${this.isUpdate ? 'updated' : 'created'} successfully !`)
-            let keyData = { ...data }
-            keyData[localFields.federationId] = responseData.federationid
-            keyData[localFields.apiKey] = responseData.apikey
-
-            let fedAddrs = responseData.federationaddr.split(':')
-            if (fedAddrs && fedAddrs.length === 2) {
-                keyData[localFields.federationAddr] = `${urlWithoutPort()}:${fedAddrs[1]}`
+            if (this.isUpdate) {
+                this.onCancel()
             }
-            this.updateState({ keyData })
+            else {
+                let keyData = { ...data }
+                keyData[localFields.federationId] = responseData.federationid
+                keyData[localFields.apiKey] = responseData.apikey
+
+                let fedAddrs = responseData.federationaddr.split(':')
+                if (fedAddrs && fedAddrs.length === 2) {
+                    keyData[localFields.federationAddr] = `${urlWithoutPort()}:${fedAddrs[1]}`
+                }
+                this.updateState({ keyData })
+            }
         }
     }
 
@@ -213,6 +218,7 @@ class RegisterOperator extends React.Component {
     loadDefaultData = (forms, data) => {
         if (data[localFields.mnc]) {
             let multiFormCount = 0;
+            let index = findIndexs(forms, localFields.mncs)
             let mncList = data[localFields.mnc]
             for (let mnc of mncList) {
                 let mncForms = this.mncElements()
@@ -221,8 +227,8 @@ class RegisterOperator extends React.Component {
                         mncForm.value = mnc
                     }
                 }
-                forms.splice(9 + multiFormCount, 0, this.getMNC(mncForms))
-                multiFormCount = +1
+                forms.splice(index + multiFormCount, 0, this.getMNC(mncForms))
+                multiFormCount++
             }
         }
     }

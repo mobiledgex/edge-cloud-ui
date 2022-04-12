@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import MexForms, { SWITCH } from '../../../../hoc/forms/MexForms'
-import { Icon } from '../../../../hoc/mexui'
 import { PREF_LOGS } from '../../../../utils/sharedPreferences_util'
 
 const LogsPref = (props) => {

@@ -1,0 +1,32 @@
+.circlechart {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    height: 300px;
+  }
+  
+  .circlechart:before {
+    content: "Current Usage";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 14px;
+    word-wrap: break-word;
+    color: white;
+    position: absolute;
+    border: 1px solid white;
+    width: calc(40% - 2px * 2);
+    height: calc(40% - 2px * 2);
+    z-index: 99;
+    border-radius: 50%;
+  }
+  
+  .circlechart .circle {
+    position: absolute;
+    width: 100px;
+    height: 50px;
+    border-radius: 50%;
+  }

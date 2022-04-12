@@ -11,7 +11,6 @@ import { redux_org } from '../../../../helper/reduxData';
 import { localFields } from '../../../../services/fields';
 import SelectMenu from '../../../../hoc/selectMenu/SelectMenu';
 import { fetchObject, storeObject } from '../../../../helper/ls';
-import { filterData } from '../../../../constant';
 import { alertInfo } from '../../../../actions';
 import { useDispatch } from 'react-redux';
 import { uniqueId } from '../../../../helper/constant/shared';
@@ -135,18 +134,9 @@ const Filter = (props) => {
         setState(false)
     }
 
-    // const renderTooltip=()=>{
-    //     return (
-    //         <div style={{maxHeight:300, overflow:'auto'}}>
-    //             <p>{time(FORMAT_FULL_DATE_TIME, range.from)} to {time(FORMAT_FULL_DATE_TIME, range.to)}</p>
-    //             <p>Limit: {limit}</p>
-    //         </div>
-    //     )
-    // }
-
     return (
         <Fragment>
-            <IconButton tooltip={'Filter by date, tags and limit'} onClick={toggleDrawer(true)} style={{ marginRight: -20, marginTop: -1 }}><Icon style={{ color: 'rgba(118, 255, 3, 0.7)', fontSize: 24 }}>filter_list</Icon></IconButton>
+            <IconButton tooltip={'Filter by date, tags and limit'} onClick={toggleDrawer(true)}><Icon style={{ color: 'rgba(118, 255, 3, 0.7)', fontSize: 24 }}>filter_list</Icon></IconButton>
             <Drawer anchor={'right'} open={state} onClose={toggleDrawer(false)}>
                 <Fragment>
                     <div className={classes.list}>
@@ -167,9 +157,9 @@ const Filter = (props) => {
                                     <Typography variant='subtitle1' className={classes.text}>Limit</Typography>
                                 </Grid>
                             </Grid>
+                            <div style={{height:10}}></div>
                             <Grid container>
                                 <Grid item xs={6}>
-                                    <div style={{ marginTop: 7 }}></div>
                                     <Picker color='#CECECE' onChange={onPickerChange} defaultDuration={DEFAULT_DURATION_MINUTES} value={filter.range} />
                                 </Grid>
                                 <Grid item xs={6}>
@@ -184,9 +174,9 @@ const Filter = (props) => {
                         </div>
                         {
                             redux_org.isAdmin(orgInfo) && props.orgList ?
-                            <div style={{padding: 5, border: '1px solid white', borderRadius: 5, margin:14 }}>
-                            <SelectMenu search={true} clear={true} labelKey={localFields.organizationName} labelWidth={300} dataList={props.orgList} placeholder='Select Organization' onChange={handleOrg} default={org}/>
-                        </div> : null
+                                <div style={{ padding: 5, border: '1px solid white', borderRadius: 5, margin: 14 }}>
+                                    <SelectMenu color={'#CECECE'} search={true} clear={true} labelKey={localFields.organizationName} labelWidth={300} dataList={props.orgList} placeholder='Select Organization' onChange={handleOrg} default={org} />
+                                </div> : null
                         }
                         <div>
                             <Box display="flex" p={1}>

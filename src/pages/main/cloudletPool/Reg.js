@@ -170,7 +170,7 @@ class CloudletPoolReg extends React.Component {
         let requestList = []
         let responseCallback = this.isOrgDelete ? this.organizationRemoveResponse : this.organizationAddResponse
         let organizationList = (redux_org.isAdmin(this) || this.isOrgDelete) ? data[localFields.organizations] : [{ organizationName: data[localFields.organizationName] }]
-        if (organizationList && organizationList.length > 0) {
+        if (organizationList?.length > 0) {
             organizationList.forEach(organization => {
                 let newData = data
                 organization = (redux_org.isAdmin(this) || this.isOrgDelete) ? JSON.parse(organization) : organization
@@ -270,7 +270,7 @@ class CloudletPoolReg extends React.Component {
                 { field: localFields.poolName, label: 'Pool Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[localFields.poolName] },
                 { field: localFields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: operator },
                 { field: localFields.organizationName, label: 'Organization', placeholder: 'Enter Organization', formType: INPUT, rules: { required: true }, update: { edit: true }, visible: redux_org.isOperator(this) && !this.isOrgDelete },
-                { field: localFields.organizations, label: 'Organizations', formType: 'DualList', rules: { required: true }, visible: redux_org.isAdmin(this) || this.isOrgDelete },
+                { field: localFields.organizations, label: 'Organizations', formType: DUALLIST, rules: { required: true }, visible: redux_org.isAdmin(this) || this.isOrgDelete },
                 { label: `${label}`, formType: 'Button', onClick: this.onAddOrganizations },
                 { label: 'Cancel', formType: 'Button', onClick: this.onAddCancel }
             ]

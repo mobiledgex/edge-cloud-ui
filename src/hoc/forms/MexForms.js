@@ -109,6 +109,24 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
+export const clearMultiForms = (forms, fields)=>{
+    return forms.filter(form=>{
+        return !fields.includes(form.field)
+    })
+}
+
+export const findIndexs = (forms, fields)=>{
+    let indexs = {}
+    let isArray = Array.isArray(fields)
+    forms.forEach((form, i)=>{
+        if((isArray && fields.includes(form.field)) || form.field === fields)
+        {
+            indexs[form.field] = i+1
+        }
+    })
+    return isArray ? indexs : indexs[fields]
+}
+
 export const fetchDataByField = (forms, fields) => {
     let data = {}
     for (const form of forms) {
@@ -497,11 +515,21 @@ const MexForms = (props) => {
         )
     }
 
+    //hide form if condition fail
+    const formVisibility = (form) => {
+        let visible = form.visible
+        //implement in 3.2 dualist causing issue
+        // if (visible && props.isUpdate && !Boolean(form.forms) && form.rules?.disabled) {
+        //     visible = form.value !== undefined
+        // }
+        return visible
+    }
+
     return (
         forms ?
             <div style={props.style ? {} : { paddingTop: `${error ? 60 : 10}px`, backgroundColor: '#292c33', position: 'relative', }}>
                 {error ?
-                    <div style={props.style ? props.style : { position: 'absolute', zIndex: 999, left: 0, right: 0, top: 0 }}>
+                    <div style={props.style ?? { position: 'absolute', zIndex: 999, left: 0, right: 0, top: 0 }}>
                         <Alert severity="error">{error}</Alert>
                         {props.style ? null : <div><br /><br /></div>}
                     </div> : null}
@@ -509,6 +537,7 @@ const MexForms = (props) => {
                     <Form.Group widths="equal" className={classes.formGroup}>
                         <Grid columns={2}>
                             {forms.map((form, i) => {
+                                const visible = formVisibility(form)
                                 if (form.custom) {
                                     return (
                                         <React.Fragment key={i}>
@@ -520,7 +549,7 @@ const MexForms = (props) => {
                                     initValidateRules(form);
                                     checkRole(form)
                                     return (
-                                        (form.advance === undefined || form.advance === true) && form.visible ?
+                                        (form.advance === undefined || form.advance === true) && visible ?
                                             form.formType === MAIN_HEADER ?
                                                 loadMainHeader(i, form) :
                                                 form.formType === HEADER ?

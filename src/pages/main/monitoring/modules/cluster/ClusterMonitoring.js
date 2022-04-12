@@ -70,7 +70,7 @@ class ClusterMonitoring extends React.Component {
                             </ImageListItem> : null
                         }
                         {tools.regions.map(region => (
-                            legends && legends[region] ? <Module key={region} region={region} legends={legends[region]} metricRequestData={metricRequestData[region]} moduleId={moduleId} visibility={visibility} search={search} range={range} organization={organization} selection={selection} handleDataStateChange={handleDataStateChange} /> : null
+                            legends && legends[region] ? <Module key={region} region={region} legends={legends[region]} metricRequestData={metricRequestData[region]} moduleId={moduleId} visibility={visibility} search={search} range={range} orgInfo={organization} selection={selection} handleDataStateChange={handleDataStateChange} /> : null
                         ))}
                     </ImageList>
                 </div>

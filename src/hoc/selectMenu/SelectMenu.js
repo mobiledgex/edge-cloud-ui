@@ -1,8 +1,7 @@
 import { Box, ListItem, ListItemText, Menu, Tooltip, Typography } from '@material-ui/core'
 import React from 'react'
-import { Icon } from 'semantic-ui-react';
 import SearchFilter from '../filter/SearchFilter'
-import './style.css'
+import { Icon, IconButton } from '../mexui'
 
 const SelectMenu = (props) => {
     const { labelKey, dataList } = props
@@ -19,11 +18,15 @@ const SelectMenu = (props) => {
         const { tip, icon, placeholder, header, color, labelWidth, clear } = props
         return (
             icon ? icon :
-                <div className='select-menu-label' style={{ color }}>
+                <div style={{ color, display: 'flex', alignItems: 'center', justifyContent:'space-between' }}>
                     {header ? <strong>{header}:</strong> : null}
-                    <Tooltip title={value ? value : ''}><Typography style={{ maxWidth: labelWidth ? labelWidth : 150, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'inline-flex', marginRight: 5, marginLeft: 5 }}>{value ? value : placeholder}</Typography></Tooltip>
-                    <Icon name='chevron down' className='select-menu-label-icon' style={{ float: 'right', color, marginTop:2 }} />
-                    {clear ? <Icon onClick={onClear} name='close' className='select-menu-label-icon' style={{ float: 'right', color }} /> : null }
+                    <Tooltip title={value ?? ''}>
+                        <strong style={{ fontSize: 13, maxWidth: labelWidth ?? 150, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', marginRight: 5, marginLeft: 5 }}>{value ? value : placeholder}</strong>
+                    </Tooltip>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, float: 'right' }}>
+                        <Icon name='chevron down' color={color}>keyboard_arrow_down</Icon>
+                        {clear ? <IconButton size='small' onClick={onClear}><Icon color={color} size={16}>clear</Icon></IconButton> : null}
+                    </div>
                 </div>
 
         )

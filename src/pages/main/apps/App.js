@@ -8,7 +8,7 @@ import { keys, showApps, deleteApp } from '../../../services/modules/app';
 import AppReg from './Reg';
 import AppInstReg from '../appInst/Reg';
 import { HELP_APP_LIST } from "../../../tutorial";
-import { perpetual } from '../../../helper/constant';
+import { perpetual, role } from '../../../helper/constant';
 import { labelFormatter } from '../../../helper/formatter';
 import { developerRoles } from '../../../constant';
 import { appendSpaceToLetter } from '../../../utils/string_utils';
@@ -92,7 +92,7 @@ class AppList extends React.Component {
             isRegion: true,
             sortBy: [localFields.region, localFields.appName],
             keys: this.keys,
-            onAdd: this.onAdd,
+            onAdd: role.validateRole(developerRoles, this.props.organizationInfo) ? this.onAdd : undefined,
             viewMode: HELP_APP_LIST,
             selection: true,
             grouping: true,

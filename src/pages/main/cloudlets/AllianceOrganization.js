@@ -3,13 +3,10 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 //Mex
-import MexForms, { DUALLIST, INPUT, MAIN_HEADER } from '../../../hoc/forms/MexForms';
+import MexForms, { INPUT, MAIN_HEADER, TEXT_AREA } from '../../../hoc/forms/MexForms';
 //model
 import { service } from '../../../services';
-import { showOrganizations } from '../../../services/modules/organization';
 import { addClouldletAllianceOrgs, removeClouldletAllianceOrgs } from '../../../services/modules/cloudlet/cloudlet'
-
-import { Grid } from '@material-ui/core';
 import { perpetual } from '../../../helper/constant';
 import { _sort } from '../../../helper/constant/operators';
 import { localFields } from '../../../services/fields';
@@ -23,7 +20,6 @@ class AllianceOrganization extends React.Component {
         this._isMounted = false
         //To avoid refeching data from server
         this.cloudletData = undefined;
-        this.allianceList = [];
         this.action = props.action ? props.action : perpetual.ACTION_ADD_ALLIANCE_ORG;
         this.isAllianceCloudletAdd = (this.action === perpetual.ACTION_ADD_ALLIANCE_ORG);
     }
@@ -42,16 +38,10 @@ class AllianceOrganization extends React.Component {
     }
 
     render() {
-        const { forms, activeIndex } = this.state
+        const { forms } = this.state
         return (
-            <div>
-                <Grid container>
-                    <Grid item xs={12}>
-                        <div className="round_panel">
-                            <MexForms forms={forms} reloadForms={this.reloadForms} />
-                        </div>
-                    </Grid>
-                </Grid>
+            <div className="round_panel">
+                <MexForms forms={forms} reloadForms={this.reloadForms} />
             </div>
         )
     }
@@ -60,26 +50,19 @@ class AllianceOrganization extends React.Component {
         this.props.onClose(false)
     }
 
-    updateUI(form) {
-        if (form) {
-            if (form.field) {
-                if (form.formType === DUALLIST) {
-                    switch (form.field) {
-                        case localFields.allianceOrganization:
-                            form.options = this.allianceList.map(data => ({ value: data, label: data }))
-                            break;
-                        default:
-                            form.options = undefined;
-                    }
+    updateFormData = (forms, data) => {
+        for (let form of forms) {
+            if (form.field === localFields.allianceOrganization) {
+                let allianceOrgs = data[localFields.allianceOrganization]
+                if (allianceOrgs) {
+                    let value = ''
+                    let length = allianceOrgs.length - 1
+                    allianceOrgs.forEach((org, i) => {
+                        value = value + org + (i < length ? '\n' : '')
+                    })
+                    form.value = value
                 }
             }
-        }
-    }
-
-    updateFormData = (forms) => {
-        for (let i = 0; i < forms.length; i++) {
-            let form = forms[i]
-            this.updateUI(form)
         }
     }
 
@@ -100,59 +83,44 @@ class AllianceOrganization extends React.Component {
 
     onCreate = async (data) => {
         let allianceOrgs = data[localFields.allianceOrganization]
-        let partnerOperator = this.props.data[localFields.partnerOperator]
-        if (allianceOrgs && allianceOrgs.length > 0) {
-            let requestList = []
-            let requestCall = this.isAllianceCloudletAdd ? addClouldletAllianceOrgs : removeClouldletAllianceOrgs
-            allianceOrgs.forEach(org => {
-                requestList.push(requestCall({...data, partnerOperator, [localFields.allianceOrganization]:org}))
-            })
-            if (requestList && requestList.length > 0) {
-                this.props.handleLoadingSpinner(true)
-                service.multiAuthRequest(this, requestList, this.onCreateResponse)
-            }
-        }
-
-    }
-
-    filterAllianceCloudlets = () => {
-        let removeList = []
-        if (this.props.data) {
-            let selectedAllianceOrgs = this.props.data[localFields.allianceOrganization]
-            if (selectedAllianceOrgs && selectedAllianceOrgs.length > 0) {
-                for (let i = 0; i < selectedAllianceOrgs.length; i++) {
-                    let selectedAllianceOrg = selectedAllianceOrgs[i];
-                    for (let j = 0; j < this.allianceList.length; j++) {
-                        let allianceOrg = this.allianceList[j]
-                        if (selectedAllianceOrg === allianceOrg) {
-                            if (this.props.action === perpetual.ACTION_ADD_ALLIANCE_ORG) {
-                                this.allianceList.splice(j, 1)
-                            }
-                            else if (this.props.action === perpetual.ACTION_REMOVE_ALLIANCE_ORG) {
-                                removeList.push(allianceOrg)
-                            }
-                            break;
+        if (allianceOrgs) {
+            let oldOrgList = this.props.data[localFields.allianceOrganization]
+            let orgList = allianceOrgs.split('\n')
+            if (orgList?.length > 0) {
+                if (this.isAllianceCloudletAdd && oldOrgList?.length > 0) {
+                    orgList = orgList.filter(item => {
+                        return Boolean(item) && !oldOrgList.includes(item.trim())
+                    })
+                }
+                if (orgList?.length > 0) {
+                    let requestList = []
+                    let requestCall = this.isAllianceCloudletAdd ? addClouldletAllianceOrgs : removeClouldletAllianceOrgs
+                    orgList.forEach(org => {
+                        if (Boolean(org)) {
+                            let requestData = { ...data }
+                            requestData[localFields.allianceOrganization] = org
+                            requestList.push(requestCall(requestData))
                         }
+                    })
+                    if (requestList?.length > 0) {
+                        this.props.handleLoadingSpinner(true)
+                        service.multiAuthRequest(this, requestList, this.onCreateResponse)
                     }
                 }
             }
         }
-        this.allianceList = removeList.length > 0 ? removeList : this.allianceList
     }
 
     getFormData = async (data) => {
-        let organizationList = await service.showAuthSyncRequest(this, showOrganizations(this, { type: perpetual.OPERATOR }))
-        organizationList = _sort(organizationList.map(org => org[localFields.organizationName]))
-        this.allianceList = organizationList.filter(org => org !== data[localFields.operatorName])
-        if (this.allianceList && this.allianceList.length > 0) {
+        let allianceList = data[localFields.allianceOrganization]
+        if (this.isAllianceCloudletAdd  || allianceList?.length > 0) {
             let action = this.props.action === perpetual.ACTION_REMOVE_ALLIANCE_ORG ? 'Remove' : 'Add'
-            this.filterAllianceCloudlets();
             let forms = [
                 { label: `${action} Alliance Organization`, formType: MAIN_HEADER, visible: true },
                 { field: localFields.region, label: 'Region', formType: INPUT, rules: { disabled: true }, visible: true, value: data[localFields.region] },
                 { field: localFields.cloudletName, label: 'Cloudlet Name', formType: INPUT, rules: { disabled: true }, visible: true, value: data[localFields.cloudletName] },
                 { field: localFields.operatorName, label: 'Operator', formType: INPUT, rules: { disabled: true }, visible: true, value: data[localFields.operatorName] },
-                { field: localFields.allianceOrganization, label: 'Alliance Organization', formType: DUALLIST, visible: true },
+                { field: localFields.allianceOrganization, label: 'Alliance Organization', rules: { rows: 10 }, formType: TEXT_AREA, visible: true },
                 { label: `${action}`, formType: 'Button', onClick: this.onCreate },
                 { label: 'Cancel', formType: 'Button', onClick: this.onCancel }
             ]
@@ -177,7 +145,6 @@ class AllianceOrganization extends React.Component {
     }
 
 };
-
 
 const mapDispatchProps = (dispatch) => {
     return {

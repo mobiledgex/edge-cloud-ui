@@ -2,6 +2,7 @@ import { UNIT_BYTES, UNIT_PERCENTAGE, UNIT_FLOOR } from '../../../pages/main/mon
 import { labelFormatter } from '../../../helper/formatter';
 import { endpoint } from '../..';
 import { redux_org } from '../../../helper/reduxData';
+import { pick } from '../../../helper/constant/operators';
 import { localFields } from '../../fields';
 
 export const appMetricsKeys = [
@@ -66,6 +67,20 @@ export const appInstResourceKeys = () => ([
     { field: 'client', header: 'Client Usage' },
 ])
 
+/**New */
+const metricElements = [
+    { field: localFields.networkSent, label: 'Network Sent', serverField: 'sendBytes', unit: UNIT_BYTES, icon: 'network_wifi' },
+    { field: localFields.networkReceived, label: 'Network Received', serverField: 'recvBytes', unit: UNIT_BYTES, icon: 'network_wifi' },
+    { field: localFields.cpu, label: 'CPU', serverField: 'cpu', unit: UNIT_PERCENTAGE, icon: 'cpu.svg' },
+    { field: localFields.mem, label: 'Memory', serverField: 'mem', unit: UNIT_BYTES, icon: 'ram.svg' },
+    { field: localFields.disk, label: 'Disk', serverField: 'disk', unit: UNIT_BYTES, icon: 'save' },
+    { field: localFields.activeConnections, label: 'Active Connections', serverField: 'active', unit: UNIT_FLOOR, icon: 'link' },
+]
+
+export const appInstMetricsElements = [
+    { serverRequest: endpoint.APP_INST_METRICS_ENDPOINT, keys: metricElements },
+]
+
 export const fetchLocation = (avgValues, metricData, showList) => {
     for (let i = 0; i < showList.length; i++) {
         let show = showList[i]
@@ -85,14 +100,16 @@ export const fetchLocation = (avgValues, metricData, showList) => {
     return avgValues
 }
 
-export const appInstMetrics = (self, data, list, organization) => {
+export const appInstMetrics = (self, data, list) => {
+    let requestData = pick(data, [localFields.region, localFields.starttime, localFields.endtime, localFields.selector, localFields.numsamples])
+    let organization = data[localFields.organizationName]
     if(list)
     {
-        data.appinsts = list 
+        requestData.appinsts = list 
     }
     else if (organization) {
-        data.appinst = redux_org.isOperator(self) ? { cluster_inst_key: { cloudlet_key: { organization } } } : { app_key: { organization } }
+        requestData.appinst = redux_org.isOperator(self) ? { cluster_inst_key: { cloudlet_key: { organization } } } : { app_key: { organization } }
     }
-    return { method: endpoint.APP_INST_METRICS_ENDPOINT, data: data, keys: appMetricsKeys }
+    return { method: endpoint.APP_INST_METRICS_ENDPOINT, data: requestData, keys: appMetricsKeys }
 }
 

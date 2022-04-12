@@ -4,19 +4,22 @@ import cloneDeep from 'lodash/cloneDeep';
 import clsx from 'clsx';
 import React from 'react'
 import { Icon } from '../mexui';
-import { ICON_COLOR } from '../../helper/constant/colors';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        display: 'inline-flex',
+        display: 'flex',
         alignItems: 'center',
-        justifyContent:'center',
         marginLeft: 15,
+        marginTop:5,
+        gap: 10
+    },
+    content: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         cursor: 'pointer',
-        textAlign: 'center',
         padding: 5,
         borderRadius: 5,
-        marginTop: 5,
         '&:hover': {
             backgroundColor: 'rgba(56, 142, 60, 0.2)',
         }
@@ -24,8 +27,12 @@ const useStyles = makeStyles((theme) => ({
     clicked: {
         backgroundColor: 'rgba(56, 142, 60, 0.2)',
     },
-    text:{
-        marginLeft: 6 
+    text: {
+        marginLeft: 6,
+        lineHeight:2
+    },
+    empty:{
+        height:35
     }
 }));
 
@@ -41,13 +48,15 @@ const IconBar = (props) => {
     }
 
     return (
-        keys ? keys.map((key, i) => {
-            const isSVG = key.icon.includes('.svg')
-            return (<div className={clsx(classes.root, key.clicked ? classes.clicked : {})} key={i} onClick={() => { onChange(i, key) }}>
-                {isSVG ? <img src={`/assets/icons/${key.icon}`} width={24} /> : <Icon color={'#388E3C'} size={24} outlined={true}>{key.icon}</Icon>}
-                <strong className={classes.text}>{`${key.label}: ${key.count}`}</strong>
-            </div>)
-        }) : null
+        <div className={classes.root}>
+            {keys ? keys.map((key, i) => {
+                const isSVG = key.icon.includes('.svg')
+                return (key?.count ? <div key={i} className={clsx(classes.content, key.clicked ? classes.clicked : {})} onClick={() => { onChange(i, key) }}>
+                    {isSVG ? <img src={`/assets/icons/${key.icon}`} width={24} /> : <Icon color={'#388E3C'} size={24} outlined={true}>{key.icon}</Icon>}
+                    <strong className={classes.text}>{`${key.label}: ${key.count}`}</strong>
+                </div> : <div key={i} className={classes.empty}></div>)
+            }) : null}
+        </div>
     )
 }
 export default IconBar

@@ -11,7 +11,7 @@ export const keys = () => ([
     { field: localFields.ram, serverField: 'ram', label: 'RAM Size(MB)', sortable: true, visible: true },
     { field: localFields.vCPUs, serverField: 'vcpus', label: 'Number of vCPUs', sortable: true, visible: true },
     { field: localFields.disk, serverField: 'disk', label: 'Disk Space(GB)', sortable: true, visible: true },
-    { field: localFields.gpu, serverField: 'opt_res_map#OS#gpu', label: 'GPU', visible: false, format: true, dataType: perpetual.TYPE_JSON }
+    { field: localFields.gpu, serverField: 'opt_res_map#OS#gpu', label: 'GPU', visible: false, dataType: perpetual.TYPE_JSON }
 ])
 
 export const iconKeys = () => ([
