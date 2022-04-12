@@ -74,22 +74,33 @@ class ReviewZones extends React.Component {
                 <br />
                 <Typography variant='h5'>Partner Zones</Typography>
                 <br />
-                {zones.length > 0 ? <MexTable dataList={zones} keys={zoneKeys()} setSelected={(selected) => this.updateState({ selected })} selected={selected} selection={true} style={{ height: zones.length * 100, maxHeight: 400 }} borderless /> : <NoData loading={loading} />}
-                <div className={classes.btnDiv}>
-                    <Button className={classes.greenBtn} onClick={this.onRegisterZone}>Register Zones</Button>
-                    <Button className={classes.greenBtn} onClick={onClose}>Close</Button>
-                </div>
+                {zones?.length > 0 ?
+                    <React.Fragment>
+                        <MexTable dataList={zones} keys={zoneKeys()} setSelected={(selected) => this.updateState({ selected })} selected={selected} selection={true} style={{ height: zones.length * 100, maxHeight: 400 }} borderless />
+                        <div className={classes.btnDiv}>
+                            <Button className={classes.greenBtn} onClick={this.onRegisterZone}>Register Zones</Button>
+                            <Button className={classes.greenBtn} onClick={onClose}>Close</Button>
+                        </div>
+                    </React.Fragment> :
+                    <NoData loading={loading} />
+                }
             </React.Fragment>
         )
     }
 
     fetchPartnerZones = async () => {
-        const { data } = this.props
+        const { data, onClose } = this.props
+        let zones = []
         if (data) {
-            let zones = await showAuthSyncRequest(this, showPartnerFederatorZone(this, data, true))
-            if (zones && zones.length > 0) {
-                this.updateState({ zones })
-            }
+            zones = await showAuthSyncRequest(this, showPartnerFederatorZone(this, data, true))
+
+        }
+        if (zones?.length > 0) {
+            this.updateState({ zones })
+        }
+        else {
+            this.props.handleAlertInfo('error', 'No zones to review')
+            onClose()
         }
     }
 
