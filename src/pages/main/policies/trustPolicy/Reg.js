@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import MexForms, { MAIN_HEADER, HEADER, SWITCH, INPUT, SELECT, MULTI_FORM, MULTI_SELECT } from '../../../../hoc/forms/MexForms';
+import MexForms, { MAIN_HEADER, HEADER, SWITCH, INPUT, SELECT, MULTI_FORM, MULTI_SELECT, ICON_BUTTON } from '../../../../hoc/forms/MexForms';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -125,9 +125,9 @@ class TrustPolicyReg extends React.Component {
         { field: localFields.protocol, label: 'Protocol', formType: SELECT, rules: { required: true, type: 'number', allCaps: true }, width: 3, visible: true, options: [perpetual.PROTOCOL_TCP, perpetual.PROTOCOL_UDP, perpetual.PROTOCOL_ICMP], serverField: 'protocol', update: { edit: true }, value: protocol },
         { field: localFields.remoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true }, width: 3, visible: true, serverField: 'remote_cidr', dataValidateFunc: validateRemoteCIDR, update: { edit: true }, value: remoteCIDR },
         { field: localFields.portRangeMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, serverField: 'port_range_min', dataValidateFunc: this.validatePortRange, update: { edit: true }, value: portRangeMin },
-        { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
+        { icon: '~', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: localFields.portRangeMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number' }, width: 3, visible: true, serverField: 'port_range_max', dataValidateFunc: this.validatePortRange, update: { edit: true }, value: portRangeMax },
-        { icon: 'delete', formType: 'IconButton', visible: true, style: { color: 'white', top: 15 }, width: 1, onClick: this.removeRulesForm }
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, style: { color: 'white', top: 15 }, width: 1, onClick: this.removeRulesForm }
     ])
 
     getOutboundSecurityForm = (outBoundRules) => (
@@ -140,7 +140,7 @@ class TrustPolicyReg extends React.Component {
         { field: localFields.organizationName, label: 'Operator', formType: SELECT, placeholder: 'Select Operator', rules: { required: true, disabled: !redux_org.isAdmin(this) ? true : false }, value: redux_org.nonAdminOrg(this), visible: true, update: { key: true } },
         { field: localFields.trustPolicyName, label: 'Trust Policy Name', formType: INPUT, placeholder: 'Enter Trust Policy Name', rules: { required: true }, visible: true, update: { key: true } },
         { field: localFields.fullIsolation, label: 'Full Isolation', formType: SWITCH, visible: true, value: false, update: { edit: true } },
-        { field: localFields.outboundSecurityRules, label: 'Outbound Security Rules', formType: HEADER, forms: [{ formType: 'IconButton', icon: 'add', style: { color: "white", display: 'inline' }, onClick: this.addRulesForm }], visible: true, update: { edit:true } },
+        { field: localFields.outboundSecurityRules, label: 'Outbound Security Rules', formType: HEADER, forms: [{ formType: ICON_BUTTON, icon: 'add', style: { color: "white", display: 'inline' }, onClick: this.addRulesForm }], visible: true, update: { edit:true } },
     ])
 
     addRulesForm = (e, form) => {

@@ -311,9 +311,9 @@ class TrustPolicyExceptionReg extends React.Component {
         { field: localFields.ocProtocol, label: 'Protocol', formType: SELECT, placeholder: 'Select', rules: { required: true, allCaps: true, required: true, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 3, visible: true, options: [perpetual.PROTOCOL_TCP, perpetual.PROTOCOL_UDP, perpetual.PROTOCOL_ICMP], update: { edit: true } },
         { field: localFields.ocRemoteCIDR, label: 'Remote CIDR', formType: INPUT, rules: { required: true, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: validateRemoteCIDR },
         { field: localFields.ocPortMin, label: 'Port Range Min', formType: INPUT, rules: { required: true, type: 'number', min: 1, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
-        { icon: '~', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
+        { icon: '~', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1 },
         { field: localFields.ocPortMax, label: 'Port Range Max', formType: INPUT, rules: { required: true, type: 'number', min: 1, disabled: role.validateRole(developerRoles, this.props.organizationInfo) ? false : true }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: this.validateOCPortRange },
-        { icon: 'delete', formType: 'IconButton', visible: canDelete && role.validateRole(developerRoles, this.props.organizationInfo) ? true : false, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
+        { icon: 'delete', formType: ICON_BUTTON, visible: canDelete && role.validateRole(developerRoles, this.props.organizationInfo) ? true : false, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     getOutboundConnectionsForm = (form) => {

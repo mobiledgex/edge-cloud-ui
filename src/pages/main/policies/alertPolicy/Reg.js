@@ -127,7 +127,7 @@ class Reg extends React.Component {
     labelsForm = () => ([
         { field: localFields.key, label: 'Key', formType: INPUT, rules: { required: true }, update: { edit: true }, width: 7, visible: true },
         { field: localFields.value, label: 'Value', formType: INPUT, rules: { required: true }, update: { edit: true }, width: 7, visible: true },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeMultiForm }
     ])
 
     getLabelsForm = (form) => {
