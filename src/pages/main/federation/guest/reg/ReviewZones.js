@@ -7,6 +7,9 @@ import { registerPartnerZone, showPartnerFederatorZone } from '../../../../../se
 import { authSyncRequest, showAuthSyncRequest } from '../../../../../services/service'
 import { withRouter } from 'react-router-dom';
 import { localFields } from '../../../../../services/fields';
+import { NoData } from '../../../../../helper/formatter/ui'
+import { withStyles } from '@material-ui/core/styles';
+import { styles } from '../../federation-styling';
 
 export const zoneKeys = () => ([
     { field: localFields.partnerFederationName, label: 'Federation Name', visible: true },
@@ -15,6 +18,7 @@ export const zoneKeys = () => ([
     { field: localFields.zoneId, label: 'Zone', serverField: 'zoneid', visible: true },
     { field: localFields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true }
 ])
+
 
 class ReviewZones extends React.Component {
 
@@ -64,28 +68,39 @@ class ReviewZones extends React.Component {
 
     render() {
         const { selected, zones } = this.state
-        const { onClose } = this.props
+        const { onClose, loading, classes } = this.props
         return (
             <React.Fragment>
                 <br />
                 <Typography variant='h5'>Partner Zones</Typography>
                 <br />
-                {zones.length > 0 ? <MexTable dataList={zones} keys={zoneKeys()} setSelected={(selected) => this.updateState({ selected })} selected={selected} selection={true} style={{ height: zones.length * 100, maxHeight: 400 }} borderless /> : null}
-                <div style={{ width: '100%', display: 'flex', gap: 20, marginTop: 20, justifyContent: 'right' }}>
-                    <Button style={{ backgroundColor: '#447700' }} onClick={this.onRegisterZone}>Register Zones</Button>
-                    <Button style={{ backgroundColor: '#447700' }} onClick={onClose}>Close</Button>
-                </div>
+                {zones?.length > 0 ?
+                    <React.Fragment>
+                        <MexTable dataList={zones} keys={zoneKeys()} setSelected={(selected) => this.updateState({ selected })} selected={selected} selection={true} style={{ height: zones.length * 100, maxHeight: 400 }} borderless />
+                        <div className={classes.btnDiv}>
+                            <Button className={classes.greenBtn} onClick={this.onRegisterZone}>Register Zones</Button>
+                            <Button className={classes.greenBtn} onClick={onClose}>Close</Button>
+                        </div>
+                    </React.Fragment> :
+                    <NoData loading={loading} />
+                }
             </React.Fragment>
         )
     }
 
     fetchPartnerZones = async () => {
-        const { data } = this.props
+        const { data, onClose } = this.props
+        let zones = []
         if (data) {
-            let zones = await showAuthSyncRequest(this, showPartnerFederatorZone(this, data, true))
-            if (zones && zones.length > 0) {
-                this.updateState({ zones })
-            }
+            zones = await showAuthSyncRequest(this, showPartnerFederatorZone(this, data, true))
+
+        }
+        if (zones?.length > 0) {
+            this.updateState({ zones })
+        }
+        else {
+            this.props.handleAlertInfo('error', 'No zones to review')
+            onClose()
         }
     }
 
@@ -106,4 +121,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(ReviewZones));
+export default withRouter(connect(null, mapDispatchProps)(withStyles(styles)(ReviewZones)))

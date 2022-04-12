@@ -10,6 +10,9 @@ import { shareZones } from '../../../../../services/modules/zones/zones';
 import { ACTION_UNSHARE_ZONES } from '../../../../../helper/constant/perpetual';
 import { responseValid } from '../../../../../services/config';
 import { localFields } from '../../../../../services/fields';
+import { NoData } from '../../../../../helper/formatter/ui'
+import { withStyles } from '@material-ui/core/styles';
+import { styles } from '../../federation-styling';
 
 export const zoneKeys = () => ([
     { field: localFields.operatorName, label: 'Operator', visible: true },
@@ -73,35 +76,46 @@ class ShareZones extends React.Component {
 
     render() {
         const { selected, zones, loading } = this.state
-        const { onClose } = this.props
+        const { onClose, classes } = this.props
         return (
             <React.Fragment>
                 <br />
                 <Typography variant='h5'>Operator Zones</Typography>
                 <br />
-                <MexTable dataList={zones} keys={zoneKeys()} loading={loading} setSelected={(selected) => this.updateState({ selected })} selected={selected} selection={true} style={{ height: zones.length * 100, maxHeight: 400 }} borderless />
-                <div style={{ width: '100%', display: 'flex', gap: 20, marginTop: 20, justifyContent: 'right' }}>
-                    <Button style={{ backgroundColor: '#447700' }} onClick={this.shareZones}>{`${this.isUnshare ? 'Uns' : 'S'}hare Zones`}</Button>
-                    <Button style={{ backgroundColor: '#447700' }} onClick={onClose}>Close</Button>
-                </div>
+                {
+                    zones.length > 0 ?
+                        <React.Fragment>
+                            <MexTable dataList={zones} keys={zoneKeys()} setSelected={(selected) => this.updateState({ selected })} selected={selected} selection={true} style={{ height: zones.length * 100, maxHeight: 400 }} borderless />
+                            <div className={classes.btnDiv}>
+                                <Button className={classes.greenBtn} onClick={this.shareZones}>{`${this.isUnshare ? 'Uns' : 'S'}hare Zones`}</Button>
+                                <Button className={classes.greenBtn} onClick={onClose}>Close</Button>
+                            </div>
+                        </React.Fragment> :
+                        <NoData loading={loading} />
+                }
             </React.Fragment>
         )
     }
 
     fetchZones = async () => {
-        const { id, data, handleAlertInfo, onClose } = this.props
+        const { data, handleAlertInfo, onClose } = this.props
         let zones = []
-        if (this.isUnshare && data[localFields.zoneId]) {
-            zones = data[localFields.zoneId].map(zone => {
-                return { ...data, zoneId: zone }
-            })
+        let existingZones = data[localFields.zones]
+        if (this.isUnshare) {
+            zones = existingZones
         }
-        else if (data) {
+        else {
             this.updateState({ loading: true })
-            zones = await showAuthSyncRequest(this, showFederatorZones(this, data, true))
+            zones = await showAuthSyncRequest(this, showFederatorZones(this, { operatorid: data[localFields.operatorName], countrycode: data[localFields.countryCode] }, true))
+            if (existingZones) {
+                existingZones = existingZones.map(zone => zone[localFields.zoneId])
+                zones = zones.filter(zone => {
+                    return !existingZones.includes(zone[localFields.zoneId])
+                })
+            }
             this.updateState({ loading: false })
         }
-        if (zones && zones.length > 0) {
+        if (zones?.length > 0) {
             this.updateState({ zones })
         }
         else {
@@ -127,4 +141,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(ShareZones));
+export default withRouter(connect(null, mapDispatchProps)(withStyles(styles)(ShareZones)))

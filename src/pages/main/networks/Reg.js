@@ -223,7 +223,7 @@ class NetworkReg extends React.Component {
     routeFormArray = () => ([
         { field: localFields.destinationCidr, label: 'Destination CIDR', placeholder: 'Enter Destination CIDR', formType: INPUT, rules: { required: true }, width: 4, visible: true, update: { edit: true }, dataValidateFunc: validateRemoteCIDR },
         { field: localFields.nextHopIp, label: 'Destination Hop IP', placeholder: 'Enter Destination Hop IP', formType: INPUT, rules: { required: true }, width: 3, visible: true, update: { edit: true }, dataValidateFunc: validateRemoteIP },
-        { icon: 'delete', formType: 'IconButton', visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeForm }
+        { icon: 'delete', formType: ICON_BUTTON, visible: true, color: 'white', style: { color: 'white', top: 15 }, width: 1, onClick: this.removeForm }
     ])
 
     removeForm = (e, form) => {
