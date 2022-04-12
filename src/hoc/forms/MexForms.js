@@ -32,6 +32,7 @@ import AddToPhotosOutlinedIcon from '@material-ui/icons/AddToPhotosOutlined';
 import VpnKeyOutlinedIcon from '@material-ui/icons/VpnKeyOutlined';
 
 import './style.css'
+import clsx from 'clsx';
 
 export const MAIN_HEADER = 'MainHeader'
 export const HEADER = 'Header'
@@ -58,6 +59,9 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         textAlign: 'center',
         justifyContent: 'center',
+        height: 35
+    },
+    formBtnMulti: {
         height: 55
     },
     fromHeaderLabel: {
@@ -387,7 +391,7 @@ const MexForms = (props) => {
         )
     }
 
-    const loadHorizontalForms = (parentId, forms) => {
+    const loadHorizontalForms = (parentId, forms, multi=true) => {
 
         let parentForm = props.forms[parentId];
         return forms.map((form, i) => {
@@ -404,7 +408,7 @@ const MexForms = (props) => {
             }
             return (
                 form.visible ?
-                    <Grid.Column width={form.width ? form.width : parentForm.width} key={key}>
+                    <Grid.Column width={form.width ? form.width : parentForm.width} key={key} style={{padding:`${multi ? 'default' : '0 1em 0 0'}`}}>
                         {
                             form.label ?
                                 <div className={classes.fromHorizontalFieldLabelContainer}>
@@ -424,7 +428,7 @@ const MexForms = (props) => {
                                     form.formType === SWITCH ?
                                         <div style={{ marginTop: 5 }}><MexSwitch horizontal={true} form={form} onChange={onValueSelect} /></div> :
                                         form.formType === ICON_BUTTON || form.formType === BUTTON ?
-                                            <div key={i} className={classes.formBtn}>{loadButton(form, i)}</div> :
+                                            <div key={i} className={clsx(classes.formBtn, multi ? classes.formBtnMulti : '')}>{loadButton(form, i)}</div> :
                                             form.formType === TIP && form.tip ?
                                                 <div key={i} className={classes.horizontalHelpTip}>{showTip(form)}</div> :
                                                 null
@@ -486,7 +490,7 @@ const MexForms = (props) => {
                     <Grid.Column width={11}>
                         {
                             form.forms ?
-                                <Grid key={index} id={form.field} className={classes.mainHorizontalForm}>{loadHorizontalForms(index, form.forms)}</Grid> :
+                                <Grid key={index} id={form.field} className={classes.mainHorizontalForm}>{loadHorizontalForms(index, form.forms, false)}</Grid> :
                                 form.formType === SELECT || form.formType === MULTI_SELECT || form.formType === DUALLIST ?
                                     loadDropDownForms(form, required, disabled) :
                                     form.formType === SELECT_RADIO_TREE ?

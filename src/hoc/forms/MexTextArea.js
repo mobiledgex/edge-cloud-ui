@@ -2,10 +2,9 @@ import React from 'react'
 import { Icon, Popup, TextArea } from 'semantic-ui-react';
 
 const MexTextArea = (props) => {
-
-    let form = props.form
-    let rules = form.rules
-    const [value, setValue] = React.useState(props.form.value ? props.form.value : '')
+    const { label, form } = props
+    const { field, placeholder, rules, error } = form
+    const [value, setValue] = React.useState(form.value ?? '')
 
     const onValueChange = (inp) => {
         form.hasChanged = inp !== value
@@ -25,26 +24,30 @@ const MexTextArea = (props) => {
 
     const getForm = () => (
         <TextArea
-            id={form.field}
+            id={field}
             rows={rules?.rows ?? 4}
-            icon={form.error ? <Icon color='red' name='times circle outline' /> : null}
-            label={props.label ? props.label : null}
-            placeholder={form.placeholder ? form.placeholder : null}
+            icon={error ? <Icon color='red' name='times circle outline' /> : null}
+            label={label}
+            placeholder={placeholder}
             onChange={(e, { value }) => onValueChange(value)}
-            type={form.rules ? form.rules.type : 'text'}
-            required={form.required ? form.rules.required : false}
+            type={rules ? rules.type : 'text'}
+            required={rules?.required ? rules.required : false}
             disabled={props.disabled}
             onBlur={(e) => onBlurChange(e.target.value)}
             value={value}
-            style={form.style ? form.style : { backgroundColor: `${form.error ? 'rgba(211, 46, 46, 0.1)' : '#18191E'}`, color: '#939396' }}
+            style={{
+                border: 'solid 1px rgba(255,255,255,.2)',
+                backgroundColor: error ? 'rgba(211, 46, 46, 0.1)' : '#18191E',
+                color: '#939396'
+            }}
         />
     )
     return (
         form ?
-            form.error ?
+            error ?
                 <Popup
                     trigger={getForm()}
-                    content={form.error}
+                    content={error}
                     inverted
                 /> :
                 getForm()
