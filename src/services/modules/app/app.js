@@ -136,10 +136,9 @@ export const getKey = (data, isCreate) => {
 
         if (data[localFields.qosSessionProfile]) {
             app.qos_session_profile = idFormatter.qosProfile(data[localFields.qosSessionProfile])
-        }
-
-        if (data[localFields.qosSessionDuration]) {
-            app.qos_session_duration = data[localFields.qosSessionDuration]
+            if (data[localFields.qosSessionDuration] && data[localFields.qosSessionProfile] !== perpetual.QOS_NO_PRIORITY) {
+                app.qos_session_duration = data[localFields.qosSessionDuration]
+            }
         }
 
         if (data[localFields.fields]) {
