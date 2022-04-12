@@ -9,6 +9,7 @@ import { withRouter } from 'react-router-dom';
 import { localFields } from '../../../../../services/fields';
 import { NoData } from '../../../../../helper/formatter/ui'
 import { withStyles } from '@material-ui/core/styles';
+import { styles } from '../../federation-styling';
 
 export const zoneKeys = () => ([
     { field: localFields.partnerFederationName, label: 'Federation Name', visible: true },
