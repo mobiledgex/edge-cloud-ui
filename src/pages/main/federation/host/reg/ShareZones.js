@@ -102,15 +102,13 @@ class ShareZones extends React.Component {
         let zones = []
         let existingZones = data[localFields.zones]
         if (this.isUnshare) {
-            zones = existingZones?.map(zone => {
-                return { ...zone, countryCode: data[localFields.countryCode] }
-            })
+            zones = existingZones
         }
         else {
             this.updateState({ loading: true })
             zones = await showAuthSyncRequest(this, showFederatorZones(this, { operatorid: data[localFields.operatorName], countrycode: data[localFields.countryCode] }, true))
             if (existingZones) {
-                let existingZones = existingZones.map(zone => zone[localFields.zoneId])
+                existingZones = existingZones.map(zone => zone[localFields.zoneId])
                 zones = zones.filter(zone => {
                     return !existingZones.includes(zone[localFields.zoneId])
                 })
