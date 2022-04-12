@@ -70,14 +70,8 @@ export const showFederationZones = (self) => {
     return { method: endpoint.SHOW_FEDERATION_SELF_ZONE, data: requestData, keys: sharedkeys() }
 }
 
-export const showFederatorZones = (self, data = null) => {
-    let requestData = {}
-    if (redux_org.isOperator(self)) {
-        requestData['operatorid'] = redux_org.nonAdminOrg(self)
-    } else {
-        requestData = data
-    }
-    return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, data: requestData, keys: keys() }
+export const showFederatorZones = (self, data) => {
+    return { method: endpoint.SHOW_FEDERATOR_SELF_ZONE, data, keys: keys() }
 }
 
 export const shareZones = (self, data, unshare = false) => {

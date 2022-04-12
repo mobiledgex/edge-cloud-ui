@@ -89,11 +89,17 @@ class ShareZones extends React.Component {
                 <br />
                 <Typography variant='h5'>Operator Zones</Typography>
                 <br />
-                {zones.length > 0 ? <MexTable dataList={zones} keys={zoneKeys()} setSelected={(selected) => this.updateState({ selected })} selected={selected} selection={true} style={{ height: zones.length * 100, maxHeight: 400 }} borderless /> : <NoData loading={loading} />}
-                <div className={classes.btnDiv}>
-                    <Button className={classes.greenBtn} onClick={this.shareZones}>{`${this.isUnshare ? 'Uns' : 'S'}hare Zones`}</Button>
-                    <Button className={classes.greenBtn} onClick={onClose}>Close</Button>
-                </div>
+                {
+                    zones.length > 0 ?
+                        <React.Fragment>
+                            <MexTable dataList={zones} keys={zoneKeys()} setSelected={(selected) => this.updateState({ selected })} selected={selected} selection={true} style={{ height: zones.length * 100, maxHeight: 400 }} borderless />
+                            <div className={classes.btnDiv}>
+                                <Button className={classes.greenBtn} onClick={this.shareZones}>{`${this.isUnshare ? 'Uns' : 'S'}hare Zones`}</Button>
+                                <Button className={classes.greenBtn} onClick={onClose}>Close</Button>
+                            </div>
+                        </React.Fragment> :
+                        <NoData loading={loading} />
+                }
             </React.Fragment>
         )
     }
@@ -112,7 +118,7 @@ class ShareZones extends React.Component {
             shareZones = zones.filter(obj1 => !data[localFields.zones].some(obj2 => obj1[localFields.zoneId] === obj2[localFields.zoneId]));
             this.updateState({ loading: false })
         }
-        zones = this.isUnshare ? data[localFields.zones] : shareZones 
+        zones = this.isUnshare ? data[localFields.zones] : shareZones
         if (zones && zones.length > 0) {
             this.updateState({ zones })
         }
