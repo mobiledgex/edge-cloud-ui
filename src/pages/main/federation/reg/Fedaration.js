@@ -76,7 +76,7 @@ class RegisterPartner extends React.Component {
         }
     }
 
-    onCancel = async () => {
+    onCancel = () => {
         this.updateState({
             dialogMessageInfo: {
                 message: perpetual.EXIT_MESSAGE
