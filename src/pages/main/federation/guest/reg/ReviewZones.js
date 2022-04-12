@@ -8,7 +8,6 @@ import { authSyncRequest, showAuthSyncRequest } from '../../../../../services/se
 import { withRouter } from 'react-router-dom';
 import { localFields } from '../../../../../services/fields';
 import { NoData } from '../../../../../helper/formatter/ui'
-import { styleComponent } from '../../host/reg/ShareZones'
 import { withStyles } from '@material-ui/core/styles';
 
 export const zoneKeys = () => ([
@@ -19,14 +18,7 @@ export const zoneKeys = () => ([
     { field: localFields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true }
 ])
 
-const styles = {
-    btnDiv: {
-        ...styleComponent.btnDiv
-    },
-    greenBtn: {
-        ...styleComponent.greenBtn
-    }
-};
+
 class ReviewZones extends React.Component {
 
     constructor(props) {
