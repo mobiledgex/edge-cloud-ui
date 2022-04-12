@@ -12,6 +12,7 @@ import { responseValid } from '../../../../../services/config';
 import { localFields } from '../../../../../services/fields';
 import { NoData } from '../../../../../helper/formatter/ui'
 import { withStyles } from '@material-ui/core/styles';
+import { styles } from '../../federation-styling';
 
 export const zoneKeys = () => ([
     { field: localFields.operatorName, label: 'Operator', visible: true },
@@ -19,14 +20,6 @@ export const zoneKeys = () => ([
     { field: localFields.countryCode, label: 'Country Code', serverField: 'countrycode', sortable: true, visible: true, filter: true, key: true }
 ])
 
-export const styleComponent = {
-    btnDiv: {
-        width: '100%', display: 'flex', gap: 20, marginTop: 20, justifyContent: 'right'
-    },
-    greenBtn: {
-        backgroundColor: '#447700'
-    }
-};
 class ShareZones extends React.Component {
 
     constructor(props) {
@@ -105,21 +98,26 @@ class ShareZones extends React.Component {
     }
 
     fetchZones = async () => {
-        const { id, data, handleAlertInfo, onClose } = this.props
-        let shareZones, zones = []
-        if (this.isUnshare && data[localFields.zoneId]) {
-            zones = data[localFields.zoneId].map(zone => {
-                return { ...data, zoneId: zone }
+        const { data, handleAlertInfo, onClose } = this.props
+        let zones = []
+        let existingZones = data[localFields.zones]
+        if (this.isUnshare) {
+            zones = existingZones?.map(zone => {
+                return { ...zone, countryCode: data[localFields.countryCode] }
             })
         }
-        else if (data && !this.isUnshare) {
+        else {
             this.updateState({ loading: true })
             zones = await showAuthSyncRequest(this, showFederatorZones(this, { operatorid: data[localFields.operatorName], countrycode: data[localFields.countryCode] }, true))
-            shareZones = zones.filter(obj1 => !data[localFields.zones].some(obj2 => obj1[localFields.zoneId] === obj2[localFields.zoneId]));
+            if (existingZones) {
+                let existingZones = existingZones.map(zone => zone[localFields.zoneId])
+                zones = zones.filter(zone => {
+                    return !existingZones.includes(zone[localFields.zoneId])
+                })
+            }
             this.updateState({ loading: false })
         }
-        zones = this.isUnshare ? data[localFields.zones] : shareZones
-        if (zones && zones.length > 0) {
+        if (zones?.length > 0) {
             this.updateState({ zones })
         }
         else {
@@ -145,4 +143,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(withStyles(styleComponent)(ShareZones)))
+export default withRouter(connect(null, mapDispatchProps)(withStyles(styles)(ShareZones)))
